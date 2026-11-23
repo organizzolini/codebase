@@ -64,19 +64,30 @@ const drawnDiagram = (lines: readonly string[]): string =>
     "",
   ].join("\n");
 
+/** A `subgraph` block: its numbered id and title, then its indented lines. */
+const subgraph = (
+  index: number,
+  title: string,
+  lines: readonly string[],
+): string[] => [
+  `subgraph nb${index}["${title}"]`,
+  ...lines.map((line) => `    ${line}`),
+  "end",
+];
+
 /** The diamond, its edges in source then target order. */
 const DIAMOND_LINES = [
-  'n0["Audit"]',
-  'n1["Report"]',
-  'n2["Build"]',
-  'n3["Ship"]',
-  'n4["Design"]',
-  'n5["Plan"]',
-  "n0 --> n1",
-  "n2 --> n3",
-  "n4 --> n3",
-  "n5 --> n2",
-  "n5 --> n4",
+  ...subgraph(0, "Audit", ['n0["Audit"]', 'n1["Report"]', "n0 --> n1"]),
+  ...subgraph(1, "Plan", [
+    'n2["Build"]',
+    'n3["Ship"]',
+    'n4["Design"]',
+    'n5["Plan"]',
+    "n2 --> n3",
+    "n4 --> n3",
+    "n5 --> n2",
+    "n5 --> n4",
+  ]),
   "class n0 root",
   "class n5 root",
 ];
@@ -276,18 +287,22 @@ describe("render-directed-acyclic-graph-data", () => {
         );
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Audit"]',
-            'n1["Report"]',
-            'n2["Build"]',
-            'n3["Ship"]',
-            'n4["Design"]',
-            'n5["Plan"]',
-            "n0 --> n1",
-            "n2 --> n3",
-            "n4 --> n3",
-            "n5 --> n2",
-            "n5 --> n4",
-            "n3 --> n5",
+            ...subgraph(0, "Audit", [
+              'n0["Audit"]',
+              'n1["Report"]',
+              "n0 --> n1",
+            ]),
+            ...subgraph(1, "Build", [
+              'n2["Build"]',
+              'n3["Ship"]',
+              'n4["Design"]',
+              'n5["Plan"]',
+              "n2 --> n3",
+              "n4 --> n3",
+              "n5 --> n2",
+              "n5 --> n4",
+              "n3 --> n5",
+            ]),
             "class n0 root",
           ]),
         );
@@ -403,17 +418,21 @@ describe("render-directed-acyclic-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Build"]',
-            'n1["Ship"]',
-            'n2["Design"]',
-            'n3["Audit"]',
-            'n4["Report"]',
-            'n5["Plan"]',
-            "n0 --> n1",
-            "n2 --> n1",
-            "n3 --> n4",
-            "n5 --> n2",
-            "n5 --> n0",
+            ...subgraph(0, "Plan", [
+              'n0["Build"]',
+              'n1["Ship"]',
+              'n2["Design"]',
+              'n5["Plan"]',
+              "n0 --> n1",
+              "n2 --> n1",
+              "n5 --> n2",
+              "n5 --> n0",
+            ]),
+            ...subgraph(1, "Audit", [
+              'n3["Audit"]',
+              'n4["Report"]',
+              "n3 --> n4",
+            ]),
             "class n3 root",
             "class n5 root",
           ]),
@@ -453,18 +472,22 @@ describe("render-directed-acyclic-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Audit"]',
-            'n1["Report"]',
-            'n2["Build"]',
-            'n3["Design"]',
-            'n4["Plan"]',
-            'n5["… 1 more"]',
-            'n6["… 1 more"]',
-            "n0 --> n1",
-            "n4 --> n2",
-            "n4 --> n3",
-            "n2 --> n5",
-            "n3 --> n6",
+            ...subgraph(0, "Audit", [
+              'n0["Audit"]',
+              'n1["Report"]',
+              "n0 --> n1",
+            ]),
+            ...subgraph(1, "Plan", [
+              'n2["Build"]',
+              'n3["Design"]',
+              'n4["Plan"]',
+              'n5["… 1 more"]',
+              'n6["… 1 more"]',
+              "n4 --> n2",
+              "n4 --> n3",
+              "n2 --> n5",
+              "n3 --> n6",
+            ]),
             "class n0 root",
             "class n4 root",
             "class n5 truncation",
@@ -512,16 +535,20 @@ describe("render-directed-acyclic-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Audit"]',
-            'n1["Report"]',
-            'n2["Build"]',
-            'n3["Ship"]',
-            'n4["Plan"]',
-            'n5["… 1 more"]',
-            "n0 --> n1",
-            "n2 --> n3",
-            "n4 --> n2",
-            "n4 --> n5",
+            ...subgraph(0, "Audit", [
+              'n0["Audit"]',
+              'n1["Report"]',
+              "n0 --> n1",
+            ]),
+            ...subgraph(1, "Plan", [
+              'n2["Build"]',
+              'n3["Ship"]',
+              'n4["Plan"]',
+              'n5["… 1 more"]',
+              "n2 --> n3",
+              "n4 --> n2",
+              "n4 --> n5",
+            ]),
             "class n0 root",
             "class n4 root",
             "class n5 truncation",

@@ -45,6 +45,18 @@ export interface GraphModel {
   readonly warnings: readonly string[];
 }
 
+/** A weakly connected group of nodes, drawn as one Mermaid subgraph. */
+export interface GraphNeighborhood {
+  /** The edges whose endpoints are in `nodes`, in model order. */
+  readonly edges: readonly GraphEdge[];
+
+  /** The nodes, in model order. */
+  readonly nodes: readonly GraphNode[];
+
+  /** The subgraph drawn around it; absent for a lone neighborhood. */
+  readonly subgraph?: GraphSubgraph;
+}
+
 /** A vertex of a graph, identified by a model-defined `id`. */
 export interface GraphNode {
   /** Unique within the graph; never drawn, so it may be any text. */
@@ -59,3 +71,12 @@ export interface GraphNode {
 
 /** A node's role in the drawing, if it has one. */
 export type GraphNodeMarker = "root" | "truncation";
+
+/** The Mermaid subgraph a neighborhood is drawn in. */
+export interface GraphSubgraph {
+  /** The Mermaid id, `nb<position>`. */
+  readonly id: string;
+
+  /** The text drawn as its title. */
+  readonly title: string;
+}

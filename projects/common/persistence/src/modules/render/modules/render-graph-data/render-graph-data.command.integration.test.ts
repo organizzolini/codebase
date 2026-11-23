@@ -66,6 +66,17 @@ const drawnDiagram = (lines: readonly string[], direction = "LR"): string =>
     "",
   ].join("\n");
 
+/** A `subgraph` block: its numbered id and title, then its indented lines. */
+const subgraph = (
+  index: number,
+  title: string,
+  lines: readonly string[],
+): string[] => [
+  `subgraph nb${index}["${title}"]`,
+  ...lines.map((line) => `    ${line}`),
+  "end",
+];
+
 /** The directed diamond, its edges in source then target order. */
 const DIAMOND_LINES = [
   'n0["Hub"]',
@@ -143,12 +154,8 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["A"]',
-            'n1["B"]',
-            'n2["Y"]',
-            'n3["X"]',
-            "n0 --- n1",
-            "n2 --- n3",
+            ...subgraph(0, "A", ['n0["A"]', 'n1["B"]', "n0 --- n1"]),
+            ...subgraph(1, "X", ['n2["Y"]', 'n3["X"]', "n2 --- n3"]),
             "class n0 root",
             "class n3 root",
           ]),
@@ -171,6 +178,28 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toContain('n0 -->|"needs (2.5)"| n1');
         expect(result.stdout).toContain('n0 -->|"3"| n2');
+      },
+      INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+    );
+
+    it(
+      "titles each neighborhood with the label its edges share and draws those edges bare",
+      async () => {
+        await source.query(
+          "INSERT INTO route_links (id, source, target) VALUES (5, 'P', 'Q')",
+        );
+        await source.query(
+          "UPDATE route_links SET label = CASE WHEN id = 5 THEN 'side' ELSE 'main' END",
+        );
+
+        const result = await runRender(["--entities", ROUTE_GLOB]);
+
+        expect(result.exitCode).toBe(0);
+        expect(result.stdout).toContain('    subgraph nb0["main"]\n');
+        expect(result.stdout).toContain('    subgraph nb1["side"]\n');
+        expect(result.stdout).toContain("        n0 --> n1\n");
+        expect(result.stdout).not.toContain('|"main"|');
+        expect(result.stdout).not.toContain('|"side"|');
       },
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
     );
@@ -281,14 +310,14 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["A"]',
-            'n1["B"]',
-            'n2["C"]',
-            'n3["Y"]',
-            'n4["X"]',
-            "n0 --- n1",
-            "n1 --- n2",
-            "n3 --- n4",
+            ...subgraph(0, "A", [
+              'n0["A"]',
+              'n1["B"]',
+              'n2["C"]',
+              "n0 --- n1",
+              "n1 --- n2",
+            ]),
+            ...subgraph(1, "X", ['n3["Y"]', 'n4["X"]', "n3 --- n4"]),
             "class n0 root",
             "class n4 root",
           ]),
@@ -310,12 +339,8 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["A"]',
-            'n1["B"]',
-            'n2["Y"]',
-            'n3["X"]',
-            "n0 --- n1",
-            "n2 --- n3",
+            ...subgraph(0, "A", ['n0["A"]', 'n1["B"]', "n0 --- n1"]),
+            ...subgraph(1, "X", ['n2["Y"]', 'n3["X"]', "n2 --- n3"]),
             "class n0 root",
             "class n3 root",
           ]),

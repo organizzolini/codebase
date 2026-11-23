@@ -120,6 +120,11 @@ testing/
   cycle ends them instead of looping.
 - **Mermaid:** `renderGraphMermaid` draws short node ids, escaped labels, and
   styled roots and truncation nodes.
+- **Neighborhoods:** with two or more weakly connected groups of nodes (edges
+  read as undirected), `renderGraphMermaid` wraps each in `subgraph nb<N>`,
+  titled by the label all its edges share (then drawn without it), else its
+  first root's or first node's label. One neighborhood draws unchanged, and the
+  `GraphModel` never carries them.
 - **Checks before connecting:** column names and the `@Tree` pick are read from
   decorators first, so a bad flag or pick never reaches the database.
 

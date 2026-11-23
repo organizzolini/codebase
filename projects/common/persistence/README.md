@@ -567,6 +567,22 @@ id, the number hidden, and the cap that hid them. Roots are drawn with a heavy
 blue border. Node ids in the diagram are short positional ids, and labels are
 escaped so a quote, pipe, angle bracket, or hash in a value cannot break the diagram.
 
+### Neighborhoods
+
+When a diagram holds two or more neighborhoods, each is wrapped in a Mermaid
+`subgraph` (`nb0`, `nb1`, and so on, in order of its first node). A
+neighborhood is one weakly connected group of nodes: for tree data each
+separate tree of the forest, and for graph data each connected group, with
+edges read as undirected. A truncation node belongs to its parent's
+neighborhood, and a node with no edges is a neighborhood of its own. A diagram
+with a single neighborhood has no `subgraph`, and the JSON output never has
+them.
+
+The title is the label every edge of the neighborhood shares; those edges are
+then drawn without it, since the title says it already, which keeps a
+constellation's lines uncluttered. Otherwise the title is the label of the
+neighborhood's first root, or of its first node. Weights stay on their edges.
+
 ### Known limits
 
 - **Nested-set parents** are found with a correlated subquery per row, so the

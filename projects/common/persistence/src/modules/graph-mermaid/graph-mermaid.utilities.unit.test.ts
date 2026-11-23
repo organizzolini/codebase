@@ -248,6 +248,179 @@ describe(renderGraphMermaid, () => {
     ).toThrow('Duplicate node id "a"');
   });
 
+  describe("neighborhoods", () => {
+    it("leaves a single neighborhood without a subgraph, even with a shared label", () => {
+      const { diagram } = renderGraphMermaid(
+        graph(
+          [
+            { id: "a", label: "A" },
+            { id: "b", label: "B" },
+          ],
+          [{ label: "x", source: "a", target: "b" }],
+        ),
+      );
+
+      expect(diagram).not.toContain("subgraph");
+      expect(diagram).toContain('    n0 -->|"x"| n1');
+    });
+
+    it("wraps each of two or more neighborhoods in a numbered subgraph, keeping classes after them", () => {
+      const { diagram } = renderGraphMermaid(
+        graph(
+          [
+            { id: "r1", label: "Root 1", marker: "root" },
+            { id: "r2", label: "Root 2", marker: "root" },
+            { id: "c1", label: "Child 1" },
+            { id: "c2", label: "Child 2" },
+          ],
+          [
+            { source: "r1", target: "c1" },
+            { source: "r2", target: "c2" },
+          ],
+        ),
+      );
+
+      expect(diagram).toBe(
+        [
+          "flowchart LR",
+          ...CLASS_DEFINITIONS,
+          '    subgraph nb0["Root 1"]',
+          '        n0["Root 1"]',
+          '        n2["Child 1"]',
+          "        n0 --> n2",
+          "    end",
+          '    subgraph nb1["Root 2"]',
+          '        n1["Root 2"]',
+          '        n3["Child 2"]',
+          "        n1 --> n3",
+          "    end",
+          "    class n0 root",
+          "    class n1 root",
+        ].join("\n"),
+      );
+    });
+
+    it("titles a neighborhood with the label all its edges share and draws those edges bare", () => {
+      const { diagram } = renderGraphMermaid(
+        graph(
+          [
+            { id: "a", label: "A" },
+            { id: "b", label: "B" },
+            { id: "c", label: "C" },
+            { id: "d", label: "D" },
+          ],
+          [
+            { label: "UMa", source: "a", target: "b", weight: 2 },
+            { label: "UMa", source: "b", target: "c" },
+            { label: "Ori", source: "d", target: "d" },
+          ],
+          { directed: false },
+        ),
+      );
+
+      expect(diagram).toContain('subgraph nb0["UMa"]');
+      expect(diagram).toContain('        n0 ---|"2"| n1');
+      expect(diagram).toContain("        n1 --- n2");
+      expect(diagram).toContain('subgraph nb1["Ori"]');
+      expect(diagram).not.toContain('"UMa"|');
+    });
+
+    it("titles mixed labels with the first root, else the first node, and keeps the edge labels", () => {
+      const { diagram } = renderGraphMermaid(
+        graph(
+          [
+            { id: "a", label: "A" },
+            { id: "b", label: "B", marker: "root" },
+            { id: "c", label: "C" },
+            { id: "d", label: "D" },
+          ],
+          [
+            { label: "x", source: "a", target: "b" },
+            { label: "y", source: "b", target: "a" },
+            { source: "c", target: "d" },
+          ],
+        ),
+      );
+
+      expect(diagram).toContain('subgraph nb0["B"]');
+      expect(diagram).toContain('subgraph nb1["C"]');
+      expect(diagram).toContain('        n0 -->|"x"| n1');
+      expect(diagram).toContain('        n1 -->|"y"| n0');
+    });
+
+    it("keeps a truncation node inside its parent's neighborhood", () => {
+      const { diagram } = renderGraphMermaid(
+        graph(
+          [
+            { id: "a", label: "A", marker: "root" },
+            { id: "more", label: "… 3 more", marker: "truncation" },
+            { id: "b", label: "B", marker: "root" },
+          ],
+          [{ source: "a", target: "more" }],
+        ),
+      );
+
+      expect(diagram).toContain(
+        '    subgraph nb0["A"]\n        n0["A"]\n        n1["… 3 more"]\n        n0 --> n1\n    end\n    subgraph nb1["B"]\n        n2["B"]\n    end',
+      );
+      expect(
+        diagram.endsWith(
+          "    end\n    class n0 root\n    class n1 truncation\n    class n2 root",
+        ),
+      ).toBe(true);
+    });
+
+    it("treats edges as undirected when grouping and draws an isolated node as its own neighborhood", () => {
+      const { diagram } = renderGraphMermaid(
+        graph(
+          [
+            { id: "a", label: "A" },
+            { id: "b", label: "B" },
+            { id: "c", label: "C" },
+            { id: "alone", label: "Alone", marker: "root" },
+          ],
+          [
+            { source: "a", target: "b" },
+            { source: "c", target: "b" },
+          ],
+        ),
+      );
+
+      expect(diagram).toContain(
+        '    subgraph nb0["A"]\n        n0["A"]\n        n1["B"]\n        n2["C"]\n        n0 --> n1\n        n2 --> n1\n    end',
+      );
+      expect(diagram).toContain(
+        '    subgraph nb1["Alone"]\n        n3["Alone"]\n    end',
+      );
+    });
+
+    it("escapes a title like a label and keeps backticks for the fence to handle", () => {
+      const { diagram } = renderGraphMermaid(
+        graph([
+          { id: "a", label: 'Say "hi" #1' },
+          { id: "b", label: "run ``` here" },
+        ]),
+      );
+
+      expect(diagram).toContain('subgraph nb0["Say #quot;hi#quot; #35;1"]');
+      expect(diagram).toContain('subgraph nb1["run ``` here"]');
+      expect(renderGraphMarkdown({ diagram, warnings: [] })).toMatch(
+        /^````mermaid\n/,
+      );
+    });
+
+    it("counts edges over the whole model for limit warnings", () => {
+      const model = graph(
+        [...hubAndLeaves(450).nodes, { id: "alone", label: "Alone" }],
+        hubAndLeaves(450).edges,
+      );
+
+      expect(renderGraphMermaid(model).warnings).toStrictEqual([
+        "Diagram has 450 edges, nearing Mermaid's 500-edge limit",
+      ]);
+    });
+  });
+
   describe(renderGraphMarkdown, () => {
     it("wraps the diagram in a mermaid fence, with no warnings after it when there are none", () => {
       const rendering = renderGraphMermaid(

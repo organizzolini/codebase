@@ -15,6 +15,7 @@ import type {
   GraphMermaidOptions,
   GraphMermaidRendering,
   GraphModel,
+  GraphNeighborhood,
   GraphNode,
 } from "./graph-mermaid.types";
 
@@ -46,11 +47,15 @@ export function renderGraphMermaid(
   options: GraphMermaidOptions = {},
 ): GraphMermaidRendering {
   const shortIds = assignShortIds(graph.nodes);
+  const neighborhoods = titleNeighborhoods(findNeighborhoods(graph, shortIds));
+  const body: string[] = [];
+  for (const neighborhood of neighborhoods) {
+    body.push(...drawNeighborhood(neighborhood, graph.directed, shortIds));
+  }
   const lines = [
     `flowchart ${options.direction ?? "LR"}`,
     ...MERMAID_CLASS_DEFINITIONS.map((definition) => indent(definition)),
-    ...graph.nodes.map((node) => drawNode(node, shortIds)),
-    ...graph.edges.map((edge) => drawEdge(edge, graph.directed, shortIds)),
+    ...body,
     ...markedNodeClasses(graph.nodes, shortIds),
   ];
 
@@ -87,7 +92,34 @@ function drawEdge(
   const label = text === "" ? "" : `|"${escapeMermaidText(text)}"|`;
   const source = shortIdOf(edge.source, shortIds, "Edge source");
   const target = shortIdOf(edge.target, shortIds, "Edge target");
-  return indent(`${source} ${arrow}${label} ${target}`);
+  return `${source} ${arrow}${label} ${target}`;
+}
+
+/**
+ * Draws a neighborhood's nodes and edges, inside a titled `subgraph` when it
+ * has one, and bare when it is the diagram's only neighborhood.
+ */
+function drawNeighborhood(
+  { edges, nodes, subgraph }: GraphNeighborhood,
+  directed: boolean,
+  shortIds: ReadonlyMap<string, string>,
+): string[] {
+  const prefix =
+    subgraph === undefined ? MERMAID_INDENT : MERMAID_INDENT.repeat(2);
+  const lines: string[] = [];
+  if (subgraph !== undefined) {
+    lines.push(
+      indent(`subgraph ${subgraph.id}["${escapeMermaidText(subgraph.title)}"]`),
+    );
+  }
+  for (const node of nodes) {
+    lines.push(`${prefix}${drawNode(node, shortIds)}`);
+  }
+  for (const edge of edges) {
+    lines.push(`${prefix}${drawEdge(edge, directed, shortIds)}`);
+  }
+  if (subgraph !== undefined) lines.push(indent("end"));
+  return lines;
 }
 
 /** Declares a node as a short id with a quoted, escaped label. */
@@ -96,7 +128,7 @@ function drawNode(
   shortIds: ReadonlyMap<string, string>,
 ): string {
   const shortId = shortIdOf(node.id, shortIds, "Node");
-  return indent(`${shortId}["${escapeMermaidText(node.label)}"]`);
+  return `${shortId}["${escapeMermaidText(node.label)}"]`;
 }
 
 /** The label and weight drawn on an edge, as `label (weight)`. */
@@ -119,6 +151,51 @@ function escapeMermaidText(text: string): string {
     .replaceAll("|", "#124;")
     .replaceAll("<", "#lt;")
     .replaceAll(">", "#gt;");
+}
+
+/** The representative of the group `id` is in, shortening the path on the way. */
+function findGroup(parents: Map<string, string>, id: string): string {
+  let top = id;
+  while ((parents.get(top) ?? top) !== top) {
+    top = parents.get(top) ?? top;
+  }
+  let current = id;
+  while (current !== top) {
+    const next = parents.get(current) ?? top;
+    parents.set(current, top);
+    current = next;
+  }
+  return top;
+}
+
+/**
+ * Splits the model into weakly connected neighborhoods, ordered by their first
+ * node, rejecting an edge that names no node.
+ */
+function findNeighborhoods(
+  graph: GraphModel,
+  shortIds: ReadonlyMap<string, string>,
+): GraphNeighborhood[] {
+  const parents = new Map(graph.nodes.map((node) => [node.id, node.id]));
+  for (const edge of graph.edges) {
+    shortIdOf(edge.source, shortIds, "Edge source");
+    shortIdOf(edge.target, shortIds, "Edge target");
+    parents.set(
+      findGroup(parents, edge.source),
+      findGroup(parents, edge.target),
+    );
+  }
+  const groups = new Map<string, { edges: GraphEdge[]; nodes: GraphNode[] }>();
+  for (const node of graph.nodes) {
+    const key = findGroup(parents, node.id);
+    const group = groups.get(key) ?? { edges: [], nodes: [] };
+    group.nodes.push(node);
+    groups.set(key, group);
+  }
+  for (const edge of graph.edges) {
+    groups.get(findGroup(parents, edge.source))?.edges.push(edge);
+  }
+  return [...groups.values()];
 }
 
 /** Prefixes a line with the diagram's indent. */
@@ -174,6 +251,25 @@ function markedNodeClasses(
   });
 }
 
+/**
+ * A neighborhood's title: the label all its edges share (then dropped from
+ * them), else its first root's, else its first node's.
+ */
+function neighborhoodTitle(
+  edges: readonly GraphEdge[],
+  nodes: readonly GraphNode[],
+): {
+  hideLabels: boolean;
+  title: string;
+} {
+  const shared = edges[0]?.label ?? "";
+  if (shared !== "" && edges.every((edge) => edge.label === shared)) {
+    return { hideLabels: true, title: shared };
+  }
+  const first = nodes.find((node) => node.marker === "root") ?? nodes[0];
+  return { hideLabels: false, title: first?.label ?? "" };
+}
+
 /** Looks up a model id's short id, rejecting an id no node has. */
 function shortIdOf(
   id: string,
@@ -185,4 +281,31 @@ function shortIdOf(
     throw new Error(`${role} "${id}" is not a node`);
   }
   return shortId;
+}
+
+/**
+ * Gives each of two or more neighborhoods its subgraph, numbered in order and
+ * titled by `neighborhoodTitle`; a lone neighborhood is returned as it is.
+ */
+function titleNeighborhoods(
+  neighborhoods: readonly GraphNeighborhood[],
+): readonly GraphNeighborhood[] {
+  if (neighborhoods.length < 2) return neighborhoods;
+  const titled: GraphNeighborhood[] = [];
+  for (const [index, { edges, nodes }] of neighborhoods.entries()) {
+    const { hideLabels, title } = neighborhoodTitle(edges, nodes);
+    titled.push({
+      edges: hideLabels ? edges.map((edge) => withoutLabel(edge)) : edges,
+      nodes,
+      subgraph: { id: `nb${index}`, title },
+    });
+  }
+  return titled;
+}
+
+/** The edge without its label, keeping its weight. */
+function withoutLabel(edge: GraphEdge): GraphEdge {
+  return edge.weight === undefined
+    ? { source: edge.source, target: edge.target }
+    : { source: edge.source, target: edge.target, weight: edge.weight };
 }
