@@ -8,7 +8,7 @@ export const ISSUES_EVENT = "issues";
 /** The action of the event that files a new issue. */
 export const ISSUE_OPENED_ACTION = "opened";
 
-/** How long a new issue's audit waits for its labels before it re-reads. */
+/** How long a new issue's audit waits for its labels. */
 export const ISSUE_AUDIT_RETRY_DELAY_MS = 15_000;
 
 /** The workflow events that sweep every open issue instead of one. */

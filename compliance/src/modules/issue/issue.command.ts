@@ -49,11 +49,7 @@ export class IssueCommand extends CommandRunner {
 
   // 🔏 Private Methods
 
-  /**
-   * Audits one issue, and a newly opened one a second time if it failed.
-   *
-   * Its author often adds the scope label just after filing it.
-   */
+  /** Audits one issue; a new one is re-audited once, for its late labels. */
   private async auditOne(
     issueNumber: string,
     newlyOpened: boolean,
