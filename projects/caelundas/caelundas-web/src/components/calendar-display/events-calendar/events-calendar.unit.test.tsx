@@ -27,9 +27,9 @@ describe(EventsCalendar, () => {
       anchor: new Date("2026-03-01T12:00:00.000Z"),
       events: [],
       facets: [],
+      filters: <button type="button">Filters</button>,
       grouping: [],
       onDateChange: () => {},
-      onViewChange: () => {},
       timeZone: "America/New_York",
     };
     const { rerender } = render(
@@ -39,7 +39,7 @@ describe(EventsCalendar, () => {
       />,
     );
     const toolbar = screen.getByTestId("calendar-toolbar");
-    const selector = screen.getByRole("button", { name: "Month" });
+    const selector = screen.getByRole("button", { name: "Filters" });
 
     selector.focus();
 

@@ -1,4 +1,12 @@
+import { createElement } from "react";
+
+import { TimelineBarCard } from "./components/timeline-bar-card/timeline-bar-card";
+import { TimelineBarContent } from "./components/timeline-bar-content/timeline-bar-content";
 import { TIMELINE_UNIT_WIDTHS } from "./components/timeline-clusters/calendar-timeline-clusters.constants";
+
+import type { TimelineBar } from "./calendar-timeline.types";
+import type { GanttRenderEventProps } from "@codebase/presentation";
+import type { ReactNode } from "react";
 
 // ♟️ Constants
 
@@ -29,7 +37,7 @@ export const TIMELINE_METRICS = {
 // A phone gives the row names a narrow column and the time the rest.
 export const COMPACT_TREE = { minWidth: 120, nameColumnWidth: 104, width: 168 };
 
-export const TREE = { nameColumnWidth: 208, width: 288 };
+export const TREE = { nameColumnWidth: 176, width: 272 };
 
 export const TIMELINE_VIEWPORT =
   '[data-slot="gantt-timeline-pane"] [data-slot="scroll-area-viewport"]';
@@ -38,3 +46,25 @@ export const TIMELINE_VIEWPORT =
  * The one row an ungrouped timeline draws every event in.
  */
 export const ALL_EVENTS_ROW = { id: "all", title: "All events" } as const;
+
+/**
+ * A row's event count drawn as a solid pill, so the sky shows through the tree pane around it.
+ */
+export const COUNT_PILL_CLASS_NAME =
+  "bg-background rounded-md border px-2 py-0.5";
+
+/**
+ * Draws the content of a bar the Gantt hands over.
+ */
+export const renderBar = (
+  properties: GanttRenderEventProps<TimelineBar>,
+): ReactNode =>
+  createElement(TimelineBarContent, { occurrence: properties.occurrence });
+
+/**
+ * Draws the hover card of a bar the Gantt hands over.
+ */
+export const renderBarCard = (
+  properties: GanttRenderEventProps<TimelineBar>,
+): ReactNode =>
+  createElement(TimelineBarCard, { occurrence: properties.occurrence });

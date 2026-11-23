@@ -7,9 +7,8 @@ import { readServedApi, serveCalendarApi } from "../../testing/calendar-api";
 import {
   BUILDER_TEST,
   BUILDER_WAIT,
+  findDisplayOption,
   findToolbar,
-  pickOption,
-  startFilterRule,
 } from "../../testing/calendar-page";
 import {
   fieldRule,
@@ -73,14 +72,8 @@ describe("index", () => {
       within(toolbar).getByRole("button", { name: /Next/u }),
     ).toBeDefined();
     expect(
-      within(within(toolbar).getByRole("group", { name: "View" })).getByRole(
-        "button",
-        {
-          name: "Month",
-          pressed: true,
-        },
-      ),
-    ).toBeDefined();
+      within(toolbar).getByRole("group", { name: "Display" }).textContent,
+    ).toBe("DisplayMonth");
   });
 
   it("shows each event at its time in the observer's zone", async () => {
@@ -327,41 +320,38 @@ describe("index", () => {
     expect(screen.queryByText("No events match the filters")).toBeNull();
   });
 
-  it.each([
-    { size: "a desktop", slot: "popover-content", width: 1280 },
-    { size: "a tablet", slot: "drawer-popup", width: 800 },
-    { size: "a phone", slot: "sheet-content", width: 375 },
-  ])(
-    "opens the filter builder over the calendar on $size",
-    async (viewport) => {
-      setViewportWidth(viewport.width);
-      await renderCalendarRoute("/?date=2026-03-01");
+  it("opens the Filter list over the calendar, with attributes to search", async () => {
+    await renderCalendarRoute("/?date=2026-03-01");
 
-      const toolbar = await findToolbar();
+    fireEvent.click(
+      within(await findToolbar()).getByRole("button", {
+        name: /^Filter(,|$)/u,
+      }),
+    );
 
-      expect(screen.queryByText("No filters yet")).toBeNull();
-
-      fireEvent.click(
-        within(toolbar).getByRole("button", { name: /^Filter(,|$)/u }),
-      );
-
-      const builder = await screen.findByRole("dialog", { name: "Filter" });
-
-      expect(builder.closest(`[data-slot="${viewport.slot}"]`)).not.toBeNull();
-      expect(within(builder).getByText("No filters yet")).toBeDefined();
-    },
-  );
+    await expect(screen.findByTestId("filter-cascader")).resolves.toBeDefined();
+    expect(screen.getByPlaceholderText("Search attributes")).toBeDefined();
+    await expect(
+      screen.findByRole("option", { name: /^Planet/u }),
+    ).resolves.toBeDefined();
+  });
 
   it(
-    "filters the calendar with a rule built in the builder",
+    "filters the calendar by a value ticked in the Filter list",
     BUILDER_TEST,
     async () => {
       await renderCalendarRoute("/?date=2026-03-01");
-      await startFilterRule(/^Planet(?!-)/u, "is any of");
-      await pickOption(/^Mercury/u);
-      fireEvent.keyDown(document.activeElement ?? document.body, {
-        key: "Escape",
-      });
+      fireEvent.click(
+        within(await findToolbar()).getByRole("button", {
+          name: /^Filter(,|$)/u,
+        }),
+      );
+      fireEvent.click(
+        await screen.findByRole("option", { name: /^Planet/u }, BUILDER_WAIT),
+      );
+      fireEvent.click(
+        await screen.findByRole("option", { name: /^Mercury/u }, BUILDER_WAIT),
+      );
 
       // Both at once, so the skeleton a slow reload shows cannot pass for it.
       await waitFor(() => {
@@ -437,61 +427,46 @@ describe("index", () => {
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
   });
 
-  it("turns the colors off from the Color menu and the grouping of crowded days from the View menu", async () => {
+  it("turns the colors off and on again with Color's None choice, and the grouping of crowded days off and on, from the Display menu", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("grid", { name: "March 2026" });
 
-    const seen = new Set<string>();
+    // The grouping starts on; each click turns it the other way. Colors start on Event kind.
+    const steps = [
+      ["Color", "None", true],
+      ["Color", "Event kind", true],
+      ["Crowded days", "Group similar events", false],
+      ["Crowded days", "Group similar events", true],
+    ] as const;
 
-    for (const [menu, role, name] of [
-      ["Color options", "switch", "Color events"],
-      ["View options", "menuitemcheckbox", "Group similar events"],
-      ["Color options", "switch", "Color events"],
-      ["View options", "menuitemcheckbox", "Group similar events"],
-    ] as const) {
-      fireEvent.click(screen.getByRole("button", { name: menu }));
-      fireEvent.click(await screen.findByRole(role, { name }));
-      // A switch leaves its panel open, where a menu item closes its menu.
-      fireEvent.keyDown(document.activeElement ?? document.body, {
-        key: "Escape",
-      });
-      await waitFor(() => {
-        expect(screen.queryByRole(role, { name })).toBeNull();
-      });
+    for (const [branch, leaf, isSelected] of steps) {
+      fireEvent.click(await findDisplayOption(branch, leaf));
 
-      // The link now says so, and the menu reads back what it holds.
-      fireEvent.click(screen.getByRole("button", { name: menu }));
+      // The link now says so, and the list reads back what it holds.
       await waitFor(() => {
         expect(
-          screen.getByRole(role, { name }).getAttribute("aria-checked"),
-        ).toBe(seen.has(name) ? "true" : "false");
-      });
-      seen.add(name);
-      fireEvent.keyDown(document.activeElement ?? document.body, {
-        key: "Escape",
+          screen
+            .getByRole("option", { name: new RegExp(`^${leaf}$`, "u") })
+            .getAttribute("aria-selected"),
+        ).toBe(String(isSelected));
       });
     }
   });
 
-  it("switches the symbols to emojis and back from the View menu", async () => {
+  it("switches the symbols to emojis and back from the Display menu", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("heading", { level: 1 });
 
     for (const name of ["Emojis", "Glyphs"]) {
-      fireEvent.click(screen.getByRole("button", { name: "View options" }));
-      fireEvent.click(await screen.findByRole("menuitemradio", { name }));
+      fireEvent.click(await findDisplayOption("Symbols", name));
 
-      // The link now holds the pick, and the menu reads it back.
-      fireEvent.click(screen.getByRole("button", { name: "View options" }));
+      // The link now holds the pick, and the list reads it back.
       await waitFor(() => {
         expect(
           screen
-            .getByRole("menuitemradio", { name })
-            .getAttribute("aria-checked"),
+            .getByRole("option", { name: new RegExp(`^${name}$`, "u") })
+            .getAttribute("aria-selected"),
         ).toBe("true");
-      });
-      fireEvent.keyDown(document.activeElement ?? document.body, {
-        key: "Escape",
       });
     }
   });
@@ -511,34 +486,6 @@ describe("index", () => {
       screen.queryByRole("button", { name: /^Mars Conjunct Venus/u }),
     ).toBeNull();
   });
-
-  it(
-    "filters by a date range picked in the builder",
-    BUILDER_TEST,
-    async () => {
-      await renderCalendarRoute("/?date=2026-03-01");
-      await startFilterRule(/^Date/u, "is between");
-      fireEvent.change(
-        await screen.findByLabelText("Date from", {}, BUILDER_WAIT),
-        {
-          target: { value: "2026-03-25" },
-        },
-      );
-      fireEvent.change(screen.getByLabelText("Date to"), {
-        target: { value: "2026-03-26" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "Apply" }));
-
-      await waitFor(() => {
-        expect(
-          screen.getByRole("button", { name: /^Venus Ingress Aries/u }),
-        ).toBeDefined();
-        expect(
-          screen.queryByRole("button", { name: /^Sun Ingress Aries/u }),
-        ).toBeNull();
-      }, BUILDER_WAIT);
-    },
-  );
 
   describe("sky link parameters", () => {
     it("keeps them through the calendar's own navigation", async () => {

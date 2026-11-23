@@ -399,6 +399,8 @@ function GanttBar<TData = unknown>({
   const barTree = (
     <TooltipProvider delay={500} closeDelay={0} timeout={300}>
       <Tooltip
+        // a consumer's hover card follows the pointer, as it does elsewhere
+        trackCursorAxis={viewConfig.renderEventTooltip ? "both" : "none"}
         open={tipOpen && !anyInteracting}
         onOpenChange={(next: boolean, details: { reason?: string }) => {
           // opens only on hover; focus/press opens are dropped
@@ -408,10 +410,25 @@ function GanttBar<TData = unknown>({
       >
         {trigger}
         {tipOpen && !anyInteracting && (
-          <TooltipContent side="top" className="pointer-events-none">
-            <div className="font-medium">{event.title}</div>
-            <div className="opacity-80">{timeLabel}</div>
-            {plannedLabel && <div className="opacity-80">{plannedLabel}</div>}
+          <TooltipContent
+            side="top"
+            className={cn(
+              "pointer-events-none",
+              viewConfig.renderEventTooltip &&
+                "bg-popover text-popover-foreground border-border flex-col items-start gap-0.5 border shadow-md [&>div:last-child]:hidden"
+            )}
+          >
+            {viewConfig.renderEventTooltip ? (
+              viewConfig.renderEventTooltip(renderProps)
+            ) : (
+              <>
+                <div className="font-medium">{event.title}</div>
+                <div className="opacity-80">{timeLabel}</div>
+                {plannedLabel && (
+                  <div className="opacity-80">{plannedLabel}</div>
+                )}
+              </>
+            )}
           </TooltipContent>
         )}
       </Tooltip>

@@ -53,4 +53,24 @@ describe(AgendaRowContent, () => {
 
     expect(onShowLater).toHaveBeenCalledExactlyOnceWith(expect.anything());
   });
+
+  it("draws a cluster of similar events", () => {
+    render(
+      <AgendaRowContent
+        dayLevel={0}
+        onShowLater={undefined}
+        row={{
+          count: 3,
+          expanded: false,
+          id: "cluster-id",
+          kind: "cluster",
+          label: "Major aspects",
+          ongoing: false,
+        }}
+        timeZone="UTC"
+      />,
+    );
+
+    expect(screen.getByText("Major aspects")).toBeDefined();
+  });
 });

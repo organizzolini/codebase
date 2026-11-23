@@ -6,13 +6,15 @@
 export const CLUSTER_ID_PREFIX = "cluster:";
 
 /**
- * Aspect kinds that merge; other kinds never do.
+ * Kinds that merge, the aspects, the retrograde periods and the sign ingresses; other kinds never do.
  */
 export const CLUSTERED_KIND_PATHS: ReadonlySet<string> = new Set([
   "Type / Aspect / Compound Aspect",
   "Type / Aspect / Simple Aspect / Major Aspect",
   "Type / Aspect / Simple Aspect / Minor Aspect",
   "Type / Aspect / Simple Aspect / Specialty Aspect",
+  "Type / Ingress",
+  "Type / Retrograde Period",
 ]);
 
 /**

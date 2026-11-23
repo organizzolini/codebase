@@ -6,6 +6,7 @@ import { SURFACE_CLASS_NAMES } from "../events-calendar/components/calendar-view
 
 import { HEADING_TAGS } from "./calendar-agenda.constants";
 import { formatEventCount } from "./calendar-agenda.utilities";
+import { AgendaClusterRow } from "./components/agenda-cluster-row/agenda-cluster-row";
 
 import type { AgendaListRow } from "./calendar-agenda.types";
 import type { ReactNode } from "react";
@@ -22,6 +23,10 @@ export interface AgendaRowContentProperties {
    */
   dayLevel: number;
   onShowLater: (() => void) | undefined;
+  /**
+   * Opens or closes a cluster of similar events, by its id.
+   */
+  onToggleCluster?: ((id: string) => void) | undefined;
   row: AgendaListRow;
   timeZone: string;
 }
@@ -35,7 +40,8 @@ export interface AgendaRowContentProperties {
 export function AgendaRowContent(
   properties: Readonly<AgendaRowContentProperties>,
 ): ReactNode {
-  const { className, dayLevel, onShowLater, row, timeZone } = properties;
+  const { className, dayLevel, onShowLater, onToggleCluster, row, timeZone } =
+    properties;
 
   // 🪝 Hooks
 
@@ -43,6 +49,16 @@ export function AgendaRowContent(
   let content: ReactNode;
 
   switch (row.kind) {
+    case "cluster": {
+      content = (
+        <AgendaClusterRow
+          onToggle={onToggleCluster}
+          row={row}
+        />
+      );
+
+      break;
+    }
     case "day": {
       const Heading = HEADING_TAGS[dayLevel] ?? "h6";
 

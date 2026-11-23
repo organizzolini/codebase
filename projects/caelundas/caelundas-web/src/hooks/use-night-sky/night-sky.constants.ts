@@ -69,7 +69,7 @@ export const CONSTELLATION_WORDS = ["all", "none", "zodiac"] as const;
 /**
  * Figures drawn when the link names none: the zodiac.
  */
-export const DEFAULT_CONSTELLATIONS: readonly string[] = ["zodiac"];
+export const DEFAULT_CONSTELLATIONS: readonly string[] = ["all"];
 
 /** The opacities the sky, its surfaces and its strokes are clamped to. */
 export const OPACITY_RANGE = { maximum: 1, minimum: 0 } as const;

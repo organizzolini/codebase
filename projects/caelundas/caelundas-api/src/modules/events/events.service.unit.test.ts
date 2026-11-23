@@ -380,6 +380,38 @@ describe(EventsService, () => {
     ]);
   });
 
+  it("orders a facet's tags alphanumerically, so Harmonic 2 comes before Harmonic 10", async () => {
+    expect.hasAssertions();
+
+    const row = (
+      id: string,
+      depth: string,
+      path_below_root: string,
+    ): Record<string, string> => ({
+      count: "1",
+      depth,
+      id,
+      name: path_below_root,
+      path_below_root,
+      root_id: "harmonic",
+    });
+
+    query.mockResolvedValueOnce([
+      row("harmonic", "0", ""),
+      row("h10", "1", "Harmonic 10"),
+      row("h2", "1", "Harmonic 2"),
+      row("h1", "1", "Harmonic 1"),
+    ]);
+
+    const [facet] = await service.findFacets();
+
+    expect(facet?.values.map((value) => value.path)).toStrictEqual([
+      "Harmonic 1",
+      "Harmonic 2",
+      "Harmonic 10",
+    ]);
+  });
+
   it("counts over every event when no period is given", async () => {
     expect.hasAssertions();
 

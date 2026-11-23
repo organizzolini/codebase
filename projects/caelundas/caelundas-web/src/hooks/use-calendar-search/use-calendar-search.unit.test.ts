@@ -47,6 +47,7 @@ describe(useCalendarSearch, () => {
       handleFilterChange: expect.any(Function),
       handleGroupingChange: expect.any(Function),
       handleScaleChange: expect.any(Function),
+      handleSortChange: expect.any(Function),
       handleSymbolsChange: expect.any(Function),
       handleViewChange: expect.any(Function),
       updateSearch: expect.any(Function),

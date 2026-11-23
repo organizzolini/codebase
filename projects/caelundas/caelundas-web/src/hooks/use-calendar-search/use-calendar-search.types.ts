@@ -7,7 +7,8 @@ import type { EventFilterQuery } from "../../components/calendar-query/calendar-
 import type {
   EventGrouping,
   EventGroupLevel,
-} from "../../components/calendar-query/calendar-group-by/components/event-group-model/event-groups.types";
+} from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CalendarSearch } from "./calendar-search.types";
 
 // 🏷️ Types
@@ -27,6 +28,7 @@ export interface UseCalendarSearchResult {
   handleFilterChange: (filter: EventFilterQuery) => void;
   handleGroupingChange: (grouping: EventGrouping) => void;
   handleScaleChange: (scale: TimelineScale) => void;
+  handleSortChange: (sort: readonly GroupSort[] | undefined) => void;
   handleSymbolsChange: (symbols: CalendarSymbols) => void;
   handleViewChange: (view: CalendarViewName) => void;
   /**

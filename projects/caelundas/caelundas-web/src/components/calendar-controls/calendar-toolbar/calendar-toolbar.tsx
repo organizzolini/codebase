@@ -1,64 +1,44 @@
 import { CalendarNavigationGroup } from "../calendar-navigation-group/calendar-navigation-group";
-import { CalendarViewSelect } from "../calendar-view-select/calendar-view-select";
+import { CalendarNavigationSlot } from "../calendar-navigation-group/calendar-navigation-slot.constants";
 
-import { ROW_CLASS_NAME } from "./calendar-toolbar.constants";
 import { hasContent } from "./calendar-toolbar.utilities";
 
-import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { CalendarNavigation } from "../calendar-navigation-group/calendar-navigation-group.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The toolbar's navigation, plus the menus and filters it shows.
+ * The toolbar's navigation, plus the controls it shows.
  */
 export interface CalendarToolbarProperties {
   className?: string;
   /**
-   * Narrows the row for a phone, listing the views in a menu.
+   * Narrows the row for a phone, with the date above the controls.
    */
   compact?: boolean | undefined;
   /**
-   * Drawn from the left of the second row: the Filter and Clear buttons and
-   * the filters' chips.
+   * Drawn on one line: the View, Display, Group and Sort strips, then Filter
+   * with the date selector and the filters' chips.
    */
   filters?: ReactNode;
-  /**
-   * Drawn from the left of the first row: the View, Color and Sky menus.
-   */
-  menus?: ReactNode;
   navigation: CalendarNavigation;
-  /**
-   * Called with the view picked; the selector is left out without it.
-   */
-  onViewChange?: ((view: CalendarViewName) => void) | undefined;
-  view?: CalendarViewName | undefined;
 }
 
 // 🧩 Component
 
 /**
- * Renders the toolbar in two rows over the view's navigation: menus and date on top, filters and view selector beneath.
+ * Renders the toolbar's controls on one line, wrapping when cramped, with the date selector joined to the Filter strip; a phone's date takes its own row.
  */
 export function CalendarToolbar(
   properties: Readonly<CalendarToolbarProperties>,
 ): ReactNode {
-  const { className, compact, filters, menus, navigation, onViewChange, view } =
-    properties;
+  const { className, compact, filters, navigation } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
-  const hasControls = hasContent(filters) || hasContent(menus);
-  const viewSelect =
-    view === undefined || onViewChange === undefined ? null : (
-      <CalendarViewSelect
-        compact={compact}
-        onViewChange={onViewChange}
-        view={view}
-      />
-    );
+  const hasFilters = hasContent(filters);
 
   // 💪 Handlers
 
@@ -83,42 +63,36 @@ export function CalendarToolbar(
               compact
             />
           </div>
-          {viewSelect}
         </div>
       ) : (
-        // Two rows, each with its own end at the right: the menus and the
-        // date, then the filters and the views. A row too narrow for both
-        // ends wraps its right end under its left, and the views scroll
-        // sideways rather than overflow the page.
-        <div className="flex min-w-0 flex-col gap-2 px-2 py-2 [&_[data-slot=button]]:active:translate-y-0!">
-          <div
-            className={ROW_CLASS_NAME}
-            data-testid="calendar-toolbar-menus"
+        <div
+          className="flex min-w-0 flex-wrap items-start gap-2 px-2 py-2 [&_[data-slot=button]]:active:translate-y-0!"
+          data-testid="calendar-toolbar-row"
+        >
+          <CalendarNavigationSlot
+            value={
+              hasFilters ? (
+                <CalendarNavigationGroup
+                  className="contents"
+                  navigation={navigation}
+                />
+              ) : null
+            }
           >
-            <div className="flex min-w-0 flex-wrap items-start gap-2">
-              {menus}
-            </div>
+            {filters}
+          </CalendarNavigationSlot>
+          {hasFilters ? null : (
             <CalendarNavigationGroup navigation={navigation} />
-          </div>
-          <div
-            className={ROW_CLASS_NAME}
-            data-testid="calendar-toolbar-filters"
-          >
-            <div className="flex min-w-0 flex-1 flex-wrap items-start gap-2">
-              {filters}
-            </div>
-            <div className="max-w-full overflow-x-auto">{viewSelect}</div>
-          </div>
+          )}
         </div>
       )}
-      {compact && hasControls ? (
+      {compact && hasFilters ? (
         // A phone's row has no room beside the title for the controls, so
         // they take a row under it, wrapping onto more rows if they outgrow it.
         <div
           className="flex min-w-0 flex-wrap items-center gap-2 px-2 pb-2 [&_[data-slot=button]]:active:translate-y-0!"
           data-testid="calendar-toolbar-controls"
         >
-          {menus}
           {filters}
         </div>
       ) : null}

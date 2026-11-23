@@ -91,7 +91,7 @@ describe(useNightSky, () => {
     expect(sky).toContain("<svg");
     expect(api.requests.nightSky).toHaveLength(1);
     expect(api.requests.nightSky[0]).toMatchObject({
-      constellations: ["zodiac"],
+      constellations: ["all"],
       height: window.innerHeight,
       latitudeDegrees: 51.5,
       pixelsPerSecond: 9,
