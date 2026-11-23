@@ -26,9 +26,8 @@ license: MIT
   own ESM resolver, and `nx g` then fails with `Cannot find module
   './modules/plugin/plugin-context.utilities'`.
 
-Why the manifest fields stay on sources, which `publishConfig` fields pnpm
-actually applies, and why shrinking the Nx plugin closure buys nothing is
-[ADR 0009](../../documentation/adr/0009-keep-manifest-fields-on-typescript-sources.md). **Do
+The manifest fields stay on sources: pnpm applies only some `publishConfig`
+fields, and shrinking the Nx plugin closure buys nothing. **Do
 not point `main` or `exports` at `dist/`** — it deadlocks the plugin graph load
 and breaks `fallow-dead-code` and `vitest`.
 

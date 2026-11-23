@@ -97,7 +97,6 @@ with `constellation_edges`, the table `Constellation`'s `@Graph` generates,
 carrying its rows over, since `squawk` refuses a table rename. The first
 carries two hand edits after `generate`: it creates `typeorm_metadata` for the view's row, and its SQL
 files open with the lock and statement timeouts the other projects' carry.
-See [ADR 0031](../../../documentation/adr/0031-move-caelundas-from-sqlite-to-postgres.md).
 
 ## Drawing the tag tree
 

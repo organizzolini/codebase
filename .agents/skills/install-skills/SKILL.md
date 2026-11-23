@@ -31,10 +31,10 @@ pnpm exec skills update
 
 ## Restoring Missing Skills
 
-The `installed-skills` command in the `synchronization` project restores folders that are genuinely absent — after `skills update` adds a lockfile entry, or when one has been deleted. Its `write` mode runs from the root `postinstall` and the `synchronization:installed-skills:write` target: it is idempotent, never leaves tracked files dirty, and never fails an install, because a missing skill is a broken agent workflow rather than a broken build. `SKIP_SKILLS_INSTALL=1` leaves skills alone, and `SKILLS_INSTALL_FORCE=1` (the `force` configuration) restores even when every skill is present. Its `check` mode lists the locked skills whose `SKILL.md` is absent, and is what the `validate-session-skills.sh` session hook runs:
+The `installed-skills` command in the `installation` project restores folders that are genuinely absent — after `skills update` adds a lockfile entry, or when one has been deleted. Its `write` mode runs from the root `postinstall` and the `installation:installed-skills:write` target: it is idempotent, never leaves tracked files dirty, and never fails an install, because a missing skill is a broken agent workflow rather than a broken build. `SKIP_SKILLS_INSTALL=1` leaves skills alone, and `SKILLS_INSTALL_FORCE=1` (the `force` configuration) restores even when every skill is present. Its `check` mode lists the locked skills whose `SKILL.md` is absent, and is what the `validate-session-skills.sh` session hook runs:
 
 ```bash
-pnpm exec nx run synchronization:installed-skills:write
+pnpm exec nx run installation:installed-skills:write
 ```
 
 ## Tool Exclusions
@@ -44,12 +44,12 @@ Five things reach `.agents/` and so must skip the **vendored** skills while stil
 The exclusions are generated, not hand-maintained. Each file marks its block with `installed-skills-start` and `installed-skills-end` comments in its own syntax — `#` in `configuration/lint/.prettierignore`, `configuration/ic-suite/.codometerignore`, `configuration/lint/cspell.config.yaml`, and `.gitattributes`; `//` in `configuration/lint/markdownlint-cli2.config.jsonc` — and the `skill-exclusions` synchronizer rewrites what sits between them from the lockfile. It joins `lint-code` in the same `nx affected` invocation, so a stale list fails there rather than silently:
 
 ```bash
-pnpm exec nx run synchronization:skill-exclusions:write
+pnpm exec nx run integration:skill-exclusions:write
 ```
 
 Two details of that machinery matter before changing it:
 
-- **A wholesale pattern defeats the whole arrangement**, and no check catches it. Re-adding `**/.agents/skills/**` outside a managed block leaves every per-skill entry in place while quietly taking this repository's own skills back out of scope, and the synchronizer reports nothing because its own block still matches the lockfile. **Exclude a vendored skill by name.**
+- **A wholesale pattern defeats the whole arrangement**, and no check catches it. Re-adding `**/.agents/skills/**` outside a managed block leaves every per-skill entry in place while quietly taking this repository's own skills back out of scope, and the `skill-exclusions` check reports nothing because its own block still matches the lockfile. **Exclude a vendored skill by name.**
 - **The `configuration` project's `project.json` mirrors the exclusions as cache negations.** Its `vendored-skills` named input drops them from the `spell-check` and `markdown-lint` `inputs`, because a tool that ignores a file has no reason to rehash on it. That is a cache optimization rather than a correctness gate.
 
 Every other tool scopes itself with explicit globs that never include `.agents/`.

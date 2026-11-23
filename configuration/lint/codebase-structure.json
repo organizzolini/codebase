@@ -534,17 +534,6 @@
               "ruleId": "any-file"
             }
           ],
-          "name": "adr"
-        },
-        {
-          "children": [
-            {
-              "ruleId": "kebab-case-folder"
-            },
-            {
-              "ruleId": "any-file"
-            }
-          ],
           "name": "agents"
         },
         {
@@ -1282,18 +1271,10 @@
         "name": "skills-lock.json"
       },
       {
-        "name": "synchronization",
-        "ruleId": "codebase-project"
-      },
-      {
         "name": "tsconfig.json"
       },
       {
         "name": "validate-branch-name.config.cjs"
-      },
-      {
-        "name": "validation",
-        "ruleId": "codebase-project"
       }
     ]
   }

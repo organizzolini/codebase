@@ -7,5 +7,5 @@
 #   - Injects a `pnpm install` or rerun directive when the command cannot run
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../.." || exit 0
-CONTEXT="$(NODE_OPTIONS='' node --import @swc-node/register/esm-register validation/src/validation.main.ts session-branch-name 2>/dev/null)" && exit 0
-printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "pnpm exec nx run validation:start:session-branch-name"
+CONTEXT="$(NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts session-branch-name 2>/dev/null)" && exit 0
+printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "pnpm exec nx run installation:start:session-branch-name"

@@ -6,8 +6,6 @@ packages:
   - infrastructure
   - installation
   - integration
-  - synchronization
-  - validation
   - projects/*
   - projects/common/*
   - projects/caelundas/*

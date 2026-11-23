@@ -132,7 +132,7 @@ const codependixConfiguration: CodependixConfiguration = {
    *
    * One was drafted and dropped — "no `*.command.ts` imports another
    * `*.command.ts`". It does not hold: `lexico-cli` and
-   * `synchronization` both compose an aggregate command out of the commands
+   * `integration` both compose an aggregate command out of the commands
    * beneath it, which is nest-commander's own subcommand arrangement rather
    * than a layering mistake. Fourteen edges is a backlog, so it is written
    * here as a note instead of there as a rule.
@@ -952,11 +952,6 @@ const codependixConfiguration: CodependixConfiguration = {
         export: "MainModule",
         file: "src/meanderaw-cli.module.ts",
       },
-      synchronization: {
-        export: "MainModule",
-        file: "src/synchronization.module.ts",
-      },
-      validation: { export: "MainModule", file: "src/validation.module.ts" },
     },
   },
   /**

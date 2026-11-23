@@ -22,7 +22,7 @@ the derived-times view, and the refresh service for the derived tag tables.
 ```text
 src/
   index.ts                               # Public exports
-  modules/caelundas-database/            # The database module, per ADR 0022
+  modules/caelundas-database/            # The database module
     caelundas-database.module.ts         # CaelundasDatabaseModule
     caelundas-database.service.ts        # isConnected, refreshReadModel
     caelundas-database.constants.ts      # Project, coordinate scale, read model SQL

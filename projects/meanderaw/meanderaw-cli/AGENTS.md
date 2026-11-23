@@ -74,7 +74,6 @@ label. A _pattern characteristic_ is a compound boolean under `compound/pattern/
 `PATTERN_CHARACTERISTIC_KEYS`. A meander can hold several patterns or none; most of the
 enumerated space holds none, which is the design rather than a gap. Adding a pattern means
 adding an evaluator there and its key to that list, never a motif service or a stored column.
-See [ADR 0023](../../../documentation/adr/0023-filter-meanders-by-characteristics-alone.md).
 
 **A hardcoded row is measured, never labelled.** The historical corpus keeps only each
 entry's Code and shape; the directory a drawing was once filed under is gone, so a hardcoded
@@ -106,8 +105,7 @@ have.
 
 **Every Characteristic is a catalog row and, where it holds, a bridge row, and a missing row
 means zero or `false`.** No Characteristic has a column of its own, so adding one needs no
-schema change — see
-[ADR 0034](../../../documentation/adr/0034-store-characteristics-in-a-catalog-and-a-bridge.md).
+schema change.
 Raw SQL reads one by joining `meander_characteristics` to `characteristics` on its key; a
 meander with no row for it holds 0, so a zero filter needs an anti-join.
 
@@ -236,8 +234,7 @@ from `@codebase/persistence`: the local Docker init creates the `meanderaw_devel
 the `meanderaw` schema inside it, and the `meanderaw_username` role that owns both, the defaults
 of `MEANDERAW_POSTGRES_DATABASE`, `MEANDERAW_POSTGRES_SCHEMA`, and `MEANDERAW_POSTGRES_USERNAME`. Every
 meanderaw variable carries the `MEANDERAW_` prefix, so the unprefixed `POSTGRES_*` the root
-`.env` sets as the container's admin login — which Nx loads into every task — never reaches it
-— see [ADR 0022](../../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md).
+`.env` sets as the container's admin login — which Nx loads into every task — never reaches it.
 
 **The `meanders` table is built by migrations, never by synchronizing.** `Meander` extends
 `PostgresqlUpdatableEntity`, so its `uuidv7()` id and audit columns come from the shared package, and the
@@ -246,8 +243,7 @@ migrations live in `projects/meanderaw/meanderaw-db/migrations/`. After changing
 `start` target never migrates, so run the migrations before the first draw run. The CLI reads its
 data source from `@codebase/meanderaw-db`, whose `migration` target finds it through the `module` option.
 
-A draw run commits nothing: the HTML pages it writes stay in the gitignored `output/` — see
-[ADR 0021](../../../documentation/adr/0021-stop-committing-the-meander-pages.md). Integration suites start
+A draw run commits nothing: the HTML pages it writes stay in the gitignored `output/`. Integration suites start
 their own throwaway `postgres:18-alpine` container, migrated by the real migrations, through
 `startDatabaseTestingModule` from `@codebase/persistence/testing` against `meanderaw_testing`, so Docker
 must be running to test them. `DatabaseModule` is the project's own database module and

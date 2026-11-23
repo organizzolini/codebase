@@ -3,7 +3,7 @@ import type { MigrationInterface, QueryRunner } from "typeorm";
 /**
  * Drops the `family` column, its enum, and the index that led with it, and
  * indexes `(rows, columns, code)` instead — the order a pattern page reads
- * its rows in. See ADR 0023.
+ * its rows in.
  */
 export class Migration1791414023001 implements MigrationInterface {
   name = "Migration1791414023001";

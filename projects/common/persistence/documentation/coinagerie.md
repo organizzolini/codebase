@@ -10,6 +10,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **deletable**: The entity base layer that adds soft-delete support, last in the identifiable, creatable, updatable, deletable chain.
 - **errand**: A root in the render tests' sample tree, the fixture label `--page` tests draw alone.
 - **forest**: The rows of a tree table taken together, whose roots `--limit` and `--page` count and page.
+- **gamma**: A placeholder project name in the extractor's unit test fixtures, with no meaning beyond the test.
 - **identifiable**: The entity base layer that adds a primary id, first in the identifiable, creatable, updatable, deletable chain.
 - **mislabelled**:
 - **neighborhood**: One weakly connected group of nodes in a drawn graph, each tree of a forest or connected group, which gets its own Mermaid subgraph when the diagram has two or more.

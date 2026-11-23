@@ -10,11 +10,8 @@ This directory contains shell scripts for:
 - **Shell utilities** - Common terminal operations
 - **Nx** - The two helpers the Nx targets call, `await-health.sh` and `stop-port.sh` (in `nx/`)
 
-> **The shell floor.** Which scripts stay shell, and why, is decided in
-> [ADR 0027](../documentation/adr/0027-narrow-the-shell-floor-to-the-hooks-and-the-pre-install-ci-steps.md),
-> as amended by
-> [ADR 0028](../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
-> A script that is not on that floor belongs in a NestJS command.
+> **The shell floor.** Only the Husky hooks and the CI steps that run before
+> `pnpm install` stay shell. A script that is not on that floor belongs in a NestJS command.
 
 ## Quick Start
 
@@ -82,18 +79,18 @@ Everything after Node exists lives in [`installation`](../installation/AGENTS.md
 
 ### VS Code extensions and settings
 
-> Implemented in [synchronization](../synchronization), not as scripts.
+> Implemented in [integration](../integration) and [installation](../installation), not as scripts.
 
 **Purpose:** Keep `.vscode/extensions.json` and both devcontainer configurations' extension lists in step, and merge `.vscode/settings.json` into the VS Code Machine settings inside a devcontainer.
 
 ```bash
-nx run synchronization:vscode-extensions:check    # Validate both configs are in sync (default)
-nx run synchronization:vscode-extensions:write    # Update both devcontainer.json files
-nx run synchronization:vscode-settings:check      # Machine settings hold every workspace key
-nx run synchronization:vscode-settings:write      # Merge workspace settings into Machine settings
+nx run integration:vscode-extensions:check    # Validate both configs are in sync (default)
+nx run integration:vscode-extensions:write    # Update both devcontainer.json files
+nx run installation:vscode-settings:check     # Machine settings hold every workspace key
+nx run installation:vscode-settings:write     # Merge workspace settings into Machine settings
 ```
 
-`vscode-extensions` runs in `guard-code`. `vscode-settings` only makes sense inside a devcontainer, so it is left out of `synchronization:start` and run by `post-create-command.sh`.
+`vscode-extensions` runs in `guard-code`. `vscode-settings` only makes sense inside a devcontainer, so it is not part of `installation:start:setup` and is run by `post-create-command.sh`.
 
 ### sync-devcontainer-configuration.ts
 
@@ -174,8 +171,7 @@ echo "Timestamp: $timestamp"
 `scripts/nx/` holds only the two helpers the Nx targets call,
 `await-health.sh` and `stop-port.sh`. The CI steps around the Nx task cache
 and the affected base, which used to be shell here, are commands of the
-[deployment](../deployment) project since
-[ADR 0028](../documentation/adr/0028-run-the-nx-ci-steps-after-the-install-as-commands.md).
+[deployment](../deployment) project.
 
 ### Task-Result Database
 
@@ -367,7 +363,7 @@ pnpm exec nx run installation:start:dependencies
 Check if lockfile needs updating:
 
 ```bash
-pnpm exec nx run validation:lockfile
+pnpm exec nx run integration:lockfile
 ```
 
 If out of sync:
@@ -457,7 +453,7 @@ pnpm install
 Verify sync:
 
 ```bash
-pnpm exec nx run validation:lockfile
+pnpm exec nx run integration:lockfile
 ```
 
 ## Contributing

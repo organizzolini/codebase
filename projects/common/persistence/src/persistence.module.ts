@@ -8,6 +8,7 @@ import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-i
 import { RenderDirectedAcyclicGraphDataModule } from "./modules/render/modules/render-directed-acyclic-graph-data/render-directed-acyclic-graph-data.module";
 import { RenderGraphDataModule } from "./modules/render/modules/render-graph-data/render-graph-data.module";
 import { RenderTreeDataModule } from "./modules/render/modules/render-tree-data/render-tree-data.module";
+import { TypeormMigrationSqlModule } from "./modules/typeorm-migration-sql/typeorm-migration-sql.module";
 
 /**
  * Root module of the database command line. Each command names its
@@ -24,6 +25,7 @@ import { RenderTreeDataModule } from "./modules/render/modules/render-tree-data/
     RenderDirectedAcyclicGraphDataModule,
     RenderGraphDataModule,
     RenderTreeDataModule,
+    TypeormMigrationSqlModule,
   ],
 })
 export class MainModule {}

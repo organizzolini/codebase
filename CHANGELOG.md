@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.12.1](https://github.com/organizzolini/codebase/compare/v6.12.0...v6.12.1) (2026-11-23)
+
+### ♻️ Code Refactoring
+
+* **integration,installation,persistence:** ♻️ move synchronization and validation commands into lifecycle projects ([#2546](https://github.com/organizzolini/codebase/issues/2546)) ([62e5049](https://github.com/organizzolini/codebase/commit/62e5049fab6923f377de033616585b660e163b9c)), closes [#2516](https://github.com/organizzolini/codebase/issues/2516) [#2515](https://github.com/organizzolini/codebase/issues/2515) [#2517](https://github.com/organizzolini/codebase/issues/2517) [#2528](https://github.com/organizzolini/codebase/issues/2528)
+
 ## [6.12.0](https://github.com/organizzolini/codebase/compare/v6.11.0...v6.12.0) (2026-11-23)
 
 ### ✨ Features

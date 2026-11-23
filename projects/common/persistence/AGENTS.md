@@ -3,8 +3,9 @@
 ## Quick Start
 
 **Type**: NestJS library package (`@codebase/persistence`) and nest-commander
-command line (`postgresql-export`, `postgresql-import`, and the drawing
-commands `render-tree-data`, `render-directed-acyclic-graph-data`, and `render-graph-data`)
+command line (`postgresql-export`, `postgresql-import`, `typeorm-migration-sql`,
+and the drawing commands `render-tree-data`,
+`render-directed-acyclic-graph-data`, and `render-graph-data`)
 
 **Purpose**: Three jobs. The library is the one way a database-backed project
 connects to Postgres: the `<PROJECT>_POSTGRES_*` environment fragment, the
@@ -62,6 +63,7 @@ src/
       modules/render-tree-data/     # The render-tree-data command, and the service that reads a @Tree table in its storage, then filters, sorts, pages, and caps it
       modules/render-directed-acyclic-graph-data/      # The render-directed-acyclic-graph-data command: refuses a @Graph entity
       modules/render-graph-data/    # The render-graph-data command: refuses a @DirectedAcyclicGraph entity
+    typeorm-migration-sql/          # The typeorm-migration-sql command: check or write each migration's SQL
 testing/
   index.ts                          # The @codebase/persistence/testing entry
   persistence-testing.*.ts          # startDatabaseTestingModule, the entry's Nest helper
@@ -154,6 +156,7 @@ nx run persistence:type-coverage
 nx run persistence:start:postgresql-export --args="--source-uri <uri> --table <schema.table> --data --file <path>"
 nx run persistence:start:postgresql-import --args="--target-uri <uri> --table <schema.table> --data --file <path>"
 nx run persistence:start --args="render-tree-data --source-uri <uri> --schema <schema> --entities '<glob>'"
+nx run persistence:typeorm-migration-sql      # check (default); `:write` rewrites the migration SQL
 ```
 
 `postgresql-import --clean` never prompts and has no `--yes`; the preview is
@@ -164,6 +167,12 @@ The `start` configurations run the command line with the working directory at
 `projects/common/persistence`, so the drawing commands' `--entities` globs and
 output paths resolve from there. Both commands need the PostgreSQL 18 client tools; see
 the README's [Moving data between databases](README.md#moving-data-between-databases).
+
+`typeorm-migration-sql` extracts the SQL of each TypeORM migration into the
+`-up.sql` and `-down.sql` files beside it. Its `check` mode (the default) reports
+drift, comparing normalized SQL because the committed files are lint-fixed and
+formatted, and `write` rewrites the files. It imports nothing from `integration`, so it adds no
+edge to the CI plumbing.
 
 See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)
 and the [testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md).

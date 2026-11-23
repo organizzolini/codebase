@@ -1,8 +1,11 @@
 ## Compliance CLI
 
 The Compliance CLI owns Continuous Compliance checks that read or update
-GitHub issues, pull requests, and repository governance metadata. It has four
-commands:
+GitHub issues, pull requests, and repository governance metadata. It is the
+pull request end of a change's way to `main`; the commit and push checks live in
+`integration`. It also owns
+the pull request template and the copies of it embedded in the pull request
+skill files. It has five commands:
 
 - `pull-request` — one run per pull request or merge group: it writes parent
   issue references and labels (pull request events only), then validates title,
@@ -12,6 +15,8 @@ commands:
   open issue, chosen by event or arguments.
 - `audit-files` — CODEOWNERS and workflow security.
 - `organization-project` — adds issues and pull requests to the project.
+- `pull-request-template` — checks or writes the pull request template into the
+  skill files that embed it. It reads files only, so it needs no token.
 
 ## Run a command
 

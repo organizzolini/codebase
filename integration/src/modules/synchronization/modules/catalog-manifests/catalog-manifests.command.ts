@@ -1,0 +1,86 @@
+import { Injectable } from "@nestjs/common";
+import { Command, CommandRunner } from "nest-commander";
+
+import { LoggerService } from "@codebase/observability";
+
+import { CatalogManifestsService } from "./catalog-manifests.service";
+
+import type { SynchronizableCommand } from "../../synchronization.types";
+
+/**
+ * CLI command that enforces the workspace catalog policy.
+ *
+ * External dependencies must be pinned `catalog:` and internal ones `workspace:*`.
+ * Both directions are checked, in all four sections, and every violation is
+ * reported together.
+ *
+ * Exits 0 when every manifest conforms and 1 when any does not.
+ */
+@Command({
+  description:
+    "Check that workspace manifests pin externals as catalog: and internals as workspace:*",
+  name: "catalog-manifests",
+})
+@Injectable()
+export class CatalogManifestsCommand
+  extends CommandRunner
+  implements SynchronizableCommand
+{
+  // 🏗 Dependency Injection
+
+  constructor(
+    private readonly catalogManifestsService: CatalogManifestsService,
+    private readonly logger: LoggerService,
+  ) {
+    super();
+    this.logger.setContext(CatalogManifestsCommand.name);
+  }
+
+  // 🔐 Private Fields
+
+  // 🔑 Public Fields
+
+  readonly synchronizationLabel = "catalog-manifests";
+
+  // 🔏 Private Methods
+
+  // 🌎 Public Methods
+
+  /** Checks every workspace manifest and exits 0 or 1 on the verdict. */
+  public async run(): Promise<void> {
+    if (!(await this.synchronize())) {
+      process.exit(1);
+    }
+  }
+
+  /** Checks every workspace manifest and reports whether all conform. Never writes. */
+  public async synchronize(): Promise<boolean> {
+    // Nothing here is asynchronous; the contract's signature is.
+    await Promise.resolve();
+
+    const manifestPaths =
+      this.catalogManifestsService.resolveWorkspaceManifestPaths(process.cwd());
+    const violations = manifestPaths.flatMap((manifestPath) =>
+      this.catalogManifestsService.validateManifestDependencies(
+        manifestPath,
+        this.catalogManifestsService.readManifest(manifestPath),
+      ),
+    );
+
+    if (violations.length === 0) {
+      console.info(
+        `Catalog policy passed for ${String(manifestPaths.length)} workspace manifests.`,
+      );
+
+      return true;
+    }
+
+    console.error("Catalog policy violations found:");
+
+    for (const violation of violations) {
+      console.error(`- ${violation}`);
+    }
+
+    return false;
+  }
+}

@@ -60,7 +60,7 @@ projects/ic-suite/codometer/codometer-examples/examples/corpus/
 # of bundled browser JavaScript that would otherwise dominate every counter.
 # Listed individually rather than as `.agents/skills/` so this repository's
 # own skills in the same directory keep being measured.
-# Verified by `nx run synchronization:synchronize`, which
+# Verified by `nx run integration:skill-exclusions`, which
 # also generates the block below.
 .agents/licenses/
 # installed-skills-start

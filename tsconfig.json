@@ -213,12 +213,6 @@
     },
     {
       "path": "./projects/meanderaw/meanderaw-web/configuration/tsconfig.json"
-    },
-    {
-      "path": "./synchronization/configuration/tsconfig.json"
-    },
-    {
-      "path": "./validation/configuration/tsconfig.json"
     }
   ]
 }

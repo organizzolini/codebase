@@ -15,16 +15,27 @@ const BOOT_TIMEOUT_MILLISECONDS = 60_000;
 const COMMAND_NAMES = [
   "adopt-task-database",
   "bound-base-to-push",
+  "catalog-manifests",
   "cleanup-codebase",
   "collect-codometer-baseline",
+  "conformetry-generators",
+  "conventional-config",
+  "devcontainer-configuration",
   "import-pr-task-cache",
   "keep-task-database",
+  "lockfile",
   "merge-task-cache",
+  "package-manifests",
+  "project-ports",
+  "readme-projects",
   "report-codometer-changes",
   "run-affected",
   "setup-codebase",
+  "skill-exclusions",
+  "synchronization",
   "upgrade-dependencies",
   "verify-task-database",
+  "vscode-extensions",
 ];
 
 /** Runs the real command's help, with no inputs or repository. */

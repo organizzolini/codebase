@@ -21,7 +21,7 @@ migrations, and the service that persists and reads meander rows.
 ```text
 src/
   index.ts                               # Public exports
-  modules/meanderaw-database/            # The database module, per ADR 0022
+  modules/meanderaw-database/            # The database module
     meanderaw-database.module.ts         # MeanderawDatabaseModule
     meanderaw-database.service.ts        # Save, read, and count meander rows
     meanderaw-database.constants.ts      # Project, insert chunk size, bigint transformer

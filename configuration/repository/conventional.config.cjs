@@ -4,7 +4,7 @@
  * Single source of truth for types, scopes, and emojis across commitlint, branch-name validation, releases, editor autocomplete, and commit-code.
  *
  * When adding or removing types, scopes, or emojis, update this file only.
- * Run `nx run synchronization:conventional-config:write` to propagate changes.
+ * Run `nx run integration:conventional-config:write` to propagate changes.
  */
 
 /** Canonical gitmoji, one emoji per commit type. See gitmoji.dev. */
@@ -224,16 +224,6 @@ const scopes = [
     description:
       "Vitest configuration, shared test utilities, and coverage setup",
     name: "testing",
-  },
-  {
-    description:
-      "Commands that reconcile codebase files and generated repository configuration",
-    name: "synchronization",
-  },
-  {
-    description:
-      "Checks and gates for codebase and project invariants",
-    name: "validation",
   },
 ];
 
