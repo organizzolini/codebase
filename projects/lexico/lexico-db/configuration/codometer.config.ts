@@ -2,7 +2,7 @@ import {
   codometerConfiguration,
   compiledJavaScriptTarget,
   directoryLimits,
-} from "../../../../configuration/ic-suite/codometer.config.js";
+} from "@codebase/configuration/codometer.config";
 
 export default {
   ...codometerConfiguration,

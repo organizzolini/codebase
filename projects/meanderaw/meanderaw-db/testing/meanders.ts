@@ -1,4 +1,4 @@
-import type { MeanderRecord } from "../src/modules/meanderaw-database/meanderaw-database.types";
+import type { MeanderRecord } from "../src/modules/database/database.types";
 
 /**
  * Builds a meander row with every field defaulted, so a case spells out only the

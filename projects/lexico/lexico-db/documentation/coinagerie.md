@@ -14,7 +14,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **disambiguator**: Numeric lexeme column that, together with lemma, makes each dictionary entry unique and tells homographs apart.
 - **ecclesiastical**: Pronunciation variant value for Ecclesiastical Latin, one of classical, ecclesiastical, or vulgar in the enum.
 - **edition**: The printed edition a text comes from, recorded on the texts table with its editors, publisher, and print year.
-- **erd**: Generated Mermaid diagram of this project's TypeORM tables and relationships, written to `documentation/erd.md` by the `erd` target in `project.json`.
 - **imperial**: Era value for the Imperial period of Latin, one of the author era enum values.
 - **inscription**: An epigraphic text from the EDCS database, stored as its own child text under its province with its find-spot, type, and material.
 - **lexeme**: The Lexeme entity, a lexical entry joined to words, which holds part of speech, etymology, and lemma.

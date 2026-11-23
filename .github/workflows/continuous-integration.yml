@@ -75,7 +75,7 @@ jobs:
             name: Codependix Bound
             emoji: 🕸️
           - target: erd
-            name: Entity Relationship Diagrams
+            name: Diagram Entity Relationships
             emoji: 🗃️
           # The codometer limits that need no build: comment budgets and directory
           # ceilings. Compiled sizes stay with Build, which measures after building.

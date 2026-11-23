@@ -205,7 +205,7 @@ const config: KnipConfig = {
       // line the `migration` target runs, by path rather than by import.
       entry: [
         "src/index.ts",
-        "src/modules/caelundas-database/data-source.constants.ts",
+        "src/modules/database/data-source.constants.ts",
         "migrations/**/*.ts",
       ],
       project: ["src/**/*.ts", "migrations/**/*.ts"],
@@ -333,7 +333,7 @@ const config: KnipConfig = {
       // line the `migration` target runs, by path rather than by import.
       entry: [
         "src/index.ts",
-        "src/modules/meanderaw-database/data-source.constants.ts",
+        "src/modules/database/data-source.constants.ts",
         "migrations/**/*.ts",
       ],
       project: ["src/**/*.ts", "migrations/**/*.ts"],

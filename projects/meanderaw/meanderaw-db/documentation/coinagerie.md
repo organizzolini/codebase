@@ -8,8 +8,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **characteristic**: A measured property of a Code's repeating unit, described by one catalog row and stored as a bridge row on each meander that holds it.
 - **chk**: The prefix TypeORM gives a check constraint's generated name, such as the one that keeps a bridge value above 0.
 - **comb**: A pattern characteristic named for a comb-shaped ink layout, stored as a true boolean on each meander row that holds it.
-- **erd**: Mermaid view of TypeORM entity metadata—tables, columns, and
-  relations—generated without connecting to PostgreSQL.
 - **family**: The retired enum column that grouped meanders into families, dropped by the migration that replaced families with characteristics.
 - **fork**: A point with three branches of ink, counted per meander as a numeric characteristic.
 - **lattice**: The rows-by-columns grid of points and edges that a Code spells, the shape every meander row is stored with.

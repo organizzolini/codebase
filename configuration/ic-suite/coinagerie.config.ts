@@ -80,7 +80,7 @@ export const commonWordExclusions: string[] = `
   convention corrupt count counter creation css custom date debug
   declaration decorator deep define definition descendant describe design
   difference directive directly disable discover display domain due each
-  early edge effort element elsewhere empty enable encode entity entry
+  early edge effort element elsewhere empty enable encode entity entry erd
   enumeration equal evaluator every exactly example execute exp experimental
   expiration explain exploration expression extname extra factory fail
   failure fake field filename find finish finite first fixture flag flat
@@ -96,10 +96,10 @@ export const commonWordExclusions: string[] = `
   other outside own pair parameter part partial pending per period permit
   phone pick ping pipeline place placement plain plan point pop populate
   position positive preamble present preset preview previous probe promise
-  protocol prototype provide publication publish publishable quick quiet
+  protocol prototype provide publication publish publishable purpose quick quiet
   quote reach readdir reader real reason rebuild reconcile reconciliation
   recursive reduce refusal reg regex rehearsal reject relative remove rename
-  repeat replace reply reporter representative resolution rest retire
+  repeat replace reply relationship reporter representative resolution rest retire
   retyped reveal rewrite role round runner safe scenario score search second
   section secure see segment self sep separator sequence shorthand show
   sibling signal significance significant skip slice so some sort spawn

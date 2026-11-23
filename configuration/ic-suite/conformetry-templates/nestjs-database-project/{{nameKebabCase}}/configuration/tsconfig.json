@@ -9,17 +9,6 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmit": true,
-    "paths": {
-      "@golevelup/ts-vitest": [
-        "../node_modules/@golevelup/ts-vitest/lib/index.d.ts"
-      ],
-      "codebase/configuration/*": [
-        "../{{workspaceRelativePrefix}}configuration/*"
-      ],
-      "eslint-plugin-better-max-params": [
-        "../{{workspaceRelativePrefix}}configuration/typescript/types/eslint-plugin-better-max-params/index.d.ts"
-      ]
-    },
     "target": "esnext",
     "types": [
       "node",
@@ -31,7 +20,7 @@
     "../node_modules",
     "../output"
   ],
-  "extends": "../{{workspaceRelativePrefix}}configuration/tsconfig.json",
+  "extends": "@codebase/configuration/tsconfig.json",
   "include": [
     "*.ts",
     "../scripts/**/*.ts",

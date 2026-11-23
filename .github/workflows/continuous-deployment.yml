@@ -276,7 +276,7 @@ jobs:
           env.RELEASE_SUPERSEDED != 'true'
         run: pnpm exec nx run configuration:codependix:write
 
-      - name: 🗃️ Generate ERDs
+      - name: 🗃️ Diagram Entity Relationships
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.target.id == 'push-releases' &&

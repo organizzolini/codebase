@@ -133,103 +133,22 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
   },
   {
     description:
-      "A standalone NestJS TypeORM package template for shared entities and migrations, with a generated ERD target",
+      "A standalone NestJS TypeORM package template for shared entities and migrations, with a generated entity relationship diagram",
     inputs: defineInputs({
-      databaseEntitiesConstant: z
+      name: z
+        .string()
+        .regex(/^[a-z0-9-]+-db$/u)
+        .describe("Database project name, ending in -db"),
+      directory: z
         .string()
         .describe(
-          "Exported constant containing the project's TypeORM entities",
-        ),
-      databaseModuleName: z
-        .string()
-        .describe("Database module directory and file stem in kebab-case"),
-      databaseProject: z
-        .string()
-        .describe(
-          "Project identifier used by the shared Postgres configuration",
-        ),
-      databaseProjectExpression: z
-        .string()
-        .describe(
-          "TypeScript expression for the shared Postgres project setting",
-        ),
-      purpose: z.string().describe("One-sentence database package purpose"),
-      moduleClassName: z.string().describe("Database module class name"),
-      name: z.string().describe("Project name (kebab-case)"),
-      persistenceModuleImport: z
-        .string()
-        .describe("Named import for the shared persistence DatabaseModule"),
-      persistenceModuleName: z
-        .string()
-        .describe("Local name of the shared persistence DatabaseModule"),
-      serviceClassName: z.string().describe("Database service class name"),
-      type: z
-        .string()
-        .describe(
-          "Directory the project nests under, with a trailing slash: empty at the workspace root, projects/, a domain folder such as projects/lexico/, or a deeper nesting such as projects/ic-suite/callidescope/",
-        ),
-      workspaceRelativePrefix: z
-        .string()
-        .describe(
-          "Relative climb from the project root back to the workspace root, e.g. ../.. two directories down or ../../../../ four directories down",
+          "Parent directory of the database project, relative to the workspace root",
         ),
     }),
     instances: [
       {
-        patterns: ["projects/lexico/lexico-db"],
-        substitutions: {
-          databaseEntitiesConstant: "LEXICO_DATABASE_ENTITIES",
-          databaseModuleName: "database",
-          databaseProject: "lexico",
-          databaseProjectExpression: '"lexico"',
-          moduleClassName: "DatabaseModule",
-          name: "lexico-db",
-          persistenceModuleImport:
-            "DatabaseModule as PersistenceDatabaseModule",
-          persistenceModuleName: "PersistenceDatabaseModule",
-          purpose:
-            "Defines the Latin dictionary and literature schema consumed by Lexico applications.",
-          serviceClassName: "DatabaseService",
-          type: "projects/lexico/",
-          workspaceRelativePrefix: "../../../",
-        },
-      },
-      {
-        patterns: ["projects/caelundas/caelundas-db"],
-        substitutions: {
-          databaseEntitiesConstant: "CAELUNDAS_DATABASE_ENTITIES",
-          databaseModuleName: "caelundas-database",
-          databaseProject: "caelundas",
-          databaseProjectExpression: '"caelundas"',
-          moduleClassName: "CaelundasDatabaseModule",
-          name: "caelundas-db",
-          persistenceModuleImport:
-            "DatabaseModule as PersistenceDatabaseModule",
-          persistenceModuleName: "PersistenceDatabaseModule",
-          purpose:
-            "Defines the PostgreSQL calendar schema and derived event read models.",
-          serviceClassName: "CaelundasDatabaseService",
-          type: "projects/caelundas/",
-          workspaceRelativePrefix: "../../../",
-        },
-      },
-      {
-        patterns: ["projects/meanderaw/meanderaw-db"],
-        substitutions: {
-          databaseEntitiesConstant: "MEANDERAW_DATABASE_ENTITIES",
-          databaseModuleName: "meanderaw-database",
-          databaseProject: "meanderaw",
-          databaseProjectExpression: "MEANDERAW_PROJECT",
-          moduleClassName: "MeanderawDatabaseModule",
-          name: "meanderaw-db",
-          persistenceModuleImport: "DatabaseModule",
-          persistenceModuleName: "DatabaseModule",
-          purpose:
-            "Defines the PostgreSQL schema for meander records and their characteristics.",
-          serviceClassName: "MeanderawDatabaseService",
-          type: "projects/meanderaw/",
-          workspaceRelativePrefix: "../../../",
-        },
+        exclude: ["projects/**/node_modules/**"],
+        patterns: ["projects/**/*-db"],
       },
     ],
     name: "nestjs-database-project",

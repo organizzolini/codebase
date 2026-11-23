@@ -1,15 +1,16 @@
 export {
-  MEANDERAW_DATABASE_ENTITIES,
+  DATABASE_ENTITIES,
+  DATABASE_ENTITIES as MEANDERAW_DATABASE_ENTITIES,
   MEANDERAW_DATABASE_MIGRATIONS,
-} from "./modules/meanderaw-database/data-source.constants";
+} from "./modules/database/data-source.constants";
 // 📤 Exports
+export { DATABASE_PROJECT as MEANDERAW_PROJECT } from "./modules/database/database.constants";
 export {
   BIGINT_NUMBER_TRANSFORMER,
-  MEANDERAW_PROJECT,
   UnknownCharacteristicError,
-} from "./modules/meanderaw-database/meanderaw-database.constants";
-export { MeanderawDatabaseModule } from "./modules/meanderaw-database/meanderaw-database.module";
-export { MeanderawDatabaseService } from "./modules/meanderaw-database/meanderaw-database.service";
+} from "./modules/database/database.constants";
+export { DatabaseModule as MeanderawDatabaseModule } from "./modules/database/database.module";
+export { DatabaseService as MeanderawDatabaseService } from "./modules/database/database.service";
 export type {
   CharacteristicRecord,
   MeanderHolding,
@@ -17,13 +18,13 @@ export type {
   MeanderRecord,
   MeanderShape,
   StoredCharacteristicValues,
-} from "./modules/meanderaw-database/meanderaw-database.types";
-export { AggregateMarker } from "./modules/meanderaw-database/modules/aggregate/aggregate-marker.entity";
-export { CharacteristicPairCount } from "./modules/meanderaw-database/modules/aggregate/characteristic-pair-count.entity";
-export { CharacteristicShapeCount } from "./modules/meanderaw-database/modules/aggregate/characteristic-shape-count.entity";
-export { CharacteristicValueCount } from "./modules/meanderaw-database/modules/aggregate/characteristic-value-count.entity";
-export { MeanderawDatabaseAggregatesService } from "./modules/meanderaw-database/modules/aggregate/meanderaw-database-aggregates.service";
-export { ShapeCount } from "./modules/meanderaw-database/modules/aggregate/shape-count.entity";
-export { Characteristic } from "./modules/meanderaw-database/modules/characteristic/characteristic.entity";
-export { MeanderCharacteristic } from "./modules/meanderaw-database/modules/characteristic/meander-characteristic.entity";
-export { Meander } from "./modules/meanderaw-database/modules/meander/meander.entity";
+} from "./modules/database/database.types";
+export { AggregateMarker } from "./modules/database/modules/aggregate/aggregate-marker.entity";
+export { CharacteristicPairCount } from "./modules/database/modules/aggregate/characteristic-pair-count.entity";
+export { CharacteristicShapeCount } from "./modules/database/modules/aggregate/characteristic-shape-count.entity";
+export { CharacteristicValueCount } from "./modules/database/modules/aggregate/characteristic-value-count.entity";
+export { MeanderawDatabaseAggregatesService } from "./modules/database/modules/aggregate/meanderaw-database-aggregates.service";
+export { ShapeCount } from "./modules/database/modules/aggregate/shape-count.entity";
+export { Characteristic } from "./modules/database/modules/characteristic/characteristic.entity";
+export { MeanderCharacteristic } from "./modules/database/modules/characteristic/meander-characteristic.entity";
+export { Meander } from "./modules/database/modules/meander/meander.entity";

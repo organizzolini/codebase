@@ -9,6 +9,7 @@
     "typeorm": "catalog:"
   },
   "devDependencies": {
+    "@codebase/configuration": "workspace:*",
     "@codebase/testing": "workspace:*",
     "@golevelup/ts-vitest": "catalog:",
     "@nestjs/testing": "catalog:",
@@ -35,20 +36,6 @@
   "main": "src/index.ts",
   "name": "@codebase/meanderaw-db",
   "private": true,
-  "publishConfig": {
-    "access": "public",
-    "exports": {
-      ".": {
-        "default": "./dist/src/index.js",
-        "import": "./dist/src/index.js",
-        "require": "./dist/src/index.js",
-        "types": "./dist/src/index.d.ts"
-      }
-    },
-    "main": "./dist/src/index.js",
-    "registry": "https://registry.npmjs.org",
-    "types": "./dist/src/index.d.ts"
-  },
   "type": "module",
   "typeCoverage": {
     "atLeast": 100,

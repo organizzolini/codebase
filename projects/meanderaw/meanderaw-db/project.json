@@ -36,19 +36,19 @@
     "erd": {
       "configurations": {
         "check": {
-          "command": "SWC_NODE_PROJECT=../../../projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register ../../../projects/common/persistence/src/persistence.main.ts postgresql-erd --entities \"src/**/*.entity.ts\" --output-markdown documentation/erd.md --check"
+          "command": "SWC_NODE_PROJECT=../../../projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register ../../../projects/common/persistence/src/persistence.main.ts postgresql-erd --entities \"src/**/*.entity.ts\" --output-markdown documentation/entity-relationship-diagram.md --check"
         },
         "write": {
-          "command": "SWC_NODE_PROJECT=../../../projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register ../../../projects/common/persistence/src/persistence.main.ts postgresql-erd --entities \"src/**/*.entity.ts\" --output-markdown documentation/erd.md"
+          "command": "SWC_NODE_PROJECT=../../../projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register ../../../projects/common/persistence/src/persistence.main.ts postgresql-erd --entities \"src/**/*.entity.ts\" --output-markdown documentation/entity-relationship-diagram.md"
         }
       },
       "defaultConfiguration": "check",
-      "description": "Check or write the project ERD from its TypeORM entity files",
+      "description": "Check or write the project entity relationship diagram from its TypeORM entity files",
       "executor": "nx:run-commands",
       "options": {
         "cwd": "{projectRoot}"
       },
-      "outputs": ["{projectRoot}/documentation/erd.md"]
+      "outputs": ["{projectRoot}/documentation/entity-relationship-diagram.md"]
     },
     "eslint": {},
     "format-code": {},
@@ -58,7 +58,7 @@
     "markdown-lint": {},
     "migration": {
       "options": {
-        "module": "src/modules/meanderaw-database"
+        "module": "src/modules/database"
       }
     },
     "oxfmt": {},

@@ -1,4 +1,4 @@
-import { projectDefaults } from "../../../../configuration/ic-suite/callidescope.config.js";
+import { projectDefaults } from "@codebase/configuration/callidescope.config";
 
 /**
  * Measured against the workspace defaults, which every stack here fits within.

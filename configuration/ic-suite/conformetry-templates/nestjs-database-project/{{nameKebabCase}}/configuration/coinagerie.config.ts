@@ -1,1 +1,1 @@
-export { coinagerieConfiguration as default } from "../{{workspaceRelativePrefix}}configuration/ic-suite/coinagerie.config.js";
+export { coinagerieConfiguration as default } from "@codebase/configuration/coinagerie.config";
