@@ -1,3 +1,5 @@
+import { setTimeout } from "node:timers/promises";
+
 import {
   afterEach,
   beforeAll,
@@ -14,6 +16,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { IssueReportService } from "./issue-report.service";
 import { IssueCommand } from "./issue.command";
+import { ISSUE_AUDIT_RETRY_DELAY_MS } from "./issue.constants";
 import { IssueAssigningService } from "./modules/assignees/issue-assigning.service";
 import { IssueAuditService } from "./modules/audit/issue-audit.service";
 import { IssuePlanService } from "./modules/audit/issue-plan.service";
@@ -21,6 +24,10 @@ import { IssueLabelingService } from "./modules/labels/issue-labeling.service";
 
 import type { IssuePlan } from "./issue.types";
 import type { TestingModuleOptions } from "@codebase/testing/nestjs";
+
+vi.mock("node:timers/promises", () => ({
+  setTimeout: vi.fn().mockResolvedValue(undefined),
+}));
 
 const plan: IssuePlan = {
   allIssues: false,
@@ -108,6 +115,60 @@ describe(IssueCommand, () => {
     expect(audit.auditOne).toHaveBeenCalledWith("7");
     expect(audit.auditAll).not.toHaveBeenCalled();
     expect(report.publish).toHaveBeenCalledWith(["r"]);
+  });
+
+  describe("auditing a new issue", () => {
+    const failed = { failures: ["No scope label"], lines: ["No scope label"] };
+
+    it("re-reads a failed audit after a delay and keeps the second result", async () => {
+      vi.mocked(audit.auditOne)
+        .mockReturnValueOnce(failed)
+        .mockReturnValueOnce(outcome);
+
+      await command.run(["7"]);
+
+      expect(setTimeout).toHaveBeenCalledExactlyOnceWith(
+        ISSUE_AUDIT_RETRY_DELAY_MS,
+      );
+      expect(audit.auditOne).toHaveBeenCalledTimes(2);
+      expect(report.compose).toHaveBeenCalledWith(
+        expect.arrayContaining([outcome]),
+      );
+      expect(report.compose).toHaveBeenCalledWith(
+        expect.not.arrayContaining([failed]),
+      );
+    });
+
+    it("reports the second failure when the labels never arrive", async () => {
+      vi.mocked(audit.auditOne).mockReturnValue(failed);
+
+      await command.run(["7"]);
+
+      expect(audit.auditOne).toHaveBeenCalledTimes(2);
+      expect(report.compose).toHaveBeenCalledWith(
+        expect.arrayContaining([failed]),
+      );
+    });
+
+    it("does not wait when the first audit passes", async () => {
+      await command.run(["7"]);
+
+      expect(setTimeout).not.toHaveBeenCalled();
+      expect(audit.auditOne).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not retry an issue that was not just opened", async () => {
+      vi.mocked(planning.resolve).mockReturnValue({
+        ok: true,
+        plan: { ...plan, newlyOpened: false },
+      });
+      vi.mocked(audit.auditOne).mockReturnValue(failed);
+
+      await command.run(["7"]);
+
+      expect(setTimeout).not.toHaveBeenCalled();
+      expect(audit.auditOne).toHaveBeenCalledTimes(1);
+    });
   });
 
   it("only audits when the plan is read-only", async () => {

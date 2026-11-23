@@ -1,9 +1,12 @@
+import { setTimeout } from "node:timers/promises";
+
 import { Injectable } from "@nestjs/common";
 import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
 import { IssueReportService } from "./issue-report.service";
+import { ISSUE_AUDIT_RETRY_DELAY_MS } from "./issue.constants";
 import { IssueAssigningService } from "./modules/assignees/issue-assigning.service";
 import { IssueAuditService } from "./modules/audit/issue-audit.service";
 import { IssuePlanService } from "./modules/audit/issue-plan.service";
@@ -45,6 +48,26 @@ export class IssueCommand extends CommandRunner {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * Audits one issue, and a newly opened one a second time if it failed.
+   *
+   * Its author often adds the scope label just after filing it.
+   */
+  private async auditOne(
+    issueNumber: string,
+    newlyOpened: boolean,
+  ): Promise<IssueOutcome> {
+    const outcome = this.issueAuditService.auditOne(issueNumber);
+
+    if (!newlyOpened || outcome.failures.length === 0) {
+      return outcome;
+    }
+
+    await setTimeout(ISSUE_AUDIT_RETRY_DELAY_MS);
+
+    return this.issueAuditService.auditOne(issueNumber);
+  }
 
   /** Labels and assigns the one issue, when writing is allowed. */
   private prepare(plan: IssuePlan): IssueOutcome[] {
@@ -88,9 +111,6 @@ export class IssueCommand extends CommandRunner {
     passedParameters: string[],
     options?: { readonly all?: boolean },
   ): Promise<void> {
-    // Nothing here is asynchronous; the base class signature is.
-    await Promise.resolve();
-
     const resolution = this.issuePlanService.resolve(
       passedParameters,
       options,
@@ -102,7 +122,7 @@ export class IssueCommand extends CommandRunner {
       : [{ failures: [resolution.failure], lines: [resolution.failure] }];
 
     if (plan?.number !== undefined) {
-      outcomes.push(this.issueAuditService.auditOne(plan.number));
+      outcomes.push(await this.auditOne(plan.number, plan.newlyOpened));
     }
 
     if (plan?.allIssues && plan.writable) {
