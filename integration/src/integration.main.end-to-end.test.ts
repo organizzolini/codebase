@@ -23,6 +23,7 @@ const COMMAND_NAMES = [
   "report-codometer-changes",
   "run-affected",
   "setup-codebase",
+  "synchronization",
   "upgrade-dependencies",
   "verify-task-database",
 ];

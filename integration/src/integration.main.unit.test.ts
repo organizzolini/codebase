@@ -74,9 +74,12 @@ vi.mock("./modules/import-pr-task-cache/import-pr-task-cache.module", () => ({
   ImportPrTaskCacheModule: function ImportPrTaskCacheModule() {},
 }));
 
-vi.mock("./modules/merge-task-cache/merge-task-cache.module", () => ({
-  MergeTaskCacheModule: function MergeTaskCacheModule() {},
-}));
+vi.mock(
+  "./modules/task-database/modules/merge-task-cache/merge-task-cache.module",
+  () => ({
+    MergeTaskCacheModule: function MergeTaskCacheModule() {},
+  }),
+);
 
 vi.mock("./modules/cleanup-codebase/cleanup-codebase.module", () => ({
   CleanupCodebaseModule: function CleanupCodebaseModule() {},
@@ -99,6 +102,10 @@ vi.mock(
 
 vi.mock("./modules/setup-codebase/setup-codebase.module", () => ({
   SetupCodebaseModule: function SetupCodebaseModule() {},
+}));
+
+vi.mock("./modules/synchronization/synchronization.module", () => ({
+  SynchronizationModule: function SynchronizationModule() {},
 }));
 
 vi.mock("./modules/upgrade-dependencies/upgrade-dependencies.module", () => ({

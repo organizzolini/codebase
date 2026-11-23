@@ -13,12 +13,12 @@ import {
   createTaskDatabaseWorkspace,
   readCachedHashes,
   writeTaskDatabase,
-} from "../../../testing/mocks";
-import { TaskDatabaseService } from "../task-database/task-database.service";
+} from "../../../../../testing/mocks";
+import { TaskDatabaseService } from "../../task-database.service";
 
 import { MergeTaskCacheCommand } from "./merge-task-cache.command";
 
-import type { TaskDatabaseWorkspace } from "../../../testing/mocks";
+import type { TaskDatabaseWorkspace } from "../../../../../testing/mocks";
 
 describe(MergeTaskCacheCommand, () => {
   const moduleOptions = { mocks: [TaskDatabaseService] };

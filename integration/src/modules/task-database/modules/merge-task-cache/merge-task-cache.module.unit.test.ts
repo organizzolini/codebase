@@ -6,7 +6,7 @@ import {
   expectModuleProvides,
 } from "@codebase/testing/nestjs";
 
-import { TaskDatabaseModule } from "../task-database/task-database.module";
+import { TaskDatabaseModule } from "../../task-database.module";
 
 import { MergeTaskCacheCommand } from "./merge-task-cache.command";
 import { MergeTaskCacheModule } from "./merge-task-cache.module";

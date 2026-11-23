@@ -49,6 +49,24 @@ src/
 testing/                            # Shared test utilities
 ```
 
+### Synchronization contract and layout
+
+`src/modules/synchronization` holds what every check and derivation shares:
+`SynchronizableCommand` (a `synchronizationLabel` and `synchronize(mode)`, which
+reports success), the `check`/`write` mode service, the markers service that
+splices generated blocks between marker comments, and the `start` aggregate. A
+command with no `write` Nx configuration is just a check: `write` mode runs its
+check. The aggregate runs every command, collects every failure, and prints the
+command that fixes each: the command's own `fixCommand` (such as `pnpm install`),
+else `pnpm exec nx run integration:<label>:write`.
+
+Codometer caps a folder at 12 entries and `src/modules/` is near it, so the
+checks and derivations moving in land under `src/modules/synchronization/modules/<command>/`,
+never beside the CI commands. To put one in the aggregate, import its module in
+`synchronization.module.ts` and add it to the `SYNCHRONIZABLE_COMMANDS` factory's
+`inject` list; leave out any that must run only by name. Never raise the limit;
+group further into `modules/` folders instead.
+
 ### Commands
 
 Commands read their inputs from the environment, as the workflows and composite
@@ -65,11 +83,12 @@ one class.
 | `adopt-task-database` | `src/modules/task-database/modules/adopt-task-database` | `setup-codebase` |
 | `cleanup-codebase` | `src/modules/cleanup-codebase` | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it |
 | `keep-task-database` | `src/modules/task-database/modules/keep-task-database` | `cleanup-codebase` |
-| `merge-task-cache` | `src/modules/merge-task-cache` | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory |
+| `merge-task-cache` | `src/modules/task-database/modules/merge-task-cache` | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory |
 | `run-affected` | `src/modules/run-affected` | the Continuous Integration matrix legs, for every check but Secure |
 | `collect-codometer-baseline` | `src/modules/collect-codometer-baseline` | the `report-integration` composite action, on a green `main` build |
 | `report-codometer-changes` | `src/modules/report-codometer-changes` | the `report-integration` composite action, on a pull request's build |
 | `upgrade-dependencies` | `src/modules/upgrade-dependencies` | the `upgrade-dependencies` workflow |
+| `synchronization` (the `start` target) | `src/modules/synchronization` | a human at a terminal: `nx run integration:start` runs every registered check and derivation in one process, `check` by default, or `:write` |
 
 `setup-codebase` and `cleanup-codebase` run the services of the commands above
 themselves, in a command of their own rather than a service: one more layer

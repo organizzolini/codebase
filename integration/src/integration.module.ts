@@ -9,12 +9,13 @@ import { BoundBaseToPushModule } from "./modules/bound-base-to-push/bound-base-t
 import { CleanupCodebaseModule } from "./modules/cleanup-codebase/cleanup-codebase.module";
 import { CollectCodometerBaselineModule } from "./modules/collect-codometer-baseline/collect-codometer-baseline.module";
 import { ImportPrTaskCacheModule } from "./modules/import-pr-task-cache/import-pr-task-cache.module";
-import { MergeTaskCacheModule } from "./modules/merge-task-cache/merge-task-cache.module";
 import { ReportCodometerChangesModule } from "./modules/report-codometer-changes/report-codometer-changes.module";
 import { RunAffectedModule } from "./modules/run-affected/run-affected.module";
 import { SetupCodebaseModule } from "./modules/setup-codebase/setup-codebase.module";
+import { SynchronizationModule } from "./modules/synchronization/synchronization.module";
 import { AdoptTaskDatabaseModule } from "./modules/task-database/modules/adopt-task-database/adopt-task-database.module";
 import { KeepTaskDatabaseModule } from "./modules/task-database/modules/keep-task-database/keep-task-database.module";
+import { MergeTaskCacheModule } from "./modules/task-database/modules/merge-task-cache/merge-task-cache.module";
 import { VerifyTaskDatabaseModule } from "./modules/task-database/modules/verify-task-database/verify-task-database.module";
 import { UpgradeDependenciesModule } from "./modules/upgrade-dependencies/upgrade-dependencies.module";
 
@@ -41,6 +42,7 @@ import { UpgradeDependenciesModule } from "./modules/upgrade-dependencies/upgrad
     ReportCodometerChangesModule,
     RunAffectedModule,
     SetupCodebaseModule,
+    SynchronizationModule,
     UpgradeDependenciesModule,
     VerifyTaskDatabaseModule,
   ],

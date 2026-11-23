@@ -2,8 +2,8 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { PackageManifestService } from "../../../package-manifest/package-manifest.service";
 import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { PackageManifestService } from "../package-manifest/package-manifest.service";
 
 import { UpgradePnpmService } from "./upgrade-pnpm.service";
 

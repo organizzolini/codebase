@@ -3,7 +3,7 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { TaskDatabaseService } from "../task-database/task-database.service";
+import { TaskDatabaseService } from "../../task-database.service";
 
 import { NO_SOURCE_MESSAGE } from "./merge-task-cache.constants";
 

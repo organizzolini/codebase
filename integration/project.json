@@ -34,6 +34,9 @@
         "bound-base-to-push": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts bound-base-to-push"
         },
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts synchronization check"
+        },
         "cleanup-codebase": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts cleanup-codebase"
         },
@@ -63,9 +66,13 @@
         },
         "verify-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts verify-task-database"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts synchronization write"
         }
       },
-      "description": "Run one integration command by name. Callers in CI set the variables each command reads, such as NX_BASE and NX_HEAD.",
+      "defaultConfiguration": "check",
+      "description": "Runs every integration check in one process, for a human at a terminal who wants all of them in one command; `check` is the default and `write` runs each command's `write` where it has one. Callers in CI name one command instead, such as `integration:start:run-affected`, and set the variables it reads, such as NX_BASE and NX_HEAD. Uncached because nothing should depend on its result.",
       "executor": "nx:run-commands",
       "options": {
         "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts",
