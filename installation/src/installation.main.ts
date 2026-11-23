@@ -5,8 +5,13 @@ import { LoggerService } from "@codebase/observability";
 
 import { MainModule } from "./installation.module";
 
-/** Bootstraps the installation CLI application. */
+/**
+ * Bootstraps the installation CLI application. Diagnostics go to standard error,
+ * since standard output is a command's result that the skills hook reads whole.
+ */
 async function main(): Promise<void> {
+  LoggerService.logToStandardError();
+
   const logger = new LoggerService();
   logger.setContext("CommandFactory");
 

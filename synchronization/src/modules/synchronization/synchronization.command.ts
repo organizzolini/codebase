@@ -6,7 +6,6 @@ import { LoggerService } from "@codebase/observability";
 import { ConformetryGeneratorsCommand } from "../conformetry-generators/conformetry-generators.command";
 import { ConventionalConfigCommand } from "../conventional-config/conventional-config.command";
 import { DevcontainerConfigurationCommand } from "../devcontainer-configuration/devcontainer-configuration.command";
-import { InstalledSkillsCommand } from "../installed-skills/installed-skills.command";
 import { PackageManifestsCommand } from "../package-manifests/package-manifests.command";
 import { SkillExclusionsCommand } from "../skill-exclusions/skill-exclusions.command";
 import { VscodeExtensionsCommand } from "../vscode-extensions/vscode-extensions.command";
@@ -37,7 +36,6 @@ export class SynchronizationCommand extends CommandRunner {
     private readonly conformetryGeneratorsCommand: ConformetryGeneratorsCommand,
     private readonly conventionalConfigCommand: ConventionalConfigCommand,
     private readonly devcontainerConfigurationCommand: DevcontainerConfigurationCommand,
-    private readonly installedSkillsCommand: InstalledSkillsCommand,
     private readonly logger: LoggerService,
     private readonly packageManifestsCommand: PackageManifestsCommand,
     private readonly skillExclusionsCommand: SkillExclusionsCommand,
@@ -55,16 +53,14 @@ export class SynchronizationCommand extends CommandRunner {
   // 🔏 Private Methods
 
   /**
-   * Lists the commands the aggregate drives. `vscode-settings` needs a
-   * devcontainer and `project-ports` rewrites authored ports, so both run only
-   * by name.
+   * Lists the commands the aggregate drives. `project-ports` rewrites authored
+   * ports, so it runs only by name.
    */
   private getCommands(): SynchronizableCommand[] {
     return [
       this.conformetryGeneratorsCommand,
       this.conventionalConfigCommand,
       this.devcontainerConfigurationCommand,
-      this.installedSkillsCommand,
       this.packageManifestsCommand,
       this.skillExclusionsCommand,
       this.vscodeExtensionsCommand,

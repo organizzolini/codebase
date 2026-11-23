@@ -78,8 +78,8 @@ describe("main bootstrap", () => {
     );
   });
 
-  // `installed-skills check` prints the skills session hook's context, so a
-  // log line on standard output would become part of what an agent reads.
+  // Standard output is a command's result, so a log line there would become
+  // part of what an agent reads.
   it("sends every log line to standard error before anything logs", async () => {
     logToStandardError.mockClear();
 

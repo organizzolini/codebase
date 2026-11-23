@@ -2,18 +2,17 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { SynchronizationService } from "../synchronization/synchronization.service";
-
 import { VscodeSettingsCommand } from "./vscode-settings.command";
 
 /**
- * Wires the vscodeSettings command, which merges the workspace settings into
- * the VS Code Machine settings.
+ * Wires the vscode-settings command, which merges the workspace settings into
+ * the VS Code Machine settings. Not part of `setup`: only a devcontainer has
+ * Machine settings, so its `postCreateCommand` runs it.
  */
 @Module({
   controllers: [],
   exports: [VscodeSettingsCommand],
   imports: [LoggerModule],
-  providers: [VscodeSettingsCommand, SynchronizationService],
+  providers: [VscodeSettingsCommand],
 })
 export class VscodeSettingsModule {}

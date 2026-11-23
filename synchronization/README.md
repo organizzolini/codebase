@@ -77,12 +77,10 @@ target, on `opened`/`reopened`, and nothing else names it.
 | `conformetry-generators`     | `configuration/ic-suite/conformetry.config.ts`     | The generator table in `AGENTS.md`, between marker comments                                           |
 | `conventional-config`        | `configuration/repository/conventional.config.cjs` | The commit type and scope tables, commitlint, and release configuration                               |
 | `devcontainer-configuration` | `.devcontainer/local/devcontainer.json`            | The shared fields of `.devcontainer/cloud/devcontainer.json`                                          |
-| `installed-skills`           | `skills-lock.json`                                 | The installed skills in `.agents/skills/`, restored from their sources. Run by `postinstall`          |
 | `project-ports`              | Each `*-api` and `*-web` name                      | The port in `vite.config.mts` or `.env.default`, and the lines about it in the domain folder          |
 | `pull-request-labels`        | `configuration/repository/conventional.config.cjs` | This repository's `type:`, `scope:`, and `source:` labels on GitHub. Needs credentials                |
 | `skill-exclusions`           | `skills-lock.json`                                 | Installed skills and their vendored files, in six tool files                                          |
 | `vscode-extensions`          | `.vscode/extensions.json`                          | The `extensions`, `recommendations`, and `unwantedRecommendations` lists of both devcontainer configs |
-| `vscode-settings`            | `.vscode/settings.json`                            | The VS Code Machine settings in a devcontainer. Left out of `start`: only a devcontainer has them     |
 
 ### Pull request labels
 

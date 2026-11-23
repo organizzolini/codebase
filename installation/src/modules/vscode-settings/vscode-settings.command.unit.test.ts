@@ -7,8 +7,6 @@ import { expectLoggerContext } from "@codebase/observability/testing";
 import { expectProcessExitOne } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { SynchronizationService } from "../synchronization/synchronization.service";
-
 import { VscodeSettingsCommand } from "./vscode-settings.command";
 import {
   VSCODE_MACHINE_SETTINGS_DIRECTORY,
@@ -39,7 +37,7 @@ vi.mock("node:fs", () => {
   };
 });
 
-const moduleOptions = { providers: [SynchronizationService] };
+const moduleOptions = {};
 
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 

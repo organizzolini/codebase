@@ -8,6 +8,8 @@
 
 One command is maintenance rather than setup: `update-reui-skill` refreshes the vendored ReUI skill, and `upgrade-dependencies.yml` runs it after `skills update`. It is not part of `setup`, and an outage prints the retry command and exits 0.
 
+`installed-skills` restores the skills `skills-lock.json` declares that are missing from `.agents/skills/`. `postinstall` runs its `write` mode on every `pnpm install`, and `scripts/git/validate-session-skills.sh` runs its `check` mode at session start. `vscode-settings` merges `.vscode/settings.json` into the VS Code Machine settings of a devcontainer, and `post-create-command.sh` runs its `write` mode. Neither is part of `setup`: a laptop has no devcontainer Machine settings, and the lockfile's skills are restored by `pnpm install`, not by the setup steps.
+
 `remote-cache` is part of `setup` on a Mac, after `software`: it asks `linode-cli` for a key that can only read the Nx cache bucket and keeps it in `~/.config/codebase/nx-shared-cache-remote.env` (mode 600, or the file `NX_SHARED_CACHE_REMOTE_ENV_FILE` names), where the session hook reads it. A machine that already has the file is left alone, and without `linode-cli` or a configured token it prints why and skips, so setup never fails on it. Stop the running shared cache server once afterwards so it starts with the key. Linux, meaning a cloud session or the devcontainer, does not run it.
 
 Another is a long-running service rather than setup: `shared-nx-cache` serves Nx's self-hosted remote cache so every git worktree on one machine shares task outputs. It is not part of `setup`.
@@ -20,6 +22,8 @@ nx run installation:start:setup                  # Everything this project does,
 nx run installation:start:software               # Or one step: shell-configuration, software, environment-files, dependencies
 nx run installation:start:local-services         # Start a Docker daemon where this machine can run one, then the local Postgres container
 nx run installation:start:update-reui-skill      # Refresh the vendored ReUI skill (also run by the weekly upgrade-dependencies workflow)
+nx run installation:installed-skills:check   # Lists locked skills whose SKILL.md is absent; `:write` restores them (postinstall runs it)
+nx run installation:vscode-settings:check    # Machine settings hold every workspace key (devcontainer only; `:write` merges them)
 nx run installation:start:shared-nx-cache           # Serve the local Nx remote cache in the foreground on 127.0.0.1:19750 until Ctrl+C (flags: --port, --directory)
 nx run installation:start:remote-cache           # Create this machine's read-only key to the Nx cache bucket (also run by `setup` on a Mac)
 nx run installation:start:software -- gitleaks trivy postgres-client   # Just these (the setup-codebase action runs it this way too)
@@ -40,6 +44,8 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 | `dependencies`        | `modules/dependencies`                     |
 | `local-services`      | `modules/local-services`                   |
 | `update-reui-skill`   | `modules/update-reui-skill`                |
+| `installed-skills`    | `modules/installed-skills`                 |
+| `vscode-settings`     | `modules/vscode-settings`                  |
 | `remote-cache`        | `modules/setup/modules/remote-cache`       |
 | `shared-nx-cache`     | `modules/setup/modules/shared-nx-cache`    |
 

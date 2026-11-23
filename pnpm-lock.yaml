@@ -1238,6 +1238,12 @@ importers:
       aws4fetch:
         specifier: 'catalog:'
         version: 1.0.20
+      json5:
+        specifier: 'catalog:'
+        version: 2.2.3
+      lodash:
+        specifier: 'catalog:'
+        version: 4.18.1
       nest-commander:
         specifier: 'catalog:'
         version: 3.21.0(@nestjs/common@12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1))(@nestjs/core@12.1.0)(@types/inquirer@8.2.13)(@types/node@26.6.2)(typescript@6.0.3)
@@ -1269,6 +1275,9 @@ importers:
       '@swc/helpers':
         specifier: 'catalog:'
         version: 0.5.23
+      '@types/lodash':
+        specifier: 'catalog:'
+        version: 4.17.25
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.2

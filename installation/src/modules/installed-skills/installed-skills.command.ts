@@ -4,8 +4,6 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { SynchronizationService } from "../synchronization/synchronization.service";
-
 import {
   CLOUD_REMEDIATION,
   LOCAL_REMEDIATION,
@@ -15,11 +13,6 @@ import {
   SKILLS_LOCKFILE,
 } from "./installed-skills.constants";
 import { InstalledSkillsService } from "./installed-skills.service";
-
-import type {
-  SynchronizableCommand,
-  SynchronizationMode,
-} from "../synchronization/synchronization.types";
 
 /**
  * CLI command that keeps the skills `skills-lock.json` declares installed.
@@ -36,17 +29,13 @@ import type {
   name: "installed-skills",
 })
 @Injectable()
-export class InstalledSkillsCommand
-  extends CommandRunner
-  implements SynchronizableCommand
-{
+export class InstalledSkillsCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
     private readonly configService: ConfigService,
     private readonly installedSkillsService: InstalledSkillsService,
     private readonly logger: LoggerService,
-    private readonly synchronizationModeService: SynchronizationService,
   ) {
     super();
     this.logger.setContext(InstalledSkillsCommand.name);
@@ -55,8 +44,6 @@ export class InstalledSkillsCommand
   // 🔐 Private Fields
 
   // 🔑 Public Fields
-
-  readonly synchronizationLabel = "installed-skills";
 
   // 🔏 Private Methods
 
@@ -177,13 +164,16 @@ export class InstalledSkillsCommand
 
   /** Runs the installed-skills command in check or write mode. */
   public async run(passedParameters: string[]): Promise<void> {
-    const mode =
-      this.synchronizationModeService.resolveSynchronizationModeOrExit({
-        invalidModeLabel: "Unknown mode",
-        loggerService: this.logger,
-        passedParameters,
-        usageMessage: "Expected 'check' or 'write'",
+    const mode = passedParameters[0] ?? "check";
+
+    if (mode !== "check" && mode !== "write") {
+      this.logger.error("🚦 Rejected an unusable mode", undefined, {
+        mode,
+        reason: "Unknown mode",
+        usage: "Expected 'check' or 'write'",
       });
+      process.exit(1);
+    }
 
     if (!(await this.synchronize(mode))) {
       process.exit(1);
@@ -191,9 +181,9 @@ export class InstalledSkillsCommand
   }
 
   /** Checks or restores the installed skills, reporting success. */
-  public async synchronize(mode: SynchronizationMode): Promise<boolean> {
+  public async synchronize(mode: "check" | "write"): Promise<boolean> {
     // Nothing here is asynchronous; the interface is, because other
-    // synchronizers load configuration.
+    // commands load configuration.
     await Promise.resolve();
 
     return mode === "write" ? this.write() : this.check();

@@ -21,8 +21,6 @@ import {
 } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { SynchronizationService } from "../synchronization/synchronization.service";
-
 import {
   createFakeProcessRunner,
   installSkill,
@@ -43,13 +41,12 @@ const moduleOptions = {
   mocks: [InstalledSkillsProcessService],
   providers: [
     InstalledSkillsService,
-    SynchronizationService,
     { provide: ConfigService, useValue: new ConfigService({}) },
   ],
 };
 
 const RETRY_HINT =
-  "Retry with 'pnpm exec nx run synchronization:installed-skills:write'";
+  "Retry with 'pnpm exec nx run installation:installed-skills:write'";
 
 describe(InstalledSkillsCommand, () => {
   let command: InstalledSkillsCommand;
@@ -72,7 +69,6 @@ describe(InstalledSkillsCommand, () => {
         ...moduleOptions,
         providers: [
           InstalledSkillsService,
-          SynchronizationService,
           { provide: ConfigService, useValue: new ConfigService(environment) },
         ],
       },
@@ -167,7 +163,7 @@ describe(InstalledSkillsCommand, () => {
           '🚨 The agent workflow in AGENTS.md links to these skills. Until they are restored those links dangle, and user-invoked skills such as "/grill-me" are unavailable.',
           "",
           "Action required:",
-          '1. Restore them with "pnpm exec nx run synchronization:installed-skills:write".',
+          '1. Restore them with "pnpm exec nx run installation:installed-skills:write".',
           "2. Ask the user to start a new session afterwards. Skills register when a session starts, so restoring them does not add them to this one.",
           '3. Re-run "bash scripts/git/validate-session-skills.sh" to confirm.',
         ].join("\n"),
@@ -185,7 +181,7 @@ describe(InstalledSkillsCommand, () => {
         expect(printed()).toContain(
           [
             "Action required:",
-            '1. Restore them with "pnpm exec nx run synchronization:installed-skills:write".',
+            '1. Restore them with "pnpm exec nx run installation:installed-skills:write".',
             '2. If restoration fails, confirm ".github/workflows/copilot-setup-steps.yml" completed its dependency install, which restores skills through postinstall.',
             "3. Start a fresh cloud agent session so the restored skills register.",
             '4. Re-run "bash scripts/git/validate-session-skills.sh" to confirm.',

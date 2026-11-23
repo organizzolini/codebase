@@ -9,11 +9,9 @@ import {
 import { ConformetryGeneratorsModule } from "../conformetry-generators/conformetry-generators.module";
 import { ConventionalConfigModule } from "../conventional-config/conventional-config.module";
 import { DevcontainerConfigurationModule } from "../devcontainer-configuration/devcontainer-configuration.module";
-import { InstalledSkillsModule } from "../installed-skills/installed-skills.module";
 import { ProjectPortsModule } from "../project-ports/project-ports.module";
 import { SkillExclusionsModule } from "../skill-exclusions/skill-exclusions.module";
 import { VscodeExtensionsModule } from "../vscode-extensions/vscode-extensions.module";
-import { VscodeSettingsModule } from "../vscode-settings/vscode-settings.module";
 
 import { SynchronizationCommand } from "./synchronization.command";
 import { SynchronizationModule } from "./synchronization.module";
@@ -29,11 +27,9 @@ describe(SynchronizationModule, () => {
       ConformetryGeneratorsModule,
       ConventionalConfigModule,
       DevcontainerConfigurationModule,
-      InstalledSkillsModule,
       ProjectPortsModule,
       SkillExclusionsModule,
       VscodeExtensionsModule,
-      VscodeSettingsModule,
     );
     expectModuleProvides(
       SynchronizationModule,

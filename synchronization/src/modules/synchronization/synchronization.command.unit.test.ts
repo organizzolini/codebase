@@ -8,7 +8,6 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 import { ConformetryGeneratorsCommand } from "../conformetry-generators/conformetry-generators.command";
 import { ConventionalConfigCommand } from "../conventional-config/conventional-config.command";
 import { DevcontainerConfigurationCommand } from "../devcontainer-configuration/devcontainer-configuration.command";
-import { InstalledSkillsCommand } from "../installed-skills/installed-skills.command";
 import { PackageManifestsCommand } from "../package-manifests/package-manifests.command";
 import { SkillExclusionsCommand } from "../skill-exclusions/skill-exclusions.command";
 import { VscodeExtensionsCommand } from "../vscode-extensions/vscode-extensions.command";
@@ -41,12 +40,6 @@ const moduleOptions = {
       }),
     },
     {
-      provide: InstalledSkillsCommand,
-      useValue: createMock<InstalledSkillsCommand>({
-        synchronizationLabel: "installed-skills",
-      }),
-    },
-    {
       provide: PackageManifestsCommand,
       useValue: createMock<PackageManifestsCommand>({
         synchronizationLabel: "package-manifests",
@@ -72,7 +65,6 @@ describe(SynchronizationCommand, () => {
   let conformetryGenerators: ConformetryGeneratorsCommand;
   let conventionalConfig: ConventionalConfigCommand;
   let devcontainerConfiguration: DevcontainerConfigurationCommand;
-  let installedSkills: InstalledSkillsCommand;
   let logger: BuiltTestingModule<unknown>["logger"];
   let packageManifests: PackageManifestsCommand;
   let skillExclusions: SkillExclusionsCommand;
@@ -84,7 +76,6 @@ describe(SynchronizationCommand, () => {
       conformetryGenerators,
       conventionalConfig,
       devcontainerConfiguration,
-      installedSkills,
       packageManifests,
       skillExclusions,
       vscodeExtensions,
@@ -112,7 +103,6 @@ describe(SynchronizationCommand, () => {
     devcontainerConfiguration = await built.module.resolve(
       DevcontainerConfigurationCommand,
     );
-    installedSkills = await built.module.resolve(InstalledSkillsCommand);
     logger = built.logger;
     packageManifests = await built.module.resolve(PackageManifestsCommand);
     skillExclusions = await built.module.resolve(SkillExclusionsCommand);
@@ -219,7 +209,6 @@ describe(SynchronizationCommand, () => {
 
     await command.run(["check"]);
 
-    expect(installedSkills.synchronize).toHaveBeenCalledWith("check");
     expect(skillExclusions.synchronize).toHaveBeenCalledWith("check");
     expect(vscodeExtensions.synchronize).toHaveBeenCalledWith("check");
   });

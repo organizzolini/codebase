@@ -89,11 +89,11 @@ Everything after Node exists lives in [`installation`](../installation/AGENTS.md
 ```bash
 nx run synchronization:vscode-extensions:check    # Validate both configs are in sync (default)
 nx run synchronization:vscode-extensions:write    # Update both devcontainer.json files
-nx run synchronization:vscode-settings:check      # Machine settings hold every workspace key
-nx run synchronization:vscode-settings:write      # Merge workspace settings into Machine settings
+nx run installation:vscode-settings:check      # Machine settings hold every workspace key
+nx run installation:vscode-settings:write      # Merge workspace settings into Machine settings
 ```
 
-`vscode-extensions` runs in `guard-code`. `vscode-settings` only makes sense inside a devcontainer, so it is left out of `synchronization:start` and run by `post-create-command.sh`.
+`vscode-extensions` runs in `guard-code`. `vscode-settings` only makes sense inside a devcontainer, so it is not part of `installation:start:setup` and is run by `post-create-command.sh`.
 
 ### sync-devcontainer-configuration.ts
 

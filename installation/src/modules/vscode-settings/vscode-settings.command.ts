@@ -8,18 +8,12 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { SynchronizationService } from "../synchronization/synchronization.service";
-
 import {
   VSCODE_MACHINE_SETTINGS_DIRECTORY,
   VSCODE_MACHINE_SETTINGS_FILE,
   VSCODE_WORKSPACE_SETTINGS_FILE,
 } from "./vscode-settings.constants";
 
-import type {
-  SynchronizableCommand,
-  SynchronizationMode,
-} from "../synchronization/synchronization.types";
 import type {
   VscodeSettings,
   VscodeSettingsDrift,
@@ -36,16 +30,10 @@ import type {
   name: "vscode-settings",
 })
 @Injectable()
-export class VscodeSettingsCommand
-  extends CommandRunner
-  implements SynchronizableCommand
-{
+export class VscodeSettingsCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
-  constructor(
-    private readonly logger: LoggerService,
-    private readonly synchronizationModeService: SynchronizationService,
-  ) {
+  constructor(private readonly logger: LoggerService) {
     super();
     this.logger.setContext(VscodeSettingsCommand.name);
   }
@@ -53,8 +41,6 @@ export class VscodeSettingsCommand
   // 🔐 Private Fields
 
   // 🔑 Public Fields
-
-  readonly synchronizationLabel = "vscode-settings";
 
   // 🔏 Private Methods
 
@@ -102,14 +88,17 @@ export class VscodeSettingsCommand
     passedParameters: string[],
     _options?: Record<string, unknown>,
   ): Promise<void> {
-    const mode =
-      this.synchronizationModeService.resolveSynchronizationModeOrExit({
-        invalidModeLabel: "Invalid mode",
-        loggerService: this.logger,
-        passedParameters,
-        usageMessage:
-          "💡 Usage: nx run synchronization:vscode-settings:check (or synchronization:vscode-settings:write)",
+    const mode = passedParameters[0] ?? "check";
+
+    if (mode !== "check" && mode !== "write") {
+      this.logger.error("🚦 Rejected an unusable mode", undefined, {
+        mode,
+        reason: "Invalid mode",
+        usage:
+          "💡 Usage: nx run installation:vscode-settings:check (or installation:vscode-settings:write)",
       });
+      process.exit(1);
+    }
 
     if (!(await this.synchronize(mode))) {
       process.exit(1);
@@ -117,7 +106,7 @@ export class VscodeSettingsCommand
   }
 
   /** Synchronizes the Machine settings and reports success without exiting. */
-  async synchronize(mode: SynchronizationMode): Promise<boolean> {
+  async synchronize(mode: "check" | "write"): Promise<boolean> {
     try {
       await Promise.resolve();
 
@@ -146,7 +135,7 @@ export class VscodeSettingsCommand
       }
 
       this.logger.info("📦 Detected out-of-sync Machine settings", undefined, {
-        hint: "Run: nx run synchronization:vscode-settings:write",
+        hint: "Run: nx run installation:vscode-settings:write",
         mismatchedKeys: drift.mismatchedKeys,
         missingKeys: drift.missingKeys,
       });
