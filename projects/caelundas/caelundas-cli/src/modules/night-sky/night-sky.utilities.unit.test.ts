@@ -7,7 +7,7 @@ import {
   indexStars,
   parseConstellations,
   parseStarCatalog,
-  traceConstellationLines,
+  traceConstellationEdges,
 } from "./night-sky.utilities";
 
 import type { CatalogStar } from "./night-sky.types";
@@ -120,7 +120,7 @@ describe("night-sky utilities", () => {
     });
   });
 
-  describe(traceConstellationLines, () => {
+  describe(traceConstellationEdges, () => {
     const index = indexStars([DUBHE, MERAK]);
 
     it("joins each pair of vertices it finds stars for, once", () => {
@@ -145,14 +145,14 @@ describe("night-sky utilities", () => {
         ],
       });
 
-      expect(traceConstellationLines(file, index)).toStrictEqual([
-        { constellationDesignation: "UMa", fromHip: 54_061, toHip: 53_910 },
+      expect([...traceConstellationEdges(file, index)]).toStrictEqual([
+        ["UMa", [{ fromHip: 54_061, toHip: 53_910 }]],
       ]);
     });
   });
 
   describe(buildNightSkyRows, () => {
-    it("stores the stars bright enough or in a figure, and the figures' segments", () => {
+    it("stores the stars bright enough or in a figure, and each constellation with its figure's edges", () => {
       const rows = buildNightSkyRows({
         constellations: JSON.stringify({
           features: [{ id: "UMa", properties: { name: "Ursa Major" } }],
@@ -181,9 +181,13 @@ describe("night-sky utilities", () => {
 
       expect(rows).toStrictEqual({
         constellations: [
-          { designation: "UMa", name: "Ursa Major", zodiac: false },
+          {
+            designation: "UMa",
+            edges: [{ fromHip: 54_061, toHip: 1 }],
+            name: "Ursa Major",
+            zodiac: false,
+          },
         ],
-        lines: [{ constellationDesignation: "UMa", fromHip: 54_061, toHip: 1 }],
         stars: [DUBHE, FAINT],
       });
     });

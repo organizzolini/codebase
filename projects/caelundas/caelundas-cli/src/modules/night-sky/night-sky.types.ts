@@ -9,11 +9,16 @@ export interface CatalogStar {
   rightAscensionHours: number;
 }
 
-/** Figure segment between two stars, as `constellation_line` stores it. */
-export interface ConstellationLineRow {
-  constellationDesignation: string;
+/** Figure segment between two stars, saved with its constellation's `edges`. */
+export interface ConstellationEdgeRow {
   fromHip: number;
   toHip: number;
+}
+
+/** A constellation with the segments of its figure, ready to save as one. */
+export interface ConstellationFigureRow extends ConstellationRow {
+  /** The segments of its figure; the constellation supplies their key. */
+  edges: ConstellationEdgeRow[];
 }
 
 /**
@@ -48,8 +53,7 @@ export type NightSkyFiles = Required<NightSkyCommandOptions>;
  * The rows the night sky's tables are rewritten with.
  */
 export interface NightSkyRows {
-  constellations: ConstellationRow[];
-  lines: ConstellationLineRow[];
+  constellations: ConstellationFigureRow[];
   stars: CatalogStar[];
 }
 

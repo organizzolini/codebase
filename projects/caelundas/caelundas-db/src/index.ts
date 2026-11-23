@@ -11,8 +11,10 @@ export { CalendarEventDerivedTime } from "./modules/caelundas-database/modules/c
 export { CalendarEventTagNode } from "./modules/caelundas-database/modules/calendar-events/calendar-event-tag-node.entity";
 export { CalendarEventTag } from "./modules/caelundas-database/modules/calendar-events/calendar-event-tag.entity";
 export { CalendarEvent } from "./modules/caelundas-database/modules/calendar-events/calendar-event.entity";
-export { ConstellationLine } from "./modules/caelundas-database/modules/night-sky/constellation-line.entity";
-export { Constellation } from "./modules/caelundas-database/modules/night-sky/constellation.entity";
+export {
+  Constellation,
+  type ConstellationEdge,
+} from "./modules/caelundas-database/modules/night-sky/constellation.entity";
 export { Star } from "./modules/caelundas-database/modules/night-sky/star.entity";
 export { TagNode } from "./modules/caelundas-database/modules/tags/tag-node.entity";
 export { Tag } from "./modules/caelundas-database/modules/tags/tag.entity";

@@ -69,7 +69,7 @@ describe(NightSkyService, () => {
     await database.close();
   });
 
-  it("writes the stars, the constellations and their segments", async () => {
+  it("writes the stars, the constellations and their edges", async () => {
     await service.ingest(files);
 
     await expect(
@@ -89,7 +89,7 @@ describe(NightSkyService, () => {
     ]);
     await expect(
       database.dataSource.query(
-        `select constellation_designation, from_hip, to_hip from constellation_lines`,
+        `select constellation_designation, from_hip, to_hip from constellation_edges`,
       ),
     ).resolves.toStrictEqual([
       { constellation_designation: "UMa", from_hip: "54061", to_hip: "53910" },

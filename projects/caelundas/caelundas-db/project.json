@@ -48,10 +48,10 @@
     "prettier": {},
     "render-constellation-graph": {
       "cache": false,
-      "description": "Draw the caelundas constellation lines as a Mermaid flowchart from the local database, one subgraph per constellation; pass --args=\"--limit 8 --output-markdown constellations.md\" for the filter, sort, paging and output options",
+      "description": "Draw the caelundas constellation figures as a Mermaid flowchart from the local database, one subgraph per constellation titled with its name; pass --args=\"--limit 8 --output-markdown constellations.md\" for the filter, sort, paging and output options",
       "executor": "nx:run-commands",
       "options": {
-        "command": "SWC_NODE_PROJECT=projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register projects/common/persistence/src/persistence.main.ts render-graph-data --source-uri \"postgresql://${CAELUNDAS_POSTGRES_USERNAME:?set CAELUNDAS_POSTGRES_USERNAME}:${CAELUNDAS_POSTGRES_PASSWORD:?set CAELUNDAS_POSTGRES_PASSWORD}@${CAELUNDAS_POSTGRES_HOST:-localhost}:${CAELUNDAS_POSTGRES_PORT:-5432}/${CAELUNDAS_POSTGRES_DATABASE:?set CAELUNDAS_POSTGRES_DATABASE}\" --schema \"${CAELUNDAS_POSTGRES_SCHEMA:-caelundas}\" --entities 'projects/caelundas/caelundas-db/src/**/constellation-line.entity.ts' --entities 'projects/caelundas/caelundas-db/src/**/constellation.entity.ts' --entities 'projects/caelundas/caelundas-db/src/**/star.entity.ts' --table constellation_lines {args}",
+        "command": "SWC_NODE_PROJECT=projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register projects/common/persistence/src/persistence.main.ts render-graph-data --source-uri \"postgresql://${CAELUNDAS_POSTGRES_USERNAME:?set CAELUNDAS_POSTGRES_USERNAME}:${CAELUNDAS_POSTGRES_PASSWORD:?set CAELUNDAS_POSTGRES_PASSWORD}@${CAELUNDAS_POSTGRES_HOST:-localhost}:${CAELUNDAS_POSTGRES_PORT:-5432}/${CAELUNDAS_POSTGRES_DATABASE:?set CAELUNDAS_POSTGRES_DATABASE}\" --schema \"${CAELUNDAS_POSTGRES_SCHEMA:-caelundas}\" --entities 'projects/caelundas/caelundas-db/src/**/constellation.entity.ts' --table constellations {args}",
         "cwd": "{workspaceRoot}"
       }
     },

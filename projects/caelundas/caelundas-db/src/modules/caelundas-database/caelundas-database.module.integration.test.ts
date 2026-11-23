@@ -83,7 +83,7 @@ describe(CaelundasDatabaseModule, () => {
       "calendar_event_tag_nodes",
       "calendar_event_tags",
       "calendar_events",
-      "constellation_lines",
+      "constellation_edges",
       "constellations",
       "migrations",
       "stars",

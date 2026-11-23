@@ -48,7 +48,7 @@ application's `ConfigModule` must be global, and spreads
 | `CalendarEventTag`         | `calendar_event_tags`          | An event carrying a tag                                           |
 | `Star`                     | `stars`                        | A star of the HYG catalog, keyed by its Hipparcos number          |
 | `Constellation`            | `constellations`               | One of the 88 IAU constellations                                  |
-| `ConstellationLine`        | `constellation_lines`          | A segment of a constellation's figure                             |
+| `ConstellationEdge`        | `constellation_edges`          | Generated: a segment of a constellation's figure                  |
 | `TagNode`                  | `tag_nodes`                    | Derived: a tag with its depth, root, and path                     |
 | `CalendarEventTagNode`     | `calendar_event_tag_nodes`     | Derived: an event and every tag it carries, ancestors too         |
 | `CalendarEventDerivedTime` | `calendar_event_derived_times` | Derived view: an event's UTC and local year, day, hour, and so on |
@@ -138,15 +138,21 @@ nx run caelundas-db:render-constellation-graph --args="--limit 31"
 nx run caelundas-db:render-constellation-graph --args="--filter constellationDesignation=UMa"
 ```
 
-`ConstellationLine` is a `@Graph({ directed: false })`: each line joins two
-stars by Hipparcos number, and its constellation designation is the label. The
-`render-constellation-graph` target runs the `persistence` `render-graph-data`
-command over that entity, with the same connection variables and `--args` as
-the tag tree above. Each connected group of stars is a neighborhood, drawn as
-its own Mermaid subgraph titled with its constellation, and its lines are drawn
-without the label. Constellations that share a star are one neighborhood
-and keep their labels on the lines. A single constellation is one neighborhood,
-so it draws with no subgraph.
+`Constellation` is a `@Graph({ directed: false, edge: "ConstellationEdge",
+nodes: () => Star })`: the decorator generates the `ConstellationEdge` entity,
+so no class is written for it, and each of its rows joins two stars by
+Hipparcos number. Callers never name it; they save a `Constellation` with its
+`edges`, and read `Constellation.edges` with `relations`. A star reaches its
+edges through `Star.outgoingEdges` and `Star.incomingEdges`, and their `graph`.
+`@GraphLabel()` on `Constellation.name` titles each figure's box, and on
+`Star.hip` labels each star's node. The `render-constellation-graph` target
+runs the `persistence` `render-graph-data` command over `Constellation`, with
+the same connection variables and `--args` as the tag tree above. Each
+connected group of stars is a neighborhood, drawn as its own Mermaid subgraph
+titled with its constellation's name, and its lines are drawn without the
+label. Constellations that share a star are one neighborhood and keep their
+labels on the lines. A single constellation is one neighborhood, so it draws
+with no subgraph.
 
 Mermaid draws at most 500 edges and all constellation lines exceed it, so
 page with `--limit 31`, which draws every 31 neighborhoods as a diagram of its
@@ -156,13 +162,13 @@ own, or add `--page 1`, repeating `--page` for several, to draw only those. Or p
 ## Committed diagrams
 
 [`tag-tree-data.md`](documentation/tag-tree-data.md) and
-[`constellation-line-graph-data.md`](documentation/constellation-line-graph-data.md)
+[`constellation-graph-data.md`](documentation/constellation-graph-data.md)
 hold the diagrams of a local database, named `{entity}-{tree|graph}-data.md`.
 Regenerate them with the connection variables set:
 
 ```bash
 nx run caelundas-db:render-tag-tree --args="--output-markdown projects/caelundas/caelundas-db/documentation/tag-tree-data.md --overwrite"
-nx run caelundas-db:render-constellation-graph --args="--limit 31 --output-markdown projects/caelundas/caelundas-db/documentation/constellation-line-graph-data.md --overwrite"
+nx run caelundas-db:render-constellation-graph --args="--limit 31 --output-markdown projects/caelundas/caelundas-db/documentation/constellation-graph-data.md --overwrite"
 ```
 
 ## Test

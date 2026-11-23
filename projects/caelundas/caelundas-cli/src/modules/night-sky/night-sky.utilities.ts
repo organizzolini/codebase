@@ -20,7 +20,8 @@ import {
 
 import type {
   CatalogStar,
-  ConstellationLineRow,
+  ConstellationEdgeRow,
+  ConstellationFigureRow,
   ConstellationRow,
   NightSkyRows,
   NightSkySources,
@@ -35,12 +36,21 @@ import type {
  */
 export function buildNightSkyRows(sources: NightSkySources): NightSkyRows {
   const catalog = parseStarCatalog(sources.stars);
-  const lines = traceConstellationLines(sources.lines, indexStars(catalog));
-  const joined = new Set(lines.flatMap((line) => [line.fromHip, line.toHip]));
+  const edges = traceConstellationEdges(sources.lines, indexStars(catalog));
+  const joined = new Set<number>();
+  const constellations: ConstellationFigureRow[] = [];
+
+  for (const constellation of parseConstellations(sources.constellations)) {
+    const figure = edges.get(constellation.designation) ?? [];
+
+    for (const { fromHip, toHip } of figure) {
+      joined.add(fromHip).add(toHip);
+    }
+    constellations.push({ ...constellation, edges: figure });
+  }
 
   return {
-    constellations: parseConstellations(sources.constellations),
-    lines,
+    constellations,
     stars: catalog.filter(
       (star) => star.magnitude <= MAXIMUM_MAGNITUDE || joined.has(star.hip),
     ),
@@ -132,17 +142,19 @@ export function parseStarCatalog(text: string): CatalogStar[] {
   });
 }
 
-// 🌎 Public Functions
-
 /**
  * Reads figures as segments between catalog stars by Hipparcos number,
- * dropping ends with no matching star and duplicate segments.
+ * grouped by constellation, dropping ends with no matching star and
+ * duplicate segments.
  */
-export function traceConstellationLines(
+export function traceConstellationEdges(
   text: string,
   index: StarIndex,
-): ConstellationLineRow[] {
-  const segments = new Map<string, ConstellationLineRow>();
+): ReadonlyMap<string, ConstellationEdgeRow[]> {
+  const segments = new Map<
+    string,
+    { designation: string; edge: ConstellationEdgeRow }
+  >();
 
   for (const feature of linesFileSchema.parse(JSON.parse(text)).features) {
     for (const polyline of feature.geometry.coordinates) {
@@ -160,9 +172,8 @@ export function traceConstellationLines(
           segments.set(
             key,
             segments.get(key) ?? {
-              constellationDesignation: feature.id,
-              fromHip: from.hip,
-              toHip: to.hip,
+              designation: feature.id,
+              edge: { fromHip: from.hip, toHip: to.hip },
             },
           );
         }
@@ -170,7 +181,22 @@ export function traceConstellationLines(
     }
   }
 
-  return [...segments.values()];
+  return groupEdges([...segments.values()]);
+}
+
+// 🌎 Public Functions
+
+/** Groups edges by their constellation's designation, in first-seen order. */
+function groupEdges(
+  segments: readonly { designation: string; edge: ConstellationEdgeRow }[],
+): Map<string, ConstellationEdgeRow[]> {
+  const grouped = new Map<string, ConstellationEdgeRow[]>();
+
+  for (const { designation, edge } of segments) {
+    grouped.set(designation, [...(grouped.get(designation) ?? []), edge]);
+  }
+
+  return grouped;
 }
 
 /**

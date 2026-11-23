@@ -1,11 +1,7 @@
 import { getEntityManagerToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import {
-  type Constellation,
-  type ConstellationLine,
-  Star,
-} from "@codebase/caelundas-db";
+import { type Constellation, Star } from "@codebase/caelundas-db";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { NightSkyEclipticService } from "./modules/astronomy/night-sky-ecliptic.service";
@@ -61,27 +57,25 @@ const STARS: Star[] = [
 
 const URSA_MAJOR: Constellation = {
   designation: "UMa",
+  edges: [
+    {
+      constellationDesignation: "UMa",
+      fromHip: 54_061,
+      source: DUBHE,
+      target: ALIOTH,
+      toHip: 62_956,
+    },
+  ],
   name: "Ursa Major",
   zodiac: false,
 };
 
-const LINES: ConstellationLine[] = [
-  {
-    constellation: URSA_MAJOR,
-    constellationDesignation: "UMa",
-    fromHip: 54_061,
-    fromStar: DUBHE,
-    toHip: 62_956,
-    toStar: ALIOTH,
-  },
-];
-
-/** Answers star and figure reads with the fixtures above. */
+/** Answers star and constellation reads with the fixtures above. */
 const manager = {
   getRepository: (target: unknown) => ({
     find: vi
       .fn<() => Promise<unknown[]>>()
-      .mockResolvedValue(target === Star ? STARS : LINES),
+      .mockResolvedValue(target === Star ? STARS : [URSA_MAJOR]),
   }),
 };
 

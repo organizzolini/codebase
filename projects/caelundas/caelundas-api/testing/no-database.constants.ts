@@ -1,10 +1,6 @@
 import { type Mock, vi } from "vitest";
 
-import {
-  type Constellation,
-  ConstellationLine,
-  Star,
-} from "@codebase/caelundas-db";
+import { Constellation, Star } from "@codebase/caelundas-db";
 
 // 🌟 Stars
 
@@ -44,28 +40,30 @@ const STARS: Star[] = [
   FAINT,
 ];
 
-const LYRA: Constellation = { designation: "Lyr", name: "Lyra", zodiac: false };
-
-/** One figure segment, from the first star to the faint one. */
-const LINES: ConstellationLine[] = [
-  {
-    constellation: LYRA,
-    constellationDesignation: "Lyr",
-    fromHip: 91_262,
-    fromStar: VEGA,
-    toHip: 62_956,
-    toStar: FAINT,
-  },
-];
+/** Lyra, with an edge from Vega to a faint star. */
+const LYRA: Constellation = {
+  designation: "Lyr",
+  edges: [
+    {
+      constellationDesignation: "Lyr",
+      fromHip: 91_262,
+      source: VEGA,
+      target: FAINT,
+      toHip: 62_956,
+    },
+  ],
+  name: "Lyra",
+  zodiac: false,
+};
 
 // 🗄️ Entity manager
 
 const READS = new Map<unknown, unknown[]>([
-  [ConstellationLine, LINES],
+  [Constellation, [LYRA]],
   [Star, STARS],
 ]);
 
-/** Entity manager answers without a database: stars and one figure segment. */
+/** Answers reads without a database: stars, and one constellation. */
 export const NO_DATABASE_ENTITY_MANAGER = {
   getRepository: (
     target: unknown,

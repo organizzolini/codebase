@@ -2,6 +2,9 @@ import { z } from "zod";
 
 // ♟️ Constants
 
+/** Constellations saved per chunk, each with its edges, far under the bind-parameter limit. */
+export const CONSTELLATION_SAVE_CHUNK_SIZE = 40;
+
 /** Faintest magnitude stored, the naked-eye limit from a dark site. */
 export const MAXIMUM_MAGNITUDE = 6.5;
 

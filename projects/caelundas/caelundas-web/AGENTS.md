@@ -150,7 +150,7 @@ testing/
 ### Night Sky Data
 
 The API draws the night sky: its `nightSky` query reads the `stars`,
-`constellations` and `constellation_lines` tables that `caelundas-cli`'s
+`constellations` and `constellation_edges` tables that `caelundas-cli`'s
 `night-sky` command fills and returns an SVG, which `useNightSky` hands to the
 backdrop. The stars are the HYG star database v4.1 (CC BY-SA 4.0, David Nash
 and the HYG contributors, <https://github.com/astronexus/HYG-Database>), stored
