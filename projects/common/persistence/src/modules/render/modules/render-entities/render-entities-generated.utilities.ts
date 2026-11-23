@@ -216,8 +216,7 @@ function copiedKeyOptions(source: ColumnOptions): ColumnOptions {
 
 /**
  * Drops what an earlier run of this graph's decorator registered for the same
- * edge name, as when a test reloads the module, since TypeORM's storage
- * outlives it.
+ * edge name, as when a test reloads the module.
  */
 function discardStaleEdge(edge: string, graph: GraphEntity): void {
   const storage = getMetadataArgumentsStorage();
@@ -280,8 +279,8 @@ function lowerFirst(text: string): string {
 }
 
 /**
- * An empty class that reports `name` as its own, as a class declared under it
- * would, marked with the name of the graph that generated it.
+ * An empty class named `name`, marked with the name of the graph that
+ * generated it.
  */
 function namedClass(name: string, graph: GraphEntity): GraphEntity {
   const created = class extends Object {};

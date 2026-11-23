@@ -15,7 +15,7 @@ export const COMMAND_OF_KIND: Readonly<Record<GraphEdgeKind, string>> = {
   graph: "render-graph-data",
 };
 
-/** The property a generated edge class carries, naming its graph, shared across module reloads. */
+/** The property naming the graph a generated edge class came from. */
 export const RENDER_ENTITIES_GENERATED_MARK = Symbol.for(
   "@codebase/persistence/generated-edge-graph",
 );
