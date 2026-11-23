@@ -11,8 +11,8 @@ import {
   graphTableSchemaMessage,
 } from "./graph-options.constants";
 import {
-  parseGraphFilter,
-  parseGraphSort,
+  parseGraphPaging,
+  parseGraphRows,
   positiveIntegerFlag,
 } from "./graph-options.utilities";
 
@@ -63,8 +63,10 @@ export class GraphOptionsService {
   plan({
     entities,
     filter,
+    limit,
     maxBreadth: maximumBreadth,
     maxDepth: maximumDepth,
+    page,
     schema,
     sort,
     sourceUri,
@@ -81,14 +83,16 @@ export class GraphOptionsService {
     }
 
     const connection = parsePostgresUri(sourceUri, "--source-uri");
+    const { filters, sorts } = parseGraphRows(filter, sort);
 
     return {
       connection: { ...connection, schema },
       entities,
-      filters: (filter ?? []).map((expression) => parseGraphFilter(expression)),
+      filters,
       maximumBreadth: positiveIntegerFlag("--max-breadth", maximumBreadth),
       maximumDepth: positiveIntegerFlag("--max-depth", maximumDepth),
-      sorts: (sort ?? []).map((expression) => parseGraphSort(expression)),
+      paging: parseGraphPaging(page, limit),
+      sorts,
       source: maskPostgresCredentials(sourceUri, connection.password),
       table: this.tableName(table, schema),
     };

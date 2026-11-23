@@ -694,6 +694,198 @@ describe("render-tree-data", () => {
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   );
 
+  describe("paging roots", () => {
+    /** The Errands tree alone, the second root in id order. */
+    const ERRANDS_DIAGRAM = drawnDiagram(['n0["Errands"]', "class n0 root"]);
+
+    /** The Work subtree, the first root in id order. */
+    const WORK_DIAGRAM = drawnDiagram([
+      'n0["Work"]',
+      'n1["Email"]',
+      'n2["Meetings"]',
+      'n3["Inbox"]',
+      "n0 --> n1",
+      "n0 --> n2",
+      "n1 --> n3",
+      "class n0 root",
+    ]);
+
+    it.each([
+      ["closure-table", CLOSURE_GLOB],
+      ["materialized-path", PATH_GLOB],
+      ["nested-set", SET_GLOB],
+      ["adjacency-list", LIST_GLOB],
+    ])(
+      "draws the second root's tree alone with --limit 1 --page 2 in the %s storage",
+      async (_storage, glob) => {
+        const result = await runRender([
+          "--entities",
+          glob,
+          "--limit",
+          "1",
+          "--page",
+          "2",
+        ]);
+
+        expect(result.exitCode).toBe(0);
+        expect(result.stdout).toBe(ERRANDS_DIAGRAM);
+        expect(result.stderr).toBe("");
+      },
+      INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+    );
+
+    it("draws the first root's subtree with --limit 1, roots in id order", async () => {
+      const result = await runRender(["--entities", LIST_GLOB, "--limit", "1"]);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toBe(WORK_DIAGRAM);
+    });
+
+    it("draws the same diagram as no paging when --limit covers every root", async () => {
+      const result = await runRender([
+        "--entities",
+        LIST_GLOB,
+        "--limit",
+        "2",
+        "--page",
+        "1",
+      ]);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toBe(TREE_DIAGRAM);
+    });
+
+    it("pages the roots in --sort order, so the first sorted root comes first", async () => {
+      const first = await runRender([
+        "--entities",
+        LIST_GLOB,
+        "--sort",
+        "name",
+        "--limit",
+        "1",
+        "--page",
+        "1",
+      ]);
+      const second = await runRender([
+        "--entities",
+        LIST_GLOB,
+        "--sort",
+        "name",
+        "--limit",
+        "1",
+        "--page",
+        "2",
+      ]);
+
+      expect(first.stdout).toBe(ERRANDS_DIAGRAM);
+      expect(second.stdout).toBe(
+        drawnDiagram([
+          'n0["Email"]',
+          'n1["Inbox"]',
+          'n2["Meetings"]',
+          'n3["Work"]',
+          "n3 --> n0",
+          "n0 --> n1",
+          "n3 --> n2",
+          "class n3 root",
+        ]),
+      );
+    });
+
+    it("pages the roots that remain after --filter, keeping the matched row's ancestors", async () => {
+      const first = await runRender([
+        "--entities",
+        LIST_GLOB,
+        "--filter",
+        "name~=Inbox",
+        "--limit",
+        "1",
+        "--page",
+        "1",
+      ]);
+      const second = await runRender([
+        "--entities",
+        LIST_GLOB,
+        "--filter",
+        "name~=Inbox",
+        "--limit",
+        "1",
+        "--page",
+        "2",
+      ]);
+
+      expect(first.stdout).toBe(
+        drawnDiagram([
+          'n0["Work"]',
+          'n1["Email"]',
+          'n2["Inbox"]',
+          "n0 --> n1",
+          "n1 --> n2",
+          "class n0 root",
+        ]),
+      );
+      expect(second.exitCode).toBe(0);
+      expect(second.stdout).toBe(drawnDiagram([]));
+      expect(second.stderr).toBe(
+        "⚠️ Page 2 with --limit 1 is past the last root: the tree has 1 root in total, so nothing is drawn\n",
+      );
+    });
+
+    it("draws only the header and warns when the page is past the last root", async () => {
+      const result = await runRender([
+        "--entities",
+        LIST_GLOB,
+        "--limit",
+        "1",
+        "--page",
+        "3",
+      ]);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toBe(drawnDiagram([]));
+      expect(result.stderr).toBe(
+        "⚠️ Page 3 with --limit 1 is past the last root: the tree has 2 roots in total, so nothing is drawn\n",
+      );
+    });
+
+    it.each([
+      ["--page without --limit", ["--page", "2"], "--page needs --limit"],
+      [
+        "a zero --limit",
+        ["--limit", "0"],
+        "--limit must be a positive integer",
+      ],
+      [
+        "a zero --page",
+        ["--limit", "1", "--page", "0"],
+        "--page must be a positive integer",
+      ],
+      [
+        "a non-numeric --limit",
+        ["--limit", "two"],
+        '--limit must be a positive integer, e.g. --limit 3; got "two"',
+      ],
+    ])(
+      "rejects %s before connecting",
+      async (_description, flags, message) => {
+        const secret = "paging-fixture-secret-3d8e";
+        const unreachable = `postgresql://fixture_user:${secret}@127.0.0.1:1/fixture_db`;
+
+        const result = await runRender(
+          ["--entities", LIST_GLOB, ...flags],
+          unreachable,
+        );
+
+        expect(result.exitCode).toBe(1);
+        expect(result.stdout).toBe("");
+        expect(result.stderr).toContain(message);
+        expect(result.stderr).not.toContain("ECONNREFUSED");
+        expect(result.stderr).not.toContain(secret);
+      },
+      INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+    );
+  });
+
   it("builds the same URI the fixture reports", () => {
     expect(postgresUri(source.connection)).toBe(source.uri);
   });

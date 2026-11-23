@@ -2,32 +2,29 @@
 
 import { z } from "zod";
 
-/** A row an id query selects, which filters and sorts rank a tree by. */
-export const GRAPH_TREE_IDENTIFIED_ROW_SCHEMA = z.object({
+import type { GraphPaging } from "../graph-options/graph-options.types";
+
+/** Rows read per query, and parent ids named per child query. */
+export const GRAPH_TREE_BATCH_SIZE = 500;
+
+/** A row's id as text. */
+export const GRAPH_TREE_ID_ROW_SCHEMA = z.object({
   id: z.string(),
 });
 
-/** A row of an adjacency-list or closure-table tree: its parent column is its key. */
-export const GRAPH_TREE_PARENT_ROW_SCHEMA = z.object({
+/** A tree row: id, label, and parent id, null for a root. */
+export const GRAPH_TREE_ROW_SCHEMA = z.object({
   id: z.string(),
   label: z.string(),
   parentId: z.string().nullable(),
 });
 
-/** A row of a materialized-path tree, whose path lists its ancestors' keys. */
-export const GRAPH_TREE_PATH_ROW_SCHEMA = z.object({
-  id: z.string(),
-  label: z.string(),
-  path: z.string(),
-});
+/** SQL regex whose first group is a path's parent key. */
+export const GRAPH_TREE_PATH_PARENT_PATTERN = String.raw`([^.]+)\.[^.]+\.?$`;
 
-/** A row of a nested-set tree, whose interval places it among its ancestors. */
-export const GRAPH_TREE_NESTED_SET_ROW_SCHEMA = z.object({
-  id: z.string(),
-  label: z.string(),
-  left: z.coerce.number(),
-  right: z.coerce.number(),
-});
-
-/** The separator of a materialized path's keys. */
-export const GRAPH_TREE_PATH_SEPARATOR = ".";
+/** The warning for a page past the last root. */
+export const graphTreePageMessage = (
+  { limit, page }: GraphPaging,
+  roots: number,
+): string =>
+  `Page ${String(page)} with --limit ${String(limit)} is past the last root: the tree has ${String(roots)} ${roots === 1 ? "root" : "roots"} in total, so nothing is drawn`;

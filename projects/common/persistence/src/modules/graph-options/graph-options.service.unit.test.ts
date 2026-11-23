@@ -40,6 +40,7 @@ describe(GraphOptionsService, () => {
         filters: [],
         maximumBreadth: undefined,
         maximumDepth: undefined,
+        paging: undefined,
         sorts: [],
         source: "postgresql://fixture_user:****@localhost:5433/fixture_db",
         table: "closure_tags",
@@ -97,6 +98,77 @@ describe(GraphOptionsService, () => {
         const { instance } = await buildTestingModule(GraphOptionsService);
 
         for (const value of ["0", "-2", "1.5", "2x", "abc", ""]) {
+          expect(() =>
+            instance.plan({
+              entities: ["a.ts"],
+              [key]: value,
+              schema: "fixture",
+              sourceUri: SOURCE_URI,
+            }),
+          ).toThrow(
+            `${flag} must be a positive integer, e.g. ${flag} 3; got "${value}"`,
+          );
+        }
+      },
+    );
+
+    it("reads --page and --limit as a paging of root nodes, --page defaulting to 1", async () => {
+      const { instance } = await buildTestingModule(GraphOptionsService);
+
+      const paged = instance.plan({
+        entities: ["a.ts"],
+        limit: "20",
+        page: "3",
+        schema: "fixture",
+        sourceUri: SOURCE_URI,
+      });
+      const firstPage = instance.plan({
+        entities: ["a.ts"],
+        limit: "5",
+        schema: "fixture",
+        sourceUri: SOURCE_URI,
+      });
+
+      expect(paged.paging).toStrictEqual({ limit: 20, page: 3 });
+      expect(firstPage.paging).toStrictEqual({ limit: 5, page: 1 });
+    });
+
+    it("draws every root when neither --page nor --limit is given", async () => {
+      const { instance } = await buildTestingModule(GraphOptionsService);
+
+      const plan = instance.plan({
+        entities: ["a.ts"],
+        schema: "fixture",
+        sourceUri: SOURCE_URI,
+      });
+
+      expect(plan.paging).toBeUndefined();
+    });
+
+    it("rejects --page without --limit, naming both flags", async () => {
+      const { instance } = await buildTestingModule(GraphOptionsService);
+
+      expect(() =>
+        instance.plan({
+          entities: ["a.ts"],
+          page: "2",
+          schema: "fixture",
+          sourceUri: SOURCE_URI,
+        }),
+      ).toThrow(
+        "--page needs --limit: name how many roots a page holds, e.g. --page 2 --limit 20",
+      );
+    });
+
+    it.each([
+      ["--page", "page"],
+      ["--limit", "limit"],
+    ])(
+      "rejects a %s that is not a positive integer, naming the value",
+      async (flag, key) => {
+        const { instance } = await buildTestingModule(GraphOptionsService);
+
+        for (const value of ["0", "-1", "2.5", "3x", "one", ""]) {
           expect(() =>
             instance.plan({
               entities: ["a.ts"],

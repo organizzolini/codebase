@@ -6,6 +6,8 @@ import { z } from "zod";
 export const GRAPH_OPTION_MESSAGES = {
   entities:
     "--entities is required: name the entity files to read, e.g. --entities 'src/**/*.entity.ts'",
+  pageNeedsLimit:
+    "--page needs --limit: name how many roots a page holds, e.g. --page 2 --limit 20",
   schema:
     "--schema is required: name the schema the entity tables live in, e.g. --schema caelundas",
   sourceUri:

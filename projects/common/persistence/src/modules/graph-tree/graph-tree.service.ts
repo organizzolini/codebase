@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { resolveGraphView } from "../graph-options/graph-options-columns.utilities";
 
 import { graphColumns, loadTreeGraph } from "./graph-tree-readers.utilities";
+import { GRAPH_TREE_BATCH_SIZE } from "./graph-tree.constants";
 import { limitTreeGraph } from "./graph-tree.utilities";
 
 import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
@@ -11,8 +12,9 @@ import type { DataSource, EntityMetadata } from "typeorm";
 
 /**
  * Reads a `@Tree` entity's rows from a database as a graph model, whatever
- * storage the tree uses, for the render commands to draw. Filters run first,
- * then sort keys, then the caps cut the filtered, sorted tree.
+ * storage the tree uses, for the render commands to draw. Rows are read in
+ * batches, then filters run, then sort keys, then the root page is cut, then the
+ * caps cut the tree.
  */
 @Injectable()
 export class GraphTreeService {
@@ -43,7 +45,11 @@ export class GraphTreeService {
       options.filters,
       options.sorts,
     );
-    const graph = await loadTreeGraph(dataSource, metadata, view);
+    const graph = await loadTreeGraph(dataSource, metadata, {
+      batchSize: options.batchSize ?? GRAPH_TREE_BATCH_SIZE,
+      paging: options.paging,
+      view,
+    });
     return limitTreeGraph(graph, options);
   }
 }

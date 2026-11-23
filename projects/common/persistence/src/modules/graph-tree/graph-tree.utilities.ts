@@ -1,16 +1,18 @@
 // 🌎 Utilities
 
+import { graphTreePageMessage } from "./graph-tree.constants";
+
 import type {
   GraphEdge,
   GraphModel,
   GraphNode,
 } from "../graph-mermaid/graph-mermaid.types";
+import type { GraphPaging } from "../graph-options/graph-options.types";
 import type {
   GraphTreeLimits,
   GraphTreeRow,
   GraphTreeTruncation,
   GraphTreeWalk,
-  NestedSetRow,
 } from "./graph-tree.types";
 
 /**
@@ -140,29 +142,6 @@ export function matchedSubtrees(
 }
 
 /**
- * Finds each nested-set row's parent: the nearest row whose interval encloses
- * its own. Rows are visited in left-bound order, keeping the open intervals.
- */
-export function nestedSetParents(
-  rows: readonly NestedSetRow[],
-): Map<string, string | undefined> {
-  const parents = new Map<string, string | undefined>();
-  const open: NestedSetRow[] = [];
-
-  for (const row of rows.toSorted((left, right) => left.left - right.left)) {
-    let top = open.at(-1);
-    while (top !== undefined && top.right < row.left) {
-      open.pop();
-      top = open.at(-1);
-    }
-    parents.set(row.id, top?.id);
-    open.push(row);
-  }
-
-  return parents;
-}
-
-/**
  * The rows sorted by their position in `rank`, which lists every row's id in
  * the order its sort keys place it. A row `rank` omits sorts after the rest.
  */
@@ -185,6 +164,28 @@ export function orderRowsByRank(
     if (unplaced.has(row.id)) ordered.push(row);
   }
   return ordered;
+}
+
+/**
+ * Keeps the roots `paging` selects, with their descendants.
+ * A page past the last root keeps none and warns.
+ */
+export function pageTreeRows(
+  rows: readonly GraphTreeRow[],
+  paging: GraphPaging,
+): { readonly rows: GraphTreeRow[]; readonly warning?: string } {
+  const ids = new Set(rows.map(({ id }) => id));
+  const roots = rows
+    .filter(({ parentId }) => parentId === undefined || !ids.has(parentId))
+    .map(({ id }) => id);
+
+  const start = (paging.page - 1) * paging.limit;
+  if (start >= roots.length) {
+    return { rows: [], warning: graphTreePageMessage(paging, roots.length) };
+  }
+
+  const selected = roots.slice(start, start + paging.limit);
+  return { rows: keepRowsIn(rows, subtreeIds(rows, selected)) };
 }
 
 /**
@@ -270,6 +271,33 @@ function childrenToShow(
       parent,
     },
   };
+}
+
+/**
+ * The ids of each root and its descendants, found through parent ids.
+ * A cycle ends its walk.
+ */
+function subtreeIds(
+  rows: readonly GraphTreeRow[],
+  roots: readonly string[],
+): Set<string> {
+  const ids = new Set(rows.map(({ id }) => id));
+  const edges = rows.flatMap(({ id, parentId }) =>
+    parentId === undefined || !ids.has(parentId)
+      ? []
+      : [{ source: parentId, target: id }],
+  );
+  const children = childrenByParent(edges);
+
+  const kept = new Set<string>();
+  const pending = [...roots];
+  for (let id = pending.pop(); id !== undefined; id = pending.pop()) {
+    if (!kept.has(id)) {
+      kept.add(id);
+      pending.push(...(children.get(id) ?? []));
+    }
+  }
+  return kept;
 }
 
 /** A truncation node's id under `parent`, unused by any node in `taken`. */

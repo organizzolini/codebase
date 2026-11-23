@@ -5,6 +5,7 @@ import { maskPostgresCredentials } from "../postgresql-utilities/postgresql-util
 import {
   GRAPH_FILTER_PATTERN,
   GRAPH_FILTER_SCHEMA,
+  GRAPH_OPTION_MESSAGES,
   GRAPH_SORT_PATTERN,
   GRAPH_SORT_SCHEMA,
   graphFilterSyntaxMessage,
@@ -13,7 +14,11 @@ import {
   graphSortSyntaxMessage,
 } from "./graph-options.constants";
 
-import type { GraphFilter, GraphSort } from "./graph-options.types";
+import type {
+  GraphFilter,
+  GraphPaging,
+  GraphSort,
+} from "./graph-options.types";
 
 /**
  * `error` again, with its message's password masked, so a connection failure
@@ -41,6 +46,37 @@ export function parseGraphFilter(expression: string): GraphFilter {
     throw new GraphOptionsError(graphFilterSyntaxMessage(expression));
   }
   return { ...parsed.data, expression };
+}
+
+/**
+ * The page `--page` and `--limit` name, or `undefined` without `--limit`.
+ * @throws GraphOptionsError on a bad flag.
+ */
+export function parseGraphPaging(
+  page: string | undefined,
+  limit: string | undefined,
+): GraphPaging | undefined {
+  const pageNumber = positiveIntegerFlag("--page", page);
+  const rootLimit = positiveIntegerFlag("--limit", limit);
+  if (pageNumber !== undefined && rootLimit === undefined) {
+    throw new GraphOptionsError(GRAPH_OPTION_MESSAGES.pageNeedsLimit);
+  }
+  if (rootLimit === undefined) return undefined;
+  return { limit: rootLimit, page: pageNumber ?? 1 };
+}
+
+/**
+ * The filters and sort keys `--filter` and `--sort` name, in order.
+ * @throws GraphOptionsError on a bad expression.
+ */
+export function parseGraphRows(
+  filter: readonly string[] = [],
+  sort: readonly string[] = [],
+): { readonly filters: GraphFilter[]; readonly sorts: GraphSort[] } {
+  return {
+    filters: filter.map((expression) => parseGraphFilter(expression)),
+    sorts: sort.map((expression) => parseGraphSort(expression)),
+  };
 }
 
 /**

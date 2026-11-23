@@ -2,6 +2,7 @@
 
 import type {
   GraphFilter,
+  GraphPaging,
   GraphSort,
 } from "../graph-options/graph-options.types";
 import type { DataSource, EntityMetadata } from "typeorm";
@@ -15,20 +16,35 @@ export interface GraphTreeLimits {
   readonly maximumDepth?: number | undefined;
 }
 
-/** What a tree read draws: its row filters and sort keys, then its caps. */
+/** What a tree read draws: filters, sorts, paging, then caps. */
 export interface GraphTreeOptions extends GraphTreeLimits {
+  /** Rows read per query; a test seam, `undefined` for the default. */
+  readonly batchSize?: number | undefined;
+
   /** The row filters, each by a column name; a row must match all of them. */
   readonly filters: readonly GraphFilter[];
+
+  /** The page of root nodes to draw; `undefined` draws every root. */
+  readonly paging?: GraphPaging | undefined;
 
   /** The sort keys, applied in order among siblings. */
   readonly sorts: readonly GraphSort[];
 }
 
-/** Reads one tree table's rows, whichever storage it uses. */
-export type GraphTreeReader = (
-  dataSource: DataSource,
-  table: GraphTreeTable,
-) => Promise<GraphTreeRow[]>;
+/** Inputs every batched read of one tree shares. */
+export interface GraphTreeRead {
+  /** The rows or parent ids one query reads at most. */
+  readonly batchSize: number;
+
+  /** The connection the tree is read through. */
+  readonly dataSource: DataSource;
+
+  /** The SQL the tree is read by. */
+  readonly sql: GraphTreeSql;
+
+  /** The table the rows are read from. */
+  readonly table: GraphTreeTable;
+}
 
 /** One row of a tree table, reduced to what a diagram draws. */
 export interface GraphTreeRow {
@@ -42,8 +58,20 @@ export interface GraphTreeRow {
   readonly parentId: string | undefined;
 }
 
-/** A tree's storage, as `@Tree` names it. */
-export type GraphTreeStorage = NonNullable<EntityMetadata["treeType"]>;
+/** The SQL a tree is read by, over the table aliased `t`. */
+export interface GraphTreeSql {
+  /** The predicate for the rows whose parent is one of the ids. */
+  readonly children: string;
+
+  /** The columns a row is read by: id, label, and parent id, as text. */
+  readonly columns: string;
+
+  /** The table, aliased `t`. */
+  readonly from: string;
+
+  /** The predicate for the rows whose parent no row has, or that have none. */
+  readonly roots: string;
+}
 
 /** The escaped SQL names a tree table is read by. */
 export interface GraphTreeTable {
@@ -82,16 +110,4 @@ export interface GraphTreeWalk {
 
   /** Each node whose children a cap hid, in walk order. */
   readonly truncations: readonly GraphTreeTruncation[];
-}
-
-/** A nested-set row's interval, which places it among its ancestors. */
-export interface NestedSetRow {
-  /** The row's primary key, as text. */
-  readonly id: string;
-
-  /** The left bound of the row's interval. */
-  readonly left: number;
-
-  /** The right bound of the row's interval. */
-  readonly right: number;
 }

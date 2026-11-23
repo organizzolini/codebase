@@ -43,11 +43,17 @@ export interface GraphOptions {
   /** Each `column<op>value` row filter as text; repeatable, all must match. */
   readonly filter?: string[] | undefined;
 
+  /** Roots per page, as text; a positive integer when given. */
+  readonly limit?: string | undefined;
+
   /** The most children drawn under one node, as text; a positive integer when given. */
   readonly maxBreadth?: string | undefined;
 
   /** The deepest level drawn, roots being level 1, as text; a positive integer when given. */
   readonly maxDepth?: string | undefined;
+
+  /** Page of roots to draw, from 1, as text; needs `limit`. */
+  readonly page?: string | undefined;
 
   /** The schema the entity tables live in; required. */
   readonly schema?: string | undefined;
@@ -71,6 +77,15 @@ export interface GraphOrder {
   readonly direction: GraphSortDirection;
 }
 
+/** One page of root nodes, numbered from 1. */
+export interface GraphPaging {
+  /** The roots a page holds. */
+  readonly limit: number;
+
+  /** The page drawn, from 1. */
+  readonly page: number;
+}
+
 /** A validated graph command: where to read, which entities, and which table. */
 export interface GraphPlan {
   /** The database and schema, with the password in it; never logged. */
@@ -87,6 +102,9 @@ export interface GraphPlan {
 
   /** The deepest level drawn, or `undefined` for every level. */
   readonly maximumDepth: number | undefined;
+
+  /** The page of root nodes drawn, or `undefined` for every root. */
+  readonly paging: GraphPaging | undefined;
 
   /** The sort keys, in the order given. */
   readonly sorts: readonly GraphSort[];

@@ -369,17 +369,21 @@ closure table, materialized path, nested set, or adjacency list.
 pnpm exec nx run persistence:start --args="render-tree-data --source-uri postgresql://user:password@localhost:5432/source --schema tags --entities '../<project>/src/**/tag.entity.ts'"
 ```
 
-| Option               | Does                                                                                              |
-| -------------------- | ------------------------------------------------------------------------------------------------- |
-| `--source-uri <uri>` | Required. The database to read from                                                               |
-| `--schema <name>`    | Required. The schema the entity tables live in                                                    |
-| `--entities <glob>`  | Required, repeatable. The entity files to import                                                  |
-| `--table <name>`     | The tree to draw when the globs match several `@Tree` entities; unqualified, or `schema.table`    |
-| `--max-depth <n>`    | The deepest level drawn, roots at level 1; children below it become one `… K more` node           |
-| `--max-breadth <n>`  | Most children drawn under one node; the rest become one `… K more` node; roots not capped         |
-| `--dry-run`          | Check the options and list the entity files, without connecting to a database or drawing anything |
+| Option               | Does                                                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `--source-uri <uri>` | Required. The database to read from                                                                             |
+| `--schema <name>`    | Required. The schema the entity tables live in                                                                  |
+| `--entities <glob>`  | Required, repeatable. The entity files to import                                                                |
+| `--table <name>`     | The tree to draw when the globs match several `@Tree` entities; unqualified, or `schema.table`                  |
+| `--limit <n>`        | Root nodes per page, each drawn with its descendants, in sort order; the first page unless `--page`             |
+| `--page <n>`         | The page of `--limit` roots to draw, from 1; needs `--limit`; a page past the last root draws nothing and warns |
+| `--max-depth <n>`    | The deepest level drawn, roots at level 1; children below it become one `… K more` node                         |
+| `--max-breadth <n>`  | Most children drawn under one node; the rest become one `… K more` node; roots not capped                       |
+| `--dry-run`          | Check the options and list the entity files, without connecting to a database or drawing anything               |
 
-Several `@Tree` entities without `--table` fail, naming each table, before any
+`--limit` and `--page` cut the tree after `--filter` and `--sort` and before the
+caps, so each page is the next roots of the filtered, sorted forest. Several
+`@Tree` entities without `--table` fail, naming each table, before any
 connection opens. A row whose parent is missing from the table is drawn as a
 root and warned about. Each cap that hides children warns with the parent's id
 and the count hidden. The password is masked in every error and dry-run line.

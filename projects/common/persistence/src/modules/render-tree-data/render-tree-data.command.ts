@@ -75,6 +75,7 @@ export class RenderTreeDataCommand extends CommandRunner {
           filters: plan.filters,
           maximumBreadth: plan.maximumBreadth,
           maximumDepth: plan.maximumDepth,
+          paging: plan.paging,
           sorts: plan.sorts,
         },
       );
@@ -125,6 +126,16 @@ export class RenderTreeDataCommand extends CommandRunner {
     return [...previous, value];
   }
 
+  /** Parses `--limit`, the number of root nodes a page holds. */
+  @Option({
+    description:
+      "Root nodes per page, each drawn with its descendants, in sort order; the first page unless --page. Positive integer",
+    flags: "--limit <n>",
+  })
+  parseLimit(value: string): string {
+    return value;
+  }
+
   /** Parses `--max-breadth`, the most children drawn under one node. */
   @Option({
     description:
@@ -142,6 +153,16 @@ export class RenderTreeDataCommand extends CommandRunner {
     flags: "--max-depth <n>",
   })
   parseMaximumDepth(value: string): string {
+    return value;
+  }
+
+  /** Parses `--page`, the page of `--limit` roots to draw, from 1. */
+  @Option({
+    description:
+      "Page of --limit roots to draw, from 1; needs --limit. A page past the last root draws nothing and warns. Positive integer",
+    flags: "--page <n>",
+  })
+  parsePage(value: string): string {
     return value;
   }
 

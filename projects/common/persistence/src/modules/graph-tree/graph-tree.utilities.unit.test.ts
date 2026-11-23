@@ -6,8 +6,8 @@ import {
   limitTreeGraph,
   matchedAncestors,
   matchedSubtrees,
-  nestedSetParents,
   orderRowsByRank,
+  pageTreeRows,
   requireTreeMetadata,
 } from "./graph-tree.utilities";
 
@@ -221,26 +221,6 @@ describe("graph tree utilities", () => {
     });
   });
 
-  describe(nestedSetParents, () => {
-    it("finds each row's nearest enclosing interval as its parent", () => {
-      const parents = nestedSetParents([
-        { id: "a", left: 1, right: 6 },
-        { id: "b", left: 2, right: 3 },
-        { id: "c", left: 4, right: 5 },
-        { id: "d", left: 7, right: 8 },
-      ]);
-
-      expect(parents).toStrictEqual(
-        new Map<string, string | undefined>([
-          ["a", undefined],
-          ["b", "a"],
-          ["c", "a"],
-          ["d", undefined],
-        ]),
-      );
-    });
-  });
-
   describe("filter keeping", () => {
     const ROWS: GraphTreeRow[] = [
       { id: "1", label: "Work", parentId: undefined },
@@ -352,6 +332,85 @@ describe("graph tree utilities", () => {
       const ordered = orderRowsByRank(rows, ["7", "9"]);
 
       expect(ordered.map(({ id }) => id)).toStrictEqual(["9"]);
+    });
+  });
+
+  describe(pageTreeRows, () => {
+    const forest: GraphTreeRow[] = [
+      { id: "1", label: "Work", parentId: undefined },
+      { id: "2", label: "Email", parentId: "1" },
+      { id: "3", label: "Meetings", parentId: "1" },
+      { id: "4", label: "Inbox", parentId: "2" },
+      { id: "5", label: "Errands", parentId: undefined },
+      { id: "6", label: "Home", parentId: undefined },
+    ];
+
+    it("keeps the roots of the first page with each one's descendants, in row order", () => {
+      const paged = pageTreeRows(forest, { limit: 2, page: 1 });
+
+      expect(paged.rows.map(({ id }) => id)).toStrictEqual([
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+      ]);
+      expect(paged.warning).toBeUndefined();
+    });
+
+    it("keeps the roots of a later page, with their descendants", () => {
+      const paged = pageTreeRows(forest, { limit: 2, page: 2 });
+
+      expect(paged.rows.map(({ id }) => id)).toStrictEqual(["6"]);
+      expect(paged.warning).toBeUndefined();
+    });
+
+    it("selects nothing past the last root and warns with the page, limit, and root count", () => {
+      const paged = pageTreeRows(forest, { limit: 2, page: 3 });
+
+      expect(paged.rows).toStrictEqual([]);
+      expect(paged.warning).toBe(
+        "Page 3 with --limit 2 is past the last root: the tree has 3 roots in total, so nothing is drawn",
+      );
+    });
+
+    it("warns in the singular for a tree with one root", () => {
+      const paged = pageTreeRows(forest.slice(0, 1), { limit: 1, page: 2 });
+
+      expect(paged.warning).toBe(
+        "Page 2 with --limit 1 is past the last root: the tree has 1 root in total, so nothing is drawn",
+      );
+    });
+
+    it("warns on page 1 of a tree with no roots", () => {
+      const paged = pageTreeRows([], { limit: 1, page: 1 });
+
+      expect(paged.rows).toStrictEqual([]);
+      expect(paged.warning).toContain("the tree has 0 roots in total");
+    });
+
+    it("counts a row whose parent no row has as a root", () => {
+      const rows: GraphTreeRow[] = [
+        { id: "7", label: "Stray", parentId: "99" },
+        { id: "8", label: "Child", parentId: "7" },
+        { id: "9", label: "Other", parentId: undefined },
+      ];
+
+      const paged = pageTreeRows(rows, { limit: 1, page: 1 });
+
+      expect(paged.rows.map(({ id }) => id)).toStrictEqual(["7", "8"]);
+    });
+
+    it("leaves out a cycle that no selected root reaches", () => {
+      const rows: GraphTreeRow[] = [
+        { id: "1", label: "Work", parentId: undefined },
+        { id: "2", label: "Loop a", parentId: "3" },
+        { id: "3", label: "Loop b", parentId: "2" },
+      ];
+
+      const paged = pageTreeRows(rows, { limit: 1, page: 1 });
+
+      expect(paged.rows.map(({ id }) => id)).toStrictEqual(["1"]);
     });
   });
 });
