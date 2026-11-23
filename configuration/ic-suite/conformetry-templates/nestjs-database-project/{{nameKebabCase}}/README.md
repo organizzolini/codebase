@@ -4,7 +4,7 @@
 
 **Type**: Node.js database package (NestJS + TypeORM + PostgreSQL)
 
-**Purpose**: <!-- Briefly describe the database package and its entities -->
+**Purpose**: {{purpose}}
 
 ## Development
 

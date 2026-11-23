@@ -153,6 +153,7 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
         .describe(
           "TypeScript expression for the shared Postgres project setting",
         ),
+      purpose: z.string().describe("One-sentence database package purpose"),
       moduleClassName: z.string().describe("Database module class name"),
       name: z.string().describe("Project name (kebab-case)"),
       persistenceModuleImport: z
@@ -186,6 +187,8 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           persistenceModuleImport:
             "DatabaseModule as PersistenceDatabaseModule",
           persistenceModuleName: "PersistenceDatabaseModule",
+          purpose:
+            "Defines the Latin dictionary and literature schema consumed by Lexico applications.",
           serviceClassName: "DatabaseService",
           type: "projects/lexico/",
           workspaceRelativePrefix: "../../../",
@@ -203,6 +206,8 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           persistenceModuleImport:
             "DatabaseModule as PersistenceDatabaseModule",
           persistenceModuleName: "PersistenceDatabaseModule",
+          purpose:
+            "Defines the PostgreSQL calendar schema and derived event read models.",
           serviceClassName: "CaelundasDatabaseService",
           type: "projects/caelundas/",
           workspaceRelativePrefix: "../../../",
@@ -219,6 +224,8 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           name: "meanderaw-db",
           persistenceModuleImport: "DatabaseModule",
           persistenceModuleName: "DatabaseModule",
+          purpose:
+            "Defines the PostgreSQL schema for meander records and their characteristics.",
           serviceClassName: "MeanderawDatabaseService",
           type: "projects/meanderaw/",
           workspaceRelativePrefix: "../../../",
