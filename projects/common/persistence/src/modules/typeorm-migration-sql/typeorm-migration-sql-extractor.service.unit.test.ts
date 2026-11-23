@@ -183,6 +183,62 @@ describe(TypeormMigrationSqlExtractorService, () => {
     );
   });
 
+  it("accepts lint-fixed and formatted sql files in check mode", async () => {
+    const directory = createTemporaryDirectory("typeorm-sql-extractor");
+    await writeMigrationFile({
+      directory,
+      downSql: [String.raw`DROP TABLE \"alpha\"`],
+      fileName: "1791255787877-migration.ts",
+      upSql: [String.raw`CREATE TABLE \"alpha\" (\"id\" integer NOT NULL)`],
+    });
+    await writeFile(
+      path.join(directory, "1791255787877-migration-up.sql"),
+      "create table alpha (\n    id integer not null\n);\n",
+      "utf8",
+    );
+    await writeFile(
+      path.join(directory, "1791255787877-migration-down.sql"),
+      "drop table alpha;\n",
+      "utf8",
+    );
+
+    const result = await service.synchronize({
+      logger,
+      mode: "check",
+      options: { directory, migration: "1791255787877-migration.ts" },
+    });
+
+    expect(result).toBe(true);
+  });
+
+  it("rejects a formatted sql file whose identifier drifted", async () => {
+    const directory = createTemporaryDirectory("typeorm-sql-extractor");
+    await writeMigrationFile({
+      directory,
+      downSql: ["DROP TABLE alpha"],
+      fileName: "1791255787877-migration.ts",
+      upSql: ["CREATE TABLE alpha (id int)"],
+    });
+    await writeFile(
+      path.join(directory, "1791255787877-migration-up.sql"),
+      "create table alpha (\n    ident int\n);\n",
+      "utf8",
+    );
+    await writeFile(
+      path.join(directory, "1791255787877-migration-down.sql"),
+      "drop table alpha;\n",
+      "utf8",
+    );
+
+    const result = await service.synchronize({
+      logger,
+      mode: "check",
+      options: { directory, migration: "1791255787877-migration.ts" },
+    });
+
+    expect(result).toBe(false);
+  });
+
   it("processes every migration when selection is all", async () => {
     const migrationsDirectory = createTemporaryDirectory(
       "typeorm-sql-extractor",

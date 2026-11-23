@@ -104,7 +104,8 @@ the README's [Moving data between databases](README.md#moving-data-between-datab
 
 `typeorm-migration-sql` extracts the SQL of each TypeORM migration into the
 `-up.sql` and `-down.sql` files beside it. Its `check` mode (the default) reports
-drift, and `write` rewrites the files. It imports nothing from `integration`, so it adds no
+drift, comparing normalized SQL because the committed files are lint-fixed and
+formatted, and `write` rewrites the files. It imports nothing from `integration`, so it adds no
 edge to the CI plumbing.
 
 See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)

@@ -8,6 +8,7 @@ import {
   MIGRATIONS_FOLDER,
   TYPEORM_MIGRATION_FILE_PATTERN,
 } from "./typeorm-migration-sql.constants";
+import { normalizeSql } from "./typeorm-migration-sql.utilities";
 
 import type {
   MigrationSqlPaths,
@@ -29,7 +30,10 @@ export class TypeormMigrationSqlExtractorService {
   // 🔑 Public Fields
   // 🔏 Private Methods
 
-  /** Checks extracted SQL files and returns whether both match expected output. */
+  /**
+   * Checks the committed SQL files against the expected output. Both sides
+   * are normalized because the committed files are lint-fixed and formatted.
+   */
   private async checkExtractedSql(options: {
     expectedDown: string;
     expectedUp: string;
@@ -38,8 +42,12 @@ export class TypeormMigrationSqlExtractorService {
     const actualUp = await this.maybeFile(options.migrationSqlPaths.upPath);
     const actualDown = await this.maybeFile(options.migrationSqlPaths.downPath);
     return {
-      downMatches: actualDown === options.expectedDown,
-      upMatches: actualUp === options.expectedUp,
+      downMatches:
+        actualDown !== null &&
+        normalizeSql(actualDown) === normalizeSql(options.expectedDown),
+      upMatches:
+        actualUp !== null &&
+        normalizeSql(actualUp) === normalizeSql(options.expectedUp),
     };
   }
 
