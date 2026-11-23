@@ -1,4 +1,52 @@
-# 📖 Lexico Entities
+# LexicoDb: NestJS Database Project
+
+## Quick Start
+
+**Type**: Node.js database package (NestJS + TypeORM + PostgreSQL)
+
+**Purpose**: <!-- Briefly describe the database package and its entities -->
+
+## Development
+
+### Entities and migrations
+
+Keep entity classes under `src/` with one `*.entity.ts` file per entity. Add
+each entity to `LEXICO_DATABASE_ENTITIES` in
+`src/modules/database/data-source.constants.ts`; the shared
+`createDataSource` helper reads this list for TypeORM's migration commands.
+Keep migrations under `migrations/`. They are never run or synchronized on
+application startup.
+
+### Entity relationship diagram
+
+The ERD is generated from every TypeORM entity file under `src/`. Do not edit
+the diagram between its markers by hand.
+
+```bash
+nx run lexico-db:erd:write
+nx run lexico-db:erd:check
+```
+
+See [documentation/erd.md](documentation/erd.md) for the generated diagram.
+
+## Template lineage
+
+This standalone template keeps the common scaffold files from
+[`nestjs-service-project`](../nestjs-service-project) in step. It intentionally
+differs in this README and `AGENTS.md`, the `package.json` database dependencies,
+and the `project.json` TypeORM tags and ERD target. It adds the data source,
+database module and service, and ERD marker document; it does not replace
+project-specific entities or migrations.
+
+## Key Files
+
+- [project.json](project.json): Nx targets and project tags
+- [src/modules/database/data-source.constants.ts](src/modules/database/data-source.constants.ts): Entity list and CLI data source
+- [src/modules/database/database.module.ts](src/modules/database/database.module.ts): NestJS database module
+- [src/modules/database/database.service.ts](src/modules/database/database.service.ts): Database service
+- [documentation/erd.md](documentation/erd.md): Generated ERD
+
+## 📖 Lexico Entities
 
 **The dictionary's shape.** TypeORM entities, PostgreSQL migrations, and the
 shared enumerations for [Lexico](../lexico-web/README.md).

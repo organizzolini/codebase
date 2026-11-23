@@ -173,6 +173,26 @@ const conformetryConfiguration: ConformetryNxConfiguration = [
           "Relative climb from the project root back to the workspace root, e.g. ../.. two directories down or ../../../../ four directories down",
         ),
     }),
+    instances: [
+      {
+        patterns: ["projects/lexico/lexico-db"],
+        threshold: 0.993,
+        substitutions: {
+          databaseEntitiesConstant: "LEXICO_DATABASE_ENTITIES",
+          databaseModuleName: "database",
+          databaseProject: "lexico",
+          databaseProjectExpression: '"lexico"',
+          moduleClassName: "DatabaseModule",
+          name: "lexico-db",
+          persistenceModuleImport:
+            "DatabaseModule as PersistenceDatabaseModule",
+          persistenceModuleName: "PersistenceDatabaseModule",
+          serviceClassName: "DatabaseService",
+          type: "projects/lexico/",
+          workspaceRelativePrefix: "../../../",
+        },
+      },
+    ],
     name: "nestjs-database-project",
     templatePath:
       "configuration/ic-suite/conformetry-templates/nestjs-database-project",

@@ -7,7 +7,9 @@
     "domain:lexico",
     "framework:nestjs",
     "framework:typeorm",
+    "generator:nestjs-database-project",
     "language:typescript",
+    "name:lexico-db",
     "type:package"
   ],
   "targets": {
@@ -31,6 +33,23 @@
     "build-projects": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "erd": {
+      "configurations": {
+        "check": {
+          "command": "SWC_NODE_PROJECT=../../../projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register ../../../projects/common/persistence/src/persistence.main.ts postgresql-erd --entities \"src/**/*.entity.ts\" --output-markdown documentation/erd.md --check"
+        },
+        "write": {
+          "command": "SWC_NODE_PROJECT=../../../projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register ../../../projects/common/persistence/src/persistence.main.ts postgresql-erd --entities \"src/**/*.entity.ts\" --output-markdown documentation/erd.md"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Check or write the project ERD from its TypeORM entity files",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{projectRoot}/documentation/erd.md"]
+    },
     "eslint": {},
     "format-code": {},
     "guard-code": {},
