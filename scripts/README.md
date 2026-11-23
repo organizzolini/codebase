@@ -367,7 +367,7 @@ pnpm exec nx run installation:start:dependencies
 Check if lockfile needs updating:
 
 ```bash
-pnpm exec nx run validation:lockfile
+pnpm exec nx run integration:lockfile
 ```
 
 If out of sync:
@@ -457,7 +457,7 @@ pnpm install
 Verify sync:
 
 ```bash
-pnpm exec nx run validation:lockfile
+pnpm exec nx run integration:lockfile
 ```
 
 ## Contributing

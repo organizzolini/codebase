@@ -4,9 +4,6 @@ import { DiscoveryModule } from "@nestjs/core";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
-import { LockfileModule } from "./modules/lockfile/lockfile.module";
-import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
 import { environmentSchema } from "./validation.constants";
 
 /**
@@ -20,11 +17,8 @@ import { environmentSchema } from "./validation.constants";
       validate: (config: Record<string, unknown>) =>
         environmentSchema.parse(config),
     }),
-    CatalogManifestsModule,
     DiscoveryModule,
-    LockfileModule,
     LoggerModule,
-    ReadmeProjectsModule,
   ],
 })
 export class MainModule {}

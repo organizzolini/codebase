@@ -91,4 +91,21 @@ describe(ReadmeProjectsCommand, () => {
       "- projects/stray",
     ]);
   });
+
+  it("tells the user to add a README row as the fix", () => {
+    expect(command.synchronizationLabel).toBe("readme-projects");
+    expect(command.fixCommand).toBe(
+      "add a row linking each missing project to the root README.md",
+    );
+  });
+
+  it("reports a verdict without exiting when synchronized", async () => {
+    expect.hasAssertions();
+
+    vi.mocked(
+      readmeProjectsService.findUndocumentedProjectPaths,
+    ).mockReturnValue(["projects/orphan"]);
+
+    await expect(command.synchronize()).resolves.toBe(false);
+  });
 });

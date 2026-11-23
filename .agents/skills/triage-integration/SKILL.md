@@ -84,8 +84,8 @@ staged `package.json` matches all three, so all four commands run.
 
 | Staged file pattern                     | Commands lint-staged runs                                                                                                                                                                                      |
 | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `{**/package.json,pnpm-workspace.yaml}` | `validation lockfile`, run as the CLI directly rather than through its Nx target                                                                                                                               |
-| `**/package.json`                       | `nx run-many --projects=validation --targets=catalog-manifests`, then `nx run-many --projects=configuration --targets=sherif,syncpack`                                                                         |
+| `{**/package.json,pnpm-workspace.yaml}` | `integration lockfile`, run as the CLI directly rather than through its Nx target                                                                                                                               |
+| `**/package.json`                       | `nx run-many --projects=integration --targets=catalog-manifests`, then `nx run-many --projects=configuration --targets=sherif,syncpack`                                                                         |
 | `*` (every staged path)                 | `nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --parallel=… --base=HEAD --head=<staged-commit>`, then `nx run-many --targets=conformetry-validate` |
 
 There is deliberately no per-file-type row any more. `lint-code` is an
@@ -271,12 +271,12 @@ There is no command that regenerates a skills table of contents. The synchroniza
 
 #### `lockfile` (package.json / pnpm-workspace.yaml changes)
 
-Command: `validation lockfile`, the [lockfile](../../../validation/src/modules/lockfile/lockfile.command.ts) check
+Command: `integration lockfile`, the [lockfile](../../../integration/src/modules/synchronization/modules/lockfile/lockfile.command.ts) check
 
-lint-staged runs it as the CLI directly rather than through its `validation:lockfile` Nx target, so one command does not cost another project graph build. Run it by hand through the target:
+lint-staged runs it as the CLI directly rather than through its `integration:lockfile` Nx target, so one command does not cost another project graph build. Run it by hand through the target:
 
 ```bash
-pnpm exec nx run validation:lockfile
+pnpm exec nx run integration:lockfile
 ```
 
 #### `commitlint` (commit-msg hook)
@@ -543,7 +543,7 @@ Remaining Actions
 | commitlint                          | [configuration/repository/commitlint.config.ts](../../../configuration/repository/commitlint.config.ts)                                                                    |
 | validate-branch-name                | [validate-branch-name.config.cjs](../../../validate-branch-name.config.cjs)                                                                                                |
 | Conventional commits (types/scopes) | [configuration/repository/conventional.config.cjs](../../../configuration/repository/conventional.config.cjs)                                                              |
-| lockfile                            | [validation/src/modules/lockfile/lockfile.constants.ts](../../../validation/src/modules/lockfile/lockfile.constants.ts)                                                    |
+| lockfile                            | [integration/src/modules/synchronization/modules/lockfile/lockfile.constants.ts](../../../integration/src/modules/synchronization/modules/lockfile/lockfile.constants.ts)                                                    |
 
 ### Git Conventions
 

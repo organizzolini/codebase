@@ -202,7 +202,7 @@ nx show projects
 ```
 
 [`README.md`](README.md) carries the annotated table, one row per project, and
-`nx run validation:readme-projects` fails when it misses one.
+`nx run integration:readme-projects` fails when it misses one.
 
 **A commit scope is not a project.** The scope vocabulary is the closed set in
 [Conventional Naming](.github/CONTRIBUTING.md#commit-guidelines), and it collapses each toolchain to

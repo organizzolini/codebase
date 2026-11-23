@@ -95,13 +95,13 @@ function getStagedChangeFlags(files: string[]): string {
 
 const config = {
   // 🔒 Lockfile integrity
-  // Runs as the `validation` CLI, not its Nx target, which would cost another graph build.
+  // Runs as the `integration` CLI, not its Nx target, which would cost another graph build.
   // No environment prefix: lint-staged spawns commands without a shell.
   //
   // It checks that the resolution still holds with `pnpm install --frozen-lockfile
   // --lockfile-only`, which no Nx target models. It never writes node_modules.
   "{**/package.json,pnpm-workspace.yaml}": (): string[] => [
-    "node --import @swc-node/register/esm-register validation/src/validation.main.ts lockfile",
+    "node --import @swc-node/register/esm-register integration/src/integration.main.ts lockfile",
   ],
 
   // 📦 Manifest consistency
@@ -110,7 +110,7 @@ const config = {
   // `configuration`, which owns those two, has to run whether or not
   // `affected` selected it.
   "**/package.json": (): string[] => [
-    "nx run-many --projects=validation --targets=catalog-manifests --outputStyle=static",
+    "nx run-many --projects=integration --targets=catalog-manifests --outputStyle=static",
     "nx run-many --projects=configuration --targets=sherif,syncpack --outputStyle=static",
   ],
 

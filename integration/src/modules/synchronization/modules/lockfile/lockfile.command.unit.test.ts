@@ -105,4 +105,21 @@ describe(LockfileCommand, () => {
       "⚠️  pnpm not found in PATH; skipping lockfile check",
     ]);
   });
+
+  it("names pnpm install as the fix", () => {
+    expect(command.synchronizationLabel).toBe("lockfile");
+    expect(command.fixCommand).toBe("pnpm install");
+  });
+
+  it("reports a verdict without exiting when synchronized", async () => {
+    expect.hasAssertions();
+
+    vi.mocked(lockfileService.checkLockfile).mockReturnValue({
+      available: true,
+      output: "refused",
+      succeeded: false,
+    });
+
+    await expect(command.synchronize()).resolves.toBe(false);
+  });
 });

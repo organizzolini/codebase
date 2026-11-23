@@ -2,15 +2,21 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
+import { CatalogManifestsCommand } from "./modules/catalog-manifests/catalog-manifests.command";
+import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
 import { ConformetryGeneratorsCommand } from "./modules/conformetry-generators/conformetry-generators.command";
 import { ConformetryGeneratorsModule } from "./modules/conformetry-generators/conformetry-generators.module";
 import { ConventionalConfigCommand } from "./modules/conventional-config/conventional-config.command";
 import { ConventionalConfigModule } from "./modules/conventional-config/conventional-config.module";
 import { DevcontainerConfigurationCommand } from "./modules/devcontainer-configuration/devcontainer-configuration.command";
 import { DevcontainerConfigurationModule } from "./modules/devcontainer-configuration/devcontainer-configuration.module";
+import { LockfileCommand } from "./modules/lockfile/lockfile.command";
+import { LockfileModule } from "./modules/lockfile/lockfile.module";
 import { PackageManifestsCommand } from "./modules/package-manifests/package-manifests.command";
 import { PackageManifestsModule } from "./modules/package-manifests/package-manifests.module";
 import { ProjectPortsModule } from "./modules/project-ports/project-ports.module";
+import { ReadmeProjectsCommand } from "./modules/readme-projects/readme-projects.command";
+import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
 import { SkillExclusionsCommand } from "./modules/skill-exclusions/skill-exclusions.command";
 import { SkillExclusionsModule } from "./modules/skill-exclusions/skill-exclusions.module";
 import { VscodeExtensionsCommand } from "./modules/vscode-extensions/vscode-extensions.command";
@@ -37,6 +43,9 @@ import type { SynchronizableCommand } from "./synchronization.types";
   ],
   imports: [
     LoggerModule,
+    CatalogManifestsModule,
+    LockfileModule,
+    ReadmeProjectsModule,
     ConformetryGeneratorsModule,
     ConventionalConfigModule,
     DevcontainerConfigurationModule,
@@ -51,6 +60,9 @@ import type { SynchronizableCommand } from "./synchronization.types";
     SynchronizationService,
     {
       inject: [
+        CatalogManifestsCommand,
+        LockfileCommand,
+        ReadmeProjectsCommand,
         ConformetryGeneratorsCommand,
         ConventionalConfigCommand,
         DevcontainerConfigurationCommand,

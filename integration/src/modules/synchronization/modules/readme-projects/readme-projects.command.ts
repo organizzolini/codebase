@@ -5,6 +5,8 @@ import { LoggerService } from "@codebase/observability";
 
 import { ReadmeProjectsService } from "./readme-projects.service";
 
+import type { SynchronizableCommand } from "../../synchronization.types";
+
 /**
  * CLI command that checks the root README links to every workspace project, so
  * none ships invisible to readers.
@@ -16,7 +18,10 @@ import { ReadmeProjectsService } from "./readme-projects.service";
   name: "readme-projects",
 })
 @Injectable()
-export class ReadmeProjectsCommand extends CommandRunner {
+export class ReadmeProjectsCommand
+  extends CommandRunner
+  implements SynchronizableCommand
+{
   // 🏗 Dependency Injection
 
   constructor(
@@ -31,13 +36,25 @@ export class ReadmeProjectsCommand extends CommandRunner {
 
   // 🔑 Public Fields
 
+  readonly fixCommand =
+    "add a row linking each missing project to the root README.md";
+
+  readonly synchronizationLabel = "readme-projects";
+
   // 🔏 Private Methods
 
   // 🌎 Public Methods
 
   /** Checks every workspace project and exits 0 or 1 on the verdict. */
   public async run(): Promise<void> {
-    // Nothing here is asynchronous; the base class signature is.
+    if (!(await this.synchronize())) {
+      process.exit(1);
+    }
+  }
+
+  /** Checks every workspace project and reports whether all are linked. Never writes. */
+  public async synchronize(): Promise<boolean> {
+    // Nothing here is asynchronous; the contract's signature is.
     await Promise.resolve();
 
     const workspaceRoot = process.cwd();
@@ -56,7 +73,7 @@ export class ReadmeProjectsCommand extends CommandRunner {
         `Root README documents all ${String(projectPaths.length)} workspace projects.`,
       );
 
-      return;
+      return true;
     }
 
     console.error("Root README is missing these workspace projects:");
@@ -65,6 +82,6 @@ export class ReadmeProjectsCommand extends CommandRunner {
       console.error(`- ${undocumentedProjectPath}`);
     }
 
-    process.exit(1);
+    return false;
   }
 }

@@ -95,6 +95,9 @@ one class.
 | `project-ports` | `src/modules/synchronization/modules/project-ports` | `guard-code`; derives each `*-api` and `*-web` port. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target |
 | `skill-exclusions` | `src/modules/synchronization/modules/skill-exclusions` | the release workflow's `write` step; derives installed-skill exclusion lists. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target |
 | `vscode-extensions` | `src/modules/synchronization/modules/vscode-extensions` | `guard-code` and `test-devcontainer.sh`; derives both devcontainers' extension lists. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target |
+| `catalog-manifests` | `src/modules/synchronization/modules/catalog-manifests` | `guard-code`; a check, no `write`: every workspace manifest pins externals as `catalog:` and internals as `workspace:*`. Collects every violation; has no `fixCommand` |
+| `lockfile` | `src/modules/synchronization/modules/lockfile` | `guard-code` and lint-staged; a check, no `write`: runs `pnpm install --frozen-lockfile --lockfile-only`. Sets `fixCommand` to `pnpm install` |
+| `readme-projects` | `src/modules/synchronization/modules/readme-projects` | `guard-code`; a check, no `write`: the root README links every workspace project. Its `fixCommand` says to add a row for each missing project |
 | `synchronization` (the `start` target) | `src/modules/synchronization` | a human at a terminal: `nx run integration:start` runs every registered check and derivation in one process, `check` by default, or `:write` |
 
 `setup-codebase` and `cleanup-codebase` run the services of the commands above

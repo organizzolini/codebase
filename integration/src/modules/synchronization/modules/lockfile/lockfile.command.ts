@@ -10,6 +10,8 @@ import {
 } from "./lockfile.constants";
 import { LockfileService } from "./lockfile.service";
 
+import type { SynchronizableCommand } from "../../synchronization.types";
+
 /**
  * CLI command that checks `pnpm-lock.yaml` against the workspace manifests, by
  * pnpm's own `--frozen-lockfile` refusal.
@@ -23,7 +25,10 @@ import { LockfileService } from "./lockfile.service";
   name: "lockfile",
 })
 @Injectable()
-export class LockfileCommand extends CommandRunner {
+export class LockfileCommand
+  extends CommandRunner
+  implements SynchronizableCommand
+{
   // 🏗 Dependency Injection
 
   constructor(
@@ -38,13 +43,24 @@ export class LockfileCommand extends CommandRunner {
 
   // 🔑 Public Fields
 
+  readonly fixCommand = "pnpm install";
+
+  readonly synchronizationLabel = "lockfile";
+
   // 🔏 Private Methods
 
   // 🌎 Public Methods
 
   /** Checks the lockfile and exits 0 or 1 on pnpm's verdict. */
   public async run(): Promise<void> {
-    // Nothing here is asynchronous; the base class signature is.
+    if (!(await this.synchronize())) {
+      process.exit(1);
+    }
+  }
+
+  /** Checks the lockfile and reports whether pnpm accepted it. Never writes. */
+  public async synchronize(): Promise<boolean> {
+    // Nothing here is asynchronous; the contract's signature is.
     await Promise.resolve();
 
     const result = this.lockfileService.checkLockfile();
@@ -52,13 +68,13 @@ export class LockfileCommand extends CommandRunner {
     if (!result.available) {
       console.warn(PACKAGE_MANAGER_MISSING_MESSAGE);
 
-      return;
+      return true;
     }
 
     if (result.succeeded) {
       console.info(LOCKFILE_IN_SYNC_MESSAGE);
 
-      return;
+      return true;
     }
 
     for (const message of LOCKFILE_OUT_OF_SYNC_MESSAGES) {
@@ -66,6 +82,7 @@ export class LockfileCommand extends CommandRunner {
     }
 
     console.error(result.output);
-    process.exit(1);
+
+    return false;
   }
 }

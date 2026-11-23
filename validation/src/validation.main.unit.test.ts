@@ -3,9 +3,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { captureExitCode } from "@codebase/testing";
 
-import type { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
-import type { LockfileModule } from "./modules/lockfile/lockfile.module";
-import type { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
 import type { LoggerService } from "@codebase/observability";
 
 type CommandFactoryRun = (
@@ -20,9 +17,6 @@ type CommandFactoryRun = (
 const run = vi.fn<CommandFactoryRun>().mockResolvedValue(undefined);
 const loggerServiceMock = createMock<LoggerService>();
 const logToStandardError = vi.fn<() => void>();
-const catalogManifestsModuleMock = createMock<CatalogManifestsModule>();
-const lockfileModuleMock = createMock<LockfileModule>();
-const readmeProjectsModuleMock = createMock<ReadmeProjectsModule>();
 
 vi.mock("nest-commander", () => ({
   CommandFactory: {
@@ -53,26 +47,6 @@ vi.mock("@codebase/observability", () => ({
     setContext(context: string): void {
       loggerServiceMock.setContext(context);
     }
-  },
-}));
-
-// Mocked so that bootstrapping never reaches the real commands, which extend a
-// `nest-commander` class this suite has replaced.
-vi.mock("./modules/catalog-manifests/catalog-manifests.module", () => ({
-  CatalogManifestsModule: function CatalogManifestsModule() {
-    return catalogManifestsModuleMock;
-  },
-}));
-
-vi.mock("./modules/lockfile/lockfile.module", () => ({
-  LockfileModule: function LockfileModule() {
-    return lockfileModuleMock;
-  },
-}));
-
-vi.mock("./modules/readme-projects/readme-projects.module", () => ({
-  ReadmeProjectsModule: function ReadmeProjectsModule() {
-    return readmeProjectsModuleMock;
   },
 }));
 

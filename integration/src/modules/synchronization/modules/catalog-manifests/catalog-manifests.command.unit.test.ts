@@ -98,4 +98,18 @@ describe(CatalogManifestsCommand, () => {
       "- projects/common/observability/package.json -> dependencies.pino must use catalog: (found ^9.0.0)",
     ]);
   });
+
+  it("is a check the aggregate can run", () => {
+    expect(command.synchronizationLabel).toBe("catalog-manifests");
+  });
+
+  it("reports a verdict without exiting when synchronized", async () => {
+    expect.hasAssertions();
+
+    vi.mocked(
+      catalogManifestsService.validateManifestDependencies,
+    ).mockReturnValueOnce(["package.json -> dependencies.zod"]);
+
+    await expect(command.synchronize()).resolves.toBe(false);
+  });
 });

@@ -5,6 +5,8 @@ import { LoggerService } from "@codebase/observability";
 
 import { CatalogManifestsService } from "./catalog-manifests.service";
 
+import type { SynchronizableCommand } from "../../synchronization.types";
+
 /**
  * CLI command that enforces the workspace catalog policy.
  *
@@ -20,7 +22,10 @@ import { CatalogManifestsService } from "./catalog-manifests.service";
   name: "catalog-manifests",
 })
 @Injectable()
-export class CatalogManifestsCommand extends CommandRunner {
+export class CatalogManifestsCommand
+  extends CommandRunner
+  implements SynchronizableCommand
+{
   // 🏗 Dependency Injection
 
   constructor(
@@ -35,13 +40,22 @@ export class CatalogManifestsCommand extends CommandRunner {
 
   // 🔑 Public Fields
 
+  readonly synchronizationLabel = "catalog-manifests";
+
   // 🔏 Private Methods
 
   // 🌎 Public Methods
 
   /** Checks every workspace manifest and exits 0 or 1 on the verdict. */
   public async run(): Promise<void> {
-    // Nothing here is asynchronous; the base class signature is.
+    if (!(await this.synchronize())) {
+      process.exit(1);
+    }
+  }
+
+  /** Checks every workspace manifest and reports whether all conform. Never writes. */
+  public async synchronize(): Promise<boolean> {
+    // Nothing here is asynchronous; the contract's signature is.
     await Promise.resolve();
 
     const manifestPaths =
@@ -58,7 +72,7 @@ export class CatalogManifestsCommand extends CommandRunner {
         `Catalog policy passed for ${String(manifestPaths.length)} workspace manifests.`,
       );
 
-      return;
+      return true;
     }
 
     console.error("Catalog policy violations found:");
@@ -67,6 +81,6 @@ export class CatalogManifestsCommand extends CommandRunner {
       console.error(`- ${violation}`);
     }
 
-    process.exit(1);
+    return false;
   }
 }
