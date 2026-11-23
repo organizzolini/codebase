@@ -4,7 +4,7 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: Continuous Integration plumbing: the steps that run around a CI job, as tested commands. The affected run, the Nx base and task-cache steps, codometer's baseline and pull-request report, and the weekly dependency upgrades. "Integration" in this project means Continuous Integration, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
+**Purpose**: Everything that guards a change on its way to `main`, as tested commands. That is the local branch into its remote branch at commit and push, and a pull request into `main`. It holds the checks (catalog pins, the lockfile, the README's project rows), the derivations that keep generated files in step with their sources, and the Continuous Integration plumbing: the affected run, the Nx base and task-cache steps, codometer's baseline and pull-request report, and the weekly dependency upgrades. "Integration" in this project means that path, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
 
 ### Run Locally
 
@@ -49,6 +49,24 @@ src/
 testing/                            # Shared test utilities
 ```
 
+### Checks, derivations, and the aggregate
+
+`src/modules/synchronization` holds what every check and derivation shares:
+`SynchronizableCommand` (a `synchronizationLabel` and `synchronize(mode)`, which
+reports success), the `check`/`write` mode service, the markers service that
+splices generated blocks between marker comments, and the `start` aggregate. A
+command with no `write` Nx configuration is just a check: `write` mode runs its
+check. The aggregate runs every command, collects every failure, and prints the
+command that fixes each: the command's own `fixCommand` (such as `pnpm install`),
+else its own Nx target, `pnpm exec nx run integration:<label>`; a derivation sets `fixCommand` to its `:write` target.
+
+Codometer caps a folder at 12 entries, and `src/modules/` already holds 11, so
+each check and derivation lives under `src/modules/synchronization/modules/<command>/`,
+never beside the CI commands. To put one in the aggregate, import its module in
+`synchronization.module.ts` and add it to the `SYNCHRONIZABLE_COMMANDS` factory's
+`inject` list; leave out any that must run only by name. Never raise the limit;
+group further into `modules/` folders instead.
+
 ### Commands
 
 Commands read their inputs from the environment, as the workflows and composite
@@ -56,20 +74,31 @@ actions set them, print what they decide, and set the exit code. Anything that
 runs a child process goes through `ProcessRunnerService`, so a test replaces
 one class.
 
-| Command | Module | Called from |
-| ------- | ------ | ----------- |
-| `setup-codebase` | `src/modules/setup-codebase` | the `setup-codebase` composite action, right after `pnpm install`; runs the four steps below it |
-| `bound-base-to-push` | `src/modules/bound-base-to-push` | `setup-codebase`, on a push with `nx-base: push-before` |
-| `import-pr-task-cache` | `src/modules/import-pr-task-cache` | `setup-codebase`, in a merge group |
-| `verify-task-database` | `src/modules/task-database/modules/verify-task-database` | `setup-codebase` and `cleanup-codebase` |
-| `adopt-task-database` | `src/modules/task-database/modules/adopt-task-database` | `setup-codebase` |
-| `cleanup-codebase` | `src/modules/cleanup-codebase` | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it |
-| `keep-task-database` | `src/modules/task-database/modules/keep-task-database` | `cleanup-codebase` |
-| `merge-task-cache` | `src/modules/merge-task-cache` | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory |
-| `run-affected` | `src/modules/run-affected` | the Continuous Integration matrix legs, for every check but Secure |
-| `collect-codometer-baseline` | `src/modules/collect-codometer-baseline` | the `report-integration` composite action, on a green `main` build |
-| `report-codometer-changes` | `src/modules/report-codometer-changes` | the `report-integration` composite action, on a pull request's build |
-| `upgrade-dependencies` | `src/modules/upgrade-dependencies` | the `upgrade-dependencies` workflow |
+| Command                                | Module                                                           | Called from                                                                                                                                                                                                                                      |
+| -------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `setup-codebase`                       | `src/modules/setup-codebase`                                     | the `setup-codebase` composite action, right after `pnpm install`; runs the four steps below it                                                                                                                                                  |
+| `bound-base-to-push`                   | `src/modules/bound-base-to-push`                                 | `setup-codebase`, on a push with `nx-base: push-before`                                                                                                                                                                                          |
+| `import-pr-task-cache`                 | `src/modules/import-pr-task-cache`                               | `setup-codebase`, in a merge group                                                                                                                                                                                                               |
+| `verify-task-database`                 | `src/modules/task-database/modules/verify-task-database`         | `setup-codebase` and `cleanup-codebase`                                                                                                                                                                                                          |
+| `adopt-task-database`                  | `src/modules/task-database/modules/adopt-task-database`          | `setup-codebase`                                                                                                                                                                                                                                 |
+| `cleanup-codebase`                     | `src/modules/cleanup-codebase`                                   | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it                                                                                                                                                 |
+| `keep-task-database`                   | `src/modules/task-database/modules/keep-task-database`           | `cleanup-codebase`                                                                                                                                                                                                                               |
+| `merge-task-cache`                     | `src/modules/task-database/modules/merge-task-cache`             | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory                                                                                                                                           |
+| `run-affected`                         | `src/modules/run-affected`                                       | the Continuous Integration matrix legs, for every check but Secure                                                                                                                                                                               |
+| `collect-codometer-baseline`           | `src/modules/collect-codometer-baseline`                         | the `report-integration` composite action, on a green `main` build                                                                                                                                                                               |
+| `report-codometer-changes`             | `src/modules/report-codometer-changes`                           | the `report-integration` composite action, on a pull request's build                                                                                                                                                                             |
+| `upgrade-dependencies`                 | `src/modules/upgrade-dependencies`                               | the `upgrade-dependencies` workflow                                                                                                                                                                                                              |
+| `conformetry-generators`               | `src/modules/synchronization/modules/conformetry-generators`     | the release workflow's `write` step; derives the generator table in `AGENTS.md`. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                               |
+| `conventional-config`                  | `src/modules/synchronization/modules/conventional-config`        | the release workflow's `write` step; derives commit types and scopes, commitlint, release configuration. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                       |
+| `devcontainer-configuration`           | `src/modules/synchronization/modules/devcontainer-configuration` | the release workflow's `write` step and `test-devcontainer.sh`; derives the cloud devcontainer's shared fields. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                |
+| `package-manifests`                    | `src/modules/synchronization/modules/package-manifests`          | nothing in CI: run it by name; derives publishable package metadata. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                           |
+| `project-ports`                        | `src/modules/synchronization/modules/project-ports`              | `guard-code`; derives each `*-api` and `*-web` port. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                           |
+| `skill-exclusions`                     | `src/modules/synchronization/modules/skill-exclusions`           | the release workflow's `write` step; derives installed-skill exclusion lists. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                  |
+| `vscode-extensions`                    | `src/modules/synchronization/modules/vscode-extensions`          | `guard-code` and `test-devcontainer.sh`; derives both devcontainers' extension lists. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                          |
+| `catalog-manifests`                    | `src/modules/synchronization/modules/catalog-manifests`          | `guard-code`; a check, no `write`: every workspace manifest pins externals as `catalog:` and internals as `workspace:*`. Collects every violation; has no `fixCommand`                                                                           |
+| `lockfile`                             | `src/modules/synchronization/modules/lockfile`                   | `guard-code` and lint-staged; a check, no `write`: runs `pnpm install --frozen-lockfile --lockfile-only`. Sets `fixCommand` to `pnpm install`                                                                                                    |
+| `readme-projects`                      | `src/modules/synchronization/modules/readme-projects`            | `guard-code`; a check, no `write`: the root README links every workspace project. Its `fixCommand` says to add a row for each missing project                                                                                                    |
+| `synchronization` (the `start` target) | `src/modules/synchronization`                                    | a human at a terminal: `nx run integration:start` runs the ten checks and derivations above in one process, `check` by default, or `:write`. The CLI name is internal: the conformetry template fixes it, and `conformetry-validate` requires it |
 
 `setup-codebase` and `cleanup-codebase` run the services of the commands above
 themselves, in a command of their own rather than a service: one more layer
@@ -125,10 +154,10 @@ for a third-party tool. They exist to be **batched**. Nx only batches an executo
 that names a `batchImplementation`, and `nx:run-commands` has none, so a tool run
 once per project pays its start-up once per project.
 
-| Executor      | Replaces                                      | Source                      |
-| ------------- | --------------------------------------------- | --------------------------- |
-| `knip`        | `knip --workspace <root>`, once per project   | `src/executors/knip`        |
-| `spell-check` | `cspell '<root>/**'`, once per project        | `src/executors/spell-check` |
+| Executor      | Replaces                                    | Source                      |
+| ------------- | ------------------------------------------- | --------------------------- |
+| `knip`        | `knip --workspace <root>`, once per project | `src/executors/knip`        |
+| `spell-check` | `cspell '<root>/**'`, once per project      | `src/executors/spell-check` |
 
 `knip` runs one `knip --reporter json --workspace <root> --workspace <root> …` for
 every task Nx batches, reads which workspace each issue's file sits in, and fails

@@ -3,7 +3,7 @@
 ## Quick Start
 
 **Type**: NestJS library package (`@codebase/persistence`) and nest-commander
-command line (`postgresql-export` and `postgresql-import`)
+command line (`postgresql-export`, `postgresql-import`, and `typeorm-migration-sql`)
 
 **Purpose**: Two jobs. The library is the one way a database-backed project
 connects to Postgres: the `<PROJECT>_POSTGRES_*` environment fragment, the
@@ -47,6 +47,7 @@ src/
     postgresql-export/              # The postgresql-export command: options, plan, dry run, atomic write
     postgresql-import/              # The postgresql-import command: options, plan, --clean (no prompt), dry run
     postgresql-utilities/           # pg_dump, pg_restore, and truncate behind one service
+    typeorm-migration-sql/          # The typeorm-migration-sql command: check or write each migration's SQL
 testing/
   index.ts                          # The @codebase/persistence/testing entry
   persistence-testing.*.ts          # startDatabaseTestingModule, the entry's Nest helper
@@ -90,6 +91,7 @@ nx run persistence:vitest:unit
 nx run persistence:type-coverage
 nx run persistence:start:postgresql-export --args="--source-uri <uri> --table <schema.table> --data --file <path>"
 nx run persistence:start:postgresql-import --args="--target-uri <uri> --table <schema.table> --data --file <path>"
+nx run persistence:typeorm-migration-sql      # check (default); `:write` rewrites the migration SQL
 ```
 
 `postgresql-import --clean` never prompts and has no `--yes`; the preview is
@@ -99,6 +101,12 @@ first.
 The `start` configurations run the command line with the working directory at
 `projects/common/persistence`. Both commands need the PostgreSQL 18 client tools; see
 the README's [Moving data between databases](README.md#moving-data-between-databases).
+
+`typeorm-migration-sql` extracts the SQL of each TypeORM migration into the
+`-up.sql` and `-down.sql` files beside it. Its `check` mode (the default) reports
+drift, comparing normalized SQL because the committed files are lint-fixed and
+formatted, and `write` rewrites the files. It imports nothing from `integration`, so it adds no
+edge to the CI plumbing.
 
 See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)
 and the [testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md).

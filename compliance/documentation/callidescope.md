@@ -6,13 +6,13 @@ Call stacks traced through `compliance`, deepest first. Each frame shows what it
 
 | Measure | Value |
 | --- | --- |
-| Callables | 327 |
-| Files | 73 |
-| Calls traced | 378 |
-| Call stacks | 5 |
+| Callables | 347 |
+| Files | 77 |
+| Calls traced | 397 |
+| Call stacks | 6 |
 | Deepest stack | 8 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 23 |
+| Unfollowable calls | 24 |
 
 ### Limits
 
@@ -70,7 +70,7 @@ What this project is judged against, as declared in its own `callidescope.config
 ```text
 🚀 PullRequestCommand.run(passedParameters: string[]): Promise<void> [compliance/src/modules/pull-request/pull-request.command.ts:93]
    ↳ Runs both phases and exits 0 only when every applicable check passed.
-  └─> PullRequestValidationService.validate(context: PullRequestContext): CheckOutcome[] [compliance/src/modules/pull-request/pull-request-validation.service.ts:227]
+  └─> PullRequestValidationService.validate(context: PullRequestContext): CheckOutcome[] [compliance/src/modules/pull-request/pull-request-validation.service.ts:223]
      ↳ Every check that applies to this pull request.
     └─> PullRequestValidationService.checkBody(context: PullRequestContext): CheckOutcome [compliance/src/modules/pull-request/pull-request-validation.service.ts:54]
        ↳ The body, its sections, and the template comments left in it.
@@ -85,9 +85,25 @@ What this project is judged against, as declared in its own `callidescope.config
 ```
 
 <details>
-<summary>2 more call stacks</summary>
+<summary>3 more call stacks</summary>
 
-**4. `OrganizationProjectCommand.run`** — depth 4 · decorated-method
+**4. `PullRequestTemplateCommand.run`** — depth 6 · decorated-method
+
+```text
+🚀 PullRequestTemplateCommand.run(passedParameters: string[], _options?: Record<string, unknown>): Promise<void> [compliance/src/modules/pull-request-template/pull-request-template.command.ts:234]
+   ↳ Runs the pull-request-template sync command in check or write mode.
+  └─> PullRequestTemplateCommand.synchronize(mode: PullRequestTemplateMode): Promise<boolean> [compliance/src/modules/pull-request-template/pull-request-template.command.ts:169]
+     ↳ Synchronizes the PR template and reports success without exiting.
+    └─> PullRequestTemplateCommand.handleWriteMode(templateContent: string, targetFiles: string[]): void [compliance/src/modules/pull-request-template/pull-request-template.command.ts:114]
+       ↳ Writes the current PR template into any target files that are out of sync.
+      └─> PullRequestTemplateCommand.filter(…)(targetFile: string): boolean [compliance/src/modules/pull-request-template/pull-request-template.command.ts:119]
+        └─> PullRequestTemplateCommand.checkTargetSync(templateContent: string, targetFile: string): boolean [compliance/src/modules/pull-request-template/pull-request-template.command.ts:42]
+           ↳ Checks whether the target file's marker block matches the current PR template.
+          └─> PullRequestTemplateCommand.extractMarkerContent(content: string, markerName: string): string | undefined [compliance/src/modules/pull-request-template/pull-request-template.command.ts:77]
+             ↳ Extracts the content between start and end marker comments from a file.
+```
+
+**5. `OrganizationProjectCommand.run`** — depth 4 · decorated-method
 
 ```text
 🚀 OrganizationProjectCommand.run(passedParameters: string[]): Promise<void> [compliance/src/modules/organization-project/organization-project.command.ts:163]
@@ -96,16 +112,16 @@ What this project is judged against, as declared in its own `callidescope.config
      ↳ Lists repository issue or pull request URLs.
     └─> OrganizationProjectCommand.readJson(…): T [compliance/src/modules/organization-project/organization-project.command.ts:101]
        ↳ Validates JSON returned by a GitHub CLI read command.
-      └─> PullRequestGithubService.run(commandArguments: readonly string[]): GithubCliResult [compliance/src/modules/pull-request/modules/github/pull-request-github.service.ts:48]
+      └─> PullRequestGithubService.run(commandArguments: readonly string[]): GithubCliResult [compliance/src/modules/pull-request/modules/github/pull-request-github.service.ts:84]
          ↳ Invokes `gh` with these arguments, capturing each stream on its own.
 ```
 
-**5. `PullRequestGithubService.isAvailable`** — depth 2 · orphan-root
+**6. `PullRequestGithubService.isAvailable`** — depth 2 · orphan-root
 
 ```text
-🚀 PullRequestGithubService.isAvailable(): boolean [compliance/src/modules/pull-request/modules/github/pull-request-github.service.ts:43]
+🚀 PullRequestGithubService.isAvailable(): boolean [compliance/src/modules/pull-request/modules/github/pull-request-github.service.ts:46]
    ↳ Whether the `gh` binary can be executed at all.
-  └─> PullRequestGithubService.run(commandArguments: readonly string[]): GithubCliResult [compliance/src/modules/pull-request/modules/github/pull-request-github.service.ts:48]
+  └─> PullRequestGithubService.run(commandArguments: readonly string[]): GithubCliResult [compliance/src/modules/pull-request/modules/github/pull-request-github.service.ts:84]
      ↳ Invokes `gh` with these arguments, capturing each stream on its own.
 ```
 
@@ -120,38 +136,39 @@ What this project is judged against, as declared in its own `callidescope.config
 | `IssueCommand.run` | 7 | `IssuePlanService.resolve`, `IssueCommand.prepare`, `IssueAuditService.auditOne`, `IssueAssigningService.assignAll`, `IssueAuditService.auditAll`, `IssueReportService.compose`, `IssueReportService.publish` | `compliance/src/modules/issue/issue.command.ts:87` |
 
 <details>
-<summary>138 more callables</summary>
+<summary>148 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `IssueMetadataService.checkMetadata` | 6 | `IssueMetadataService.groupLabels`, `IssueMetadataService.checkTypeLabel`, `IssueMetadataService.checkScopeLabels`, `IssueMetadataService.checkSourceLabel`, `IssueMetadataTypeService.check`, `IssueFieldsService.checkPriority` | `compliance/src/modules/issue/modules/metadata/issue-metadata.service.ts:372` |
 | `PullRequestLabelsService.planReconciliation` | 6 | `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.filter(…)`, `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.filter(…)`, `PullRequestLabelsService.filter(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-labels.service.ts:60` |
-| `PullRequestAncestorIssuesService.link` | 6 | `PullRequestAncestorIssuesService.readLinked`, `PullRequestAncestorIssuesService.unchanged`, `PullRequestAncestorIssuesService.collectAncestors`, `PullRequestDescendantIssuesService.collect`, `PullRequestAncestorIssuesService.writeReferences`, `PullRequestAncestorIssuesService.filter(…)` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:264` |
-| `PullRequestLinkedIssuesService.checkIssue` | 6 | `IssueMetadataService.resolveFromDocument`, `IssueMetadataService.checkMetadata`, `IssueMetadataService.parseFormAnswers`, `PullRequestLinkedIssuesService.nameIssue`, `PullRequestLinkedIssuesService.checkField`, `PullRequestLinkedIssuesService.findRoot` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:68` |
-| `PullRequestValidationService.checkSignificance` | 6 | `PullRequestReleaseSignificanceService.parseConventionalSubject`, `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure`, `PullRequestReleaseSignificanceService.resolveFromDocument`, `PullRequestReleaseSignificanceService.checkSignificance`, `PullRequestReleaseSignificanceService.readReleaseRules` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:115` |
-| `PullRequestValidationService.validate` | 6 | `PullRequestValidationService.checkTitle`, `PullRequestValidationService.checkBody`, `PullRequestValidationService.checkMetadata`, `PullRequestValidationService.checkSignificance`, `PullRequestLinkedIssuesService.check`, `PullRequestAncestorIssuesService.verify` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:227` |
+| `PullRequestAncestorIssuesService.link` | 6 | `PullRequestBodyLinksService.extractClosingIssueNumbers`, `PullRequestAncestorIssuesService.unchanged`, `PullRequestAncestorIssuesService.collectAncestors`, `PullRequestDescendantIssuesService.collect`, `PullRequestAncestorIssuesService.writeReferences`, `PullRequestAncestorIssuesService.filter(…)` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:244` |
+| `PullRequestLinkedIssuesService.checkIssue` | 6 | `IssueMetadataService.resolveFromDocument`, `IssueMetadataService.checkMetadata`, `IssueMetadataService.parseFormAnswers`, `PullRequestLinkedIssuesService.nameIssue`, `PullRequestLinkedIssuesService.checkField`, `PullRequestLinkedIssuesService.findRoot` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:70` |
+| `PullRequestValidationService.checkSignificance` | 6 | `PullRequestReleaseSignificanceService.parseConventionalSubject`, `PullRequestGithubService.readList`, `PullRequestGithubService.describeFailure`, `PullRequestReleaseSignificanceService.resolveFromCommits`, `PullRequestReleaseSignificanceService.checkSignificance`, `PullRequestReleaseSignificanceService.readReleaseRules` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:115` |
+| `PullRequestValidationService.validate` | 6 | `PullRequestValidationService.checkTitle`, `PullRequestValidationService.checkBody`, `PullRequestValidationService.checkMetadata`, `PullRequestValidationService.checkSignificance`, `PullRequestLinkedIssuesService.check`, `PullRequestAncestorIssuesService.verify` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:223` |
 | `IssueGithubService.listOpenIssueFieldNames` | 5 | `IssueGithubService.run`, `IssueGithubService.describeFailure`, `IssueGithubService.map(…)`, `IssueGithubService.map(…)`, `IssueGithubService.describeError` | `compliance/src/modules/issue/modules/github/issue-github.service.ts:56` |
 | `IssueGithubService.listOpenIssues` | 5 | `IssueGithubService.run`, `IssueGithubService.describeFailure`, `IssueGithubService.describeError`, `IssueGithubService.listOpenIssueFieldNames`, `IssueGithubService.map(…)` | `compliance/src/modules/issue/modules/github/issue-github.service.ts:126` |
 | `IssueMetadataService.checkBulkIssues` | 5 | `IssueMetadataService.parseFormAnswers`, `IssueMetadataService.checkMetadata`, `IssueMetadataTypeService.readFromSummary`, `IssueMetadataService.map(…)`, `IssueMetadataService.checkHierarchy` | `compliance/src/modules/issue/modules/metadata/issue-metadata.service.ts:285` |
 | `IssueAuditService.auditAll` | 5 | `IssueGithubService.isAvailable`, `IssueAuditService.fail`, `IssueGithubService.listOpenIssues`, `IssueMetadataService.checkBulkIssues`, `IssueAuditService.map(…)` | `compliance/src/modules/issue/modules/audit/issue-audit.service.ts:57` |
-| `PullRequestBodyLinksService.addRelatedIssueReferences` | 5 | `PullRequestBodyLinksService.findIndex(…)`, `PullRequestBodyLinksService.readExistingIssueNumbers`, `PullRequestBodyLinksService.filter(…)`, `PullRequestBodyLinksService.insertReferences`, `PullRequestBodyLinksService.map(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body-links.service.ts:60` |
+| `PullRequestBodyLinksService.addRelatedIssueReferences` | 5 | `PullRequestBodyLinksService.findIndex(…)`, `PullRequestBodyLinksService.readExistingIssueNumbers`, `PullRequestBodyLinksService.filter(…)`, `PullRequestBodyLinksService.insertReferences`, `PullRequestBodyLinksService.map(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body-links.service.ts:61` |
 | `PullRequestBodyService.checkBody` | 5 | `PullRequestBodyService.findEmptySections`, `PullRequestBodyService.findMalformedSections`, `PullRequestBodyService.findMissingHeadings`, `PullRequestBodyService.findOversizedSections`, `PullRequestBodyService.findUnfilledComments` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:186` |
-| `PullRequestLabelVocabularyService.plan` | 5 | `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure`, `PullRequestLabelsService.planReconciliation`, `PullRequestLabelsService.parseRepositoryLabels`, `PullRequestLabelsService.readExpectedLabels` | `compliance/src/modules/pull-request/modules/labels/pull-request-label-vocabulary.service.ts:73` |
+| `PullRequestLabelVocabularyService.plan` | 5 | `PullRequestGithubService.readList`, `PullRequestGithubService.describeFailure`, `PullRequestLabelsService.planReconciliation`, `PullRequestLabelsService.parseRepositoryLabels`, `PullRequestLabelsService.readExpectedLabels` | `compliance/src/modules/pull-request/modules/labels/pull-request-label-vocabulary.service.ts:72` |
 | `PullRequestLabelsAssigneesService.checkMetadata` | 5 | `PullRequestLabelsAssigneesService.groupLabels`, `PullRequestLabelsAssigneesService.checkTypeLabel`, `PullRequestLabelsAssigneesService.checkScopeLabels`, `PullRequestLabelsAssigneesService.record`, `PullRequestLabelsAssigneesService.checkSourceLabel` | `compliance/src/modules/pull-request/modules/labels/pull-request-labels-assignees.service.ts:149` |
-| `PullRequestAncestorIssuesService.writeReferences` | 5 | `PullRequestBodyLinksService.addRelatedIssueReferences`, `PullRequestAncestorIssuesService.unchanged`, `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure`, `PullRequestAncestorIssuesService.format` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:188` |
-| `PullRequestAncestorIssuesService.verify` | 5 | `PullRequestAncestorIssuesService.readLinked`, `PullRequestAncestorIssuesService.collectAncestors`, `PullRequestAncestorIssuesService.map(…)`, `PullRequestAncestorIssuesService.filter(…)`, `PullRequestAncestorIssuesService.format` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:302` |
-| `PullRequestLinkedIssuesService.check` | 5 | `PullRequestLinkedIssuesService.read(…)`, `PullRequestLinkedIssuesService.read`, `PullRequestLinkedIssuesService.readHierarchy`, `PullRequestLinkedIssuesService.map(…)`, `PullRequestLinkedIssuesService.checkIssue` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:244` |
-| `PullRequestReleaseSignificanceService.checkSignificance` | 5 | `PullRequestReleaseSignificanceService.significanceRank`, `PullRequestReleaseSignificanceService.findMostSignificantCommit`, `PullRequestReleaseSignificanceService.findCommitScopes`, `PullRequestReleaseSignificanceService.describeSignificanceFailure`, `PullRequestReleaseSignificanceService.describeScopeFailure` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:166` |
+| `PullRequestAncestorIssuesService.writeReferences` | 5 | `PullRequestBodyLinksService.addRelatedIssueReferences`, `PullRequestAncestorIssuesService.unchanged`, `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure`, `PullRequestAncestorIssuesService.format` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:168` |
+| `PullRequestAncestorIssuesService.verify` | 5 | `PullRequestBodyLinksService.extractClosingIssueNumbers`, `PullRequestAncestorIssuesService.collectAncestors`, `PullRequestAncestorIssuesService.map(…)`, `PullRequestAncestorIssuesService.filter(…)`, `PullRequestAncestorIssuesService.format` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:278` |
+| `PullRequestReleaseSignificanceService.checkSignificance` | 5 | `PullRequestReleaseSignificanceService.significanceRank`, `PullRequestReleaseSignificanceService.findMostSignificantCommit`, `PullRequestReleaseSignificanceService.findCommitScopes`, `PullRequestReleaseSignificanceService.describeSignificanceFailure`, `PullRequestReleaseSignificanceService.describeScopeFailure` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:165` |
 | `OrganizationProjectCommand.run` | 5 | `OrganizationProjectCommand.fail`, `OrganizationProjectCommand.readRepositoryResourceUrls`, `OrganizationProjectCommand.readExistingProjectResourceUrls`, `OrganizationProjectCommand.filter(…)`, `OrganizationProjectCommand.addProjectItem` | `compliance/src/modules/organization-project/organization-project.command.ts:163` |
 | `IssueGithubService.listUnassignedOpenIssueNumbers` | 4 | `IssueGithubService.run`, `IssueGithubService.describeFailure`, `IssueGithubService.map(…)`, `IssueGithubService.filter(…)` | `compliance/src/modules/issue/modules/github/issue-github.service.ts:170` |
 | `IssueAssigningService.assignAll` | 4 | `IssueGithubService.listUnassignedOpenIssueNumbers`, `IssueAssigningService.map(…)`, `IssueAssigningService.flatMap(…)`, `IssueAssigningService.flatMap(…)` | `compliance/src/modules/issue/modules/assignees/issue-assigning.service.ts:43` |
 | `IssueMetadataService.resolveFromDocument` | 4 | `IssueMetadataService.describeError`, `IssueMetadataService.isRecord`, `IssueMetadataTypeService.readFromDocument`, `IssueMetadataService.readLabelNames` | `compliance/src/modules/issue/modules/metadata/issue-metadata.service.ts:446` |
 | `IssuePlanService.resolve` | 4 | `IssuePlanService.filter(…)`, `IssuePlanService.filter(…)`, `IssuePlanService.readLabelNames`, `IssuePlanService.hasNoAssignee` | `compliance/src/modules/issue/modules/audit/issue-plan.service.ts:66` |
 | `IssueLabelingService.label` | 4 | `IssueLabelsService.missingLabels`, `IssueLabelsService.parseFormAnswers`, `IssueGithubService.isAvailable`, `IssueLabelingService.map(…)` | `compliance/src/modules/issue/modules/labels/issue-labeling.service.ts:29` |
-| `PullRequestLabelVocabularyService.reconcile` | 4 | `PullRequestLabelVocabularyService.plan`, `PullRequestLabelVocabularyService.map(…)`, `PullRequestLabelVocabularyService.apply`, `PullRequestLabelVocabularyService.describePlan` | `compliance/src/modules/pull-request/modules/labels/pull-request-label-vocabulary.service.ts:102` |
-| `PullRequestLinkedIssuesService.readIssue` | 4 | `PullRequestLinkedIssuesService.read(…)`, `PullRequestLinkedIssuesService.read`, `PullRequestLinkedIssuesService.read(…)`, `IssueMetadataService.extractParentIssueNumber` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:191` |
+| `PullRequestLabelVocabularyService.reconcile` | 4 | `PullRequestLabelVocabularyService.plan`, `PullRequestLabelVocabularyService.map(…)`, `PullRequestLabelVocabularyService.apply`, `PullRequestLabelVocabularyService.describePlan` | `compliance/src/modules/pull-request/modules/labels/pull-request-label-vocabulary.service.ts:96` |
+| `PullRequestLinkedIssuesService.readIssue` | 4 | `PullRequestLinkedIssuesService.read(…)`, `PullRequestLinkedIssuesService.read`, `PullRequestLinkedIssuesService.read(…)`, `IssueMetadataService.extractParentIssueNumber` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:193` |
+| `PullRequestLinkedIssuesService.check` | 4 | `PullRequestBodyLinksService.extractClosingIssueNumbers`, `PullRequestLinkedIssuesService.readHierarchy`, `PullRequestLinkedIssuesService.map(…)`, `PullRequestLinkedIssuesService.checkIssue` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:245` |
 | `PullRequestReportService.compose` | 4 | `PullRequestReportService.map(…)`, `PullRequestReportService.map(…)`, `PullRequestReportService.reduce(…)`, `PullRequestReportService.flatMap(…)` | `compliance/src/modules/pull-request/pull-request-report.service.ts:49` |
 | `PullRequestCommand.begin` | 4 | `PullRequestContextService.resolveInvocation`, `PullRequestCommand.abort`, `PullRequestCommand.load`, `PullRequestContextService.writeStepOutputs` | `compliance/src/modules/pull-request/pull-request.command.ts:57` |
+| `PullRequestTemplateCommand.synchronize` | 4 | `PullRequestTemplateCommand.map(…)`, `PullRequestTemplateCommand.loadTemplate`, `PullRequestTemplateCommand.handleCheckMode`, `PullRequestTemplateCommand.handleWriteMode` | `compliance/src/modules/pull-request-template/pull-request-template.command.ts:169` |
 | `AuditFilesService.auditWorkflowContent` | 3 | `AuditFilesService.some(…)`, `AuditFilesService.some(…)`, `AuditFilesService.collectWorkflowJobViolations` | `compliance/src/modules/audit-files/audit-files.service.ts:57` |
 | `AuditFilesCommand.run` | 3 | `AuditFilesService.checkFiles`, `AuditFilesCommand.reportCodeownersVerdict`, `AuditFilesCommand.reportWorkflowsVerdict` | `compliance/src/modules/audit-files/audit-files.command.ts:74` |
 | `IssueReportService.compose` | 3 | `IssueReportService.filter(…)`, `IssueReportService.reduce(…)`, `IssueReportService.flatMap(…)` | `compliance/src/modules/issue/issue-report.service.ts:28` |
@@ -165,7 +182,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestBodyService.filter(…)` | 3 | `PullRequestBodyService.cleanSectionContent`, `PullRequestBodyService.holdsShape`, `PullRequestBodyService.parseBlocks` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:224` |
 | `PullRequestContextService.fetch` | 3 | `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure`, `PullRequestContextService.parseContext` | `compliance/src/modules/pull-request/modules/context/pull-request-context.service.ts:88` |
 | `PullRequestLabelsAssigneesService.groupLabels` | 3 | `PullRequestLabelsAssigneesService.filter(…)`, `PullRequestLabelsAssigneesService.filter(…)`, `PullRequestLabelsAssigneesService.filter(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-labels-assignees.service.ts:190` |
-| `PullRequestLinkedIssuesService.read` | 3 | `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure`, `IssueMetadataService.describeError` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:137` |
+| `PullRequestLinkedIssuesService.read` | 3 | `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure`, `IssueMetadataService.describeError` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:139` |
+| `PullRequestTitleService.checkScopeCount` | 3 | `PullRequestTitleService.filter(…)`, `PullRequestTitleService.map(…)`, `tooManyScopesMessage` | `compliance/src/modules/pull-request/modules/title/pull-request-title.service.ts:29` |
 | `PullRequestValidationService.checkBody` | 3 | `PullRequestValidationService.describeBodyVerdict`, `PullRequestBodyService.checkBody`, `PullRequestBodyService.extractTemplateComments` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:54` |
 | `OrganizationProjectCommand.addProjectItem` | 3 | `PullRequestGithubService.run`, `OrganizationProjectCommand.fail`, `PullRequestGithubService.describeFailure` | `compliance/src/modules/organization-project/organization-project.command.ts:44` |
 | `OrganizationProjectCommand.readExistingProjectResourceUrls` | 3 | `OrganizationProjectCommand.readJson`, `OrganizationProjectCommand.fail`, `OrganizationProjectCommand.flatMap(…)` | `compliance/src/modules/organization-project/organization-project.command.ts:70` |
@@ -191,28 +209,33 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestBodyService.findEmptySections` | 2 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.filter(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:207` |
 | `PullRequestBodyService.findMissingHeadings` | 2 | `PullRequestBodyService.map(…)`, `PullRequestBodyService.filter(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:243` |
 | `PullRequestBodyService.findOversizedSections` | 2 | `PullRequestBodyService.splitSections`, `PullRequestBodyService.flatMap(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:250` |
+| `PullRequestGithubService.readList` | 2 | `PullRequestGithubService.run`, `PullRequestGithubService.flatMap(…)` | `compliance/src/modules/pull-request/modules/github/pull-request-github.service.ts:54` |
 | `PullRequestLabelsService.readExpectedLabels` | 2 | `PullRequestLabelsService.map(…)`, `PullRequestLabelsService.map(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-labels.service.ts:97` |
-| `PullRequestLabelVocabularyService.map(…)` | 2 | `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure` | `compliance/src/modules/pull-request/modules/labels/pull-request-label-vocabulary.service.ts:40` |
-| `PullRequestLabelVocabularyService.describePlan` | 2 | `PullRequestLabelVocabularyService.map(…)`, `PullRequestLabelVocabularyService.map(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-label-vocabulary.service.ts:58` |
+| `PullRequestLabelVocabularyService.map(…)` | 2 | `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure` | `compliance/src/modules/pull-request/modules/labels/pull-request-label-vocabulary.service.ts:39` |
+| `PullRequestLabelVocabularyService.describePlan` | 2 | `PullRequestLabelVocabularyService.map(…)`, `PullRequestLabelVocabularyService.map(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-label-vocabulary.service.ts:57` |
 | `PullRequestLabelsAssigneesService.checkSourceLabel` | 2 | `PullRequestLabelsAssigneesService.map(…)`, `PullRequestLabelsAssigneesService.map(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-labels-assignees.service.ts:80` |
 | `PullRequestLabelsAssigneesService.checkTypeLabel` | 2 | `PullRequestLabelsAssigneesService.map(…)`, `PullRequestLabelsAssigneesService.filter(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-labels-assignees.service.ts:111` |
 | `PullRequestLabelsAssigneesService.parseTitle` | 2 | `PullRequestLabelsAssigneesService.filter(…)`, `PullRequestLabelsAssigneesService.map(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-labels-assignees.service.ts:209` |
 | `PullRequestDescendantIssuesService.readChildren` | 2 | `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-descendant-issues.service.ts:23` |
 | `PullRequestAncestorIssuesService.readJson` | 2 | `PullRequestGithubService.run`, `PullRequestGithubService.describeFailure` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:108` |
-| `PullRequestAncestorIssuesService.readLinked` | 2 | `PullRequestAncestorIssuesService.readJson(…)`, `PullRequestAncestorIssuesService.readJson` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:136` |
-| `PullRequestAncestorIssuesService.readParent` | 2 | `PullRequestAncestorIssuesService.readJson(…)`, `PullRequestAncestorIssuesService.readJson` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:153` |
-| `PullRequestLinkedIssuesService.checkField` | 2 | `PullRequestLinkedIssuesService.checkField(…)`, `IssueFieldsService.checkField` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:50` |
+| `PullRequestAncestorIssuesService.readParent` | 2 | `PullRequestAncestorIssuesService.readJson(…)`, `PullRequestAncestorIssuesService.readJson` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:136` |
+| `PullRequestLinkedIssuesService.checkField` | 2 | `PullRequestLinkedIssuesService.checkField(…)`, `IssueFieldsService.checkField` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:52` |
 | `PullRequestReleaseSignificanceService.describeScopeFailure` | 2 | `PullRequestReleaseSignificanceService.some(…)`, `PullRequestReleaseSignificanceService.map(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:48` |
 | `PullRequestReleaseSignificanceService.describeSignificanceFailure` | 2 | `PullRequestReleaseSignificanceService.releaseLevelName`, `PullRequestReleaseSignificanceService.find(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:63` |
 | `PullRequestReleaseSignificanceService.readRawCommit` | 2 | `PullRequestReleaseSignificanceService.isRecord`, `PullRequestReleaseSignificanceService.parseConventionalSubject` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:120` |
-| `PullRequestReleaseSignificanceService.parseConventionalSubject` | 2 | `PullRequestReleaseSignificanceService.filter(…)`, `PullRequestReleaseSignificanceService.map(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:203` |
-| `PullRequestReleaseSignificanceService.resolveFromDocument` | 2 | `PullRequestReleaseSignificanceService.describeError`, `PullRequestReleaseSignificanceService.map(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:256` |
-| `PullRequestReleaseSignificanceService.significanceRank` | 2 | `PullRequestReleaseSignificanceService.find(…)`, `PullRequestReleaseSignificanceService.rankOfRelease` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:285` |
-| `PullRequestTitleService.check` | 2 | `PullRequestTitleService.filter(…)`, `PullRequestTitleService.map(…)` | `compliance/src/modules/pull-request/modules/title/pull-request-title.service.ts:23` |
+| `PullRequestReleaseSignificanceService.parseConventionalSubject` | 2 | `PullRequestReleaseSignificanceService.filter(…)`, `PullRequestReleaseSignificanceService.map(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:202` |
+| `PullRequestReleaseSignificanceService.resolveFromCommits` | 2 | `PullRequestReleaseSignificanceService.describeError`, `PullRequestReleaseSignificanceService.map(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:255` |
+| `PullRequestReleaseSignificanceService.significanceRank` | 2 | `PullRequestReleaseSignificanceService.find(…)`, `PullRequestReleaseSignificanceService.rankOfRelease` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:282` |
+| `PullRequestTitleService.checkCommitlint` | 2 | `PullRequestTitleService.filter(…)`, `PullRequestTitleService.map(…)` | `compliance/src/modules/pull-request/modules/title/pull-request-title.service.ts:41` |
+| `PullRequestTitleService.check` | 2 | `PullRequestTitleService.checkCommitlint`, `PullRequestTitleService.checkScopeCount` | `compliance/src/modules/pull-request/modules/title/pull-request-title.service.ts:68` |
 | `PullRequestReportService.describeOutcome` | 2 | `PullRequestReportService.map(…)`, `PullRequestReportService.map(…)` | `compliance/src/modules/pull-request/pull-request-report.service.ts:26` |
 | `PullRequestValidationService.checkMetadata` | 2 | `PullRequestLabelsAssigneesService.parseTitle`, `PullRequestLabelsAssigneesService.checkMetadata` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:82` |
-| `PullRequestValidationService.describeBodyVerdict` | 2 | `PullRequestValidationService.listHeadings`, `PullRequestValidationService.listItems` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:191` |
+| `PullRequestValidationService.describeBodyVerdict` | 2 | `PullRequestValidationService.listHeadings`, `PullRequestValidationService.listItems` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:187` |
 | `PullRequestCommand.load` | 2 | `PullRequestContextService.fetch`, `PullRequestCommand.abort` | `compliance/src/modules/pull-request/pull-request.command.ts:84` |
+| `PullRequestTemplateCommand.checkTargetSync` | 2 | `PullRequestTemplateCommand.extractMarkerContent`, `PullRequestTemplateCommand.wrapInCodeBlock` | `compliance/src/modules/pull-request-template/pull-request-template.command.ts:42` |
+| `PullRequestTemplateCommand.handleWriteMode` | 2 | `PullRequestTemplateCommand.filter(…)`, `PullRequestTemplateCommand.writeTargetSync` | `compliance/src/modules/pull-request-template/pull-request-template.command.ts:114` |
+| `PullRequestTemplateCommand.writeTargetSync` | 2 | `PullRequestTemplateCommand.wrapInCodeBlock`, `PullRequestTemplateCommand.replaceMarkerContent` | `compliance/src/modules/pull-request-template/pull-request-template.command.ts:210` |
+| `PullRequestTemplateCommand.run` | 2 | `PullRequestTemplateCommand.resolveMode`, `PullRequestTemplateCommand.synchronize` | `compliance/src/modules/pull-request-template/pull-request-template.command.ts:234` |
 | `AuditFilesService.parseCodeownersLines` | 1 | `AuditFilesService.parseCodeownersRule` | `compliance/src/modules/audit-files/audit-files.service.ts:172` |
 | `AuditFilesService.sliceJobsSection` | 1 | `AuditFilesService.findIndex(…)` | `compliance/src/modules/audit-files/audit-files.service.ts:221` |
 | `IssueGithubService.addLabel` | 1 | `IssueGithubService.run` | `compliance/src/modules/issue/modules/github/issue-github.service.ts:92` |
@@ -230,8 +253,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `IssueMetadataService.parseFormAnswers` | 1 | `IssueMetadataService.extractFormField` | `compliance/src/modules/issue/modules/metadata/issue-metadata.service.ts:435` |
 | `IssuePlanService.readLabelNames` | 1 | `IssuePlanService.map(…)` | `compliance/src/modules/issue/modules/audit/issue-plan.service.ts:49` |
 | `IssueLabelsService.parseFormAnswers` | 1 | `IssueLabelsService.extractFormField` | `compliance/src/modules/issue/modules/labels/issue-labels.service.ts:83` |
-| `PullRequestBodyLinksService.readExistingIssueNumbers` | 1 | `PullRequestBodyLinksService.flatMap(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body-links.service.ts:38` |
-| `PullRequestBodyLinksService.flatMap(…)` | 1 | `PullRequestBodyLinksService.map(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body-links.service.ts:46` |
+| `PullRequestBodyLinksService.readExistingIssueNumbers` | 1 | `PullRequestBodyLinksService.flatMap(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body-links.service.ts:39` |
+| `PullRequestBodyLinksService.flatMap(…)` | 1 | `PullRequestBodyLinksService.map(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body-links.service.ts:47` |
+| `PullRequestBodyLinksService.extractClosingIssueNumbers` | 1 | `PullRequestBodyLinksService.map(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body-links.service.ts:113` |
 | `PullRequestBodyService.countWords` | 1 | `PullRequestBodyService.filter(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:83` |
 | `PullRequestBodyService.parseBlocks` | 1 | `PullRequestBodyService.filter(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:140` |
 | `PullRequestBodyService.splitSections` | 1 | `PullRequestBodyService.map(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:161` |
@@ -240,28 +264,30 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PullRequestBodyService.flatMap(…)` | 1 | `PullRequestBodyService.countWords` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:253` |
 | `PullRequestBodyService.findUnfilledComments` | 1 | `PullRequestBodyService.filter(…)` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:271` |
 | `PullRequestBodyService.filter(…)` | 1 | `PullRequestBodyService.prefixOf` | `compliance/src/modules/pull-request/modules/body/pull-request-body.service.ts:277` |
-| `PullRequestGithubService.isAvailable` | 1 | `PullRequestGithubService.run` | `compliance/src/modules/pull-request/modules/github/pull-request-github.service.ts:43` |
+| `PullRequestGithubService.isAvailable` | 1 | `PullRequestGithubService.run` | `compliance/src/modules/pull-request/modules/github/pull-request-github.service.ts:46` |
 | `PullRequestLabelsService.isTrackedLabel` | 1 | `PullRequestLabelsService.some(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-labels.service.ts:43` |
 | `PullRequestLabelsService.filter(…)` | 1 | `PullRequestLabelsService.isTrackedLabel` | `compliance/src/modules/pull-request/modules/labels/pull-request-labels.service.ts:76` |
-| `PullRequestLabelVocabularyService.apply` | 1 | `PullRequestLabelVocabularyService.map(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-label-vocabulary.service.ts:36` |
+| `PullRequestLabelVocabularyService.apply` | 1 | `PullRequestLabelVocabularyService.map(…)` | `compliance/src/modules/pull-request/modules/labels/pull-request-label-vocabulary.service.ts:35` |
 | `PullRequestDescendantIssuesService.collect` | 1 | `PullRequestDescendantIssuesService.readChildren` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-descendant-issues.service.ts:63` |
 | `PullRequestAncestorIssuesService.climb` | 1 | `PullRequestAncestorIssuesService.readParent` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:46` |
 | `PullRequestAncestorIssuesService.collectAncestors` | 1 | `PullRequestAncestorIssuesService.climb` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:79` |
 | `PullRequestAncestorIssuesService.format` | 1 | `PullRequestAncestorIssuesService.map(…)` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:103` |
-| `PullRequestAncestorIssuesService.readJson(…)` | 1 | `IssueMetadataService.extractParentIssueNumber` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:166` |
-| `PullRequestLinkedIssuesService.checkField(…)` | 1 | `PullRequestLinkedIssuesService.nameIssue` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:58` |
-| `PullRequestLinkedIssuesService.readHierarchy` | 1 | `PullRequestLinkedIssuesService.readIssue` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:169` |
+| `PullRequestAncestorIssuesService.readJson(…)` | 1 | `IssueMetadataService.extractParentIssueNumber` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-ancestor-issues.service.ts:146` |
+| `PullRequestLinkedIssuesService.checkField(…)` | 1 | `PullRequestLinkedIssuesService.nameIssue` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:60` |
+| `PullRequestLinkedIssuesService.readHierarchy` | 1 | `PullRequestLinkedIssuesService.readIssue` | `compliance/src/modules/pull-request/modules/linked-issues/pull-request-linked-issues.service.ts:171` |
 | `PullRequestReleaseSignificanceService.findCommitScopes` | 1 | `PullRequestReleaseSignificanceService.flatMap(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:79` |
 | `PullRequestReleaseSignificanceService.findMostSignificantCommit` | 1 | `PullRequestReleaseSignificanceService.significanceRank` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:86` |
-| `PullRequestReleaseSignificanceService.releaseLevelName` | 1 | `PullRequestReleaseSignificanceService.find(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:139` |
-| `PullRequestReleaseSignificanceService.readReleaseRules` | 1 | `PullRequestReleaseSignificanceService.find(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:234` |
-| `PullRequestReleaseSignificanceService.map(…)` | 1 | `PullRequestReleaseSignificanceService.readRawCommit` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:275` |
-| `PullRequestReleaseSignificanceService.find(…)` | 1 | `PullRequestReleaseSignificanceService.ruleMatches` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:289` |
+| `PullRequestReleaseSignificanceService.releaseLevelName` | 1 | `PullRequestReleaseSignificanceService.find(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:138` |
+| `PullRequestReleaseSignificanceService.readReleaseRules` | 1 | `PullRequestReleaseSignificanceService.find(…)` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:233` |
+| `PullRequestReleaseSignificanceService.map(…)` | 1 | `PullRequestReleaseSignificanceService.readRawCommit` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:273` |
+| `PullRequestReleaseSignificanceService.find(…)` | 1 | `PullRequestReleaseSignificanceService.ruleMatches` | `compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts:286` |
 | `PullRequestReportService.map(…)` | 1 | `PullRequestReportService.describeOutcome` | `compliance/src/modules/pull-request/pull-request-report.service.ts:63` |
-| `PullRequestValidationService.checkTitle` | 1 | `PullRequestTitleService.check` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:181` |
-| `PullRequestValidationService.listHeadings` | 1 | `PullRequestValidationService.map(…)` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:210` |
-| `PullRequestValidationService.listItems` | 1 | `PullRequestValidationService.map(…)` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:215` |
+| `PullRequestValidationService.checkTitle` | 1 | `PullRequestTitleService.check` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:177` |
+| `PullRequestValidationService.listHeadings` | 1 | `PullRequestValidationService.map(…)` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:206` |
+| `PullRequestValidationService.listItems` | 1 | `PullRequestValidationService.map(…)` | `compliance/src/modules/pull-request/pull-request-validation.service.ts:211` |
 | `PullRequestCommand.abort` | 1 | `PullRequestReportService.publish` | `compliance/src/modules/pull-request/pull-request.command.ts:50` |
+| `PullRequestTemplateCommand.handleCheckMode` | 1 | `PullRequestTemplateCommand.checkTargetSync` | `compliance/src/modules/pull-request-template/pull-request-template.command.ts:91` |
+| `PullRequestTemplateCommand.filter(…)` | 1 | `PullRequestTemplateCommand.checkTargetSync` | `compliance/src/modules/pull-request-template/pull-request-template.command.ts:119` |
 
 </details>
 <!-- callidescope:end -->

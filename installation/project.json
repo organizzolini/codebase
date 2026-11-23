@@ -16,6 +16,26 @@
     "eslint": {},
     "format-code": {},
     "guard-code": {},
+    "installed-skills": {
+      "cache": false,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts installed-skills check"
+        },
+        "force": {
+          "command": "SKILLS_INSTALL_FORCE=1 NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts installed-skills write"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts installed-skills write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Checks or restores the skills `skills-lock.json` declares. `check` lists the locked skills whose `SKILL.md` is absent, and is what `scripts/git/validate-session-skills.sh` runs; `write` restores them, and is what the root `postinstall` runs. Never cached: its result depends on what is on disk and, in `write`, on the network.",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "knip": {},
     "lint-code": {},
     "markdown-lint": {},
@@ -36,6 +56,12 @@
         "remote-cache": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts remote-cache"
         },
+        "session-branch-name": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts session-branch-name"
+        },
+        "session-worktree-name": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts session-worktree-name"
+        },
         "setup": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts setup"
         },
@@ -52,7 +78,7 @@
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts update-reui-skill"
         }
       },
-      "description": "Run one setup command by name: setup, shell-configuration, software, environment-files, dependencies, remote-cache, update-reui-skill, or shared-nx-cache.",
+      "description": "Run one installation command by name: setup, shell-configuration, software, environment-files, dependencies, remote-cache, update-reui-skill, shared-nx-cache, session-branch-name, or session-worktree-name.",
       "executor": "nx:run-commands",
       "options": {
         "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts",
@@ -64,6 +90,23 @@
     "typecheck": {},
     "typecheck-code": {},
     "vitest": {},
+    "vscode-settings": {
+      "cache": false,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts vscode-settings check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts vscode-settings write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Merges `.vscode/settings.json` into the VS Code Machine settings under `/root/.vscode-server`, which persist across devcontainer rebuilds. Uncached because its result depends on a file outside the workspace, and not part of `setup` or any aggregate because only a devcontainer has that path. The devcontainer's `postCreateCommand` runs `write`.",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "yaml-lint": {}
   }
 }

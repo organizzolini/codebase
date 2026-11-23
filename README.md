@@ -199,21 +199,19 @@
 `│   │       └──` **[coinagerie-examples](projects/ic-suite/coinagerie/coinagerie-examples)** - Examples of vocabulary collection features\
 `│   ├──` 🔮 **[affirmancy](projects/affirmancy)** - Generates affirmations with an interactive agent\
 `│   ├──` 🤝 **common/** — Shared utilities across projects\
-`│   │   ├──` **🐘 [persistence](projects/common/persistence)** - Shared database setup, migrations, and testing utilities\
+`│   │   ├──` **🐘 [persistence](projects/common/persistence)** - Shared database setup, migrations, migration SQL extraction, and testing utilities\
 `│   │   ├──` **✉️ [interface](projects/common/interface)** - Shared application interface and pagination utilities\
 `│   │   ├──` **🎨 [presentation](projects/common/presentation)** - Shared user interface components\
 `│   │   ├──` **👀 [observability](projects/common/observability)** - Shared application logging\
 `│   │   └──` **🧪 [testing](projects/common/testing)** - Shared application testing utilities\
 `│   └──` **🧑 [JimmyPaolini](projects/JimmyPaolini)** - Personal GitHub profile site\
 `├──` **🛠️ [configuration](configuration)** - Workspace configuration and quality checks\
-`├──` **🧭 [compliance](compliance)** - Checks repository governance and contribution requirements\
+`├──` **🧭 [compliance](compliance)** - Checks repository governance, contribution requirements, and the pull request template\
 `├──` **📚 [documentation](documentation)** - Refreshes repository documentation\
 `├──` **🏗️ [infrastructure](infrastructure)** - Deployment infrastructure and local services\
-`├──` **🛠️ [installation](installation)** - Sets up developer machines and project dependencies\
-`├──` **🔁 [integration](integration)** - Coordinates continuous integration tasks\
-`├──` **📤 [deployment](deployment)** - Coordinates releases and package publishing\
-`├──` **↔️ [synchronization](synchronization)** - Keeps derived workspace configuration and documentation current\
-`└──` **✅ [validation](validation)** - Checks repository and project invariants
+`├──` **🛠️ [installation](installation)** - Sets up developer machines and project dependencies, and checks each new session\
+`├──` **🔁 [integration](integration)** - Guards a change on its way to `main`: commit and push checks, derived configuration, and pull request checks\
+`└──` **📤 [deployment](deployment)** - Coordinates releases and package publishing\
 
 ## 📖 Documentation
 
@@ -248,7 +246,7 @@ Other important files include [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](.githu
 
 ## 👔 Conformetry
 
-Template-driven code generation and conformance validation, templates synced from [configuration/ic-suite/conformetry.config.ts](configuration/ic-suite/conformetry.config.ts) by `nx run synchronization:conformetry-generators:write`.
+Template-driven code generation and conformance validation, templates synced from [configuration/ic-suite/conformetry.config.ts](configuration/ic-suite/conformetry.config.ts) by `nx run integration:conformetry-generators:write`.
 
 <!-- conformetry:start -->
 | Template | Description |

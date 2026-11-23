@@ -37,9 +37,9 @@
   ],
   "entry": [
     "**/scripts/**/*.{js,mjs,ts,sh}",
-    "{projects/**,compliance,documentation,installation,integration,deployment,synchronization,validation}/src/index.ts",
+    "{projects/**,compliance,documentation,installation,integration,deployment}/src/index.ts",
     // The one file each application bootstraps from, named for its project.
-    "{projects/**,compliance,documentation,installation,integration,deployment,synchronization,validation}/src/*.main.ts",
+    "{projects/**,compliance,documentation,installation,integration,deployment}/src/*.main.ts",
     // Vendored shadcn and ReUI source in components, written by `shadcn add`
     // and mostly not imported by anything yet. Each file is an entry point so
     // none reads as unused, and the packages it imports still count as used —
@@ -47,19 +47,19 @@
     "projects/common/presentation/src/components/**/*.{ts,tsx}",
     "projects/common/presentation/src/hooks/**/*.{ts,tsx}",
     "projects/common/presentation/src/lib/**/*.ts",
-    "{projects/**,compliance,documentation,installation,integration,deployment,synchronization,validation}/src/modules/**/*.module.ts",
+    "{projects/**,compliance,documentation,installation,integration,deployment}/src/modules/**/*.module.ts",
     // Nx resolves these from executors.json and generators.json, which is not
     // an import, so nothing reaches them through the module graph.
-    "{projects/**,compliance,documentation,installation,integration,deployment,synchronization,validation}/src/executors/**/executor.ts",
-    "{projects/**,compliance,documentation,installation,integration,deployment,synchronization,validation}/src/generators/**/generator.ts",
-    "{projects/**,compliance,documentation,installation,integration,deployment,synchronization,validation}/src/generators.ts",
-    "{projects/**,compliance,documentation,installation,integration,deployment,synchronization,validation}/src/*.repl.ts",
+    "{projects/**,compliance,documentation,installation,integration,deployment}/src/executors/**/executor.ts",
+    "{projects/**,compliance,documentation,installation,integration,deployment}/src/generators/**/generator.ts",
+    "{projects/**,compliance,documentation,installation,integration,deployment}/src/generators.ts",
+    "{projects/**,compliance,documentation,installation,integration,deployment}/src/*.repl.ts",
     // A worker thread's entry point is spawned by URL, never imported.
-    "{projects/**,compliance,documentation,installation,integration,deployment,synchronization,validation}/src/worker.ts",
+    "{projects/**,compliance,documentation,installation,integration,deployment}/src/worker.ts",
     // So is a browser Web Worker's, which the bundler emits from the
     // `new Worker(new URL(…))` that starts it.
     "projects/**/src/**/*.worker.ts",
-    "{projects/**,compliance,documentation,installation,integration,deployment,synchronization,validation}/testing/**/*.ts",
+    "{projects/**,compliance,documentation,installation,integration,deployment}/testing/**/*.ts",
     // conformetry-examples: every example is read and run rather than imported,
     // so nothing in the module graph reaches one. knip names the same paths in
     // its own entry list for the same reason.
@@ -67,7 +67,7 @@
     // Each project's tool configurations sit in its `configuration` folder, and
     // every tool reads its own by the path it is given, never by import, so
     // nothing in the module graph reaches one. The root file writes the root glossary.
-    "{projects/**,compliance,documentation,infrastructure,installation,integration,deployment,synchronization,validation}/configuration/*.config.{cjs,mts,ts}",
+    "{projects/**,compliance,documentation,infrastructure,installation,integration,deployment}/configuration/*.config.{cjs,mts,ts}",
     "coinagerie.config.ts",
     // Read by the codometer command line, one per documented behavior, and
     // reached by nothing in the module graph for the same reason.

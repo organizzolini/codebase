@@ -63,6 +63,10 @@ describe(DependenciesCommand, () => {
   beforeEach(() => {
     workspace = createTemporaryWorkspace();
     enterWorkspace(workspace);
+    // Nx loads the root `.env` into the task environment, where a credential
+    // can be defined but empty. Unset them so each test states its own.
+    vi.stubEnv("TF_VAR_linode_token", undefined);
+    vi.stubEnv("TF_VAR_linode_kubernetes_engine_cluster_id", undefined);
     report = captureReport();
   });
 
@@ -106,6 +110,21 @@ describe(DependenciesCommand, () => {
       "🔑 Setting up kubeconfig...",
       "⚠️  Skipping kubeconfig: set TF_VAR_linode_token and TF_VAR_linode_kubernetes_engine_cluster_id in .env",
     ]);
+  });
+
+  it("skips kubeconfig when the credentials are set but empty", async () => {
+    expect.hasAssertions();
+
+    vi.stubEnv("TF_VAR_linode_token", "");
+    vi.stubEnv("TF_VAR_linode_kubernetes_engine_cluster_id", "");
+    const { command: subject, commands } = await createCommand();
+
+    await subject.run();
+
+    expect(commands).toStrictEqual(INSTALL_STEPS);
+    expect(report.at(-1)).toBe(
+      "⚠️  Skipping kubeconfig: set TF_VAR_linode_token and TF_VAR_linode_kubernetes_engine_cluster_id in .env",
+    );
   });
 
   it("imports the cluster and writes kubeconfig from the root .env credentials", async () => {
