@@ -53,6 +53,7 @@ src/
     postgresql-import/              # The postgresql-import command: options, plan, --clean (no prompt), dry run
     postgresql-utilities/           # pg_dump, pg_restore, and truncate behind one service
     render/                         # RenderService: connects, reads, draws, and writes for every drawing command
+      modules/render-command/       # RenderCommand: the flags and run flow every drawing command shares
       modules/render-entities/      # @DirectedAcyclicGraph, @Graph and the endpoint decorators; globs to entity classes; the @Tree pick
       modules/render-options/       # Options every drawing command shares: connection, filter, sort, paging, caps, outputs
       modules/render-edges/         # Reads an edge table, finds roots and cycles, then pages and caps the edges

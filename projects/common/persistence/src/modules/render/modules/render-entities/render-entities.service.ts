@@ -29,6 +29,7 @@ import type {
   GraphEdgeTarget,
   GraphEntity,
   GraphTreePick,
+  GraphTreeTarget,
 } from "./render-entities.types";
 import type { DataSource } from "typeorm";
 
@@ -136,6 +137,23 @@ export class RenderEntitiesService {
       entities,
       globs: plan.entities,
       kinds,
+      namingStrategy: dataSource.namingStrategy,
+      table: plan.table,
+    });
+    this.assertColumns(picked, plan.filters, plan.sorts);
+    return { dataSource, picked };
+  }
+
+  /**
+   * Imports the entities, picks the `@Tree` entity to draw, and checks its
+   * columns, before any connection opens.
+   */
+  async prepareTree(plan: GraphPlan): Promise<GraphTreeTarget> {
+    const entities = await this.load(plan.entities);
+    const dataSource = this.createDataSource(plan.connection, entities);
+    const picked = this.pickTree({
+      entities,
+      globs: plan.entities,
       namingStrategy: dataSource.namingStrategy,
       table: plan.table,
     });

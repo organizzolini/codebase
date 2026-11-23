@@ -1,23 +1,15 @@
 import { Injectable } from "@nestjs/common";
-import { Command, CommandRunner, Option } from "nest-commander";
+import { Command, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { graphDrawDryRunMessages } from "../../render.constants";
 import { RenderService } from "../../render.service";
+import { RenderCommand } from "../render-command/render-command.command";
 import { RenderEdgesService } from "../render-edges/render-edges.service";
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
-import { graphOutputDryRunMessages } from "../render-options/render-options-outputs.utilities";
 import {
-  RENDER_DRY_RUN_OPTION,
-  RENDER_ENTITIES_OPTION,
   RENDER_FILTER_OPTION,
-  RENDER_OUTPUT_JSON_OPTION,
-  RENDER_OUTPUT_MARKDOWN_OPTION,
-  RENDER_OVERWRITE_OPTION,
-  RENDER_SCHEMA_OPTION,
   RENDER_SORT_OPTION,
-  RENDER_SOURCE_URI_OPTION,
   RENDER_TRUNCATE_BREADTH_OPTION,
   RENDER_TRUNCATE_DEPTH_OPTION,
 } from "../render-options/render-options.constants";
@@ -28,7 +20,7 @@ import {
   RENDER_DIRECTED_ACYCLIC_GRAPH_DATA_DIRECTION,
 } from "./render-directed-acyclic-graph-data.constants";
 
-import type { GraphCommandOptions } from "../render-options/render-options.types";
+import type { RenderCommandEntity } from "../render-command/render-command.types";
 
 /**
  * Reads a `@DirectedAcyclicGraph` entity's edges from a database and prints them as a Mermaid
@@ -41,39 +33,38 @@ import type { GraphCommandOptions } from "../render-options/render-options.types
   name: "render-directed-acyclic-graph-data",
 })
 @Injectable()
-export class RenderDirectedAcyclicGraphDataCommand extends CommandRunner {
+export class RenderDirectedAcyclicGraphDataCommand extends RenderCommand {
   // 🏗 Dependency Injection
 
   constructor(
-    private readonly logger: LoggerService,
-    private readonly renderEdges: RenderEdgesService,
-    private readonly renderEntities: RenderEntitiesService,
-    private readonly renderOptions: RenderOptionsService,
-    private readonly renderService: RenderService,
+    logger: LoggerService,
+    protected readonly reader: RenderEdgesService,
+    renderEntities: RenderEntitiesService,
+    renderOptions: RenderOptionsService,
+    renderService: RenderService,
   ) {
-    super();
-    this.logger.setContext(RenderDirectedAcyclicGraphDataCommand.name);
+    super(logger, renderEntities, renderOptions, renderService);
   }
 
   // 🔐 Private Fields
 
   // 🔑 Public Fields
 
+  protected readonly decorator = "@DirectedAcyclicGraph";
+
+  protected readonly direction = RENDER_DIRECTED_ACYCLIC_GRAPH_DATA_DIRECTION;
+
+  protected readonly entity: RenderCommandEntity = {
+    command: "render-directed-acyclic-graph-data",
+    kind: "edge",
+    kinds: ["directed-acyclic-graph"],
+  };
+
   // 🔏 Private Methods
 
+  // 🔧 Protected Methods
+
   // 🌎 Public Methods
-
-  /** Parses `--dry-run`, which checks the options and connects to no database. */
-  @Option(RENDER_DRY_RUN_OPTION)
-  parseDryRun(): boolean {
-    return true;
-  }
-
-  /** Collects each repeated `--entities` glob into one list. */
-  @Option(RENDER_ENTITIES_OPTION)
-  parseEntities(value: string, previous: string[] = []): string[] {
-    return [...previous, value];
-  }
 
   /** Collects each repeated `--filter` into one list, in the order given. */
   @Option(RENDER_FILTER_OPTION)
@@ -91,50 +82,10 @@ export class RenderDirectedAcyclicGraphDataCommand extends CommandRunner {
     return value;
   }
 
-  /** Parses `--output-json`, the file the normalized graph is written to. */
-  @Option(RENDER_OUTPUT_JSON_OPTION)
-  parseOutputJson(value: string): string {
-    return value;
-  }
-
-  /** Parses `--output-markdown`, the file the diagram is written to. */
-  @Option(RENDER_OUTPUT_MARKDOWN_OPTION)
-  parseOutputMarkdown(value: string): string {
-    return value;
-  }
-
-  /** Parses `--overwrite`, which lets an output file that exists be replaced. */
-  @Option(RENDER_OVERWRITE_OPTION)
-  parseOverwrite(): boolean {
-    return true;
-  }
-
-  /** Parses `--page`, the page of `--limit` roots to draw, from 1. */
-  @Option({
-    description:
-      "Page of --limit roots to draw, from 1; repeat for several, each its own diagram; needs --limit. A page past the last root draws nothing and warns. Without it, every page is drawn. Positive integer",
-    flags: "--page <n>",
-  })
-  parsePage(value: string, previous: string[] = []): string[] {
-    return [...previous, value];
-  }
-
-  /** Parses `--schema`, the schema the entity tables live in. */
-  @Option(RENDER_SCHEMA_OPTION)
-  parseSchema(value: string): string {
-    return value;
-  }
-
   /** Collects each repeated `--sort` into one list of keys, applied in the order given. */
   @Option(RENDER_SORT_OPTION)
   parseSort(value: string, previous: string[] = []): string[] {
     return [...previous, value];
-  }
-
-  /** Parses `--source-uri`, the database to read from. */
-  @Option(RENDER_SOURCE_URI_OPTION)
-  parseSourceUri(value: string): string {
-    return value;
   }
 
   /** Parses `--table`, the table to draw when the entities hold several directed acyclic graphs. */
@@ -157,48 +108,5 @@ export class RenderDirectedAcyclicGraphDataCommand extends CommandRunner {
   @Option(RENDER_TRUNCATE_DEPTH_OPTION)
   parseTruncateDepth(value: string): string {
     return value;
-  }
-
-  /**
-   * Validates the options, then draws the picked directed acyclic graph. `--dry-run` stops after
-   * the entity files resolve, before any connection opens.
-   */
-  async run(
-    _passedParameters: string[],
-    options: GraphCommandOptions,
-  ): Promise<void> {
-    const plan = this.renderOptions.plan(options);
-    if (options.dryRun === true) {
-      const files = this.renderEntities.resolveFiles(plan.entities);
-      const lines = [
-        ...graphDrawDryRunMessages(plan, files, "@DirectedAcyclicGraph"),
-        ...graphOutputDryRunMessages(plan.outputs),
-      ];
-      for (const line of lines) {
-        this.logger.log(line);
-      }
-      return;
-    }
-    const { dataSource, picked } = await this.renderEntities.prepareEdge(plan, {
-      command: "render-directed-acyclic-graph-data",
-      kinds: ["directed-acyclic-graph"],
-    });
-    const edge = this.renderEntities.describeEdge(picked);
-    const written = await this.renderService.render(plan, {
-      dataSource,
-      direction: RENDER_DIRECTED_ACYCLIC_GRAPH_DATA_DIRECTION,
-      read: async (paging) =>
-        this.renderEdges.load(dataSource, dataSource.getMetadata(picked), {
-          edge,
-          filters: plan.filters,
-          paging,
-          sorts: plan.sorts,
-          truncateBreadth: plan.truncateBreadth,
-          truncateDepth: plan.truncateDepth,
-        }),
-    });
-    for (const line of written) {
-      this.logger.log(line);
-    }
   }
 }

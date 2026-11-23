@@ -1,10 +1,8 @@
 // 🏷️ Types
 
-import type { GraphEntity } from "../render-entities/render-entities.types";
 import type { GraphTreeTruncation } from "../render-mermaid/render-mermaid.types";
 import type {
   GraphLimits,
-  GraphPlan,
   GraphReadOptions,
 } from "../render-options/render-options.types";
 import type { DataSource, EntityMetadata } from "typeorm";
@@ -79,16 +77,4 @@ export interface GraphTreeWalk {
 
   /** Each node whose children a cap hid, in walk order. */
   readonly truncations: readonly GraphTreeTruncation[];
-}
-
-/** The plan `render-tree-data` runs, which is a graph plan. */
-export type RenderTreeDataPlan = GraphPlan;
-
-/** The connection and picked entity a run reads through. */
-export interface RenderTreeDataTarget {
-  /** The connection the tree is read through. */
-  readonly dataSource: DataSource;
-
-  /** The `@Tree` entity class the run draws. */
-  readonly picked: GraphEntity;
 }

@@ -125,3 +125,12 @@ export interface GraphTreePick {
   /** The table `--table` names, or `undefined` to pick the only tree. */
   readonly table: string | undefined;
 }
+
+/** The connection and picked `@Tree` entity a tree run reads through. */
+export interface GraphTreeTarget {
+  /** The connection the tree is read through, not yet open. */
+  readonly dataSource: DataSource;
+
+  /** The `@Tree` entity class the run draws. */
+  readonly picked: GraphEntity;
+}

@@ -61,6 +61,13 @@ export const RENDER_OVERWRITE_OPTION = {
   flags: "--overwrite",
 } as const;
 
+/** The flag and help text of `--page`. */
+export const RENDER_PAGE_OPTION = {
+  description:
+    "Page of --limit roots to draw, from 1; repeat for several, each its own diagram; needs --limit. A page past the last root draws nothing and warns. Without it, every page is drawn. Positive integer",
+  flags: "--page <n>",
+} as const;
+
 /** The flag and help text of `--schema`. */
 export const RENDER_SCHEMA_OPTION = {
   description: "Schema the entity tables live in; required",
