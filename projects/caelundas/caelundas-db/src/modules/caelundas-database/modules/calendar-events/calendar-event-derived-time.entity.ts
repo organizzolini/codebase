@@ -1,35 +1,10 @@
 import { ViewColumn, ViewEntity } from "typeorm";
 
-import type { ColumnType } from "typeorm";
-
 /** Event start, a wall-clock timestamp in the event's zone. */
 const LOCAL_START = `(e."start" at time zone e.timezone)`;
 
 /** UTC wall-clock start; every derived time but duration reads it. */
 const UTC_START = `(e."start" at time zone 'UTC')`;
-
-/** TypeORM retains these extra options for the ERD generator. */
-interface ViewColumnErdOptions {
-  name?: string;
-  nullable?: boolean;
-  type: ColumnType;
-}
-
-const INTEGER_VIEW_COLUMN: ViewColumnErdOptions = { type: "integer" };
-const NULLABLE_TEXT_VIEW_COLUMN: ViewColumnErdOptions = {
-  nullable: true,
-  type: "text",
-};
-const NULLABLE_UUID_VIEW_COLUMN: ViewColumnErdOptions = {
-  nullable: true,
-  type: "uuid",
-};
-const NUMERIC_VIEW_COLUMN: ViewColumnErdOptions = { type: "numeric" };
-const TEXT_VIEW_COLUMN: ViewColumnErdOptions = { type: "text" };
-const TIMESTAMPTZ_VIEW_COLUMN: ViewColumnErdOptions = {
-  type: "timestamptz",
-};
-const UUID_VIEW_COLUMN: ViewColumnErdOptions = { type: "uuid" };
 
 /**
  * One row of the `calendar_event_derived_times` view: an event with times derived from its start and end. Plain view, so no refresh.
@@ -65,78 +40,78 @@ from calendar_events as e`,
   name: "calendar_event_derived_times",
 })
 export class CalendarEventDerivedTime {
-  @ViewColumn(NULLABLE_TEXT_VIEW_COLUMN)
+  @ViewColumn()
   color!: null | string;
 
-  @ViewColumn(TIMESTAMPTZ_VIEW_COLUMN)
+  @ViewColumn()
   createdAt!: Date;
 
-  @ViewColumn(NULLABLE_UUID_VIEW_COLUMN)
+  @ViewColumn()
   createdBy!: null | string;
 
-  @ViewColumn(TEXT_VIEW_COLUMN)
+  @ViewColumn()
   description!: string;
 
-  @ViewColumn(INTEGER_VIEW_COLUMN)
+  @ViewColumn()
   durationMinutes!: number;
 
-  @ViewColumn(TIMESTAMPTZ_VIEW_COLUMN)
+  @ViewColumn()
   end!: Date;
 
-  @ViewColumn(UUID_VIEW_COLUMN)
+  @ViewColumn()
   id!: string;
 
-  @ViewColumn(NUMERIC_VIEW_COLUMN)
+  @ViewColumn()
   latitude!: string;
 
-  @ViewColumn(NULLABLE_TEXT_VIEW_COLUMN)
+  @ViewColumn()
   location!: null | string;
 
-  @ViewColumn(NUMERIC_VIEW_COLUMN)
+  @ViewColumn()
   longitude!: string;
 
-  @ViewColumn(TIMESTAMPTZ_VIEW_COLUMN)
+  @ViewColumn()
   start!: Date;
 
-  @ViewColumn(TEXT_VIEW_COLUMN)
+  @ViewColumn()
   startDay!: string;
 
-  @ViewColumn(INTEGER_VIEW_COLUMN)
+  @ViewColumn()
   startHour!: number;
 
-  @ViewColumn(TEXT_VIEW_COLUMN)
+  @ViewColumn()
   startLocalDay!: string;
 
-  @ViewColumn(INTEGER_VIEW_COLUMN)
+  @ViewColumn()
   startLocalHour!: number;
 
-  @ViewColumn(INTEGER_VIEW_COLUMN)
+  @ViewColumn()
   startMonth!: number;
 
-  @ViewColumn(INTEGER_VIEW_COLUMN)
+  @ViewColumn()
   startQuarter!: number;
 
-  @ViewColumn(INTEGER_VIEW_COLUMN)
+  @ViewColumn()
   startWeek!: number;
 
-  @ViewColumn(INTEGER_VIEW_COLUMN)
+  @ViewColumn()
   startWeekday!: number;
 
-  @ViewColumn(INTEGER_VIEW_COLUMN)
+  @ViewColumn()
   startYear!: number;
 
-  @ViewColumn(TEXT_VIEW_COLUMN)
+  @ViewColumn()
   summary!: string;
 
-  @ViewColumn(TEXT_VIEW_COLUMN)
+  @ViewColumn()
   temporality!: "Duration" | "Instant";
 
-  @ViewColumn(TEXT_VIEW_COLUMN)
+  @ViewColumn()
   timezone!: string;
 
-  @ViewColumn(TIMESTAMPTZ_VIEW_COLUMN)
+  @ViewColumn()
   updatedAt!: Date;
 
-  @ViewColumn(NULLABLE_UUID_VIEW_COLUMN)
+  @ViewColumn()
   updatedBy!: null | string;
 }
