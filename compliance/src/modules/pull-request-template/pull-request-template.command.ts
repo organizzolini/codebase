@@ -202,8 +202,6 @@ export class PullRequestTemplateCommand extends CommandRunner {
     return `\`\`\`markdown\n${content}\n\`\`\``;
   }
 
-  // 🌎 Public Methods
-
   /**
    * Writes the PR template code block into a target file between its marker comments.
    */
@@ -227,6 +225,8 @@ export class PullRequestTemplateCommand extends CommandRunner {
       target: targetName,
     });
   }
+
+  // 🌎 Public Methods
 
   /**
    * Runs the pull-request-template sync command in check or write mode.

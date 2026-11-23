@@ -4,9 +4,11 @@
 
 **Type**: Node.js CLI application (NestJS + `nest-commander`)
 
-**Purpose**: The pull request end of a change's way to `main`. Owns Continuous
-Compliance commands that read or update GitHub issue and pull request metadata,
-enforce repository governance, and own the pull request template and its derived
+**Purpose**: <!-- Briefly describe the specific purpose of this CLI application -->
+
+The pull request end of a change's way to `main`. Owns Continuous Compliance
+commands that read or update GitHub issue and pull request metadata, enforce
+repository governance, and own the pull request template and its derived
 copies. The commit and push checks live in `integration`.
 
 ### Run Locally
