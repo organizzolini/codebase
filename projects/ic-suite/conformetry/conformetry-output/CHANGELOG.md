@@ -1,3 +1,10 @@
+## 0.0.95 (2026-11-23)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-languages to 0.0.95
+- Updated conformetry-core to 0.0.94
+
 ## 0.0.94 (2026-11-23)
 
 ### 🚀 Features

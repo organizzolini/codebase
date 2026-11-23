@@ -82,18 +82,18 @@ Everything after Node exists lives in [`installation`](../installation/AGENTS.md
 
 ### VS Code extensions and settings
 
-> Implemented in [synchronization](../synchronization), not as scripts.
+> Implemented in [integration](../integration) and [installation](../installation), not as scripts.
 
 **Purpose:** Keep `.vscode/extensions.json` and both devcontainer configurations' extension lists in step, and merge `.vscode/settings.json` into the VS Code Machine settings inside a devcontainer.
 
 ```bash
-nx run synchronization:vscode-extensions:check    # Validate both configs are in sync (default)
-nx run synchronization:vscode-extensions:write    # Update both devcontainer.json files
-nx run synchronization:vscode-settings:check      # Machine settings hold every workspace key
-nx run synchronization:vscode-settings:write      # Merge workspace settings into Machine settings
+nx run integration:vscode-extensions:check    # Validate both configs are in sync (default)
+nx run integration:vscode-extensions:write    # Update both devcontainer.json files
+nx run installation:vscode-settings:check     # Machine settings hold every workspace key
+nx run installation:vscode-settings:write     # Merge workspace settings into Machine settings
 ```
 
-`vscode-extensions` runs in `guard-code`. `vscode-settings` only makes sense inside a devcontainer, so it is left out of `synchronization:start` and run by `post-create-command.sh`.
+`vscode-extensions` runs in `guard-code`. `vscode-settings` only makes sense inside a devcontainer, so it is not part of `installation:start:setup` and is run by `post-create-command.sh`.
 
 ### sync-devcontainer-configuration.ts
 
@@ -367,7 +367,7 @@ pnpm exec nx run installation:start:dependencies
 Check if lockfile needs updating:
 
 ```bash
-pnpm exec nx run validation:lockfile
+pnpm exec nx run integration:lockfile
 ```
 
 If out of sync:
@@ -457,7 +457,7 @@ pnpm install
 Verify sync:
 
 ```bash
-pnpm exec nx run validation:lockfile
+pnpm exec nx run integration:lockfile
 ```
 
 ## Contributing

@@ -39,7 +39,6 @@ suffixes do not push the queued commit subject over the header limit.
 
 **Name at most 3 scopes.** Every scope adds its name plus a comma to the header,
 and a long list is what pushes a title over 128 characters: a six-scope title
-(`feat(codometer,synchronization,integration,configuration,infrastructure,documentation): …`)
 reached 135 characters and failed commitlint. The Comply check
 (`compliance pull-request`) rejects a fourth scope outright, even when the
 header would fit. When the commits span more, name the three that carry most of
@@ -110,8 +109,6 @@ not every one. Keep the labels in step: one `scope:*` label per scope named.
 | `reporting` | Pull request change report generation and the packages that diff and render it |
 | `scripts` | Shell and TypeScript scripts in scripts/ (sync, setup, utilities) |
 | `testing` | Vitest configuration, shared test utilities, and coverage setup |
-| `synchronization` | Commands that reconcile codebase files and generated repository configuration |
-| `validation` | Checks and gates for codebase and project invariants |
 
 <!-- scopes-end -->
 
@@ -149,7 +146,7 @@ Write clear, comprehensive descriptions that help reviewers understand changes. 
 ```markdown
 ## 🌰 Summary
 
-<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: the title must name at least one scope its commits use, so release-significance passes. -->
+<!-- One plain paragraph of at most 48 words, readable at a glance: what this PR does and why. Title reminder: the title's scope list must share at least one scope with each commit, so release-significance passes. -->
 
 ## 📝 Details
 

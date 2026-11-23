@@ -11,7 +11,10 @@ import type { ReactNode } from "react";
  */
 export const Route = createRootRoute({
   head: () => ({
-    links: [{ href: applicationCss, rel: "stylesheet" }],
+    links: [
+      { href: "/favicon.svg", rel: "icon", type: "image/svg+xml" },
+      { href: applicationCss, rel: "stylesheet" },
+    ],
     meta: [
       { charSet: "utf8" },
       { content: "width=device-width, initial-scale=1", name: "viewport" },

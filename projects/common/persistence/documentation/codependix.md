@@ -14,7 +14,9 @@ graph LR
   lexico_api["lexico-api"]
   lexico_cli["lexico-cli"]
   lexico_db["lexico-db"]
+  meanderaw_api["meanderaw-api"]
   meanderaw_cli["meanderaw-cli"]
+  meanderaw_db["meanderaw-db"]
   observability["observability"]
   persistence["persistence"]
   testing["testing"]
@@ -24,7 +26,9 @@ graph LR
   lexico_api --> persistence
   lexico_cli --> persistence
   lexico_db --> persistence
+  meanderaw_api --> persistence
   meanderaw_cli --> persistence
+  meanderaw_db --> persistence
   persistence --> configuration
   persistence --> observability
   persistence --> testing
@@ -45,9 +49,11 @@ flowchart LR
   PostgresqlImportModule
   PostgresqlModule
   PostgresqlUtilitiesModule
+  TypeormMigrationSqlModule
   MainModule --> DiscoveryModule
   MainModule --> PostgresqlExportModule
   MainModule --> PostgresqlImportModule
+  MainModule --> TypeormMigrationSqlModule
   PostgresqlExportModule --> PostgresqlUtilitiesModule
   PostgresqlImportModule --> PostgresqlUtilitiesModule
 ```
@@ -120,6 +126,14 @@ graph LR
   file_src_modules_postgresql_postgresql_types_ts["src/modules/postgresql/postgresql.types.ts"]
   file_src_modules_postgresql_postgresql_utilities_ts["src/modules/postgresql/postgresql.utilities.ts"]
   file_src_modules_postgresql_postgresql_utilities_unit_test_ts["src/modules/postgresql/postgresql.utilities.unit.test.ts"]
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts["src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts"]
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_unit_test_ts["src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.unit.test.ts"]
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts["src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts"]
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_unit_test_ts["src/modules/typeorm-migration-sql/typeorm-migration-sql.command.unit.test.ts"]
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_constants_ts["src/modules/typeorm-migration-sql/typeorm-migration-sql.constants.ts"]
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts["src/modules/typeorm-migration-sql/typeorm-migration-sql.module.ts"]
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_unit_test_ts["src/modules/typeorm-migration-sql/typeorm-migration-sql.module.unit.test.ts"]
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_types_ts["src/modules/typeorm-migration-sql/typeorm-migration-sql.types.ts"]
   file_src_persistence_main_end_to_end_test_ts["src/persistence.main.end-to-end.test.ts"]
   file_src_persistence_main_ts["src/persistence.main.ts"]
   file_src_persistence_main_unit_test_ts["src/persistence.main.unit.test.ts"]
@@ -280,9 +294,21 @@ graph LR
   file_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_src_modules_postgresql_postgresql_constants_ts
   file_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_src_modules_postgresql_postgresql_types_ts
   file_src_modules_postgresql_postgresql_utilities_unit_test_ts --> file_src_modules_postgresql_postgresql_utilities_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_constants_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_types_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_unit_test_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_types_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_unit_test_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_unit_test_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_extractor_service_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_unit_test_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_command_ts
+  file_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_unit_test_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts
   file_src_persistence_main_ts --> file_src_persistence_module_ts
   file_src_persistence_module_ts --> file_src_modules_postgresql_export_postgresql_export_module_ts
   file_src_persistence_module_ts --> file_src_modules_postgresql_import_postgresql_import_module_ts
+  file_src_persistence_module_ts --> file_src_modules_typeorm_migration_sql_typeorm_migration_sql_module_ts
   file_src_persistence_module_unit_test_ts --> file_src_persistence_module_ts
   file_src_persistence_module_unit_test_ts --> file_testing_command_line_runner_ts
   file_src_persistence_repl_ts --> file_src_persistence_module_ts

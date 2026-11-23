@@ -148,8 +148,12 @@ conventional paths from:
 | `nx run <project>:migration:extract-sql-all`    | Extracts every migration's SQL                                  |
 
 Migrations never run on application start; running them is its own step.
-SQL extraction now runs through the `synchronization` command:
-`extract-typeorm-migration-sql`.
+The extraction runs through this project's `typeorm-migration-sql` command, which
+the two `extract-sql-*` targets run in `write` mode. Run it alone with
+`nx run persistence:typeorm-migration-sql`: `check` by default reports drift, comparing
+normalized SQL because the committed files are lint-fixed and formatted, and
+`write` rewrites each migration's sibling `-up.sql` and `-down.sql` files. The
+`extract-typeorm-migration-sql` alias still works.
 
 The extracted SQL is linted only once the project opts in to it as well: a
 `framework:typeorm` tag, and three more empty entries beside `migration`:

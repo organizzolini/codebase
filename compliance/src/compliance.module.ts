@@ -8,6 +8,7 @@ import { environmentSchema } from "./compliance.constants";
 import { AuditFilesModule } from "./modules/audit-files/audit-files.module";
 import { IssueModule } from "./modules/issue/issue.module";
 import { OrganizationProjectModule } from "./modules/organization-project/organization-project.module";
+import { PullRequestTemplateModule } from "./modules/pull-request-template/pull-request-template.module";
 import { PullRequestModule } from "./modules/pull-request/pull-request.module";
 
 /**
@@ -27,6 +28,7 @@ import { PullRequestModule } from "./modules/pull-request/pull-request.module";
     LoggerModule,
     OrganizationProjectModule,
     PullRequestModule,
+    PullRequestTemplateModule,
   ],
 })
 export class MainModule {}

@@ -36,4 +36,4 @@ The devcontainer lifecycle scripts are not part of this floor. They belong to th
 - A new script under `scripts/` needs a reason from this table. Without one, it is a command.
 - Removing an entry from the floor needs a new ADR that supersedes this one.
 - The task-database steps in `scripts/nx/` are not on the floor. They stay shell only until a CI run shows that moving them after `pnpm install` loses no cache hits.
-- The `validation` project's guidance links here instead of restating the rule.
+- The session-hook guidance in `installation` links here instead of restating the rule.

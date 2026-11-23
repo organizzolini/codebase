@@ -6,13 +6,13 @@ Call stacks traced through `projects/common/persistence`, deepest first. Each fr
 
 | Measure | Value |
 | --- | --- |
-| Callables | 128 |
-| Files | 34 |
-| Calls traced | 134 |
-| Call stacks | 6 |
+| Callables | 171 |
+| Files | 39 |
+| Calls traced | 170 |
+| Call stacks | 9 |
 | Deepest stack | 7 |
 | Stacks through recursion | 0 |
-| Unfollowable calls | 19 |
+| Unfollowable calls | 20 |
 
 ### Limits
 
@@ -41,7 +41,25 @@ What this project is judged against, as declared in its own `callidescope.config
             └─> PostgresClientError.constructor({ code, detail, tool }: PostgresClientFailure): PostgresClientError [projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.constants.ts:44]
 ```
 
-**2. `PostgresqlExportCommand.run`** — depth ≥ 6 · decorated-method
+**2. `TypeormMigrationSqlCommand.run`** — depth 7 · decorated-method
+
+```text
+🚀 TypeormMigrationSqlCommand.run(…): Promise<void> [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:108]
+   ↳ Runs the typeorm-migration-sql sync command in check or write mode.
+  └─> TypeormMigrationSqlCommand.synchronize(…): Promise<boolean> [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:120]
+     ↳ Checks or writes extracted migration SQL and reports success without exiting.
+    └─> TypeormMigrationSqlExtractorService.synchronize(…): Promise<boolean> [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:398]
+       ↳ Synchronizes extracted SQL in check or write mode.
+      └─> TypeormMigrationSqlExtractorService.targets(…): Promise<TypeormMigrationProjectTarget[]> [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:453]
+         ↳ Every configured migration target in the workspace or one explicit target.
+        └─> TypeormMigrationSqlExtractorService.projectJsonPaths(): Promise<string[]> [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:170]
+           ↳ Every project.json one or two levels under the workspace projects/ directory.
+          └─> TypeormMigrationSqlExtractorService.childDirectories(directoryPath: string): Promise<string[]> [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:47]
+             ↳ Full paths of the directories directly inside one directory.
+            └─> TypeormMigrationSqlExtractorService.map(…)(entry: Dirent<string>): string [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:51]
+```
+
+**3. `PostgresqlExportCommand.run`** — depth ≥ 6 · decorated-method
 
 ```text
 🚀 PostgresqlExportCommand.run(…): Promise<void> [projects/common/persistence/src/modules/postgresql-export/postgresql-export.command.ts:232]
@@ -55,7 +73,10 @@ What this project is judged against, as declared in its own `callidescope.config
           └─> PostgresClientError.constructor({ code, detail, tool }: PostgresClientFailure): PostgresClientError [projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.constants.ts:44]
 ```
 
-**3. `postgresEnvironmentSchema`** — depth 4 · orphan-root
+<details>
+<summary>6 more call stacks</summary>
+
+**4. `postgresEnvironmentSchema`** — depth 4 · orphan-root
 
 ```text
 🚀 postgresEnvironmentSchema(…): PostgresEnvironmentShape<Project> [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:164]
@@ -68,10 +89,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ The variable a project reads `field` from, such as `LEXICO_POSTGRES_DATABASE`.
 ```
 
-<details>
-<summary>3 more call stacks</summary>
-
-**4. `PostgresqlService.createTypeOrmOptions`** — depth 4 · orphan-root
+**5. `PostgresqlService.createTypeOrmOptions`** — depth 4 · orphan-root
 
 ```text
 🚀 PostgresqlService.createTypeOrmOptions(): PostgresDataSourceOptions [projects/common/persistence/src/modules/postgresql/postgresql.service.ts:75]
@@ -84,7 +102,7 @@ What this project is judged against, as declared in its own `callidescope.config
          ↳ The variable a project reads `field` from, such as `LEXICO_POSTGRES_DATABASE`.
 ```
 
-**5. `createDataSource`** — depth 3 · orphan-root
+**6. `createDataSource`** — depth 3 · orphan-root
 
 ```text
 🚀 createDataSource(…): DataSource [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:56]
@@ -95,7 +113,27 @@ What this project is judged against, as declared in its own `callidescope.config
        ↳ The startup parameter setting the session's `search_path` to `schema` alone. `public` is left off, so unqualified DDL…
 ```
 
-**6. `postgresEnvironment`** — depth 2 · orphan-root
+**7. `TypeormMigrationSqlExtractorService.visit`** — depth 3 · orphan-root
+
+```text
+🚀 TypeormMigrationSqlExtractorService.visit(node: ts.Node): void [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:291]
+  └─> TypeormMigrationSqlExtractorService.sqlFromQueryCall(…): string | undefined [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:218]
+     ↳ One migration SQL statement text extracted from a query call node.
+    └─> TypeormMigrationSqlExtractorService.sqlLiteral(…): string | undefined [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:241]
+       ↳ SQL text from a query argument literal.
+```
+
+**8. `TypeormMigrationSqlExtractorService.visit`** — depth 3 · orphan-root
+
+```text
+🚀 TypeormMigrationSqlExtractorService.visit(node: ts.Node): void [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:313]
+  └─> TypeormMigrationSqlExtractorService.statementsFromClass(…): MigrationSqlStatements | undefined [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:260]
+     ↳ SQL statements extracted from a migration class declaration node.
+    └─> TypeormMigrationSqlExtractorService.statementsFromMethod(…): string[] [projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:285]
+       ↳ SQL statements extracted from one migration method body.
+```
+
+**9. `postgresEnvironment`** — depth 2 · orphan-root
 
 ```text
 🚀 postgresEnvironment({ connection, project, }: PostgresEnvironmentSource): Record<string, string> [projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:117]
@@ -115,11 +153,13 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PostgresqlExportCommand.run` | 6 | `PostgresqlExportCommand.plan`, `PostgresqlUtilitiesService.ensureTool`, `PostgresqlExportCommand.logDryRun`, `describePostgresContent`, `PostgresqlUtilitiesService.dump`, `PostgresqlExportCommand.explain` | `projects/common/persistence/src/modules/postgresql-export/postgresql-export.command.ts:232` |
 
 <details>
-<summary>48 more callables</summary>
+<summary>64 more callables</summary>
 
 | Callable | Breadth | Calls directly | Location |
 | --- | --- | --- | --- |
 | `PostgresqlImportCommand.run` | 5 | `PostgresqlImportCommand.check`, `PostgresqlImportCommand.logDryRun`, `describePostgresContent`, `PostgresqlImportCommand.truncate`, `PostgresqlImportCommand.restore` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:336` |
+| `TypeormMigrationSqlExtractorService.synchronize` | 5 | `TypeormMigrationSqlExtractorService.targets`, `TypeormMigrationSqlExtractorService.migrationFiles`, `TypeormMigrationSqlExtractorService.migrationOption`, `TypeormMigrationSqlExtractorService.synchronizeMigration`, `TypeormMigrationSqlExtractorService.migrationSqlPaths` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:398` |
+| `TypeormMigrationSqlExtractorService.targets` | 5 | `TypeormMigrationSqlExtractorService.explicitTarget`, `TypeormMigrationSqlExtractorService.projectJsonPaths`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.filter(…)`, `TypeormMigrationSqlExtractorService.map(…)` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:453` |
 | `PostgresqlService.connection` | 4 | `PostgresqlService.databaseOptions`, `postgresConnection`, `PostgresqlService.map(…)`, `postgresEnvironmentKeys` | `projects/common/persistence/src/modules/postgresql/postgresql.service.ts:60` |
 | `selectPostgresDumpEntries` | 4 | `map(…)`, `every(…)`, `filter(…)`, `every(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-dump.utilities.ts:79` |
 | `truncatePostgresTables` | 4 | `map(…)`, `postgresErrorCode`, `map(…)`, `PostgresReferencedTablesError.constructor` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-truncate.utilities.ts:28` |
@@ -128,6 +168,8 @@ What this project is judged against, as declared in its own `callidescope.config
 | `PostgresqlImportCommand.check` | 4 | `PostgresqlImportCommand.plan`, `PostgresqlUtilitiesService.ensureTool`, `PostgresqlUtilitiesService.list`, `PostgresqlImportCommand.ensureContents` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:79` |
 | `PostgresqlImportCommand.restore` | 4 | `PostgresqlUtilitiesService.restore`, `PostgresqlImportRestoreError.constructor`, `truncatedMessage`, `rolledBackMessage` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:185` |
 | `PostgresqlImportCommand.truncate` | 4 | `PostgresqlUtilitiesService.truncate`, `PostgresqlImportCleanError.constructor`, `referencedTablesMessage`, `notTruncatedMessage` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:225` |
+| `TypeormMigrationSqlExtractorService.migrationFiles` | 4 | `TypeormMigrationSqlExtractorService.singleMigrationFile`, `TypeormMigrationSqlExtractorService.sortedMigrationEntries`, `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.latestMigrationEntry` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:97` |
+| `TypeormMigrationSqlExtractorService.synchronizeMigration` | 4 | `TypeormMigrationSqlExtractorService.statementsFromMigrationFile`, `TypeormMigrationSqlExtractorService.renderSql`, `TypeormMigrationSqlExtractorService.writeExtractedSql`, `TypeormMigrationSqlExtractorService.checkExtractedSql` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:330` |
 | `postgresEnvironmentSchema` | 3 | `postgresSettingsSchema`, `postgresEnvironmentKey`, `assertPostgresEnvironmentKeys` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:164` |
 | `PostgresqlService.createTypeOrmOptions` | 3 | `postgresDataSourceOptions`, `PostgresqlService.connection`, `PostgresqlService.databaseOptions` | `projects/common/persistence/src/modules/postgresql/postgresql.service.ts:75` |
 | `qualifyTableNames` | 3 | `filter(…)`, `PostgresTableNameError.constructor`, `map(…)` | `projects/common/persistence/src/modules/postgresql-utilities/postgresql-utilities.utilities.ts:122` |
@@ -146,6 +188,9 @@ What this project is judged against, as declared in its own `callidescope.config
 | `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/common/persistence/src/modules/postgresql-export/postgresql-export.constants.ts:54` |
 | `dryRunMessages` | 2 | `describePostgresContent`, `map(…)` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.constants.ts:103` |
 | `PostgresqlImportCommand.missing` | 2 | `dumpedTables`, `PostgresqlImportCommand.filter(…)` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:98` |
+| `TypeormMigrationSqlExtractorService.childDirectories` | 2 | `TypeormMigrationSqlExtractorService.map(…)`, `TypeormMigrationSqlExtractorService.filter(…)` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:47` |
+| `TypeormMigrationSqlExtractorService.projectJsonPaths` | 2 | `TypeormMigrationSqlExtractorService.childDirectories`, `TypeormMigrationSqlExtractorService.catch(…)` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:170` |
+| `TypeormMigrationSqlCommand.run` | 2 | `TypeormMigrationSqlCommand.resolveMode`, `TypeormMigrationSqlCommand.synchronize` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:108` |
 | `assertPostgresEnvironmentKeys` | 1 | `postgresEnvironmentKeys` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:32` |
 | `postgresDataSourceOptions` | 1 | `postgresSearchPathOption` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:91` |
 | `postgresEnvironment` | 1 | `postgresEnvironmentKey` | `projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts:117` |
@@ -167,6 +212,15 @@ What this project is judged against, as declared in its own `callidescope.config
 | `map(…)` | 1 | `describePostgresContent` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.constants.ts:118` |
 | `PostgresqlImportCommand.requireOption` | 1 | `PostgresqlImportOptionsError.constructor` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:172` |
 | `PostgresqlImportCommand.selectContent` | 1 | `PostgresqlImportOptionsError.constructor` | `projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts:207` |
+| `TypeormMigrationSqlExtractorService.checkExtractedSql` | 1 | `TypeormMigrationSqlExtractorService.maybeFile` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:33` |
+| `TypeormMigrationSqlExtractorService.maybeFile` | 1 | `TypeormMigrationSqlExtractorService.catch(…)` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:92` |
+| `TypeormMigrationSqlExtractorService.sortedMigrationEntries` | 1 | `TypeormMigrationSqlExtractorService.filter(…)` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:206` |
+| `TypeormMigrationSqlExtractorService.sqlFromQueryCall` | 1 | `TypeormMigrationSqlExtractorService.sqlLiteral` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:218` |
+| `TypeormMigrationSqlExtractorService.statementsFromClass` | 1 | `TypeormMigrationSqlExtractorService.statementsFromMethod` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:260` |
+| `TypeormMigrationSqlExtractorService.visit` | 1 | `TypeormMigrationSqlExtractorService.sqlFromQueryCall` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:291` |
+| `TypeormMigrationSqlExtractorService.visit` | 1 | `TypeormMigrationSqlExtractorService.statementsFromClass` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:313` |
+| `TypeormMigrationSqlExtractorService.map(…)` | 1 | `TypeormMigrationSqlExtractorService.parsedProjectTarget` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql-extractor.service.ts:461` |
+| `TypeormMigrationSqlCommand.synchronize` | 1 | `TypeormMigrationSqlExtractorService.synchronize` | `projects/common/persistence/src/modules/typeorm-migration-sql/typeorm-migration-sql.command.ts:120` |
 
 </details>
 <!-- callidescope:end -->

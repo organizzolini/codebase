@@ -54,7 +54,7 @@ dist/** linguist-generated
 # JavaScript, which would otherwise dominate the language bar. Diffs stay
 # visible on purpose: `skills update` lands upstream changes as a reviewable
 # pull request. One entry per skill in skills-lock.json, verified by
-# `nx run synchronization:synchronize`, which
+# `nx run integration:skill-exclusions`, which
 # also generates the block below.
 .agents/licenses/** linguist-vendored
 # installed-skills-start

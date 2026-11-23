@@ -71,5 +71,5 @@ pnpm exec nx graph --file=.nx/graph.json 2>/dev/null
 echo "✅ Nx project graph generated"
 
 echo "⚙️ Syncing VSCode settings..."
-pnpm exec nx run synchronization:vscode-settings:write
+pnpm exec nx run installation:vscode-settings:write
 echo "✅ VSCode settings synced"

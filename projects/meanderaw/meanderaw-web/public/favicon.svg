@@ -1,0 +1,8 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="32" height="32" rx="9" fill="oklch(22% 0.025 150deg)"/>
+<g transform="translate(5 5) scale(2.44)" stroke="oklch(94% 0.015 150deg)" stroke-linecap="square">
+<path d="M1.5 6.5V2.5H3.5V6.5H5.5V2.5H7.5V6.5"/>
+<path d="M8.5 8.5H0.5"/>
+<path d="M0.5 0.5H8.5"/>
+</g>
+</svg>

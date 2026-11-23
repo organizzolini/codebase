@@ -1,3 +1,10 @@
+## 0.0.81 (2026-11-23)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-configuration to 0.0.94
+- Updated codependix-cli to 0.0.95
+
 ## 0.0.80 (2026-11-23)
 
 ### 🚀 Features

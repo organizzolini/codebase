@@ -2,6 +2,7 @@
 name: agent-session-hooks
 description: Explains how startup scripts run at the start of agent sessions and inject context. Use when an agent session reports a failing hook (e.g. validate-session-branch-name.sh, validate-session-worktree-name.sh, validate-session-commit-signing.sh, validate-session-gh-authentication.sh, validate-session-skills.sh), or when adding a new startup check.
 ---
+
 # Agent Session Hooks
 
 Startup checks run at the start of every agent session and inject their failure as additional context. **Fix what they report before writing any code** — each one names the problem and the command that repairs it.
@@ -16,11 +17,11 @@ Startup checks run at the start of every agent session and inject their failure 
 
 | Script                                  | Checks                                                                                                                          |
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `validate-session-branch-name.sh`       | Shim over `validation`'s `session-branch-name`: branch follows `<type>/<scope>-<description>`                                   |
-| `validate-session-worktree-name.sh`     | Shim over `validation`'s `session-worktree-name`: worktree is kebab-case and gitignored                                         |
+| `validate-session-branch-name.sh`       | Shim over `installation`'s `session-branch-name`: branch follows `<type>/<scope>-<description>`                                 |
+| `validate-session-worktree-name.sh`     | Shim over `installation`'s `session-worktree-name`: worktree is kebab-case and gitignored                                       |
 | `validate-session-commit-signing.sh`    | `commit.gpgsign`, `user.signingkey`, and a GPG signing smoke test                                                               |
 | `validate-session-gh-authentication.sh` | The active `gh` account plus Projects access                                                                                    |
-| `validate-session-skills.sh`            | Shim over `synchronization`'s `installed-skills check`: every skill in `skills-lock.json` is present                            |
+| `validate-session-skills.sh`            | Shim over `installation`'s `installed-skills check`: every skill in `skills-lock.json` is present                               |
 | `validate-session-hooks-path.sh`        | `core.hooksPath` resolves to a directory holding a pre-commit hook; git runs no hooks, silently, when it does not               |
 | `validate-subagent-model.sh`            | `PreToolUse` check on `Agent`/`task`: blocks Opus/Sol or higher on subagents and requires an explicit model on `Explore`/`Plan` |
 
@@ -45,8 +46,8 @@ printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "<rerun
 
 An empty context is how the emitter learns the command could not run at all. With no finished install (`node_modules/.modules.yaml` absent) it directs the agent to run `pnpm install`; otherwise it directs the agent to the rerun command, whose error the shim discarded. Without `node` it stays silent, since nothing can be emitted.
 
-The command must therefore print nothing to standard output except the context, which is why the `synchronization` and `validation` command-line applications send their logs to standard error; a project hosting a new hook command must do the same. Which project a command belongs in follows each project's own rule: a `check` with a `write` belongs in `synchronization`, a one-sided check in `validation`.
+The command must therefore print nothing to standard output except the context, which is why the `integration` command-line application sends its logs to standard error; a new hook command must do the same. Every such check lives in `integration`, whether or not it has a `write` configuration: a check with a `write` sits beside the derivation it verifies, and a check without one is just a check.
 
-The signing and authentication hooks stay pure shell on purpose, since they must still work when `node_modules` is broken; see `validation/AGENTS.md`.
+The signing and authentication hooks stay pure shell on purpose, since they must still work when `node_modules` is broken; see `installation/AGENTS.md`.
 
 Why the credential checks resolve the session's own token and signing configuration rather than the hook shell's, and why a hook can fail but never hang, is in [ADR 0010](../../documentation/adr/0010-judge-the-credentials-a-session-really-uses.md).

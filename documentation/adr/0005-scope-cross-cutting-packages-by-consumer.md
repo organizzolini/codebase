@@ -40,7 +40,7 @@ package belongs to one domain or to the workspace.
   the single source of truth for commitlint, `validate-branch-name`, the
   release rules, five skill reference tables, `AGENTS.md`, the issue template,
   and `.vscode/settings.json`, all rewritten by
-  `nx run synchronization:conventional-config:write`. A branch named for a
+  `nx run integration:conventional-config:write`. A branch named for a
   removed scope stops validating the moment the change lands, so check for open
   pull requests and live branches first — `logger` had neither.
 - **The `scope:logger` GitHub label outlives the scope.** Nothing deletes a

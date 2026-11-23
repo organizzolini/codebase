@@ -12,18 +12,249 @@
   ],
   "targets": {
     "build-projects": {},
+    "catalog-manifests": {
+      "cache": true,
+      "description": "Enforce catalog: protocol for external dependencies in workspace package manifests. Named by `guard-code` through its targetDefault, so only a project that defines it runs it; its `inputs` read every manifest in the workspace, which is what pulls this project into the affected set when one changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/**/package.json",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts catalog-manifests",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
+    "conformetry-generators": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts conformetry-generators check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts conformetry-generators write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Reconciles generated code against the conformetry templates it was scaffolded from. `check` runs on a pull request, because drift is the author's to fix in the same change; `write` runs on the default branch's release, alongside every other derivation. Named on its own by whichever caller wants it — `configuration/repository/lint-staged.config.ts`, the Static check, and the release workflow — rather than through a shared aggregate, the way `configuration:codometer` and `configuration:callidescope` are named by their own callers.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/configuration/ic-suite/conformetry.config.ts",
+        "{workspaceRoot}/nx.json",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "conventional-config": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts conventional-config check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts conventional-config write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Reconciles derived conventional-commit configuration against `configuration/repository/conventional.config.cjs`. `check` runs on a pull request; `write` runs on the default branch's release.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/.agents/skills/checkout-branch/SKILL.md",
+        "{workspaceRoot}/.agents/skills/commit-code/SKILL.md",
+        "{workspaceRoot}/.agents/skills/create-pull-request/SKILL.md",
+        "{workspaceRoot}/.agents/skills/rename-branch/SKILL.md",
+        "{workspaceRoot}/.agents/skills/triage-integration/SKILL.md",
+        "{workspaceRoot}/.github/CONTRIBUTING.md",
+        "{workspaceRoot}/.github/ISSUE_TEMPLATE/issue.yml",
+        "{workspaceRoot}/.vscode/settings.json",
+        "{workspaceRoot}/configuration/repository/conventional.config.cjs",
+        "{workspaceRoot}/configuration/repository/release.config.cjs",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "devcontainer-configuration": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts devcontainer-configuration check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts devcontainer-configuration write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Reconciles the cloud devcontainer configuration's synced fields against the local one. `check` runs on a pull request; `write` runs on the default branch's release.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/.devcontainer/cloud/devcontainer.json",
+        "{workspaceRoot}/.devcontainer/local/devcontainer.json",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "eslint": {},
     "format-code": {},
     "guard-code": {},
     "knip": {},
     "lint-code": {},
+    "lockfile": {
+      "cache": true,
+      "description": "Verify that pnpm-lock.yaml is in sync with package.json files. A `guard-code` dependency, and affected whenever a manifest, the workspace file, `.npmrc`, a patch, or the lockfile changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/.npmrc",
+        "{workspaceRoot}/patches/**/*",
+        "{workspaceRoot}/pnpm-lock.yaml",
+        "{workspaceRoot}/pnpm-workspace.yaml",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts lockfile",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
     "markdown-lint": {},
     "oxfmt": {},
     "oxlint": {},
+    "package-manifests": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts package-manifests check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts package-manifests write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Reconciles derived package manifest metadata (author, license, repository, homepage, bugs) across all 29 publishable packages against root package.json and project paths. `check` runs on pull requests; `write` runs on release.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/package.json",
+        "{workspaceRoot}/projects/ic-suite/**/package.json",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "prettier": {},
+    "project-ports": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts project-ports check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts project-ports write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Makes the port of every `*-api` and `*-web` application the one its project name hashes to. `check` reports an application whose port differs; `write` rewrites the port on every line about a port across the application's domain folder, so a web application's default API address and an API's allowed origin follow.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/projects/**/*-api/.env.default",
+        "{workspaceRoot}/projects/**/*-api/project.json",
+        "{workspaceRoot}/projects/**/*-web/project.json",
+        "{workspaceRoot}/projects/**/*-web/vite.config.mts",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "readme-projects": {
+      "cache": true,
+      "description": "Verify the root README links to every workspace project. A `guard-code` dependency, affected whenever a manifest or the root README changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/README.md",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts readme-projects",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
     "repl": {},
+    "skill-exclusions": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts skill-exclusions check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts skill-exclusions write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Reconciles the installed-skill exclusion lists against `skills-lock.json`. `check` runs on a pull request; `write` runs on the default branch's release.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/.agents/skills/**",
+        "{workspaceRoot}/skills-lock.json",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "spell-check": {},
     "start": {
       "cache": false,
@@ -33,6 +264,9 @@
         },
         "bound-base-to-push": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts bound-base-to-push"
+        },
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts synchronization check"
         },
         "cleanup-codebase": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts cleanup-codebase"
@@ -63,9 +297,13 @@
         },
         "verify-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts verify-task-database"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts synchronization write"
         }
       },
-      "description": "Run one integration command by name. Callers in CI set the variables each command reads, such as NX_BASE and NX_HEAD.",
+      "defaultConfiguration": "check",
+      "description": "Runs every integration check in one process, for a human at a terminal who wants all of them in one command; `check` is the default and `write` runs each command's `write` where it has one. Callers in CI name one command instead, such as `integration:start:run-affected`, and set the variables it reads, such as NX_BASE and NX_HEAD. Uncached because nothing should depend on its result.",
       "executor": "nx:run-commands",
       "options": {
         "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts",
@@ -77,6 +315,30 @@
     "typecheck": {},
     "typecheck-code": {},
     "vitest": {},
+    "vscode-extensions": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts vscode-extensions check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts vscode-extensions write && pnpm exec nx run configuration:oxfmt:write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Reconciles both devcontainer configurations' extension lists against `.vscode/extensions.json`. `check` runs on a pull request and as part of `guard-code`; `write` copies the recommendations into each devcontainer's `extensions` and `recommendations`, then formats the result.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/.devcontainer/cloud/devcontainer.json",
+        "{workspaceRoot}/.devcontainer/local/devcontainer.json",
+        "{workspaceRoot}/.vscode/extensions.json",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "yaml-lint": {}
   }
 }

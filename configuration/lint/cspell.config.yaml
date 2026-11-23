@@ -48,7 +48,7 @@ ignorePaths:
   - "**/projects/ic-suite/callidescope/callidescope-examples/output/**"
   # 🧩 Installed agent skills, one per entry in skills-lock.json. Their prose stays as upstream wrote it.
   # Listed individually, not as `.agents/skills/`, so this repository's own skills stay checked.
-  # Verified by `nx run synchronization:skill-exclusions`, which also generates the block below.
+  # Verified by `nx run integration:skill-exclusions`, which also generates the block below.
   - "**/.agents/licenses/**"
   # installed-skills-start
   - "**/.agents/skills/brainstorming/**"

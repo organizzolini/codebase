@@ -47,7 +47,7 @@
     // close to the formatting their sources chose. Listed individually rather
     // than as ".agents/skills/**" so this repository's own skills in the same
     // directory keep being linted. Verified by
-    // "nx run synchronization:synchronize", which also generates the block
+    // "nx run integration:skill-exclusions", which also generates the block
     // below.
     // installed-skills-start
     ".agents/skills/brainstorming/**",
