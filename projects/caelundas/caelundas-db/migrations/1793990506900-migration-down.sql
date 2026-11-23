@@ -1,5 +1,6 @@
 set lock_timeout = '10s';
-set statement_timeout = '5m';
+
+set statement_timeout = '5min';
 
 delete from caelundas.typeorm_metadata
 where "type" = $1 and "name" = $2 and "schema" = $3;
