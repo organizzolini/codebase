@@ -73,6 +73,48 @@ describe("postgresql ERD utilities", () => {
     });
   });
 
+  it("uses reflected property types when view columns omit explicit types", async () => {
+    const model = await readPostgresqlErdModel([
+      "testing/fixtures/postgresql-erd/reflected-view.entity.ts",
+    ]);
+
+    expect(model).toStrictEqual({
+      entities: [
+        {
+          columns: [
+            {
+              name: "count",
+              nullable: false,
+              primaryKey: false,
+              type: "Number",
+            },
+            {
+              name: "createdAt",
+              nullable: false,
+              primaryKey: false,
+              type: "Date",
+            },
+            {
+              name: "label",
+              nullable: false,
+              primaryKey: false,
+              type: "String",
+            },
+            {
+              name: "optionalLabel",
+              nullable: false,
+              primaryKey: false,
+              type: "Object",
+            },
+          ],
+          name: "ErdReflectedView",
+          relations: [],
+          tableName: "reflected_view",
+        },
+      ],
+    });
+  });
+
   describe(renderPostgresqlErdModel, () => {
     it("renders each relationship cardinality and the entity table names", () => {
       const model: PostgresqlErdModel = {

@@ -217,7 +217,7 @@ function findLineBreak(segments: string[]): string {
 }
 
 /**
- * Reads column metadata from an entity and each of its base classes.
+ * Reads column options or emitted property types across an entity's bases.
  */
 function getEntityColumns(
   targets: PostgresqlErdEntityClass[],
@@ -230,7 +230,14 @@ function getEntityColumns(
       return parsedTarget.success && targets.includes(parsedTarget.data);
     })
     .map((column) => {
-      const type: unknown = column.options.type;
+      const reflectedType: unknown = isEntityClass(column.target)
+        ? Reflect.getMetadata(
+            "design:type",
+            column.target.prototype,
+            column.propertyName,
+          )
+        : undefined;
+      const type: unknown = column.options.type ?? reflectedType;
       const parsedType = z
         .union([z.string(), POSTGRESQL_ERD_ENTITY_CLASS_SCHEMA])
         .parse(type);

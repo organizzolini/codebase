@@ -23,7 +23,10 @@ export interface PostgresqlErdCommandPlan {
 /** A TypeORM entity class stored by its decorators. */
 export type PostgresqlErdEntityClass = (abstract new (
   ...arguments_: never[]
-) => object) & { readonly name: string };
+) => object) & {
+  readonly name: string;
+  readonly prototype: object;
+};
 
 /** A full entity record containing its columns and relations. */
 export type PostgresqlErdEntityDetails = Extract<

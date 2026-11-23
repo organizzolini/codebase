@@ -86,6 +86,7 @@ const postgresqlErdEntityReferenceSchema = z
 export const POSTGRESQL_ERD_ENTITY_CLASS_SCHEMA = z.custom<
   (abstract new (...arguments_: never[]) => object) & {
     readonly name: string;
+    readonly prototype: object;
   }
 >((value) => typeof value === "function");
 
