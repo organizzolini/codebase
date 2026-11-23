@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 
-import { TextType } from "../texts/text.entities";
+import { TextType } from "../../../texts/text.entities";
 
 import { LibraryMatchType } from "./library-match.entities";
 

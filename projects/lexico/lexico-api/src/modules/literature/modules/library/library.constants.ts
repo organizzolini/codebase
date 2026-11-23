@@ -6,7 +6,7 @@ import {
   LibraryGroupField,
   LibrarySortDirection,
   LibrarySortField,
-} from "./library-sort.entities";
+} from "./modules/sort/library-sort.entities";
 
 /** The page a library request gets when it names no page size. */
 export const LIBRARY_DEFAULT_PAGE_SIZE = 24;
@@ -14,10 +14,7 @@ export const LIBRARY_DEFAULT_PAGE_SIZE = 24;
 /** The most authors one library page may hold. */
 export const LIBRARY_MAX_PAGE_SIZE = 100;
 
-/**
- * The most top-level works one author card carries. `workCount` still
- * reports every work in scope, and `libraryWorks` pages the rest.
- */
+/** The most top-level works one author card carries. */
 export const LIBRARY_WORKS_PER_AUTHOR = 200;
 
 /** The works one `libraryWorks` page holds when it names no size. */
@@ -43,7 +40,7 @@ export const LIBRARY_GROUP_SORT_FIELDS: Record<
   [LibraryGroupField.ERA]: LibrarySortField.AUTHOR_ERA,
 };
 
-/** The order a library page takes when it names none: authors by name. */
+/** The order a library page takes when it names none. */
 export const LIBRARY_DEFAULT_SORT = {
   direction: LibrarySortDirection.ASC,
   field: LibrarySortField.AUTHOR_NAME,
@@ -60,10 +57,7 @@ export const LIBRARY_TEXT_SEARCH_COLUMNS = [
   "material",
 ] as const;
 
-/**
- * Where each sortable attribute lives: on the author, or on the Texts it
- * carries, and in which column.
- */
+/** Where each sortable attribute lives: author or Texts, and column. */
 export const LIBRARY_SORT_COLUMNS: Record<
   LibrarySortField,
   { readonly column: string; readonly scope: "author" | "text" }
@@ -90,12 +84,7 @@ export const LIBRARY_SORT_COLUMNS: Record<
   [LibrarySortField.TEXT_WORD_COUNT]: { column: "word_count", scope: "text" },
 };
 
-/**
- * The explicit order of the enum-valued sort fields, first to last: eras run
- * chronologically, collections from the general corpora to the specialist
- * ones. A sort ranks by this list and never by the database's enum order or
- * the alphabet.
- */
+/** The explicit order of enum-valued sort fields, never the database's or alphabetical. */
 export const LIBRARY_SORT_RANKS: Partial<
   Record<LibrarySortField, readonly string[]>
 > = {

@@ -1,10 +1,10 @@
 import type {
   LibrarySortDirection,
   LibrarySortField,
-} from "./library-sort.entities";
+} from "./modules/sort/library-sort.entities";
 import type { Author, AuthorEra, Text } from "@codebase/lexico-db";
 
-/** An author card: the author, what matched, and the top-level works it carries. */
+/** An author card: the author, matches, and top-level works. */
 export interface LibraryAuthorRecord {
   readonly author: Author;
   readonly matches: LibraryMatchRange[];
@@ -19,7 +19,7 @@ export interface LibraryFacetsRecord {
   readonly provinces: LibraryFacetValueRecord[];
 }
 
-/** One distinct value of a Text column and how many Texts carry it. */
+/** One distinct Text column value and how many Texts carry it. */
 export interface LibraryFacetValueRecord {
   readonly count: number;
   readonly value: string;
@@ -64,13 +64,13 @@ export interface LibrarySort {
   readonly field: LibrarySortField;
 }
 
-/** A sort as a request names it, before validation fills in the direction. */
+/** A sort as requested, before validation fills the direction. */
 export interface LibrarySortRequest {
   readonly direction?: LibrarySortDirection | null | undefined;
   readonly field: LibrarySortField;
 }
 
-/** A Text a library author card carries, with the spans its search matched. */
+/** A Text on an author card, with the spans its search matched. */
 export interface LibraryTextRecord {
   readonly childCount: number;
   readonly matches: LibraryMatchRange[];

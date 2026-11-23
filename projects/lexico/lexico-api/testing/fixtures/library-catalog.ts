@@ -4,10 +4,10 @@ import { Author, Text, textCollection } from "@codebase/lexico-db";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 
-/** How many inscriptions the EDCS author's province holds: more than one author card carries. */
+/** Inscriptions the EDCS author's province holds; more than one card carries. */
 export const LIBRARY_INSCRIPTION_COUNT = 52;
 
-/** How many numbered books the seeded Fasti holds: more than one range chunk's worth is not needed to test ordering. */
+/** How many numbered books the seeded Fasti holds. */
 export const LIBRARY_FASTI_BOOK_COUNT = 12;
 
 /** Seeds a library whose attributes the library query searches, filters, and pages. */

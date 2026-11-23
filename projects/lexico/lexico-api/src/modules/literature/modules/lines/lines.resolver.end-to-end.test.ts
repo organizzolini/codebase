@@ -11,12 +11,12 @@ import {
   vi,
 } from "vitest";
 
-import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
 import {
   type ReadingApplication,
   startReadingApplication,
-} from "../../../../../testing/reading-application";
-import { PASSAGE_TOKENS } from "../../../../../testing/reading-passage";
+} from "../../../../../testing/applications/reading-application";
+import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
+import { PASSAGE_TOKENS } from "../../../../../testing/fixtures/reading-passage";
 
 /** A line as the reader query below selects one. */
 interface ReaderLine {

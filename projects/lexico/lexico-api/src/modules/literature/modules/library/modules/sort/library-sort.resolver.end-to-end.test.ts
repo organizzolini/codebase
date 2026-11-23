@@ -4,11 +4,11 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { Author, Text, textCollection } from "@codebase/lexico-db";
 
-import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
 import {
   type LibraryApplication,
   startLibraryApplication,
-} from "../../../../../testing/library-application";
+} from "../../../../../../../testing/applications/library-application";
+import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../../../testing/database";
 
 import {
   LibrarySortDirection,
@@ -38,10 +38,7 @@ const TEXT_SEARCH = "txs keeper";
 /** The authors the author cases order, all matched by this search. */
 const AUTHOR_SEARCH = "srt";
 
-/**
- * Author sort cases: [field, ascending names of the authors that have the
- * attribute]. Descending reverses them; Omega has no value and sorts last.
- */
+/** Author sort cases: field and ascending names; Omega sorts last. */
 const AUTHOR_CASES: readonly [LibrarySortField, readonly string[]][] = [
   [
     LibrarySortField.AUTHOR_END_YEAR,

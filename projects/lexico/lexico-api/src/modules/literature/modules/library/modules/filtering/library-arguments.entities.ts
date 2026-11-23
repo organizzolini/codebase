@@ -1,7 +1,11 @@
 import { ArgsType as ArgumentsType, Field, Int } from "@nestjs/graphql";
 
+import {
+  LibraryGroupField,
+  LibrarySortInput,
+} from "../sort/library-sort.entities";
+
 import { LibraryFiltersInput } from "./library-filters.entities";
-import { LibraryGroupField, LibrarySortInput } from "./library-sort.entities";
 
 /** Arguments for one page of the library: search, filters, sort, and page. */
 @ArgumentsType()

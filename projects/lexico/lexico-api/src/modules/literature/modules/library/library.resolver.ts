@@ -1,20 +1,20 @@
 import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
-import { LibraryArguments } from "./library-arguments.entities";
-import { LibraryChildrenArguments } from "./library-children-arguments.entities";
-import { LibraryFacetsType } from "./library-facets.entities";
-import { LibraryPageType } from "./library-page.entities";
-import { LibraryTextsPageType } from "./library-texts-page.entities";
-import { LibraryWorksArguments } from "./library-works-arguments.entities";
 import { LIBRARY_WORKS_PAGE_SIZE } from "./library.constants";
 import { LibraryService } from "./library.service";
+import { LibraryPageType } from "./modules/cards/library-page.entities";
+import { LibraryTextsPageType } from "./modules/cards/library-texts-page.entities";
+import { LibraryArguments } from "./modules/filtering/library-arguments.entities";
+import { LibraryChildrenArguments } from "./modules/filtering/library-children-arguments.entities";
+import { LibraryFacetsType } from "./modules/filtering/library-facets.entities";
+import { LibraryWorksArguments } from "./modules/filtering/library-works-arguments.entities";
 import {
   parseLibraryArguments,
   parseLibraryChildrenArguments,
   toLibraryPageType,
   toLibraryTextsPageType,
-} from "./library.utilities";
+} from "./modules/query/library.utilities";
 
 /**
  * GraphQL resolver for the library: author cards, paged and searched.

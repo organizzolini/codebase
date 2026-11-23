@@ -1,15 +1,15 @@
-import { LibrarySortDirection } from "./library-sort.entities";
 import {
   LIBRARY_SORT_COLUMNS,
   LIBRARY_SORT_RANKS,
   LIBRARY_TEXT_SEARCH_COLUMNS,
-} from "./library.constants";
+} from "../../library.constants";
+import { LibrarySortDirection } from "../sort/library-sort.entities";
 
 import type {
   LibraryFilters,
   LibraryRange,
   LibrarySort,
-} from "./library.types";
+} from "../../library.types";
 
 /** A SQL condition, and the named parameters its placeholders take. */
 export interface LibrarySqlClause {
@@ -102,10 +102,7 @@ export function orderDirection(
   return direction === LibrarySortDirection.DESC ? "DESC" : "ASC";
 }
 
-/**
- * Keeps a top-level Text that is in scope itself or has a child in scope,
- * so a card lists the works that hold a match, not only the match.
- */
+/** Keeps a top-level Text in scope itself or with a child in scope. */
 export function rootScopeClause(
   alias: string,
   own: LibrarySqlClause,
@@ -117,11 +114,7 @@ export function rootScopeClause(
   ]);
 }
 
-/**
- * The sort's attribute as SQL, on the `author` or `text` alias. An enum
- * field becomes a CASE over its explicit rank, so its order never depends on
- * how the database declares the enum.
- */
+/** The sort's attribute as SQL on the `author` or `text` alias; an enum orders by explicit rank. */
 export function sortColumnSql(
   field: LibrarySort["field"],
   alias: string,
@@ -185,10 +178,7 @@ export function textFilterClause(
   return andClauses(clauses);
 }
 
-/**
- * The order the Texts of a card take: by each sort that names a Text
- * attribute, in list order, then by title. Nulls sort last in both directions.
- */
+/** The order of a card's Texts: each Text-attribute sort in list order, then title, nulls last. */
 export function textOrderSql(sorts: readonly LibrarySort[]): string {
   const keys = sorts
     .filter((sort) => LIBRARY_SORT_COLUMNS[sort.field].scope === "text")
@@ -199,11 +189,7 @@ export function textOrderSql(sorts: readonly LibrarySort[]): string {
   return [...keys, "text.title ASC", "text.id ASC"].join(", ");
 }
 
-/**
- * The Texts a library request keeps: all of an author's Texts when the
- * author matched the search, otherwise the matching ones; and then only those
- * the text filters keep.
- */
+/** The Texts a request keeps: all of a matched author's, else the matching ones, then those the filters keep. */
 export function textScopeClause(
   alias: string,
   pattern: null | string,
@@ -264,11 +250,7 @@ function hasValues(values: null | readonly unknown[] | undefined): boolean {
   return (values?.length ?? 0) > 0;
 }
 
-/**
- * Keeps rows whose [start, end] span overlaps the range. One rule covers a
- * range with a single bound: a row missing its start or its end is always
- * left out, because its span cannot be placed on the range.
- */
+/** Keeps rows whose [start, end] span overlaps the range; a row missing a bound is left out. */
 function overlapClauses(
   [start, end]: readonly [string, string],
   range: LibraryRange | null | undefined,

@@ -1,9 +1,6 @@
 import { Field, InputType, registerEnumType } from "@nestjs/graphql";
 
-/**
- * An attribute the library can be ordered by. Author attributes order the
- * cards; Text attributes order the Texts within each card.
- */
+/** An attribute the library can be ordered by. */
 export enum LibrarySortField {
   AUTHOR_END_YEAR = "AUTHOR_END_YEAR",
   AUTHOR_ERA = "AUTHOR_ERA",
@@ -26,10 +23,7 @@ registerEnumType(LibrarySortField, {
   name: "LibrarySortField",
 });
 
-/**
- * An attribute the library's authors are grouped by. Each group leads the
- * order, so an author's group is readable from the author itself.
- */
+/** An attribute the library's authors are grouped by. */
 export enum LibraryGroupField {
   ERA = "ERA",
 }

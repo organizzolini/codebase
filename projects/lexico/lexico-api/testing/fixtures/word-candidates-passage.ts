@@ -11,10 +11,7 @@ import {
 
 import type { DataSource } from "typeorm";
 
-/**
- * Links the passage's words to their lexemes and forms. "arma" surfaces as two
- * forms of one noun, so it has two candidates; "cano" as one verb form.
- */
+/** Links the passage's words to their lexemes and forms; "arma" has two candidates, "cano" one. */
 export async function seedWordCandidates(
   dataSource: DataSource,
 ): Promise<void> {

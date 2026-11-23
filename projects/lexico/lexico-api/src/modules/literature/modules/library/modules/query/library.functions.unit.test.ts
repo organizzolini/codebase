@@ -3,7 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   LibrarySortDirection,
   LibrarySortField,
-} from "./library-sort.entities";
+} from "../sort/library-sort.entities";
+
 import { sortColumnSql, textOrderSql } from "./library.functions";
 
 describe("library functions", () => {

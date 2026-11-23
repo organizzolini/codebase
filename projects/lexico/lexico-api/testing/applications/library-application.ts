@@ -3,46 +3,47 @@ import { z } from "zod";
 
 import { Author, Line, Text } from "@codebase/lexico-db";
 
-import {
-  type AuthorTextCatalog,
-  seedAuthorTextCatalog,
-} from "./author-text-catalog";
-import { startLexicoDatabaseTestingModule } from "./database";
+import { startLexicoDatabaseTestingModule } from "../database";
+import { seedLibraryCatalog } from "../fixtures/library-catalog";
 
+import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { INestApplication } from "@nestjs/common";
 import type { Server } from "node:http";
 
-/** The whole Lexico API, served over HTTP from the seeded author-text catalog. */
-export interface AuthorTextApplication {
-  readonly catalog: AuthorTextCatalog;
+/** The whole Lexico API, served over HTTP from the seeded library catalog. */
+export interface LibraryApplication {
+  readonly database: DatabaseTestingModule;
   readonly execute: (
     document: string,
     variables?: Record<string, unknown>,
-  ) => Promise<AuthorTextResponse>;
-  readonly server: INestApplication<Server>;
+  ) => Promise<LibraryResponse>;
   readonly stop: () => Promise<void>;
 }
 
 /** Validates a GraphQL response body: data when execution succeeded, errors when not. */
-const authorTextResponseSchema = z.object({
+const libraryResponseSchema = z.object({
   data: z.record(z.string(), z.unknown()).nullish(),
-  errors: z.array(z.object({ message: z.string() })).optional(),
+  errors: z
+    .array(
+      z.object({ extensions: z.unknown().optional(), message: z.string() }),
+    )
+    .optional(),
 });
 
 /** A GraphQL response body: data when execution succeeded, errors when not. */
-export type AuthorTextResponse = z.infer<typeof authorTextResponseSchema>;
+export type LibraryResponse = z.infer<typeof libraryResponseSchema>;
 
 /**
- * Seeds the author-text catalog into a fresh database and boots the Lexico API on an ephemeral port. Stops the database if either fails.
+ * Seeds the library catalog into a fresh database and boots the Lexico API on an ephemeral port. Stops the database if either fails.
  */
-export async function startAuthorTextApplication(): Promise<AuthorTextApplication> {
+export async function startLibraryApplication(): Promise<LibraryApplication> {
   const database = await startLexicoDatabaseTestingModule([Author, Line, Text]);
   try {
-    const catalog = await seedAuthorTextCatalog(database);
+    await seedLibraryCatalog(database);
 
     // ⏳ ConfigModule reads the environment when the module is imported, so the
     // root module is imported only once the database's login is stubbed.
-    const { LexicoApiModule } = await import("../src/lexico-api.module");
+    const { LexicoApiModule } = await import("../../src/lexico-api.module");
     const application = await NestFactory.create<INestApplication<Server>>(
       LexicoApiModule,
       { logger: false },
@@ -51,19 +52,18 @@ export async function startAuthorTextApplication(): Promise<AuthorTextApplicatio
     const endpoint = `${await application.getUrl()}/graphql`;
 
     return {
-      catalog,
+      database,
       execute: async (
         document: string,
         variables: Record<string, unknown> = {},
-      ): Promise<AuthorTextResponse> => {
+      ): Promise<LibraryResponse> => {
         const response = await fetch(endpoint, {
           body: JSON.stringify({ query: document, variables }),
           headers: { "content-type": "application/json" },
           method: "POST",
         });
-        return authorTextResponseSchema.parse(await response.json());
+        return libraryResponseSchema.parse(await response.json());
       },
-      server: application,
       stop: async (): Promise<void> => {
         await application.close();
         await database.close();

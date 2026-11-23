@@ -4,15 +4,15 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { Text } from "@codebase/lexico-db";
 
-import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
 import {
   type LibraryApplication,
   startLibraryApplication,
-} from "../../../../../testing/library-application";
+} from "../../../../../testing/applications/library-application";
+import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
 import {
   LIBRARY_FASTI_BOOK_COUNT,
   LIBRARY_INSCRIPTION_COUNT,
-} from "../../../../../testing/library-catalog";
+} from "../../../../../testing/fixtures/library-catalog";
 
 /** A page of Texts as `libraryChildren` and `libraryWorks` select one. */
 interface TextsPageNode {

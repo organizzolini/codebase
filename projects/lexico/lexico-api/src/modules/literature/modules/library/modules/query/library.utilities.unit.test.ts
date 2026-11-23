@@ -2,12 +2,13 @@
 
 import { describe, expect, it } from "vitest";
 
+import { LIBRARY_DEFAULT_PAGE_SIZE } from "../../library.constants";
 import {
   LibraryGroupField,
   LibrarySortDirection,
   LibrarySortField,
-} from "./library-sort.entities";
-import { LIBRARY_DEFAULT_PAGE_SIZE } from "./library.constants";
+} from "../sort/library-sort.entities";
+
 import {
   escapeLikePattern,
   findMatchRanges,

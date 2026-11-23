@@ -31,12 +31,14 @@ import {
   WordForm,
 } from "@codebase/lexico-db";
 
-import { environmentSchema } from "../src/lexico-api.constants";
-import { LiteratureModule } from "../src/modules/literature/literature.module";
-
-import { startLexicoDatabaseTestingModule } from "./database";
-import { type ReadingPassage, seedReadingPassage } from "./reading-passage";
-import { seedWordCandidates } from "./word-candidates-passage";
+import { environmentSchema } from "../../src/lexico-api.constants";
+import { LiteratureModule } from "../../src/modules/literature/literature.module";
+import { startLexicoDatabaseTestingModule } from "../database";
+import {
+  type ReadingPassage,
+  seedReadingPassage,
+} from "../fixtures/reading-passage";
+import { seedWordCandidates } from "../fixtures/word-candidates-passage";
 
 import type { DynamicModule, INestApplication } from "@nestjs/common";
 import type { Server } from "node:http";

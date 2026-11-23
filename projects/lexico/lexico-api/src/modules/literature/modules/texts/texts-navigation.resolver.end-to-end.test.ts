@@ -6,7 +6,7 @@ import { Text } from "@codebase/lexico-db";
 import {
   type AuthorTextApplication,
   startAuthorTextApplication,
-} from "../../../../../testing/author-text-application";
+} from "../../../../../testing/applications/author-text-application";
 import { DATABASE_TIMEOUT_MILLISECONDS } from "../../../../../testing/database";
 
 /** A text as the navigation fields select it. */

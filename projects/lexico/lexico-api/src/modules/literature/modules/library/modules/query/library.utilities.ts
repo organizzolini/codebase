@@ -1,13 +1,6 @@
 import { GraphQLError } from "graphql";
 
-import { toAuthorType, toTextType } from "../../literature.utilities";
-
-import { LibraryAuthorType } from "./library-author.entities";
-import { LibraryMatchType } from "./library-match.entities";
-import { LibraryPageType } from "./library-page.entities";
-import { LibrarySortDirection } from "./library-sort.entities";
-import { LibraryTextType } from "./library-text.entities";
-import { LibraryTextsPageType } from "./library-texts-page.entities";
+import { toAuthorType, toTextType } from "../../../../literature.utilities";
 import {
   LIBRARY_CHILDREN_PAGE_SIZE,
   LIBRARY_DEFAULT_PAGE_SIZE,
@@ -15,14 +8,14 @@ import {
   LIBRARY_GROUP_SORT_FIELDS,
   libraryArgumentsSchema,
   libraryChildrenArgumentsSchema,
-} from "./library.constants";
+} from "../../library.constants";
+import { LibraryAuthorType } from "../cards/library-author.entities";
+import { LibraryMatchType } from "../cards/library-match.entities";
+import { LibraryPageType } from "../cards/library-page.entities";
+import { LibraryTextType } from "../cards/library-text.entities";
+import { LibraryTextsPageType } from "../cards/library-texts-page.entities";
+import { LibrarySortDirection } from "../sort/library-sort.entities";
 
-import type { LibraryArguments } from "./library-arguments.entities";
-import type { LibraryChildrenArguments } from "./library-children-arguments.entities";
-import type {
-  LibraryGroupField,
-  LibrarySortField,
-} from "./library-sort.entities";
 import type {
   LibraryAuthorRecord,
   LibraryMatchRange,
@@ -33,7 +26,13 @@ import type {
   LibraryTextsPageRecord,
   ParsedLibraryArguments,
   ParsedLibraryChildrenArguments,
-} from "./library.types";
+} from "../../library.types";
+import type { LibraryArguments } from "../filtering/library-arguments.entities";
+import type { LibraryChildrenArguments } from "../filtering/library-children-arguments.entities";
+import type {
+  LibraryGroupField,
+  LibrarySortField,
+} from "../sort/library-sort.entities";
 import type { ZodError } from "zod";
 
 /**
@@ -44,11 +43,7 @@ export function escapeLikePattern(term: string): string {
   return term.replaceAll(/[\\%_]/g, (character) => `\\${character}`);
 }
 
-/**
- * Finds every non-overlapping, case-insensitive occurrence of a term in a
- * field's value. Offsets index the original value, never a lowercased copy,
- * because lowercasing can change a string's length (`İ` becomes two units).
- */
+/** Finds every non-overlapping, case-insensitive occurrence of a term in a field's value, as offsets into the original value. */
 export function findMatchRanges(
   field: string,
   value: null | string | undefined,
@@ -78,11 +73,7 @@ export function matchRangesOf(
   );
 }
 
-/**
- * The sorts in the order given, each with its direction, keeping the first of
- * a repeated attribute. Each group leads, in the direction its own sort gave
- * or ascending. No sorts means the default.
- */
+/** The sorts in order, keeping the first of a repeated attribute; each group leads. No sorts means the default. */
 export function normalizeSorts(
   sorts: null | readonly LibrarySortRequest[] | undefined,
   groups: null | readonly LibraryGroupField[] | undefined = [],

@@ -1,6 +1,6 @@
 import { Field, InputType } from "@nestjs/graphql";
 
-import { AUTHOR_ERA_MEMBERS } from "../authors/author.entities";
+import { AUTHOR_ERA_MEMBERS } from "../../../authors/author.entities";
 
 import { LibraryRangeInput } from "./library-range.entities";
 

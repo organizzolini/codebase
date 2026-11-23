@@ -8,10 +8,10 @@ import {
 } from "@codebase/lexico-db";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
-import { environmentSchema } from "../src/lexico-api.constants";
-import { ORPHANED_GRAPHQL_TYPES } from "../src/modules/lexemes/lexemes.constants";
+import { environmentSchema } from "../../src/lexico-api.constants";
+import { ORPHANED_GRAPHQL_TYPES } from "../../src/modules/lexemes/lexemes.constants";
 
-import type { RepositoryOf } from "./word-lookups";
+import type { RepositoryOf } from "../word-lookups";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { INestApplication, ModuleMetadata } from "@nestjs/common";
 import type { Server } from "node:http";

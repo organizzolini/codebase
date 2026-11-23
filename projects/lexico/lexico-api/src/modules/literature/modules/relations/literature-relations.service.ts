@@ -57,12 +57,7 @@ export class LiteratureRelationsService {
 
   // 🌎 Public Methods
 
-  /**
-   * Finds each text's ancestors, root first, with their authors, in two
-   * statements however many texts ask: the chain of parent ids, then the rows.
-   * A top-level text has none. No constraint forbids a parent cycle, so the
-   * chain stops before revisiting a text rather than looping.
-   */
+  /** Finds each text's ancestors, root first, with authors, in two statements; a parent cycle stops the chain. */
   public async findAncestorTexts(
     textIds: readonly string[],
   ): Promise<Map<string, Text[]>> {
@@ -121,11 +116,7 @@ export class LiteratureRelationsService {
     return new Map(texts.map((text) => [text.id, text.parentText ?? null]));
   }
 
-  /**
-   * Finds each text's previous and next sibling, in the order its parent's
-   * child texts are listed, in two statements however many texts ask. Null at
-   * either end, and for a top-level text, which has no siblings.
-   */
+  /** Finds each text's previous and next sibling in two statements; null at either end and for top-level texts. */
   public async findSiblingTexts(
     textIds: readonly string[],
   ): Promise<Map<string, TextSiblings>> {

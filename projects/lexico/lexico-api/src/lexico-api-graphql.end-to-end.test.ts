@@ -20,11 +20,11 @@ import {
 } from "@codebase/lexico-db";
 import { LoggerModule } from "@codebase/observability";
 
-import { DATABASE_TIMEOUT_MILLISECONDS } from "../testing/database";
 import {
   type LexicoGraphqlApplication,
   startLexicoGraphqlApplication,
-} from "../testing/graphql-application";
+} from "../testing/applications/graphql-application";
+import { DATABASE_TIMEOUT_MILLISECONDS } from "../testing/database";
 
 import { LexemesModule } from "./modules/lexemes/lexemes.module";
 import { LiteratureModule } from "./modules/literature/literature.module";
