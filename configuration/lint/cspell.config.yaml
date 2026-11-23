@@ -40,7 +40,7 @@ ignorePaths:
   - "**/documentation/planning/**"
   # Diagrams the persistence render commands draw from database rows, whose
   # labels are data, such as the IAU abbreviations of constellations.
-  - "**/documentation/documentation/*-data.md"
+  - "**/documentation/*-data.md"
   # 🌀 Every meander the `draw` command writes. The SVGs are covered by the `*.svg` entry.
   # The index lists mosaic tile identifiers, which are coordinates, not words.
   # `.codometerignore` and `.prettierignore` exclude the same directory.

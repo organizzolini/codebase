@@ -155,14 +155,14 @@ own, or add `--page 1`, repeating `--page` for several, to draw only those. Or p
 
 ## Committed diagrams
 
-[`tag-tree-data.md`](../../../documentation/documentation/tag-tree-data.md) and
-[`constellation-line-graph-data.md`](../../../documentation/documentation/constellation-line-graph-data.md)
+[`tag-tree-data.md`](documentation/tag-tree-data.md) and
+[`constellation-line-graph-data.md`](documentation/constellation-line-graph-data.md)
 hold the diagrams of a local database, named `{entity}-{tree|graph}-data.md`.
 Regenerate them with the connection variables set:
 
 ```bash
-nx run caelundas-db:render-tag-tree --args="--output-markdown documentation/documentation/tag-tree-data.md --overwrite"
-nx run caelundas-db:render-constellation-graph --args="--limit 31 --output-markdown documentation/documentation/constellation-line-graph-data.md --overwrite"
+nx run caelundas-db:render-tag-tree --args="--output-markdown projects/caelundas/caelundas-db/documentation/tag-tree-data.md --overwrite"
+nx run caelundas-db:render-constellation-graph --args="--limit 31 --output-markdown projects/caelundas/caelundas-db/documentation/constellation-line-graph-data.md --overwrite"
 ```
 
 ## Test
