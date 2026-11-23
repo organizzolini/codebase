@@ -8,6 +8,7 @@ import { Widget } from "../../../testing/fixtures/widget.entity";
 import { PluralSnakeNamingStrategy } from "../postgresql/postgresql.constants";
 
 import {
+  entityColumnNames,
   pickTreeCandidate,
   resolveEntityFiles,
   treeCandidates,
@@ -27,6 +28,24 @@ const tree = (
 ): GraphTreeCandidate => ({ entity, tableName });
 
 describe("graph entity utilities", () => {
+  describe(entityColumnNames, () => {
+    it("names the columns an entity declares itself, and those it inherits from its base layers", () => {
+      const names = entityColumnNames(Widget);
+
+      expect(names).toContain("displayName");
+      expect(names).toContain("id");
+      expect(names).toContain("createdAt");
+      expect(names).toStrictEqual([...new Set(names)]);
+    });
+
+    it("names the columns of an entity that extends nothing", () => {
+      expect(entityColumnNames(ListTag).toSorted()).toStrictEqual([
+        "id",
+        "name",
+      ]);
+    });
+  });
+
   describe(treeCandidates, () => {
     it("lists each tree entity with the table its name maps to, skipping plain entities", () => {
       const candidates = treeCandidates(

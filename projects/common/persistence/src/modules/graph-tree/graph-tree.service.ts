@@ -1,15 +1,18 @@
 import { Injectable } from "@nestjs/common";
 
-import { loadTreeGraph } from "./graph-tree-readers.utilities";
+import { resolveGraphView } from "../graph-options/graph-options-columns.utilities";
+
+import { graphColumns, loadTreeGraph } from "./graph-tree-readers.utilities";
 import { limitTreeGraph } from "./graph-tree.utilities";
 
 import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
-import type { GraphTreeLimits } from "./graph-tree.types";
+import type { GraphTreeOptions } from "./graph-tree.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /**
  * Reads a `@Tree` entity's rows from a database as a graph model, whatever
- * storage the tree uses, for the render commands to draw.
+ * storage the tree uses, for the render commands to draw. Filters run first,
+ * then sort keys, then the caps cut the filtered, sorted tree.
  */
 @Injectable()
 export class GraphTreeService {
@@ -27,13 +30,20 @@ export class GraphTreeService {
 
   /**
    * Reads the tree `metadata` describes from `dataSource` as a graph model,
-   * capped at `limits`; see `limitTreeGraph`.
+   * filtered and sorted by `options`, then capped by them; see `limitTreeGraph`.
+   * @throws GraphOptionsError when a filter or sort names no column, or compares unfit values.
    */
   async load(
     dataSource: DataSource,
     metadata: EntityMetadata,
-    limits: GraphTreeLimits = {},
+    options: GraphTreeOptions,
   ): Promise<GraphModel> {
-    return limitTreeGraph(await loadTreeGraph(dataSource, metadata), limits);
+    const view = resolveGraphView(
+      graphColumns(dataSource, metadata),
+      options.filters,
+      options.sorts,
+    );
+    const graph = await loadTreeGraph(dataSource, metadata, view);
+    return limitTreeGraph(graph, options);
   }
 }

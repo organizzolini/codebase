@@ -1,5 +1,7 @@
 // ♟️ Constants
 
+import { z } from "zod";
+
 /** Missing-option messages, keyed by option, each showing its usage. */
 export const GRAPH_OPTION_MESSAGES = {
   entities:
@@ -34,3 +36,77 @@ export const graphTableSchemaMessage = (
   schema: string,
 ): string =>
   `--table ${table} is qualified with a schema other than --schema ${schema}: name the table as ${schema}.<table> or as <table> alone`;
+
+/** A `--filter` that is not `column<op>value`, naming the grammar and its operators. */
+export const graphFilterSyntaxMessage = (expression: string): string =>
+  `--filter "${expression}" must be column<op>value, e.g. --filter name~=Inbox; operators are =, !=, ~= (contains), <, >`;
+
+/** A `--sort` that is not `column`, `column:asc`, or `column:desc`. */
+export const graphSortSyntaxMessage = (expression: string): string =>
+  `--sort "${expression}" must be column, column:asc, or column:desc, e.g. --sort name:desc`;
+
+/** A `--filter` or `--sort` that names a column the entity does not have. */
+export const graphUnknownColumnMessage = ({
+  column,
+  columns,
+  expression,
+  flag,
+}: {
+  readonly column: string;
+  readonly columns: readonly string[];
+  readonly expression: string;
+  readonly flag: "--filter" | "--sort";
+}): string =>
+  `${flag} "${expression}" names no column "${column}"; columns are ${columns.join(", ")}`;
+
+/** `column<op>value`: a column name, the operator, then the value, which keeps any operator characters after it. */
+export const GRAPH_FILTER_PATTERN =
+  /^([A-Za-z_][A-Za-z0-9_]*)(!=|~=|=|<|>)([\s\S]*)$/u;
+
+/** `column`, optionally followed by `:asc` or `:desc`. */
+export const GRAPH_SORT_PATTERN = /^([A-Za-z_][A-Za-z0-9_]*)(?::(asc|desc))?$/u;
+
+/** The operators a `--filter` may use, each a token `GRAPH_FILTER_PATTERN` matches. */
+export const GRAPH_FILTER_OPERATORS = ["!=", "<", "=", ">", "~="] as const;
+
+/** SQL types a filter compares as numbers, such as `integer` or `numeric(10,2)`. */
+export const GRAPH_NUMBER_TYPE =
+  /^(?:(?:small|big)?int(?:eger)?\d?|numeric|decimal|real|float\d*|double precision|(?:small|big)?serial)(?:\(.*\))?$/u;
+
+/** SQL types a filter compares as dates or times, such as `timestamp with time zone`. */
+export const GRAPH_DATE_TYPE = /^(?:date|time|timestamp)(?:\s|\(|$)/u;
+
+/** A `<` or `>` value a numeric column accepts: an optional sign, digits, and an optional fraction. */
+export const GRAPH_NUMBER_VALUE = /^[+-]?(?:\d+\.?\d*|\.\d+)$/u;
+
+/** A `--filter` whose pattern matched: its column, its operator, and its value. */
+export const GRAPH_FILTER_SCHEMA = z.object({
+  column: z.string(),
+  operator: z.enum(GRAPH_FILTER_OPERATORS),
+  value: z.string(),
+});
+
+/** A `--sort` whose pattern matched: its column, and its direction, ascending when none was given. */
+export const GRAPH_SORT_SCHEMA = z.object({
+  column: z.string(),
+  direction: z.enum(["asc", "desc"]).default("asc"),
+});
+
+/** A `<` or `>` filter on a column that is not numeric or a date. */
+export const graphComparisonKindMessage = (
+  expression: string,
+  column: string,
+): string =>
+  `--filter "${expression}" compares with < or >, which needs a numeric or date column; "${column}" is a text column`;
+
+/** A `<` or `>` filter whose value is not a number, for a numeric column. */
+export const graphNumberValueMessage = (
+  expression: string,
+  value: string,
+): string => `--filter "${expression}": "${value}" is not a number`;
+
+/** A `<` or `>` filter whose value is not a date, for a date column. */
+export const graphDateValueMessage = (
+  expression: string,
+  value: string,
+): string => `--filter "${expression}": "${value}" is not a date`;

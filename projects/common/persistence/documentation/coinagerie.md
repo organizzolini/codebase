@@ -8,7 +8,9 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **db**: A stray fragment for database; this package's code and docs use the full word, so the headword carries no local role.
 - **deletable**: The entity base layer that adds soft-delete support, last in the identifiable, creatable, updatable, deletable chain.
 - **identifiable**: The entity base layer that adds a primary id, first in the identifiable, creatable, updatable, deletable chain.
+- **predicate**: A `--filter` once its column is resolved, the comparison of one column with one value that becomes one WHERE term.
 - **qualifier**: The schema a `schema.table` name carries before its dot, which `--table` checks against `--schema`.
+- **unplaced**: A row that a sort rank does not name, which keeps its place after every ranked row.
 - **updatable**: The entity base layer that adds update tracking columns, third in the identifiable, creatable, updatable, deletable chain.
 - **verb**: The verb in a log message that the export log convention test expects after the subject emoji, such as exists.
 

@@ -37,11 +37,40 @@ describe(GraphOptionsService, () => {
           username: "fixture_user",
         },
         entities: ["src/**/*.entity.ts"],
+        filters: [],
         maximumBreadth: undefined,
         maximumDepth: undefined,
+        sorts: [],
         source: "postgresql://fixture_user:****@localhost:5433/fixture_db",
         table: "closure_tags",
       });
+    });
+
+    it("parses each --filter and --sort in the order given, rejecting bad syntax", async () => {
+      const { instance } = await buildTestingModule(GraphOptionsService);
+
+      const plan = instance.plan({
+        entities: ["a.ts"],
+        filter: ["name~=Inbox", "id>4"],
+        schema: "fixture",
+        sort: ["name:desc", "id"],
+        sourceUri: SOURCE_URI,
+      });
+
+      expect(
+        plan.filters.map(({ column, operator }) => `${column}${operator}`),
+      ).toStrictEqual(["name~=", "id>"]);
+      expect(
+        plan.sorts.map(({ column, direction }) => `${column}:${direction}`),
+      ).toStrictEqual(["name:desc", "id:asc"]);
+      expect(() =>
+        instance.plan({
+          entities: ["a.ts"],
+          schema: "fixture",
+          sort: ["name:up"],
+          sourceUri: SOURCE_URI,
+        }),
+      ).toThrow('--sort "name:up" must be column, column:asc, or column:desc');
     });
 
     it("reads --max-depth and --max-breadth as positive integers", async () => {

@@ -40,6 +40,27 @@ export function createGraphDataSource(
 }
 
 /**
+ * The property names of the columns `entity` declares or inherits from the
+ * classes it extends, read from the decorator metadata before any connection
+ * opens, so `--filter` and `--sort` can name them. TypeORM's `filterColumns`
+ * matches one class exactly, so each class up the chain is asked in turn.
+ */
+export function entityColumnNames(entity: GraphEntity): string[] {
+  const storage = getMetadataArgumentsStorage();
+  const names = new Set<string>();
+  for (
+    let target: unknown = entity;
+    isClass(target);
+    target = Object.getPrototypeOf(target)
+  ) {
+    for (const column of storage.filterColumns(target)) {
+      names.add(column.propertyName);
+    }
+  }
+  return [...names];
+}
+
+/**
  * The entity classes `files` define, found by importing each file through the
  * process's module loader, which runs the repository's swc hook for TypeScript.
  * A class counts when it carries `@Entity`.
@@ -131,6 +152,11 @@ export function treeCandidates(
       },
     ];
   });
+}
+
+/** Whether `value` is a class, not the `Function.prototype` that ends every class chain. */
+function isClass(value: unknown): value is GraphEntity {
+  return typeof value === "function" && value !== Function.prototype;
 }
 
 /** Whether `value` is a class carrying `@Entity`, which TypeORM registers. */

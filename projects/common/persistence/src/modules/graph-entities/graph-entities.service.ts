@@ -1,13 +1,20 @@
 import { Injectable } from "@nestjs/common";
 
+import { assertGraphColumnNames } from "../graph-options/graph-options-columns.utilities";
+
 import {
   createGraphDataSource,
+  entityColumnNames,
   importEntityClasses,
   pickTreeCandidate,
   resolveEntityFiles,
   treeCandidates,
 } from "./graph-entities.utilities";
 
+import type {
+  GraphFilter,
+  GraphSort,
+} from "../graph-options/graph-options.types";
 import type { PostgresConnection } from "../postgresql/postgresql.types";
 import type { GraphEntity, GraphTreePick } from "./graph-entities.types";
 import type { DataSource } from "typeorm";
@@ -29,6 +36,19 @@ export class GraphEntitiesService {
   // 🔏 Private Methods
 
   // 🌎 Public Methods
+
+  /**
+   * Passes when every filter and sort names a column `entity` declares, read
+   * before any connection opens.
+   * @throws GraphOptionsError naming the first column the entity lacks.
+   */
+  assertColumns(
+    entity: GraphEntity,
+    filters: readonly GraphFilter[],
+    sorts: readonly GraphSort[],
+  ): void {
+    assertGraphColumnNames(entityColumnNames(entity), filters, sorts);
+  }
 
   /** A data source over `entities` on `connection`, which it does not open. */
   createDataSource(

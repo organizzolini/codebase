@@ -77,6 +77,17 @@ const KEYED_DIAGRAM = [
   "",
 ].join("\n");
 
+/** The diagram header every drawn tree opens with, before its nodes, edges, and classes. */
+const DIAGRAM_HEADER = [
+  "flowchart LR",
+  "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
+  "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
+];
+
+/** The diagram of `lines`, indented under the header, as stdout holds it. */
+const drawnDiagram = (lines: readonly string[]): string =>
+  [...DIAGRAM_HEADER, ...lines.map((line) => `    ${line}`), ""].join("\n");
+
 describe("render-tree-data", () => {
   let source: FixtureDatabase;
 
@@ -380,6 +391,243 @@ describe("render-tree-data", () => {
       expect(result.stderr).toBe(
         warnings.map((warning) => `⚠️ ${warning}\n`).join(""),
       );
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
+
+  it.each([
+    [
+      "--filter name=Inbox keeps the match and its ancestors, not its siblings",
+      ["--filter", "name=Inbox"],
+      [
+        'n0["Work"]',
+        'n1["Email"]',
+        'n2["Inbox"]',
+        "n0 --> n1",
+        "n1 --> n2",
+        "class n0 root",
+      ],
+    ],
+    [
+      "--filter name~=ting keeps the rows whose name contains the text",
+      ["--filter", "name~=ting"],
+      ['n0["Work"]', 'n1["Meetings"]', "n0 --> n1", "class n0 root"],
+    ],
+    [
+      "--filter name!=Errands drops only the rows named Errands and keeps the rest",
+      ["--filter", "name!=Errands"],
+      [
+        'n0["Work"]',
+        'n1["Email"]',
+        'n2["Meetings"]',
+        'n3["Inbox"]',
+        "n0 --> n1",
+        "n0 --> n2",
+        "n1 --> n3",
+        "class n0 root",
+      ],
+    ],
+    [
+      "--filter id<3 keeps each match with its ancestors and its whole subtree",
+      ["--filter", "id<3"],
+      [
+        'n0["Work"]',
+        'n1["Email"]',
+        'n2["Meetings"]',
+        'n3["Inbox"]',
+        "n0 --> n1",
+        "n0 --> n2",
+        "n1 --> n3",
+        "class n0 root",
+      ],
+    ],
+    [
+      "--filter id>4 keeps only the rows above the id, which are roots",
+      ["--filter", "id>4"],
+      ['n0["Errands"]', "class n0 root"],
+    ],
+    [
+      "--filter name=Meetings keeps the match and its root, as an equal-text match",
+      ["--filter", "name=Meetings"],
+      ['n0["Work"]', 'n1["Meetings"]', "n0 --> n1", "class n0 root"],
+    ],
+    [
+      "--filter name=Email keeps the match's ancestors and its children, but not its siblings",
+      ["--filter", "name=Email"],
+      [
+        'n0["Work"]',
+        'n1["Email"]',
+        'n2["Inbox"]',
+        "n0 --> n1",
+        "n1 --> n2",
+        "class n0 root",
+      ],
+    ],
+    [
+      "several --filter flags combine with AND",
+      ["--filter", "name~=n", "--filter", "id>4"],
+      ['n0["Errands"]', "class n0 root"],
+    ],
+    [
+      "--max-depth applies to the filtered tree, truncating what the filter kept",
+      ["--filter", "name!=Errands", "--max-depth", "2"],
+      [
+        'n0["Work"]',
+        'n1["Email"]',
+        'n2["Meetings"]',
+        'n3["… 1 more"]',
+        "n0 --> n1",
+        "n0 --> n2",
+        "n1 --> n3",
+        "class n0 root",
+        "class n3 truncation",
+      ],
+    ],
+    [
+      "--sort name:desc orders the roots and each sibling group, Z to A",
+      ["--sort", "name:desc"],
+      [
+        'n0["Work"]',
+        'n1["Meetings"]',
+        'n2["Inbox"]',
+        'n3["Errands"]',
+        'n4["Email"]',
+        "n0 --> n1",
+        "n4 --> n2",
+        "n0 --> n4",
+        "class n0 root",
+        "class n3 root",
+      ],
+    ],
+    [
+      "--sort name orders each sibling group A to Z",
+      ["--sort", "name"],
+      [
+        'n0["Email"]',
+        'n1["Errands"]',
+        'n2["Inbox"]',
+        'n3["Meetings"]',
+        'n4["Work"]',
+        "n4 --> n0",
+        "n0 --> n2",
+        "n4 --> n3",
+        "class n1 root",
+        "class n4 root",
+      ],
+    ],
+  ])(
+    "draws the list tree: %s",
+    async (_description, argv, lines) => {
+      const result = await runRender(["--entities", LIST_GLOB, ...argv]);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toBe(drawnDiagram(lines));
+      expect(result.stderr).toBe(
+        "⚠️ Node 2 hides 1 child beyond --max-depth 2\n".repeat(
+          argv.includes("--max-depth") ? 1 : 0,
+        ),
+      );
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
+
+  it(
+    "applies several --sort keys in order, breaking each tie with the next key",
+    async () => {
+      await source.query(
+        "INSERT INTO list_tags (id, name, parent_id) VALUES (6, 'Email', NULL)",
+      );
+
+      const result = await runRender([
+        "--entities",
+        LIST_GLOB,
+        "--sort",
+        "name",
+        "--sort",
+        "id:desc",
+      ]);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toBe(
+        drawnDiagram([
+          'n0["Email"]',
+          'n1["Email"]',
+          'n2["Errands"]',
+          'n3["Inbox"]',
+          'n4["Meetings"]',
+          'n5["Work"]',
+          "n5 --> n1",
+          "n1 --> n3",
+          "n5 --> n4",
+          "class n0 root",
+          "class n2 root",
+          "class n5 root",
+        ]),
+      );
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
+
+  it.each([
+    [
+      "a --filter names a column the entity lacks",
+      ["--filter", "gadget=1"],
+      '--filter "gadget=1" names no column "gadget"; columns are id, name',
+    ],
+    [
+      "a --sort names a column the entity lacks",
+      ["--sort", "gadget:desc"],
+      '--sort "gadget:desc" names no column "gadget"; columns are id, name',
+    ],
+    [
+      "a --filter has no operator",
+      ["--filter", "name"],
+      '--filter "name" must be column<op>value, e.g. --filter name~=Inbox; operators are =, !=, ~= (contains), <, >',
+    ],
+    [
+      "a --sort has an unknown direction",
+      ["--sort", "name:up"],
+      '--sort "name:up" must be column, column:asc, or column:desc, e.g. --sort name:desc',
+    ],
+  ])(
+    "fails naming the problem before connecting when %s",
+    async (_description, argv, message) => {
+      const secret = "filter-fixture-secret-6e21";
+      const unreachable = `postgresql://fixture_user:${secret}@127.0.0.1:1/fixture_db`;
+
+      const result = await runRender(
+        ["--entities", LIST_GLOB, ...argv],
+        unreachable,
+      );
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stdout).toBe("");
+      expect(result.stderr).toBe(`${message}\n`);
+      expect(result.stderr).not.toContain("ECONNREFUSED");
+      expect(result.stderr).not.toContain(secret);
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
+
+  it.each([
+    [
+      "< on a text column",
+      ["--filter", "name<M"],
+      '--filter "name<M" compares with < or >, which needs a numeric or date column; "name" is a text column',
+    ],
+    [
+      "> with a value that is not a number on a numeric column",
+      ["--filter", "id>abc"],
+      '--filter "id>abc": "abc" is not a number',
+    ],
+  ])(
+    "fails naming the comparison when it is %s",
+    async (_description, argv, message) => {
+      const result = await runRender(["--entities", LIST_GLOB, ...argv]);
+
+      expect(result.exitCode).toBe(1);
+      expect(result.stdout).toBe("");
+      expect(result.stderr).toBe(`${message}\n`);
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   );

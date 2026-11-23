@@ -1,5 +1,9 @@
 // 🏷️ Types
 
+import type {
+  GraphFilter,
+  GraphSort,
+} from "../graph-options/graph-options.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /** Caps on the drawn tree; an absent cap draws every level or child. */
@@ -9,6 +13,15 @@ export interface GraphTreeLimits {
 
   /** The deepest level drawn, with roots at level 1; `undefined` draws every level. */
   readonly maximumDepth?: number | undefined;
+}
+
+/** What a tree read draws: its row filters and sort keys, then its caps. */
+export interface GraphTreeOptions extends GraphTreeLimits {
+  /** The row filters, each by a column name; a row must match all of them. */
+  readonly filters: readonly GraphFilter[];
+
+  /** The sort keys, applied in order among siblings. */
+  readonly sorts: readonly GraphSort[];
 }
 
 /** Reads one tree table's rows, whichever storage it uses. */

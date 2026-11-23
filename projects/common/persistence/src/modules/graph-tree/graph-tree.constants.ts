@@ -2,6 +2,11 @@
 
 import { z } from "zod";
 
+/** A row an id query selects, which filters and sorts rank a tree by. */
+export const GRAPH_TREE_IDENTIFIED_ROW_SCHEMA = z.object({
+  id: z.string(),
+});
+
 /** A row of an adjacency-list or closure-table tree: its parent column is its key. */
 export const GRAPH_TREE_PARENT_ROW_SCHEMA = z.object({
   id: z.string(),

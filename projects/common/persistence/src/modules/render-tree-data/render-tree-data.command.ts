@@ -65,14 +65,17 @@ export class RenderTreeDataCommand extends CommandRunner {
       namingStrategy: dataSource.namingStrategy,
       table: plan.table,
     });
+    this.graphEntities.assertColumns(picked, plan.filters, plan.sorts);
     try {
       await dataSource.initialize();
       const graph = await this.graphTree.load(
         dataSource,
         dataSource.getMetadata(picked),
         {
+          filters: plan.filters,
           maximumBreadth: plan.maximumBreadth,
           maximumDepth: plan.maximumDepth,
+          sorts: plan.sorts,
         },
       );
       const rendering = this.graphMermaid.render(graph, {
@@ -112,6 +115,16 @@ export class RenderTreeDataCommand extends CommandRunner {
     return [...previous, value];
   }
 
+  /** Collects each repeated `--filter` into one list, in the order given. */
+  @Option({
+    description:
+      "Keep rows matching column<op>value, e.g. --filter name~=Inbox; repeat and all must match. Operators: = (equal), != (not equal), ~= (contains, case-sensitive), < and > (numeric or date columns only). A matching row keeps its ancestors and its descendants",
+    flags: "--filter <expression>",
+  })
+  parseFilter(value: string, previous: string[] = []): string[] {
+    return [...previous, value];
+  }
+
   /** Parses `--max-breadth`, the most children drawn under one node. */
   @Option({
     description:
@@ -139,6 +152,16 @@ export class RenderTreeDataCommand extends CommandRunner {
   })
   parseSchema(value: string): string {
     return value;
+  }
+
+  /** Collects each repeated `--sort` into one list of keys, applied in the order given. */
+  @Option({
+    description:
+      "Sort siblings by column[:asc|desc], e.g. --sort name:desc; repeat for several keys, applied in order. Applied before --max-depth and --max-breadth cut the tree",
+    flags: "--sort <expression>",
+  })
+  parseSort(value: string, previous: string[] = []): string[] {
+    return [...previous, value];
   }
 
   /** Parses `--source-uri`, the database to read from. */

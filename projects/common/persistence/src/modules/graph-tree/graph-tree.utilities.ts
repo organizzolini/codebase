@@ -41,6 +41,18 @@ export function buildTreeGraph(rows: readonly GraphTreeRow[]): GraphModel {
   return { directed: true, edges, nodes, warnings };
 }
 
+/** The rows whose ids `ids` holds, in their given order. */
+export function keepRowsIn(
+  rows: readonly GraphTreeRow[],
+  ids: ReadonlySet<string>,
+): GraphTreeRow[] {
+  const drawn: GraphTreeRow[] = [];
+  for (const row of rows) {
+    if (ids.has(row.id)) drawn.push(row);
+  }
+  return drawn;
+}
+
 /**
  * Caps a tree graph at `limits`. Roots are level 1 and never capped by
  * breadth. A node past `maximumDepth` hides all its children, and a node with more
@@ -82,6 +94,52 @@ export function limitTreeGraph(
 }
 
 /**
+ * The ids of each match and of every ancestor of a match, so a matched row
+ * still shows where it sits. A parent no row has ends the walk up, and a cycle
+ * ends it at a row already kept.
+ */
+export function matchedAncestors(
+  rows: readonly GraphTreeRow[],
+  matches: ReadonlySet<string>,
+): Set<string> {
+  const parents = new Map<string, string | undefined>();
+  for (const { id, parentId } of rows) parents.set(id, parentId);
+
+  const kept = new Set<string>();
+  for (const match of matches) {
+    let id: string | undefined = match;
+    while (id !== undefined && parents.has(id) && !kept.has(id)) {
+      kept.add(id);
+      id = parents.get(id);
+    }
+  }
+  return kept;
+}
+
+/**
+ * The ids of each match and of every descendant of a match, so a matched row
+ * draws its whole subtree. A row joins once its parent has joined, which
+ * repeats over the rows until none joins; a cycle joins each row once.
+ */
+export function matchedSubtrees(
+  rows: readonly GraphTreeRow[],
+  matches: ReadonlySet<string>,
+): Set<string> {
+  const subtree = new Set(matches);
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const { id, parentId } of rows) {
+      if (parentId !== undefined && subtree.has(parentId) && !subtree.has(id)) {
+        subtree.add(id);
+        grew = true;
+      }
+    }
+  }
+  return subtree;
+}
+
+/**
  * Finds each nested-set row's parent: the nearest row whose interval encloses
  * its own. Rows are visited in left-bound order, keeping the open intervals.
  */
@@ -102,6 +160,31 @@ export function nestedSetParents(
   }
 
   return parents;
+}
+
+/**
+ * The rows sorted by their position in `rank`, which lists every row's id in
+ * the order its sort keys place it. A row `rank` omits sorts after the rest.
+ */
+export function orderRowsByRank(
+  rows: readonly GraphTreeRow[],
+  rank: readonly string[],
+): GraphTreeRow[] {
+  const unplaced = new Map<string, GraphTreeRow>();
+  for (const row of rows) unplaced.set(row.id, row);
+
+  const ordered: GraphTreeRow[] = [];
+  for (const id of rank) {
+    const row = unplaced.get(id);
+    if (row !== undefined) {
+      ordered.push(row);
+      unplaced.delete(id);
+    }
+  }
+  for (const row of rows) {
+    if (unplaced.has(row.id)) ordered.push(row);
+  }
+  return ordered;
 }
 
 /**

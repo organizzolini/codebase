@@ -3,9 +3,17 @@
 import { maskPostgresCredentials } from "../postgresql-utilities/postgresql-utilities.utilities";
 
 import {
+  GRAPH_FILTER_PATTERN,
+  GRAPH_FILTER_SCHEMA,
+  GRAPH_SORT_PATTERN,
+  GRAPH_SORT_SCHEMA,
+  graphFilterSyntaxMessage,
   GraphOptionsError,
   graphPositiveIntegerMessage,
+  graphSortSyntaxMessage,
 } from "./graph-options.constants";
+
+import type { GraphFilter, GraphSort } from "./graph-options.types";
 
 /**
  * `error` again, with its message's password masked, so a connection failure
@@ -16,6 +24,39 @@ export function maskedError(error: unknown, password: string): Error {
   const masked = new Error(maskPostgresCredentials(message, password));
   masked.name = error instanceof Error ? error.name : Error.name;
   return masked;
+}
+
+/**
+ * `expression` as a row filter: its column, operator, and value.
+ * @throws GraphOptionsError naming the grammar when it is not `column<op>value`.
+ */
+export function parseGraphFilter(expression: string): GraphFilter {
+  const match = GRAPH_FILTER_PATTERN.exec(expression);
+  const parsed = GRAPH_FILTER_SCHEMA.safeParse({
+    column: match?.[1],
+    operator: match?.[2],
+    value: match?.[3],
+  });
+  if (!parsed.success) {
+    throw new GraphOptionsError(graphFilterSyntaxMessage(expression));
+  }
+  return { ...parsed.data, expression };
+}
+
+/**
+ * `expression` as a sort key: its column and direction, ascending by default.
+ * @throws GraphOptionsError naming the grammar when it is not `column[:asc|desc]`.
+ */
+export function parseGraphSort(expression: string): GraphSort {
+  const match = GRAPH_SORT_PATTERN.exec(expression);
+  const parsed = GRAPH_SORT_SCHEMA.safeParse({
+    column: match?.[1],
+    direction: match?.[2],
+  });
+  if (!parsed.success) {
+    throw new GraphOptionsError(graphSortSyntaxMessage(expression));
+  }
+  return { ...parsed.data, expression };
 }
 
 /**

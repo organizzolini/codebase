@@ -2,8 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildTreeGraph,
+  keepRowsIn,
   limitTreeGraph,
+  matchedAncestors,
+  matchedSubtrees,
   nestedSetParents,
+  orderRowsByRank,
   requireTreeMetadata,
 } from "./graph-tree.utilities";
 
@@ -234,6 +238,120 @@ describe("graph tree utilities", () => {
           ["d", undefined],
         ]),
       );
+    });
+  });
+
+  describe("filter keeping", () => {
+    const ROWS: GraphTreeRow[] = [
+      { id: "1", label: "Work", parentId: undefined },
+      { id: "2", label: "Email", parentId: "1" },
+      { id: "4", label: "Inbox", parentId: "2" },
+      { id: "3", label: "Meetings", parentId: "1" },
+      { id: "5", label: "Errands", parentId: undefined },
+    ];
+
+    /** The rows a filter keeps: each match, its ancestors, and its subtree. */
+    const keep = (
+      rows: readonly GraphTreeRow[],
+      matches: ReadonlySet<string>,
+    ): GraphTreeRow[] =>
+      keepRowsIn(
+        rows,
+        new Set([
+          ...matchedAncestors(rows, matches),
+          ...matchedSubtrees(rows, matches),
+        ]),
+      );
+
+    it("keeps each match and every ancestor of it, dropping the rest", () => {
+      expect(keep(ROWS, new Set(["4"])).map(({ id }) => id)).toStrictEqual([
+        "1",
+        "2",
+        "4",
+      ]);
+    });
+
+    it("keeps a match's descendants with its ancestors, and not its siblings", () => {
+      expect(keep(ROWS, new Set(["2"])).map(({ id }) => id)).toStrictEqual([
+        "1",
+        "2",
+        "4",
+      ]);
+    });
+
+    it("keeps every descendant of a root match, however deep, but not an unrelated root", () => {
+      expect(keep(ROWS, new Set(["1"])).map(({ id }) => id)).toStrictEqual([
+        "1",
+        "2",
+        "4",
+        "3",
+      ]);
+    });
+
+    it("keeps no row when nothing matches", () => {
+      expect(keep(ROWS, new Set())).toStrictEqual([]);
+    });
+
+    it("lists a match's subtree ids on their own", () => {
+      expect(matchedSubtrees(ROWS, new Set(["2"]))).toStrictEqual(
+        new Set(["2", "4"]),
+      );
+    });
+
+    it("stops at a parent no row has, so a row whose parent is missing stays a root", () => {
+      const kept = keep(
+        [{ id: "7", label: "Stray", parentId: "99" }],
+        new Set(["7"]),
+      );
+
+      expect(kept.map(({ id }) => id)).toStrictEqual(["7"]);
+    });
+
+    it("ends each walk on a cycle, keeping each row once", () => {
+      const kept = keep(
+        [
+          { id: "a", label: "A", parentId: "b" },
+          { id: "b", label: "B", parentId: "a" },
+        ],
+        new Set(["a"]),
+      );
+
+      expect(kept.map(({ id }) => id).toSorted()).toStrictEqual(["a", "b"]);
+    });
+  });
+
+  describe(orderRowsByRank, () => {
+    it("orders rows by their position in the rank, keeping ties in row order", () => {
+      const rows: GraphTreeRow[] = [
+        { id: "1", label: "Work", parentId: undefined },
+        { id: "2", label: "Email", parentId: "1" },
+        { id: "3", label: "Meetings", parentId: "1" },
+      ];
+
+      const ordered = orderRowsByRank(rows, ["3", "1", "2"]);
+
+      expect(ordered.map(({ id }) => id)).toStrictEqual(["3", "1", "2"]);
+    });
+
+    it("places a row the rank omits after every ranked row", () => {
+      const rows: GraphTreeRow[] = [
+        { id: "1", label: "Work", parentId: undefined },
+        { id: "9", label: "Stray", parentId: undefined },
+      ];
+
+      const ordered = orderRowsByRank(rows, ["9"]);
+
+      expect(ordered.map(({ id }) => id)).toStrictEqual(["9", "1"]);
+    });
+
+    it("skips a rank id that no row has, keeping the rows it names", () => {
+      const rows: GraphTreeRow[] = [
+        { id: "9", label: "Stray", parentId: undefined },
+      ];
+
+      const ordered = orderRowsByRank(rows, ["7", "9"]);
+
+      expect(ordered.map(({ id }) => id)).toStrictEqual(["9"]);
     });
   });
 });

@@ -10,7 +10,11 @@ import {
   GraphOptionsError,
   graphTableSchemaMessage,
 } from "./graph-options.constants";
-import { positiveIntegerFlag } from "./graph-options.utilities";
+import {
+  parseGraphFilter,
+  parseGraphSort,
+  positiveIntegerFlag,
+} from "./graph-options.utilities";
 
 import type { GraphOptions, GraphPlan } from "./graph-options.types";
 
@@ -58,9 +62,11 @@ export class GraphOptionsService {
    */
   plan({
     entities,
+    filter,
     maxBreadth: maximumBreadth,
     maxDepth: maximumDepth,
     schema,
+    sort,
     sourceUri,
     table,
   }: GraphOptions): GraphPlan {
@@ -79,8 +85,10 @@ export class GraphOptionsService {
     return {
       connection: { ...connection, schema },
       entities,
+      filters: (filter ?? []).map((expression) => parseGraphFilter(expression)),
       maximumBreadth: positiveIntegerFlag("--max-breadth", maximumBreadth),
       maximumDepth: positiveIntegerFlag("--max-depth", maximumDepth),
+      sorts: (sort ?? []).map((expression) => parseGraphSort(expression)),
       source: maskPostgresCredentials(sourceUri, connection.password),
       table: this.tableName(table, schema),
     };

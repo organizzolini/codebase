@@ -1,6 +1,13 @@
 // 🌎 Utilities
 
 import {
+  filterClause,
+  graphColumnKind,
+  sortClause,
+} from "../graph-options/graph-options-columns.utilities";
+
+import {
+  GRAPH_TREE_IDENTIFIED_ROW_SCHEMA,
   GRAPH_TREE_NESTED_SET_ROW_SCHEMA,
   GRAPH_TREE_PARENT_ROW_SCHEMA,
   GRAPH_TREE_PATH_ROW_SCHEMA,
@@ -8,11 +15,19 @@ import {
 } from "./graph-tree.constants";
 import {
   buildTreeGraph,
+  keepRowsIn,
+  matchedAncestors,
+  matchedSubtrees,
   nestedSetParents,
+  orderRowsByRank,
   requireTreeMetadata,
 } from "./graph-tree.utilities";
 
 import type { GraphModel } from "../graph-mermaid/graph-mermaid.types";
+import type {
+  GraphColumn,
+  GraphView,
+} from "../graph-options/graph-options.types";
 import type {
   GraphTreeReader,
   GraphTreeRow,
@@ -22,16 +37,34 @@ import type {
 import type { DataSource, EntityMetadata } from "typeorm";
 import type { z } from "zod";
 
+/** The columns of `metadata`, each with the kind its SQL type gives it. */
+export function graphColumns(
+  dataSource: DataSource,
+  metadata: EntityMetadata,
+): GraphColumn[] {
+  const columns: GraphColumn[] = [];
+  for (const column of metadata.columns) {
+    columns.push({
+      kind: graphColumnKind(dataSource.driver.normalizeType(column)),
+      name: column.propertyName,
+      sqlName: escapeName(dataSource, column.databaseName),
+    });
+  }
+  return columns;
+}
+
 /**
  * Reads the tree `metadata` describes from `dataSource` as a graph model. The
  * storage named by `@Tree` decides how each row's parent is found: a parent
  * column for adjacency lists and closure tables, the path for materialized
- * paths, and the intervals for nested sets.
+ * paths, and the intervals for nested sets. `view` filters and sorts the rows
+ * before they are drawn; see `shapeTreeRows`.
  * @throws Error when the entity is not a tree, or lacks the columns its storage needs.
  */
 export async function loadTreeGraph(
   dataSource: DataSource,
   metadata: EntityMetadata,
+  view: GraphView,
 ): Promise<GraphModel> {
   const storage = requireTreeMetadata(
     metadata.treeType,
@@ -39,7 +72,9 @@ export async function loadTreeGraph(
   );
 
   const table = treeTable(dataSource, metadata);
-  return buildTreeGraph(await readerFor(storage)(dataSource, table));
+  const rows = await readerFor(storage)(dataSource, table);
+  const shaped = await shapeTreeRows(dataSource, table, { rows, view });
+  return buildTreeGraph(shaped);
 }
 
 /** Escapes a name for SQL, the way the connection's driver quotes it. */
@@ -135,6 +170,20 @@ async function readPathRows(
   });
 }
 
+/** The ids `sql` selects, in the order it selects them. */
+async function selectIds(
+  dataSource: DataSource,
+  sql: string,
+  parameters: readonly string[],
+): Promise<string[]> {
+  const rows: unknown[] = await dataSource.query(sql, [...parameters]);
+  const ids: string[] = [];
+  for (const row of rows) {
+    ids.push(GRAPH_TREE_IDENTIFIED_ROW_SCHEMA.parse(row).id);
+  }
+  return ids;
+}
+
 /** Runs `sql` and checks every row against `schema`. */
 async function selectRows<Schema extends z.ZodType>(
   dataSource: DataSource,
@@ -143,6 +192,48 @@ async function selectRows<Schema extends z.ZodType>(
 ): Promise<z.infer<Schema>[]> {
   const rows: unknown[] = await dataSource.query(sql);
   return rows.map((row) => schema.parse(row));
+}
+
+/**
+ * The rows `view` keeps, in the order it sorts them. Filters run first, keeping
+ * each matching row with its ancestors and subtree; sort keys then order the rows the
+ * database ranks, so siblings are drawn in that order.
+ */
+async function shapeTreeRows(
+  dataSource: DataSource,
+  table: GraphTreeTable,
+  {
+    rows,
+    view,
+  }: { readonly rows: readonly GraphTreeRow[]; readonly view: GraphView },
+): Promise<GraphTreeRow[]> {
+  let shaped: GraphTreeRow[] = [...rows];
+
+  if (view.filters.length > 0) {
+    const { parameters, sql } = filterClause(view.filters);
+    const matches = await selectIds(
+      dataSource,
+      `SELECT ${table.id}::text AS "id" FROM ${table.from} WHERE ${sql}`,
+      parameters,
+    );
+    const matched = new Set(matches);
+    const kept = new Set([
+      ...matchedAncestors(shaped, matched),
+      ...matchedSubtrees(shaped, matched),
+    ]);
+    shaped = keepRowsIn(shaped, kept);
+  }
+
+  if (view.sorts.length > 0) {
+    const rank = await selectIds(
+      dataSource,
+      `SELECT ${table.id}::text AS "id" FROM ${table.from} ORDER BY ${sortClause(view.sorts)}, ${table.id}`,
+      [],
+    );
+    shaped = orderRowsByRank(shaped, rank);
+  }
+
+  return shaped;
 }
 
 /** The tree table `metadata` describes, with its SQL names escaped. */
