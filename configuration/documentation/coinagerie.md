@@ -17,6 +17,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **gap**: A missing lexical slot that the lexico gap discovery CLI searches English for, the subject of its gap-finding tooling.
 - **meander**: Greek key or fret border motif that the meanderaw project generates as SVG from composable motif and modifier definitions.
 - **modifier**: A declaration keyword such as `static` or `shorthand` that a configuration rule matches on, as in a codometer symbol selector or an ESLint sort group.
+- **purpose**: A one-sentence description of what a database package models and supports, provided by each `nestjs-database-project` instance.
 - **restrict**: Suffix of the callidescope-restrict target, which traces only the callables a project owns and gates them against its own limits.
 - **selector**: Config key naming which code or projects a rule applies to, such as codometer comment selectors and codependix project selectors.
 - **shadow**: Name-hiding check set to error in typescript-eslint so a variable may not reuse an outer scope name.
