@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   renderGraphMarkdown,
   renderGraphMermaid,
+  renderGraphPagesMarkdown,
 } from "./graph-mermaid.utilities";
 
 import type { GraphEdge, GraphModel, GraphNode } from "./graph-mermaid.types";
@@ -539,6 +540,27 @@ describe(renderGraphMermaid, () => {
 
       expect(markdown.startsWith("`````mermaid\n")).toBe(true);
       expect(markdown.endsWith("\n`````\n")).toBe(true);
+    });
+  });
+
+  describe(renderGraphPagesMarkdown, () => {
+    const rendering = { diagram: "flowchart LR", warnings: [] };
+
+    it("writes a lone rendering with no heading", () => {
+      expect(renderGraphPagesMarkdown([rendering], ["Page 3"])).toBe(
+        renderGraphMarkdown(rendering),
+      );
+    });
+
+    it("puts each of several renderings under its own heading", () => {
+      const markdown = renderGraphPagesMarkdown(
+        [rendering, rendering],
+        ["Page 3", "Page 5"],
+      );
+
+      expect(markdown).toBe(
+        `## Page 3\n\n${renderGraphMarkdown(rendering)}\n## Page 5\n\n${renderGraphMarkdown(rendering)}`,
+      );
     });
   });
 });

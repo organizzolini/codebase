@@ -130,6 +130,33 @@ describe("render-tree-data output files", () => {
   );
 
   it(
+    "headings each repeated --page by its own number, in the order given",
+    async () => {
+      const file = path.join(directory, "pages.md");
+
+      const result = await runRender([
+        "--limit",
+        "1",
+        "--page",
+        "2",
+        "--page",
+        "1",
+        "--output-markdown",
+        file,
+      ]);
+
+      const markdown = fs.readFileSync(file, "utf8");
+
+      expect(result.exitCode).toBe(0);
+      expect(markdown.indexOf("## Page 2")).toBeGreaterThanOrEqual(0);
+      expect(markdown.indexOf("## Page 2")).toBeLessThan(
+        markdown.indexOf("## Page 1"),
+      );
+    },
+    INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+  );
+
+  it(
     "writes the JSON graph alone, and it parses back to the diagram drawn from it",
     async () => {
       const file = path.join(directory, "tree.json");

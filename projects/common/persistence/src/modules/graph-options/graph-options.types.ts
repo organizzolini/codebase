@@ -71,7 +71,7 @@ export interface GraphOptions {
   readonly overwrite?: boolean | undefined;
 
   /** Page of roots to draw, from 1, as text; needs `limit`. */
-  readonly page?: string | undefined;
+  readonly page?: string[] | undefined;
 
   /** The schema the entity tables live in; required. */
   readonly schema?: string | undefined;
@@ -142,8 +142,11 @@ export interface GraphPaging {
   /** The roots a page holds. */
   readonly limit: number;
 
-  /** The page drawn, from 1. */
+  /** The page a read draws, from 1. */
   readonly page: number;
+
+  /** The pages `--page` named, in order and without repeats; empty when `all`. */
+  readonly pages?: readonly number[] | undefined;
 }
 
 /** A validated graph command: where to read, which entities, and which table. */

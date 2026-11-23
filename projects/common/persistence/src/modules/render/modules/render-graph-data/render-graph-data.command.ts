@@ -112,11 +112,11 @@ export class RenderGraphDataCommand extends CommandRunner {
   /** Parses `--page`, the page of `--limit` roots to draw, from 1. */
   @Option({
     description:
-      "Page of --limit roots to draw, from 1; needs --limit. A page past the last root draws nothing and warns. Without it, every page is drawn, each as its own diagram. Positive integer",
+      "Page of --limit roots to draw, from 1; repeat for several, each its own diagram; needs --limit. A page past the last root draws nothing and warns. Without it, every page is drawn. Positive integer",
     flags: "--page <n>",
   })
-  parsePage(value: string): string {
-    return value;
+  parsePage(value: string, previous: string[] = []): string[] {
+    return [...previous, value];
   }
 
   /** Parses `--schema`, the schema the entity tables live in. */

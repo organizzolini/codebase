@@ -150,7 +150,7 @@ so it draws with no subgraph.
 
 Mermaid draws at most 500 edges and all constellation lines exceed it, so
 page with `--limit 31`, which draws every 31 neighborhoods as a diagram of its
-own, or add `--page 1` for just the first. Or pick one constellation with
+own, or add `--page 1`, repeating `--page` for several, to draw only those. Or pick one constellation with
 `--filter constellationDesignation=UMa`.
 
 ## Committed diagrams

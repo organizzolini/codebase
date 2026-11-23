@@ -125,7 +125,7 @@ describe(GraphOptionsService, () => {
           expect(() =>
             instance.plan({
               entities: ["a.ts"],
-              [key]: value,
+              [key]: key === "page" ? [value] : value,
               schema: "fixture",
               sourceUri: SOURCE_URI,
             }),
@@ -142,7 +142,7 @@ describe(GraphOptionsService, () => {
       const paged = instance.plan({
         entities: ["a.ts"],
         limit: "20",
-        page: "3",
+        page: ["3", "1", "3"],
         schema: "fixture",
         sourceUri: SOURCE_URI,
       });
@@ -153,8 +153,18 @@ describe(GraphOptionsService, () => {
         sourceUri: SOURCE_URI,
       });
 
-      expect(paged.paging).toStrictEqual({ all: false, limit: 20, page: 3 });
-      expect(firstPage.paging).toStrictEqual({ all: true, limit: 5, page: 1 });
+      expect(paged.paging).toStrictEqual({
+        all: false,
+        limit: 20,
+        page: 3,
+        pages: [3, 1],
+      });
+      expect(firstPage.paging).toStrictEqual({
+        all: true,
+        limit: 5,
+        page: 1,
+        pages: [],
+      });
     });
 
     it("draws every root when neither --page nor --limit is given", async () => {
@@ -175,7 +185,7 @@ describe(GraphOptionsService, () => {
       expect(() =>
         instance.plan({
           entities: ["a.ts"],
-          page: "2",
+          page: ["2"],
           schema: "fixture",
           sourceUri: SOURCE_URI,
         }),
@@ -196,7 +206,7 @@ describe(GraphOptionsService, () => {
           expect(() =>
             instance.plan({
               entities: ["a.ts"],
-              [key]: value,
+              [key]: key === "page" ? [value] : value,
               schema: "fixture",
               sourceUri: SOURCE_URI,
             }),

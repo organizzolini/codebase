@@ -76,11 +76,12 @@ export function renderGraphMermaid(
 }
 
 /**
- * Joins page renderings into one Markdown document, each under a `Page i of n`
- * heading; a lone rendering is returned as `renderGraphMarkdown` writes it.
+ * Joins page renderings into one Markdown document, each under its heading
+ * (`Page 3`); a lone rendering is returned as `renderGraphMarkdown` writes it.
  */
 export function renderGraphPagesMarkdown(
   renderings: readonly GraphMermaidRendering[],
+  headings: readonly string[],
 ): string {
   const [only] = renderings;
   if (renderings.length === 1 && only !== undefined) {
@@ -88,8 +89,8 @@ export function renderGraphPagesMarkdown(
   }
   const sections: string[] = [];
   for (const [index, rendering] of renderings.entries()) {
-    const heading = `## Page ${index + 1} of ${renderings.length}`;
-    sections.push(`${heading}\n\n${renderGraphMarkdown(rendering)}`);
+    const heading = headings[index] ?? `Page ${index + 1}`;
+    sections.push(`## ${heading}\n\n${renderGraphMarkdown(rendering)}`);
   }
   return sections.join("\n");
 }

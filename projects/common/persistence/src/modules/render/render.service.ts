@@ -16,9 +16,10 @@ import type {
 } from "../graph-mermaid/graph-mermaid.types";
 import type {
   GraphOutputFile,
+  GraphPaging,
   GraphPlan,
 } from "../graph-options/graph-options.types";
-import type { GraphDrawing } from "./render.types";
+import type { GraphDrawing, GraphPages } from "./render.types";
 
 /**
  * Draws a graph a render command reads: connects, reads, renders it as Mermaid,
@@ -40,14 +41,14 @@ export class RenderService {
   /** Writes the diagram to stdout, or to the named files, then warnings to stderr; returns a line per file. */
   private emit(
     plan: GraphPlan,
-    graphs: readonly GraphModel[],
+    { graphs, headings }: GraphPages,
     renderings: readonly GraphMermaidRendering[],
   ): string[] {
     const { json, markdown } = plan.outputs;
     const files: GraphOutputFile[] = [];
     if (markdown !== undefined) {
       files.push({
-        content: renderGraphPagesMarkdown(renderings),
+        content: renderGraphPagesMarkdown(renderings, headings),
         path: markdown,
       });
     }
@@ -71,19 +72,41 @@ export class RenderService {
     return files.map((file) => graphRenderWroteMessage(file.path));
   }
 
-  /** Reads the page `--page` names, or every page of `--limit` roots when it is left out. */
-  private async readPages(
-    plan: GraphPlan,
+  /** Reads every page of `--limit` roots, stopping at the first past the last. */
+  private async readEveryPage(
+    paging: GraphPaging,
     drawing: GraphDrawing,
-  ): Promise<GraphModel[]> {
-    const { paging } = plan;
-    if (!paging?.all) return [await drawing.read(paging)];
+  ): Promise<GraphPages> {
     const graphs: GraphModel[] = [];
     for (let page = 1; ; page += 1) {
       const graph = await drawing.read({ ...paging, page });
       if (page === 1 || graph.nodes.length > 0) graphs.push(graph);
-      if (graph.nodes.length === 0) return graphs;
+      if (graph.nodes.length === 0) break;
     }
+    return {
+      graphs,
+      headings: graphs.map(
+        (_, index) => `Page ${index + 1} of ${graphs.length}`,
+      ),
+    };
+  }
+
+  /** Reads each page `--page` names, or every page when it is left out. */
+  private async readPages(
+    plan: GraphPlan,
+    drawing: GraphDrawing,
+  ): Promise<GraphPages> {
+    const { paging } = plan;
+    if (paging?.all === true) return this.readEveryPage(paging, drawing);
+    const named = paging?.pages ?? [];
+    if (paging === undefined || named.length === 0) {
+      return { graphs: [await drawing.read(paging)], headings: [] };
+    }
+    const graphs: GraphModel[] = [];
+    for (const page of named) {
+      graphs.push(await drawing.read({ ...paging, page }));
+    }
+    return { graphs, headings: named.map((page) => `Page ${page}`) };
   }
 
   // 🌎 Public Methods
@@ -96,14 +119,14 @@ export class RenderService {
     const { dataSource } = drawing;
     try {
       await dataSource.initialize();
-      const graphs = await this.readPages(plan, drawing);
+      const pages = await this.readPages(plan, drawing);
       const renderings: GraphMermaidRendering[] = [];
-      for (const graph of graphs) {
+      for (const graph of pages.graphs) {
         renderings.push(
           this.graphMermaid.render(graph, { direction: drawing.direction }),
         );
       }
-      return this.emit(plan, graphs, renderings);
+      return this.emit(plan, pages, renderings);
     } catch (error) {
       throw maskedError(error, plan.connection.password);
     } finally {

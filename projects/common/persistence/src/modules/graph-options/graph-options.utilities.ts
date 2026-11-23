@@ -57,19 +57,24 @@ export function parseGraphFilter(expression: string): GraphFilter {
  * @throws GraphOptionsError on a bad flag.
  */
 export function parseGraphPaging(
-  page: string | undefined,
+  page: readonly string[] | undefined,
   limit: string | undefined,
 ): GraphPaging | undefined {
-  const pageNumber = positiveIntegerFlag("--page", page);
+  const pages = [
+    ...new Set(
+      (page ?? []).map((value) => positiveIntegerFlag("--page", value) ?? 1),
+    ),
+  ];
   const rootLimit = positiveIntegerFlag("--limit", limit);
-  if (pageNumber !== undefined && rootLimit === undefined) {
+  if (pages.length > 0 && rootLimit === undefined) {
     throw new GraphOptionsError(GRAPH_OPTION_MESSAGES.pageNeedsLimit);
   }
   if (rootLimit === undefined) return undefined;
   return {
-    all: pageNumber === undefined,
+    all: pages.length === 0,
     limit: rootLimit,
-    page: pageNumber ?? 1,
+    page: pages[0] ?? 1,
+    pages,
   };
 }
 
