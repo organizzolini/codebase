@@ -3,12 +3,12 @@
 import {
   filterClause,
   sortClause,
-} from "../render/modules/render-options/render-options-columns.utilities";
-import { selectPages } from "../render/modules/render-options/render-options-reads.utilities";
+} from "../render-options/render-options-columns.utilities";
+import { selectPages } from "../render-options/render-options-reads.utilities";
 
-import { loadTreeRows } from "./graph-tree-batches.utilities";
-import { treeSql, treeTable } from "./graph-tree-sql.utilities";
-import { GRAPH_TREE_ID_ROW_SCHEMA } from "./graph-tree.constants";
+import { loadTreeRows } from "./render-tree-data-batches.utilities";
+import { treeSql, treeTable } from "./render-tree-data-sql.utilities";
+import { RENDER_TREE_DATA_ID_ROW_SCHEMA } from "./render-tree-data.constants";
 import {
   buildTreeGraph,
   keepRowsIn,
@@ -16,16 +16,16 @@ import {
   matchedSubtrees,
   orderRowsByRank,
   pageTreeRows,
-} from "./graph-tree.utilities";
+} from "./render-tree-data.utilities";
 
-import type { GraphModel } from "../render/modules/render-mermaid/render-mermaid.types";
+import type { GraphModel } from "../render-mermaid/render-mermaid.types";
 import type {
   GraphOrder,
   GraphPaging,
   GraphPredicate,
   GraphView,
-} from "../render/modules/render-options/render-options.types";
-import type { GraphTreeRow, GraphTreeTable } from "./graph-tree.types";
+} from "../render-options/render-options.types";
+import type { GraphTreeRow, GraphTreeTable } from "./render-tree-data.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /**
@@ -93,7 +93,7 @@ async function keepMatchingRows(
     batchSize,
     body: `SELECT t.${table.id}::text AS "id" FROM ${table.from} t WHERE ${sql} ORDER BY t.${table.id}`,
     parameters,
-    schema: GRAPH_TREE_ID_ROW_SCHEMA,
+    schema: RENDER_TREE_DATA_ID_ROW_SCHEMA,
   });
   const matched = new Set(matches.map(({ id }) => id));
   const kept = new Set([
@@ -121,7 +121,7 @@ async function orderByRank(
     batchSize,
     body: `SELECT t.${table.id}::text AS "id" FROM ${table.from} t ORDER BY ${sortClause(sorts)}, t.${table.id}`,
     parameters: [],
-    schema: GRAPH_TREE_ID_ROW_SCHEMA,
+    schema: RENDER_TREE_DATA_ID_ROW_SCHEMA,
   });
   return orderRowsByRank(
     rows,

@@ -9,10 +9,10 @@ import {
   orderRowsByRank,
   pageTreeRows,
   requireTreeMetadata,
-} from "./graph-tree.utilities";
+} from "./render-tree-data.utilities";
 
-import type { GraphModel } from "../render/modules/render-mermaid/render-mermaid.types";
-import type { GraphTreeLimits, GraphTreeRow } from "./graph-tree.types";
+import type { GraphModel } from "../render-mermaid/render-mermaid.types";
+import type { GraphTreeLimits, GraphTreeRow } from "./render-tree-data.types";
 
 /** The graph a tree's rows draw once the limits cap it. */
 const capped = (

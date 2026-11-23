@@ -1,6 +1,6 @@
 // 🌎 Utilities
 
-import { truncationParts } from "../../../graph-tree/graph-tree.utilities";
+import { truncationParts } from "../render-mermaid/render-mermaid-truncations.utilities";
 
 import { renderEdgesPageMessage } from "./render-edges.constants";
 import { edgeKey, graphLinks, reachableFrom } from "./render-edges.utilities";

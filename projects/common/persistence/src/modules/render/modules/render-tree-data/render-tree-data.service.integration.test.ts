@@ -6,19 +6,19 @@ import {
   FIXTURE_DATABASE_TIMEOUT_MILLISECONDS,
   INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   startFixtureDatabase,
-} from "../../../testing/fixture-persistence";
-import { RenderEntitiesService } from "../render/modules/render-entities/render-entities.service";
-import { RenderOptionsService } from "../render/modules/render-options/render-options.service";
+} from "../../../../../testing/fixture-persistence";
+import { RenderEntitiesService } from "../render-entities/render-entities.service";
+import { RenderOptionsService } from "../render-options/render-options.service";
 
-import { GraphTreeService } from "./graph-tree.service";
+import { RenderTreeDataService } from "./render-tree-data.service";
 
-import type { FixtureDatabase } from "../../../testing/fixture-persistence";
-import type { GraphTreeOptions } from "./graph-tree.types";
+import type { FixtureDatabase } from "../../../../../testing/fixture-persistence";
+import type { GraphTreeOptions } from "./render-tree-data.types";
 
 /** The entity files, one per storage type, each in its own glob. */
 const TREE_ENTITIES = path.join(
   import.meta.dirname,
-  "../../../testing/fixtures/trees",
+  "../../../../../testing/fixtures/trees",
 );
 const STORAGES = [
   ["closure-table", path.join(TREE_ENTITIES, "closure-tag.entity.ts")],
@@ -50,13 +50,13 @@ describe("graph tree service, read in batches", () => {
   let source: FixtureDatabase;
   const renderEntities = new RenderEntitiesService();
   const renderOptions = new RenderOptionsService();
-  const graphTree = new GraphTreeService();
+  const renderTreeData = new RenderTreeDataService();
 
   /** Reads the tree `glob` picks from the fixture database with `options`. */
   async function loadTree(
     glob: string,
     options: Partial<GraphTreeOptions> = {},
-  ): ReturnType<GraphTreeService["load"]> {
+  ): ReturnType<RenderTreeDataService["load"]> {
     const { connection } = renderOptions.plan({
       entities: [glob],
       schema: "fixture",
@@ -72,11 +72,15 @@ describe("graph tree service, read in batches", () => {
         namingStrategy: dataSource.namingStrategy,
         table: undefined,
       });
-      return await graphTree.load(dataSource, dataSource.getMetadata(picked), {
-        filters: [],
-        sorts: [],
-        ...options,
-      });
+      return await renderTreeData.load(
+        dataSource,
+        dataSource.getMetadata(picked),
+        {
+          filters: [],
+          sorts: [],
+          ...options,
+        },
+      );
     } finally {
       await dataSource.destroy();
     }

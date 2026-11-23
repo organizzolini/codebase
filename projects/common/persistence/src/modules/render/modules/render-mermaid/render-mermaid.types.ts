@@ -80,3 +80,18 @@ export interface GraphSubgraph {
   /** The text drawn as its title. */
   readonly title: string;
 }
+
+/** A node whose children a cap hid. */
+export interface GraphTreeTruncation {
+  /** The number of children the cap hid. */
+  readonly hidden: number;
+
+  /** The flag whose cap hid them. */
+  readonly limit: "--truncate-breadth" | "--truncate-depth";
+
+  /** The cap's value. */
+  readonly maximum: number;
+
+  /** The id of the node whose children were hidden. */
+  readonly parent: string;
+}

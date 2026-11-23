@@ -52,13 +52,12 @@ src/
     postgresql-export/              # The postgresql-export command: options, plan, dry run, atomic write
     postgresql-import/              # The postgresql-import command: options, plan, --clean (no prompt), dry run
     postgresql-utilities/           # pg_dump, pg_restore, and truncate behind one service
-    graph-tree/                     # Reads a @Tree table in its storage, then filters, sorts, pages, and caps it
     render/                         # RenderService: connects, reads, draws, and writes for every drawing command
       modules/render-entities/      # @DirectedAcyclicGraph, @Graph and the endpoint decorators; globs to entity classes; the @Tree pick
       modules/render-options/       # Options every drawing command shares: connection, filter, sort, paging, caps, outputs
       modules/render-edges/         # Reads an edge table, finds roots and cycles, then pages and caps the edges
       modules/render-mermaid/       # Pure renderer: a graph model to Mermaid text, with its limit warnings
-      modules/render-tree-data/     # The render-tree-data command: options, constants, module
+      modules/render-tree-data/     # The render-tree-data command, and the service that reads a @Tree table in its storage, then filters, sorts, pages, and caps it
       modules/render-directed-acyclic-graph-data/      # The render-directed-acyclic-graph-data command: refuses a @Graph entity
       modules/render-graph-data/    # The render-graph-data command: refuses a @DirectedAcyclicGraph entity
 testing/

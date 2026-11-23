@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 
-import { resolveGraphView } from "../render/modules/render-options/render-options-columns.utilities";
-import { graphColumns } from "../render/modules/render-options/render-options-reads.utilities";
-import { RENDER_BATCH_SIZE } from "../render/modules/render-options/render-options.constants";
+import { resolveGraphView } from "../render-options/render-options-columns.utilities";
+import { graphColumns } from "../render-options/render-options-reads.utilities";
+import { RENDER_BATCH_SIZE } from "../render-options/render-options.constants";
 
-import { loadTreeGraph } from "./graph-tree-readers.utilities";
-import { limitTreeGraph } from "./graph-tree.utilities";
+import { loadTreeGraph } from "./render-tree-data-readers.utilities";
+import { limitTreeGraph } from "./render-tree-data.utilities";
 
-import type { GraphModel } from "../render/modules/render-mermaid/render-mermaid.types";
-import type { GraphTreeOptions } from "./graph-tree.types";
+import type { GraphModel } from "../render-mermaid/render-mermaid.types";
+import type { GraphTreeOptions } from "./render-tree-data.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /**
@@ -18,7 +18,7 @@ import type { DataSource, EntityMetadata } from "typeorm";
  * caps cut the tree.
  */
 @Injectable()
-export class GraphTreeService {
+export class RenderTreeDataService {
   // 🏗 Dependency Injection
 
   constructor() {}

@@ -1,19 +1,21 @@
 // 🌎 Utilities
 
-import { graphTreePageMessage } from "./graph-tree.constants";
+import { truncationParts } from "../render-mermaid/render-mermaid-truncations.utilities";
+
+import { renderTreeDataPageMessage } from "./render-tree-data.constants";
 
 import type {
   GraphEdge,
   GraphModel,
   GraphNode,
-} from "../render/modules/render-mermaid/render-mermaid.types";
-import type { GraphPaging } from "../render/modules/render-options/render-options.types";
+  GraphTreeTruncation,
+} from "../render-mermaid/render-mermaid.types";
+import type { GraphPaging } from "../render-options/render-options.types";
 import type {
   GraphTreeLimits,
   GraphTreeRow,
-  GraphTreeTruncation,
   GraphTreeWalk,
-} from "./graph-tree.types";
+} from "./render-tree-data.types";
 
 /**
  * Builds the directed graph a tree's rows describe. A row whose parent no row
@@ -182,7 +184,10 @@ export function pageTreeRows(
 
   const start = (paging.page - 1) * paging.limit;
   if (start >= roots.length) {
-    return { rows: [], warning: graphTreePageMessage(paging, roots.length) };
+    return {
+      rows: [],
+      warning: renderTreeDataPageMessage(paging, roots.length),
+    };
   }
 
   const selected = roots.slice(start, start + paging.limit);
@@ -199,34 +204,6 @@ export function requireTreeMetadata<Value>(
 ): Value {
   if (value === undefined) throw new Error(message);
   return value;
-}
-
-/**
- * The truncation nodes, edges, and warnings drawn for `truncations`, each node
- * under its parent with an id unused in `taken`.
- */
-export function truncationParts(
-  truncations: readonly GraphTreeTruncation[],
-  taken: Set<string>,
-): {
-  readonly edges: GraphEdge[];
-  readonly nodes: GraphNode[];
-  readonly warnings: string[];
-} {
-  const edges: GraphEdge[] = [];
-  const nodes: GraphNode[] = [];
-  const warnings: string[] = [];
-
-  for (const { hidden, limit, maximum, parent } of truncations) {
-    const id = truncationId(parent, taken);
-    nodes.push({ id, label: `… ${hidden} more`, marker: "truncation" });
-    edges.push({ source: parent, target: id });
-    warnings.push(
-      `Node ${parent} hides ${hidden} ${hidden === 1 ? "child" : "children"} beyond ${limit} ${maximum}`,
-    );
-  }
-
-  return { edges, nodes, warnings };
 }
 
 /**
@@ -329,16 +306,6 @@ function subtreeIds(
     }
   }
   return kept;
-}
-
-/** A truncation node's id under `parent`, unused by any node in `taken`. */
-function truncationId(parent: string, taken: Set<string>): string {
-  let id = `${parent}/more`;
-  for (let suffix = 2; taken.has(id); suffix += 1) {
-    id = `${parent}/more-${String(suffix)}`;
-  }
-  taken.add(id);
-  return id;
 }
 
 /**

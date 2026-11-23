@@ -3,7 +3,6 @@ import { Command, CommandRunner, Option } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { GraphTreeService } from "../../../graph-tree/graph-tree.service";
 import { RenderService } from "../../render.service";
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
 import { graphOutputDryRunMessages } from "../render-options/render-options-outputs.utilities";
@@ -23,6 +22,7 @@ import {
   RENDER_TREE_DATA_DIRECTION,
   renderTreeDataDryRunMessages,
 } from "./render-tree-data.constants";
+import { RenderTreeDataService } from "./render-tree-data.service";
 
 import type {
   GraphCommandOptions,
@@ -49,7 +49,7 @@ export class RenderTreeDataCommand extends CommandRunner {
     private readonly renderEntities: RenderEntitiesService,
     private readonly renderOptions: RenderOptionsService,
     private readonly renderService: RenderService,
-    private readonly graphTree: GraphTreeService,
+    private readonly renderTreeData: RenderTreeDataService,
   ) {
     super();
     this.logger.setContext(RenderTreeDataCommand.name);
@@ -220,7 +220,7 @@ export class RenderTreeDataCommand extends CommandRunner {
       dataSource,
       direction: RENDER_TREE_DATA_DIRECTION,
       read: async (paging) =>
-        this.graphTree.load(dataSource, dataSource.getMetadata(picked), {
+        this.renderTreeData.load(dataSource, dataSource.getMetadata(picked), {
           filters: plan.filters,
           paging,
           sorts: plan.sorts,

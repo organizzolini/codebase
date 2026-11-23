@@ -1,7 +1,7 @@
 // 🏷️ Types
 
-import type { GraphTreeTruncation } from "../../../graph-tree/graph-tree.types";
 import type { GraphEdgeMetadata } from "../render-entities/render-entities.types";
+import type { GraphTreeTruncation } from "../render-mermaid/render-mermaid.types";
 import type { GraphReadOptions } from "../render-options/render-options.types";
 
 /** A frame of the cycle walk: a vertex and its next target. */
