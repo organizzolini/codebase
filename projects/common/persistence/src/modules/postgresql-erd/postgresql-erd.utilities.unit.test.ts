@@ -1,11 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  isPostgresqlErdMarkdownCurrent,
   POSTGRESQL_ERD_MODEL_SCHEMA,
   readPostgresqlErdModel,
+  renderPostgresqlErdModel,
+  splicePostgresqlErdMarkdown,
 } from "../../index";
 
-describe(readPostgresqlErdModel, () => {
+import type { PostgresqlErdModel } from "../../index";
+
+describe("postgresql ERD utilities", () => {
   it("reads exported entities, their columns, and many-to-one relations", async () => {
     const model = await readPostgresqlErdModel([
       "testing/fixtures/postgresql-erd/department.entity.ts",
@@ -65,6 +70,246 @@ describe(readPostgresqlErdModel, () => {
           tableName: "ErdEmployee",
         },
       ],
+    });
+  });
+
+  describe(renderPostgresqlErdModel, () => {
+    it("renders each relationship cardinality and the entity table names", () => {
+      const model: PostgresqlErdModel = {
+        entities: [
+          {
+            columns: [],
+            name: "ErdSource",
+            relations: [
+              {
+                cardinality: "one-to-one",
+                name: "oneToOne",
+                target: "ErdOneToOne",
+              },
+              {
+                cardinality: "one-to-many",
+                name: "oneToMany",
+                target: "ErdOneToMany",
+              },
+              {
+                cardinality: "many-to-one",
+                name: "manyToOne",
+                target: "ErdManyToOne",
+              },
+              {
+                cardinality: "many-to-many",
+                name: "manyToMany",
+                target: "ErdManyToMany",
+              },
+            ],
+            tableName: "sources",
+          },
+          { name: "ErdOneToOne" },
+          { name: "ErdOneToMany" },
+          { name: "ErdManyToOne" },
+          { name: "ErdManyToMany" },
+        ],
+      };
+
+      expect(renderPostgresqlErdModel(model)).toBe(
+        [
+          "erDiagram",
+          "  sources ||--|| ErdOneToOne : oneToOne",
+          "  sources ||--o{ ErdOneToMany : oneToMany",
+          "  sources }o--|| ErdManyToOne : manyToOne",
+          "  sources }o--o{ ErdManyToMany : manyToMany",
+          "  sources {",
+          "  }",
+          "  ErdOneToOne",
+          "  ErdOneToMany",
+          "  ErdManyToOne",
+          "  ErdManyToMany",
+        ].join("\n"),
+      );
+    });
+
+    it("maps column types and includes primary-key and nullability markers", () => {
+      const model: PostgresqlErdModel = {
+        entities: [
+          {
+            columns: [
+              {
+                name: "id",
+                nullable: false,
+                primaryKey: true,
+                type: "uuid",
+              },
+              {
+                name: "description",
+                nullable: true,
+                primaryKey: false,
+                type: "text",
+              },
+              {
+                name: "active",
+                nullable: false,
+                primaryKey: false,
+                type: "Boolean",
+              },
+            ],
+            name: "ErdExample",
+            relations: [],
+            tableName: "examples",
+          },
+        ],
+      };
+
+      expect(renderPostgresqlErdModel(model)).toBe(
+        [
+          "erDiagram",
+          "  examples {",
+          '    string id PK "not nullable"',
+          '    string description "nullable"',
+          '    boolean active "not nullable"',
+          "  }",
+        ].join("\n"),
+      );
+    });
+
+    it("quotes entity names and relationship labels containing spaces", () => {
+      const model: PostgresqlErdModel = {
+        entities: [
+          {
+            columns: [],
+            name: "ErdOwner",
+            relations: [
+              {
+                cardinality: "many-to-one",
+                name: "belongs to",
+                target: "ErdUnusualTable",
+              },
+            ],
+            tableName: "owners",
+          },
+          {
+            columns: [],
+            name: "ErdUnusualTable",
+            relations: [],
+            tableName: "unusual table",
+          },
+        ],
+      };
+
+      expect(renderPostgresqlErdModel(model)).toContain(
+        '  owners }o--|| "unusual table" : "belongs to"',
+      );
+    });
+
+    it("escapes column names and falls back for unknown types with spaces", () => {
+      const model: PostgresqlErdModel = {
+        entities: [
+          {
+            columns: [
+              {
+                name: "display name",
+                nullable: true,
+                primaryKey: false,
+                type: "unrecognized type",
+              },
+            ],
+            name: "ErdExample",
+            relations: [],
+            tableName: "examples",
+          },
+        ],
+      };
+
+      expect(renderPostgresqlErdModel(model)).toContain(
+        '    string `display name` "nullable"',
+      );
+    });
+  });
+
+  describe(splicePostgresqlErdMarkdown, () => {
+    const model: PostgresqlErdModel = {
+      entities: [{ name: "ErdExample" }],
+    };
+    const block = [
+      "<!-- postgresql-erd:start -->",
+      "",
+      "```mermaid",
+      "erDiagram",
+      "  ErdExample",
+      "```",
+      "",
+      "<!-- postgresql-erd:end -->",
+    ].join("\n");
+
+    it("replaces only the anchored block and is idempotent", () => {
+      const markdown = [
+        "# Before",
+        "<!-- postgresql-erd:start -->",
+        "stale diagram",
+        "<!-- postgresql-erd:end -->",
+        "# After",
+      ].join("\n");
+      const spliced = splicePostgresqlErdMarkdown(markdown, model);
+
+      expect(spliced).toBe(
+        ["# Before", ...block.split("\n"), "# After"].join("\n"),
+      );
+      expect(splicePostgresqlErdMarkdown(spliced, model)).toBe(spliced);
+    });
+
+    it("appends the anchored block when the markdown has no markers", () => {
+      expect(splicePostgresqlErdMarkdown("# Readme", model)).toBe(
+        ["# Readme", "", ...block.split("\n"), ""].join("\n"),
+      );
+    });
+
+    it("keeps a trailing newline when appending to markdown", () => {
+      expect(splicePostgresqlErdMarkdown("# Readme\n", model)).toBe(
+        ["# Readme", "", ...block.split("\n"), ""].join("\n"),
+      );
+    });
+
+    it("creates the marker block for an empty markdown document", () => {
+      expect(splicePostgresqlErdMarkdown("", model)).toBe(`${block}\n`);
+    });
+
+    it("creates the marker block when no markdown document exists", () => {
+      expect(splicePostgresqlErdMarkdown(undefined, model)).toBe(`${block}\n`);
+    });
+
+    it("rejects an incomplete marker pair rather than replacing prose", () => {
+      expect(() =>
+        splicePostgresqlErdMarkdown(
+          "<!-- postgresql-erd:start -->\nhandwritten",
+          model,
+        ),
+      ).toThrow(/one ordered pair/);
+    });
+  });
+
+  describe(isPostgresqlErdMarkdownCurrent, () => {
+    const model: PostgresqlErdModel = {
+      entities: [{ name: "ErdExample" }],
+    };
+    const freshMarkdown = [
+      "<!-- postgresql-erd:start -->",
+      "",
+      "```mermaid",
+      "erDiagram",
+      "  ErdExample",
+      "```",
+      "",
+      "<!-- postgresql-erd:end -->",
+      "",
+    ].join("\n");
+
+    it("distinguishes fresh and stale markdown content", () => {
+      expect(isPostgresqlErdMarkdownCurrent(freshMarkdown, model)).toBe(true);
+      expect(
+        isPostgresqlErdMarkdownCurrent(
+          freshMarkdown.replace("  ErdExample", "  ErdStale"),
+          model,
+        ),
+      ).toBe(false);
     });
   });
 

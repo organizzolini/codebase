@@ -2,6 +2,53 @@ import { z } from "zod";
 
 // ♟️ Constants
 
+export const POSTGRESQL_ERD_END_ANCHOR = "<!-- postgresql-erd:end -->";
+export const POSTGRESQL_ERD_START_ANCHOR = "<!-- postgresql-erd:start -->";
+export const POSTGRESQL_ERD_RELATION_SYMBOLS: Record<
+  "many-to-many" | "many-to-one" | "one-to-many" | "one-to-one",
+  string
+> = {
+  "many-to-many": "}o--o{",
+  "many-to-one": "}o--||",
+  "one-to-many": "||--o{",
+  "one-to-one": "||--||",
+};
+export const POSTGRESQL_ERD_TYPE_MAP: Record<string, string> = {
+  bigint: "int",
+  bit: "string",
+  boolean: "boolean",
+  character: "string",
+  "character varying": "string",
+  date: "date",
+  decimal: "float",
+  "double precision": "float",
+  float: "float",
+  float4: "float",
+  float8: "float",
+  int: "int",
+  int2: "int",
+  int4: "int",
+  int8: "int",
+  integer: "int",
+  json: "json",
+  jsonb: "json",
+  number: "float",
+  numeric: "float",
+  real: "float",
+  serial: "int",
+  smallint: "int",
+  text: "string",
+  time: "time",
+  timestamp: "date",
+  timestamptz: "date",
+  "timestamp without time zone": "date",
+  "timestamp with time zone": "date",
+  "time without time zone": "time",
+  "time with time zone": "time",
+  uuid: "string",
+  varchar: "string",
+};
+
 const postgresqlErdColumnSchema = z.object({
   name: z.string(),
   nullable: z.boolean(),

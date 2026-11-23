@@ -6,7 +6,12 @@ export type {
   PostgresqlErdEntityDetails,
   PostgresqlErdModel,
 } from "./modules/postgresql-erd/postgresql-erd.types";
-export { readPostgresqlErdModel } from "./modules/postgresql-erd/postgresql-erd.utilities";
+export {
+  isPostgresqlErdMarkdownCurrent,
+  readPostgresqlErdModel,
+  renderPostgresqlErdModel,
+  splicePostgresqlErdMarkdown,
+} from "./modules/postgresql-erd/postgresql-erd.utilities";
 export { PostgresqlCreatableEntity } from "./modules/postgresql/modules/base-entities/creatable.entity";
 export { PostgresqlDeletableEntity } from "./modules/postgresql/modules/base-entities/deletable.entity";
 export { PostgresqlIdentifiableEntity } from "./modules/postgresql/modules/base-entities/identifiable.entity";
