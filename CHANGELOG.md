@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.10.0](https://github.com/organizzolini/codebase/compare/v6.9.0...v6.10.0) (2026-11-23)
+
+### ✨ Features
+
+* **caelundas,presentation:** ✨ add View, Display, Group and Sort strips with nested pickers and sticky timeline labels ([#2471](https://github.com/organizzolini/codebase/issues/2471)) ([dc79068](https://github.com/organizzolini/codebase/commit/dc790684d78f1a96f8368626b77623e7e4ae30f3)), closes [#2470](https://github.com/organizzolini/codebase/issues/2470) [#2468](https://github.com/organizzolini/codebase/issues/2468)
+* **meanderaw:** ✨ explore meanders by characteristic in a web gallery ([#2451](https://github.com/organizzolini/codebase/issues/2451)) ([92c3300](https://github.com/organizzolini/codebase/commit/92c330063b160f3727ded6e1055774b02d4db0a9)), closes [#2275](https://github.com/organizzolini/codebase/issues/2275) [#2276](https://github.com/organizzolini/codebase/issues/2276) [#2277](https://github.com/organizzolini/codebase/issues/2277) [#2278](https://github.com/organizzolini/codebase/issues/2278) [#2279](https://github.com/organizzolini/codebase/issues/2279) [#2280](https://github.com/organizzolini/codebase/issues/2280) [#2281](https://github.com/organizzolini/codebase/issues/2281) [#2282](https://github.com/organizzolini/codebase/issues/2282) [#2283](https://github.com/organizzolini/codebase/issues/2283) [#2284](https://github.com/organizzolini/codebase/issues/2284) [#2274](https://github.com/organizzolini/codebase/issues/2274)
+
 ## [6.9.0](https://github.com/organizzolini/codebase/compare/v6.8.2...v6.9.0) (2026-11-23)
 
 ### ✨ Features
