@@ -375,6 +375,9 @@ pnpm exec nx run persistence:start --args="render-directed-acyclic-graph-data --
 pnpm exec nx run persistence:start --args="render-graph-data --source-uri postgresql://user:password@localhost:5432/source --schema routes --entities '../<project>/src/**/route-link.entity.ts'"
 ```
 
+For a real `@Graph`, `nx run caelundas-db:render-constellation-graph` draws the
+constellation lines, and `nx run caelundas-db:render-tag-tree` draws a `@Tree`.
+
 `start` runs with the working directory at `projects/common/persistence`, so
 relative `--entities` globs and output paths resolve from there.
 

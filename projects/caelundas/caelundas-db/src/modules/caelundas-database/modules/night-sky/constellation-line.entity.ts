@@ -1,5 +1,12 @@
 import { Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 
+import {
+  Graph,
+  GraphLabel,
+  GraphSource,
+  GraphTarget,
+} from "@codebase/persistence";
+
 import { createBigintTransformer } from "../../caelundas-database.utilities";
 
 import { Constellation } from "./constellation.entity";
@@ -15,6 +22,7 @@ import type { Relation } from "typeorm";
  * every side cascades on delete.
  */
 @Entity()
+@Graph({ directed: false })
 @Index("constellation_lines_from_hip", ["fromHip"])
 @Index("constellation_lines_to_hip", ["toHip"])
 export class ConstellationLine {
@@ -23,10 +31,12 @@ export class ConstellationLine {
   constellation?: Relation<Constellation>;
 
   /** The constellation whose figure the segment belongs to. */
+  @GraphLabel()
   @PrimaryColumn("text")
   constellationDesignation!: string;
 
   /** The star the segment starts at. */
+  @GraphSource()
   @PrimaryColumn({ transformer: createBigintTransformer(), type: "bigint" })
   fromHip!: number;
 
@@ -35,6 +45,7 @@ export class ConstellationLine {
   fromStar?: Relation<Star>;
 
   /** The star the segment ends at. */
+  @GraphTarget()
   @PrimaryColumn({ transformer: createBigintTransformer(), type: "bigint" })
   toHip!: number;
 

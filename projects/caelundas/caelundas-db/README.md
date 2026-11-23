@@ -131,6 +131,27 @@ line as `--source-uri`, as it is for `postgresql-export` and
 `postgresql-import`, so other local users can read it, password included, with
 `ps`. The command masks it in everything it prints or logs.
 
+## Drawing the constellation lines
+
+```bash
+nx run caelundas-db:render-constellation-graph --args="--limit 8"
+nx run caelundas-db:render-constellation-graph --args="--filter constellationDesignation=UMa"
+```
+
+`ConstellationLine` is a `@Graph({ directed: false })`: each line joins two
+stars by Hipparcos number, and its constellation designation is the label. The
+`render-constellation-graph` target runs the `persistence` `render-graph-data`
+command over that entity, with the same connection variables and `--args` as
+the tag tree above. Each connected group of stars is a neighborhood, drawn as
+its own Mermaid subgraph titled with its constellation, and its lines are drawn
+without the label. Constellations that share a star are one neighborhood
+and keep their labels on the lines. A single constellation is one neighborhood,
+so it draws with no subgraph.
+
+Mermaid draws at most 500 edges and all 599 lines exceed it, so page with
+`--limit 8`, which draws the first 8 neighborhoods, or pick one constellation
+with `--filter constellationDesignation=UMa`.
+
 ## Test
 
 ```bash
