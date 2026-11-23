@@ -9,6 +9,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **bookkeeping**:
 - **border**: Edge of a meander band that ADR 0006 closes on both sides in the branch and parallel families through a MotifService hook.
 - **characteristic**: Named property of a meander, such as its letter counts, that ADR 0012 and ADR 0018 store together in one sparse JSON map.
+- **constellation**: Named group of stars whose figure is stored as line segments, which the committed constellation-line graph diagram draws one subgraph per group.
 - **corpus**: Committed historical set of meander drawings that ADR 0006 and ADR 0013 read as a test set for regression checks.
 - **cut**: Seam where a meander band is split, which ADR 0006 and ADR 0013 use when comparing one drawing or family to another.
 - **ephemeris**: Astronomical position data that the caelundas performance plan generates year by year with local computation instead of HTTP calls.

@@ -134,7 +134,7 @@ line as `--source-uri`, as it is for `postgresql-export` and
 ## Drawing the constellation lines
 
 ```bash
-nx run caelundas-db:render-constellation-graph --args="--limit 8"
+nx run caelundas-db:render-constellation-graph --args="--limit 31"
 nx run caelundas-db:render-constellation-graph --args="--filter constellationDesignation=UMa"
 ```
 
@@ -148,9 +148,22 @@ without the label. Constellations that share a star are one neighborhood
 and keep their labels on the lines. A single constellation is one neighborhood,
 so it draws with no subgraph.
 
-Mermaid draws at most 500 edges and all constellation lines exceed it, so page with
-`--limit 8`, which draws the first 8 neighborhoods, or pick one constellation
-with `--filter constellationDesignation=UMa`.
+Mermaid draws at most 500 edges and all constellation lines exceed it, so
+page with `--limit 31`, which draws every 31 neighborhoods as a diagram of its
+own, or add `--page 1` for just the first. Or pick one constellation with
+`--filter constellationDesignation=UMa`.
+
+## Committed diagrams
+
+[`tag-tree-data.md`](../../../documentation/documentation/tag-tree-data.md) and
+[`constellation-line-graph-data.md`](../../../documentation/documentation/constellation-line-graph-data.md)
+hold the diagrams of a local database, named `{entity}-{tree|graph}-data.md`.
+Regenerate them with the connection variables set:
+
+```bash
+nx run caelundas-db:render-tag-tree --args="--output-markdown documentation/documentation/tag-tree-data.md --overwrite"
+nx run caelundas-db:render-constellation-graph --args="--limit 31 --output-markdown documentation/documentation/constellation-line-graph-data.md --overwrite"
+```
 
 ## Test
 
