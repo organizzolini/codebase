@@ -159,7 +159,7 @@ function drawNeighborhood(
   return lines;
 }
 
-/** Declares a node as a short id with a quoted, escaped label, and its icon and note in italics on a second line when it has them. */
+/** Declares a node by short id and escaped label, with any icon and note beneath. */
 function drawNode(
   node: GraphNode,
   shortIds: ReadonlyMap<string, string>,

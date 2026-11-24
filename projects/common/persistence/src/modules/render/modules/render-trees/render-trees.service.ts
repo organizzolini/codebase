@@ -34,7 +34,7 @@ export class RenderTreesService {
   // 🔏 Private Methods
 
   /**
-   * The sorts given, or, with none, the order field and then the name, when the entity has them, so siblings come in the order they were given.
+   * The sorts given, else the order field then the name.
    */
   private sortsOf(
     columns: readonly GraphColumn[],

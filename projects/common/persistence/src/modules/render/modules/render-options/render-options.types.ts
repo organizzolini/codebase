@@ -246,11 +246,7 @@ export interface GraphSort {
 /** A sort's direction. */
 export type GraphSortDirection = "asc" | "desc";
 
-/**
- * The entity properties that say how a tree row is drawn: its icon (a lucide
- * slug), a note, and its place among its siblings. A property the entity lacks
- * is left out.
- */
+/** The entity properties a tree row is drawn from. */
 export interface GraphTreeFields {
   /** The property holding the row's lucide icon slug. */
   readonly icon: string;

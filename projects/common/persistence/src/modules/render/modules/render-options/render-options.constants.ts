@@ -12,7 +12,7 @@ export const RENDER_DIAGRAM_OPTION = {
   flags: "--diagram <flowchart|filetree>",
 } as const;
 
-/** The properties a tree's icons, notes and sibling order are read from, unless a flag names others. */
+/** Where a tree's icons, notes and order are read from. */
 export const RENDER_TREE_FIELDS = {
   icon: "icon",
   note: "note",
