@@ -7,7 +7,12 @@ import { RenderService } from "../../render.service";
 import { RenderCommand } from "../render-command/render-command.command";
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
 import { RenderNodesService } from "../render-nodes/render-nodes.service";
-import { RENDER_DIAGRAM_OPTION } from "../render-options/render-options.constants";
+import {
+  RENDER_DIAGRAM_OPTION,
+  RENDER_ICON_FIELD_OPTION,
+  RENDER_NOTE_FIELD_OPTION,
+  RENDER_ORDER_FIELD_OPTION,
+} from "../render-options/render-options.constants";
 import { RenderOptionsService } from "../render-options/render-options.service";
 import { RenderTreesService } from "../render-trees/render-trees.service";
 
@@ -75,6 +80,12 @@ export class RenderTreeDataCommand extends RenderCommand {
     return [...previous, value];
   }
 
+  /** Parses `--icon-field`, the property holding each row's lucide icon slug. */
+  @Option(RENDER_ICON_FIELD_OPTION)
+  parseIconField(value: string): string {
+    return value;
+  }
+
   /** Parses `--limit`, the number of root nodes a page holds. */
   @Option({
     description:
@@ -82,6 +93,18 @@ export class RenderTreeDataCommand extends RenderCommand {
     flags: "--limit <n>",
   })
   parseLimit(value: string): string {
+    return value;
+  }
+
+  /** Parses `--note-field`, the property holding each row's note. */
+  @Option(RENDER_NOTE_FIELD_OPTION)
+  parseNoteField(value: string): string {
+    return value;
+  }
+
+  /** Parses `--order-field`, the property holding each row's place among its siblings. */
+  @Option(RENDER_ORDER_FIELD_OPTION)
+  parseOrderField(value: string): string {
     return value;
   }
 

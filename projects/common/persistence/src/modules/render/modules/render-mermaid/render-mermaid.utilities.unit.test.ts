@@ -563,4 +563,24 @@ describe(renderGraphMermaid, () => {
       );
     });
   });
+
+  describe("a node's icon and note in a flowchart", () => {
+    it("draws them in italics beneath the label, escaped", () => {
+      const { diagram } = renderGraphMermaid(
+        graph([{ icon: "moon", id: "a", label: "Moon", note: "The <Moon>" }]),
+      );
+
+      expect(diagram).toContain(
+        'n0["Moon<br/><i>moon · The #lt;Moon#gt;</i>"]',
+      );
+    });
+
+    it("draws only what the node has", () => {
+      const { diagram } = renderGraphMermaid(
+        graph([{ id: "a", label: "Moon", note: "Earth's satellite" }]),
+      );
+
+      expect(diagram).toContain('n0["Moon<br/><i>Earth\'s satellite</i>"]');
+    });
+  });
 });

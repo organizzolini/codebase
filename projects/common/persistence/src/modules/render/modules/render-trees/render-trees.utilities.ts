@@ -25,14 +25,20 @@ export function buildTreeGraph(rows: readonly GraphTreeRow[]): GraphModel {
   const ids = new Set(rows.map(({ id }) => id));
   const warnings: string[] = [];
 
-  const nodes: GraphNode[] = rows.map(({ id, label, parentId }) => {
-    if (parentId !== undefined && ids.has(parentId)) return { id, label };
+  const nodes: GraphNode[] = rows.map(({ icon, id, label, note, parentId }) => {
+    const detail = {
+      ...(icon === undefined ? {} : { icon }),
+      ...(note === undefined ? {} : { note }),
+    };
+    if (parentId !== undefined && ids.has(parentId)) {
+      return { id, label, ...detail };
+    }
     if (parentId !== undefined) {
       warnings.push(
         `Node ${id} names parent ${parentId}, which no row has; drawn as a root`,
       );
     }
-    return { id, label, marker: "root" };
+    return { id, label, ...detail, marker: "root" };
   });
 
   const edges: GraphEdge[] = rows.flatMap(({ id, parentId }) =>

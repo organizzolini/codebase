@@ -23,6 +23,7 @@ import type {
   GraphOrder,
   GraphPaging,
   GraphPredicate,
+  GraphTreeFields,
   GraphView,
 } from "../render-options/render-options.types";
 import type { GraphTreeRow, GraphTreeTable } from "./render-trees.types";
@@ -37,15 +38,17 @@ export async function loadTreeGraph(
   metadata: EntityMetadata,
   {
     batchSize,
+    fields,
     paging,
     view,
   }: {
     readonly batchSize: number;
+    readonly fields?: GraphTreeFields | undefined;
     readonly paging: GraphPaging | undefined;
     readonly view: GraphView;
   },
 ): Promise<GraphModel> {
-  const table = treeTable(dataSource, metadata);
+  const table = treeTable(dataSource, metadata, fields);
   const sql = treeSql(dataSource, table);
   const rows = await loadTreeRows(dataSource, table, { batchSize, sql });
   const filtered =

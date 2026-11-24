@@ -30,11 +30,17 @@ export interface GraphTreeRead {
 
 /** One row of a tree table, reduced to what a diagram draws. */
 export interface GraphTreeRow {
+  /** The row's lucide icon slug, when the entity has the property and the row a value. */
+  readonly icon?: string | undefined;
+
   /** The row's primary key, as text. */
   readonly id: string;
 
   /** The row's `name` column, or its primary key when it has none. */
   readonly label: string;
+
+  /** The row's note, when the entity has the property and the row a value. */
+  readonly note?: string | undefined;
 
   /** The primary key of the row's parent; `undefined` for a root. */
   readonly parentId: string | undefined;
@@ -60,6 +66,9 @@ export interface GraphTreeTable {
   /** The table, schema-qualified when its entity names a schema. */
   readonly from: string;
 
+  /** The icon column's escaped name, when the entity has the property. */
+  readonly icon?: string | undefined;
+
   /** The primary key column. */
   readonly id: string;
 
@@ -68,6 +77,9 @@ export interface GraphTreeTable {
 
   /** The entity's metadata, for its tree columns. */
   readonly metadata: EntityMetadata;
+
+  /** The note column's escaped name, when the entity has the property. */
+  readonly note?: string | undefined;
 }
 
 /** The ids a walk shows, and the truncations it made. */

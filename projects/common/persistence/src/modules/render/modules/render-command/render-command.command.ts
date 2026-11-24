@@ -162,6 +162,7 @@ export abstract class RenderCommand extends CommandRunner {
           dataSource.getMetadata(picked),
           {
             edge,
+            fields: plan.fields,
             filters: plan.filters,
             paging,
             sorts: plan.sorts,

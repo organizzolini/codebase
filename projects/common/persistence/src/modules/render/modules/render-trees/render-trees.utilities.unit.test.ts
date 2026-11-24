@@ -453,4 +453,30 @@ describe("graph tree utilities", () => {
       expect(paged.rows.map(({ id }) => id)).toStrictEqual(["1"]);
     });
   });
+
+  describe("a tree row's icon and note", () => {
+    it("passes them to its node, leaving out what the row lacks", () => {
+      const graph = buildTreeGraph([
+        {
+          icon: "sun",
+          id: "a",
+          label: "Solar",
+          note: "The Sun",
+          parentId: undefined,
+        },
+        { id: "b", label: "Season", parentId: "a" },
+      ]);
+
+      expect(graph.nodes).toStrictEqual([
+        {
+          icon: "sun",
+          id: "a",
+          label: "Solar",
+          marker: "root",
+          note: "The Sun",
+        },
+        { id: "b", label: "Season" },
+      ]);
+    });
+  });
 });

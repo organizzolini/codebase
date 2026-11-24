@@ -11,8 +11,10 @@ export const RENDER_TREES_ID_ROW_SCHEMA = z.object({
 
 /** A tree row: id, label, and parent id, null for a root. */
 export const RENDER_TREES_ROW_SCHEMA = z.object({
+  icon: z.string().nullish(),
   id: z.string(),
   label: z.string(),
+  note: z.string().nullish(),
   parentId: z.string().nullable(),
 });
 

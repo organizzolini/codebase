@@ -28,7 +28,7 @@ export function renderGraphFileTree(graph: GraphModel): GraphMermaidRendering {
     drawn.add(node.id);
     const below = children.get(node.id) ?? [];
     lines.push(
-      `${RENDER_MERMAID_INDENT.repeat(level)}${fileTreeLabel(node.label, below.length > 0)}`,
+      `${RENDER_MERMAID_INDENT.repeat(level)}${fileTreeLabel(fileTreeText(node, below.length > 0), false)}`,
     );
     for (const child of below)
       draw(requireNode(nodes, child, "Edge"), level + 1);
@@ -49,6 +49,15 @@ function fileTreeLabel(label: string, directory: boolean): string {
   const text = `${label.replaceAll(/\r?\n/g, " ")}${directory ? "/" : ""}`;
   if (!text.includes('"')) return `"${text}"`;
   return `'${text.replaceAll("'", "’")}'`;
+}
+
+/** A node's label, `/`-ended for a directory, then its icon in brackets and its note after a dash, when it has them. */
+function fileTreeText(node: GraphNode, directory: boolean): string {
+  const icon =
+    node.icon === undefined || node.icon === "" ? "" : ` [${node.icon}]`;
+  const note =
+    node.note === undefined || node.note === "" ? "" : ` — ${node.note}`;
+  return `${node.label}${directory ? "/" : ""}${icon}${note}`;
 }
 
 /** Indexes `nodes` by id, rejecting a repeated id. */

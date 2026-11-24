@@ -5,6 +5,7 @@ import { escapeName } from "../render-options/render-options-reads.utilities";
 import { RENDER_TREES_PATH_PARENT_PATTERN } from "./render-trees.constants";
 import { requireTreeMetadata } from "./render-trees.utilities";
 
+import type { GraphTreeFields } from "../render-options/render-options.types";
 import type { GraphTreeSql, GraphTreeTable } from "./render-trees.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
@@ -16,7 +17,13 @@ export function treeSql(
   const parent = parentKeySql(dataSource, table);
   return {
     children: `(${parent}) = ANY($1::text[])`,
-    columns: `t.${table.id}::text AS "id", ${table.label} AS "label", (${parent}) AS "parentId"`,
+    columns: [
+      `t.${table.id}::text AS "id"`,
+      `${table.label} AS "label"`,
+      `(${parent}) AS "parentId"`,
+      ...(table.icon === undefined ? [] : [`t.${table.icon}::text AS "icon"`]),
+      ...(table.note === undefined ? [] : [`t.${table.note}::text AS "note"`]),
+    ].join(", "),
     from: `${table.from} t`,
     roots: `(${parent}) IS NULL OR (${parent}) NOT IN (SELECT p.${table.id}::text FROM ${table.from} p)`,
   };
@@ -29,6 +36,7 @@ export function treeSql(
 export function treeTable(
   dataSource: DataSource,
   metadata: EntityMetadata,
+  fields?: GraphTreeFields,
 ): GraphTreeTable {
   requireTreeMetadata(
     metadata.treeType,
@@ -50,12 +58,22 @@ export function treeTable(
       : `${escapeName(dataSource, metadata.schema)}.`;
   const id = escapeName(dataSource, primary.databaseName);
   const label = escapeName(dataSource, (name ?? primary).databaseName);
+  const fieldColumn = (property: string | undefined): string | undefined => {
+    const column = metadata.columns.find(
+      (candidate) => candidate.propertyName === property,
+    );
+    return column === undefined
+      ? undefined
+      : escapeName(dataSource, column.databaseName);
+  };
 
   return {
     from: `${schema}${escapeName(dataSource, metadata.tableName)}`,
+    icon: fieldColumn(fields?.icon),
     id,
     label: `COALESCE(${label}::text, ${id}::text)`,
     metadata,
+    note: fieldColumn(fields?.note),
   };
 }
 

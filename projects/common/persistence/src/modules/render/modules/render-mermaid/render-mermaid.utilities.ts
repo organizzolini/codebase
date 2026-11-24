@@ -159,13 +159,17 @@ function drawNeighborhood(
   return lines;
 }
 
-/** Declares a node as a short id with a quoted, escaped label. */
+/** Declares a node as a short id with a quoted, escaped label, and its icon and note in italics on a second line when it has them. */
 function drawNode(
   node: GraphNode,
   shortIds: ReadonlyMap<string, string>,
 ): string {
   const shortId = shortIdOf(node.id, shortIds, "Node");
-  return `${shortId}["${escapeMermaidText(node.label)}"]`;
+  const label = escapeMermaidText(node.label);
+  const detail = nodeDetail(node);
+  return detail === ""
+    ? `${shortId}["${label}"]`
+    : `${shortId}["${label}<br/><i>${escapeMermaidText(detail)}</i>"]`;
 }
 
 /** The label and weight drawn on an edge, as `label (weight)`. */
@@ -306,6 +310,19 @@ function neighborhoodTitle(
   }
   const first = nodes.find((node) => node.marker === "root") ?? nodes[0];
   return { hideLabels: false, title: first?.label ?? "" };
+}
+
+/**
+ * A node's icon and note on one line, empty when it has neither.
+ */
+function nodeDetail(node: GraphNode): string {
+  const parts: string[] = [];
+  for (const part of [node.icon, node.note]) {
+    if (part !== undefined && part !== "") {
+      parts.push(part);
+    }
+  }
+  return parts.join(" · ");
 }
 
 /** Looks up a model id's short id, rejecting an id no node has. */

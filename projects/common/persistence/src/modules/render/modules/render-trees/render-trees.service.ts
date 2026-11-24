@@ -8,6 +8,10 @@ import { loadTreeGraph } from "./render-trees-readers.utilities";
 import { limitTreeGraph } from "./render-trees.utilities";
 
 import type { GraphModel } from "../render-mermaid/render-mermaid.types";
+import type {
+  GraphColumn,
+  GraphSort,
+} from "../render-options/render-options.types";
 import type { GraphTreeOptions } from "./render-trees.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
@@ -29,6 +33,29 @@ export class RenderTreesService {
 
   // 🔏 Private Methods
 
+  /**
+   * The sorts given, or, with none, the order field and then the name, when the entity has them, so siblings come in the order they were given.
+   */
+  private sortsOf(
+    columns: readonly GraphColumn[],
+    options: GraphTreeOptions,
+  ): readonly GraphSort[] {
+    if (options.sorts.length > 0 || options.fields === undefined) {
+      return options.sorts;
+    }
+    const order = options.fields.order;
+    if (!columns.some(({ name }) => name === order)) return options.sorts;
+
+    const keys = columns.some(({ name }) => name === "name")
+      ? [order, "name"]
+      : [order];
+    return keys.map((column) => ({
+      column,
+      direction: "asc",
+      expression: column,
+    }));
+  }
+
   // 🌎 Public Methods
 
   /**
@@ -41,13 +68,15 @@ export class RenderTreesService {
     metadata: EntityMetadata,
     options: GraphTreeOptions,
   ): Promise<GraphModel> {
+    const columns = graphColumns(dataSource, metadata);
     const view = resolveGraphView(
-      graphColumns(dataSource, metadata),
+      columns,
       options.filters,
-      options.sorts,
+      this.sortsOf(columns, options),
     );
     const graph = await loadTreeGraph(dataSource, metadata, {
       batchSize: options.batchSize ?? RENDER_BATCH_SIZE,
+      fields: options.fields,
       paging: options.paging,
       view,
     });

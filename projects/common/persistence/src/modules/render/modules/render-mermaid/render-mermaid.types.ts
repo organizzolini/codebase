@@ -65,6 +65,9 @@ export interface GraphNeighborhood {
 
 /** A vertex of a graph, identified by a model-defined `id`. */
 export interface GraphNode {
+  /** A lucide icon slug, drawn with the note when the node has one. */
+  readonly icon?: string;
+
   /** Unique within the graph; never drawn, so it may be any text. */
   readonly id: string;
 
@@ -73,6 +76,9 @@ export interface GraphNode {
 
   /** Styles the node as a root or as a "… N more" truncation node. */
   readonly marker?: GraphNodeMarker;
+
+  /** A note on what the node means, drawn beneath its label in a flowchart and after it in a file tree. */
+  readonly note?: string;
 }
 
 /** A node's role in the drawing, if it has one. */

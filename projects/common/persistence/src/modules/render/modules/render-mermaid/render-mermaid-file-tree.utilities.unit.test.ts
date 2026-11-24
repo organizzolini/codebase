@@ -150,4 +150,31 @@ describe(renderGraphFileTree, () => {
       ),
     ).toThrow('Edge target "z" is not a node');
   });
+
+  describe("a node's icon and note in a file tree", () => {
+    it("draws the icon in brackets and the note after a dash, after a directory's slash", () => {
+      const { diagram } = renderGraphFileTree(
+        graph(
+          [
+            {
+              icon: "sun",
+              id: "solar",
+              label: "Solar",
+              note: "The Sun's year",
+            },
+            { id: "season", label: "Season" },
+          ],
+          [{ source: "solar", target: "season" }],
+        ),
+      );
+
+      expect(diagram).toBe(
+        [
+          "treeView-beta",
+          '    "Solar/ [sun] — The Sun\'s year"',
+          '        "Season"',
+        ].join("\n"),
+      );
+    });
+  });
 });
