@@ -65,7 +65,7 @@ export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, n
 export const NO_GROUP_SQL = `select null::text as "key", null::text as label, null::text as "path", null::text as "orderKey" where false`;
 
 /**
- * A tag's ordering key: each ancestor's `order`, zero-padded, then its name, from the root down, so keys compare in the order the tags are meant to read.
+ * A tag's ordering key: each ancestor's padded `order`, then its name.
  */
 const TAG_ORDER_KEY_SQL = `(
       select string_agg(
@@ -105,7 +105,7 @@ export const TAG_GROUP_SQL = `
     )
 `;
 
-/** The children of a tag an event carries, directly or through the tags beneath each. */
+/** The children of a tag an event carries. */
 export const PARENT_TAG_GROUP_SQL = `
   select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path",
     ${TAG_ORDER_KEY_SQL}

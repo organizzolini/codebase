@@ -55,8 +55,7 @@ export class EventsService {
   // 🔏 Private Methods
 
   /**
-   * Assembles the tag roots from the facet rows: each root with its tags
-   * beneath it, siblings in the order the tags are meant to read.
+   * Assembles the tag roots from the facet rows, each with its tags beneath it.
    */
   private toFacets(
     rows: readonly z.infer<typeof facetRowSchema>[],

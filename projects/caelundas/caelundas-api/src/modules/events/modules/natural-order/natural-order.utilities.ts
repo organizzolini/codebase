@@ -5,7 +5,7 @@ import type { OrderedName } from "./natural-order.types";
 // 🌎 Public Functions
 
 /**
- * Orders paths level by level, each level by its `order` and then its name with digits counted as numbers, so a parent comes before the names beneath it, siblings keep the order given them, and "Harmonic 2" precedes "Harmonic 10".
+ * Orders paths level by level, by `order` then name with digits as numbers, so "Harmonic 2" precedes "Harmonic 10".
  */
 export function compareOrderedPaths(
   left: readonly OrderedName[],
