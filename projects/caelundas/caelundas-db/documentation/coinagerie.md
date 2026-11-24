@@ -13,6 +13,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **dow**: Postgres `extract` field for the day of the week, which the derived-time view reads as `start_weekday`.
 - **doy**: Postgres `extract` field for the day of the year, which the derived-time view uses to number weeks.
 - **epoch**: Postgres `extract` field giving an interval in seconds, from which the derived-time view computes `duration_minutes`.
+- **filetree**: The Mermaid diagram that draws the tag tree as nested, indented entries like a directory listing, chosen with `--diagram filetree` instead of the default flowchart.
 - **hip**: A star's Hipparcos catalog number, the key of the `stars` table and of each constellation line's two ends.
 - **latitude**: The observer's north-south position in degrees, part of the natural key of `calendar_events`.
 - **longitude**: The observer's east-west position in degrees, part of the natural key of `calendar_events`.

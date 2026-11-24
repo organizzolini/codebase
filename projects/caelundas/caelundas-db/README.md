@@ -146,8 +146,8 @@ nx run caelundas-db:render-tag-tree --args="--truncate-depth 2 --output-markdown
 
 The `render-tag-tree` target runs the `persistence` `render-tree-data` command
 over `tag.entity.ts`. It prints a Mermaid flowchart, or with `--diagram filetree`
-Mermaid's beta file tree, which needs Mermaid 11.14 or later. The committed tag
-diagram is a filetree; the flowchart stays the default. `--args` takes the
+Mermaid's beta file tree, which needs Mermaid 11.14 or later. Both
+are committed, and the flowchart is the default. `--args` takes the
 command's filter, sort, depth, breadth, paging, and output options. The
 `--overwrite` flag lets a rerun replace `tags.md`, because an existing output
 file is otherwise refused, as `postgresql-export` refuses an existing `--file`.
@@ -203,13 +203,16 @@ own, or add `--page 1`, repeating `--page` for several, to draw only those. Or p
 
 ## Committed diagrams
 
-[`tag-tree-data.md`](documentation/tag-tree-data.md) and
+[`tag-tree-flowchart-data.md`](documentation/tag-tree-flowchart-data.md),
+[`tag-tree-filetree-data.md`](documentation/tag-tree-filetree-data.md) and
 [`constellation-graph-data.md`](documentation/constellation-graph-data.md)
-hold the diagrams of a local database, named `{entity}-{tree|graph}-data.md`.
-Regenerate them with the connection variables set:
+hold the diagrams of a local database, named `{entity}-{tree|graph}-data.md`,
+with the tag tree's `--diagram` between them. Regenerate them with the
+connection variables set:
 
 ```bash
-nx run caelundas-db:render-tag-tree --args="--diagram filetree --output-markdown projects/caelundas/caelundas-db/documentation/tag-tree-data.md --overwrite"
+nx run caelundas-db:render-tag-tree --args="--diagram flowchart --output-markdown projects/caelundas/caelundas-db/documentation/tag-tree-flowchart-data.md --overwrite"
+nx run caelundas-db:render-tag-tree --args="--diagram filetree --output-markdown projects/caelundas/caelundas-db/documentation/tag-tree-filetree-data.md --overwrite"
 nx run caelundas-db:render-constellation-graph --args="--limit 31 --output-markdown projects/caelundas/caelundas-db/documentation/constellation-graph-data.md --overwrite"
 ```
 
