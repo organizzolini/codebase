@@ -219,7 +219,8 @@ jobs:
           steps.terraform-changes.outputs.terraform == 'true')))
         uses: ./.github/actions/setup-codebase
         with:
-          nx-shas: "false"
+          nx-shas: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
+          nx-base: push-before
           python-dependencies: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
           terraform: ${{ matrix.target.id == 'apply-terraform' && 'true' || 'false' }}
           uv: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
@@ -274,6 +275,13 @@ jobs:
           matrix.target.id == 'push-releases' &&
           env.RELEASE_SUPERSEDED != 'true'
         run: pnpm exec nx run configuration:codependix:write
+
+      - name: 🗃️ Diagram Entity Relationships
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.target.id == 'push-releases' &&
+          env.RELEASE_SUPERSEDED != 'true'
+        run: pnpm exec nx affected --target=erd --configuration=write
 
       - name: 👔 Inventory Generators
         if: >-

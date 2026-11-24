@@ -15,10 +15,7 @@ import {
 import { partsOfSpeech } from "../dictionary/modules/lexemes/part-of-speech.entity";
 import { pronunciationVariants } from "../dictionary/modules/lexemes/pronunciation.entity";
 
-import {
-  LEXICO_DATABASE_ENTITIES,
-  lexicoDataSource,
-} from "./data-source.constants";
+import { DATABASE_ENTITIES, databaseDataSource } from "./data-source.constants";
 import {
   adjectiveDegreeValues,
   adverbDegrees,
@@ -44,8 +41,8 @@ class MetadataDataSource extends DataSource {
 }
 
 const metadataDataSource = new MetadataDataSource({
-  ...lexicoDataSource.options,
-  entities: [...LEXICO_DATABASE_ENTITIES],
+  ...databaseDataSource.options,
+  entities: [...DATABASE_ENTITIES],
 });
 
 interface EntityColumnExpectation {
@@ -212,7 +209,7 @@ function getComparableInheritanceDiscriminatorValue(
 }
 
 function getRegisteredEntityClass(entityName: string): EntityClass {
-  const entityClass = LEXICO_DATABASE_ENTITIES.find(
+  const entityClass = DATABASE_ENTITIES.find(
     (registeredEntityClass) => registeredEntityClass.name === entityName,
   );
 
@@ -224,7 +221,7 @@ function getRegisteredEntityClass(entityName: string): EntityClass {
 }
 
 function getRegisteredInheritanceEntityNames(): readonly string[] {
-  return LEXICO_DATABASE_ENTITIES.map((entityClass) =>
+  return DATABASE_ENTITIES.map((entityClass) =>
     metadataDataSource.getMetadata(entityClass),
   )
     .filter(
@@ -1124,12 +1121,12 @@ describe("lexico database entities", () => {
           Object.values(ENTITY_EXPECTATIONS).map(
             (entityExpectation) => entityExpectation.entityClass,
           ),
-          LEXICO_DATABASE_ENTITIES,
+          DATABASE_ENTITIES,
         );
 
         assertExactSet(
           Object.keys(ENTITY_EXPECTATIONS),
-          LEXICO_DATABASE_ENTITIES.map((entityClass) => entityClass.name),
+          DATABASE_ENTITIES.map((entityClass) => entityClass.name),
           {
             label: "entity expectation coverage",
             toComparableString: (value) => value,
@@ -1174,7 +1171,7 @@ describe("lexico database entities", () => {
       expect(() => {
         assertExactSet(
           Object.keys(ENTITY_RELATION_EXPECTATIONS),
-          LEXICO_DATABASE_ENTITIES.map((entityClass) => entityClass.name),
+          DATABASE_ENTITIES.map((entityClass) => entityClass.name),
           {
             label: "entity relation expectation coverage",
             toComparableString: (value) => value,
@@ -1256,13 +1253,13 @@ describe("lexico database entities", () => {
     relationTarget: EntityRelationMetadata["target"],
   ): boolean {
     if (typeof relationTarget === "string") {
-      return LEXICO_DATABASE_ENTITIES.some(
+      return DATABASE_ENTITIES.some(
         (entityClass) => entityClass.name === relationTarget,
       );
     }
 
     if (typeof relationTarget === "function") {
-      return LEXICO_DATABASE_ENTITIES.some(
+      return DATABASE_ENTITIES.some(
         (entityClass) => entityClass.name === relationTarget.name,
       );
     }

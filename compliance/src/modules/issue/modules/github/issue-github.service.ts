@@ -171,7 +171,6 @@ export class IssueGithubService {
     const result = this.run([
       "api",
       "--paginate",
-      "--slurp",
       OPEN_ISSUES_ENDPOINT,
       "--jq",
       OPEN_ISSUES_QUERY,
@@ -182,9 +181,12 @@ export class IssueGithubService {
     }
 
     try {
-      const issues = openIssueSummariesSchema.parse(
-        JSON.parse(result.standardOutput) as unknown,
-      );
+      // `--jq` runs per page, so each output line is one page's array.
+      const pages = result.standardOutput
+        .split("\n")
+        .filter(Boolean)
+        .map((line) => JSON.parse(line) as unknown[]);
+      const issues = openIssueSummariesSchema.parse(pages.flat());
 
       return {
         issueNumbers: issues

@@ -22,8 +22,8 @@ type PostgresDataSourceOptions = Extract<
 async function loadDataSourceOptions(): Promise<PostgresDataSourceOptions> {
   vi.resetModules();
 
-  const { lexicoDataSource } = await import("./data-source.constants");
-  const { options } = lexicoDataSource;
+  const { databaseDataSource } = await import("./data-source.constants");
+  const { options } = databaseDataSource;
 
   if (options.type !== "postgres") {
     throw new Error("Expected postgres data source options.");

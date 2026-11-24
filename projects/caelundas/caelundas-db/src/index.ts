@@ -1,20 +1,21 @@
-// 📤 Exports
-export { CAELUNDAS_PROJECT } from "./modules/caelundas-database/caelundas-database.constants";
-export { CaelundasDatabaseModule } from "./modules/caelundas-database/caelundas-database.module";
-export { CaelundasDatabaseService } from "./modules/caelundas-database/caelundas-database.service";
-export { createMomentTransformer } from "./modules/caelundas-database/caelundas-database.utilities";
 export {
-  CAELUNDAS_DATABASE_ENTITIES,
+  DATABASE_ENTITIES as CAELUNDAS_DATABASE_ENTITIES,
   CAELUNDAS_DATABASE_MIGRATIONS,
-} from "./modules/caelundas-database/data-source.constants";
-export { CalendarEventDerivedTime } from "./modules/caelundas-database/modules/calendar-events/calendar-event-derived-time.entity";
-export { CalendarEventTagNode } from "./modules/caelundas-database/modules/calendar-events/calendar-event-tag-node.entity";
-export { CalendarEventTag } from "./modules/caelundas-database/modules/calendar-events/calendar-event-tag.entity";
-export { CalendarEvent } from "./modules/caelundas-database/modules/calendar-events/calendar-event.entity";
+  DATABASE_ENTITIES,
+} from "./modules/database/data-source.constants";
+// 📤 Exports
+export { DATABASE_PROJECT as CAELUNDAS_PROJECT } from "./modules/database/database.constants";
+export { DatabaseModule as CaelundasDatabaseModule } from "./modules/database/database.module";
+export { DatabaseService as CaelundasDatabaseService } from "./modules/database/database.service";
+export { createMomentTransformer } from "./modules/database/database.utilities";
+export { CalendarEventDerivedTime } from "./modules/database/modules/calendar-events/calendar-event-derived-time.entity";
+export { CalendarEventTagNode } from "./modules/database/modules/calendar-events/calendar-event-tag-node.entity";
+export { CalendarEventTag } from "./modules/database/modules/calendar-events/calendar-event-tag.entity";
+export { CalendarEvent } from "./modules/database/modules/calendar-events/calendar-event.entity";
 export {
   Constellation,
   type ConstellationEdge,
-} from "./modules/caelundas-database/modules/night-sky/constellation.entity";
-export { Star } from "./modules/caelundas-database/modules/night-sky/star.entity";
-export { TagNode } from "./modules/caelundas-database/modules/tags/tag-node.entity";
-export { Tag } from "./modules/caelundas-database/modules/tags/tag.entity";
+} from "./modules/database/modules/night-sky/constellation.entity";
+export { Star } from "./modules/database/modules/night-sky/star.entity";
+export { TagNode } from "./modules/database/modules/tags/tag-node.entity";
+export { Tag } from "./modules/database/modules/tags/tag.entity";

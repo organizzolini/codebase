@@ -3,6 +3,7 @@ import { DiscoveryModule } from "@nestjs/core";
 
 import { LoggerModule } from "@codebase/observability";
 
+import { PostgresqlErdModule } from "./modules/postgresql-erd/postgresql-erd.module";
 import { PostgresqlExportModule } from "./modules/postgresql-export/postgresql-export.module";
 import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-import.module";
 import { RenderDirectedAcyclicGraphDataModule } from "./modules/render/modules/render-directed-acyclic-graph-data/render-directed-acyclic-graph-data.module";
@@ -20,6 +21,7 @@ import { TypeormMigrationSqlModule } from "./modules/typeorm-migration-sql/typeo
   imports: [
     DiscoveryModule,
     LoggerModule,
+    PostgresqlErdModule,
     PostgresqlExportModule,
     PostgresqlImportModule,
     RenderDirectedAcyclicGraphDataModule,

@@ -10,7 +10,7 @@ import { Text } from "../literature/text.entity";
 import { Token } from "../literature/token.entity";
 
 import {
-  LEXICO_DATABASE_ENTITIES,
+  DATABASE_ENTITIES,
   LEXICO_DATABASE_MIGRATIONS,
 } from "./data-source.constants";
 
@@ -420,7 +420,7 @@ describe("entity integration schema", () => {
 
     integrationDataSource = createDataSource(
       {
-        entities: [...LEXICO_DATABASE_ENTITIES],
+        entities: [...DATABASE_ENTITIES],
         migrations: [...LEXICO_DATABASE_MIGRATIONS],
         project: "lexico",
       },

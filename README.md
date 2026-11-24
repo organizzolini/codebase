@@ -254,6 +254,7 @@ Template-driven code generation and conformance validation, templates synced fro
 | `jupyter-notebook-application` | A standalone Python application template with a Jupyter notebook entry point, pytest/pyright/ruff tooling, and a shared uv workspace venv |
 | `nestjs-command-project` | A standalone NestJS CLI application template built on nest-commander, for a new command-line tool in projects/ |
 | `nestjs-graphql-application` | A standalone NestJS GraphQL API application template, for a new backend service exposing a GraphQL schema over HTTP |
+| `nestjs-database-project` | A standalone NestJS TypeORM package template for shared entities and migrations, with a generated entity relationship diagram |
 | `nestjs-service-project` | A standalone NestJS library package template for internal workspace code shared across projects, with no CLI entry point or HTTP server |
 | `tanstack-application` | A standalone TanStack Start web application template — server rendering, file-based routes, Tailwind CSS, and Vitest — for a new frontend in projects/ |
 | `nestjs-command-module` | A nest-commander command module template — command, module, constants, types, and unit test — for an existing NestJS command-line project |

@@ -33,7 +33,9 @@ import { Line } from "../literature/line.entity";
 import { Text } from "../literature/text.entity";
 import { Token } from "../literature/token.entity";
 
-export const LEXICO_DATABASE_ENTITIES = [
+import { DATABASE_PROJECT } from "./database.constants";
+
+export const DATABASE_ENTITIES = [
   Lexeme,
   Inflection,
   NounInflection,
@@ -71,8 +73,8 @@ export const LEXICO_DATABASE_MIGRATIONS = [
 ] as const;
 
 /** TypeORM migration source: reads `LEXICO_POSTGRES_*`, never synchronizes. */
-export const lexicoDataSource = createDataSource({
-  entities: [...LEXICO_DATABASE_ENTITIES],
+export const databaseDataSource = createDataSource({
+  entities: [...DATABASE_ENTITIES],
   migrations: ["migrations/*.ts"],
-  project: "lexico",
+  project: DATABASE_PROJECT,
 });

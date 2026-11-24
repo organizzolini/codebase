@@ -1,4 +1,23 @@
-# MeanderawDatabase: Postgres Schema Library
+# MeanderawDb: NestJS Database Project
+
+## Database source
+
+- Keep one TypeORM entity per `*.entity.ts` file under `src/`.
+- Register entities in `DATABASE_ENTITIES` in
+  `src/modules/database/data-source.constants.ts`.
+- Keep project migrations under `migrations/`; the runtime never runs or
+  synchronizes them.
+- Preserve project-specific entities and migrations when updating shared
+  configuration.
+
+## Entity relationship diagram
+
+Run `nx run meanderaw-db:erd:write` to update
+`documentation/entity-relationship-diagram.md`. Run
+`nx run meanderaw-db:erd:check` to verify it. Do not edit the generated
+content between the PostgreSQL entity relationship diagram markers.
+
+## Project-specific guidance
 
 ## Quick Start
 
@@ -21,11 +40,11 @@ migrations, and the service that persists and reads meander rows.
 ```text
 src/
   index.ts                               # Public exports
-  modules/meanderaw-database/            # The database module
-    meanderaw-database.module.ts         # MeanderawDatabaseModule
-    meanderaw-database.service.ts        # Save, read, and count meander rows
-    meanderaw-database.constants.ts      # Project, insert chunk size, bigint transformer
-    meanderaw-database.types.ts          # Record, shape, and count types
+  modules/database/                      # The database module
+    database.module.ts                   # MeanderawDatabaseModule
+    database.service.ts                  # Save, read, and count meander rows
+    database.constants.ts                # Project, insert chunk size, bigint transformer
+    database.types.ts                    # Record, shape, and count types
     data-source.constants.ts             # Entities, migrations, meanderawDataSource
     entities/                            # One *.entity.ts per table
     migrations/                          # Migrations and their .sql pairs

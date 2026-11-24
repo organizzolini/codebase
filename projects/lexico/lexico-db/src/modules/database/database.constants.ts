@@ -1,4 +1,8 @@
 // ♟️ Constants
+
+// Database packages use the domain name as their shared Postgres project key.
+export const DATABASE_PROJECT = "lexico-db".replace(/-db$/u, "");
+
 export const formCase = {
   ablative: "ablative",
   accusative: "accusative",
