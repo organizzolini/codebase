@@ -8,10 +8,6 @@ import type { MigrationInterface, QueryRunner } from "typeorm";
 export class Migration1795470728582 implements MigrationInterface {
   name = "Migration1795470728582";
 
-  /**
-   * Drops every table, the bridge first so its foreign keys and indexes go
-   * before the tables they point at.
-   */
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`SET lock_timeout = '10s'`);
     await queryRunner.query(`SET statement_timeout = '5min'`);
@@ -25,11 +21,6 @@ export class Migration1795470728582 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE "aggregate_markers"`);
   }
 
-  /**
-   * Creates the tables, their indexes and check, then the bridge's cascading
-   * foreign keys. The bridge key leads with `meander_id`, the way a meander's
-   * rows are read.
-   */
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`SET lock_timeout = '10s'`);
     await queryRunner.query(`SET statement_timeout = '5min'`);
