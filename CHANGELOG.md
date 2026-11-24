@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.14.0](https://github.com/organizzolini/codebase/compare/v6.13.1...v6.14.0) (2026-11-24)
+
+### ✨ Features
+
+* **persistence,caelundas,meanderaw:** ✨ render tag-tree data as Mermaid diagrams ([#2545](https://github.com/organizzolini/codebase/issues/2545)) ([86762ac](https://github.com/organizzolini/codebase/commit/86762acca167e31a35c36bbea330bce53d6a865c)), closes [#2503](https://github.com/organizzolini/codebase/issues/2503) [#2502](https://github.com/organizzolini/codebase/issues/2502)
+
+### 📝 Documentation
+
+* **documentation:** 📝 make ship-changes wait and wake instead of asking ([#2553](https://github.com/organizzolini/codebase/issues/2553)) ([bffee9e](https://github.com/organizzolini/codebase/commit/bffee9e529dad18903165626ce22355cffd839c5)), closes [#2552](https://github.com/organizzolini/codebase/issues/2552)
+
 ## [6.13.1](https://github.com/organizzolini/codebase/compare/v6.13.0...v6.13.1) (2026-11-23)
 
 ### 🐛 Bug Fixes
