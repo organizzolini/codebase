@@ -21,6 +21,10 @@ description = "Ignore test fixtures and snapshots"
 paths = [".*/testing/.*", ".*\\.snap$", ".*/__snapshots__/.*"]
 
 [[allowlists]]
+description = "Ignore persistence integration tests, whose made-up passwords prove the render commands mask a connection string; the render tests have moved folders, so fingerprints cannot follow them"
+paths = ["projects/common/persistence/src/modules/.*\\.integration\\.test\\.ts$"]
+
+[[allowlists]]
 description = "Ignore Gitleaks configuration itself"
 paths = ["\\.gitleaksignore$", "gitleaks\\.toml$"]
 

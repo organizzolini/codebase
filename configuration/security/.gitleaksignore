@@ -5,10 +5,3 @@
 #
 # Note: prefer path allowlists in gitleaks.toml over fingerprints where possible —
 # fingerprints are commit-specific and break when a file changes.
-
-# Test fixtures in persistence's render-tree-data integration test: a made-up
-# password the credential-masking tests assert never reaches output. The file
-# has since moved, so these name its earlier path.
-f8883e28f3716925049e60a9db51fa8f13a915a9:projects/common/persistence/src/modules/render-tree-data/render-tree-data.command.integration.test.ts:generic-api-key:871
-692e70a31a081f9045f5fddcd2a550f52f955d7d:projects/common/persistence/src/modules/render-tree-data/render-tree-data.command.integration.test.ts:generic-api-key:390
-692e70a31a081f9045f5fddcd2a550f52f955d7d:projects/common/persistence/src/modules/render-tree-data/render-tree-data.command.integration.test.ts:generic-api-key:436
