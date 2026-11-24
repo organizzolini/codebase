@@ -182,11 +182,11 @@ describe("events resolver end-to-end suite", () => {
     const WHOLE_DATASET = [
       {
         name: "Aspect",
-        values: [{ count: 2, depth: 1, name: "Conjunct", path: "Conjunct" }],
-      },
-      {
-        name: "Phase",
-        values: [{ count: 1, depth: 1, name: "Forming", path: "Forming" }],
+        values: [
+          { count: 2, depth: 1, name: "Conjunct", path: "Conjunct" },
+          { count: 1, depth: 1, name: "Phase", path: "Phase" },
+          { count: 1, depth: 2, name: "Forming", path: "Phase / Forming" },
+        ],
       },
       {
         name: "Planet",
@@ -218,11 +218,11 @@ describe("events resolver end-to-end suite", () => {
       expect(facets).toStrictEqual([
         {
           name: "Aspect",
-          values: [{ count: 0, depth: 1, name: "Conjunct", path: "Conjunct" }],
-        },
-        {
-          name: "Phase",
-          values: [{ count: 0, depth: 1, name: "Forming", path: "Forming" }],
+          values: [
+            { count: 0, depth: 1, name: "Conjunct", path: "Conjunct" },
+            { count: 0, depth: 1, name: "Phase", path: "Phase" },
+            { count: 0, depth: 2, name: "Forming", path: "Phase / Forming" },
+          ],
         },
         {
           name: "Planet",

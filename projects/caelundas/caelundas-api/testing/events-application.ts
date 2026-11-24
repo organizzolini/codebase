@@ -42,18 +42,22 @@ export interface EventsApplication {
 /** The tags {@link seedFilterTags} adds, by name. */
 export interface FilterTags {
   readonly aspect: Tag;
+  readonly body: Tag;
   readonly direction: Tag;
   readonly harmonic: Tag;
   readonly harmonic2: Tag;
   readonly harmonic6: Tag;
   readonly harmonic12: Tag;
   readonly ingress: Tag;
+  readonly luminary: Tag;
+  readonly luminaryMoon: Tag;
   readonly major: Tag;
   readonly moon: Tag;
   readonly planet: Tag;
+  readonly planetary: Tag;
   readonly signIngress: Tag;
   readonly simple: Tag;
-  readonly type: Tag;
+  readonly zodiac: Tag;
 }
 
 /** The body of a GraphQL response: data, errors, or both. */
@@ -85,7 +89,7 @@ export async function seedEvents(
   const conjunct = await tags.save(
     tags.create({ name: "Conjunct", parent: aspect }),
   );
-  const phase = await tags.save(tags.create({ name: "Phase" }));
+  const phase = await tags.save(tags.create({ name: "Phase", parent: aspect }));
   const forming = await tags.save(
     tags.create({ name: "Forming", parent: phase }),
   );
@@ -165,25 +169,33 @@ export async function seedFilterTags(
 ): Promise<FilterTags> {
   const tags = database.dataSource.getTreeRepository(Tag);
   const planet = await tags.findOneByOrFail({ name: "Planet" });
+  const aspect = await tags.findOneByOrFail({ name: "Aspect" });
   const moon = await tags.save(tags.create({ name: "Moon", parent: planet }));
-  const type = await tags.save(tags.create({ name: "Type" }));
-  const aspect = await tags.save(tags.create({ name: "Aspect", parent: type }));
+  const body = await tags.save(tags.create({ name: "Body" }));
+  const luminary = await tags.save(
+    tags.create({ name: "Luminary", parent: body }),
+  );
+  const luminaryMoon = await tags.save(
+    tags.create({ name: "Moon", parent: luminary }),
+  );
   const simple = await tags.save(
-    tags.create({ name: "Simple Aspect", parent: aspect }),
+    tags.create({ name: "Simple", parent: aspect }),
   );
-  const major = await tags.save(
-    tags.create({ name: "Major Aspect", parent: simple }),
-  );
+  const major = await tags.save(tags.create({ name: "Major", parent: simple }));
+  const zodiac = await tags.save(tags.create({ name: "Zodiac" }));
   const ingress = await tags.save(
-    tags.create({ name: "Ingress", parent: type }),
+    tags.create({ name: "Ingress", parent: zodiac }),
   );
   const signIngress = await tags.save(
     tags.create({ name: "Sign Ingress", parent: ingress }),
   );
+  const planetary = await tags.save(tags.create({ name: "Planetary" }));
   const direction = await tags.save(
-    tags.create({ name: "Direction", parent: type }),
+    tags.create({ name: "Direction", parent: planetary }),
   );
-  const harmonic = await tags.save(tags.create({ name: "Aspect Harmonic" }));
+  const harmonic = await tags.save(
+    tags.create({ name: "Harmonic", parent: aspect }),
+  );
   const harmonic2 = await tags.save(
     tags.create({ name: "Harmonic 2", parent: harmonic }),
   );
@@ -194,7 +206,7 @@ export async function seedFilterTags(
     tags.create({ name: "Harmonic 12", parent: harmonic }),
   );
   const given: [string, Tag[]][] = [
-    ["Moon Conjunct Mars", [major, moon, harmonic2]],
+    ["Moon Conjunct Mars", [major, moon, luminaryMoon, harmonic2]],
     ["Sun Enters Aries", [signIngress, harmonic12]],
     ["Mars Retrograde", [direction]],
     ["Equinox Watch", [harmonic6]],
@@ -219,18 +231,22 @@ export async function seedFilterTags(
 
   return {
     aspect,
+    body,
     direction,
     harmonic,
     harmonic2,
     harmonic6,
     harmonic12,
     ingress,
+    luminary,
+    luminaryMoon,
     major,
     moon,
     planet,
+    planetary,
     signIngress,
     simple,
-    type,
+    zodiac,
   };
 }
 

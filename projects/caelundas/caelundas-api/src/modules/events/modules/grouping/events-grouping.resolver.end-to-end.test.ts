@@ -379,8 +379,8 @@ describe("events grouping end-to-end suite", () => {
             rules: [
               {
                 operator: "is_any_of",
-                path: [`tag:${tags.type.id}`],
-                values: [tags.type.id],
+                path: [`tag:${tags.aspect.id}`],
+                values: [tags.aspect.id, tags.direction.id],
               },
               { operator: "contains", path: ["text"], values: ["mars"] },
             ],
@@ -394,7 +394,7 @@ describe("events grouping end-to-end suite", () => {
       expect(keysOf(grouped[MARS_RETROGRADE])[1]).toStrictEqual(["3"]);
     });
 
-    it("refuses more than three levels of grouping, a color level aside", async () => {
+    it("refuses more than sixteen levels of grouping, a color level aside", async () => {
       expect.hasAssertions();
 
       const body = await application.query(
@@ -403,9 +403,7 @@ describe("events grouping end-to-end suite", () => {
         }`,
         {
           grouping: {
-            levels: ["year", "month", "day", "hour"].map((field) => ({
-              field,
-            })),
+            levels: Array.from({ length: 17 }, () => ({ field: "year" })),
           },
           period: {
             end: "2026-04-01T00:00:00.000Z",

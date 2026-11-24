@@ -147,16 +147,18 @@ describe("events filtering end-to-end suite", () => {
     it("matches an event carrying the tag or any tag beneath it", async () => {
       expect.hasAssertions();
 
-      const { aspect, major, type } = tags;
+      const { aspect, direction, ingress, major, simple } = tags;
 
       await expect(
-        keepWhere(tagRule(type, "is_any_of", [major.id])),
+        keepWhere(tagRule(aspect, "is_any_of", [major.id])),
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
       await expect(
-        keepWhere(tagRule(type, "is_any_of", [aspect.id])),
+        keepWhere(tagRule(aspect, "is_any_of", [simple.id])),
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
       await expect(
-        keepWhere(tagRule(type, "is_any_of", [type.id])),
+        keepWhere(
+          tagRule(aspect, "is_any_of", [simple.id, ingress.id, direction.id]),
+        ),
       ).resolves.toStrictEqual([
         MARS_RETROGRADE,
         MOON_CONJUNCT_MARS,
@@ -167,66 +169,66 @@ describe("events filtering end-to-end suite", () => {
     it("requires all of the picked tags for has_all_of", async () => {
       expect.hasAssertions();
 
-      const { major, moon, signIngress, type } = tags;
+      const { aspect, major, moon, signIngress } = tags;
 
       await expect(
-        keepWhere(tagRule(type, "has_all_of", [major.id, moon.id])),
+        keepWhere(tagRule(aspect, "has_all_of", [major.id, moon.id])),
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
       await expect(
-        keepWhere(tagRule(type, "has_all_of", [major.id, signIngress.id])),
+        keepWhere(tagRule(aspect, "has_all_of", [major.id, signIngress.id])),
       ).resolves.toStrictEqual([]);
     });
 
     it("drops the events carrying any picked tag for is_none_of, as a negated is_any_of does", async () => {
       expect.hasAssertions();
 
-      const { moon, type } = tags;
+      const { aspect, moon } = tags;
       const withoutTheMoon = [MARS_RETROGRADE, SUN_ENTERS_ARIES, EQUINOX_WATCH];
 
       await expect(
-        keepWhere(tagRule(type, "is_none_of", [moon.id])),
+        keepWhere(tagRule(aspect, "is_none_of", [moon.id])),
       ).resolves.toStrictEqual(withoutTheMoon);
       await expect(
-        keepWhere(tagRule(type, "is_any_of", [moon.id], true)),
+        keepWhere(tagRule(aspect, "is_any_of", [moon.id], true)),
       ).resolves.toStrictEqual(withoutTheMoon);
     });
 
     it("treats a pick that is no tag as a tag the data lacks", async () => {
       expect.hasAssertions();
 
-      const { type } = tags;
+      const { aspect } = tags;
 
       await expect(
-        keepWhere(tagRule(type, "is_any_of", ["no-such-tag"])),
+        keepWhere(tagRule(aspect, "is_any_of", ["no-such-tag"])),
       ).resolves.toStrictEqual([]);
       await expect(
-        keepWhere(tagRule(type, "is_none_of", ["no-such-tag"])),
+        keepWhere(tagRule(aspect, "is_none_of", ["no-such-tag"])),
       ).resolves.toStrictEqual(EVERYTHING);
     });
 
     it("compares the numbers the tags beneath a root are named for", async () => {
       expect.hasAssertions();
 
-      const { harmonic } = tags;
+      const { aspect } = tags;
 
       await expect(
-        keepWhere(tagRule(harmonic, "gte", ["6"])),
+        keepWhere(tagRule(aspect, "gte", ["6"])),
       ).resolves.toStrictEqual([SUN_ENTERS_ARIES, EQUINOX_WATCH]);
       await expect(
-        keepWhere(tagRule(harmonic, "eq", ["2"])),
+        keepWhere(tagRule(aspect, "eq", ["2"])),
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
       await expect(
-        keepWhere(tagRule(harmonic, "between", ["3", "8"])),
+        keepWhere(tagRule(aspect, "between", ["3", "8"])),
       ).resolves.toStrictEqual([EQUINOX_WATCH]);
       await expect(
-        keepWhere(tagRule(harmonic, "neq", ["6"])),
+        keepWhere(tagRule(aspect, "neq", ["6"])),
       ).resolves.toStrictEqual([
         MARS_RETROGRADE,
         MOON_CONJUNCT_MARS,
         SUN_ENTERS_ARIES,
       ]);
       await expect(
-        keepWhere(tagRule(harmonic, "not_between", ["2", "12"])),
+        keepWhere(tagRule(aspect, "not_between", ["2", "12"])),
       ).resolves.toStrictEqual([MARS_RETROGRADE]);
     });
 
@@ -234,7 +236,7 @@ describe("events filtering end-to-end suite", () => {
       expect.hasAssertions();
 
       await expect(
-        keepWhere(tagRule(tags.harmonic, "lt", ["1"])),
+        keepWhere(tagRule(tags.aspect, "lt", ["1"])),
       ).resolves.toStrictEqual([]);
     });
   });
@@ -590,6 +592,13 @@ describe("events filtering end-to-end suite", () => {
       const { presets } = await askPresets();
       const highlights = presets.find(({ id }) => id === "highlights");
 
+      const notTheMoon = {
+        negated: false,
+        operator: "is_none_of",
+        path: [`tag:${tags.body.id}`],
+        values: [tags.luminaryMoon.id],
+      };
+
       expect(highlights?.filter).toStrictEqual({
         combinator: "OR",
         groups: [
@@ -600,26 +609,39 @@ describe("events filtering end-to-end suite", () => {
               {
                 negated: false,
                 operator: "is_any_of",
-                path: [`tag:${tags.type.id}`],
-                values: [tags.major.id, tags.signIngress.id],
+                path: [`tag:${tags.aspect.id}`],
+                values: [tags.major.id],
               },
+              notTheMoon,
+            ],
+          },
+          {
+            combinator: "AND",
+            groups: [],
+            rules: [
               {
                 negated: false,
-                operator: "is_none_of",
-                path: [`tag:${tags.planet.id}`],
-                values: [tags.moon.id],
+                operator: "is_any_of",
+                path: [`tag:${tags.zodiac.id}`],
+                values: [tags.signIngress.id],
+              },
+              notTheMoon,
+            ],
+          },
+          {
+            combinator: "OR",
+            groups: [],
+            rules: [
+              {
+                negated: false,
+                operator: "is_any_of",
+                path: [`tag:${tags.planetary.id}`],
+                values: [tags.direction.id],
               },
             ],
           },
         ],
-        rules: [
-          {
-            negated: false,
-            operator: "is_any_of",
-            path: [`tag:${tags.type.id}`],
-            values: [tags.direction.id],
-          },
-        ],
+        rules: [],
       });
     });
 

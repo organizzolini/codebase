@@ -33,6 +33,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **july**: A test name for the windows computed for July 2026.
 - **latitude**: The observer's north-south position in degrees, which sets how high the pole sits in the night sky.
 - **longitude**: The observer's east-west position in degrees, which with sidereal time sets the sky's rotation.
+- **luminary**:
 - **lyra**: A constellation used as a fixture when no database is present.
 - **magnitude**: A star's brightness, where a lower number is brighter; `faintestMagnitude` limits which stars are drawn.
 - **moon**: The Moon, as a body named in sample events and tag paths.
@@ -41,6 +42,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **observer**: The viewer on Earth, whose time zone and position decide which events and which sky are shown.
 - **phase**: The tag root holding `Forming` and `Dissolving`, the stages of an aspect that event queries leave out.
 - **planet**: The tag root whose paths name a body, as in `Planet / Mars / Retrograde`.
+- **planetary**:
 - **polar**: Measured from the celestial pole, as in the polar distance of the top and bottom of the view.
 - **pole**: The north celestial pole, the point the night sky rotates around.
 - **quarter**: The calendar quarter of the year, one of the levels events can be grouped by.
