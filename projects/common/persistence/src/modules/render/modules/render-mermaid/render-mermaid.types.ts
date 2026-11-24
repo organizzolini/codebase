@@ -1,5 +1,8 @@
 // 🏷️ Types
 
+/** The Mermaid diagram drawn: a file tree or a flowchart. */
+export type GraphDiagram = "filetree" | "flowchart";
+
 /** A connection from `source` to `target`, by node id. */
 export interface GraphEdge {
   /** Text drawn on the edge. */
@@ -17,13 +20,16 @@ export interface GraphEdge {
 
 /** Layout options for the Mermaid flowchart. */
 export interface GraphMermaidOptions {
+  /** The diagram to draw; defaults to `flowchart`. A file tree ignores `direction`. */
+  readonly diagram?: GraphDiagram;
+
   /** The flowchart direction; defaults to `LR`. */
   readonly direction?: "BT" | "LR" | "RL" | "TB";
 }
 
 /** A rendered Mermaid flowchart and the warnings about its limits. */
 export interface GraphMermaidRendering {
-  /** The Mermaid source, starting with its `flowchart` header. */
+  /** The Mermaid source, starting with its `flowchart` or `treeView-beta` header. */
   readonly diagram: string;
 
   /** Model warnings followed by limit warnings for this diagram. */

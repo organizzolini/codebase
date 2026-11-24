@@ -25,4 +25,25 @@ describe(RenderMermaidService, () => {
     expect(diagram).toContain('    n0["A"]');
     expect(warnings).toStrictEqual([]);
   });
+
+  it("renders a graph model as a file tree when asked", async () => {
+    const { instance } = await buildTestingModule(RenderMermaidService);
+
+    const { diagram } = instance.render(
+      {
+        directed: true,
+        edges: [{ source: "a", target: "b" }],
+        nodes: [
+          { id: "a", label: "A" },
+          { id: "b", label: "B" },
+        ],
+        warnings: [],
+      },
+      { diagram: "filetree" },
+    );
+
+    expect(diagram).toBe(
+      ["treeView-beta", '    "A/"', '        "B"'].join("\n"),
+    );
+  });
 });

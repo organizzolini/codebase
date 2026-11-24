@@ -12,6 +12,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **department**: A fixture entity with a customized table name and nullable text column, defined by `ErdDepartment` in `department.entity.ts`.
 - **employee**: A fixture entity with an inherited identifier and a many-to-one department relation, defined by `ErdEmployee` in `employee.entity.ts`.
 - **errand**: A root in the render tests' sample tree, the fixture label `--page` tests draw alone.
+- **filetree**:
 - **forest**: The rows of a tree table taken together, whose roots `--limit` and `--page` count and page.
 - **gamma**: A placeholder project name in the extractor's unit test fixtures, with no meaning beyond the test.
 - **identifiable**: The entity base layer that adds a primary id, first in the identifiable, creatable, updatable, deletable chain.

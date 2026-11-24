@@ -39,6 +39,7 @@ describe(RenderOptionsService, () => {
           schema: "fixture",
           username: "fixture_user",
         },
+        diagram: "flowchart",
         entities: ["src/**/*.entity.ts"],
         filters: [],
         outputs: { json: undefined, markdown: undefined, overwrite: false },
@@ -49,6 +50,20 @@ describe(RenderOptionsService, () => {
         truncateBreadth: undefined,
         truncateDepth: undefined,
       });
+    });
+
+    it("plans the diagram --diagram names, a flowchart when it is left out", async () => {
+      const { instance } = await buildTestingModule(RenderOptionsService);
+      const base = {
+        entities: ["a.ts"],
+        schema: "fixture",
+        sourceUri: SOURCE_URI,
+      };
+
+      expect(instance.plan(base).diagram).toBe("flowchart");
+      expect(instance.plan({ ...base, diagram: "filetree" }).diagram).toBe(
+        "filetree",
+      );
     });
 
     it("resolves the output flags into the plan's output files", async () => {

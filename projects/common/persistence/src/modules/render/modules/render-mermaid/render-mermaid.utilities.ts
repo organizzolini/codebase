@@ -19,6 +19,15 @@ import type {
   GraphNode,
 } from "./render-mermaid.types";
 
+/** Warnings for an edge count or diagram length nearing or past Mermaid's limits. */
+export function limitWarnings(edges: number, characters: number): string[] {
+  const warnings = [
+    limitWarning(edges, RENDER_MERMAID_MAXIMUM_EDGES, "edge"),
+    limitWarning(characters, RENDER_MERMAID_MAXIMUM_CHARACTERS, "character"),
+  ];
+  return warnings.filter((warning): warning is string => warning !== undefined);
+}
+
 /**
  * Wraps a rendering's diagram in a Mermaid fence longer than any backtick run
  * in it, with its warnings as blockquotes after the fence.
@@ -249,15 +258,6 @@ function limitWarning(
     return `${subject}, nearing Mermaid's ${maximum}-${unit} limit`;
   }
   return undefined;
-}
-
-/** Warnings for an edge count or diagram length nearing or past Mermaid's limits. */
-function limitWarnings(edges: number, characters: number): string[] {
-  const warnings = [
-    limitWarning(edges, RENDER_MERMAID_MAXIMUM_EDGES, "edge"),
-    limitWarning(characters, RENDER_MERMAID_MAXIMUM_CHARACTERS, "character"),
-  ];
-  return warnings.filter((warning): warning is string => warning !== undefined);
 }
 
 /** A backtick fence one longer than the longest backtick run in `text`, and at least three. */

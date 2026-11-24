@@ -406,7 +406,8 @@ relative `--entities` globs and output paths resolve from there.
 
 ### Options
 
-Every option is shared by the three commands unless the table says otherwise.
+Every option is shared by the three commands unless the table says otherwise;
+`--diagram` is `render-tree-data` only.
 
 | Option                     | Does                                                                                                                                                                                                  |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -424,6 +425,10 @@ Every option is shared by the three commands unless the table says otherwise.
 | `--output-json <path>`     | Writes the drawn graph as pretty JSON, creating its folders. The diagram is not printed                                                                                                               |
 | `--overwrite`              | Replaces an existing `--output-markdown` or `--output-json` file. Without it an existing file is refused and left unchanged                                                                           |
 | `--dry-run`                | Checks the options and output paths and lists the entity files it would read. It connects to no database and imports no entity file                                                                   |
+
+`--diagram <flowchart|filetree>` is `render-tree-data` only. `flowchart` (the
+default) draws the tree as a flowchart; `filetree` draws Mermaid's beta
+`treeView-beta` file tree. See [Drawing trees](#drawing-trees).
 
 Filters and sorts name columns of the entity, and fail before any connection
 opens when a name is unknown. A `<` or `>` on a text column, or a value that is
@@ -620,6 +625,18 @@ name the edge's columns, as in the first form.
   parent warns with its id and the count hidden.
 - Several `@Tree` entities without `--table` fail, naming each table, before
   any connection opens.
+- **`--diagram filetree`** draws the same tree as Mermaid's `treeView-beta`
+  diagram instead of a flowchart: roots at the top level, children nested by
+  indentation, quoted labels, and a trailing `/` on each node with children. A
+  truncation node shows as its `… K more` label. Filters, sorts, caps, paging
+  (with the same `## Page` headings), and the output flags work unchanged; edge
+  labels, weights, and styled roots are not drawn. Mermaid's quoted labels
+  have no escapes, so a label holding `"` is wrapped in single quotes with its
+  own `'` turned into `’`.
+- **`treeView-beta` is a beta diagram.** It needs Mermaid 11.14 or later, its
+  syntax may still change, and Obsidian may not render it yet. Only Mermaid's
+  50,000-character text limit warns for a filetree; the 500-edge limit is a
+  flowchart setting.
 
 ### Drawing directed acyclic graphs and graphs
 

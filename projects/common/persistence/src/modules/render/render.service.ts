@@ -122,7 +122,10 @@ export class RenderService {
       const renderings: GraphMermaidRendering[] = [];
       for (const graph of pages.graphs) {
         renderings.push(
-          this.renderMermaid.render(graph, { direction: drawing.direction }),
+          this.renderMermaid.render(graph, {
+            diagram: plan.diagram,
+            direction: drawing.direction,
+          }),
         );
       }
       return this.emit(plan, pages, renderings);

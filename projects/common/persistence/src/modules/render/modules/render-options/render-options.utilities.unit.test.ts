@@ -1,8 +1,31 @@
 import { describe, expect, it } from "vitest";
 
-import { parseGraphFilter, parseGraphSort } from "./render-options.utilities";
+import {
+  parseGraphDiagram,
+  parseGraphFilter,
+  parseGraphSort,
+} from "./render-options.utilities";
 
 describe("graph options utilities", () => {
+  describe(parseGraphDiagram, () => {
+    it.each([
+      [undefined, "flowchart"],
+      ["flowchart", "flowchart"],
+      ["filetree", "filetree"],
+    ] as const)("reads %j as the %s diagram", (value, diagram) => {
+      expect(parseGraphDiagram(value)).toBe(diagram);
+    });
+
+    it.each(["tree", "Filetree", "", "flowchart "])(
+      "rejects %j, listing the choices",
+      (value) => {
+        expect(() => parseGraphDiagram(value)).toThrow(
+          `--diagram must be flowchart or filetree, e.g. --diagram filetree; got "${value}"`,
+        );
+      },
+    );
+  });
+
   describe(parseGraphFilter, () => {
     it.each([
       ["name=Inbox", "name", "=", "Inbox"],

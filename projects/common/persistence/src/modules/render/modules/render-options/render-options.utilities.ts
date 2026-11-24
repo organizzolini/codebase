@@ -6,19 +6,23 @@ import {
 } from "../../../postgresql-utilities/postgresql-utilities.utilities";
 
 import {
+  RENDER_DIAGRAM_SCHEMA,
   RENDER_FILTER_PATTERN,
   RENDER_FILTER_SCHEMA,
   RENDER_OPTION_MESSAGES,
   RENDER_SORT_PATTERN,
   RENDER_SORT_SCHEMA,
+  renderOptionsDiagramMessage,
   RenderOptionsError,
   renderOptionsFilterSyntaxMessage,
   renderOptionsPositiveIntegerMessage,
   renderOptionsSortSyntaxMessage,
 } from "./render-options.constants";
 
+import type { GraphDiagram } from "../render-mermaid/render-mermaid.types";
 import type {
   GraphFilter,
+  GraphOptions,
   GraphPaging,
   GraphPlan,
   GraphSort,
@@ -33,6 +37,37 @@ export function maskedError(error: unknown, password: string): Error {
   const masked = new Error(maskPostgresCredentials(message, password));
   masked.name = error instanceof Error ? error.name : Error.name;
   return masked;
+}
+
+/**
+ * The diagram `--diagram` names, `flowchart` when it is absent.
+ * @throws RenderOptionsError listing the choices when it names another.
+ */
+export function parseGraphDiagram(value: string | undefined): GraphDiagram {
+  const parsed = RENDER_DIAGRAM_SCHEMA.safeParse(value);
+  if (!parsed.success) {
+    throw new RenderOptionsError(renderOptionsDiagramMessage(String(value)));
+  }
+  return parsed.data;
+}
+
+/**
+ * How the graph is drawn: the diagram and the two caps, validated together.
+ * @throws RenderOptionsError on a bad diagram or cap.
+ */
+export function parseGraphDrawing({
+  diagram,
+  truncateBreadth,
+  truncateDepth,
+}: Pick<GraphOptions, "diagram" | "truncateBreadth" | "truncateDepth">): Pick<
+  GraphPlan,
+  "diagram" | "truncateBreadth" | "truncateDepth"
+> {
+  return {
+    diagram: parseGraphDiagram(diagram),
+    truncateBreadth: positiveIntegerFlag("--truncate-breadth", truncateBreadth),
+    truncateDepth: positiveIntegerFlag("--truncate-depth", truncateDepth),
+  };
 }
 
 /**
@@ -139,4 +174,29 @@ export function positiveIntegerFlag(
     );
   }
   return Number(value);
+}
+
+/**
+ * The three options every graph command needs, now known to be given.
+ * @throws RenderOptionsError naming the first one missing, with its usage.
+ */
+export function requireGraphOptions({
+  entities,
+  schema,
+  sourceUri,
+}: Pick<GraphOptions, "entities" | "schema" | "sourceUri">): {
+  readonly entities: string[];
+  readonly schema: string;
+  readonly sourceUri: string;
+} {
+  if (sourceUri === undefined) {
+    throw new RenderOptionsError(RENDER_OPTION_MESSAGES.sourceUri);
+  }
+  if (entities === undefined) {
+    throw new RenderOptionsError(RENDER_OPTION_MESSAGES.entities);
+  }
+  if (schema === undefined) {
+    throw new RenderOptionsError(RENDER_OPTION_MESSAGES.schema);
+  }
+  return { entities, schema, sourceUri };
 }

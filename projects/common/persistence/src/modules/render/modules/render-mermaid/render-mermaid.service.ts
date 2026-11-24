@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { renderGraphFileTree } from "./render-mermaid-file-tree.utilities";
 import { renderGraphMermaid } from "./render-mermaid.utilities";
 
 import type {
@@ -25,11 +26,16 @@ export class RenderMermaidService {
 
   // 🌎 Public Methods
 
-  /** Draws `graph` as Mermaid; see `renderGraphMermaid` for its rules. */
+  /**
+   * Draws `graph` as the diagram `options` name: a flowchart by default, see
+   * `renderGraphMermaid`, or a file tree, see `renderGraphFileTree`.
+   */
   render(
     graph: GraphModel,
     options?: GraphMermaidOptions,
   ): GraphMermaidRendering {
-    return renderGraphMermaid(graph, options);
+    return options?.diagram === "filetree"
+      ? renderGraphFileTree(graph)
+      : renderGraphMermaid(graph, options);
   }
 }

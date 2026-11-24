@@ -5,6 +5,18 @@ import { z } from "zod";
 /** Rows read per query, and ids named per follow-up query. */
 export const RENDER_BATCH_SIZE = 500;
 
+/** Flag and help text of `--diagram`, which only the tree command takes. */
+export const RENDER_DIAGRAM_OPTION = {
+  description:
+    "Mermaid diagram to draw: flowchart (default), or filetree, the beta treeView-beta file tree, which needs Mermaid 11.14 or later and may not render in Obsidian. A filetree draws no edge labels, weights, or styled roots, and only the 50,000-character limit warns",
+  flags: "--diagram <flowchart|filetree>",
+} as const;
+
+/** The diagrams `--diagram` names; the first is the default. */
+export const RENDER_DIAGRAM_SCHEMA = z
+  .enum(["flowchart", "filetree"])
+  .default("flowchart");
+
 /** The flag and help text of `--dry-run`, which every graph command takes. */
 export const RENDER_DRY_RUN_OPTION = {
   description:
@@ -110,6 +122,10 @@ export class RenderOptionsError extends Error {
     this.name = RenderOptionsError.name;
   }
 }
+
+/** A `--diagram` that names no diagram, listing the choices. */
+export const renderOptionsDiagramMessage = (value: string): string =>
+  `--diagram must be flowchart or filetree, e.g. --diagram filetree; got "${value}"`;
 
 /** A cap flag whose value is not a positive integer. */
 export const renderOptionsPositiveIntegerMessage = (

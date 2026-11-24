@@ -1,6 +1,7 @@
 // 🏷️ Types
 
 import type { PostgresConnection } from "../../../postgresql/postgresql.types";
+import type { GraphDiagram } from "../render-mermaid/render-mermaid.types";
 
 /** A column of an entity, as a graph command reads it. */
 export interface GraphColumn {
@@ -52,6 +53,9 @@ export interface GraphLimits {
 
 /** The options every graph command shares. The command validates them. */
 export interface GraphOptions {
+  /** The diagram to draw, as text: `flowchart` or `filetree`; flowchart when absent. */
+  readonly diagram?: string | undefined;
+
   /** Glob patterns of the entity files to import; repeatable. */
   readonly entities?: string[] | undefined;
 
@@ -153,6 +157,9 @@ export interface GraphPaging {
 export interface GraphPlan {
   /** The database and schema, with the password in it; never logged. */
   readonly connection: PostgresConnection;
+
+  /** The Mermaid diagram drawn. */
+  readonly diagram: GraphDiagram;
 
   /** The entity glob patterns, in the order given. */
   readonly entities: readonly string[];

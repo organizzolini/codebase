@@ -7,6 +7,7 @@ import { RenderService } from "../../render.service";
 import { RenderCommand } from "../render-command/render-command.command";
 import { RenderEntitiesService } from "../render-entities/render-entities.service";
 import { RenderNodesService } from "../render-nodes/render-nodes.service";
+import { RENDER_DIAGRAM_OPTION } from "../render-options/render-options.constants";
 import { RenderOptionsService } from "../render-options/render-options.service";
 import { RenderTreesService } from "../render-trees/render-trees.service";
 
@@ -57,6 +58,12 @@ export class RenderTreeDataCommand extends RenderCommand {
   // 🔧 Protected Methods
 
   // 🌎 Public Methods
+
+  /** Parses `--diagram`, the Mermaid diagram to draw: a flowchart or a file tree. */
+  @Option(RENDER_DIAGRAM_OPTION)
+  parseDiagram(value: string): string {
+    return value;
+  }
 
   /** Collects each repeated `--filter` into one list, in the order given. */
   @Option({

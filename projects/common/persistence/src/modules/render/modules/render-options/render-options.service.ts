@@ -2,15 +2,15 @@ import { Injectable } from "@nestjs/common";
 
 import { resolveGraphOutputs } from "./render-options-outputs.utilities";
 import {
-  RENDER_OPTION_MESSAGES,
   RenderOptionsError,
   renderOptionsTableSchemaMessage,
 } from "./render-options.constants";
 import {
+  parseGraphDrawing,
   parseGraphPaging,
   parseGraphRows,
   parseGraphSource,
-  positiveIntegerFlag,
+  requireGraphOptions,
 } from "./render-options.utilities";
 
 import type { GraphOptions, GraphPlan } from "./render-options.types";
@@ -60,6 +60,7 @@ export class RenderOptionsService {
    * @throws RenderOptionsError naming the first option that cannot be used.
    */
   plan({
+    diagram,
     entities,
     filter,
     limit,
@@ -74,22 +75,21 @@ export class RenderOptionsService {
     truncateBreadth,
     truncateDepth,
   }: GraphOptions): GraphPlan {
-    if (sourceUri === undefined) {
-      throw new RenderOptionsError(RENDER_OPTION_MESSAGES.sourceUri);
-    }
-    if (entities === undefined) {
-      throw new RenderOptionsError(RENDER_OPTION_MESSAGES.entities);
-    }
-    if (schema === undefined) {
-      throw new RenderOptionsError(RENDER_OPTION_MESSAGES.schema);
-    }
-
-    const { connection, source } = parseGraphSource(sourceUri, schema);
+    const required = requireGraphOptions({ entities, schema, sourceUri });
+    const { connection, source } = parseGraphSource(
+      required.sourceUri,
+      required.schema,
+    );
     const { filters, sorts } = parseGraphRows(filter, sort);
+    const drawing = parseGraphDrawing({
+      diagram,
+      truncateBreadth,
+      truncateDepth,
+    });
 
     return {
       connection,
-      entities,
+      entities: required.entities,
       filters,
       outputs: resolveGraphOutputs({
         json: outputJson,
@@ -99,12 +99,8 @@ export class RenderOptionsService {
       paging: parseGraphPaging(page, limit),
       sorts,
       source,
-      table: this.tableName(table, schema),
-      truncateBreadth: positiveIntegerFlag(
-        "--truncate-breadth",
-        truncateBreadth,
-      ),
-      truncateDepth: positiveIntegerFlag("--truncate-depth", truncateDepth),
+      table: this.tableName(table, required.schema),
+      ...drawing,
     };
   }
 }

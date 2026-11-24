@@ -124,6 +124,14 @@ testing/
   cycle ends them instead of looping.
 - **Mermaid:** `renderGraphMermaid` draws short node ids, escaped labels, and
   styled roots and truncation nodes.
+- **File tree:** `--diagram filetree` (`render-tree-data` only; the plan's
+  `diagram` defaults to `flowchart`) makes `RenderMermaidService` call
+  `renderGraphFileTree`, Mermaid's beta `treeView-beta` (needs Mermaid 11.14 or
+  later; Obsidian may not render it). It nests children under roots by edge
+  order, quotes labels, and marks a node with children with a trailing `/`
+  inside the quotes. It ignores edge labels, weights, markers, and direction,
+  and warns only on the 50,000-character limit, not the 500-edge flowchart one.
+  The grammar has no quote escape, so a label holding `"` uses single quotes.
 - **Neighborhoods:** with two or more weakly connected groups of nodes (edges
   read as undirected), `renderGraphMermaid` wraps each in `subgraph nb<N>`,
   titled by the label all its edges share (then drawn without it), else its

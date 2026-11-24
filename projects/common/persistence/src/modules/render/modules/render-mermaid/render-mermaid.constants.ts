@@ -12,6 +12,9 @@ export const RENDER_MERMAID_WARNING_THRESHOLD = 0.9;
 /** The indent of every line under the `flowchart` header. */
 export const RENDER_MERMAID_INDENT = "    ";
 
+/** The header line of a file tree, Mermaid's beta `treeView` diagram. */
+export const RENDER_MERMAID_FILE_TREE_HEADER = "treeView-beta";
+
 /** The `classDef` a root node is styled with. */
 export const RENDER_MERMAID_ROOT_CLASS = "root";
 
