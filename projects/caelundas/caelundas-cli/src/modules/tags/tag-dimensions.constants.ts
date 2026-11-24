@@ -146,28 +146,28 @@ export const MARTIAN_SYNODIC_STAGE_BY_PHASE: Readonly<Record<string, string>> =
     full: "Opposition",
   };
 
-/** Class of each body, also carried by events involving it. */
-export const BODY_CLASS_BY_BODY: Record<Body, string> = {
-  ceres: "Asteroid",
-  chiron: "Asteroid",
-  juno: "Asteroid",
-  jupiter: "Social",
-  lilith: "Point",
-  "lunar apogee": "Point",
-  "lunar perigee": "Point",
-  mars: "Personal",
-  mercury: "Personal",
-  moon: "Luminary",
-  neptune: "Outer",
-  "north lunar node": "Node",
-  pallas: "Asteroid",
-  pluto: "Outer",
-  saturn: "Social",
-  "south lunar node": "Node",
-  sun: "Luminary",
-  uranus: "Outer",
-  venus: "Personal",
-  vesta: "Asteroid",
+/** Where each body sits beneath Body: its class, and a planet's kind. */
+export const BODY_CLASS_BY_BODY: Record<Body, readonly string[]> = {
+  ceres: ["Asteroid"],
+  chiron: ["Asteroid"],
+  juno: ["Asteroid"],
+  jupiter: ["Planet", "Social"],
+  lilith: ["Point"],
+  "lunar apogee": ["Point"],
+  "lunar perigee": ["Point"],
+  mars: ["Planet", "Personal"],
+  mercury: ["Planet", "Personal"],
+  moon: ["Luminary"],
+  neptune: ["Planet", "Outer"],
+  "north lunar node": ["Node"],
+  pallas: ["Asteroid"],
+  pluto: ["Planet", "Outer"],
+  saturn: ["Planet", "Social"],
+  "south lunar node": ["Node"],
+  sun: ["Luminary"],
+  uranus: ["Planet", "Outer"],
+  venus: ["Planet", "Personal"],
+  vesta: ["Asteroid"],
 };
 
 /**

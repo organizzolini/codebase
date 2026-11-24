@@ -26,6 +26,7 @@
     "@types/lodash": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
+    "lucide-react": "catalog:",
     "moment": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"

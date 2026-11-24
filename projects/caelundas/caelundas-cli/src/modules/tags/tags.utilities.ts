@@ -6,6 +6,7 @@ import {
   ECLIPSE_TYPE_NAMES,
   SHARED_TAG_MAP,
 } from "./tag-map.constants";
+import { TAG_CHILD_ORDER } from "./tag-order.constants";
 import { TAG_ROOT } from "./tags.constants";
 
 import type { ClassifiableEvent, TagMap, TagPath } from "./tags.types";
@@ -27,7 +28,7 @@ export function classifyEvent(event: ClassifiableEvent): TagPath[] {
     ...[...rawTags].flatMap((rawTag) => mapRawTag(rawTag, maps)),
     ...ingressPaths(event, rawTags),
     ...eclipsePaths(rawTags),
-    [TAG_ROOT.temporality, isInstant(event) ? "Instant" : "Duration"],
+    [TAG_ROOT.temporality, isInstant(event) ? "Perfective" : "Progressive"],
   ]);
 }
 
@@ -36,6 +37,16 @@ export function classifyEvent(event: ClassifiableEvent): TagPath[] {
  */
 export function tagNodeKey(parentId: null | string, name: string): string {
   return `${parentId ?? ""}\u0000${name}`;
+}
+
+/**
+ * Where a node sits among its siblings: its place, from 1, in its parent's list in `TAG_CHILD_ORDER`, or 0 when it is not listed.
+ */
+export function tagOrder(path: readonly string[]): number {
+  const siblings = TAG_CHILD_ORDER[path.slice(0, -1).join(" / ")];
+  const index = siblings?.indexOf(path.at(-1) ?? "") ?? -1;
+
+  return index + 1;
 }
 
 /** The key a path is told apart by: its names, in order. */
@@ -64,7 +75,7 @@ function dignityPaths(rawTags: ReadonlySet<string>): TagPath[] {
     "Peregrine",
   ];
 
-  return [[TAG_ROOT.dignity, dignity]];
+  return [[TAG_ROOT.zodiac, "Dignity", dignity]];
 }
 
 /** An eclipse's kind, from the body eclipsed and the eclipse's type. */
@@ -75,13 +86,12 @@ function eclipsePaths(rawTags: ReadonlySet<string>): TagPath[] {
     return [];
   }
 
-  const eclipse = `${body} Eclipse`;
   const eclipseType = findRawTag(rawTags, ECLIPSE_TYPE_NAMES);
 
   return [
     eclipseType === undefined
-      ? [TAG_ROOT.type, "Eclipse", eclipse]
-      : [TAG_ROOT.type, "Eclipse", eclipse, `${eclipseType} ${eclipse}`],
+      ? [TAG_ROOT.eclipse, body]
+      : [TAG_ROOT.eclipse, body, eclipseType],
   ];
 }
 
@@ -119,7 +129,7 @@ function ingressPaths(
   }
 
   return [
-    [TAG_ROOT.type, "Ingress", ingressKind(event, rawTags)],
+    [TAG_ROOT.zodiac, "Ingress", ingressKind(event, rawTags)],
     ...dignityPaths(rawTags),
   ];
 }

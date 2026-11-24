@@ -109,8 +109,16 @@ const DETECTOR_TAG_SETS: readonly (readonly string[])[] = [
     "Vernal Equinox",
     "Winter Solstice",
   ].map((name) => ["Annual Solar Cycle", "Solar", name]),
-  ["Daily Solar Cycle", "Solar"],
-  ["Daily Lunar Cycle", "Lunar"],
+  ...["Sunrise", "Sunset", "Solar Zenith", "Solar Nadir"].map((point) => [
+    "Daily Solar Cycle",
+    "Solar",
+    point,
+  ]),
+  ...["Moonrise", "Moonset", "Lunar Zenith", "Lunar Nadir"].map((point) => [
+    "Daily Lunar Cycle",
+    "Lunar",
+    point,
+  ]),
   ...["Apogee", "Perigee"].map((name) => ["Lunar Apsides", "Lunar", name]),
   ...aspects.flatMap((aspect) =>
     ["Forming", "Perfective", "Dissolving"].map((phase) => [
@@ -198,12 +206,15 @@ describe("tag map vocabulary", () => {
     ]
       .map((pattern) => _.startCase(pattern))
       .filter((pattern) => {
-        const roots = new Set(
-          classify(["Compound Aspect", pattern]).map(([root]) => root),
-        );
+        const paths = classify(["Compound Aspect", pattern]);
         return (
-          !roots.has(TAG_ROOT.aspectNature) ||
-          !roots.has(TAG_ROOT.aspectHarmonic)
+          !paths.some(
+            ([root, branch]) => root === TAG_ROOT.aspect && branch === "Nature",
+          ) ||
+          !paths.some(
+            ([root, branch]) =>
+              root === TAG_ROOT.aspect && branch === "Harmonic",
+          )
         );
       });
 
@@ -215,17 +226,17 @@ describe("tag map vocabulary", () => {
     (phase) => {
       expect(
         classify(["Planetary Phase", "Martian", phase]).filter(
-          ([root]) => root === TAG_ROOT.synodicStage,
+          ([, branch]) => branch === "Synodic Stage",
         ),
-      ).toStrictEqual([[TAG_ROOT.synodicStage, "Opposition"]]);
+      ).toStrictEqual([[TAG_ROOT.planetary, "Synodic Stage", "Opposition"]]);
     },
   );
 
   it("keeps Venus full at a conjunction", () => {
     expect(
       classify(["Planetary Phase", "Venusian", "Full"]).filter(
-        ([root]) => root === TAG_ROOT.synodicStage,
+        ([, branch]) => branch === "Synodic Stage",
       ),
-    ).toStrictEqual([[TAG_ROOT.synodicStage, "Conjunction"]]);
+    ).toStrictEqual([[TAG_ROOT.planetary, "Synodic Stage", "Conjunction"]]);
   });
 });

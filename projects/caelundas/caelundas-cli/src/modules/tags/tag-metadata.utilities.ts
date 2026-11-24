@@ -1,0 +1,47 @@
+import { TAG_ICON_BY_NAME, TAG_METADATA } from "./tag-metadata.constants";
+import { TAG_NOTES } from "./tag-notes.constants";
+
+import type { TagMetadata } from "./tag-metadata.types";
+
+/**
+ * The icon and note of the node at `path`: its entry in the tag metadata, else its note from the generated notes, else for a planetary phase a note saying what it is.
+ */
+export function tagMetadata(path: readonly string[]): TagMetadata {
+  const key = path.join(" / ");
+  const [, note = null] = TAG_METADATA[key] ?? [];
+
+  return {
+    icon: tagIcon(path),
+    note:
+      note ??
+      TAG_NOTES[key] ??
+      (key.startsWith("Planetary / Phase / ") && path.length === 4
+        ? "A phase of the planet's cycle with the Sun."
+        : null),
+  };
+}
+
+/**
+ * The icon of the node at `path`: its own entry, else one for its name or its last word, else the nearest ancestor's.
+ */
+function tagIcon(path: readonly string[]): null | string {
+  const name = path.at(-1) ?? "";
+  const own =
+    TAG_METADATA[path.join(" / ")]?.[0] ??
+    TAG_ICON_BY_NAME[name] ??
+    TAG_ICON_BY_NAME[name.split(" ").at(-1) ?? ""];
+
+  if (own !== undefined) {
+    return own;
+  }
+
+  for (let length = path.length - 1; length > 0; length -= 1) {
+    const inherited = TAG_METADATA[path.slice(0, length).join(" / ")]?.[0];
+
+    if (inherited !== undefined) {
+      return inherited;
+    }
+  }
+
+  return null;
+}

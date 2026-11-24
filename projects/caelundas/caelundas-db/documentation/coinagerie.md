@@ -22,6 +22,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **quarter**: The calendar quarter of the year an event starts in, the `start_quarter` column of the derived-time view.
 - **retrograde**: Sample tag and event in the integration tests, standing for a planet's apparent backward motion.
 - **sky**:
+- **smallint**:
 - **star**: A star of the HYG catalog, the `Star` entity, keyed by its Hipparcos number.
 - **temporality**: Derived column classing an event as `Instant` when its start equals its end, and `Duration` otherwise.
 - **updatable**: The `PostgresqlUpdatableEntity` base from `@codebase/persistence`, which gives `calendar_events` its audit columns.

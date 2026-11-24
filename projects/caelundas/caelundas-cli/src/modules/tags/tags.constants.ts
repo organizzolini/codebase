@@ -1,28 +1,19 @@
 // ♟️ Constants
 
-/** Tag tree roots, one per dimension, never nested. */
+/**
+ * Tag tree roots, one per caelundas-cli module group, never nested. Each
+ * filter, group and sort menu opens on these, so keep them to about ten.
+ */
 export const TAG_ROOT = {
-  aspectHarmonic: "Aspect Harmonic",
-  aspectNature: "Aspect Nature",
-  bodyClass: "Body Class",
-  decan: "Decan",
-  dignity: "Dignity",
-  domain: "Domain",
-  eclipseFrame: "Eclipse Frame",
-  element: "Element",
-  focalBody: "Focal Body",
-  lunarPhase: "Lunar Phase",
-  modality: "Modality",
-  motion: "Motion",
-  phase: "Phase",
-  planet: "Planet",
-  polarity: "Polarity",
-  season: "Season",
-  sign: "Sign",
-  synodicStage: "Synodic Stage",
+  aspect: "Aspect",
+  body: "Body",
+  daily: "Daily",
+  eclipse: "Eclipse",
+  lunar: "Lunar",
+  planetary: "Planetary",
+  solar: "Solar",
   temporality: "Temporality",
-  timeOfDay: "Time of Day",
-  type: "Type",
+  zodiac: "Zodiac",
 } as const;
 
 /** Raw tags every detector attaches, which tell no event apart from another. */

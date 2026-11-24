@@ -214,27 +214,37 @@ The upsert classifies each event's raw tags into paths of the tree, inserting
 any node that is missing, and replaces the event's links, so a re-run that
 drops a tag drops its link. A static map in `src/modules/tags/` turns each raw
 tag into one or more paths, implied tags included, and a raw tag the map does
-not know falls back to a root of its own. Each root is one dimension, and
-independent dimensions are never nested, so an Aries event carries `Aries`,
-`Fire`, `Cardinal` and `Positive` side by side:
+not know falls back to a root of its own. The roots follow the modules of
+this project, about ten of them at most, since every filter, group and sort menu opens
+on them. A root groups what one module family detects with the attributes that
+travel with it, and a tag with several parents is carried as several paths on
+the event, not as a node with two parents, so an Aries event carries
+`Zodiac / Sign / Aries`, `Zodiac / Element / Fire`, `Zodiac / Modality /
+Cardinal` and `Zodiac / Polarity / Positive` side by side:
 
 | Root | Its nodes |
 | ---- | --------- |
-| `Type` | `Aspect` (simple and compound, by class and name), `Ingress`, `Eclipse`, `Station`, `Retrograde Period`, `Twilight`, `Cycle` and `Planetary Phase` (`Venusian`, `Mercurian`, `Martian`) |
-| `Planet`, `Body Class` | Every body, and its class: `Luminary`, `Personal`, `Social`, `Outer`, `Asteroid`, `Node` or `Point` |
-| `Sign`, `Element`, `Modality`, `Polarity`, `Decan` | A sign and what it implies, and the decan a decan ingress enters |
-| `Aspect Nature`, `Aspect Harmonic` | `Hard`, `Soft` or `Neutral`, and `Harmonic 1` to `Harmonic 12` |
-| `Phase`, `Lunar Phase`, `Synodic Stage` | Forming to dissolving and eclipse beginning to ending, the Moon's phases, and the stages of the Mercury, Venus and Mars cycles |
-| `Motion`, `Temporality`, `Season`, `Domain`, `Dignity` | Retrograde and stations, `Instant` or `Duration`, the season of a solar cycle point, `Solar`, `Lunar` or `Planetary`, and a traditional planet's dignity in the sign it enters |
-| `Focal Body`, `Eclipse Frame`, `Time of Day` | The focus of a compound aspect, an eclipse seen geocentrically or from the observer, and a twilight's morning or evening |
+| `Aspect` | `Simple` (`Major`, `Minor` and `Specialty`) and `Compound` (`Triple`, `Quadruple`, `Quintuple`, `Sextuple` and `Stellium`) aspects by name, with their `Nature`, `Harmonic` (`Harmonic 1` to `Harmonic 12`), `Phase` (`Forming`, `Exact` and `Dissolving`) and `Focal Body` |
+| `Body` | Every body under its class: `Luminary`, `Planet` (holding `Personal`, `Social` and `Outer`), `Asteroid`, `Node` or `Point` |
+| `Zodiac` | `Sign`, `Element`, `Modality`, `Polarity`, `Decan`, a traditional planet's `Dignity` in the sign it enters, and the `Ingress` kinds |
+| `Solar` | The `Annual Cycle` (solstices, equinoxes, cross-quarter days, hexadecans, apsides) and its `Season` |
+| `Lunar` | The `Monthly Cycle`, with the Moon's phases, and its `Apsides` |
+| `Daily` | The `Solar Cycle` and `Lunar Cycle` of a day, each with its `Rise`, `Set`, `Zenith` and `Nadir`, its `Twilight` events and spans, and `Time of Day` |
+| `Planetary` | `Direction` (stations and retrograde periods), `Phase` (`Mercurian`, `Venusian` and `Martian`) and `Synodic Stage` |
+| `Eclipse` | `Solar` and `Lunar` by type (`Total`, `Partial`, `Annular`), with their `Frame` (`Geocentric` or `Topocentric`) and `Phase` |
+| `Temporality` | `Perfective`, an instant in time, or `Progressive`, progressing over a duration of time |
 
-The last three roots go beyond the dimensions the spec lists. Their raw tags
-tell events apart in ways no listed dimension holds, and filing them under
-one would nest an independent attribute. Mars is full at opposition rather
-than at a superior conjunction, so its full and opposition events take an
-`Opposition` synodic stage of their own; a phase named like its stage, such
-as Mars's conjunction, is typed as `Martian Conjunction` so no event carries
-one name twice.
+Mars is full at opposition rather than at a superior conjunction, so its full
+and opposition events take an `Opposition` synodic stage of their own; a phase
+named like its stage, such as Mars's conjunction, is typed as `Martian
+Conjunction`, and a focal body as `Sun Focal`, so no event carries one name
+twice.
+
+Each node also has an optional `note`, a sentence saying what it means, and
+an `icon`, the slug of a lucide icon, both from `tags/tag-metadata.constants.ts`,
+and an `order`, its place among its siblings from `tags/tag-order.constants.ts`
+(0 when unlisted, sorted first by name). All three are written when a node is
+first created.
 
 An event links only to the deepest node of each branch it is classified
 under, and carries the nodes above through the closure table. The `.ics`

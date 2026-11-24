@@ -4,7 +4,12 @@ import { describe, expect, it } from "vitest";
 
 import { aspects } from "../caelundas/caelundas.constants";
 
-import { classifyEvent, tagNodeKey, tagPathKey } from "./tags.utilities";
+import {
+  classifyEvent,
+  tagNodeKey,
+  tagOrder,
+  tagPathKey,
+} from "./tags.utilities";
 
 import type { TagPath } from "./tags.types";
 
@@ -16,8 +21,15 @@ function classify(tags: string[], end = AT): TagPath[] {
   return classifyEvent({ end: moment.utc(end), start: moment.utc(AT), tags });
 }
 
-/** The paths under one root, or under the `Type` root by default. */
-function under(paths: readonly TagPath[], root = "Type"): TagPath[] {
+/** The harmonic paths, which sit under Aspect. */
+function harmonics(paths: readonly TagPath[]): TagPath[] {
+  return paths.filter(
+    ([root, branch]) => root === "Aspect" && branch === "Harmonic",
+  );
+}
+
+/** The paths under one root. */
+function under(paths: readonly TagPath[], root: string): TagPath[] {
   return paths.filter(([first]) => first === root);
 }
 
@@ -34,7 +46,7 @@ describe("tags utilities", () => {
       expect(roots).not.toContain("Astrology");
     });
 
-    it("types a simple aspect by its class and name, under Aspect", () => {
+    it("files a simple aspect by its class and name, under Aspect", () => {
       const paths = classify([
         "Astronomy",
         "Astrology",
@@ -45,12 +57,14 @@ describe("tags utilities", () => {
         "Conjunct",
       ]);
 
-      expect(under(paths)).toStrictEqual([
-        ["Type", "Aspect", "Simple Aspect", "Major Aspect", "Conjunct"],
+      expect(under(paths, "Aspect")).toStrictEqual([
+        ["Aspect", "Harmonic", "Harmonic 1"],
+        ["Aspect", "Nature", "Neutral"],
+        ["Aspect", "Simple", "Major", "Conjunct"],
       ]);
-      expect(under(paths, "Planet")).toStrictEqual([
-        ["Planet", "Mars"],
-        ["Planet", "Venus"],
+      expect(under(paths, "Body")).toStrictEqual([
+        ["Body", "Planet", "Personal", "Mars"],
+        ["Body", "Planet", "Personal", "Venus"],
       ]);
     });
 
@@ -66,27 +80,35 @@ describe("tags utilities", () => {
         "Mercury Focal",
       ]);
 
-      expect(under(paths)).toStrictEqual([
-        ["Type", "Aspect", "Compound Aspect", "Triple Aspect", "T Square"],
-      ]);
-      expect(under(paths, "Focal Body")).toStrictEqual([
-        ["Focal Body", "Mercury Focal"],
+      expect(under(paths, "Aspect")).toStrictEqual([
+        ["Aspect", "Compound", "Triple", "T Square"],
+        ["Aspect", "Focal Body", "Mercury Focal"],
+        ["Aspect", "Harmonic", "Harmonic 4"],
+        ["Aspect", "Nature", "Hard"],
+        ["Aspect", "Phase", "Forming"],
       ]);
     });
 
-    it("types a stellium by its number of bodies", () => {
+    it("files a stellium by its number of bodies", () => {
       expect(
-        under(classify(["Compound Aspect", "Stellium", "4 Body", "Sun"])),
-      ).toStrictEqual([
-        ["Type", "Aspect", "Compound Aspect", "Stellium", "4 Body"],
-      ]);
+        under(
+          classify(["Compound Aspect", "Stellium", "4 Body", "Sun"]),
+          "Aspect",
+        ),
+      ).toContainEqual(["Aspect", "Compound", "Stellium", "4 Body"]);
     });
 
-    it("tags a body's sign beside the body, as separate roots", () => {
+    it("tags a body's sign beside the body, in separate roots", () => {
       const paths = classify(["Ingress", "Mars", "Aries"]);
 
-      expect(under(paths, "Planet")).toStrictEqual([["Planet", "Mars"]]);
-      expect(under(paths, "Sign")).toStrictEqual([["Sign", "Aries"]]);
+      expect(under(paths, "Body")).toStrictEqual([
+        ["Body", "Planet", "Personal", "Mars"],
+      ]);
+      expect(under(paths, "Zodiac")).toContainEqual([
+        "Zodiac",
+        "Sign",
+        "Aries",
+      ]);
     });
 
     it.each([
@@ -95,33 +117,29 @@ describe("tags utilities", () => {
       ["Gemini", "Air", "Mutable", "Positive"],
       ["Cancer", "Water", "Cardinal", "Negative"],
     ])(
-      "implies %s's element, modality and polarity as roots of their own",
+      "implies %s's element, modality and polarity in the zodiac",
       (sign, element, modality, polarity) => {
-        const paths = classify(["Ingress", "Sun", sign]);
+        const paths = under(classify(["Ingress", "Sun", sign]), "Zodiac");
 
-        expect(under(paths, "Sign")).toStrictEqual([["Sign", sign]]);
-        expect(under(paths, "Element")).toStrictEqual([["Element", element]]);
-        expect(under(paths, "Modality")).toStrictEqual([
-          ["Modality", modality],
-        ]);
-        expect(under(paths, "Polarity")).toStrictEqual([
-          ["Polarity", polarity],
-        ]);
+        expect(paths).toContainEqual(["Zodiac", "Sign", sign]);
+        expect(paths).toContainEqual(["Zodiac", "Element", element]);
+        expect(paths).toContainEqual(["Zodiac", "Modality", modality]);
+        expect(paths).toContainEqual(["Zodiac", "Polarity", polarity]);
       },
     );
 
     it.each([
       ["Sun", "Luminary"],
-      ["Mercury", "Personal"],
-      ["Saturn", "Social"],
-      ["Pluto", "Outer"],
+      ["Mercury", "Planet", "Personal"],
+      ["Saturn", "Planet", "Social"],
+      ["Pluto", "Planet", "Outer"],
       ["Chiron", "Asteroid"],
       ["North Lunar Node", "Node"],
       ["Lunar Apogee", "Point"],
-    ])("classes %s as a %s body", (body, bodyClass) => {
-      expect(
-        under(classify(["Ingress", body, "Leo"]), "Body Class"),
-      ).toStrictEqual([["Body Class", bodyClass]]);
+    ])("classes %s as a %s body", (body, ...bodyClass) => {
+      expect(under(classify(["Ingress", body, "Leo"]), "Body")).toStrictEqual([
+        ["Body", ...bodyClass, body],
+      ]);
     });
 
     it.each([
@@ -134,11 +152,13 @@ describe("tags utilities", () => {
     ])("gives a %s its %s nature and its %s", (aspect, nature, harmonic) => {
       const paths = classify(["Simple Aspect", "Sun", "Moon", aspect]);
 
-      expect(under(paths, "Aspect Nature")).toStrictEqual([
-        ["Aspect Nature", nature],
+      expect(under(paths, "Aspect")).toContainEqual([
+        "Aspect",
+        "Nature",
+        nature,
       ]);
-      expect(under(paths, "Aspect Harmonic")).toStrictEqual([
-        ["Aspect Harmonic", harmonic],
+      expect(harmonics(paths)).toStrictEqual([
+        ["Aspect", "Harmonic", harmonic],
       ]);
     });
 
@@ -153,11 +173,13 @@ describe("tags utilities", () => {
       (tags, nature, harmonic) => {
         const paths = classify(["Compound Aspect", ...tags, "Sun", "Moon"]);
 
-        expect(under(paths, "Aspect Nature")).toStrictEqual([
-          ["Aspect Nature", nature],
+        expect(under(paths, "Aspect")).toContainEqual([
+          "Aspect",
+          "Nature",
+          nature,
         ]);
-        expect(under(paths, "Aspect Harmonic")).toStrictEqual([
-          ["Aspect Harmonic", harmonic],
+        expect(harmonics(paths)).toStrictEqual([
+          ["Aspect", "Harmonic", harmonic],
         ]);
       },
     );
@@ -166,10 +188,11 @@ describe("tags utilities", () => {
       const unclassified = aspects
         .map((aspect) => _.startCase(aspect))
         .filter((aspect) => {
-          const roots = new Set(
-            classify(["Simple Aspect", aspect]).map(([root]) => root),
+          const paths = classify(["Simple Aspect", aspect]);
+          return (
+            !under(paths, "Aspect").some(([, branch]) => branch === "Nature") ||
+            harmonics(paths).length === 0
           );
-          return !roots.has("Aspect Nature") || !roots.has("Aspect Harmonic");
         });
 
       expect(unclassified).toStrictEqual([]);
@@ -186,15 +209,17 @@ describe("tags utilities", () => {
       ["Saturn", "Aries", "Fall"],
     ])("gives %s's ingress into %s the %s dignity", (planet, sign, dignity) => {
       expect(
-        under(classify(["Ingress", planet, sign]), "Dignity"),
-      ).toStrictEqual([["Dignity", dignity]]);
+        under(classify(["Ingress", planet, sign]), "Zodiac"),
+      ).toContainEqual(["Zodiac", "Dignity", dignity]);
     });
 
     it("gives each ingress of a traditional planet one dignity", () => {
       const counts = ["Moon", "Venus", "Mars", "Jupiter"].flatMap((planet) =>
         ["Aries", "Cancer", "Libra", "Capricorn"].map(
           (sign) =>
-            under(classify(["Ingress", planet, sign]), "Dignity").length,
+            under(classify(["Ingress", planet, sign]), "Zodiac").filter(
+              ([, branch]) => branch === "Dignity",
+            ).length,
         ),
       );
 
@@ -205,7 +230,11 @@ describe("tags utilities", () => {
       [["Ingress", "Uranus", "Leo"]],
       [["Simple Aspect", "Sun", "Leo"]],
     ])("gives %j no dignity", (tags) => {
-      expect(under(classify(tags), "Dignity")).toStrictEqual([]);
+      expect(
+        under(classify(tags), "Zodiac").filter(
+          ([, branch]) => branch === "Dignity",
+        ),
+      ).toStrictEqual([]);
     });
 
     it.each([
@@ -216,7 +245,7 @@ describe("tags utilities", () => {
       ["Martian", "Mars", "Evening Station", "Station"],
       ["Martian", "Mars", "Morning Visibility", "Visibility"],
     ])(
-      "types a %s %s event under Planetary Phase, with its planet and the %s stage",
+      "files a %s %s event under Planetary Phase, with its planet and the %s stage",
       (marker, planet, phase, stage) => {
         const paths = classify([
           "Astronomy",
@@ -226,23 +255,24 @@ describe("tags utilities", () => {
           phase,
         ]);
 
-        expect(under(paths)).toStrictEqual([
-          ["Type", "Planetary Phase", marker, phase],
+        expect(under(paths, "Planetary")).toStrictEqual([
+          ["Planetary", "Phase", marker, phase],
+          ["Planetary", "Synodic Stage", stage],
         ]);
-        expect(under(paths, "Planet")).toStrictEqual([["Planet", planet]]);
-        expect(under(paths, "Synodic Stage")).toStrictEqual([
-          ["Synodic Stage", stage],
+        expect(under(paths, "Body")).toStrictEqual([
+          ["Body", "Planet", "Personal", planet],
         ]);
-        expect(under(paths, "Domain")).toStrictEqual([["Domain", "Planetary"]]);
       },
     );
 
-    it("keeps a planetary phase named like a lunar phase out of Lunar Phase", () => {
+    it("keeps a planetary phase named like a lunar phase out of the Moon's", () => {
       const paths = classify(["Planetary Phase", "Venusian", "Full"]);
 
-      expect(under(paths, "Lunar Phase")).toStrictEqual([]);
-      expect(under(paths, "Synodic Stage")).toStrictEqual([
-        ["Synodic Stage", "Conjunction"],
+      expect(under(paths, "Lunar")).toStrictEqual([]);
+      expect(under(paths, "Planetary")).toContainEqual([
+        "Planetary",
+        "Synodic Stage",
+        "Conjunction",
       ]);
     });
 
@@ -255,7 +285,11 @@ describe("tags utilities", () => {
         "Leo",
       ]);
 
-      expect(under(paths, "Decan")).toStrictEqual([["Decan", "Second Decan"]]);
+      expect(under(paths, "Zodiac")).toContainEqual([
+        "Zodiac",
+        "Decan",
+        "Second Decan",
+      ]);
     });
 
     it.each([
@@ -263,113 +297,174 @@ describe("tags utilities", () => {
       [["Ingress", "Mars", "Aries"], LATER, "Sign Transit"],
       [["Ingress", "Decan", "Mars", "Aries"], AT, "Decan Ingress"],
       [["Ingress", "Peak", "Mars", "Aries"], AT, "Peak Ingress"],
-    ])("types %j ending at %s as a %s", (tags, end, kind) => {
-      expect(under(classify(tags, end))).toStrictEqual([
-        ["Type", "Ingress", kind],
+    ])("files %j ending at %s as a %s", (tags, end, kind) => {
+      expect(under(classify(tags, end), "Zodiac")).toContainEqual([
+        "Zodiac",
+        "Ingress",
+        kind,
       ]);
     });
 
-    it("types an eclipse by the body eclipsed and its type", () => {
-      const paths = classify(["Eclipse", "Lunar", "Geocentric", "Total"]);
+    it("files an eclipse by the body eclipsed and its type", () => {
+      const paths = under(
+        classify(["Eclipse", "Lunar", "Geocentric", "Total"]),
+        "Eclipse",
+      );
 
-      expect(under(paths)).toStrictEqual([
-        ["Type", "Eclipse", "Lunar Eclipse", "Total Lunar Eclipse"],
-      ]);
-      expect(under(paths, "Eclipse Frame")).toStrictEqual([
-        ["Eclipse Frame", "Geocentric"],
+      expect(paths).toStrictEqual([
+        ["Eclipse", "Frame", "Geocentric"],
+        ["Eclipse", "Lunar", "Total"],
       ]);
     });
 
-    it("types an eclipse span without a type by its body alone", () => {
+    it("files an eclipse span without a type by its body alone", () => {
       expect(
-        under(classify(["Eclipse", "Solar", "Topocentric Visibility"], LATER)),
-      ).toStrictEqual([["Type", "Eclipse", "Solar Eclipse"]]);
+        under(
+          classify(["Eclipse", "Solar", "Topocentric Visibility"], LATER),
+          "Eclipse",
+        ),
+      ).toContainEqual(["Eclipse", "Solar"]);
     });
 
     it.each([
-      [["Retrogrades"], ["Type", "Retrograde Period"]],
+      [["Retrogrades"], ["Planetary", "Direction", "Retrograde Period"]],
       [
         ["Direction", "Retrograde"],
-        ["Type", "Direction"],
+        ["Planetary", "Direction", "Station Retrograde"],
+      ],
+      [
+        ["Direction", "Direct"],
+        ["Planetary", "Direction", "Station Direct"],
       ],
       [
         ["Twilight", "Civil Dawn"],
-        ["Type", "Twilight", "Civil Dawn"],
+        ["Daily", "Twilight", "Civil Dawn"],
       ],
       [
         ["Daily Solar Cycle", "Solar"],
-        ["Type", "Cycle", "Daily Solar Cycle"],
+        ["Daily", "Solar Cycle"],
+      ],
+      [
+        ["Daily Lunar Cycle", "Lunar"],
+        ["Daily", "Lunar Cycle"],
+      ],
+      [
+        ["Daily Solar Cycle", "Solar", "Sunrise"],
+        ["Daily", "Solar Cycle", "Rise"],
+      ],
+      [
+        ["Daily Solar Cycle", "Solar", "Sunset"],
+        ["Daily", "Solar Cycle", "Set"],
+      ],
+      [
+        ["Daily Solar Cycle", "Solar", "Solar Zenith"],
+        ["Daily", "Solar Cycle", "Zenith"],
+      ],
+      [
+        ["Daily Solar Cycle", "Solar", "Solar Nadir"],
+        ["Daily", "Solar Cycle", "Nadir"],
+      ],
+      [
+        ["Daily Lunar Cycle", "Lunar", "Moonrise"],
+        ["Daily", "Lunar Cycle", "Rise"],
+      ],
+      [
+        ["Daily Lunar Cycle", "Lunar", "Moonset"],
+        ["Daily", "Lunar Cycle", "Set"],
+      ],
+      [
+        ["Daily Lunar Cycle", "Lunar", "Lunar Zenith"],
+        ["Daily", "Lunar Cycle", "Zenith"],
+      ],
+      [
+        ["Daily Lunar Cycle", "Lunar", "Lunar Nadir"],
+        ["Daily", "Lunar Cycle", "Nadir"],
       ],
       [
         ["Lunar Apsides", "Lunar", "Apogee"],
-        ["Type", "Cycle", "Lunar Apsides", "Apogee"],
+        ["Lunar", "Apsides", "Apogee"],
       ],
       [
         ["Annual Solar Cycle", "Solar", "Perihelion"],
-        ["Type", "Cycle", "Annual Solar Cycle", "Perihelion"],
+        ["Solar", "Annual Cycle", "Perihelion"],
       ],
-    ])("types %j as %j", (tags, path) => {
-      expect(under(classify(tags))).toStrictEqual([path]);
+      [
+        ["Monthly Lunar Cycle", "Lunar", "Waxing Gibbous"],
+        ["Lunar", "Monthly Cycle", "Waxing Gibbous"],
+      ],
+    ])("files %j as %j", (tags, path) => {
+      expect(under(classify(tags), path[0] ?? "")).toContainEqual(path);
     });
 
     it.each([
-      [AT, "Instant"],
-      [LATER, "Duration"],
-    ])("tags an event ending at %s as an %s", (end, temporality) => {
+      [["Retrogrades", "Mars"], LATER, "Planetary"],
+      [["Twilight", "Night"], AT, "Daily"],
+    ])(
+      "keeps the sphere of %j in its root, with no Domain tag",
+      (tags, end, root) => {
+        const roots = classify(tags, end).map(([first]) => first);
+
+        expect(roots).toContain(root);
+        expect(roots).not.toContain("Domain");
+      },
+    );
+
+    it.each([
+      [AT, "Perfective"],
+      [LATER, "Progressive"],
+    ])("tags an event ending at %s as %s", (end, temporality) => {
       expect(
         under(classify(["Twilight", "Night"], end), "Temporality"),
       ).toStrictEqual([["Temporality", temporality]]);
     });
 
     it.each([
-      [["Simple Aspect", "Trine", "Forming"], "Forming"],
-      [["Compound Aspect", "Kite", "Perfective"], "Perfective"],
-      [["Eclipse", "Solar", "Annular", "Geocentric", "Beginning"], "Beginning"],
-      [["Eclipse", "Lunar", "Total", "Geocentric", "Maximum"], "Maximum"],
-    ])("puts %j under the %s phase", (tags, phase) => {
-      expect(under(classify(tags), "Phase")).toStrictEqual([["Phase", phase]]);
-    });
-
-    it.each([
-      [["Retrogrades", "Mars"], LATER, "Retrograde"],
-      [["Direction", "Mars", "Retrograde"], AT, "Station Retrograde"],
-      [["Direction", "Mars", "Direct"], AT, "Station Direct"],
-    ])("gives %j ending at %s the %s motion", (tags, end, motion) => {
-      expect(under(classify(tags, end), "Motion")).toStrictEqual([
-        ["Motion", motion],
-      ]);
-    });
-
-    it.each([
+      [["Simple Aspect", "Trine", "Forming"], "Aspect", "Forming"],
+      [["Compound Aspect", "Kite", "Perfective"], "Aspect", "Exact"],
       [
-        ["Monthly Lunar Cycle", "Lunar", "Waxing Gibbous"],
-        "Lunar Phase",
-        "Waxing Gibbous",
+        ["Eclipse", "Solar", "Annular", "Geocentric", "Beginning"],
+        "Eclipse",
+        "Beginning",
       ],
-      [["Annual Solar Cycle", "Solar", "Beltane"], "Season", "Spring"],
-      [["Annual Solar Cycle", "Solar", "Winter Solstice"], "Season", "Winter"],
-      [["Daily Solar Cycle", "Solar"], "Domain", "Solar"],
-      [["Lunar Apsides", "Lunar", "Perigee"], "Domain", "Lunar"],
-      [["Retrogrades", "Venus"], "Domain", "Planetary"],
-      [["Direction", "Venus", "Direct"], "Domain", "Planetary"],
-    ])("tags %j with the %s %s", (tags, root, name) => {
-      expect(under(classify(tags), root)).toStrictEqual([[root, name]]);
+      [
+        ["Eclipse", "Lunar", "Total", "Geocentric", "Maximum"],
+        "Eclipse",
+        "Maximum",
+      ],
+    ])("puts %j under the %s phase %s", (tags, root, phase) => {
+      expect(under(classify(tags), root)).toContainEqual([
+        root,
+        "Phase",
+        phase,
+      ]);
     });
 
-    it("types a point of the solar cycle by its kind", () => {
-      expect(
-        under(classify(["Annual Solar Cycle", "Solar", "Vernal Equinox"])),
-      ).toStrictEqual([
-        ["Type", "Cycle", "Annual Solar Cycle", "Equinox", "Vernal Equinox"],
+    it.each([
+      [["Annual Solar Cycle", "Solar", "Beltane"], "Spring"],
+      [["Annual Solar Cycle", "Solar", "Winter Solstice"], "Winter"],
+    ])("tags %j with the %s season", (tags, season) => {
+      expect(under(classify(tags), "Solar")).toContainEqual([
+        "Solar",
+        "Season",
+        season,
       ]);
+    });
+
+    it("files a point of the solar cycle by its kind", () => {
+      expect(
+        under(
+          classify(["Annual Solar Cycle", "Solar", "Vernal Equinox"]),
+          "Solar",
+        ),
+      ).toContainEqual(["Solar", "Annual Cycle", "Equinox", "Vernal Equinox"]);
     });
 
     it("keeps only the deepest node of each branch, each once", () => {
       const paths = classify(["Twilight", "Night", "Night", "Twilight"]);
 
       expect(paths).toStrictEqual([
-        ["Temporality", "Instant"],
-        ["Type", "Twilight", "Night"],
+        ["Daily", "Twilight", "Night"],
+        ["Temporality", "Perfective"],
       ]);
     });
   });
@@ -386,9 +481,27 @@ describe("tags utilities", () => {
 
   describe(tagPathKey, () => {
     it("tells apart paths whose names join alike", () => {
-      expect(tagPathKey(["Type", "Aspect"])).not.toBe(
-        tagPathKey(["Type Aspect"]),
+      expect(tagPathKey(["Zodiac", "Sign"])).not.toBe(
+        tagPathKey(["Zodiac Sign"]),
       );
+    });
+  });
+
+  describe(tagOrder, () => {
+    it.each([
+      [["Aspect"], 1],
+      [["Temporality"], 9],
+      [["Zodiac", "Sign", "Aries"], 1],
+      [["Zodiac", "Sign", "Pisces"], 12],
+      [["Body", "Luminary", "Moon"], 2],
+      [["Daily", "Solar Cycle", "Nadir"], 4],
+    ])("places %j at %i among its siblings", (path, order) => {
+      expect(tagOrder(path)).toBe(order);
+    });
+
+    it("gives a node its parent's list does not name 0", () => {
+      expect(tagOrder(["Aspect", "Harmonic", "Harmonic 4"])).toBe(0);
+      expect(tagOrder(["Unknown"])).toBe(0);
     });
   });
 });

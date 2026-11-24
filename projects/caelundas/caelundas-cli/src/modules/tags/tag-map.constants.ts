@@ -46,8 +46,6 @@ import { TAG_ROOT, UNCLASSIFIED_RAW_TAGS } from "./tags.constants";
 
 import type { TagMap, TagPath } from "./tags.types";
 
-const { type } = TAG_ROOT;
-
 /** Every body's display name, as detectors tag it. */
 const BODY_NAMES = bodies.map((body) => bodyDisplayName(body));
 
@@ -55,8 +53,11 @@ const BODY_NAMES = bodies.map((body) => bodyDisplayName(body));
 const MAXIMUM_STELLIUM_BODIES =
   MINIMUM_STELLIUM_BODIES + Object.keys(symbolByStellium).length - 1;
 
-const SIMPLE_ASPECT: TagPath = [type, "Aspect", "Simple Aspect"];
-const COMPOUND_ASPECT: TagPath = [type, "Aspect", "Compound Aspect"];
+const SIMPLE_ASPECT: TagPath = [TAG_ROOT.aspect, "Simple"];
+const COMPOUND_ASPECT: TagPath = [TAG_ROOT.aspect, "Compound"];
+
+/** The annual solar cycle's node, with its points beneath it. */
+const ANNUAL_CYCLE: TagPath = [TAG_ROOT.solar, "Annual Cycle"];
 
 /** The class of simple aspect each simple aspect name belongs to. */
 const ASPECT_CLASSES = [
@@ -80,6 +81,15 @@ const COMPOUND_CLASSES = [
   ],
 ] as const;
 
+/** The lunar month's node, with its phases beneath it. */
+const MONTHLY_CYCLE: TagPath = [TAG_ROOT.lunar, "Monthly Cycle"];
+
+/** The planets' apparent direction, with stations and retrograde spans beneath it. */
+const DIRECTION: TagPath = [TAG_ROOT.planetary, "Direction"];
+
+/** The twilight node, with every event and span of it beneath. */
+const TWILIGHT: TagPath = [TAG_ROOT.daily, "Twilight"];
+
 /** Names of every twilight event and span. */
 const TWILIGHT_NAMES = [
   "Astronomical Dawn",
@@ -97,8 +107,27 @@ const TWILIGHT_NAMES = [
 /** The kinds of eclipse, as the eclipse detector tags them. */
 export const ECLIPSE_TYPE_NAMES = Object.values(eclipseTypeLabelByType);
 
-/** The daily cycles, whose events no raw tag tells apart further. */
-const DAILY_CYCLE_NAMES = ["Daily Lunar Cycle", "Daily Solar Cycle"];
+/** The daily cycles, with the raw tag and node of each point they mark. */
+const DAILY_CYCLES = [
+  [
+    "Daily Lunar Cycle",
+    [
+      ["Moonrise", "Rise"],
+      ["Moonset", "Set"],
+      ["Lunar Zenith", "Zenith"],
+      ["Lunar Nadir", "Nadir"],
+    ],
+  ],
+  [
+    "Daily Solar Cycle",
+    [
+      ["Sunrise", "Rise"],
+      ["Sunset", "Set"],
+      ["Solar Zenith", "Zenith"],
+      ["Solar Nadir", "Nadir"],
+    ],
+  ],
+] as const;
 
 /** Raw tags with one meaning everywhere, such as bodies. */
 export const SHARED_TAG_MAP: TagMap = {
@@ -106,10 +135,7 @@ export const SHARED_TAG_MAP: TagMap = {
   ...Object.fromEntries(
     bodies.map((body): [string, readonly TagPath[]] => [
       bodyDisplayName(body),
-      [
-        [TAG_ROOT.planet, bodyDisplayName(body)],
-        [TAG_ROOT.bodyClass, BODY_CLASS_BY_BODY[body]],
-      ],
+      [[TAG_ROOT.body, ...BODY_CLASS_BY_BODY[body], bodyDisplayName(body)]],
     ]),
   ),
   ...Object.fromEntries(
@@ -119,24 +145,22 @@ export const SHARED_TAG_MAP: TagMap = {
     ]),
   ),
   ...mapEach(Object.values(DECAN_TAG_BY_DECAN), (name) => [
-    TAG_ROOT.decan,
+    TAG_ROOT.zodiac,
+    "Decan",
     name,
   ]),
   ...mapEach(
     BODY_NAMES.map((name) => `${name} Focal`),
-    (name) => [TAG_ROOT.focalBody, name],
+    (name) => [TAG_ROOT.aspect, "Focal Body", name],
   ),
-  ...mapEach(["Lunar", "Solar"], (name) => [TAG_ROOT.domain, name]),
-  ...mapEach(["Direction", "Planetary Phase", "Retrogrades"], () => [
-    TAG_ROOT.domain,
-    "Planetary",
-  ]),
+  // Which sphere an event is in is its root's job now, not a tag's.
+  ...mapNone(["Lunar", "Solar"]),
 };
 
 /** The phase of an aspect: forming, exact, or separating. */
 const ASPECT_PHASE_TAG_MAP: TagMap = mapEach(
   ["Dissolving", "Forming", "Perfective"],
-  (name) => [TAG_ROOT.phase, name],
+  (name) => [TAG_ROOT.aspect, "Phase", name === "Perfective" ? "Exact" : name],
 );
 
 /** Simple aspects by class and name, with nature, harmonic, phase. */
@@ -199,76 +223,89 @@ export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   ...PLANETARY_PHASE_TAG_MAPS,
   "Compound Aspect": COMPOUND_ASPECT_TAG_MAP,
   Direction: {
-    Direct: one([TAG_ROOT.motion, "Station Direct"]),
-    Direction: one([type, "Direction"]),
-    Retrograde: one([TAG_ROOT.motion, "Station Retrograde"]),
+    Direct: one([...DIRECTION, "Station Direct"]),
+    Direction: one(DIRECTION),
+    Retrograde: one([...DIRECTION, "Station Retrograde"]),
   },
   Eclipse: {
     ...mapNone(["Eclipse", "Lunar", "Solar", ...ECLIPSE_TYPE_NAMES]),
     ...mapEach(["Geocentric", "Topocentric Visibility"], (name) => [
-      TAG_ROOT.eclipseFrame,
-      name,
+      TAG_ROOT.eclipse,
+      "Frame",
+      name.replace(/ Visibility$/u, ""),
     ]),
     ...mapEach(["Beginning", "Ending", "Maximum"], (name) => [
-      TAG_ROOT.phase,
+      TAG_ROOT.eclipse,
+      "Phase",
       name,
     ]),
   },
   Ingress: mapNone(["Decan", "Ingress", "Peak"]),
   "Planetary Phase": mapEach(["Planetary Phase"], () => [
-    type,
-    "Planetary Phase",
+    TAG_ROOT.planetary,
+    "Phase",
   ]),
   Retrogrades: {
-    Retrogrades: [
-      [type, "Retrograde Period"],
-      [TAG_ROOT.motion, "Retrograde"],
-    ],
+    Retrogrades: one([...DIRECTION, "Retrograde Period"]),
   },
   "Simple Aspect": SIMPLE_ASPECT_TAG_MAP,
   Twilight: {
-    Twilight: one([type, "Twilight"]),
-    ...mapEach(TWILIGHT_NAMES, (name) => [type, "Twilight", name]),
-    ...mapEach(["Evening", "Morning"], (name) => [TAG_ROOT.timeOfDay, name]),
+    Twilight: one(TWILIGHT),
+    ...mapEach(TWILIGHT_NAMES, (name) => [...TWILIGHT, name]),
+    ...mapEach(["Evening", "Morning"], (name) => [
+      TAG_ROOT.daily,
+      "Time of Day",
+      name,
+    ]),
   },
   ...Object.fromEntries(
-    DAILY_CYCLE_NAMES.map((name): [string, TagMap] => [
-      name,
-      mapEach([name], () => [type, "Cycle", name]),
-    ]),
+    DAILY_CYCLES.map(([name, points]): [string, TagMap] => {
+      const cycle: TagPath = [TAG_ROOT.daily, name.replace(/^Daily /u, "")];
+      return [
+        name,
+        {
+          [name]: one(cycle),
+          ...Object.fromEntries(
+            points.map(([rawTag, point]): [string, readonly TagPath[]] => [
+              rawTag,
+              one([...cycle, point]),
+            ]),
+          ),
+        },
+      ];
+    }),
   ),
   "Annual Solar Cycle": {
-    "Annual Solar Cycle": one([type, "Cycle", "Annual Solar Cycle"]),
+    "Annual Solar Cycle": one(ANNUAL_CYCLE),
     ...mapEach(
       ["Advancing", "Aphelion", "Perihelion", "Retreating"],
-      (name) => [type, "Cycle", "Annual Solar Cycle", name],
+      (name) => [...ANNUAL_CYCLE, name],
     ),
     ...Object.fromEntries(
       Object.entries(KIND_AND_SEASON_BY_SOLAR_CYCLE_POINT).map(
         ([name, [kind, season]]): [string, readonly TagPath[]] => [
           name,
           [
-            [type, "Cycle", "Annual Solar Cycle", kind, name],
-            [TAG_ROOT.season, season],
+            [...ANNUAL_CYCLE, kind, name],
+            [TAG_ROOT.solar, "Season", season],
           ],
         ],
       ),
     ),
   },
   "Lunar Apsides": {
-    "Lunar Apsides": one([type, "Cycle", "Lunar Apsides"]),
+    "Lunar Apsides": one([TAG_ROOT.lunar, "Apsides"]),
     ...mapEach(["Apogee", "Perigee"], (name) => [
-      type,
-      "Cycle",
-      "Lunar Apsides",
+      TAG_ROOT.lunar,
+      "Apsides",
       name,
     ]),
   },
   "Monthly Lunar Cycle": {
-    "Monthly Lunar Cycle": one([type, "Cycle", "Monthly Lunar Cycle"]),
+    "Monthly Lunar Cycle": one(MONTHLY_CYCLE),
     ...mapEach(
       lunarPhases.map((phase) => _.startCase(phase)),
-      (name) => [TAG_ROOT.lunarPhase, name],
+      (name) => [...MONTHLY_CYCLE, name],
     ),
   },
 };

@@ -36,6 +36,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **butterfly**: Quadruple compound pattern mapped to a butterfly glyph in the symbol constants, one of the compound shapes detected.
 - **cancer**: Zodiac sign Cancer, used as a sign name in ingress seed rows such as event-sun-ingress-cancer.
 - **capricorn**: Zodiac sign Capricorn, the sign name the ingresses service returns for longitude 270 degrees in the end-to-end test.
+- **cardinal**:
 - **chiron**: The body Chiron, tracked alongside the planets in aspects and listed in the caelundas body constants.
 - **civil**: First of three twilight kinds, with nautical and astronomical, that the twilight module emits to mark dawn and dusk.
 - **conjunct**: The zero-degree aspect, written as an adjective the way every aspect is named, as in Sun conjunct Moon; conjunction is the noun.
@@ -55,9 +56,11 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **decuple**: Stellium of ten bodies in conjunction, labeled decuple stellium and drawn with its own symbol in calendar events.
 - **degree**: Angular unit of ecliptic longitude, in which signs span 30 degrees, decans 10, and every orb and threshold is set.
 - **designation**: IAU abbreviation such as UMa that identifies a constellation, keyed as the constellation table's primary identifier.
+- **detriment**:
 - **dignity**: A planet's standing in a sign, such as domicile, exaltation, or peregrine, which tag-dimensions uses to rank sign ingress tags.
 - **dimension**: One root of the tag tree, grouping related tags such as Motion or Season, so each event carries one tag per root.
 - **disc**: Apparent circular face of the Sun or Moon as seen from the observer, whose radius decides eclipse overlap geometry.
+- **domicile**:
 - **dubhe**: Alpha Ursae Majoris, a bright catalog star that night-sky unit tests use as a fixture.
 - **duodecuple**: Stellium of twelve bodies in conjunction, labeled duodecuple stellium and assigned its own symbol in the stellium constants.
 - **dusk**: Evening twilight moment when the Sun sinks through a depression angle, closing civil, nautical, or astronomical evening light.
@@ -71,6 +74,8 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **equatorial**: Coordinate system measured from the celestial equator, and Earth's equatorial radius in eclipse geometry.
 - **equinox**: Moment the Sun crosses the celestial equator in spring or autumn, one of the annual solar cycle's marked events.
 - **estimate**: Provisional eclipse type assigned to an eclipse when it first appears, replaced by a settled type later.
+- **exaltation**:
+- **fall**:
 - **family**: Group of related events, such as Aspects, Eclipses, or Twilights, that a README table and service folder share.
 - **fire**: Element tag for the fire signs Aries, Leo, and Sagittarius, a root tag node that ingress tags link to.
 - **focal**: Body at the apex or focus of a compound aspect pattern, such as the Venus focal body in a kite, named in event summaries.
@@ -82,6 +87,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **gibbous**: Moon phase between half and full, spanning 135 and 225 degrees of elongation, with waxing and waning forms.
 - **grand**: Prefix naming large compound patterns like trine, cross, or sextile, built from several aspects in balanced figures.
 - **hammer**: Compound aspect pattern built on sesquiquadrate aspects, one of the triple patterns counted in calendar tags.
+- **hard**:
 - **harmonic**: Aspect defined by a multiple of the 360-degree circle, such as the 5th or 12th harmonic, beyond the classic major aspects.
 - **hexadecan**: One of sixteen equal solar longitude thresholds in the annual solar cycle, each producing its own named calendar event.
 - **hexagon**: Six-body compound pattern of six trines and six sextiles, detected as a valid arrangement of sextuple aspects.
@@ -110,6 +116,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **lilith**: Lunar body tracked as the mean lunar apogee, a smooth average that sits alongside the osculating lunar apogee.
 - **limb**: Outer edge of the Sun or Moon's disc, whose upper edge sets the daily-cycle sunrise, sunset, moonrise and moonset times.
 - **longitude**: Angle in degrees placing a body along the ecliptic, and the observer east-west coordinate set by LONGITUDE.
+- **luminary**:
 - **lunar**: Relating to the Moon, covering its phases, nodes, apogee and perigee, daily rise and set, and eclipse events.
 - **mag**: Column of the night-sky star catalog holding a star's brightness on the astronomical magnitude scale.
 - **magnitude**: Brightness of a body on the astronomical scale, estimated by the phenomena service and listed in the night-sky star catalog.
@@ -121,6 +128,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **moon**: Earth's natural satellite, the body whose phases, rise and set, and apsides this calendar detects.
 - **moonrise**: Daily-cycle event for the instant the Moon's upper limb appears above the horizon, detected for each day.
 - **moonset**: Daily-cycle event for the instant the Moon's upper limb dips below the horizon, detected for each day.
+- **mutable**:
 - **mystic**: Compound aspect of two oppositions joined by four sextiles, called a mystic rectangle in the aspect types.
 - **nadir**: Lowest altitude a body reaches each day, timed as the lunar or solar nadir daily-cycle event.
 - **nautical**: Twilight stage between civil and astronomical, detected as dawn and dusk boundary events for each day.
@@ -138,8 +146,10 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **parallax**: Shift in a body's apparent position from the observer's surface, used in daily-cycle and eclipse topocentric timing.
 - **pentagram**: Compound aspect of five bodies forming a five-pointed star configuration, shown with a star emoji.
 - **penumbral**: Eclipse type in which the Moon crosses only Earth's penumbra, with no umbral contact at all.
+- **peregrine**:
 - **perigee**: Point on the Moon's orbit nearest Earth, where its radial speed changes sign, detected as a lunar apsis.
 - **perihelion**: Solar apsis event at Earth's closest approach to the Sun, built by the annual solar cycle events service.
+- **personal**:
 - **phase**: Stage of a body's cycle relative to the Sun, covering Moon phases and planetary phase events in this calendar.
 - **phenomenon**: Singular form of phenomena, the ephemeris service group that computes illumination, magnitude, and horizon events.
 - **pisces**: Zodiac sign spanning 330 to 360 degrees of longitude, named in the night-sky seed as Psc.
@@ -177,7 +187,9 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **sextile**: Major aspect at 60 degrees of separation, one of the five major aspects alongside conjunct, opposite, square, and trine.
 - **sextuple**: Compound pattern of six bodies, such as a hexagram, that the sextuple-aspects module detects from its hexagon arrangement.
 - **shadow**: Umbra or penumbra cone that Earth or the Moon casts, whose geometry decides eclipse type and the totality of each eclipse.
+- **sixteenth**:
 - **sky**: The night-sky module's catalog of stars, constellations, and figure lines, and the command that renders that stored sky.
+- **social**:
 - **solar**: Relating to the Sun, naming the solar eclipse kind, the annual solar cycle module, and the solar events of daily cycles.
 - **solstice**: One of the two annual points where the Sun reaches its extreme declination, emitted as summer and winter solstice events by the annual-solar-cycle module.
 - **south**: The south lunar node, opposite the north node, computed but used in no event; also the south part of the stored night sky.
@@ -199,6 +211,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **tilt**: Inclination of the Moon's shadow track relative to the ecliptic, a parameter of the eclipse geometry tests.
 - **topocentric**: Describes positions and rise times seen from the observer's location rather than Earth's centre, used for horizon and local eclipse events.
 - **totality**: Phase of a total eclipse when the Sun or Moon is fully covered, classified by the eclipse calculation and classification services.
+- **transit**:
 - **tredecile**: Specialty aspect at exactly 108 degrees, detected by the specialty-aspects module from the harmonic division of the circle.
 - **trine**: Major aspect at exactly 120 degrees of separation, one of the five major aspects and the base of grand trine patterns.
 - **twilight**: The time when the Sun is below the horizon but still lights the sky, at dawn and at dusk, with civil, nautical, and astronomical boundaries computed by the twilights module.

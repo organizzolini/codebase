@@ -4,6 +4,7 @@ import { createDataSource, withGeneratedEdges } from "@codebase/persistence";
 
 import { Migration1793990506900 } from "../../../migrations/1793990506900-migration";
 import { Migration1795466077000 } from "../../../migrations/1795466077000-migration";
+import { Migration1795532000000 } from "../../../migrations/1795532000000-migration";
 
 import { DATABASE_PROJECT } from "./database.constants";
 import { CalendarEventDerivedTime } from "./modules/calendar-events/calendar-event-derived-time.entity";
@@ -33,6 +34,7 @@ export const DATABASE_ENTITIES = [
 export const CAELUNDAS_DATABASE_MIGRATIONS = [
   Migration1793990506900,
   Migration1795466077000,
+  Migration1795532000000,
 ] as const;
 
 /** TypeORM CLI data source; reads only `CAELUNDAS_POSTGRES_*`, never syncs. */

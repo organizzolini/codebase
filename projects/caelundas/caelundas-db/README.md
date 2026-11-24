@@ -148,7 +148,8 @@ The `render-tag-tree` target runs the `persistence` `render-tree-data` command
 over `tag.entity.ts`. It prints a Mermaid flowchart, or with `--diagram filetree`
 Mermaid's beta file tree, which needs Mermaid 11.14 or later. Both
 are committed, and the flowchart is the default. `--args` takes the
-command's filter, sort, depth, breadth, paging, and output options. The
+command's filter, sort, depth, breadth, paging, and output options. A tag's
+`icon` and `note` are drawn with its name, and siblings come in their `order`. The
 `--overwrite` flag lets a rerun replace `tags.md`, because an existing output
 file is otherwise refused, as `postgresql-export` refuses an existing `--file`.
 

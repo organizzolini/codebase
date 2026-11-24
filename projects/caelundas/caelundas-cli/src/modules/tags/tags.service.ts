@@ -2,7 +2,8 @@ import { Injectable } from "@nestjs/common";
 
 import { Tag } from "@codebase/caelundas-db";
 
-import { tagNodeKey, tagPathKey } from "./tags.utilities";
+import { tagMetadata } from "./tag-metadata.utilities";
+import { tagNodeKey, tagOrder, tagPathKey } from "./tags.utilities";
 
 import type { TagPath } from "./tags.types";
 import type { EntityManager } from "typeorm";
@@ -34,15 +35,17 @@ export class TagsService {
     let parentId: null | string = null;
     let id = "";
 
-    for (const name of path) {
+    for (const [index, name] of path.entries()) {
       const key = tagNodeKey(parentId, name);
       const stored = ids.get(key);
 
       if (stored === undefined) {
         const parent = parentId === null ? null : { id: parentId };
+        const { icon, note } = tagMetadata(path.slice(0, index + 1));
+        const order = tagOrder(path.slice(0, index + 1));
         const saved = await manager
           .getTreeRepository(Tag)
-          .save(manager.create(Tag, { name, parent }));
+          .save(manager.create(Tag, { icon, name, note, order, parent }));
         id = saved.id;
         ids.set(key, id);
       } else {

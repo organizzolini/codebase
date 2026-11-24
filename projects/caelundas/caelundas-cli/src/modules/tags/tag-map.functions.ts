@@ -12,7 +12,7 @@ import type { Sign } from "../caelundas/caelundas.types";
 import type { TagMap, TagPath } from "./tags.types";
 
 /**
- * Maps each class under `parent`, and each name in it, to its node; names are title-cased.
+ * Maps each class under `parent`, and each name in it, to its node; names are title-cased. A class is keyed by its raw tag, such as `Major Aspect`, and its node drops the ` Aspect` its parent already says.
  */
 export function mapClasses(
   parent: TagPath,
@@ -20,7 +20,10 @@ export function mapClasses(
 ): TagMap {
   return Object.fromEntries(
     classes.flatMap(([className, names]) => {
-      const classPath: TagPath = [...parent, className];
+      const classPath: TagPath = [
+        ...parent,
+        className.replace(/ Aspect$/u, ""),
+      ];
       return [
         [className, one(classPath)],
         ...Object.entries(
@@ -64,7 +67,7 @@ export function mapPlanetaryPhases(args: {
   stageByPhase?: Readonly<Record<string, string>>;
 }): TagMap {
   const { marker, phases, planetPaths, stageByPhase = {} } = args;
-  const markerPath: TagPath = [TAG_ROOT.type, "Planetary Phase", marker];
+  const markerPath: TagPath = [TAG_ROOT.planetary, "Phase", marker];
 
   return {
     [marker]: [markerPath, ...planetPaths],
@@ -80,7 +83,7 @@ export function mapPlanetaryPhases(args: {
           name,
           [
             [...markerPath, leaf],
-            [TAG_ROOT.synodicStage, stage],
+            [TAG_ROOT.planetary, "Synodic Stage", stage],
           ],
         ];
       }),
@@ -101,14 +104,14 @@ export function mergeTagMaps(...maps: readonly TagMap[]): TagMap {
   return Object.fromEntries(merged);
 }
 
-/** The nodes an aspect's nature and harmonic stand for, as roots of their own. */
+/** The nodes an aspect's nature and harmonic stand for; both sit under Aspect. */
 export function natureAndHarmonicPaths([nature, harmonic]: readonly [
   string,
   number,
 ]): readonly TagPath[] {
   return [
-    [TAG_ROOT.aspectNature, nature],
-    [TAG_ROOT.aspectHarmonic, `Harmonic ${String(harmonic)}`],
+    [TAG_ROOT.aspect, "Nature", nature],
+    [TAG_ROOT.aspect, "Harmonic", `Harmonic ${String(harmonic)}`],
   ];
 }
 
@@ -118,16 +121,16 @@ export function one(path: TagPath): readonly TagPath[] {
 }
 
 /**
- * The nodes a sign stands for: the sign itself, and beside it, as roots of
- * their own, the element, modality and polarity it implies.
+ * The nodes a sign stands for: the sign itself, and beside it, in the zodiac,
+ * the element, modality and polarity it implies.
  */
 export function signPaths(sign: Sign): readonly TagPath[] {
   const element = ELEMENT_BY_SIGN[sign];
 
   return [
-    [TAG_ROOT.sign, _.startCase(sign)],
-    [TAG_ROOT.element, element],
-    [TAG_ROOT.modality, MODALITY_BY_SIGN[sign]],
-    [TAG_ROOT.polarity, POLARITY_BY_ELEMENT[element] ?? element],
+    [TAG_ROOT.zodiac, "Sign", _.startCase(sign)],
+    [TAG_ROOT.zodiac, "Element", element],
+    [TAG_ROOT.zodiac, "Modality", MODALITY_BY_SIGN[sign]],
+    [TAG_ROOT.zodiac, "Polarity", POLARITY_BY_ELEMENT[element] ?? element],
   ];
 }

@@ -1538,6 +1538,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 5.1.0(vitest@5.1.0)
+      lucide-react:
+        specifier: 'catalog:'
+        version: 1.48.0(react@19.3.0)
       moment:
         specifier: 'catalog:'
         version: 2.31.0
