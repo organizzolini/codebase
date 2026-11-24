@@ -1,13 +1,14 @@
 import { z } from "zod";
 
 import { DURATION_BUCKETS } from "../filtering/modules/query-building/event-filter-fields.constants";
+import { UUID_PATTERN } from "../filtering/modules/values/event-filter-values.constants";
 
 import type { EventGroupLevel } from "./event-grouping.types";
 
 // ♟️ Constants
 
 /** Most levels a grouping nests, not counting the color level. */
-export const MAXIMUM_GROUP_LEVELS = 3;
+export const MAXIMUM_GROUP_LEVELS = 16;
 
 /**
  * The deepest a tag grouping may reach beneath its root.
@@ -58,14 +59,30 @@ export const CALENDAR_GROUP_KEY_SQL: Readonly<
 /**
  * One derived group key for the event `e`, in place of `{key}`.
  */
-export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, null::text as "path"`;
+export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, null::text as "path", null::text as "orderKey"`;
 
 /** Puts every event in no group, for an unknown field. */
-export const NO_GROUP_SQL = `select null::text as "key", null::text as label, null::text as "path" where false`;
+export const NO_GROUP_SQL = `select null::text as "key", null::text as label, null::text as "path", null::text as "orderKey" where false`;
+
+/**
+ * A tag's ordering key: each ancestor's `order`, zero-padded, then its name, from the root down, so keys compare in the order the tags are meant to read.
+ */
+const TAG_ORDER_KEY_SQL = `(
+      select string_agg(
+        lpad(a."order"::text, 5, '0') || ':' || a."name",
+        ' / '
+        order by an.depth
+      )
+      from tags_closure oc
+      join tags a on a.id = oc.ancestor_id
+      join tag_nodes an on an.id = a.id
+      where oc.descendant_id = t.tag_id
+    ) as "orderKey"`;
 
 /** Tags an event falls under at a depth; shallower leaves count. */
 export const TAG_GROUP_SQL = `
-  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path"
+  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path",
+    ${TAG_ORDER_KEY_SQL}
   from calendar_event_tag_nodes t
   where
     t.calendar_event_id = e.id
@@ -88,9 +105,21 @@ export const TAG_GROUP_SQL = `
     )
 `;
 
+/** The children of a tag an event carries, directly or through the tags beneath each. */
+export const PARENT_TAG_GROUP_SQL = `
+  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path",
+    ${TAG_ORDER_KEY_SQL}
+  from calendar_event_tag_nodes t
+  join tags child on child.id = t.tag_id
+  where
+    t.calendar_event_id = e.id
+    and child.parent_id = {parent}::uuid
+`;
+
 /** Picked tags an event falls under, including every ancestor tag. */
 export const PICKED_TAG_GROUP_SQL = `
-  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path"
+  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path",
+    ${TAG_ORDER_KEY_SQL}
   from calendar_event_tag_nodes t
   where t.calendar_event_id = e.id and t.tag_id = any({tags}::uuid[])
 `;
@@ -100,7 +129,12 @@ export const GROUP_COLUMN_SQL = `,
     coalesce(
       (
         select json_agg(
-          json_build_object('key', g."key", 'label', g.label, 'path', g."path")
+          json_build_object(
+            'key', g."key",
+            'label', g.label,
+            'orderKey', g."orderKey",
+            'path', g."path"
+          )
           order by g."path" collate "C", g."key" collate "C"
         )
         from ({source}) g
@@ -119,6 +153,11 @@ export const eventGroupLevelSchema: z.ZodType<EventGroupLevel> = z.object({
     .nullish()
     .transform((depth) => depth ?? undefined),
   field: z.string().max(MAXIMUM_GROUP_FIELD_LENGTH),
+  parent: z
+    .string()
+    .regex(UUID_PATTERN)
+    .nullish()
+    .transform((parent) => parent ?? undefined),
   tags: z
     .array(z.string())
     .max(MAXIMUM_GROUP_TAGS)

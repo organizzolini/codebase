@@ -2,6 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { EventFilterParametersService } from "../filtering/modules/query-building/event-filter-parameters.service";
 
+import {
+  MAXIMUM_GROUP_LEVELS,
+  PARENT_TAG_GROUP_SQL,
+} from "./event-grouping.constants";
 import { EventGroupingService } from "./event-grouping.service";
 
 import type { EventGroupLevel } from "./event-grouping.types";
@@ -47,6 +51,22 @@ describe(EventGroupingService, () => {
       expect(
         service.compile([level(`tag:${ROOT}`, { depth: 3 })], 0).parameters,
       ).toStrictEqual([ROOT, 3]);
+    });
+
+    it("reads a tag's children with the parent bound as a parameter", () => {
+      expect.hasAssertions();
+
+      const compiled = service.compile(
+        [level(`tag:${ROOT}`, { parent: MARS })],
+        2,
+      );
+
+      expect(compiled.parameters).toStrictEqual([MARS]);
+      expect(compiled.sql).toContain("child.parent_id = $3::uuid");
+      expect(compiled.sql).not.toContain(MARS);
+      expect(compiled.sql).toContain(
+        PARENT_TAG_GROUP_SQL.replace("{parent}", "$3"),
+      );
     });
 
     it("groups by the picked tags alone, dropping what is no tag id", () => {
@@ -135,16 +155,18 @@ describe(EventGroupingService, () => {
       ]);
     });
 
-    it("allows three levels of grouping and one more for the color", () => {
+    it("allows up to the most levels of grouping, and one more for the color", () => {
       expect.hasAssertions();
 
-      const three = [{ field: "year" }, { field: "month" }, { field: "day" }];
+      const most = Array.from({ length: MAXIMUM_GROUP_LEVELS }, () => ({
+        field: "year",
+      }));
 
       expect(
-        service.parse({ colorBy: { field: "hour" }, levels: three }),
-      ).toHaveLength(4);
+        service.parse({ colorBy: { field: "hour" }, levels: most }),
+      ).toHaveLength(MAXIMUM_GROUP_LEVELS + 1);
       expect(() =>
-        service.parse({ levels: [...three, { field: "hour" }] }),
+        service.parse({ levels: [...most, { field: "hour" }] }),
       ).toThrow("too_big");
     });
 

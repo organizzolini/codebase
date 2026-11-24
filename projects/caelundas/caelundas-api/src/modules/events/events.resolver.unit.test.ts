@@ -10,6 +10,7 @@ import { EventFilterParametersService } from "./modules/filtering/modules/query-
 import { EventFilterCombinator } from "./modules/filtering/modules/rules/event-filter-combinator.entities";
 import { EventFilterNumbersService } from "./modules/filtering/modules/values/event-filter-numbers.service";
 import { EventFilterValuesService } from "./modules/filtering/modules/values/event-filter-values.service";
+import { MAXIMUM_GROUP_LEVELS } from "./modules/grouping/event-grouping.constants";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { CalendarWindow } from "./modules/windows/calendar-window.entities";
 
@@ -165,12 +166,9 @@ describe(EventsResolver, () => {
     ]);
     await expect(
       resolver.events(period, null, {
-        levels: [
-          { field: "year" },
-          { field: "month" },
-          { field: "day" },
-          { field: "hour" },
-        ],
+        levels: Array.from({ length: MAXIMUM_GROUP_LEVELS + 1 }, () => ({
+          field: "year",
+        })),
       }),
     ).rejects.toThrow(/too_big/u);
   });

@@ -19,11 +19,23 @@ export class EventFacetValueEntity {
   })
   depth!: number;
 
+  @Field(() => String, {
+    description: "The slug of a lucide icon for the tag, if it has one.",
+    nullable: true,
+  })
+  icon!: null | string;
+
   @Field(() => ID)
   id!: string;
 
   @Field(() => String, { description: "The tag's own label." })
   name!: string;
+
+  @Field(() => String, {
+    description: "What the tag means, if it says.",
+    nullable: true,
+  })
+  note!: null | string;
 
   @Field(() => String, {
     description:

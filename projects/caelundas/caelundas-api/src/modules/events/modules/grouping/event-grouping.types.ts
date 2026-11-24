@@ -11,5 +11,7 @@ export interface CompiledEventGrouping {
 export interface EventGroupLevel {
   depth?: number | undefined;
   field: string;
+  /** The tag whose children the level groups by, in place of the root's own. */
+  parent?: string | undefined;
   tags: string[];
 }

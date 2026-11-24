@@ -272,7 +272,7 @@ describe(EventsService, () => {
     );
 
     expect(events.at(0)?.groups).toStrictEqual([
-      [{ key: "2026", label: null, path: null }],
+      [{ key: "2026", label: null, orderKey: null, path: null }],
       [],
     ]);
     expect(query).toHaveBeenLastCalledWith(
@@ -350,7 +350,19 @@ describe(EventsService, () => {
     query.mockResolvedValueOnce([
       row("planet", "Planet", "0", "planet", "", "0"),
       row("mars", "Mars", "1", "planet", "Mars", "2"),
-      row("retrograde", "Retrograde", "2", "planet", "Mars / Retrograde", "1"),
+      {
+        ...row(
+          "retrograde",
+          "Retrograde",
+          "2",
+          "planet",
+          "Mars / Retrograde",
+          "1",
+        ),
+        icon: "rotate-ccw",
+        note: "Moving backward.",
+        parent_id: "mars",
+      },
     ]);
 
     await expect(
@@ -360,15 +372,27 @@ describe(EventsService, () => {
       }),
     ).resolves.toStrictEqual([
       {
+        icon: null,
         id: "planet",
         name: "Planet",
+        note: null,
         values: [
-          { count: 2, depth: 1, id: "mars", name: "Mars", path: "Mars" },
+          {
+            count: 2,
+            depth: 1,
+            icon: null,
+            id: "mars",
+            name: "Mars",
+            note: null,
+            path: "Mars",
+          },
           {
             count: 1,
             depth: 2,
+            icon: "rotate-ccw",
             id: "retrograde",
             name: "Retrograde",
+            note: "Moving backward.",
             path: "Mars / Retrograde",
           },
         ],
@@ -412,6 +436,51 @@ describe(EventsService, () => {
     ]);
   });
 
+  it("orders siblings by their order before their names, under each parent", async () => {
+    expect.hasAssertions();
+
+    const row = (
+      id: string,
+      name: string,
+      order: number,
+      parent: string,
+      path: string,
+    ): Record<string, number | string> => ({
+      count: "1",
+      depth: path.split(" / ").length,
+      id,
+      name,
+      order,
+      parent_id: parent,
+      path_below_root: path,
+      root_id: "sign",
+    });
+
+    query.mockResolvedValueOnce([
+      {
+        count: "0",
+        depth: "0",
+        id: "sign",
+        name: "Sign",
+        path_below_root: "",
+        root_id: "sign",
+      },
+      row("taurus", "Taurus", 2, "sign", "Taurus"),
+      row("aries", "Aries", 1, "sign", "Aries"),
+      row("b", "B", 2, "aries", "Aries / B"),
+      row("a", "A", 1, "aries", "Aries / A"),
+    ]);
+
+    const [facet] = await service.findFacets();
+
+    expect(facet?.values.map((value) => value.path)).toStrictEqual([
+      "Aries",
+      "Aries / A",
+      "Aries / B",
+      "Taurus",
+    ]);
+  });
+
   it("counts over every event when no period is given", async () => {
     expect.hasAssertions();
 
@@ -439,7 +508,7 @@ describe(EventsService, () => {
         count: "0",
         depth: "0",
         id: "planetary",
-        name: "Type",
+        name: "Planetary",
         path_below_root: "",
         root_id: "planetary",
       },

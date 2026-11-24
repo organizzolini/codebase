@@ -10,11 +10,23 @@ import { EventFacetValueEntity } from "./event-facet-value.entities";
  */
 @ObjectType("EventFacet")
 export class EventFacetEntity {
+  @Field(() => String, {
+    description: "The slug of a lucide icon for the root, if it has one.",
+    nullable: true,
+  })
+  icon!: null | string;
+
   @Field(() => ID)
   id!: string;
 
   @Field(() => String, { description: "The root tag's label." })
   name!: string;
+
+  @Field(() => String, {
+    description: "What the root means, if it says.",
+    nullable: true,
+  })
+  note!: null | string;
 
   @Field(() => [EventFacetValueEntity], {
     description: "The tags beneath the root, depth first.",

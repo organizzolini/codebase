@@ -71,7 +71,7 @@ export const EVENTS_IN_PERIOD_SQL = `
       select 1
       from calendar_event_tag_nodes n
       where n.calendar_event_id = e.id
-        and n.tag_path in ('Phase / Forming', 'Phase / Dissolving')
+        and n.tag_path in ('Aspect / Phase / Forming', 'Aspect / Phase / Dissolving')
     )
     {filter}
   order by e."start", e."summary" collate "C", e.id
@@ -90,6 +90,7 @@ export const groupKeysSchema = z.array(
   z.object({
     key: z.string(),
     label: z.string().nullable(),
+    orderKey: z.string().nullish().default(null),
     path: z.string().nullable(),
   }),
 );
@@ -131,8 +132,13 @@ export const FACETS_SQL = `
     n.depth,
     n.root_id,
     substr(n."path", length(r."name") + length(' / ') + 1) as path_below_root,
-    coalesce(c.count, 0) as count
+    coalesce(c.count, 0) as count,
+    t.icon,
+    t.note,
+    t."order",
+    t.parent_id
   from tag_nodes n
+  join tags t on t.id = n.id
   join tag_nodes r on r.id = n.root_id
   left join tag_counts c on c.tag_id = n.id
   order by n."path" collate "C"
@@ -142,14 +148,15 @@ export const FACETS_SQL = `
 export const facetRowSchema = z.object({
   count: z.coerce.number(),
   depth: z.coerce.number(),
+  icon: z.string().nullish().default(null),
   id: z.string(),
   name: z.string(),
+  note: z.string().nullish().default(null),
+  order: z.coerce.number().default(0),
+  parent_id: z.string().nullish().default(null),
   path_below_root: z.string(),
   root_id: z.string(),
 });
 
 /** Compares text counting digits as numbers: "Harmonic 2" precedes "Harmonic 10". */
 export const NATURAL_COLLATOR = new Intl.Collator("en-US", { numeric: true });
-
-/** What separates the names in a tag's path. */
-export const PATH_SEPARATOR = " / ";

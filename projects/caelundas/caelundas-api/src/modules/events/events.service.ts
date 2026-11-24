@@ -13,7 +13,7 @@ import {
 } from "./events.constants";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
-import { compareNaturalPaths } from "./modules/natural-order/natural-order.utilities";
+import { compareOrderedPaths } from "./modules/natural-order/natural-order.utilities";
 import { PresetsService } from "./modules/presets/presets.service";
 import { WindowsService } from "./modules/windows/windows.service";
 
@@ -22,6 +22,7 @@ import type { CalendarEventEntity } from "./modules/calendar-event/calendar-even
 import type { EventFacetEntity } from "./modules/facets/event-facet.entities";
 import type { EventFilterGroup } from "./modules/filtering/event-filter.types";
 import type { EventGroupLevel } from "./modules/grouping/event-grouping.types";
+import type { OrderedName } from "./modules/natural-order/natural-order.types";
 import type { ResolvedPreset } from "./modules/presets/presets.types";
 import type { PeriodInput } from "./modules/windows/period-input.entities";
 import type { WindowsArguments } from "./modules/windows/windows-arguments.entities";
@@ -52,6 +53,65 @@ export class EventsService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * Assembles the tag roots from the facet rows: each root with its tags
+   * beneath it, siblings in the order the tags are meant to read.
+   */
+  private toFacets(
+    rows: readonly z.infer<typeof facetRowSchema>[],
+  ): EventFacetEntity[] {
+    const facets = new Map<string, EventFacetEntity>();
+    const levelsById = new Map<string, OrderedName[]>();
+    const byId = new Map(rows.map((row) => [row.id, row]));
+
+    for (const row of rows) {
+      if (row.depth === 0) {
+        facets.set(row.id, {
+          icon: row.icon,
+          id: row.id,
+          name: row.name,
+          note: row.note,
+          values: [],
+        });
+        continue;
+      }
+
+      // Each level beneath the root with its place among its siblings, from
+      // the tag's ancestors, so siblings sort as intended.
+      const levels: OrderedName[] = [];
+
+      for (
+        let node: (typeof rows)[number] | undefined = row;
+        node !== undefined && node.depth > 0;
+        node = node.parent_id === null ? undefined : byId.get(node.parent_id)
+      ) {
+        levels.unshift({ name: node.name, order: node.order });
+      }
+
+      levelsById.set(row.id, levels);
+      facets.get(row.root_id)?.values.push({
+        count: row.count,
+        depth: row.depth,
+        icon: row.icon,
+        id: row.id,
+        name: row.name,
+        note: row.note,
+        path: row.path_below_root,
+      });
+    }
+
+    for (const facet of facets.values()) {
+      facet.values.sort((left, right) =>
+        compareOrderedPaths(
+          levelsById.get(left.id) ?? [],
+          levelsById.get(right.id) ?? [],
+        ),
+      );
+    }
+
+    return [...facets.values()];
+  }
 
   /**
    * Formats an instant as the ISO 8601 text Postgres reads as a timestamptz.
@@ -137,30 +197,7 @@ export class EventsService {
       ],
       facetRowSchema,
     );
-    const facets = new Map<string, EventFacetEntity>();
-
-    for (const row of rows) {
-      if (row.depth === 0) {
-        facets.set(row.id, { id: row.id, name: row.name, values: [] });
-        continue;
-      }
-
-      facets.get(row.root_id)?.values.push({
-        count: row.count,
-        depth: row.depth,
-        id: row.id,
-        name: row.name,
-        path: row.path_below_root,
-      });
-    }
-
-    for (const facet of facets.values()) {
-      facet.values.sort((left, right) =>
-        compareNaturalPaths(left.path, right.path),
-      );
-    }
-
-    return [...facets.values()];
+    return this.toFacets(rows);
   }
 
   /**

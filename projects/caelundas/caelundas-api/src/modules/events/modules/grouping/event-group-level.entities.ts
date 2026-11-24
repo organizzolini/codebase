@@ -21,6 +21,13 @@ export class EventGroupLevelEntity {
   })
   field!: string;
 
+  @Field(() => String, {
+    description:
+      "For a tag root, the id of the tag whose children to make a group of each, the root's own when absent. A tag beneath no event is no group, and an event with none of the children is in no group.",
+    nullable: true,
+  })
+  parent?: null | string;
+
   @Field(() => [String], {
     description:
       "For a tag root, the ids of the tags to make a group of each, in place of the root's children or a depth.",

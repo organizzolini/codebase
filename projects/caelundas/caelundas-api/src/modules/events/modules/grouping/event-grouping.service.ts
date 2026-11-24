@@ -11,6 +11,7 @@ import {
   eventGroupingSchema,
   GROUP_COLUMN_SQL,
   NO_GROUP_SQL,
+  PARENT_TAG_GROUP_SQL,
   PICKED_TAG_GROUP_SQL,
   TAG_GROUP_SQL,
 } from "./event-grouping.constants";
@@ -40,6 +41,15 @@ export class EventGroupingService {
     level: EventGroupLevel,
     parameters: EventFilterParameters,
   ): string {
+    if (
+      level.field.startsWith(TAG_FIELD_PREFIX) &&
+      level.parent !== undefined
+    ) {
+      return PARENT_TAG_GROUP_SQL.replace("{parent}", () =>
+        this.parametersService.bind(parameters, level.parent),
+      );
+    }
+
     if (level.field.startsWith(TAG_FIELD_PREFIX) && level.tags.length > 0) {
       // A pick that is no tag id matches nothing, as a tag the data lacks
       // would, rather than failing the cast.
