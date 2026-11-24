@@ -4,23 +4,42 @@
 
 The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
+- **acyclic**: The mark of a directed acyclic graph, an edge entity marked `@DirectedAcyclicGraph()`, whose edges run from source to target and form no cycle.
 - **cardinality**: The relation category that distinguishes one-to-one, one-to-many, many-to-one, and many-to-many links in the ERD model.
 - **creatable**: The entity base layer that adds create-time columns, sitting second in the identifiable, creatable, updatable, deletable chain.
 - **db**: A stray fragment for database; this package's code and docs use the full word, so the headword carries no local role.
 - **deletable**: The entity base layer that adds soft-delete support, last in the identifiable, creatable, updatable, deletable chain.
 - **department**: A fixture entity with a customized table name and nullable text column, defined by `ErdDepartment` in `department.entity.ts`.
 - **employee**: A fixture entity with an inherited identifier and a many-to-one department relation, defined by `ErdEmployee` in `employee.entity.ts`.
+- **errand**: A root in the render tests' sample tree, the fixture label `--page` tests draw alone.
+- **filetree**:
+- **forest**: The rows of a tree table taken together, whose roots `--limit` and `--page` count and page.
 - **gamma**: A placeholder project name in the extractor's unit test fixtures, with no meaning beyond the test.
 - **identifiable**: The entity base layer that adds a primary id, first in the identifiable, creatable, updatable, deletable chain.
+- **mislabelled**:
+- **neighborhood**: One weakly connected group of nodes in a drawn graph, each tree of a forest or connected group, which gets its own Mermaid subgraph when the diagram has two or more.
 - **nullability**: Whether a database column accepts SQL `NULL`; the
   `postgresqlErdColumnSchema` flag is rendered by `renderColumn` in
   `postgresql-erd.utilities.ts`.
+- **predicate**: A `--filter` once its column is resolved, the comparison of one column with one value that becomes one WHERE term.
+- **qualifier**: The schema a `schema.table` name carries before its dot, which `--table` checks against `--schema`.
+- **redeclared**: A subclass property that repeats a base class's endpoint name, which counts once rather than as a second endpoint.
+- **redeclaring**: A subclass property that gives a base class's endpoint a new name, which leaves two endpoints for one role.
+- **relabelled**:
 - **serial**: A PostgreSQL integer type that supplies sequential values, mapped
   to Mermaid `int` by `POSTGRESQL_ERD_TYPE_MAP` in
   `postgresql-erd.constants.ts`.
 - **smallint**: A PostgreSQL two-byte integer type, mapped to Mermaid `int` by
   `POSTGRESQL_ERD_TYPE_MAP` in `postgresql-erd.constants.ts`.
+- **station**:
+- **subgraph**: The Mermaid block that groups one neighborhood's nodes and edges under a title, written `subgraph nb0["Title"]` and closed by `end`.
+- **undirected**: A graph marked `@Graph({ directed: false })`, whose edges have no direction.
+- **unmarked**:
+- **unplaced**: A row that a sort rank does not name, which keeps its place after every ranked row.
+- **unreached**: A row no root's walk reaches, such as one in a cycle, which the batched loader reads by id.
 - **updatable**: The entity base layer that adds update tracking columns, third in the identifiable, creatable, updatable, deletable chain.
 - **verb**: The verb in a log message that the export log convention test expects after the subject emoji, such as exists.
+- **vertex**: A node in the cycle search of a directed acyclic graph's edges, which holds its visit order and the nodes its edges reach.
+- **via**: The node a cap walk first reached another node from, kept as `GraphEdgesWalk.via` in `render-edges.types.ts` and set by `walkEdges` in `render-edges-limits.utilities.ts`; roots have none. Everyday "via" means "by way of"; here it is the discovery parent, which an undirected walk uses so a node is not drawn back to where it came from.
 
 <!-- coinagerie:end -->

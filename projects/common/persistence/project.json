@@ -55,7 +55,7 @@
           "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/persistence.main.ts postgresql-import {args}"
         }
       },
-      "description": "Run the database command line: postgresql-export, postgresql-import, or postgresql-erd",
+      "description": "Run the database command line: postgresql-export, postgresql-import, postgresql-erd, or the render-tree-data, render-directed-acyclic-graph-data, and render-graph-data diagram commands",
       "executor": "nx:run-commands",
       "options": {
         "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/persistence.main.ts {args}",

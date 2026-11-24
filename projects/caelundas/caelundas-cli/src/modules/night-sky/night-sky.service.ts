@@ -4,21 +4,23 @@ import { Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
-import { Constellation, ConstellationLine, Star } from "@codebase/caelundas-db";
+import { Constellation, Star } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
 import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 
+import { CONSTELLATION_SAVE_CHUNK_SIZE } from "./night-sky.constants";
 import { buildNightSkyRows } from "./night-sky.utilities";
 
 import type { NightSkyFiles, NightSkyRows } from "./night-sky.types";
 import type { EntityManager, EntityTarget, ObjectLiteral } from "typeorm";
 
 /**
- * Rewrites the night sky's tables, `stars`, `constellations` and
- * `constellation_lines`, from the downloaded HYG catalog and d3-celestial's
+ * Rewrites the night sky's tables, `stars`, `constellations` and the edges of
+ * their figures, from the downloaded HYG catalog and d3-celestial's
  * constellations and figures, in one transaction, so a reader never sees a
- * half-written sky.
+ * half-written sky. A constellation is saved with its `edges`, which its
+ * generated edge entity stores.
  */
 @Injectable()
 export class NightSkyService {
@@ -63,19 +65,21 @@ export class NightSkyService {
   }
 
   /**
-   * Empties the three tables and writes the new rows, segments last, since
-   * each refers to its constellation and its two stars.
+   * Empties the constellations, whose edges go with them, and the stars, then
+   * writes the stars and each constellation with its edges, which refer to
+   * the stars.
    */
   private async replace(
     manager: EntityManager,
     rows: NightSkyRows,
   ): Promise<void> {
-    for (const target of [ConstellationLine, Constellation, Star]) {
+    for (const target of [Constellation, Star]) {
       await manager.createQueryBuilder().delete().from(target).execute();
     }
     await this.insertInBatches(manager, Star, rows.stars);
-    await this.insertInBatches(manager, Constellation, rows.constellations);
-    await this.insertInBatches(manager, ConstellationLine, rows.lines);
+    await manager.save(Constellation, rows.constellations, {
+      chunk: CONSTELLATION_SAVE_CHUNK_SIZE,
+    });
   }
 
   // 🌎 Public Methods
@@ -97,7 +101,10 @@ export class NightSkyService {
     );
     this.logger.info("🌌 Ingested the night sky", undefined, {
       constellations: rows.constellations.length,
-      lines: rows.lines.length,
+      edges: rows.constellations.reduce(
+        (total, { edges }) => total + edges.length,
+        0,
+      ),
       stars: rows.stars.length,
     });
 

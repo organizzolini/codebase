@@ -5,12 +5,13 @@ import { createMock } from "@golevelup/ts-vitest";
 import { getDataSourceToken } from "@nestjs/typeorm";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { Constellation, ConstellationLine, Star } from "@codebase/caelundas-db";
+import { Constellation, Star } from "@codebase/caelundas-db";
 import { useTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 
+import { CONSTELLATION_SAVE_CHUNK_SIZE } from "./night-sky.constants";
 import { NightSkyService } from "./night-sky.service";
 
 import type { NightSkyFiles } from "./night-sky.types";
@@ -88,24 +89,29 @@ describe(NightSkyService, () => {
     expect(instance).toBeInstanceOf(NightSkyService);
   });
 
-  it("empties the tables segments first, then writes the stars before the segments that join them", async () => {
+  it("empties the constellations, whose edges cascade, then the stars, then writes the stars before the constellations that join them", async () => {
     const rows = await service.ingest(files);
     const deletion = manager.createQueryBuilder().delete();
 
     expect(rows.stars).toHaveLength(2);
-    expect(deletion.from).toHaveBeenNthCalledWith(1, ConstellationLine);
-    expect(deletion.from).toHaveBeenNthCalledWith(2, Constellation);
-    expect(deletion.from).toHaveBeenNthCalledWith(3, Star);
-    expect(manager.insert).toHaveBeenNthCalledWith(1, Star, expect.any(Array));
-    expect(manager.insert).toHaveBeenNthCalledWith(
-      2,
-      Constellation,
+    expect(deletion.from).toHaveBeenNthCalledWith(1, Constellation);
+    expect(deletion.from).toHaveBeenNthCalledWith(2, Star);
+    expect(deletion.from).toHaveBeenCalledTimes(2);
+    expect(manager.insert).toHaveBeenCalledExactlyOnceWith(
+      Star,
       expect.any(Array),
     );
-    expect(manager.insert).toHaveBeenNthCalledWith(
-      3,
-      ConstellationLine,
-      expect.any(Array),
+    expect(manager.save).toHaveBeenCalledExactlyOnceWith(
+      Constellation,
+      [
+        {
+          designation: "UMa",
+          edges: [{ fromHip: 54_061, toHip: 53_910 }],
+          name: "Ursa Major",
+          zodiac: false,
+        },
+      ],
+      { chunk: CONSTELLATION_SAVE_CHUNK_SIZE },
     );
   });
 

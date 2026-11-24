@@ -265,7 +265,7 @@ tag at once make the second fail on the tag's unique name; run it again.
 ## Night sky
 
 The `night-sky` command fills the tables the night sky behind `caelundas-web`
-is drawn from, `stars`, `constellations` and `constellation_lines`, in the same
+is drawn from, `stars`, `constellations` and `constellation_edges`, in the same
 database. `caelundas-api` reads them once at startup, so run the command before
 starting the API, or restart the API after it. Without it the sky has no stars,
 replacing what an earlier run wrote, in one transaction. It reads three files downloaded beforehand, never

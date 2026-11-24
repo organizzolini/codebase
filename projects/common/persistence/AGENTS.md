@@ -3,15 +3,21 @@
 ## Quick Start
 
 **Type**: NestJS library package (`@codebase/persistence`) and nest-commander
-command line (`postgresql-export`, `postgresql-import`, and `typeorm-migration-sql`)
+command line (`postgresql-export`, `postgresql-import`, `typeorm-migration-sql`,
+and the drawing commands `render-tree-data`,
+`render-directed-acyclic-graph-data`, and `render-graph-data`)
 
-**Purpose**: Two jobs. The library is the one way a database-backed project
+**Purpose**: Three jobs. The library is the one way a database-backed project
 connects to Postgres: the `<PROJECT>_POSTGRES_*` environment fragment, the
 TypeORM options factory, the NestJS module and command-line data source built
 from it, and the naming convention behind them. The command line moves
 selected tables between databases through `pg_dump` and `pg_restore`, each
 database named by a URI. See the [README](README.md) for the exports, the
-naming table, and every command-line option.
+naming table, and every command-line option. The third job is drawing: the
+drawing commands read a `@Tree` entity, or a `@DirectedAcyclicGraph` or `@Graph` entity's edge
+rows, and print them as a Mermaid flowchart on stdout or write them to files.
+The README's [Drawing diagrams](README.md#drawing-diagrams) section documents
+their options, decorators, and output streams.
 
 This package may import one workspace package, `@codebase/observability`, for its
 command line's logger, and never any other, or every database-backed project
@@ -47,6 +53,17 @@ src/
     postgresql-export/              # The postgresql-export command: options, plan, dry run, atomic write
     postgresql-import/              # The postgresql-import command: options, plan, --clean (no prompt), dry run
     postgresql-utilities/           # pg_dump, pg_restore, and truncate behind one service
+    render/                         # RenderService: connects, reads, draws, and writes for every drawing command
+      modules/render-command/       # RenderCommand: the flags and run flow every drawing command shares
+      modules/render-entities/      # @DirectedAcyclicGraph, @Graph (two forms), the endpoint and reverse-relation decorators, the generated edge entity; globs to entity classes; the @Tree pick
+      modules/render-options/       # Options every drawing command shares: connection, filter, sort, paging, caps, outputs
+      modules/render-edges/         # Reads an edge table, finds roots and cycles, then pages and caps the edges
+      modules/render-nodes/         # Reads the labels of only the drawn nodes and graphs, and relabels a generated edge's graph
+      modules/render-mermaid/       # Pure renderer: a graph model to Mermaid text, with its limit warnings
+      modules/render-trees/         # Reads a @Tree table in its storage, then filters, sorts, pages, and caps it
+      modules/render-tree-data/     # The render-tree-data command: draws a @Tree entity
+      modules/render-directed-acyclic-graph-data/      # The render-directed-acyclic-graph-data command: refuses a @Graph entity
+      modules/render-graph-data/    # The render-graph-data command: refuses a @DirectedAcyclicGraph entity
     typeorm-migration-sql/          # The typeorm-migration-sql command: check or write each migration's SQL
 testing/
   index.ts                          # The @codebase/persistence/testing entry
@@ -54,6 +71,7 @@ testing/
   command-line-runner.ts            # runCliCommandLine: argv through the real nest-commander runner
   fixture-persistence.ts            # A migrated container for the command line's integration tests
   fixtures/                         # Entities, modules, and the widgets and parts migrations
+  fixtures/graphs/, fixtures/trees/ # @DirectedAcyclicGraph and @Graph edge entities (graphs/generated/ for the generated form), and @Tree entities, for the drawing commands
   setup.ts, mocks.ts                # Vitest setup and mocks
 ```
 
@@ -82,6 +100,61 @@ testing/
   line or an error.
 - **Never import GraphQL into the base entities.** Meanderaw and caelundas
   must not depend on it; lexico layers its `@Field` decorators on top.
+- **Draw a diagram only through `RenderService`.** It writes the diagram to
+  stdout, or to the files named, and the warnings to stderr. Never send the
+  diagram through the logger.
+- **Give a shared drawing flag its help text once,** in
+  `render-options.constants.ts`, so a flag reads the same in every drawing
+  command.
+- **Check a drawing command's entity kind before connecting.** A `@DirectedAcyclicGraph` command
+  refuses a `@Graph` entity, and the reverse, naming the other command.
+
+### Drawing internals
+
+- **Entity columns:** TypeORM's `filterColumns` matches one class exactly, so
+  `entityColumnNames` asks each class up the inheritance chain in turn.
+- **Filters:** `=`, `!=`, and `~=` compare a column's text, so a NULL matches
+  only `!=`. `~=` wraps its value in wildcards, with the value's own wildcards
+  escaped.
+- **Tree caps:** a node past `--truncate-depth` hides all its children, and one past
+  `--truncate-breadth` keeps its first children in row order. Each hidden group is
+  drawn as one "… K more" truncation node under its parent and warned about.
+  Nodes no root reaches, such as a cycle, stay as drawn.
+- **Tree matches:** the ancestor and descendant walks each join a row once, so a
+  cycle ends them instead of looping.
+- **Mermaid:** `renderGraphMermaid` draws short node ids, escaped labels, and
+  styled roots and truncation nodes.
+- **File tree:** `--diagram filetree` (`render-tree-data` only; the plan's
+  `diagram` defaults to `flowchart`) makes `RenderMermaidService` call
+  `renderGraphFileTree`, Mermaid's beta `treeView-beta` (needs Mermaid 11.14 or
+  later; Obsidian may not render it). It nests children under roots by edge
+  order, quotes labels, and marks a node with children with a trailing `/`
+  inside the quotes. It ignores edge labels, weights, markers, and direction,
+  and warns only on the 50,000-character limit, not the 500-edge flowchart one.
+  The grammar has no quote escape, so a label holding `"` uses single quotes.
+- **Neighborhoods:** with two or more weakly connected groups of nodes (edges
+  read as undirected), `renderGraphMermaid` wraps each in `subgraph nb<N>`,
+  titled by the label all its edges share (then drawn without it), else its
+  first root's or first node's label. One neighborhood draws unchanged, and the
+  `GraphModel` never carries them.
+- **Checks before connecting:** column names and the `@Tree` pick are read from
+  decorators first, so a bad flag or pick never reaches the database.
+- **Two forms of one decorator:** `@Graph()` and `@DirectedAcyclicGraph()` mark
+  either a hand-written edge entity (with `@GraphSource` and `@GraphTarget`), or,
+  with `edge` and `nodes` options, the graph entity, which generates the edge
+  entity. `generateEdgeEntity` registers a nameless class, its table, key
+  columns, cascading relations and indexes with TypeORM's metadata storage when
+  the decorator runs; the class is reachable only through
+  `generatedEdgeOf` and `withGeneratedEdges`, which `createGraphDataSource` and a
+  project's own entity list must use. A graph entity is a pick candidate, but the
+  command reads the generated class, so `--filter` and `--sort` name its columns.
+- **Labels:** `RenderCommand` calls `RenderNodesService.relabel` after
+  `RenderEdgesService` has paged and capped the edges, so node labels and neighborhood titles are read for
+  only the nodes drawn. A generated edge carries its graph's key as its label,
+  which `relabel` replaces with the graph's `@GraphLabel`.
+- **Reverse relations** register by the generated entity's name, since its class
+  does not exist when a node entity is defined, so a data source that builds the
+  node entity must also build the graph entity.
 
 ### Key Commands
 
@@ -91,6 +164,7 @@ nx run persistence:vitest:unit
 nx run persistence:type-coverage
 nx run persistence:start:postgresql-export --args="--source-uri <uri> --table <schema.table> --data --file <path>"
 nx run persistence:start:postgresql-import --args="--target-uri <uri> --table <schema.table> --data --file <path>"
+nx run persistence:start --args="render-tree-data --source-uri <uri> --schema <schema> --entities '<glob>'"
 nx run persistence:typeorm-migration-sql      # check (default); `:write` rewrites the migration SQL
 ```
 
@@ -99,7 +173,8 @@ nx run persistence:typeorm-migration-sql      # check (default); `:write` rewrit
 first.
 
 The `start` configurations run the command line with the working directory at
-`projects/common/persistence`. Both commands need the PostgreSQL 18 client tools; see
+`projects/common/persistence`, so the drawing commands' `--entities` globs and
+output paths resolve from there. Both commands need the PostgreSQL 18 client tools; see
 the README's [Moving data between databases](README.md#moving-data-between-databases).
 
 `typeorm-migration-sql` extracts the SQL of each TypeORM migration into the

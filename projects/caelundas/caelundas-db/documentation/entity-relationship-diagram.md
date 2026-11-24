@@ -6,9 +6,12 @@
 erDiagram
   CalendarEventTag }o--|| CalendarEvent : calendarEvent
   CalendarEventTag }o--|| Tag : tag
-  ConstellationLine }o--|| Constellation : constellation
-  ConstellationLine }o--|| Star : fromStar
-  ConstellationLine }o--|| Star : toStar
+  Constellation ||--o{ ConstellationEdge : edges
+  ConstellationEdge }o--|| Constellation : graph
+  ConstellationEdge }o--|| Star : source
+  ConstellationEdge }o--|| Star : target
+  Star ||--o{ ConstellationEdge : incomingEdges
+  Star ||--o{ ConstellationEdge : outgoingEdges
   Tag ||--o{ Tag : children
   Tag }o--|| Tag : parent
   CalendarEvent {
@@ -72,10 +75,10 @@ erDiagram
     string name "not nullable"
     boolean zodiac "not nullable"
   }
-  ConstellationLine {
-    string constellationDesignation PK "not nullable"
-    int fromHip PK "not nullable"
-    int toHip PK "not nullable"
+  ConstellationEdge {
+    string constellation_designation PK "not nullable"
+    int from_hip PK "not nullable"
+    int to_hip PK "not nullable"
   }
   Star {
     int hip PK "not nullable"

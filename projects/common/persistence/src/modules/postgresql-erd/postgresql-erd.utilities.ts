@@ -5,6 +5,8 @@ import { pathToFileURL } from "node:url";
 import { getMetadataArgsStorage as getMetadataArgumentsStorage } from "typeorm";
 import { z } from "zod";
 
+import { withGeneratedEdges } from "../render/modules/render-entities/render-entities-generated.utilities";
+
 import {
   POSTGRESQL_ERD_END_ANCHOR,
   POSTGRESQL_ERD_ENTITY_CLASS_SCHEMA,
@@ -15,6 +17,7 @@ import {
   POSTGRESQL_ERD_TYPE_MAP,
 } from "./postgresql-erd.constants";
 
+import type { GraphEntity } from "../render/modules/render-entities/render-entities.types";
 import type {
   PostgresqlErdEntityClass,
   PostgresqlErdEntityDetails,
@@ -340,7 +343,7 @@ async function importEntityFiles(
   files: string[],
 ): Promise<PostgresqlErdEntityClass[]> {
   const storage = getMetadataArgumentsStorage();
-  const entities: PostgresqlErdEntityClass[] = [];
+  const entities: GraphEntity[] = [];
 
   for (const file of files) {
     const imported = z
@@ -349,17 +352,18 @@ async function importEntityFiles(
 
     for (const value of Object.values(imported)) {
       if (
-        typeof value === "function" &&
+        isGraphEntity(value) &&
         storage.tables.some(({ target }) => target === value)
       ) {
-        entities.push(POSTGRESQL_ERD_ENTITY_CLASS_SCHEMA.parse(value));
+        entities.push(value);
       }
     }
   }
 
-  return [...new Set(entities)].toSorted((left, right) =>
-    left.name.localeCompare(right.name),
-  );
+  // Edge entities a `@Graph` generates are exported from no file, so add them.
+  return withGeneratedEdges([...new Set(entities)])
+    .map((entity) => POSTGRESQL_ERD_ENTITY_CLASS_SCHEMA.parse(entity))
+    .toSorted((left, right) => left.name.localeCompare(right.name));
 }
 
 /**
@@ -374,6 +378,11 @@ function isEntityDetails(
   entity: PostgresqlErdModel["entities"][number],
 ): entity is PostgresqlErdEntityDetails {
   return "columns" in entity;
+}
+
+/** Narrows an exported value to a class constructor. */
+function isGraphEntity(value: unknown): value is GraphEntity {
+  return typeof value === "function";
 }
 
 /** Adds Mermaid's key marker and explicit nullability comment to one column. */

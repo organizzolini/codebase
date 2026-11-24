@@ -389,6 +389,18 @@ describe("postgresql ERD utilities", () => {
     ]);
   });
 
+  it("includes the edge, node, and graph entities a graph generates, though no file exports them", async () => {
+    const model = await readPostgresqlErdModel([
+      "testing/fixtures/graphs/generated/network.entity.ts",
+    ]);
+
+    expect(model.entities.map(({ name }) => name).toSorted()).toStrictEqual([
+      "Network",
+      "NetworkLine",
+      "Station",
+    ]);
+  });
+
   it("includes columns inherited from the Postgresql identifiable entity", async () => {
     const model = await readPostgresqlErdModel([
       "testing/fixtures/postgresql-erd/employee.entity.ts",

@@ -12,8 +12,10 @@ export { CalendarEventDerivedTime } from "./modules/database/modules/calendar-ev
 export { CalendarEventTagNode } from "./modules/database/modules/calendar-events/calendar-event-tag-node.entity";
 export { CalendarEventTag } from "./modules/database/modules/calendar-events/calendar-event-tag.entity";
 export { CalendarEvent } from "./modules/database/modules/calendar-events/calendar-event.entity";
-export { ConstellationLine } from "./modules/database/modules/night-sky/constellation-line.entity";
-export { Constellation } from "./modules/database/modules/night-sky/constellation.entity";
+export {
+  Constellation,
+  type ConstellationEdge,
+} from "./modules/database/modules/night-sky/constellation.entity";
 export { Star } from "./modules/database/modules/night-sky/star.entity";
 export { TagNode } from "./modules/database/modules/tags/tag-node.entity";
 export { Tag } from "./modules/database/modules/tags/tag.entity";

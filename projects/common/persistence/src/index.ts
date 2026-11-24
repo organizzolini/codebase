@@ -55,3 +55,40 @@ export {
   postgresEnvironmentKeys,
   postgresEnvironmentSchema,
 } from "./modules/postgresql/postgresql.utilities";
+export {
+  GraphEdges,
+  GraphIncomingEdges,
+  GraphOutgoingEdges,
+  withGeneratedEdges,
+} from "./modules/render/modules/render-entities/render-entities-generated.utilities";
+export { RenderEntitiesEdgeError as GraphEdgeError } from "./modules/render/modules/render-entities/render-entities.constants";
+export type {
+  GraphEdgeKind,
+  GraphEdgeMetadata,
+  GraphEdgeOptions,
+  GraphEdgeRow,
+  GraphEntity,
+  GraphGeneratedEdge,
+  GraphGeneratedNames,
+  GraphGeneratedOptions,
+} from "./modules/render/modules/render-entities/render-entities.types";
+export {
+  DirectedAcyclicGraph,
+  getGraphEdgeMetadata,
+  Graph,
+  GraphLabel,
+  GraphSource,
+  GraphTarget,
+  GraphWeight,
+  listGraphEdgeEntities,
+} from "./modules/render/modules/render-entities/render-entities.utilities";
+export { RenderMermaidModule as GraphMermaidModule } from "./modules/render/modules/render-mermaid/render-mermaid.module";
+export { RenderMermaidService as GraphMermaidService } from "./modules/render/modules/render-mermaid/render-mermaid.service";
+export type {
+  GraphEdge,
+  GraphMermaidOptions,
+  GraphMermaidRendering,
+  GraphModel,
+  GraphNode,
+  GraphNodeMarker,
+} from "./modules/render/modules/render-mermaid/render-mermaid.types";

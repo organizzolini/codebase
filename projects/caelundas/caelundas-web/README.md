@@ -112,7 +112,7 @@ to the default.
 ## Stars and constellations
 
 The API draws the night sky from its `stars`, `constellations` and
-`constellation_lines` tables, which `caelundas-cli`'s `night-sky` command fills,
+`constellation_edges` tables, which `caelundas-cli`'s `night-sky` command fills,
 and this app shows the SVG its `nightSky` query returns. The list of all 88
 constellations in the Sky menu is a constant in `night-sky.constants.ts`.
 

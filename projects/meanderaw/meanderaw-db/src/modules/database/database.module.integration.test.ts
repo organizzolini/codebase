@@ -88,15 +88,7 @@ describe("meanderaw database module", () => {
         .get(DataSource)
         .query(`SELECT name FROM "meanderaw"."migrations" ORDER BY timestamp`);
 
-      expect(migrations).toStrictEqual([
-        { name: "Migration1791160950069" },
-        { name: "Migration1791414023001" },
-        { name: "Migration1794630084904" },
-        { name: "Migration1794700000000" },
-        { name: "Migration1794800000000" },
-        { name: "Migration1794900000000" },
-        { name: "Migration1795000000000" },
-      ]);
+      expect(migrations).toStrictEqual([{ name: "Migration1795470728582" }]);
     });
   });
 

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectEntityManager } from "@nestjs/typeorm";
 import { EntityManager } from "typeorm";
 
-import { ConstellationLine, Star } from "@codebase/caelundas-db";
+import { Constellation, Star } from "@codebase/caelundas-db";
 
 import { NightSkySiderealTimeService } from "./modules/astronomy/night-sky-sidereal-time.service";
 import { NightSkySvgService } from "./modules/drawing/night-sky-svg.service";
@@ -109,30 +109,27 @@ export class NightSkyService implements OnModuleInit {
    * the stars brightest first, which is the order the builder draws them in.
    */
   public async onModuleInit(): Promise<void> {
-    const [stars, lines] = await Promise.all([
+    const [stars, constellations] = await Promise.all([
       this.manager.getRepository(Star).find(),
-      this.manager.getRepository(ConstellationLine).find({
-        relations: { constellation: true, fromStar: true, toStar: true },
+      this.manager.getRepository(Constellation).find({
+        relations: { edges: { source: true, target: true } },
       }),
     ]);
 
     this.loaded = {
-      segments: lines.flatMap(({ constellation, fromStar, toStar }) =>
-        constellation === undefined ||
-        fromStar === undefined ||
-        toStar === undefined
-          ? []
-          : [
-              {
-                from: [
-                  fromStar.rightAscensionHours,
-                  fromStar.declinationDegrees,
-                ],
-                name: constellation.name,
-                to: [toStar.rightAscensionHours, toStar.declinationDegrees],
-                zodiac: constellation.zodiac,
-              },
-            ],
+      segments: constellations.flatMap(({ edges = [], name, zodiac }) =>
+        edges.flatMap(({ source, target }) =>
+          source === undefined || target === undefined
+            ? []
+            : [
+                {
+                  from: [source.rightAscensionHours, source.declinationDegrees],
+                  name,
+                  to: [target.rightAscensionHours, target.declinationDegrees],
+                  zodiac,
+                },
+              ],
+        ),
       ),
       stars: stars
         .map((star): StarRow => [

@@ -6,6 +6,9 @@ import { LoggerModule } from "@codebase/observability";
 import { PostgresqlErdModule } from "./modules/postgresql-erd/postgresql-erd.module";
 import { PostgresqlExportModule } from "./modules/postgresql-export/postgresql-export.module";
 import { PostgresqlImportModule } from "./modules/postgresql-import/postgresql-import.module";
+import { RenderDirectedAcyclicGraphDataModule } from "./modules/render/modules/render-directed-acyclic-graph-data/render-directed-acyclic-graph-data.module";
+import { RenderGraphDataModule } from "./modules/render/modules/render-graph-data/render-graph-data.module";
+import { RenderTreeDataModule } from "./modules/render/modules/render-tree-data/render-tree-data.module";
 import { TypeormMigrationSqlModule } from "./modules/typeorm-migration-sql/typeorm-migration-sql.module";
 
 /**
@@ -21,6 +24,9 @@ import { TypeormMigrationSqlModule } from "./modules/typeorm-migration-sql/typeo
     PostgresqlErdModule,
     PostgresqlExportModule,
     PostgresqlImportModule,
+    RenderDirectedAcyclicGraphDataModule,
+    RenderGraphDataModule,
+    RenderTreeDataModule,
     TypeormMigrationSqlModule,
   ],
 })
