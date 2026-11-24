@@ -1,9 +1,9 @@
-SET lock_timeout = '10s';
+set lock_timeout = '10s';
 
-SET statement_timeout = '5min';
+set statement_timeout = '5min';
 
-ALTER TABLE "tags" ADD "icon" text;
+alter table tags add icon text;
 
-ALTER TABLE "tags" ADD "note" text;
+alter table tags add note text;
 
-ALTER TABLE "tags" ADD "order" smallint NOT NULL DEFAULT '0';
+alter table tags add "order" smallint not null default '0';

@@ -557,7 +557,7 @@ describe("main end-to-end suite", () => {
       // the transaction that wrote the event.
       expect(fresh).toStrictEqual(
         expect.arrayContaining([
-          { is_direct: true, tag_name: "Instant" },
+          { is_direct: true, tag_name: "Perfective" },
           { is_direct: false, tag_name: "Temporality" },
         ]),
       );

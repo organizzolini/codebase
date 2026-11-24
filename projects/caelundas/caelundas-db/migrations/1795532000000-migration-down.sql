@@ -1,9 +1,9 @@
-SET lock_timeout = '10s';
+set lock_timeout = '10s';
 
-SET statement_timeout = '5min';
+set statement_timeout = '5min';
 
-ALTER TABLE "tags" DROP COLUMN "order";
+alter table tags drop column "order";
 
-ALTER TABLE "tags" DROP COLUMN "note";
+alter table tags drop column note;
 
-ALTER TABLE "tags" DROP COLUMN "icon";
+alter table tags drop column icon;

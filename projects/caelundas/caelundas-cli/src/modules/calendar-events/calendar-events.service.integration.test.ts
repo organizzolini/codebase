@@ -124,7 +124,7 @@ describe("calendar events service integration", () => {
 
     expect(nodes.map(({ tag_name: name }) => name)).toContain("Sun");
     expect(derived?.temporality).toBe("Instant");
-    expect(paths.map(({ path }) => path)).toContain("Planet / Sun");
+    expect(paths.map(({ path }) => path)).toContain("Body / Luminary / Sun");
   });
 
   it(
@@ -382,10 +382,10 @@ describe("calendar events service integration", () => {
       const rows = await service.findInRange(range);
 
       expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
-        ["Spans start", ["Duration", "aspects", "moon"]],
-        ["Instant at start", ["Instant", "aspects", "moon"]],
-        ["Inside", ["Instant", "inside", "moon"]],
-        ["Spans end", ["Duration", "aspects", "moon"]],
+        ["Spans start", ["Progressive", "aspects", "moon"]],
+        ["Instant at start", ["Perfective", "aspects", "moon"]],
+        ["Inside", ["Perfective", "inside", "moon"]],
+        ["Spans end", ["Progressive", "aspects", "moon"]],
       ]);
     });
 
@@ -492,7 +492,7 @@ describe("calendar events service integration", () => {
       });
 
       expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
-        ["Changed tags", ["Instant", "added", "kept"]],
+        ["Changed tags", ["Perfective", "added", "kept"]],
       ]);
     });
 
@@ -519,8 +519,8 @@ describe("calendar events service integration", () => {
       });
 
       expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
-        ["Mixed new", ["Instant", "mixed fresh"]],
-        ["Mixed stored", ["Instant", "mixed updated"]],
+        ["Mixed new", ["Perfective", "mixed fresh"]],
+        ["Mixed stored", ["Perfective", "mixed updated"]],
       ]);
     });
 
@@ -545,10 +545,9 @@ describe("calendar events service integration", () => {
       expect(leaves).toHaveLength(1);
       expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([
         "Aspect",
-        "Major Aspect",
-        "Simple Aspect",
+        "Major",
+        "Simple",
         "Trine",
-        "Type",
       ]);
     });
 
@@ -583,10 +582,10 @@ describe("calendar events service integration", () => {
       expect(row?.tags).toStrictEqual(
         expect.arrayContaining(["Aries", "Cardinal", "Fire", "Positive"]),
       );
-      expect(roots).toStrictEqual(["Sign", "Element", "Modality", "Polarity"]);
+      expect(roots).toStrictEqual(["Zodiac", "Zodiac", "Zodiac", "Zodiac"]);
     });
 
-    it("files a planetary phase under Type as Planetary Phase, with its planet", async () => {
+    it("files a planetary phase under Phase as Planetary, with its planet", async () => {
       expect.hasAssertions();
 
       const start = "2026-09-12T00:00:00Z";
@@ -618,8 +617,8 @@ describe("calendar events service integration", () => {
       expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([
         "Martian",
         "Martian Opposition",
-        "Planetary Phase",
-        "Type",
+        "Phase",
+        "Planetary",
       ]);
     });
 
