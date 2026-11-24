@@ -22,24 +22,23 @@ export function areSameIds(
 }
 
 /**
- * What can be done to the groups: close some while one is open, open some while one is closed.
+ * What can be done to the groups at some levels: close some while one is open, open some while one is closed.
  */
 export function getCollapseActions(
-  groupIds: readonly string[],
-  expanded: ReadonlySet<string>,
+  state: Pick<TableGroupsState, "expanded" | "groupIds" | "groupLevels">,
+  levels: readonly number[],
 ): { canCollapse: boolean; canExpand: boolean } {
   let open = 0;
+  let total = 0;
 
-  for (const id of groupIds) {
-    if (expanded.has(id)) {
-      open += 1;
+  for (const [index, id] of state.groupIds.entries()) {
+    if (levels.includes(state.groupLevels[index] ?? -1)) {
+      total += 1;
+      open += state.expanded.has(id) ? 1 : 0;
     }
   }
 
-  return {
-    canCollapse: open > 0,
-    canExpand: open < groupIds.length,
-  };
+  return { canCollapse: open > 0, canExpand: open < total };
 }
 
 /**
@@ -94,12 +93,8 @@ function reduceGroupActions(
     { type: "collapse-all" | "expand-all" | "reset" | "toggle" }
   >,
 ): TableGroupsState {
-  if (action.type === "collapse-all") {
-    return { ...state, expanded: new Set() };
-  }
-
-  if (action.type === "expand-all") {
-    return { ...state, expanded: new Set(state.groupIds) };
+  if (action.type === "collapse-all" || action.type === "expand-all") {
+    return setLevelsExpanded(state, action);
   }
 
   if (action.type === "reset") {
@@ -147,10 +142,15 @@ function reducePageActions(
  */
 function resetTableGroups(
   state: TableGroupsState,
-  data: Readonly<{ firstPath: readonly string[]; groupIds: readonly string[] }>,
+  data: Readonly<{
+    firstPath: readonly string[];
+    groupIds: readonly string[];
+    groupLevels: readonly number[];
+  }>,
 ): TableGroupsState {
   if (
     areSameIds(state.groupIds, data.groupIds) &&
+    areSameIds(state.groupLevels.map(String), data.groupLevels.map(String)) &&
     hasSameMembers(state.expanded, data.firstPath) &&
     state.limits.size === 0 &&
     state.pages === 1
@@ -162,7 +162,30 @@ function resetTableGroups(
     ...state,
     expanded: new Set(data.firstPath),
     groupIds: data.groupIds,
+    groupLevels: data.groupLevels,
     limits: new Map(),
     pages: 1,
   };
+}
+
+/**
+ * The state after the groups at some levels are all closed or all opened, the other levels left as they are.
+ */
+function setLevelsExpanded(
+  state: TableGroupsState,
+  action: Extract<TableGroupsAction, { type: "collapse-all" | "expand-all" }>,
+): TableGroupsState {
+  const expanded = new Set(state.expanded);
+
+  for (const [index, id] of state.groupIds.entries()) {
+    if (action.levels.includes(state.groupLevels[index] ?? -1)) {
+      if (action.type === "expand-all") {
+        expanded.add(id);
+      } else {
+        expanded.delete(id);
+      }
+    }
+  }
+
+  return { ...state, expanded };
 }

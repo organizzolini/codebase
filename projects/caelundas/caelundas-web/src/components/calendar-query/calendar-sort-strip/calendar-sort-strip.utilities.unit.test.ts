@@ -5,6 +5,7 @@ import { createEventGroupFields } from "../calendar-group-strip/components/event
 import {
   createSortItems,
   flipSortAt,
+  getSortIcon,
   labelSort,
   toSorts,
   toSortValue,
@@ -93,6 +94,20 @@ describe("calendar-sort-strip utilities", () => {
     it("names a tag the data lacks by its id, or a tag sort naming none by its key", () => {
       expect(labelSort({ ...IN_SIMPLE, tag: "gone" }, FIELDS)).toBe("gone");
       expect(labelSort({ direction: "asc", key: "tag" }, FIELDS)).toBe("tag");
+    });
+  });
+
+  describe(getSortIcon, () => {
+    it("gives a key its icon, and a tag its row's symbol", () => {
+      expect(getSortIcon(NAME_ASC, FIELDS)).toBeDefined();
+      expect(getSortIcon(ASPECT, FIELDS)).toBe(FIELDS[0]?.icon);
+      expect(getSortIcon(IN_SIMPLE, FIELDS)).toBeDefined();
+    });
+
+    it("gives none to a tag the data lacks", () => {
+      expect(
+        getSortIcon({ ...IN_SIMPLE, tag: "gone" }, FIELDS),
+      ).toBeUndefined();
     });
   });
 

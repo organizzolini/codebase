@@ -5,7 +5,6 @@ import type {
   TimelineScale,
 } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { CalendarSymbols } from "../../calendar-events/event-glyphs/calendar-symbols.types";
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 
 // 🏷️ Types
 
@@ -14,7 +13,6 @@ import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/
  */
 export interface DisplayChoices {
   clusters: boolean;
-  colorBy: EventGroupLevel | undefined;
   colors: boolean;
   /**
    * The constellations the sky can draw.

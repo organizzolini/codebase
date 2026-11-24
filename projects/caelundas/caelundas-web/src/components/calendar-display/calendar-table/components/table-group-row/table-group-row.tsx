@@ -10,6 +10,7 @@ import { getGroupCounts } from "../../table-groups.utilities";
 import {
   getGroupHeight,
   getGroupIndent,
+  getGroupTint,
   getGroupTop,
 } from "./table-group-row.utilities";
 
@@ -23,6 +24,10 @@ export interface TableGroupRowProperties {
   className?: string;
   columns: readonly TableColumn[];
   levelIcons?: readonly (string | undefined)[];
+  /**
+   * Colors by group id; absent when colors are off.
+   */
+  nodeColors?: ReadonlyMap<string, string> | undefined;
   onToggle?: ((id: string) => void) | undefined;
   row: Extract<TableRowModel, { kind: "group" }>;
   timeZone: string;
@@ -40,6 +45,7 @@ export function TableGroupRow(
     className,
     columns,
     levelIcons = [],
+    nodeColors,
     onToggle,
     row,
     timeZone,
@@ -79,7 +85,10 @@ export function TableGroupRow(
               onClick={() => {
                 onToggle?.(row.id);
               }}
-              style={{ marginLeft: getGroupIndent(row.depth) }}
+              style={{
+                ...getGroupTint(nodeColors, row.node),
+                marginLeft: getGroupIndent(row.depth),
+              }}
               type="button"
             >
               <Chevron aria-hidden="true" />

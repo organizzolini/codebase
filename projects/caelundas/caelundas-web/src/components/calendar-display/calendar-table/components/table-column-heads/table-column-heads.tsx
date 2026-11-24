@@ -1,31 +1,52 @@
-import { TableHead, TableRow } from "@codebase/presentation";
+import { TableRow } from "@codebase/presentation";
 
-import { TagLead } from "../../../../calendar-events/tag-lead/tag-lead";
+import { isPositionColumn } from "../../calendar-table.utilities";
+import { TableHeaderCell } from "../table-header-cell/table-header-cell";
 
+import {
+  createHeaderActions,
+  getSortDirection,
+} from "./table-column-heads.utilities";
+
+import type { GroupSort } from "../../../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { TableColumn } from "../../calendar-table.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** The columns whose names head the table. */
+/** The table's column heads, their sorts, and handlers. */
 export interface TableColumnHeadsProperties {
   className?: string;
   columns: readonly TableColumn[];
+  onColumnsChange?:
+    | ((columns: readonly string[] | undefined) => void)
+    | undefined;
+  onSortChange?: ((sort: GroupSort[] | undefined) => void) | undefined;
+  sort?: readonly GroupSort[] | undefined;
 }
 
 // 🧩 Component
 
 /**
- * Renders the header row: each column's name, led by its symbol, icon, or the generic tag icon.
+ * Renders the header row: each column's name as a pill with a menu to sort, move, or deselect it.
  */
 export function TableColumnHeads(
   properties: Readonly<TableColumnHeadsProperties>,
 ): ReactNode {
-  const { className, columns } = properties;
+  const {
+    className,
+    columns,
+    onColumnsChange,
+    onSortChange,
+    sort = [],
+  } = properties;
 
   // 🪝 Hooks
 
   // 🏗 Setup
+  const ids = columns
+    .filter((column) => !isPositionColumn(column))
+    .map((column) => column.id);
 
   // 💪 Handlers
 
@@ -36,23 +57,21 @@ export function TableColumnHeads(
   // 🎨 Markup
   return (
     <TableRow
-      className={`h-10 ${className ?? ""}`}
+      className={`h-10 border-b-0 hover:bg-transparent ${className ?? ""}`}
       data-testid="table-column-heads"
     >
       {columns.map((column) => (
-        <TableHead
+        <TableHeaderCell
           key={column.id}
-          className={column.kind === "number" ? "w-12" : undefined}
-        >
-          <span className="inline-flex items-center gap-1">
-            <TagLead
-              icon={column.icon}
-              id={column.id}
-              label={column.label}
-            />
-            {column.label}
-          </span>
-        </TableHead>
+          column={column}
+          sortDirection={getSortDirection(sort, column)}
+          {...createHeaderActions(column, {
+            ids,
+            onColumnsChange,
+            onSortChange,
+            sort,
+          })}
+        />
       ))}
     </TableRow>
   );

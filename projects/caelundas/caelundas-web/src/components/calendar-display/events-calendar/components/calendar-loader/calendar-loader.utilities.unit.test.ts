@@ -171,49 +171,44 @@ describe(loadCalendar, () => {
     });
   });
 
-  it("reads the keys an event is colored by after its grouping's, for a color in the link", async () => {
+  it("resolves the link's grouping on every view, a month's included, which colors its events", async () => {
     const api = serveCalendarApi();
     const data = await loadCalendar({
       ...MARCH,
-      color: { field: "tag:tag-body" },
       filter: EMPTY_EVENT_FILTER,
+      group: [{ field: "tag:tag-body" }],
     });
     const conjunction = data.events.find(
       (event) => event.id === "event-mars-conjunct-venus",
     );
 
-    expect(data.colorBy).toStrictEqual({ field: "tag:tag-body" });
-    expect(data.grouping).toStrictEqual([]);
+    expect(data.grouping).toStrictEqual([{ field: "tag:tag-body" }]);
     expect(api.requests.events[0]?.grouping).toStrictEqual({
-      colorBy: { field: "tag:tag-body" },
+      levels: [{ field: "tag:tag-body" }],
     });
     expect(
       conjunction?.groups[0]?.map(({ key }) => key).toSorted(),
     ).toStrictEqual(["tag-mars", "tag-venus"]);
   });
 
-  it("colors by nothing in particular without a color, or for a field the data lacks", async () => {
+  it("drops a grouping field the data lacks, and ignores a stale color", async () => {
     serveCalendarApi();
 
     await expect(
-      loadCalendar(MARCH).then((data) => data.colorBy),
-    ).resolves.toBeUndefined();
-    await expect(
-      loadCalendar({
-        ...MARCH,
-        color: { field: "tag:tag-missing" },
-      }).then((data) => data.colorBy),
-    ).resolves.toBeUndefined();
+      loadCalendar({ ...MARCH, group: [{ field: "tag:tag-missing" }] }).then(
+        (data) => data.grouping,
+      ),
+    ).resolves.toStrictEqual([]);
   });
 
-  it("reads the agenda's events with its default grouping, and the month's with none", async () => {
+  it("reads the timeline's events by every tag root, and the month's by the first", async () => {
     const api = serveCalendarApi();
 
-    await loadCalendar({ date: "2026-03-15", view: "agenda" });
+    await loadCalendar({ date: "2026-03-15", view: "timeline" });
     await loadCalendar(MARCH);
 
-    expect(api.requests.events[0]?.grouping?.levels?.length).toBeGreaterThan(0);
-    expect(api.requests.events[1]?.grouping).toBeNull();
+    expect(api.requests.events[0]?.grouping?.levels?.length).toBeGreaterThan(1);
+    expect(api.requests.events[1]?.grouping?.levels).toHaveLength(1);
   });
 
   it("asks the API for the window the view shows around the day", async () => {
@@ -222,7 +217,7 @@ describe(loadCalendar, () => {
       date: "2026-03-15",
       days: 10,
       scale: "week",
-      view: "agenda",
+      view: "table",
     });
 
     expect(api.requests.windows).toStrictEqual([

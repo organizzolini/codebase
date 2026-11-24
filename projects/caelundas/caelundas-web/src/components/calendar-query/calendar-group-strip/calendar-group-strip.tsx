@@ -1,4 +1,4 @@
-import { ListTree } from "lucide-react";
+import { ListTree, Tags } from "lucide-react";
 import { use, useMemo } from "react";
 
 import {
@@ -18,8 +18,9 @@ import {
   iconGroupRun,
   labelGroupRun,
   toGroupRuns,
+  toRunLevels,
 } from "./calendar-group-strip-runs.utilities";
-import { TITLE } from "./calendar-group-strip.constants";
+import { COLOR_HINT, TITLE } from "./calendar-group-strip.constants";
 import {
   createGroupItems,
   getCollapseHandlers,
@@ -27,7 +28,11 @@ import {
   toGroupValue,
 } from "./calendar-group-strip.utilities";
 import { moveListItem } from "./components/chip-menu/chip-menu.utilities";
-import { createEventGroupFields } from "./components/event-group-model/event-group-fields.utilities";
+import { DEFAULT_GROUP_LABEL } from "./components/event-group-model/event-group-fields.constants";
+import {
+  createEventGroupFields,
+  getDefaultGrouping,
+} from "./components/event-group-model/event-group-fields.utilities";
 import { GroupLevelChip } from "./components/group-level-chip/group-level-chip";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
@@ -44,6 +49,8 @@ export interface CalendarGroupStripProperties {
   className?: string;
   facets: readonly EventFacet[];
   grouping: readonly EventGroupLevel[];
+  /** Whether the link names no grouping, so one "Tags" chip stands for every root. */
+  isDefaultGrouping?: boolean | undefined;
   onGroupingChange: (grouping: EventGroupLevel[]) => void;
   view: CalendarViewName;
 }
@@ -54,26 +61,39 @@ export interface CalendarGroupStripProperties {
 export function CalendarGroupStrip(
   properties: Readonly<CalendarGroupStripProperties>,
 ): ReactNode {
-  const { className, facets, grouping, onGroupingChange, view } = properties;
+  const {
+    className,
+    facets,
+    grouping: linked,
+    isDefaultGrouping = false,
+    onGroupingChange,
+    view,
+  } = properties;
 
   // 🪝 Hooks
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
+  // The default stands for every tag root, so the first change edits that list.
+  const grouping = useMemo(
+    () => (isDefaultGrouping ? getDefaultGrouping("table", fields) : linked),
+    [fields, isDefaultGrouping, linked],
+  );
 
   // 🏗 Setup
   const items = useMemo(() => createGroupItems(fields), [fields]);
   const runs = useMemo(() => toGroupRuns(grouping), [grouping]);
-  const collapse = getCollapseHandlers(view, use(TableGroupsContext));
+  const tableGroups = use(TableGroupsContext);
+  const runLevels = useMemo(() => toRunLevels(runs), [runs]);
 
   // 💪 Handlers
 
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
-  if (view !== "agenda" && view !== "table" && view !== "timeline") {
-    return null;
-  }
 
   // 🎨 Markup
+  // The month, week and day have no rows to section, so the first group only colors their events.
+  const hint = view === "table" || view === "timeline" ? undefined : COLOR_HINT;
+
   return (
     <div
       className={className}
@@ -82,12 +102,14 @@ export function CalendarGroupStrip(
       <ButtonGroup
         aria-label={TITLE}
         className="flex-wrap gap-y-2"
+        title={hint}
       >
         <Popover>
           <PopoverTrigger
             render={
               <Button
                 size="sm"
+                title={hint}
                 variant="outline"
               >
                 <ListTree aria-hidden="true" />
@@ -114,13 +136,22 @@ export function CalendarGroupStrip(
             />
           </PopoverContent>
         </Popover>
-        {runs.map((run, index) => (
+        {isDefaultGrouping ? (
+          <GroupLevelChip
+            icon={<Tags aria-hidden="true" />}
+            label={DEFAULT_GROUP_LABEL}
+            {...getCollapseHandlers(view, tableGroups, [...grouping.keys()])}
+            onRemove={() => {
+              onGroupingChange([]);
+            }}
+          />
+        ) : null}
+        {(isDefaultGrouping ? [] : runs).map((run, index) => (
           <GroupLevelChip
             key={run.field}
             icon={iconGroupRun(run, fields)}
             label={labelGroupRun(run, fields)}
-            onCollapseAll={collapse.onCollapseAll}
-            onExpandAll={collapse.onExpandAll}
+            {...getCollapseHandlers(view, tableGroups, runLevels[index] ?? [])}
             onMoveLeft={
               index === 0
                 ? undefined

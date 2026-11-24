@@ -16,8 +16,6 @@ function renderGrid(className = ""): {
       className={className}
       compact={false}
       events={[]}
-      facets={[]}
-      grouping={[]}
       onDateChange={vi.fn<(date: Date) => void>()}
       onNavigationChange={onNavigationChange}
       timeZone="America/New_York"
@@ -36,8 +34,6 @@ describe(CalendarGrid, () => {
         className="calendar-grid"
         compact={false}
         events={[]}
-        facets={[]}
-        grouping={[]}
         onDateChange={vi.fn<(date: Date) => void>()}
         onNavigationChange={vi.fn<(navigation: CalendarNavigation) => void>()}
         timeZone="America/New_York"

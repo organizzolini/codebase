@@ -38,10 +38,11 @@ export function createGroupItems(
 
 // 🌎 Public Functions
 
-/** What the chips' menus offer for the table's groups: collapse all, expand all, in the table only. */
+/** What a chip's menu offers for its run's groups, at the levels given: collapse all, expand all, in the table only. */
 export function getCollapseHandlers(
   view: CalendarViewName,
   groups: TableGroupsValue,
+  levels: readonly number[],
 ): {
   onCollapseAll: (() => void) | undefined;
   onExpandAll: (() => void) | undefined;
@@ -50,8 +51,17 @@ export function getCollapseHandlers(
 
   return {
     onCollapseAll:
-      inTable && groups.canCollapse ? groups.collapseAll : undefined,
-    onExpandAll: inTable && groups.canExpand ? groups.expandAll : undefined,
+      inTable && groups.canCollapse(levels)
+        ? () => {
+            groups.collapseAll(levels);
+          }
+        : undefined,
+    onExpandAll:
+      inTable && groups.canExpand(levels)
+        ? () => {
+            groups.expandAll(levels);
+          }
+        : undefined,
   };
 }
 

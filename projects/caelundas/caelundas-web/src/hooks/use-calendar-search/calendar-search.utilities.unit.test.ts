@@ -50,14 +50,10 @@ describe(validateCalendarSearch, () => {
     ]);
   });
 
-  it("reads what the events are colored by like a level of a grouping", () => {
+  it("ignores the color a stale link names, color following the grouping", () => {
     expect(
-      validateCalendarSearch({ color: { depth: 2, field: "tag:type" } }).color,
-    ).toMatchObject({
-      depth: 2,
-      field: "tag:type",
-    });
-    expect(validateCalendarSearch({ color: "nope" }).color).toBeUndefined();
+      validateCalendarSearch({ color: { depth: 2, field: "tag:type" } }),
+    ).not.toHaveProperty("color");
   });
 
   it("passes the sky keys through untouched, for the backdrop to read", () => {

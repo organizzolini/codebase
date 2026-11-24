@@ -24,38 +24,56 @@ describe("table-groups-provider utilities", () => {
   });
 
   describe(getCollapseActions, () => {
-    const ids = ["a", "b", "c"];
+    const groups = {
+      groupIds: ["a", "b", "c"],
+      groupLevels: [0, 1, 1],
+    };
+    const both = [0, 1];
 
     it("offers only opening when no group is open", () => {
-      expect(getCollapseActions(ids, new Set())).toStrictEqual({
-        canCollapse: false,
-        canExpand: true,
-      });
+      expect(
+        getCollapseActions({ ...groups, expanded: new Set() }, both),
+      ).toStrictEqual({ canCollapse: false, canExpand: true });
     });
 
     it("offers only closing when every group is open", () => {
-      expect(getCollapseActions(ids, new Set(ids))).toStrictEqual({
-        canCollapse: true,
-        canExpand: false,
-      });
+      expect(
+        getCollapseActions(
+          { ...groups, expanded: new Set(groups.groupIds) },
+          both,
+        ),
+      ).toStrictEqual({ canCollapse: true, canExpand: false });
     });
 
     it("offers both when the groups are mixed", () => {
-      expect(getCollapseActions(ids, new Set(["b"]))).toStrictEqual({
-        canCollapse: true,
-        canExpand: true,
-      });
+      expect(
+        getCollapseActions({ ...groups, expanded: new Set(["b"]) }, both),
+      ).toStrictEqual({ canCollapse: true, canExpand: true });
     });
 
     it("offers neither when there are no groups", () => {
-      expect(getCollapseActions([], new Set())).toStrictEqual({
-        canCollapse: false,
-        canExpand: false,
-      });
+      expect(
+        getCollapseActions(
+          { expanded: new Set(), groupIds: [], groupLevels: [] },
+          both,
+        ),
+      ).toStrictEqual({ canCollapse: false, canExpand: false });
     });
 
     it("ignores an open id that is no group", () => {
-      expect(getCollapseActions(ids, new Set(["gone"]))).toStrictEqual({
+      expect(
+        getCollapseActions({ ...groups, expanded: new Set(["gone"]) }, both),
+      ).toStrictEqual({ canCollapse: false, canExpand: true });
+    });
+
+    it("judges only the groups at the levels given", () => {
+      const expanded = new Set(["a"]);
+
+      expect(getCollapseActions({ ...groups, expanded }, [0])).toStrictEqual({
+        canCollapse: true,
+        canExpand: false,
+      });
+      expect(getCollapseActions({ ...groups, expanded }, [1])).toStrictEqual({
         canCollapse: false,
         canExpand: true,
       });
@@ -66,15 +84,40 @@ describe("table-groups-provider utilities", () => {
     const state: TableGroupsState = {
       ...INITIAL_TABLE_GROUPS,
       groupIds: ["a", "b"],
+      groupLevels: [0, 1],
     };
 
-    it("opens every group, and closes them all", () => {
-      const open = reduceTableGroups(state, { type: "expand-all" });
+    it("opens every group of the levels, and closes them all", () => {
+      const open = reduceTableGroups(state, {
+        levels: [0, 1],
+        type: "expand-all",
+      });
 
       expect([...open.expanded]).toStrictEqual(["a", "b"]);
       expect(
-        reduceTableGroups(open, { type: "collapse-all" }).expanded.size,
+        reduceTableGroups(open, { levels: [0, 1], type: "collapse-all" })
+          .expanded.size,
       ).toBe(0);
+    });
+
+    it("leaves the groups of other levels as they are", () => {
+      const open = reduceTableGroups(state, {
+        levels: [1],
+        type: "expand-all",
+      });
+
+      expect([...open.expanded]).toStrictEqual(["b"]);
+
+      const both = reduceTableGroups(open, {
+        levels: [0],
+        type: "expand-all",
+      });
+
+      expect([...both.expanded].toSorted()).toStrictEqual(["a", "b"]);
+      expect([
+        ...reduceTableGroups(both, { levels: [0], type: "collapse-all" })
+          .expanded,
+      ]).toStrictEqual(["b"]);
     });
 
     it("opens a closed group, and closes an open one", () => {
@@ -89,17 +132,17 @@ describe("table-groups-provider utilities", () => {
     it("loads a list a page past what shows, by its own id", () => {
       const more = reduceTableGroups(state, {
         listId: "a",
-        shown: 25,
+        shown: 100,
         type: "more",
       });
 
-      expect([...more.limits]).toStrictEqual([["a", 50]]);
+      expect([...more.limits]).toStrictEqual([["a", 200]]);
     });
 
     it("starts every list's own loading over when the page size or the pages change", () => {
       const more = reduceTableGroups(state, {
         listId: "a",
-        shown: 25,
+        shown: 100,
         type: "more",
       });
 
@@ -122,11 +165,19 @@ describe("table-groups-provider utilities", () => {
 
     it("opens only the first path again when the data is reset", () => {
       const reset = reduceTableGroups(
-        reduceTableGroups(reduceTableGroups(state, { type: "expand-all" }), {
-          pages: 4,
-          type: "set-pages",
-        }),
-        { firstPath: ["a"], groupIds: ["a", "b"], type: "reset" },
+        reduceTableGroups(
+          reduceTableGroups(state, { levels: [0, 1], type: "expand-all" }),
+          {
+            pages: 4,
+            type: "set-pages",
+          },
+        ),
+        {
+          firstPath: ["a"],
+          groupIds: ["a", "b"],
+          groupLevels: [0, 1],
+          type: "reset",
+        },
       );
 
       expect([...reset.expanded]).toStrictEqual(["a"]);
@@ -138,6 +189,7 @@ describe("table-groups-provider utilities", () => {
       const reset = reduceTableGroups(state, {
         firstPath: ["x"],
         groupIds: ["x", "y"],
+        groupLevels: [0, 1],
         type: "reset",
       });
 
@@ -149,6 +201,7 @@ describe("table-groups-provider utilities", () => {
       const first = reduceTableGroups(state, {
         firstPath: ["a"],
         groupIds: ["a", "b"],
+        groupLevels: [0, 1],
         type: "reset",
       });
 
@@ -156,6 +209,7 @@ describe("table-groups-provider utilities", () => {
         reduceTableGroups(first, {
           firstPath: ["a"],
           groupIds: ["a", "b"],
+          groupLevels: [0, 1],
           type: "reset",
         }),
       ).toBe(first);

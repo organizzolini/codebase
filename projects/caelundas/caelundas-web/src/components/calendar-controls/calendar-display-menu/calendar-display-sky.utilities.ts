@@ -99,6 +99,7 @@ export function createSkyItems(
   for (const choice of CONSTELLATION_CHOICES) {
     choices.push({
       label: choice.label,
+      radio: true,
       value: `constellations:${choice.value}`,
     });
   }
@@ -238,6 +239,7 @@ function createStepItems(control: SkySliderControl): CascaderNode[] {
       seen.add(step);
       steps.push({
         label: `${String(step)}${control.unit}`,
+        radio: true,
         value: `setting:${control.key}=${String(step)}`,
       });
     }
@@ -260,6 +262,7 @@ function createSwatchItems(control: SkyColorControl): CascaderNode[] {
         style: { backgroundColor: swatch.value },
       }),
       label: swatch.label,
+      radio: true,
       value: `setting:${control.key}=${swatch.value}`,
     });
   }

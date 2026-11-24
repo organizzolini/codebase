@@ -74,7 +74,7 @@ describe(CalendarPageStrip, () => {
   });
 
   it("disables stepping back on the first page, and steps forward and to the last", () => {
-    const dispatch = renderStrip();
+    const dispatch = renderStrip({ limit: 25 });
 
     expect(
       screen.getByRole<HTMLButtonElement>("button", { name: "First page" })
@@ -100,7 +100,7 @@ describe(CalendarPageStrip, () => {
   });
 
   it("disables stepping forward on the last page, and steps back and to the first", () => {
-    const dispatch = renderStrip({ pages: 4 });
+    const dispatch = renderStrip({ limit: 25, pages: 4 });
 
     expect(
       screen.getByRole<HTMLButtonElement>("button", { name: "Next page" })

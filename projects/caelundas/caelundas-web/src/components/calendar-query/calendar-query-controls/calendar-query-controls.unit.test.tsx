@@ -59,7 +59,7 @@ describe(CalendarQueryControls, () => {
     expect(names).toStrictEqual(["Saved view", "Group", "Sort", "Filter"]);
   });
 
-  it("leaves Group out of a view that has no groups", () => {
+  it("draws Group in every view, the month's only coloring events", () => {
     render(
       <CalendarQueryControls
         facets={FACETS}
@@ -75,7 +75,7 @@ describe(CalendarQueryControls, () => {
       />,
     );
 
-    expect(screen.queryByRole("group", { name: "Group" })).toBeNull();
+    expect(screen.queryByRole("group", { name: "Group" })).not.toBeNull();
   });
 
   it("draws Select, for the table's columns, in the table only", () => {

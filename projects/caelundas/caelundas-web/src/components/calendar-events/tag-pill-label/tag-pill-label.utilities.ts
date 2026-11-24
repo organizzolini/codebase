@@ -3,6 +3,7 @@ import { isIconName } from "../../calendar-query/tag-icon/tag-icon.utilities";
 import {
   GENERIC_TAG_ICON,
   GLYPH_BY_TAG_NAME,
+  ICON_BY_TAG_NAME,
 } from "./tag-pill-label.constants";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
@@ -40,13 +41,19 @@ export function getTagGlyph(label: string): string | undefined {
 }
 
 /**
- * What leads a name: its symbol, else its icon, else the generic tag icon.
+ * What leads a name: its symbol, else the icon its name implies, else its icon, else the generic tag icon.
  */
 export function getTagLead(icon: string | undefined, label: string): TagLead {
   const glyph = getTagGlyph(label);
 
   if (glyph !== undefined) {
     return { kind: "glyph", value: glyph };
+  }
+
+  const named = ICON_BY_TAG_NAME[label.split(" / ").at(-1) ?? label];
+
+  if (named !== undefined) {
+    return { kind: "icon", value: named };
   }
 
   return {

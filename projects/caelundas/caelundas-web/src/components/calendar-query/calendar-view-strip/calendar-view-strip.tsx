@@ -1,5 +1,5 @@
 import { Eye } from "lucide-react";
-import { useState } from "react";
+import { createElement, useState } from "react";
 
 import {
   Button,
@@ -10,11 +10,14 @@ import {
 } from "@codebase/presentation";
 
 import { QueryCascader } from "../query-cascader/query-cascader";
+import { TagIcon } from "../tag-icon/tag-icon";
 
 import {
   CHIP_CLASS_NAME,
   CUSTOM_ID,
+  DEFAULT_VIEW_ICON,
   TITLE,
+  VIEW_ICONS,
 } from "./calendar-view-strip.constants";
 import {
   findActiveViewId,
@@ -53,6 +56,7 @@ export function CalendarViewStrip(
   const choices = listViewChoices(presets);
   const items = choices.map((choice) => ({
     description: choice.description,
+    icon: createElement(TagIcon, { name: choice.icon }),
     label: choice.label,
     value: choice.id,
   }));
@@ -61,6 +65,7 @@ export function CalendarViewStrip(
     activeId === CUSTOM_ID
       ? "Custom"
       : choices.find((choice) => choice.id === activeId)?.label;
+  const activeIcon = VIEW_ICONS[activeId] ?? DEFAULT_VIEW_ICON;
 
   // 💪 Handlers
 
@@ -117,6 +122,7 @@ export function CalendarViewStrip(
           size="sm"
           variant="outline"
         >
+          <TagIcon name={activeIcon} />
           {active}
         </Button>
       </ButtonGroup>

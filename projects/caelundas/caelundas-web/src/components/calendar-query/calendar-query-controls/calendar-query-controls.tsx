@@ -35,6 +35,8 @@ export interface CalendarQueryControlsProperties {
   facets: readonly EventFacet[];
   filter: EventFilterQuery | undefined;
   grouping: readonly EventGroupLevel[];
+  /** Whether the link names no grouping. */
+  isDefaultGrouping?: boolean | undefined;
   onColumnsChange: (columns: readonly string[] | undefined) => void;
   onFilterChange: (filter: EventFilterQuery) => void;
   onGroupingChange: (grouping: EventGroupLevel[]) => void;
@@ -57,6 +59,7 @@ export function CalendarQueryControls(
     facets,
     filter,
     grouping,
+    isDefaultGrouping,
     onColumnsChange,
     onFilterChange,
     onGroupingChange,
@@ -117,6 +120,7 @@ export function CalendarQueryControls(
         className="contents"
         facets={facets}
         grouping={grouping}
+        isDefaultGrouping={isDefaultGrouping}
         onGroupingChange={onGroupingChange}
         view={view}
       />

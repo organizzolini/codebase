@@ -132,7 +132,7 @@ The calendar adds its data layer:
 src/
   components/
     calendar-display/            # events-calendar (with its grid, loader, API client, views,
-                                 # windows, and formats), the timeline, agenda, and virtual list
+                                 # windows, and formats), the table, the timeline, and virtual list
     calendar-query/              # calendar-filters (the filter builder and the filter tree it sends)
                                  # and calendar-group-by (the grouping picker and the event groups)
     calendar-appearance/         # Color-by, the color menu, and the night sky menu and backdrop
@@ -267,14 +267,16 @@ period's title at the right; then the Filters button with a count of the
 finished rules, Clear and the active filters as chips, with the view selector
 at the right. The menus' triggers carry an icon and no arrow. Times render in the zone the dataset's events carry.
 
-- The views are month, week, three-day, day, agenda, and timeline, listed in
+- The views are month, week, day, table, and timeline, listed in
   `src/components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants.ts`; the app owns that list, so a view is
   added or cut there. The `view` search parameter holds the one picked.
-  Without it, the view follows the width: the agenda below 768 pixels, the
-  month above, read synchronously so the first render is already right.
+  Without it, the view follows the width: the table below 768 pixels, the
+  month above, read synchronously so the first render is already right. A link
+  from before the agenda and the three-day view were cut still opens: `view=agenda`
+  as the table, `view=three-day` as the week (`RETIRED_VIEWS`).
 - Three widths are told apart, in `src/components/calendar-display/events-calendar/components/calendar-window/calendar-viewport.utilities.ts`: a
   phone below 768 pixels, a tablet from 768, and a desktop from 1024. Below a
-  desktop the view selector is a menu, as six buttons do not fit beside the
+  desktop the view selector is a menu, as five buttons do not fit beside the
   other controls. On a phone the week also scrolls sideways with a sticky
   hour column (the time grid in page scroll mode inside a scrolling content
   area), the menus and filter controls take a row of their own under the title, and the title
@@ -283,20 +285,19 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   view, so the focus on its view selector survives it: each view reports how
   it moves (`onNavigationChange`), because only a child of the vendored
   calendar or Gantt can read that, and the toolbar calls the latest report.
-- The agenda and a month cell's "+N more" list are the app's own, windowed by
+- A month cell's "+N more" list is the app's own, windowed by
   `VirtualList` over the pure functions in
   `src/components/calendar-display/virtual-list/calendar-virtual-window.utilities.ts`. An event is listed once, on
   the day it begins, or on the first day for one already under way.
 - Each load reads only the days the view shows plus a day either side
   (`getViewWindows` in `src/components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities.ts`), through a cache
-  keyed by window and filter. The agenda lists 30 days and grows by 30, up to
-  366, when scrolled to its end or its last row's button is pressed; the
-  `days` search parameter holds how many.
+  keyed by window and filter. The table lists 30 days from the one it opens on, or
+  as many as the `days` search parameter holds, up to 366.
 - The route reads its search from the location and reloads with
   `shouldReload: true`, rather than through loader dependencies, so a later
   load runs in the background and the page it replaces stays on screen.
 
-- The agenda and the timeline group their events, through the Group by
+- The table and the timeline group their events, through the Group by
   submenu of the View menu: an ordered list of up to three levels, each laid
   out like a filter rule, a field and what to group it by. A tag root opens
   the filter's own tag tree (`GroupTagPicker` over `FilterTagEditor`), and
@@ -312,8 +313,8 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   planets is listed under both, and a group counts its distinct events. A
   tag above the chosen depth stands for itself, and events with no key at a
   level, or under none of the tags ticked, gather in a last "No …" group.
-- Without a `group` search parameter, the agenda groups by Type and the
-  timeline by Type, then Planet; an empty list groups by nothing. Levels that
+- Without a `group` search parameter, the table groups by nothing and the
+  timeline by Body; an empty list groups by nothing. Levels that
   do not parse or name a field the data lacks are dropped one by one.
 - Events are colored by a level picked the way a grouping's level is: the
   `color` search parameter holds one, a field and, for a tag root, the tags or
@@ -385,7 +386,7 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
 
 - While the API answers, `CalendarSkeleton` stands in for the page: a
   grid of days from a tablet's width, a list of rows on a phone, which opens
-  on the agenda.
+  on the table.
 - A failed load, including an API that cannot be reached, shows
   `CalendarError`, announced as an alert, with Retry.
 - Days with no events keep the calendar and lay `CalendarEmpty` over it:
@@ -414,9 +415,8 @@ a drawer on a tablet, and a bottom sheet on a phone.
 | --------- | ---------------------------------------------- | ------------ | -------------- |
 | Month     | Works                                          | Works        | Works          |
 | Week      | Works; the grid scrolls sideways, hours fixed  | Works        | Works          |
-| Three-day | Works                                          | Works        | Works          |
 | Day       | Works                                          | Works        | Works          |
-| Agenda    | Works; it is the default                       | Works        | Works          |
+| Table     | Works; it is the default                       | Works        | Works          |
 | Timeline  | Works, tight: about three days beside the rows | Works        | Works          |
 
 No view is withheld at any width. One that stops working at some width is
@@ -424,7 +424,7 @@ cut by deleting it from `CALENDAR_VIEWS` and the records keyed by it in
 `src/components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants.ts`, which the compiler then follows to
 every other place that names it. Not checked: the "+N more" list of a busy
 month, as the seeded data holds no busy day, and keyboard-only scrolling of the
-agenda and the timeline in browsers that do not make a scrollable region
+table and the timeline in browsers that do not make a scrollable region
 focusable by themselves.
 
 ## Key Files

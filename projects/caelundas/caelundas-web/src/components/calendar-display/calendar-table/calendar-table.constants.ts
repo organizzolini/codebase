@@ -57,7 +57,7 @@ export const PILL_CLASS_NAME =
 /**
  * How many events of a list show per page.
  */
-export const PAGE_SIZE = 25;
+export const PAGE_SIZE = 100;
 
 /**
  * The list key of the events when they are not grouped.
@@ -78,3 +78,8 @@ export const HEADER_HEIGHT_REM = 2.5;
  * A group header's height in rem.
  */
 export const GROUP_ROW_HEIGHT_REM = 2.25;
+
+/**
+ * How much of a group's color tints its pill, in percent.
+ */
+export const GROUP_TINT_PERCENT = 32;

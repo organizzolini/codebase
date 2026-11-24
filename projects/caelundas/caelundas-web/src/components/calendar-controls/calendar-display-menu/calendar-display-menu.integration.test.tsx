@@ -39,14 +39,14 @@ vi.mock(import("../../../router"), async (importOriginal) => {
   };
 });
 
-/** Finds a Display option by label, a leaf or a branch with its item count; an opened branch is a trail button. */
+/** Finds a Display option by label, a leaf or a branch with its item count. */
 async function findOption(label: string): Promise<HTMLElement> {
   const name = new RegExp(`^${label}(,|$)`, "u");
 
   return waitFor(() => {
     const found =
-      screen.queryByRole("option", { name }) ??
-      screen.queryByRole("button", { name });
+      screen.queryByRole("treeitem", { name }) ??
+      screen.queryByRole("option", { name });
 
     if (found === null) {
       throw new Error(`No option named ${label}`);
@@ -72,12 +72,13 @@ async function findSky(): Promise<SVGSVGElement> {
 }
 
 /**
- * Opens the Display list and walks down the branches named, opening each to the right.
+ * Opens the Display list, closes Layout to keep the deep rows in view, and expands the branches named, one beneath the other.
  */
 async function openBranches(...labels: string[]): Promise<void> {
   fireEvent.click(
     await within(await findToolbar()).findByRole("button", { name: "Display" }),
   );
+  fireEvent.click(await findOption("Layout"));
 
   for (const label of labels) {
     fireEvent.click(await findOption(label));
@@ -196,7 +197,6 @@ describe("display menu's sky options", () => {
     expect(zodiac.getAttribute("aria-selected")).toBe("true");
     expect(all.getAttribute("aria-selected")).toBe("false");
 
-    fireEvent.click(await findOption("Sky"));
     fireEvent.click(await findOption("Default sky"));
 
     await waitFor(() => {

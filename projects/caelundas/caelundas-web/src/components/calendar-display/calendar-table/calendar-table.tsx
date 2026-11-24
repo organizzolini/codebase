@@ -16,6 +16,7 @@ import {
   resolveColumns,
 } from "./calendar-table.utilities";
 import { TableColumnHeads } from "./components/table-column-heads/table-column-heads";
+import { createRowColors } from "./components/table-group-row/table-group-row.utilities";
 import {
   MemoEventRow,
   MemoGroupRow,
@@ -44,9 +45,17 @@ export interface CalendarTableProperties {
   columns?: readonly string[] | undefined;
   events: readonly CalendarEventRecord[];
   facets: readonly EventFacet[];
+  /**
+   * Colors by tag key for the group pills; none when colors are off.
+   */
+  groupColors?: ReadonlyMap<string, string> | undefined;
   grouping: readonly EventGroupLevel[];
+  onColumnsChange?:
+    | ((columns: readonly string[] | undefined) => void)
+    | undefined;
   onDateChange: (date: Date) => void;
   onNavigationChange: (navigation: CalendarNavigation) => void;
+  onSortChange?: ((sort: GroupSort[] | undefined) => void) | undefined;
   sort?: readonly GroupSort[] | undefined;
   timeZone: string;
 }
@@ -66,9 +75,12 @@ export function CalendarTable(
     columns: columnIds = NO_COLUMNS,
     events,
     facets,
+    groupColors,
     grouping,
+    onColumnsChange,
     onDateChange,
     onNavigationChange,
+    onSortChange,
     sort,
     timeZone,
   } = properties;
@@ -95,6 +107,11 @@ export function CalendarTable(
     timeZone,
   });
 
+  const nodeColors = useMemo(
+    () => createRowColors(rows, groupColors),
+    [groupColors, rows],
+  );
+
   // 🏗 Setup
 
   // 💪 Handlers
@@ -119,10 +136,15 @@ export function CalendarTable(
       className={className}
       data-testid="calendar-table"
     >
-      <div className="h-full overflow-auto border-t">
+      <div className="h-full overflow-auto border-t [&>div]:overflow-visible">
         <Table>
-          <TableHeader className="bg-background sticky top-0 z-10">
-            <TableColumnHeads columns={columns} />
+          <TableHeader className="sticky top-0 z-10">
+            <TableColumnHeads
+              columns={columns}
+              onColumnsChange={onColumnsChange}
+              onSortChange={onSortChange}
+              sort={sort}
+            />
           </TableHeader>
           <TableBody>
             {rows.map((row) => {
@@ -132,6 +154,7 @@ export function CalendarTable(
                     key={row.id}
                     columns={columns}
                     levelIcons={levelIcons}
+                    nodeColors={nodeColors}
                     onToggle={toggle}
                     row={row}
                     timeZone={timeZone}

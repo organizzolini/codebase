@@ -74,10 +74,6 @@ describe(useCalendarClusters, () => {
     expect(shown("day")).toStrictEqual(["a", "b", "c"]);
   });
 
-  it("merges in three days a run of three, which a week would also merge", () => {
-    expect(shown("three-day")).toStrictEqual(["cluster:a"]);
-  });
-
   it("merges on a phone as a week does, in any view", () => {
     expect(shown("day", { compact: true })).toStrictEqual(["cluster:a"]);
   });

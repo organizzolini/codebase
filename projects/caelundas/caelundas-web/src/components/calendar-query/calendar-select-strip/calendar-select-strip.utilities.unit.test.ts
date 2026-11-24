@@ -1,11 +1,124 @@
 import { describe, expect, it } from "vitest";
 
+import {
+  getCellText,
+  resolveColumns,
+} from "../../calendar-display/calendar-table/calendar-table.utilities";
 import { createEventGroupFields } from "../calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 
 import {
   createColumnItems,
   toColumnIds,
 } from "./calendar-select-strip.utilities";
+
+import type { CalendarEventRecord } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
+
+const TREE_FIELDS = createEventGroupFields([
+  {
+    id: "aspect",
+    name: "Aspect",
+    values: [
+      { count: 3, depth: 1, id: "simple", name: "Simple", path: "Simple" },
+      {
+        count: 2,
+        depth: 2,
+        id: "major",
+        name: "Major",
+        path: "Simple / Major",
+      },
+      {
+        count: 1,
+        depth: 3,
+        id: "square",
+        name: "Square",
+        path: "Simple / Major / Square",
+      },
+      {
+        count: 1,
+        depth: 2,
+        id: "minor",
+        name: "Minor",
+        path: "Simple / Minor",
+      },
+      {
+        count: 1,
+        depth: 3,
+        id: "quincunx",
+        name: "Quincunx",
+        path: "Simple / Minor / Quincunx",
+      },
+    ],
+  },
+  {
+    id: "body",
+    name: "Body",
+    values: [
+      { count: 2, depth: 1, id: "planet", name: "Planet", path: "Planet" },
+      {
+        count: 2,
+        depth: 2,
+        id: "personal",
+        name: "Personal",
+        path: "Planet / Personal",
+      },
+      {
+        count: 1,
+        depth: 3,
+        id: "venus",
+        name: "Venus",
+        path: "Planet / Personal / Venus",
+      },
+      { count: 1, depth: 1, id: "point", name: "Point", path: "Point" },
+      { count: 1, depth: 2, id: "node", name: "Node", path: "Point / Node" },
+    ],
+  },
+]);
+const EVENT: CalendarEventRecord = {
+  color: null,
+  description: "",
+  durationMinutes: 60,
+  end: new Date("2026-03-04T11:00:00.000Z"),
+  groups: [],
+  id: "e",
+  location: null,
+  start: new Date("2026-03-04T10:00:00.000Z"),
+  summary: "Venus square Mars",
+  tags: [
+    {
+      depth: 3,
+      id: "square",
+      name: "Square",
+      path: "Aspect / Simple / Major / Square",
+    },
+    {
+      depth: 3,
+      id: "quincunx",
+      name: "Quincunx",
+      path: "Aspect / Simple / Minor / Quincunx",
+    },
+    {
+      depth: 3,
+      id: "venus",
+      name: "Venus",
+      path: "Body / Planet / Personal / Venus",
+    },
+    {
+      depth: 3,
+      id: "venus-again",
+      name: "Venus",
+      path: "Body / Planet / Personal / Venus",
+    },
+    { depth: 2, id: "node", name: "Node", path: "Body / Point / Node" },
+  ],
+  timezone: "UTC",
+};
+
+function cells(ids: readonly string[]): string[][] {
+  return resolveColumns(ids, TREE_FIELDS).map((column) => [
+    column.label,
+    getCellText(EVENT, column, "UTC"),
+  ]);
+}
 
 const FIELDS = createEventGroupFields([
   {
@@ -66,6 +179,87 @@ describe("calendar-select-strip utilities", () => {
 
     it("returns nothing when no column is left, meaning the defaults", () => {
       expect(toColumnIds([], ["name"])).toBeUndefined();
+    });
+  });
+
+  describe("tag columns of different levels", () => {
+    it("shows a root everything beneath it", () => {
+      expect(cells(["tag:aspect"])).toStrictEqual([
+        ["Aspect", "Simple / Major / Square, Simple / Minor / Quincunx"],
+      ]);
+    });
+
+    it("shows a node only its descendants, below its own path", () => {
+      expect(cells(["simple", "major", "minor"])).toStrictEqual([
+        ["Aspect › Simple", "Major / Square, Minor / Quincunx"],
+        ["Aspect › Simple › Major", "Square"],
+        ["Aspect › Simple › Minor", "Quincunx"],
+      ]);
+    });
+
+    it("names a grandchild node by its whole path", () => {
+      expect(cells(["personal", "planet", "point"])).toStrictEqual([
+        ["Body › Planet › Personal", "Venus"],
+        ["Body › Planet", "Personal / Venus"],
+        ["Body › Point", "Node"],
+      ]);
+    });
+
+    it("mixes a node of one root with another root, in the order given", () => {
+      expect(cells(["tag:body", "major", "name"])).toStrictEqual([
+        ["Body", "Planet / Personal / Venus, Point / Node"],
+        ["Aspect › Simple › Major", "Square"],
+        ["Name", "Venus square Mars"],
+      ]);
+    });
+
+    it("keeps a parent and its child as columns of their own", () => {
+      expect(
+        cells(["simple", "tag:aspect", "major"]).map(([label]) => label),
+      ).toStrictEqual(["Aspect › Simple", "Aspect", "Aspect › Simple › Major"]);
+    });
+
+    it("shows a tag once however often the event repeats it", () => {
+      expect(cells(["venus"])).toStrictEqual([]);
+      expect(cells(["personal"])).toStrictEqual([
+        ["Body › Planet › Personal", "Venus"],
+      ]);
+    });
+
+    it("lists a column once however often its id is named", () => {
+      expect(
+        cells(["simple", "simple", "end"]).map(([label]) => label),
+      ).toStrictEqual(["Aspect › Simple", "End"]);
+    });
+
+    it("ignores an id the data does not have", () => {
+      expect(
+        cells(["tag:gone", "simple"]).map(([label]) => label),
+      ).toStrictEqual(["Aspect › Simple"]);
+    });
+  });
+
+  describe("the tree of columns", () => {
+    it("offers each root with its tags that have tags beneath, nested", () => {
+      const aspect = createColumnItems(TREE_FIELDS).find(
+        (item) => item.value === "tag:aspect",
+      );
+      const simple = aspect?.children?.[0];
+
+      expect(simple?.value).toBe("simple");
+      expect(simple?.children?.map((child) => child.value)).toStrictEqual([
+        "major",
+        "minor",
+      ]);
+    });
+
+    it("keeps ticked parents and children independently", () => {
+      expect(
+        toColumnIds(["name", "simple", "major"], ["name", "simple"]),
+      ).toStrictEqual(["name", "simple", "major"]);
+      expect(
+        toColumnIds(["name", "major"], ["name", "simple", "major"]),
+      ).toStrictEqual(["name", "major"]);
     });
   });
 });

@@ -9,15 +9,16 @@ export type TableGroupsAction =
   | {
       firstPath: readonly string[];
       groupIds: readonly string[];
+      groupLevels: readonly number[];
       type: "reset";
     }
   | { id: string; type: "toggle" }
+  | { levels: readonly number[]; type: "collapse-all" }
+  | { levels: readonly number[]; type: "expand-all" }
   | { limit: number; type: "set-limit" }
   | { listId: string; shown: number; type: "more" }
   | { pages: number; type: "set-pages" }
-  | { stats: TableListStats; type: "set-stats" }
-  | { type: "collapse-all" }
-  | { type: "expand-all" };
+  | { stats: TableListStats; type: "set-stats" };
 
 /**
  * What the toolbar and table share: open groups, pages, list loading.
@@ -28,6 +29,10 @@ export interface TableGroupsState {
    */
   expanded: ReadonlySet<string>;
   groupIds: readonly string[];
+  /**
+   * The level of each group id, in the ids' order.
+   */
+  groupLevels: readonly number[];
   /**
    * How many events a page holds.
    */
@@ -48,16 +53,16 @@ export interface TableGroupsState {
  */
 export interface TableGroupsValue {
   /**
-   * Whether some group is open, so there is something to close.
+   * Whether a group at the levels is open, so there is something to close.
    */
-  canCollapse: boolean;
+  canCollapse: (levels: readonly number[]) => boolean;
   /**
-   * Whether some group is closed, so there is something to open.
+   * Whether a group at the levels is closed, so there is something to open.
    */
-  canExpand: boolean;
-  collapseAll: () => void;
+  canExpand: (levels: readonly number[]) => boolean;
+  collapseAll: (levels: readonly number[]) => void;
   dispatch: Dispatch<TableGroupsAction>;
-  expandAll: () => void;
+  expandAll: (levels: readonly number[]) => void;
   /**
    * False when no provider holds the state, so the table keeps its own.
    */

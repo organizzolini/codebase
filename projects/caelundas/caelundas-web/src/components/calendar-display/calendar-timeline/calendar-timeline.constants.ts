@@ -3,9 +3,13 @@ import { createElement } from "react";
 import { TimelineBarCard } from "./components/timeline-bar-card/timeline-bar-card";
 import { TimelineBarContent } from "./components/timeline-bar-content/timeline-bar-content";
 import { TIMELINE_UNIT_WIDTHS } from "./components/timeline-clusters/calendar-timeline-clusters.constants";
+import { TimelineRowLabel } from "./components/timeline-row-label/timeline-row-label";
 
 import type { TimelineBar } from "./calendar-timeline.types";
-import type { GanttRenderEventProps } from "@codebase/presentation";
+import type {
+  GanttRenderEventProps,
+  GanttResource,
+} from "@codebase/presentation";
 import type { ReactNode } from "react";
 
 // ♟️ Constants
@@ -58,6 +62,14 @@ export const renderBar = (
   properties: GanttRenderEventProps<TimelineBar>,
 ): ReactNode =>
   createElement(TimelineBarContent, { occurrence: properties.occurrence });
+
+/**
+ * Draws a Gantt row's name, led by its symbol.
+ */
+export const renderRowLabel = (properties: {
+  resource: GanttResource;
+}): ReactNode =>
+  createElement(TimelineRowLabel, { title: properties.resource.title });
 
 /**
  * Draws the hover card of a bar the Gantt hands over.

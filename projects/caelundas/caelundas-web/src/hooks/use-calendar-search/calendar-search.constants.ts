@@ -5,7 +5,7 @@ import { MAXIMUM_GROUP_DEPTH } from "../../components/calendar-query/calendar-gr
 
 export const calendarDateSchema = z.iso.date();
 
-// The agenda lists up to a year at a time, so a link can never ask for the
+// The table lists up to a year at a time, so a link can never ask for the
 // whole dataset at once.
 export const agendaDaysSchema = z
   .number()

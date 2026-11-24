@@ -73,3 +73,24 @@ export function toGroupRuns(grouping: readonly EventGroupLevel[]): GroupRun[] {
 
   return runs;
 }
+
+/**
+ * The grouping's level indexes each run covers, in the runs' order.
+ */
+export function toRunLevels(runs: readonly GroupRun[]): number[][] {
+  const covered: number[][] = [];
+  let next = 0;
+
+  for (const run of runs) {
+    const indexes: number[] = [];
+
+    for (const _level of run.levels) {
+      indexes.push(next);
+      next += 1;
+    }
+
+    covered.push(indexes);
+  }
+
+  return covered;
+}

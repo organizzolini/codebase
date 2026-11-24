@@ -17,15 +17,6 @@ describe(isDayShown, () => {
     );
   });
 
-  it("shows the three days from the one it opens on", () => {
-    expect(
-      isDayShown("2026-10-24", { anchor: THURSDAY, view: "three-day" }),
-    ).toBe(true);
-    expect(
-      isDayShown("2026-10-25", { anchor: THURSDAY, view: "three-day" }),
-    ).toBe(false);
-  });
-
   it("shows the whole week around the day it opens on", () => {
     expect(isDayShown("2026-10-18", { anchor: THURSDAY, view: "week" })).toBe(
       true,
@@ -53,19 +44,19 @@ describe(isDayShown, () => {
     );
   });
 
-  it("follows the agenda's days and the timeline's scale", () => {
+  it("follows the table's days and the timeline's scale", () => {
     expect(
       isDayShown("2026-11-10", {
         anchor: THURSDAY,
         options: { agendaDays: 30 },
-        view: "agenda",
+        view: "table",
       }),
     ).toBe(true);
     expect(
       isDayShown("2026-12-30", {
         anchor: THURSDAY,
         options: { agendaDays: 30 },
-        view: "agenda",
+        view: "table",
       }),
     ).toBe(false);
     expect(

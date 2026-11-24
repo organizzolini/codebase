@@ -34,7 +34,6 @@ export function useCalendarDisplay(timeZone: string): UseCalendarDisplayResult {
     constellations,
     handlers: {
       handleClustersChange: handlers.handleClustersChange,
-      handleColorByChange: handlers.handleColorByChange,
       handleColorsChange: handlers.handleColorsChange,
       handleScaleChange: handlers.handleScaleChange,
       handleSymbolsChange: handlers.handleSymbolsChange,

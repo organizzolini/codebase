@@ -5,24 +5,17 @@ import { EventCalendar, EventCalendarContent } from "@codebase/presentation";
 import { useCalendarClusters } from "../../../../../hooks/use-calendar-clusters/use-calendar-clusters";
 import { CalendarEventChip } from "../../../../calendar-events/calendar-event-chip/calendar-event-chip";
 import { CalendarOverflowList } from "../../../../calendar-events/calendar-overflow-list/calendar-overflow-list";
-import { CalendarAgenda } from "../../../calendar-agenda/calendar-agenda";
-import { getAgendaRange } from "../../../calendar-agenda/calendar-agenda.utilities";
 import { NO_NATIVE_TOOLTIP } from "../../events-calendar.constants";
 import { getViewLayout } from "../../events-calendar.utilities";
 import { describeEvent } from "../calendar-format/calendar-format.utilities";
 import { toCalendarEvent } from "../calendar-loader/calendar-events.utilities";
-import { AGENDA_DAY_COUNT } from "../calendar-views/calendar-views.constants";
 import { toEventCalendarView } from "../calendar-views/calendar-views.utilities";
 import { formatCalendarDate } from "../calendar-window/calendar-window.utilities";
 
 import { CalendarGridNavigation } from "./calendar-grid-navigation";
 
 import type { CalendarNavigation } from "../../../../calendar-controls/calendar-navigation-group/calendar-navigation-group.types";
-import type { EventGroupLevel } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
-import type {
-  CalendarEventRecord,
-  EventFacet,
-} from "../calendar-loader/calendar-records.types";
+import type { CalendarEventRecord } from "../calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../calendar-views/calendar-views.types";
 import type { EventCalendarRenderEventProps } from "@codebase/presentation";
 import type { ReactNode } from "react";
@@ -33,10 +26,6 @@ import type { ReactNode } from "react";
  * Events and view to draw, and a navigation reporter.
  */
 export interface CalendarGridProperties {
-  /**
-   * How many days the agenda lists; a month's worth when absent.
-   */
-  agendaDays?: number | undefined;
   anchor: Date;
   className?: string;
   /**
@@ -46,11 +35,8 @@ export interface CalendarGridProperties {
   clusters?: boolean | undefined;
   compact: boolean;
   events: readonly CalendarEventRecord[];
-  facets: readonly EventFacet[];
-  grouping: readonly EventGroupLevel[];
   onDateChange: (date: Date) => void;
   onNavigationChange: (navigation: CalendarNavigation) => void;
-  onShowLater?: (() => void) | undefined;
   timeZone: string;
   view: Exclude<CalendarViewName, "table" | "timeline">;
 }
@@ -65,17 +51,13 @@ export function CalendarGrid(
   properties: Readonly<CalendarGridProperties>,
 ): ReactNode {
   const {
-    agendaDays = AGENDA_DAY_COUNT,
     anchor,
     className,
     clusters = true,
     compact,
     events,
-    facets,
-    grouping,
     onDateChange,
     onNavigationChange,
-    onShowLater,
     timeZone,
     view,
   } = properties;
@@ -97,15 +79,6 @@ export function CalendarGrid(
   const descriptions = useMemo(
     () => new Map(shown.map((event) => [event.id, describeEvent(event)])),
     [shown],
-  );
-  const agendaRange = useMemo(
-    () =>
-      getAgendaRange(
-        formatCalendarDate(anchor, timeZone),
-        timeZone,
-        agendaDays,
-      ),
-    [agendaDays, anchor, timeZone],
   );
 
   // 🏗 Setup
@@ -152,11 +125,9 @@ export function CalendarGrid(
       style={{ display: "contents" }}
     >
       <EventCalendar<CalendarEventRecord>
-        agendaDayCount={agendaDays}
         className="min-h-0 flex-1 [--ec-event-min-h:2.25rem]"
         classNames={layout.classNames}
         date={anchor}
-        dayCount={calendarView.dayCount}
         events={calendarEvents}
         i18n={NO_NATIVE_TOOLTIP}
         interactions={{ drag: false, resize: false, selectSlot: false }}
@@ -166,23 +137,11 @@ export function CalendarGrid(
         renderMoreContent={renderMoreContent}
         scrollMode={layout.scrollMode}
         timeZone={timeZone}
-        view={calendarView.view}
-        views={[calendarView.view]}
+        view={calendarView}
+        views={[calendarView]}
       >
         <CalendarGridNavigation onNavigationChange={onNavigationChange} />
-        <EventCalendarContent className={layout.contentClassName}>
-          {view === "agenda" ? (
-            <CalendarAgenda
-              className="min-h-0 flex-1 border-t"
-              clusters={clusters}
-              events={events}
-              facets={facets}
-              grouping={grouping}
-              onShowLater={onShowLater}
-              range={agendaRange}
-            />
-          ) : undefined}
-        </EventCalendarContent>
+        <EventCalendarContent className={layout.contentClassName} />
       </EventCalendar>
       {clustered.dialog}
     </div>

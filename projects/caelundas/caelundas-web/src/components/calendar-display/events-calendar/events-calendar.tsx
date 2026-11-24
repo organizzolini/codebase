@@ -4,6 +4,7 @@ import { useCalendarNavigation } from "../../../hooks/use-calendar-navigation/us
 import { CalendarToolbar } from "../../calendar-controls/calendar-toolbar/calendar-toolbar";
 import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { CalendarTable } from "../calendar-table/calendar-table";
+import { createGroupColors } from "../calendar-table/components/table-group-row/table-group-row.utilities";
 import { CalendarTimeline } from "../calendar-timeline/calendar-timeline";
 
 import { createColorScheme } from "./components/calendar-color-schemes/calendar-color-schemes.utilities";
@@ -34,7 +35,7 @@ import type { ReactNode } from "react";
  */
 export interface EventsCalendarProperties {
   /**
-   * How many days the agenda lists; a month's worth when absent.
+   * How many days the table lists; a month's worth when absent.
    */
   agendaDays?: number | undefined;
   anchor: Date;
@@ -44,11 +45,6 @@ export interface EventsCalendarProperties {
    * into a single one with a count; they do when absent.
    */
   clusters?: boolean;
-  /**
-   * What the events are colored by, whose keys follow the grouping's levels
-   * in each event's `groups`; the color of their kind when absent.
-   */
-  colorBy?: EventGroupLevel | undefined;
   /**
    * Whether events are drawn in color; they are when absent.
    */
@@ -72,19 +68,23 @@ export interface EventsCalendarProperties {
    */
   filters?: ReactNode;
   /**
-   * The levels the agenda is sectioned by, which the events' `groups` were
-   * read for.
+   * The levels the table and timeline are sectioned by; the first colors events.
    */
   grouping: readonly EventGroupLevel[];
+  /**
+   * Called with the table's new columns.
+   */
+  onColumnsChange?:
+    | ((columns: readonly string[] | undefined) => void)
+    | undefined;
   /**
    * Called with the new day when the toolbar moves the calendar.
    */
   onDateChange: (date: Date) => void;
   /**
-   * Called when the agenda should list more days; without it, it lists no
-   * more.
+   * Called with the table's new sorts.
    */
-  onShowLater?: (() => void) | undefined;
+  onSortChange?: ((sort: GroupSort[] | undefined) => void) | undefined;
   /**
    * The span the timeline shows at once; a month when absent.
    */
@@ -103,7 +103,7 @@ export interface EventsCalendarProperties {
 // 🧩 Component
 
 /**
- * Renders one toolbar row over the picked view: the timeline as a Gantt, every other view in the event calendar.
+ * Renders one toolbar row over the picked view: the timeline as a Gantt, the table as rows, every other view in the event calendar.
  */
 export function EventsCalendar(
   properties: Readonly<EventsCalendarProperties>,
@@ -112,7 +112,6 @@ export function EventsCalendar(
     agendaDays,
     anchor,
     className,
-    colorBy,
     colors = true,
     columns,
     compact = false,
@@ -120,7 +119,9 @@ export function EventsCalendar(
     facets,
     filters,
     grouping,
+    onColumnsChange,
     onDateChange,
+    onSortChange,
     scale = DEFAULT_TIMELINE_SCALE,
     sort,
     timeZone,
@@ -137,8 +138,12 @@ export function EventsCalendar(
   });
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
   const scheme = useMemo(
-    () => createColorScheme(colorBy, fields, grouping.length),
-    [colorBy, fields, grouping.length],
+    () => createColorScheme(grouping, fields),
+    [fields, grouping],
+  );
+  const groupColors = useMemo(
+    () => (colors ? createGroupColors(scheme.legend) : undefined),
+    [colors, scheme],
   );
   const events = useMemo(
     () => colorEvents(loadedEvents, colors, scheme.colorOf),
@@ -175,9 +180,12 @@ export function EventsCalendar(
             columns={columns}
             events={events}
             facets={facets}
+            groupColors={groupColors}
             grouping={grouping}
+            onColumnsChange={onColumnsChange}
             onDateChange={onDateChange}
             onNavigationChange={handleNavigationChange}
+            onSortChange={onSortChange}
             sort={sort}
             timeZone={timeZone}
           />
@@ -197,16 +205,12 @@ export function EventsCalendar(
           />
         ) : (
           <CalendarGrid
-            agendaDays={agendaDays}
             anchor={anchor}
             clusters={properties.clusters}
             compact={compact}
             events={events}
-            facets={facets}
-            grouping={grouping}
             onDateChange={onDateChange}
             onNavigationChange={handleNavigationChange}
-            onShowLater={properties.onShowLater}
             timeZone={timeZone}
             view={view}
           />

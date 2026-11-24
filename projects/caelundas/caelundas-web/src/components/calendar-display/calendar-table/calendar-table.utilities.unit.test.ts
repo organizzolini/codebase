@@ -15,6 +15,7 @@ import {
   getGroupCounts,
   listFirstPath,
   listGroupIds,
+  listGroupLevels,
   toListStats,
   toResetKey,
 } from "./table-groups.utilities";
@@ -87,7 +88,7 @@ const FIELDS: EventGroupField[] = [
         id: "simple",
         name: "Simple",
         parentId: null,
-        path: "Aspect / Simple",
+        path: "Simple",
       },
     ],
     options: [],
@@ -134,11 +135,11 @@ describe("calendar-table utilities", () => {
 
     it("names the tags beneath a tag column's path, by their path past it", () => {
       expect(getCellText(event, TAG_COLUMN, "UTC")).toBe(
-        "Aspect, Simple, Simple / Major",
+        "Simple, Simple / Major",
       );
       expect(
         getCellText(event, { ...TAG_COLUMN, prefix: "Aspect / Simple" }, "UTC"),
-      ).toBe("Simple, Major");
+      ).toBe("Major");
     });
 
     it("shows nothing when the event has no tag there", () => {
@@ -292,7 +293,10 @@ describe("calendar-table utilities", () => {
     );
 
     it("shows a page of an ungrouped list, then a row for the rest", () => {
-      const rows = toTableRows([], many, { expanded: new Set() });
+      const rows = toTableRows([], many, {
+        expanded: new Set(),
+        limit: 25,
+      });
 
       expect(rows).toHaveLength(26);
       expect(rows.at(-1)).toStrictEqual({
@@ -351,7 +355,7 @@ describe("calendar-table utilities", () => {
           group("b", { events: many.slice(30, 60) }),
         ],
         many,
-        { expanded: new Set(["a", "b"]) },
+        { expanded: new Set(["a", "b"]), limit: 25 },
       );
       const more = rows.filter((row) => row.kind === "more");
 
@@ -384,7 +388,7 @@ describe("calendar-table utilities", () => {
       const rows = toTableRows(
         [group("a", { children: [group("a1", { events: many })] })],
         many,
-        { expanded: new Set(["a", "a1"]) },
+        { expanded: new Set(["a", "a1"]), limit: 25 },
       );
 
       expect(
@@ -505,12 +509,21 @@ describe("calendar-table utilities", () => {
     });
   });
 
+  describe(listGroupLevels, () => {
+    it("gives each group's level in the order of the sorted ids", () => {
+      const inner = { ...group("a1", {}), level: 1 };
+
+      expect(
+        listGroupLevels([group("b", {}), group("a", { children: [inner] })]),
+      ).toStrictEqual([0, 1, 0]);
+    });
+  });
+
   describe(getTagCellEntries, () => {
     const event = record("a", "2026-03-04T10:00:00.000Z");
 
-    it("lists the tags at or beneath a path with their ids and names", () => {
+    it("lists the tags beneath a path, not the tag at it", () => {
       expect(getTagCellEntries(event, "Aspect / Simple")).toStrictEqual([
-        { id: "simple", label: "Simple" },
         { id: "major", label: "Major" },
       ]);
     });
@@ -639,7 +652,7 @@ describe("calendar-table utilities", () => {
     });
 
     it("counts the distinct tags beneath a tag column's path, none for a path with no tag", () => {
-      expect(countGroupValues(node, TAG_COLUMN, "UTC")).toBe(3);
+      expect(countGroupValues(node, TAG_COLUMN, "UTC")).toBe(2);
       expect(
         countGroupValues(node, { ...TAG_COLUMN, prefix: "Body" }, "UTC"),
       ).toBe(0);

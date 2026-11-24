@@ -284,7 +284,7 @@ describe("events api", () => {
         agendaDays: 7,
         anchor: new Date(period.start),
         scale: "quarter",
-        view: "three-day",
+        view: "day",
       }),
     ).resolves.toStrictEqual({
       read: { end: new Date(period.end), start: new Date(period.start) },
@@ -294,7 +294,7 @@ describe("events api", () => {
       agendaDays: 7,
       anchor: "2026-01-01T00:00:00.000Z",
       scale: "QUARTER",
-      window: "THREE_DAY",
+      window: "DAY",
     });
   });
 });

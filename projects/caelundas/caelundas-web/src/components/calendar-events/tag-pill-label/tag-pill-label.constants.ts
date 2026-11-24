@@ -8,6 +8,13 @@ import { createContext } from "react";
 export const GENERIC_TAG_ICON = "tag";
 
 /**
+ * The icon of a tag by name, when it has no symbol.
+ */
+export const ICON_BY_TAG_NAME: Readonly<Record<string, string>> = {
+  Unique: "fingerprint",
+};
+
+/**
  * No tag has an icon.
  */
 export const NO_TAG_ICONS: ReadonlyMap<string, string> = new Map();

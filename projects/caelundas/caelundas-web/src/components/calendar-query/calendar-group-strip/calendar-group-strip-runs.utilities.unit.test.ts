@@ -4,6 +4,7 @@ import {
   flattenGroupRuns,
   labelGroupRun,
   toGroupRuns,
+  toRunLevels,
 } from "./calendar-group-strip-runs.utilities";
 import { toGrouping, toGroupValue } from "./calendar-group-strip.utilities";
 import { createEventGroupFields } from "./components/event-group-model/event-group-fields.utilities";
@@ -63,6 +64,18 @@ describe("group runs", () => {
       const levels = [{ field: ASPECT }, { field: ASPECT, parent: "simple" }];
 
       expect(flattenGroupRuns(toGroupRuns(levels))).toStrictEqual(levels);
+    });
+  });
+
+  describe(toRunLevels, () => {
+    it("lists the grouping's level indexes each run covers", () => {
+      const runs = toGroupRuns([
+        { field: ASPECT },
+        { field: ASPECT, parent: "compound" },
+        { field: "period" },
+      ]);
+
+      expect(toRunLevels(runs)).toStrictEqual([[0, 1], [2]]);
     });
   });
 

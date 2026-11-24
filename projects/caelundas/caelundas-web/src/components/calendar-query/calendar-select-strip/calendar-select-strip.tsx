@@ -1,4 +1,4 @@
-import { Columns3 } from "lucide-react";
+import { MousePointer2 } from "lucide-react";
 import { Fragment, useMemo } from "react";
 
 import {
@@ -14,6 +14,7 @@ import {
   NO_COLUMNS,
 } from "../../calendar-display/calendar-table/calendar-table.constants";
 import { resolveColumns } from "../../calendar-display/calendar-table/calendar-table.utilities";
+import { TagLead } from "../../calendar-events/tag-lead/tag-lead";
 import { ChipMenu } from "../calendar-group-strip/components/chip-menu/chip-menu";
 import { moveListItem } from "../calendar-group-strip/components/chip-menu/chip-menu.utilities";
 import { createEventGroupFields } from "../calendar-group-strip/components/event-group-model/event-group-fields.utilities";
@@ -89,7 +90,7 @@ export function CalendarSelectStrip(
                 size="sm"
                 variant="outline"
               >
-                <Columns3 aria-hidden="true" />
+                <MousePointer2 aria-hidden="true" />
                 {TITLE}
               </Button>
             }
@@ -120,6 +121,11 @@ export function CalendarSelectStrip(
               size="sm"
               variant="outline"
             >
+              <TagLead
+                icon={column.icon}
+                id={column.id}
+                label={column.label}
+              />
               {column.label}
             </Button>
             <ChipMenu

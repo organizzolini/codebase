@@ -28,11 +28,9 @@ export const responseSchema = z.object({
  * The API's name for each view the link names.
  */
 export const API_VIEWS: Readonly<Record<CalendarViewName, CalendarWindow>> = {
-  agenda: "AGENDA",
   day: "DAY",
   month: "MONTH",
   table: "AGENDA",
-  "three-day": "THREE_DAY",
   timeline: "TIMELINE",
   week: "WEEK",
 };

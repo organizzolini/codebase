@@ -1,9 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
 
-import {
-  AGENDA_DAY_COUNT,
-  MAXIMUM_AGENDA_DAYS,
-} from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { formatCalendarDate } from "../../components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
 
 import type { CalendarSearch } from "./calendar-search.types";
@@ -35,25 +31,8 @@ export function useCalendarSearch(timeZone: string): UseCalendarSearchResult {
 
   // 🎁 Result
   return {
-    getShowLater: (agendaDays) =>
-      agendaDays < MAXIMUM_AGENDA_DAYS
-        ? (): void => {
-            updateSearch(
-              {
-                days: Math.min(
-                  MAXIMUM_AGENDA_DAYS,
-                  agendaDays + AGENDA_DAY_COUNT,
-                ),
-              },
-              true,
-            );
-          }
-        : undefined,
     handleClustersChange: (enabled) => {
       updateSearch({ clusters: enabled ? undefined : false }, true);
-    },
-    handleColorByChange: (color) => {
-      updateSearch({ color }, true);
     },
     handleColorsChange: (enabled) => {
       updateSearch({ colors: enabled ? undefined : false }, true);
@@ -83,7 +62,7 @@ export function useCalendarSearch(timeZone: string): UseCalendarSearchResult {
       );
     },
     handleViewChange: (view) => {
-      // The agenda's extra days stay behind with a view change.
+      // The table's extra days stay behind with a view change.
       updateSearch({ days: undefined, view });
     },
     updateSearch,

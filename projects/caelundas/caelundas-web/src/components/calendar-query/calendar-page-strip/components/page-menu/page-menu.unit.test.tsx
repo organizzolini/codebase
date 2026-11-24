@@ -48,10 +48,18 @@ describe(PageMenu, () => {
     renderMenu();
 
     expect(
-      ["10", "25", "50", "100"].map((name) =>
+      ["10", "25", "50", "100", "250", "500", "1000"].map((name) =>
         screen.getByRole("button", { name }).getAttribute("aria-pressed"),
       ),
-    ).toStrictEqual(["false", "true", "false", "false"]);
+    ).toStrictEqual([
+      "false",
+      "true",
+      "false",
+      "false",
+      "false",
+      "false",
+      "false",
+    ]);
   });
 
   it("changes the page size", () => {

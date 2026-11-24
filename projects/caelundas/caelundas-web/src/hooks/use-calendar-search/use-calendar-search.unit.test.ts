@@ -1,8 +1,6 @@
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { MAXIMUM_AGENDA_DAYS } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
-
 import { useCalendarSearch } from "./use-calendar-search";
 
 import type { CalendarSearch } from "./calendar-search.types";
@@ -37,11 +35,8 @@ describe(useCalendarSearch, () => {
   it("returns its result", () => {
     const { result } = renderHook(() => useCalendarSearch("UTC"));
 
-    expect(result.current.getShowLater(MAXIMUM_AGENDA_DAYS)).toBeUndefined();
     expect(result.current).toStrictEqual({
-      getShowLater: expect.any(Function),
       handleClustersChange: expect.any(Function),
-      handleColorByChange: expect.any(Function),
       handleColorsChange: expect.any(Function),
       handleColumnsChange: expect.any(Function),
       handleDateChange: expect.any(Function),

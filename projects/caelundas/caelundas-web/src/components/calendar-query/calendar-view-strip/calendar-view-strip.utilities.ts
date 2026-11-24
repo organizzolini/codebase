@@ -1,7 +1,12 @@
 import { toEventFilterInput } from "../calendar-filters/components/event-filter-model/event-filter-input.utilities";
 import { EMPTY_EVENT_FILTER } from "../calendar-filters/components/event-filter-model/event-filter-tree.constants";
 
-import { ALL_EVENTS_ID, CUSTOM_ID } from "./calendar-view-strip.constants";
+import {
+  ALL_EVENTS_ID,
+  CUSTOM_ID,
+  DEFAULT_VIEW_ICON,
+  VIEW_ICONS,
+} from "./calendar-view-strip.constants";
 
 import type { EventFilterQuery } from "../calendar-filters/components/event-filter-model/event-filters.types";
 import type { ResolvedPreset } from "../calendar-filters/components/presets/presets.types";
@@ -50,11 +55,13 @@ export function listViewChoices(
   return [
     ...presets.map((preset) => ({
       description: preset.description,
+      icon: VIEW_ICONS[preset.id] ?? DEFAULT_VIEW_ICON,
       id: preset.id,
       label: preset.name,
     })),
     {
       description: "Every event, with no filter.",
+      icon: VIEW_ICONS[ALL_EVENTS_ID] ?? DEFAULT_VIEW_ICON,
       id: ALL_EVENTS_ID,
       label: "All events",
     },

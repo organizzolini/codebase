@@ -53,7 +53,10 @@ export function PageMenu(properties: Readonly<PageMenuProperties>): ReactNode {
       className={className}
       data-testid="page-menu"
     >
-      <ButtonGroup aria-label="Per page">
+      <ButtonGroup
+        aria-label="Per page"
+        className="flex-wrap"
+      >
         {PAGE_LIMITS.map((option) => (
           <Button
             key={option}

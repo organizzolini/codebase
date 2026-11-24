@@ -20,7 +20,7 @@ describe(CalendarSkeleton, () => {
     expect(screen.getByRole("status").dataset["layout"]).toBe("grid");
   });
 
-  it("stands in for the agenda's list on a phone, which opens on it", () => {
+  it("stands in for the table's list on a phone, which opens on it", () => {
     setViewportWidth(375);
     render(<CalendarSkeleton />);
 
@@ -36,9 +36,8 @@ describe(CalendarSkeleton, () => {
   it.each([
     ["month", "grid"],
     ["week", "columns"],
-    ["three-day", "columns"],
     ["day", "columns"],
-    ["agenda", "list"],
+    ["table", "list"],
     ["timeline", "timeline"],
   ] as const)("takes the %s view's layout when it is named", (view, layout) => {
     render(<CalendarSkeleton view={view} />);
@@ -51,10 +50,6 @@ describe(CalendarSkeleton, () => {
     const { container, rerender } = render(<CalendarSkeleton view="week" />);
 
     expect(container.querySelectorAll("[style*='repeat(7']")).toHaveLength(1);
-
-    rerender(<CalendarSkeleton view="three-day" />);
-
-    expect(container.querySelectorAll("[style*='repeat(3']")).toHaveLength(1);
 
     rerender(<CalendarSkeleton view="day" />);
 

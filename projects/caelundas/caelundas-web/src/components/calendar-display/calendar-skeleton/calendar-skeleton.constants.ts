@@ -8,7 +8,6 @@ const DAYS_PER_WEEK = 7;
 
 export const COLUMN_COUNTS = {
   day: 1,
-  "three-day": 3,
   week: DAYS_PER_WEEK,
 } as const;
 
@@ -41,11 +40,9 @@ export const EVENT_HEIGHTS = ["h-8", "h-12", "h-8", "h-16", "h-8"] as const;
 export const LAYOUTS: Readonly<
   Record<CalendarViewName, "columns" | "grid" | "list" | "timeline">
 > = {
-  agenda: "list",
   day: "columns",
   month: "grid",
   table: "list",
-  "three-day": "columns",
   timeline: "timeline",
   week: "columns",
 };

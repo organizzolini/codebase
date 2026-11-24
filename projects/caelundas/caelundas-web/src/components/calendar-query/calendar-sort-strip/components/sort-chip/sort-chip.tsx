@@ -13,6 +13,10 @@ import type { ReactNode } from "react";
 /** A sort's name, direction, flip handler, and optional menu moves. */
 export interface SortChipProperties {
   direction: GroupSort["direction"];
+  /**
+   * The symbol that leads the name.
+   */
+  icon?: ReactNode;
   label: string;
   onFlip: () => void;
   onMoveLeft?: (() => void) | undefined;
@@ -24,7 +28,7 @@ export interface SortChipProperties {
 
 /** Renders one sort as its name and direction, which flip when pressed, with an ellipsis menu to move or remove it. */
 export function SortChip(properties: Readonly<SortChipProperties>): ReactNode {
-  const { direction, label, onFlip, onMoveLeft, onMoveRight, onRemove } =
+  const { direction, icon, label, onFlip, onMoveLeft, onMoveRight, onRemove } =
     properties;
 
   // 🪝 Hooks
@@ -50,6 +54,7 @@ export function SortChip(properties: Readonly<SortChipProperties>): ReactNode {
         size="sm"
         variant="outline"
       >
+        {icon}
         {label}
         {isAscending ? (
           <ArrowUp aria-hidden="true" />

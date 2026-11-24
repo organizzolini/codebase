@@ -44,4 +44,4 @@ export const DEFAULT_SORTS: readonly GroupSort[] = [
 ];
 
 /** The name of the default sort. */
-export const DEFAULT_SORT_LABEL = "Tag order";
+export const DEFAULT_SORT_LABEL = "Tags";

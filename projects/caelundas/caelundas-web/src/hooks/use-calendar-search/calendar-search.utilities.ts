@@ -43,7 +43,6 @@ export function readCalendarSearch(
       search["clusters"] === false || search["clusters"] === "false"
         ? false
         : undefined,
-    color: groupLevelSchema.safeParse(search["color"]).data,
     colors:
       search["colors"] === false || search["colors"] === "false"
         ? false

@@ -71,7 +71,6 @@ describe(useCalendarDisplay, () => {
       constellations: expect.any(Array),
       handlers: {
         handleClustersChange: expect.any(Function),
-        handleColorByChange: expect.any(Function),
         handleColorsChange: expect.any(Function),
         handleScaleChange: expect.any(Function),
         handleSymbolsChange: expect.any(Function),

@@ -109,7 +109,7 @@ export function CalendarFilters(
             <PopoverContent
               align="start"
               aria-label={TITLE}
-              className="w-auto max-w-[95vw] overflow-x-auto p-0"
+              className="w-80 max-w-[90vw] p-0"
               sideOffset={8}
             >
               <FilterCascader

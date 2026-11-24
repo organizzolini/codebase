@@ -67,12 +67,12 @@ describe(CalendarSortStrip, () => {
     expect(screen.queryByTestId("calendar-sort-strip")).toBeNull();
   });
 
-  it("shows a default tag order chip while nothing is sorted", () => {
+  it("shows a default Tags chip while nothing is sorted", () => {
     renderStrip(NO_SORT);
 
     expect(
       screen.getByRole("button", {
-        name: "Sorted by Tag order, ascending; reverse",
+        name: "Sorted by Tags, ascending; reverse",
       }),
     ).toBeDefined();
   });
@@ -80,7 +80,7 @@ describe(CalendarSortStrip, () => {
   it("offers the default chip every menu action but removing it", async () => {
     renderStrip(NO_SORT);
 
-    fireEvent.click(screen.getByRole("button", { name: "Tag order options" }));
+    fireEvent.click(screen.getByRole("button", { name: "Tags options" }));
 
     const remove = await screen.findByRole("menuitem", { name: "Remove" });
 
@@ -114,7 +114,7 @@ describe(CalendarSortStrip, () => {
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Sorted by Tag order, ascending; reverse",
+        name: "Sorted by Tags, ascending; reverse",
       }),
     );
 

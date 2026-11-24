@@ -41,7 +41,7 @@ export function useCalendarClusters(
     const { visible } = getViewWindows(view, anchor);
 
     const tuning =
-      view === "day" || view === "three-day" || view === "week"
+      view === "day" || view === "week"
         ? CLUSTER_TUNING[compact ? "week" : view]
         : CLUSTER_TUNING.week;
 

@@ -14,7 +14,7 @@ export const BUILDER_TEST = { timeout: 30_000 };
 export const BUILDER_WAIT = { timeout: 10_000 };
 
 /**
- * Finds a leaf of the Display menu under a branch, opening the menu and the branch as needed.
+ * Finds a leaf of the Display menu under a branch, opening the menu and expanding the branch as needed.
  */
 export async function findDisplayOption(
   branch: string,
@@ -22,34 +22,71 @@ export async function findDisplayOption(
 ): Promise<HTMLElement> {
   await openDisplayMenu();
 
-  const leafName = new RegExp(`^${leaf}$`, "u");
+  const branchName = new RegExp(`^${branch}(,|$)`, "u");
+  const leafName = new RegExp(`^${leaf}(,|$)`, "u");
+  const opened = await waitFor(() => {
+    const row = screen
+      .getAllByRole("treeitem")
+      .find(
+        (item) =>
+          item.getAttribute("aria-level") === "1" &&
+          branchName.test(item.getAttribute("aria-label") ?? item.textContent),
+      );
 
-  if (screen.queryByRole("option", { name: leafName }) === null) {
-    const branchName = new RegExp(`^${branch},`, "u");
-    const back = screen.queryByRole("button", { name: /^back$/iu });
-
-    // Another branch is open in place of the list: step out of it first.
-    if (back !== null) {
-      fireEvent.click(back);
+    if (row === undefined) {
+      throw new Error(`No branch named ${branch}`);
     }
 
-    // A branch already opened is a button in the trail, not an option.
-    fireEvent.click(
-      await waitFor(() => {
-        const found =
-          screen.queryByRole("option", { name: branchName }) ??
-          screen.queryByRole("button", { name: branchName });
+    return row;
+  }, BUILDER_WAIT);
 
-        if (found === null) {
-          throw new Error(`No branch named ${branch}`);
-        }
-
-        return found;
-      }, BUILDER_WAIT),
-    );
+  if (opened.getAttribute("aria-expanded") !== "true") {
+    fireEvent.click(opened);
   }
 
-  return screen.findByRole("option", { name: leafName }, BUILDER_WAIT);
+  return waitFor(() => {
+    const items = screen.getAllByRole("treeitem");
+    const found = items
+      .slice(items.indexOf(opened) + 1)
+      .find((item) => item.getAttribute("aria-level") === "2");
+    const match = items
+      .slice(items.indexOf(opened) + 1)
+      .filter((item) => item.getAttribute("aria-level") !== "1")
+      .find((item) =>
+        leafName.test(item.getAttribute("aria-label") ?? item.textContent),
+      );
+
+    if (found === undefined || match === undefined) {
+      throw new Error(`No option named ${leaf} under ${branch}`);
+    }
+
+    return match;
+  }, BUILDER_WAIT);
+}
+
+/**
+ * Finds a top-level row of the Display menu, such as a switch, opening the menu as needed.
+ */
+export async function findDisplayRow(label: string): Promise<HTMLElement> {
+  await openDisplayMenu();
+
+  const name = new RegExp(`^${label}`, "u");
+
+  return waitFor(() => {
+    const row = screen
+      .getAllByRole("treeitem")
+      .find(
+        (item) =>
+          item.getAttribute("aria-level") === "1" &&
+          name.test(item.getAttribute("aria-label") ?? item.textContent),
+      );
+
+    if (row === undefined) {
+      throw new Error(`No row named ${label}`);
+    }
+
+    return row;
+  }, BUILDER_WAIT);
 }
 
 /**
@@ -60,41 +97,24 @@ export async function findToolbar(): Promise<HTMLElement> {
 }
 
 /**
- * Picks a calendar view by its label from the Display menu's radio group.
+ * Picks a calendar view by its label from the Display menu's Layout branch.
  */
 export async function pickCalendarView(label: string): Promise<void> {
-  await pickDisplayRadio("Calendar", label);
+  await pickDisplayRadio("Layout", label);
 }
 
 /**
- * Picks a radio choice by its label from a Display branch that shows its choices as a radio group.
+ * Ticks a choice by its label under a Display branch that offers one of several.
  */
 export async function pickDisplayRadio(
   branch: string,
   label: string,
 ): Promise<void> {
-  await openDisplayMenu();
-
-  const back = screen.queryByRole("button", { name: /^back$/iu });
-
-  if (back !== null) {
-    fireEvent.click(back);
-  }
-
-  fireEvent.click(
-    await screen.findByRole(
-      "option",
-      { name: new RegExp(`^${branch},`, "u") },
-      BUILDER_WAIT,
-    ),
-  );
-  fireEvent.click(
-    await screen.findByRole("radio", { name: label }, BUILDER_WAIT),
-  );
+  fireEvent.click(await findDisplayOption(branch, label));
 }
 
 /**
- * Picks a timeline scale by its label from the Display menu's radio group.
+ * Picks a timeline scale by its label from the Display menu's Scale branch.
  */
 export async function pickTimelineScale(label: string): Promise<void> {
   await pickDisplayRadio("Scale", label);

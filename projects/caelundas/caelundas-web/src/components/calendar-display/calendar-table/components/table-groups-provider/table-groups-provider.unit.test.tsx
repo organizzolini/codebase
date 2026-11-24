@@ -39,12 +39,10 @@ describe(TableGroupsProvider, () => {
   it("offers nothing to do until the table names its groups", () => {
     const shared = renderShared();
 
-    expect(shared.current).toMatchObject({
-      canCollapse: false,
-      canExpand: false,
-      provided: true,
-    });
-    expect(shared.current?.state.limit).toBe(25);
+    expect(shared.current).toMatchObject({ provided: true });
+    expect(shared.current?.canCollapse([0])).toBe(false);
+    expect(shared.current?.canExpand([0])).toBe(false);
+    expect(shared.current?.state.limit).toBe(100);
     expect(shared.current?.state.pages).toBe(1);
   });
 
@@ -55,6 +53,7 @@ describe(TableGroupsProvider, () => {
       shared.current?.dispatch({
         firstPath: ["a", "a|a1"],
         groupIds: ["a", "b", "a|a1"],
+        groupLevels: [0, 0, 1],
         type: "reset",
       });
     });
@@ -63,24 +62,34 @@ describe(TableGroupsProvider, () => {
       "a",
       "a|a1",
     ]);
-    expect(shared.current?.canCollapse).toBe(true);
-    expect(shared.current?.canExpand).toBe(true);
+    expect(shared.current?.canCollapse([0, 1])).toBe(true);
+    expect(shared.current?.canExpand([0, 1])).toBe(true);
 
     act(() => {
-      shared.current?.expandAll();
+      shared.current?.expandAll([0, 1]);
     });
 
     expect(shared.current?.state.expanded.size).toBe(3);
-    expect(shared.current?.canCollapse).toBe(true);
-    expect(shared.current?.canExpand).toBe(false);
+    expect(shared.current?.canCollapse([0, 1])).toBe(true);
+    expect(shared.current?.canExpand([0, 1])).toBe(false);
 
     act(() => {
-      shared.current?.collapseAll();
+      shared.current?.collapseAll([1]);
+    });
+
+    expect(
+      [...(shared.current?.state.expanded ?? [])].toSorted(),
+    ).toStrictEqual(["a", "b"]);
+    expect(shared.current?.canExpand([1])).toBe(true);
+    expect(shared.current?.canCollapse([1])).toBe(false);
+
+    act(() => {
+      shared.current?.collapseAll([0, 1]);
     });
 
     expect(shared.current?.state.expanded.size).toBe(0);
-    expect(shared.current?.canCollapse).toBe(false);
-    expect(shared.current?.canExpand).toBe(true);
+    expect(shared.current?.canCollapse([0, 1])).toBe(false);
+    expect(shared.current?.canExpand([0, 1])).toBe(true);
   });
 
   it("opens and closes one group by its id", () => {
@@ -90,6 +99,7 @@ describe(TableGroupsProvider, () => {
       shared.current?.dispatch({
         firstPath: [],
         groupIds: ["a", "b"],
+        groupLevels: [0, 0],
         type: "reset",
       });
     });

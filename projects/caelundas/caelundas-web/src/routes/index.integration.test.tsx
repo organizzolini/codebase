@@ -8,6 +8,7 @@ import {
   BUILDER_TEST,
   BUILDER_WAIT,
   findDisplayOption,
+  findDisplayRow,
   findToolbar,
 } from "../../testing/calendar-page";
 import {
@@ -332,7 +333,7 @@ describe("index", () => {
     await expect(screen.findByTestId("filter-cascader")).resolves.toBeDefined();
     expect(screen.getByPlaceholderText("Search attributes")).toBeDefined();
     await expect(
-      screen.findByRole("option", { name: /^Body/u }),
+      screen.findByRole("treeitem", { name: /^Body/u }),
     ).resolves.toBeDefined();
   });
 
@@ -347,10 +348,14 @@ describe("index", () => {
         }),
       );
       fireEvent.click(
-        await screen.findByRole("option", { name: /^Body/u }, BUILDER_WAIT),
+        await screen.findByRole("treeitem", { name: /^Body/u }, BUILDER_WAIT),
       );
       fireEvent.click(
-        await screen.findByRole("option", { name: /^Mercury/u }, BUILDER_WAIT),
+        await screen.findByRole(
+          "treeitem",
+          { name: /^Mercury/u },
+          BUILDER_WAIT,
+        ),
       );
 
       // Both at once, so the skeleton a slow reload shows cannot pass for it.
@@ -427,26 +432,26 @@ describe("index", () => {
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
   });
 
-  it("turns the colors off and on again with Color's None choice, and the grouping of crowded days off and on, from the Display menu", async () => {
+  it("turns the colors off and on again, and the grouping of crowded days off and on, from the Display menu", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("grid", { name: "March 2026" });
 
-    // The grouping starts on; each click turns it the other way. Colors start on Event kind.
+    // Both switches start on; each click turns one the other way.
     const steps = [
-      ["Color", "None", true],
-      ["Color", "Event kind", true],
-      ["Crowded days", "Group similar events", false],
-      ["Crowded days", "Group similar events", true],
+      ["Colors", false],
+      ["Colors", true],
+      ["Crowded days", false],
+      ["Crowded days", true],
     ] as const;
 
-    for (const [branch, leaf, isSelected] of steps) {
-      fireEvent.click(await findDisplayOption(branch, leaf));
+    for (const [label, isSelected] of steps) {
+      fireEvent.click(await findDisplayRow(label));
 
       // The link now says so, and the list reads back what it holds.
       await waitFor(() => {
         expect(
           screen
-            .getByRole("option", { name: new RegExp(`^${leaf}$`, "u") })
+            .getByRole("treeitem", { name: new RegExp(`^${label}`, "u") })
             .getAttribute("aria-selected"),
         ).toBe(String(isSelected));
       });
@@ -464,7 +469,7 @@ describe("index", () => {
       await waitFor(() => {
         expect(
           screen
-            .getByRole("option", { name: new RegExp(`^${name}$`, "u") })
+            .getByRole("treeitem", { name: new RegExp(`^${name}(,|$)`, "u") })
             .getAttribute("aria-selected"),
         ).toBe("true");
       });

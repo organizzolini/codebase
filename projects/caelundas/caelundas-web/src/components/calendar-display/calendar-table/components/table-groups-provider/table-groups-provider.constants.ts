@@ -15,6 +15,7 @@ import type {
 export const INITIAL_TABLE_GROUPS: TableGroupsState = {
   expanded: new Set(),
   groupIds: [],
+  groupLevels: [],
   limit: PAGE_SIZE,
   limits: new Map(),
   pages: 1,
@@ -25,8 +26,8 @@ export const INITIAL_TABLE_GROUPS: TableGroupsState = {
  * What the table shares when nothing provides it.
  */
 export const UNPROVIDED_TABLE_GROUPS: TableGroupsValue = {
-  canCollapse: false,
-  canExpand: false,
+  canCollapse: () => false,
+  canExpand: () => false,
   collapseAll: () => {},
   dispatch: () => {},
   expandAll: () => {},
@@ -44,4 +45,4 @@ export const TableGroupsContext = createContext<TableGroupsValue>(
 /**
  * The page sizes the Page strip offers.
  */
-export const PAGE_LIMITS: readonly number[] = [10, 25, 50, 100];
+export const PAGE_LIMITS: readonly number[] = [10, 25, 50, 100, 250, 500, 1000];

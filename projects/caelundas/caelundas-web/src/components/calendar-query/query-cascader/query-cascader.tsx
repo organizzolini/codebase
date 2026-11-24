@@ -22,6 +22,10 @@ export interface QueryCascaderProperties {
    */
   cascade?: boolean;
   className?: string;
+  /**
+   * Values of the branches open at first; only as a tree.
+   */
+  defaultExpanded?: readonly string[];
   items: readonly CascaderNode[];
   /**
    * Whether branches open beneath their parent, as a tree, or in columns to the right; a tree when absent.
@@ -55,6 +59,7 @@ export function QueryCascader(
     multiple = false,
     cascade = multiple,
     className,
+    defaultExpanded,
     items,
     mode = "tree",
     onValueChange,
@@ -75,7 +80,12 @@ export function QueryCascader(
       placeholder={placeholder}
     />
   );
+  const expansion =
+    defaultExpanded === undefined
+      ? {}
+      : { defaultExpanded: [...defaultExpanded] };
   const shared = {
+    ...expansion,
     indicator: multiple,
     inline: true,
     inputValue: query,

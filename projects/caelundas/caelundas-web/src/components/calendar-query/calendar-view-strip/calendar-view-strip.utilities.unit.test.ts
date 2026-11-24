@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { EMPTY_EVENT_FILTER } from "../calendar-filters/components/event-filter-model/event-filter-tree.constants";
 
+import { VIEW_ICONS } from "./calendar-view-strip.constants";
 import {
   findActiveViewId,
   getViewFilter,
@@ -34,6 +35,19 @@ describe("calendar-view-strip utilities", () => {
       expect(
         listViewChoices([PRESET]).map((choice) => choice.id),
       ).toStrictEqual(["ingress", "all-events"]);
+    });
+
+    it("gives each choice an icon, the default one to a preset with none", () => {
+      expect(
+        listViewChoices([PRESET]).map((choice) => choice.icon),
+      ).toStrictEqual(["eye", "layers"]);
+    });
+  });
+
+  describe("view icons", () => {
+    it("keeps every view's icon apart from the Display button's", () => {
+      expect(Object.values(VIEW_ICONS)).not.toContain("sliders-horizontal");
+      expect(VIEW_ICONS["custom"]).toBe("pencil-ruler");
     });
   });
 

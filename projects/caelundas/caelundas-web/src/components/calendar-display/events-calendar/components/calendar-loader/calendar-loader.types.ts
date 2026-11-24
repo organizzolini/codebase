@@ -13,10 +13,6 @@ import type {
  */
 export interface CalendarData {
   anchor: Date;
-  /**
-   * The level events are colored by, or nothing for the default by type.
-   */
-  colorBy: EventGroupLevel | undefined;
   dataset: EventsDataset | null;
   /**
    * Set only when no events were found.
@@ -37,8 +33,7 @@ export interface CalendarData {
    */
   filtered: boolean;
   /**
-   * The levels each event's `groups` were read for: the link's grouping, or
-   * the view's default, holding only fields the data has.
+   * The levels each event's `groups` were read for; the first colors events.
    */
   grouping: EventGroupLevel[];
   period: Period;

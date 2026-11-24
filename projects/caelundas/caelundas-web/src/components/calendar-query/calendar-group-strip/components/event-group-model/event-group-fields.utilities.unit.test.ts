@@ -123,16 +123,24 @@ describe("event group fields", () => {
   });
 
   describe(getDefaultGrouping, () => {
-    it.each([
-      { expected: [{ field: "tag:tag-aspect" }], view: "agenda" },
-      { expected: [{ field: "tag:tag-body" }], view: "timeline" },
-      { expected: [], view: "month" },
-    ])(
-      "groups the $view by default as the data allows",
-      ({ expected, view }) => {
-        expect(getDefaultGrouping(view, fields)).toStrictEqual(expected);
+    const listRoots = (): { field: string }[] =>
+      fields
+        .filter((field) => field.id.startsWith("tag:"))
+        .map((field) => ({ field: field.id }));
+
+    it.each(["table", "timeline"])(
+      "groups the %s by every tag root, in order",
+      (view) => {
+        expect(listRoots().length).toBeGreaterThan(1);
+        expect(getDefaultGrouping(view, fields)).toStrictEqual(listRoots());
       },
     );
+
+    it("colors the month by the first tag root alone", () => {
+      expect(getDefaultGrouping("month", fields)).toStrictEqual(
+        listRoots().slice(0, 1),
+      );
+    });
   });
 
   describe("nodes", () => {

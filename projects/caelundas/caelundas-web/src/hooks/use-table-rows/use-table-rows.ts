@@ -13,6 +13,7 @@ import {
   getLevelIcons,
   listFirstPath,
   listGroupIds,
+  listGroupLevels,
   toListStats,
   toResetKey,
 } from "../../components/calendar-display/calendar-table/table-groups.utilities";
@@ -46,41 +47,47 @@ export function useTableRows(
     reduceTableGroups,
     INITIAL_TABLE_GROUPS,
   );
-  const { groups, idsKey, levelsKey, listed, pathKey, resetKey } =
-    useMemo(() => {
-      const inRange = listTableEvents({ anchor, dayCount, events, timeZone });
-      const tree = sortEventGroups(
+  const { groups, listed } = useMemo(() => {
+    const inRange = listTableEvents({ anchor, dayCount, events, timeZone });
+
+    return {
+      groups: sortEventGroups(
         buildEventGroups(inRange, grouping, fields),
         sort,
         createTagRanks(facets),
-      );
-      const ids = listGroupIds(tree).join(ID_SEPARATOR);
+      ),
+      listed: inRange,
+    };
+  }, [anchor, dayCount, events, facets, fields, grouping, sort, timeZone]);
+  const { idsKey, levelsKey, pathKey, resetKey, tiersKey } = useMemo(() => {
+    const ids = listGroupIds(groups).join(ID_SEPARATOR);
 
-      return {
-        groups: tree,
+    return {
+      idsKey: ids,
+      levelsKey: grouping.map((level) => level.field).join("|"),
+      pathKey: listFirstPath(groups).join(ID_SEPARATOR),
+      resetKey: toResetKey({
+        anchor,
+        dayCount,
+        grouping,
         idsKey: ids,
-        levelsKey: grouping.map((level) => level.field).join("|"),
-        listed: inRange,
-        pathKey: listFirstPath(tree).join(ID_SEPARATOR),
-        resetKey: toResetKey({
-          anchor,
-          dayCount,
-          grouping,
-          idsKey: ids,
-          listed: inRange,
-          sort,
-          timeZone,
-        }),
-      };
-    }, [anchor, dayCount, events, facets, fields, grouping, sort, timeZone]);
+        listed,
+        sort,
+        timeZone,
+      }),
+      tiersKey: listGroupLevels(groups).join(ID_SEPARATOR),
+    };
+  }, [anchor, dayCount, grouping, groups, listed, sort, timeZone]);
   // The ids as lists again, made anew only when they differ, so the reset below fires on a real change and not on every new array.
-  const { firstPath, groupIds, levelIcons } = useMemo(
+  const { firstPath, groupIds, groupLevels, levelIcons } = useMemo(
     () => ({
       firstPath: pathKey === "" ? [] : pathKey.split(ID_SEPARATOR),
       groupIds: idsKey === "" ? [] : idsKey.split(ID_SEPARATOR),
+      groupLevels:
+        tiersKey === "" ? [] : tiersKey.split(ID_SEPARATOR).map(Number),
       levelIcons: getLevelIcons(levelsKey),
     }),
-    [idsKey, levelsKey, pathKey],
+    [idsKey, levelsKey, pathKey, tiersKey],
   );
 
   // 🏗 Setup
@@ -113,9 +120,9 @@ export function useTableRows(
 
   // ♻️ Lifecycle
   useEffect(() => {
-    dispatch({ firstPath, groupIds, type: "reset" });
+    dispatch({ firstPath, groupIds, groupLevels, type: "reset" });
     // The key is the data by value; the ids come from the same data.
-  }, [dispatch, firstPath, groupIds, resetKey]);
+  }, [dispatch, firstPath, groupIds, groupLevels, resetKey]);
   useEffect(() => {
     dispatch({ stats: toListStats(groups, listed, rows), type: "set-stats" });
   }, [dispatch, groups, listed, rows]);

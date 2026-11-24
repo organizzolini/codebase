@@ -27,7 +27,6 @@ export interface UseCalendarDisplayResult {
   handlers: Pick<
     UseCalendarSearchResult,
     | "handleClustersChange"
-    | "handleColorByChange"
     | "handleColorsChange"
     | "handleScaleChange"
     | "handleSymbolsChange"

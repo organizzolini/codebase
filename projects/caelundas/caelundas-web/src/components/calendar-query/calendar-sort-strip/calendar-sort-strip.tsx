@@ -28,6 +28,7 @@ import {
 import {
   createSortItems,
   flipSortAt,
+  getSortIcon,
   labelSort,
   toSorts,
   toSortValue,
@@ -147,6 +148,7 @@ export function CalendarSortStrip(
           <SortChip
             key={`${current.key}|${current.tag ?? ""}`}
             direction={current.direction}
+            icon={getSortIcon(current, fields)}
             label={isDefault ? DEFAULT_SORT_LABEL : labelSort(current, fields)}
             onFlip={() => {
               onSortChange(flipSortAt(sorts, index));

@@ -37,7 +37,17 @@ export function SkeletonBody(
   let content: ReactNode;
 
   switch (view) {
-    case "agenda":
+    case "month": {
+      content = (
+        <div className="grid min-h-0 flex-1 grid-cols-7 grid-rows-6 gap-1">
+          {CELL_KEYS.map((key) => (
+            <Skeleton key={key} />
+          ))}
+        </div>
+      );
+
+      break;
+    }
     case "table": {
       content = (
         <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
@@ -46,17 +56,6 @@ export function SkeletonBody(
               key={key}
               className="h-14 shrink-0"
             />
-          ))}
-        </div>
-      );
-
-      break;
-    }
-    case "month": {
-      content = (
-        <div className="grid min-h-0 flex-1 grid-cols-7 grid-rows-6 gap-1">
-          {CELL_KEYS.map((key) => (
-            <Skeleton key={key} />
           ))}
         </div>
       );
@@ -83,7 +82,6 @@ export function SkeletonBody(
       break;
     }
     case "day":
-    case "three-day":
     case "week": {
       const count = COLUMN_COUNTS[view];
 

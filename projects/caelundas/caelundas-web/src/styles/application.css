@@ -1,2 +1,7 @@
 @import "tailwindcss";
 @import "@codebase/presentation/styles/globals.css";
+
+/* The color a vendored view falls back on for an event with none. */
+:root {
+  --color-primary: hsl(var(--primary));
+}

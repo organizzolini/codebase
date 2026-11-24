@@ -4,6 +4,15 @@ import type { EventGroupNode } from "../../calendar-query/calendar-group-strip/c
 import type { CalendarEventRecord } from "../events-calendar/components/calendar-loader/calendar-records.types";
 
 /**
+ * Days: `from` included, `through` excluded, both `YYYY-MM-DD` in `timeZone`.
+ */
+export interface DayRange {
+  from: string;
+  through: string;
+  timeZone: string;
+}
+
+/**
  * A column of the table: what its cells show of each event.
  */
 export interface TableColumn {

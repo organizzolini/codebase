@@ -428,8 +428,11 @@ function findWindows(variables: WindowsQueryVariables): {
   const { read, visible } = getViewWindows(
     variables.window === null || variables.window === undefined
       ? undefined
-      : calendarViewSchema.parse(
-          variables.window.toLowerCase().replace("_", "-"),
+      : // The API's agenda window is the table's.
+        calendarViewSchema.parse(
+          variables.window === "AGENDA"
+            ? "table"
+            : variables.window.toLowerCase().replace("_", "-"),
         ),
     new Date(variables.anchor),
     {

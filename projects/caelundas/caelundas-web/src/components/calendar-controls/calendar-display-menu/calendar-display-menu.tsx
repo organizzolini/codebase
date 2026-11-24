@@ -1,5 +1,5 @@
 import { SlidersHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import {
   Button,
@@ -11,13 +11,11 @@ import {
 
 import { useCalendarDisplay } from "../../../hooks/use-calendar-display/use-calendar-display";
 import { CALENDAR_VIEW_LABELS } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
-import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { QueryCascader } from "../../calendar-query/query-cascader/query-cascader";
 
 import {
-  CALENDAR_BRANCH,
   CHIP_CLASS_NAME,
-  SCALE_BRANCH,
+  LAYOUT_BRANCH,
   TITLE,
 } from "./calendar-display-menu.constants";
 import {
@@ -26,24 +24,15 @@ import {
   findToggledLeaf,
   toDisplayValue,
 } from "./calendar-display-menu.utilities";
-import { DisplayRadios } from "./components/display-radios/display-radios";
-import {
-  SCALE_OPTIONS,
-  VIEW_OPTIONS,
-} from "./components/display-radios/display-radios.constants";
 
-import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
-import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** Props: color facets, zone, and the view shown. */
+/** Props: zone and the view shown. */
 export interface CalendarDisplayMenuProperties {
   className?: string;
-  colorBy: EventGroupLevel | undefined;
-  facets: readonly EventFacet[];
   timeZone: string;
   view: CalendarViewName;
 }
@@ -54,24 +43,22 @@ export interface CalendarDisplayMenuProperties {
 export function CalendarDisplayMenu(
   properties: Readonly<CalendarDisplayMenuProperties>,
 ): ReactNode {
-  const { className, colorBy, facets, timeZone, view } = properties;
+  const { className, timeZone, view } = properties;
 
   // 🪝 Hooks
   const { change, constellations, handlers, sky, state } =
     useCalendarDisplay(timeZone);
   const [isOpen, setIsOpen] = useState(false);
-  const fields = useMemo(() => createEventGroupFields(facets), [facets]);
 
   // 🏗 Setup
-  const choices = { ...state, colorBy, listing: constellations, sky, view };
-  const items = createDisplayItems(fields, choices);
+  const choices = { ...state, listing: constellations, sky, view };
+  const items = createDisplayItems(choices);
   const value = toDisplayValue(choices);
 
   // 💪 Handlers
   const applyLeaf = (leaf: string): void => {
     applyDisplayLeaf(leaf, {
       choices,
-      fields,
       handlers,
       onSkyChange: change,
     });
@@ -117,31 +104,10 @@ export function CalendarDisplayMenu(
           >
             <QueryCascader
               cascade={false}
+              defaultExpanded={[LAYOUT_BRANCH]}
               items={items}
-              mode="drill"
+              mode="tree"
               onValueChange={handleValueChange}
-              panels={{
-                [CALENDAR_BRANCH]: (
-                  <DisplayRadios
-                    label="Calendar"
-                    onValueChange={(next) => {
-                      applyLeaf(`calendar:${next}`);
-                    }}
-                    options={VIEW_OPTIONS}
-                    value={view}
-                  />
-                ),
-                [SCALE_BRANCH]: (
-                  <DisplayRadios
-                    label="Scale"
-                    onValueChange={(next) => {
-                      applyLeaf(`scale:${next}`);
-                    }}
-                    options={SCALE_OPTIONS}
-                    value={state.scale}
-                  />
-                ),
-              }}
               placeholder="Search display options"
               value={value}
               multiple

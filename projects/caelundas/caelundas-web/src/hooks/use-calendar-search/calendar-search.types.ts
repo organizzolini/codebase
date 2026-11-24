@@ -3,10 +3,7 @@ import type {
   TimelineScale,
 } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
-import type {
-  EventGrouping,
-  EventGroupLevel,
-} from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { EventGrouping } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 
 /**
@@ -18,10 +15,6 @@ export interface CalendarSearch {
    * absent.
    */
   clusters?: false | undefined;
-  /**
-   * What events are colored by, a level like a grouping's; colored by type, kind by kind, when absent.
-   */
-  color?: EventGroupLevel | undefined;
   /**
    * `false` when events are drawn without their colors; colored when absent.
    */
@@ -35,7 +28,7 @@ export interface CalendarSearch {
    */
   date?: string | undefined;
   /**
-   * How many days the agenda lists, grown as it scrolls; a month's worth
+   * How many days the table lists, grown as it scrolls; a month's worth
    * when absent.
    */
   days?: number | undefined;
@@ -44,7 +37,7 @@ export interface CalendarSearch {
    */
   filter?: EventFilterQuery | undefined;
   /**
-   * The levels the agenda and the timeline group events by, outermost
+   * The levels the table and the timeline group events by, outermost
    * first, empty for none; each view's default when absent.
    */
   group?: EventGrouping | undefined;

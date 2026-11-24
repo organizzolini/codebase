@@ -1,7 +1,4 @@
 /**
- * Tag roots each view groups by when the link names none.
+ * The default grouping's name.
  */
-export const DEFAULT_GROUP_ROOTS = {
-  agenda: ["Aspect"],
-  timeline: ["Body"],
-} as const;
+export const DEFAULT_GROUP_LABEL = "Tags";

@@ -9,7 +9,6 @@ import {
 import { TAG_FIELD_PREFIX } from "../../../calendar-filters/components/event-filter-model/event-filters.constants";
 import { TagIcon } from "../../../tag-icon/tag-icon";
 
-import { DEFAULT_GROUP_ROOTS } from "./event-group-fields.constants";
 import {
   DERIVED_GROUP_DESCRIPTIONS,
   DERIVED_GROUP_ICONS,
@@ -73,28 +72,24 @@ export function createEventGroupFields(
 }
 
 /**
- * The grouping a view starts with when the link names none, from its default roots the data has; only agenda and timeline are grouped.
+ * The grouping a view starts with when the link names none: every tag root, in order.
  */
 export function getDefaultGrouping(
   view: string,
   fields: readonly EventGroupField[],
 ): EventGrouping {
-  const roots: readonly string[] =
-    view === "agenda" || view === "timeline" ? DEFAULT_GROUP_ROOTS[view] : [];
-
   const grouping: EventGroupLevel[] = [];
 
-  // Loops rather than mapping callbacks keep the call stacks shallow.
-  for (const root of roots) {
-    for (const field of fields) {
-      if (field.label === root && field.id.startsWith(TAG_FIELD_PREFIX)) {
-        grouping.push({ field: field.id });
-        break;
-      }
+  // A loop rather than a filter callback keeps the call stacks shallow.
+  for (const field of fields) {
+    if (field.id.startsWith(TAG_FIELD_PREFIX)) {
+      grouping.push({ field: field.id });
     }
   }
 
-  return grouping;
+  return view === "table" || view === "timeline"
+    ? grouping
+    : grouping.slice(0, 1);
 }
 
 /**

@@ -1,10 +1,12 @@
 import {
-  CalendarClock,
   Galaxy,
   Layers,
+  LayoutDashboard,
   Palette,
   Ruler,
   Shapes,
+  Smile,
+  Sparkles,
 } from "lucide-react";
 import { createElement } from "react";
 
@@ -20,30 +22,25 @@ import {
   TIMELINE_SCALES,
 } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { parseCalendarView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
-import { toGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 
 import {
-  CALENDAR_BRANCH,
   CONSTELLATION_CHOICES,
-  DEFAULT_COLOR_BY,
-  NO_COLOR,
+  LAYOUT_BRANCH,
   SCALE_BRANCH,
+  SCALE_ICONS,
+  SYMBOLS_BRANCH,
+  VIEW_ICONS,
 } from "./calendar-display-menu.constants";
 import {
   applySkyLeaf,
   createSkyItems,
   toSkyValue,
 } from "./calendar-display-sky.utilities";
-import {
-  SCALE_ICONS,
-  VIEW_ICONS,
-} from "./components/display-radios/display-radios.constants";
 
 import type { UseCalendarDisplayResult } from "../../../hooks/use-calendar-display/use-calendar-display.types";
 import type { SkySearchChange } from "../../../hooks/use-night-sky/hooks/use-night-sky-controls/night-sky-controls.types";
 import type { ConstellationListing } from "../../../hooks/use-night-sky/night-sky.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
-import type { EventGroupField } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { DisplayChoices } from "./calendar-display-menu.types";
 import type { CascaderNode } from "@codebase/presentation";
 import type { LucideIcon } from "lucide-react";
@@ -57,12 +54,11 @@ export function applyDisplayLeaf(
   leaf: string,
   context: Readonly<{
     choices: DisplayChoices;
-    fields: readonly EventGroupField[];
     handlers: UseCalendarDisplayResult["handlers"];
     onSkyChange: (change: SkySearchChange) => void;
   }>,
 ): void {
-  const { choices, fields, handlers, onSkyChange } = context;
+  const { choices, handlers, onSkyChange } = context;
   const skyContext = {
     listing: choices.listing,
     onSkyChange,
@@ -82,19 +78,8 @@ export function applyDisplayLeaf(
     clusters: () => {
       handlers.handleClustersChange(!choices.clusters);
     },
-    colorBy: () => {
-      if (value === NO_COLOR) {
-        handlers.handleColorsChange(false);
-
-        return;
-      }
-
-      const field = fields.find((candidate) => candidate.id === value);
-
-      handlers.handleColorsChange(true);
-      handlers.handleColorByChange(
-        field === undefined ? undefined : toGroupLevel(field),
-      );
+    colors: () => {
+      handlers.handleColorsChange(!choices.colors);
     },
     constellation: () => {
       applySkyLeaf(group, value, skyContext);
@@ -141,7 +126,6 @@ export function applyDisplayLeaf(
  * The nested choices: each part of how the calendar looks, with its own icon; the scale only where the timeline has one.
  */
 export function createDisplayItems(
-  fields: readonly EventGroupField[],
   choices: Readonly<{
     listing: readonly ConstellationListing[];
     view: CalendarViewName;
@@ -155,6 +139,7 @@ export function createDisplayItems(
             children: TIMELINE_SCALES.map((value) => ({
               icon: toIcon(SCALE_ICONS[value]),
               label: TIMELINE_SCALE_LABELS[value],
+              radio: true,
               value: `scale:${value}`,
             })),
             icon: toIcon(Ruler),
@@ -169,41 +154,43 @@ export function createDisplayItems(
       children: CALENDAR_VIEWS.map((value) => ({
         icon: toIcon(VIEW_ICONS[value]),
         label: CALENDAR_VIEW_LABELS[value],
+        radio: true,
         value: `calendar:${value}`,
       })),
-      icon: toIcon(CalendarClock),
-      label: "Calendar",
-      value: CALENDAR_BRANCH,
+      icon: toIcon(LayoutDashboard),
+      label: "Layout",
+      value: LAYOUT_BRANCH,
     },
     ...scale,
     {
       children: [
-        { label: "Glyphs", value: "symbols:glyphs" },
-        { label: "Emojis", value: "symbols:emojis" },
+        {
+          icon: toIcon(Shapes),
+          label: "Glyphs",
+          radio: true,
+          value: "symbols:glyphs",
+        },
+        {
+          icon: toIcon(Smile),
+          label: "Emojis",
+          radio: true,
+          value: "symbols:emojis",
+        },
       ],
-      icon: toIcon(Shapes),
+      icon: toIcon(Sparkles),
       label: "Symbols",
-      value: "branch:symbols",
+      value: SYMBOLS_BRANCH,
     },
     {
-      children: [{ label: "Group similar events", value: "clusters" }],
+      icon: toIcon(Palette),
+      label: "Colors",
+      value: "colors",
+    },
+    {
+      description: "Group similar events",
       icon: toIcon(Layers),
       label: "Crowded days",
-      value: "branch:crowded",
-    },
-    {
-      children: [
-        { label: "None", value: `colorBy:${NO_COLOR}` },
-        { label: "Event kind", value: `colorBy:${DEFAULT_COLOR_BY}` },
-        ...fields.map((field) => ({
-          description: field.description,
-          label: field.label,
-          value: `colorBy:${field.id}`,
-        })),
-      ],
-      icon: toIcon(Palette),
-      label: "Color",
-      value: "branch:color",
+      value: "clusters",
     },
     {
       children: createSkyItems(choices.listing),
@@ -247,7 +234,7 @@ export function toDisplayValue(choices: DisplayChoices): string[] {
     ...(choices.view === "timeline" ? [`scale:${choices.scale}`] : []),
     `symbols:${choices.symbols}`,
     ...(choices.clusters ? ["clusters"] : []),
-    `colorBy:${choices.colors ? (choices.colorBy?.field ?? DEFAULT_COLOR_BY) : NO_COLOR}`,
+    ...(choices.colors ? ["colors"] : []),
     `constellations:${describeConstellations(choices.sky.constellations)}`,
     ...toSkyValue(choices.sky, choices.listing),
   ];

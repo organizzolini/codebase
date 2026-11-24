@@ -90,15 +90,14 @@ export function listFirstPath(groups: readonly EventGroupNode[]): string[] {
  * The id of every group of the tree, at every level, sorted.
  */
 export function listGroupIds(groups: readonly EventGroupNode[]): string[] {
-  const ids: string[] = [];
-  const pending = [...groups];
+  return listGroupEntries(groups).map((entry) => entry.id);
+}
 
-  for (let node = pending.pop(); node !== undefined; node = pending.pop()) {
-    ids.push(node.id);
-    pending.push(...node.children);
-  }
-
-  return ids.toSorted();
+/**
+ * The level of every group of the tree, in the order of their sorted ids.
+ */
+export function listGroupLevels(groups: readonly EventGroupNode[]): number[] {
+  return listGroupEntries(groups).map((entry) => entry.level);
 }
 
 /**
@@ -182,5 +181,24 @@ function addCellValues(
       column.kind === "start" ? record.start : record.end,
       timeZone,
     ),
+  );
+}
+
+/**
+ * Every group's id and level, sorted by id.
+ */
+function listGroupEntries(
+  groups: readonly EventGroupNode[],
+): { id: string; level: number }[] {
+  const entries: { id: string; level: number }[] = [];
+  const pending = [...groups];
+
+  for (let node = pending.pop(); node !== undefined; node = pending.pop()) {
+    entries.push({ id: node.id, level: node.level });
+    pending.push(...node.children);
+  }
+
+  return entries.toSorted((left, right) =>
+    left.id < right.id ? -1 : left.id > right.id ? 1 : 0,
   );
 }

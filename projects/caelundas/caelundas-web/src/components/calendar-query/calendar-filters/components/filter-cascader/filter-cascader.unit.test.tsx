@@ -70,4 +70,35 @@ describe(FilterCascader, () => {
       }),
     );
   });
+
+  it("removes the rule when its last value is unchecked", async () => {
+    const onQueryChange = vi.fn<(query: EventFilterQuery) => void>();
+
+    render(
+      <FilterCascader
+        fields={FIELDS}
+        onQueryChange={onQueryChange}
+        query={{
+          combinator: "and",
+          id: "root",
+          rules: [
+            {
+              id: "tag:type-picked",
+              operator: "is_any_of",
+              path: ["tag:type"],
+              type: "rule",
+              value: ["ingress"],
+            },
+          ],
+          type: "group",
+        }}
+      />,
+    );
+    fireEvent.click(screen.getByText("Type"));
+    fireEvent.click(await screen.findByText("Ingress"));
+
+    expect(onQueryChange).toHaveBeenCalledWith(
+      expect.objectContaining({ rules: [] }),
+    );
+  });
 });

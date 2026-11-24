@@ -16,6 +16,7 @@ import {
   QUIET_LABELS,
   renderBar,
   renderBarCard,
+  renderRowLabel,
   TIMELINE_METRICS,
   TREE,
   ZOOM,
@@ -196,6 +197,7 @@ export function CalendarTimeline(
         }}
         renderEvent={renderBar}
         renderEventTooltip={renderBarCard}
+        renderResourceLabel={renderRowLabel}
         resources={layout.resources}
         rowCheckboxes={false}
         scale={scale}

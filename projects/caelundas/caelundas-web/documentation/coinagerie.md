@@ -100,11 +100,13 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **opposition**: The 180-degree aspect, harmonic 2, mapped to its own PNG icon in the glyph set.
 - **orcus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
 - **ostara**: Seasonal festival event, the spring equinox name here, mapped to a PNG icon in the glyph set.
+- **painter**:
 - **pallas**: One of the four asteroids, named in event labels such as Mars biquintile Pallas, with its own glyph.
 - **pentagram**: The star glyph for a five-pointed pattern, mapped to its own PNG icon in the glyph set.
 - **perigee**:
 - **pholus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
 - **pisces**: Zodiac sign whose glyph maps to its own SVG icon, and a constellation listed in the sky menu.
+- **planet**:
 - **planetary**:
 - **pluto**: Dwarf-planet body whose glyph maps to its own SVG icon and appears in event names.
 - **pole**: The north celestial pole at the top of the night-sky view, where altitude equals declination.

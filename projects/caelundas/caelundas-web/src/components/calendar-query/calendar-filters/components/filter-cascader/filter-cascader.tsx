@@ -34,7 +34,7 @@ export interface FilterCascaderProperties {
 
 // 🧩 Component
 
-/** Renders a searchable Cascader of attributes to filter by, each opening to its values; every ticked value narrows the calendar. */
+/** Renders the searchable tree of attributes to filter by, each expanding to its values; every ticked value narrows the calendar. */
 export function FilterCascader(
   properties: Readonly<FilterCascaderProperties>,
 ): ReactNode {
@@ -64,8 +64,9 @@ export function FilterCascader(
       data-testid="filter-cascader"
     >
       <QueryCascader
+        cascade={false}
         items={items}
-        mode="drill"
+        mode="tree"
         onValueChange={(next) => {
           onQueryChange(
             toFilterQuery(

@@ -1,7 +1,4 @@
-import {
-  getAgendaListing,
-  getAgendaRange,
-} from "../calendar-agenda/calendar-agenda.utilities";
+import { AGENDA_DAY_COUNT } from "../events-calendar/components/calendar-views/calendar-views.constants";
 import {
   addCalendarDays,
   formatCalendarDate,
@@ -22,9 +19,9 @@ import type {
   EventGroupField,
   EventGroupNode,
 } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
-import type { AgendaRange } from "../calendar-agenda/calendar-agenda.types";
 import type { CalendarEventRecord } from "../events-calendar/components/calendar-loader/calendar-records.types";
 import type {
+  DayRange,
   TableColumn,
   TablePaging,
   TableRowModel,
@@ -110,36 +107,64 @@ export function getCellText(
 }
 
 /**
+ * The day the table lists an event under, and whether it was already under way, or `null` if no day lists it.
+ */
+export function getDayListing(
+  record: CalendarEventRecord,
+  range: DayRange,
+): null | { day: string; ongoing: boolean } {
+  const { from, through, timeZone } = range;
+  const startDay = formatCalendarDate(record.start, timeZone);
+  // An end is not part of the event, so one ending at midnight does not
+  // reach into the day that midnight begins.
+  const ongoing =
+    startDay < from &&
+    formatCalendarDate(new Date(record.end.getTime() - 1), timeZone) >= from;
+  const day = ongoing ? from : startDay;
+
+  return day >= from && day < through ? { day, ongoing } : null;
+}
+
+// 🌎 Public Functions
+
+/**
+ * The range of days from the day it opens on.
+ */
+export function getDayRange(
+  from: string,
+  timeZone: string,
+  dayCount = AGENDA_DAY_COUNT,
+): DayRange {
+  return { from, through: addCalendarDays(from, dayCount), timeZone };
+}
+
+/**
  * The days the table lists: a count of them from the anchor's day, read in the data's zone.
  */
 export function getTableRange(
   anchor: Date,
   timeZone: string,
   dayCount: number,
-): AgendaRange {
-  return getAgendaRange(
-    formatCalendarDate(anchor, timeZone),
-    timeZone,
-    dayCount,
-  );
+): DayRange {
+  return getDayRange(formatCalendarDate(anchor, timeZone), timeZone, dayCount);
 }
 
-// 🌎 Public Functions
-
 /**
- * The tags an event has at or beneath a path, with their ids and names past the path.
+ * The tags an event has beneath a path, each once, with their ids and paths past it.
  */
 export function getTagCellEntries(
   record: CalendarEventRecord,
   prefix: string,
 ): TagCellEntry[] {
   const entries: TagCellEntry[] = [];
+  const seen = new Set<string>();
 
   for (const tag of record.tags) {
-    if (tag.path === prefix) {
-      entries.push({ id: tag.id, label: tag.name });
-    } else if (tag.path.startsWith(`${prefix} / `)) {
-      entries.push({ id: tag.id, label: tag.path.slice(prefix.length + 3) });
+    const label = tag.path.slice(prefix.length + 3);
+
+    if (tag.path.startsWith(`${prefix} / `) && !seen.has(label)) {
+      seen.add(label);
+      entries.push({ id: tag.id, label });
     }
   }
 
@@ -154,7 +179,7 @@ export function isPositionColumn(column: TableColumn): boolean {
 }
 
 /**
- * The events the table lists: those the agenda lists within the days from the anchor, in the data's zone.
+ * The events the table lists: those listed within the days from the anchor, in the data's zone.
  */
 export function listTableEvents(
   context: Readonly<{
@@ -165,7 +190,7 @@ export function listTableEvents(
   }>,
 ): CalendarEventRecord[] {
   // Not through getTableRange, which would count as one more frame.
-  const range = getAgendaRange(
+  const range = getDayRange(
     formatCalendarDate(context.anchor, context.timeZone),
     context.timeZone,
     context.dayCount,
@@ -174,7 +199,7 @@ export function listTableEvents(
 
   // A loop rather than a filter callback, which would count as one more frame.
   for (const record of context.events) {
-    if (getAgendaListing(record, range) !== null) {
+    if (getDayListing(record, range) !== null) {
       listed.push(record);
     }
   }
@@ -196,7 +221,7 @@ export function resolveColumns(
     : ids) {
     const column = findColumn(id, fields);
 
-    if (column !== undefined) {
+    if (column !== undefined && !columns.some((one) => one.id === id)) {
       columns.push(column);
     }
   }
@@ -340,11 +365,12 @@ function findColumn(
     const node = field.nodes.find((candidate) => candidate.id === id);
 
     if (node !== undefined) {
+      // A node's path starts beneath its root, an event tag's path at it.
       return {
         id,
         kind: "tag",
-        label: `${field.label} › ${node.name}`,
-        prefix: node.path,
+        label: [field.label, ...node.path.split(" / ")].join(" › "),
+        prefix: `${field.label} / ${node.path}`,
       };
     }
   }

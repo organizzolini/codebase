@@ -33,7 +33,7 @@ function record(index: number): CalendarEventRecord {
   };
 }
 
-const EVENTS = Array.from({ length: 60 }, (_value, index) => record(index));
+const EVENTS = Array.from({ length: 250 }, (_value, index) => record(index));
 const OPTIONS: UseTableRowsOptions = {
   anchor: new Date("2026-03-01T12:00:00.000Z"),
   dayCount: 30,
@@ -60,16 +60,16 @@ describe(useTableRows, () => {
   it("shows a page of events and a row to show the rest", () => {
     const { result } = renderHook(() => useTableRows(OPTIONS));
 
-    expect(result.current.rows).toHaveLength(26);
+    expect(result.current.rows).toHaveLength(101);
     expect(result.current.rows.at(-1)).toStrictEqual({
       depth: 0,
       groupId: "flat",
       id: "flat|more",
       kind: "more",
-      next: 25,
-      remaining: 35,
-      shown: 25,
-      total: 60,
+      next: 100,
+      remaining: 150,
+      shown: 100,
+      total: 250,
     });
   });
 
@@ -77,10 +77,10 @@ describe(useTableRows, () => {
     const { result } = renderHook(() => useTableRows(OPTIONS));
 
     act(() => {
-      result.current.more("flat", 25);
+      result.current.more("flat", 100);
     });
 
-    expect(result.current.rows).toHaveLength(51);
+    expect(result.current.rows).toHaveLength(201);
   });
 
   it("starts the pages over when the events change", () => {
@@ -90,11 +90,11 @@ describe(useTableRows, () => {
     );
 
     act(() => {
-      result.current.more("flat", 25);
+      result.current.more("flat", 100);
     });
-    rerender({ ...OPTIONS, events: EVENTS.slice(0, 40) });
+    rerender({ ...OPTIONS, events: EVENTS.slice(0, 150) });
 
-    expect(result.current.rows).toHaveLength(26);
+    expect(result.current.rows).toHaveLength(101);
   });
 
   it("leaves the state to a provider, and tells it the groups and what shows", () => {
@@ -118,10 +118,11 @@ describe(useTableRows, () => {
     expect(dispatch).toHaveBeenCalledWith({
       firstPath: [],
       groupIds: [],
+      groupLevels: [],
       type: "reset",
     });
     expect(dispatch).toHaveBeenCalledWith({
-      stats: { longest: 60, shown: 25, total: 60 },
+      stats: { longest: 250, shown: 100, total: 250 },
       type: "set-stats",
     });
   });

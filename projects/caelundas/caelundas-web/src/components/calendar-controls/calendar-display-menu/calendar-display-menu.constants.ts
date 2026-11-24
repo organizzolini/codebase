@@ -1,3 +1,20 @@
+import {
+  CalendarDays,
+  CalendarRange,
+  ChartGantt,
+  Grid2x2,
+  Orbit,
+  Square,
+  Sun,
+  Table,
+} from "lucide-react";
+
+import type {
+  CalendarViewName,
+  TimelineScale,
+} from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
+import type { LucideIcon } from "lucide-react";
+
 // ♟️ Constants
 
 export const TITLE = "Display";
@@ -11,9 +28,6 @@ export const CONSTELLATION_CHOICES = [
   { label: "Zodiac", value: "zodiac", words: ["zodiac"] },
   { label: "None", value: "none", words: [] },
 ] as const;
-
-/** The choice coloring events by kind, the default. */
-export const DEFAULT_COLOR_BY = "default";
 
 /** The sky colors the list offers, each named. */
 export const COLOR_SWATCHES = [
@@ -30,13 +44,33 @@ export const COLOR_SWATCHES = [
 /** How many values a numeric setting offers, least to most. */
 export const STEP_COUNT = 5;
 
-/**
- * The choice that leaves events uncolored.
- */
-export const NO_COLOR = "none";
-
 /** The branch whose content is the view radio group. */
-export const CALENDAR_BRANCH = "branch:calendar";
+export const LAYOUT_BRANCH = "branch:layout";
+
+/** The branch whose content is the glyphs or emojis radio group. */
+export const SYMBOLS_BRANCH = "branch:symbols";
 
 /** The branch whose content is the timeline scale radio group. */
 export const SCALE_BRANCH = "branch:scale";
+
+/**
+ * The icon each timeline scale carries beside its name.
+ */
+export const SCALE_ICONS: Readonly<Record<TimelineScale, LucideIcon>> = {
+  day: Sun,
+  month: CalendarDays,
+  quarter: Grid2x2,
+  week: CalendarRange,
+  year: Orbit,
+};
+
+/**
+ * The icon each calendar view carries beside its name.
+ */
+export const VIEW_ICONS: Readonly<Record<CalendarViewName, LucideIcon>> = {
+  day: Square,
+  month: CalendarDays,
+  table: Table,
+  timeline: ChartGantt,
+  week: CalendarRange,
+};

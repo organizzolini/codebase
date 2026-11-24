@@ -56,10 +56,10 @@ export async function loadCalendar(
   const { dataset, defaultFilter, facets, presets } = await readBasics(visible);
   const effectiveFilter = search.filter ?? defaultFilter;
   const filter = toEventFilterInput(effectiveFilter);
-  const { colorBy, grouping } = resolveGroups(search, facets);
+  const grouping = resolveGrouping(search, facets);
   const query = {
     filter,
-    grouping: toEventGroupingInput(grouping, colorBy),
+    grouping: toEventGroupingInput(grouping),
     period: read,
   };
   const events = await readCached(
@@ -77,7 +77,6 @@ export async function loadCalendar(
 
   return {
     anchor,
-    colorBy,
     dataset,
     emptiness,
     events,
@@ -227,54 +226,18 @@ async function readConstants(): Promise<{
 }
 
 /**
- * The level the search colors events by, kept to a field the data has, or
- * nothing for the default of type, kind by kind.
- */
-function resolveColorBy(
-  search: CalendarSearch,
-  facets: readonly EventFacet[],
-): EventGroupLevel | undefined {
-  return search.color === undefined
-    ? undefined
-    : resolveEventGrouping([search.color], createEventGroupFields(facets))[0];
-}
-
-/**
- * The grouping the view shows, kept to the fields the data has. Only the
- * agenda and timeline group.
+ * The grouping for any view, kept to the fields the data has.
  */
 function resolveGrouping(
   search: CalendarSearch,
   facets: readonly EventFacet[],
 ): EventGroupLevel[] {
-  const view = search.view ?? "agenda";
-
-  if (view !== "agenda" && view !== "table" && view !== "timeline") {
-    return [];
-  }
-
   const fields = createEventGroupFields(facets);
 
   return resolveEventGrouping(
-    search.group ?? getDefaultGrouping(view, fields),
+    search.group ?? getDefaultGrouping(search.view ?? "table", fields),
     fields,
   );
-}
-
-/**
- * The grouping the search's view shows and the level it colors events by.
- */
-function resolveGroups(
-  search: CalendarSearch,
-  facets: readonly EventFacet[],
-): {
-  colorBy: EventGroupLevel | undefined;
-  grouping: EventGroupLevel[];
-} {
-  return {
-    colorBy: resolveColorBy(search, facets),
-    grouping: resolveGrouping(search, facets),
-  };
 }
 
 /**

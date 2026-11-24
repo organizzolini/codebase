@@ -29,7 +29,10 @@ const FACETS = [
 
 const TYPE: EventGroupLevel = { field: "tag:type" };
 
-function renderStrip(grouping: EventGroupLevel[] = []): {
+function renderStrip(
+  grouping: EventGroupLevel[] = [],
+  isDefaultGrouping = false,
+): {
   onGroupingChange: ReturnType<
     typeof vi.fn<(grouping: EventGroupLevel[]) => void>
   >;
@@ -40,6 +43,7 @@ function renderStrip(grouping: EventGroupLevel[] = []): {
     <CalendarGroupStrip
       facets={FACETS}
       grouping={grouping}
+      isDefaultGrouping={isDefaultGrouping}
       onGroupingChange={onGroupingChange}
       view="timeline"
     />,
@@ -68,6 +72,23 @@ describe(CalendarGroupStrip, () => {
     expect(screen.getByTestId("calendar-group-strip").className).toBe(
       "calendar-group-strip",
     );
+  });
+
+  it("draws one Tags chip while the link names no grouping", () => {
+    renderStrip([], true);
+
+    expect(screen.getByRole("group", { name: "Group" }).textContent).toBe(
+      "GroupTags",
+    );
+  });
+
+  it("removes the Tags chip into no grouping at all", async () => {
+    const { onGroupingChange } = renderStrip([], true);
+
+    fireEvent.click(screen.getByRole("button", { name: "Tags options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
+
+    expect(onGroupingChange).toHaveBeenCalledWith([]);
   });
 
   it("draws one chip per level, in order, joined to the Group button", () => {
@@ -126,8 +147,8 @@ describe(CalendarGroupStrip, () => {
     expect(onGroupingChange).toHaveBeenCalledWith([TYPE]);
   });
 
-  it.each(["month", "week", "three-day", "day"] as const)(
-    "draws nothing in the %s view, which has no groups",
+  it.each(["month", "week", "day"] as const)(
+    "draws in the %s view too, saying it colors events by the first group",
     (view) => {
       render(
         <CalendarGroupStrip
@@ -138,7 +159,10 @@ describe(CalendarGroupStrip, () => {
         />,
       );
 
-      expect(screen.queryByTestId("calendar-group-strip")).toBeNull();
+      expect(screen.queryByTestId("calendar-group-strip")).not.toBeNull();
+      expect(
+        screen.getAllByTitle("Colors events by the first group").length,
+      ).toBeGreaterThan(0);
     },
   );
 
@@ -149,8 +173,8 @@ describe(CalendarGroupStrip, () => {
     render(
       <TableGroupsContext
         value={{
-          canCollapse: true,
-          canExpand: true,
+          canCollapse: () => true,
+          canExpand: () => true,
           collapseAll,
           dispatch: () => {},
           expandAll,
@@ -171,14 +195,14 @@ describe(CalendarGroupStrip, () => {
       await screen.findByRole("menuitem", { name: "Collapse all" }),
     );
 
-    expect(collapseAll).toHaveBeenCalledTimes(1);
+    expect(collapseAll).toHaveBeenCalledWith([0]);
 
     fireEvent.click(screen.getByRole("button", { name: "Type options" }));
     fireEvent.click(
       await screen.findByRole("menuitem", { name: "Expand all" }),
     );
 
-    expect(expandAll).toHaveBeenCalledTimes(1);
+    expect(expandAll).toHaveBeenCalledWith([0]);
   });
 
   it("leaves them out of the menu outside the table", async () => {

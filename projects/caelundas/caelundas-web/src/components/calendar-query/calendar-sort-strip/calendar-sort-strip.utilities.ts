@@ -8,6 +8,7 @@ import { SORT_OPTIONS, TAG_SORT_PREFIX } from "./calendar-sort-strip.constants";
 import type { EventGroupField } from "../calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CascaderNode } from "@codebase/presentation";
+import type { ReactNode } from "react";
 
 // 🔏 Private Functions
 
@@ -48,6 +49,36 @@ export function flipSortAt(
       ? { ...sort, direction: sort.direction === "asc" ? "desc" : "asc" }
       : sort,
   );
+}
+
+/**
+ * The symbol that leads a sort's chip: its key's icon, or for a tag its row's symbol in the list.
+ */
+export function getSortIcon(
+  sort: GroupSort,
+  fields: readonly EventGroupField[],
+): ReactNode {
+  if (sort.key !== "tag") {
+    const option = SORT_OPTIONS.find((candidate) => candidate.key === sort.key);
+
+    return option === undefined
+      ? undefined
+      : createElement(TagIcon, { name: option.icon });
+  }
+
+  for (const field of fields) {
+    if (field.id === sort.tag) {
+      return field.icon;
+    }
+
+    const node = field.nodes.find((candidate) => candidate.id === sort.tag);
+
+    if (node !== undefined) {
+      return node.icon;
+    }
+  }
+
+  return undefined;
 }
 
 /**

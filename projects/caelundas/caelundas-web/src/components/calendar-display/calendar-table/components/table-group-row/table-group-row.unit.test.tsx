@@ -63,6 +63,7 @@ const ROW: GroupRow = {
 function renderRow(
   row: GroupRow,
   className?: string,
+  nodeColors?: ReadonlyMap<string, string>,
 ): ReturnType<typeof vi.fn<(id: string) => void>> {
   const onToggle = vi.fn<(id: string) => void>();
 
@@ -71,6 +72,7 @@ function renderRow(
       <tbody>
         <TableGroupRow
           columns={COLUMNS}
+          nodeColors={nodeColors}
           onToggle={onToggle}
           row={row}
           timeZone="UTC"
@@ -84,6 +86,33 @@ function renderRow(
 }
 
 describe(TableGroupRow, () => {
+  it("tints its pill with the color of its tag", () => {
+    renderRow(ROW, undefined, new Map([["group-id", "rgb(255, 0, 0)"]]));
+
+    const { background } = screen.getByRole("button", {
+      name: "Aspect",
+    }).style;
+
+    expect(background).toContain("color-mix");
+    expect(background).toContain("rgb(255, 0, 0)");
+  });
+
+  it("leaves its pill plain with colors off or no color for its tag", () => {
+    renderRow(ROW);
+
+    expect(
+      screen.getByRole("button", { name: "Aspect" }).style.background,
+    ).toBe("");
+  });
+
+  it("leaves its pill plain when the legend lacks its tag", () => {
+    renderRow(ROW, undefined, new Map([["other", "red"]]));
+
+    expect(
+      screen.getByRole("button", { name: "Aspect" }).style.background,
+    ).toBe("");
+  });
+
   it("applies its class name", () => {
     renderRow(ROW, "table-group-row");
 

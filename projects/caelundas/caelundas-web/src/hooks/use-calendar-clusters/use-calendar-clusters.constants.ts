@@ -7,7 +7,6 @@ import type { CalendarViewName } from "../../components/calendar-display/events-
  */
 export const CLUSTERED_VIEWS: ReadonlySet<CalendarViewName> = new Set([
   "day",
-  "three-day",
   "week",
 ]);
 
@@ -16,6 +15,5 @@ export const CLUSTERED_VIEWS: ReadonlySet<CalendarViewName> = new Set([
  */
 export const CLUSTER_TUNING = {
   day: { gapMinutes: 10, minimum: 4 },
-  "three-day": { gapMinutes: 15, minimum: 3 },
   week: { gapMinutes: 15, minimum: 2 },
 } as const;

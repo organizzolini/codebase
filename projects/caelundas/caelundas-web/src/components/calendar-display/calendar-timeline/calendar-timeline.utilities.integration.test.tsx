@@ -32,6 +32,11 @@ const NESTED_GROUPING = encodeURIComponent(
   JSON.stringify([{ field: "tag:tag-aspect" }, { field: "tag:tag-body" }]),
 );
 
+// Grouped by body alone, as the rows these tests count are.
+const BODY_GROUPING = encodeURIComponent(
+  JSON.stringify([{ field: "tag:tag-body" }]),
+);
+
 /**
  * The fixture's events with a run of busy ones from an instant.
  */
@@ -62,7 +67,9 @@ describe("calendar timeline", () => {
 
   // Each leaf group holds its events in a row of its own with no title, so it can collapse.
   it("draws a row per body, counting their events", async () => {
-    await renderCalendarRoute("/?view=timeline&date=2026-03-04");
+    await renderCalendarRoute(
+      `/?view=timeline&date=2026-03-04&group=${BODY_GROUPING}`,
+    );
 
     await expect(findTimelineRows()).resolves.toStrictEqual([
       "Mars1",
@@ -160,7 +167,9 @@ describe("calendar timeline", () => {
   });
 
   it("rolls a whole year's events into its rows", async () => {
-    await renderCalendarRoute("/?view=timeline&scale=year&date=2026-03-04");
+    await renderCalendarRoute(
+      `/?view=timeline&scale=year&date=2026-03-04&group=${BODY_GROUPING}`,
+    );
 
     await expect(findTimelineRows()).resolves.toStrictEqual([
       "Mars2",
@@ -194,9 +203,12 @@ describe("calendar timeline", () => {
   });
 
   it("clusters crowded markers into a count", async () => {
-    await renderCalendarRoute("/?view=timeline&date=2026-03-10", {
-      api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
-    });
+    await renderCalendarRoute(
+      `/?view=timeline&date=2026-03-10&group=${BODY_GROUPING}`,
+      {
+        api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
+      },
+    );
 
     const timeline = await screen.findByTestId("calendar-timeline");
 
@@ -212,9 +224,12 @@ describe("calendar timeline", () => {
   });
 
   it("lists the events behind a count when it is clicked", async () => {
-    await renderCalendarRoute("/?view=timeline&date=2026-03-10", {
-      api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
-    });
+    await renderCalendarRoute(
+      `/?view=timeline&date=2026-03-10&group=${BODY_GROUPING}`,
+      {
+        api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
+      },
+    );
 
     const timeline = await screen.findByTestId("calendar-timeline");
 

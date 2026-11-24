@@ -158,7 +158,7 @@ describe(CalendarTable, () => {
   });
 
   describe("paging with the toolbar's shared state", () => {
-    const many = Array.from({ length: 60 }, (_value, index) =>
+    const many = Array.from({ length: 250 }, (_value, index) =>
       event(`m${String(index)}`, { id: "aspect", name: "Aspect" }),
     );
     const shared: { current: TableGroupsValue | undefined } = {
@@ -191,33 +191,33 @@ describe(CalendarTable, () => {
     it("renders more rows when pages are loaded, a page of each list's events at a time", () => {
       render(tree(many));
 
-      expect(screen.getAllByTestId("table-event-row")).toHaveLength(25);
+      expect(screen.getAllByTestId("table-event-row")).toHaveLength(100);
 
       act(() => {
         shared.current?.dispatch({ pages: 2, type: "set-pages" });
       });
 
-      expect(screen.getAllByTestId("table-event-row")).toHaveLength(50);
+      expect(screen.getAllByTestId("table-event-row")).toHaveLength(200);
 
       act(() => {
         shared.current?.dispatch({ pages: 3, type: "set-pages" });
       });
 
-      expect(screen.getAllByTestId("table-event-row")).toHaveLength(60);
+      expect(screen.getAllByTestId("table-event-row")).toHaveLength(250);
     });
 
     it("numbers the events from 1 in each list, continuing across the pages loaded", () => {
       render(tree(many));
 
       expect(positions().slice(0, 2)).toStrictEqual(["1", "2"]);
-      expect(positions().at(-1)).toBe("25");
+      expect(positions().at(-1)).toBe("100");
 
       act(() => {
         shared.current?.dispatch({ pages: 2, type: "set-pages" });
       });
 
-      expect(positions().at(-1)).toBe("50");
-      expect(positions()[25]).toBe("26");
+      expect(positions().at(-1)).toBe("200");
+      expect(positions()[100]).toBe("101");
     });
 
     it("keeps the pages loaded when it draws again with the same data made anew", () => {
@@ -230,7 +230,7 @@ describe(CalendarTable, () => {
       rerender(tree(many.map((record) => ({ ...record }))));
 
       expect(shared.current?.state.pages).toBe(2);
-      expect(screen.getAllByTestId("table-event-row")).toHaveLength(50);
+      expect(screen.getAllByTestId("table-event-row")).toHaveLength(200);
     });
 
     it("starts over at the first page when the events really change", () => {
@@ -239,19 +239,19 @@ describe(CalendarTable, () => {
       act(() => {
         shared.current?.dispatch({ pages: 2, type: "set-pages" });
       });
-      rerender(tree(many.slice(0, 40)));
+      rerender(tree(many.slice(0, 150)));
 
       expect(shared.current?.state.pages).toBe(1);
-      expect(screen.getAllByTestId("table-event-row")).toHaveLength(25);
+      expect(screen.getAllByTestId("table-event-row")).toHaveLength(100);
     });
 
     it("tells the toolbar how big the lists are and how much shows", () => {
       render(tree(many));
 
       expect(shared.current?.state.stats).toStrictEqual({
-        longest: 60,
-        shown: 25,
-        total: 60,
+        longest: 250,
+        shown: 100,
+        total: 250,
       });
     });
   });

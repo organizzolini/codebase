@@ -1,9 +1,5 @@
 import { useMemo } from "react";
 
-import {
-  getAgendaRange,
-  toAgendaRows,
-} from "../../calendar-display/calendar-agenda/calendar-agenda.utilities";
 import { formatCalendarDay } from "../../calendar-display/events-calendar/components/calendar-format/calendar-format.utilities";
 import { VirtualList } from "../../calendar-display/virtual-list/virtual-list";
 import { CalendarEventRow } from "../calendar-event-row/calendar-event-row";
@@ -11,6 +7,7 @@ import { CalendarEventRow } from "../calendar-event-row/calendar-event-row";
 import {
   getEventRowKey,
   getRowHeight,
+  listDayEvents,
 } from "./calendar-overflow-list.utilities";
 
 import type { CalendarEventRecord } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
@@ -43,12 +40,9 @@ export function CalendarOverflowList(
 
   // 🪝 Hooks
   // The day's events in order, each once, an event already under way when
-  // the day began marked ongoing, the way the agenda lists them.
+  // the day began marked ongoing, the way the table lists them.
   const rows = useMemo(
-    () =>
-      toAgendaRows(events, getAgendaRange(day, timeZone, 1)).filter(
-        (row) => row.kind === "event",
-      ),
+    () => listDayEvents(events, day, timeZone),
     [day, events, timeZone],
   );
 

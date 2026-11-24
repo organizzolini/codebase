@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { INITIAL_TABLE_GROUPS } from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.constants";
 
@@ -195,11 +195,32 @@ describe("calendar-group-strip utilities", () => {
   });
 
   describe(getCollapseHandlers, () => {
+    it("acts on the levels given and no others", () => {
+      const collapseAll = vi.fn();
+      const handlers = getCollapseHandlers(
+        "table",
+        {
+          canCollapse: (levels) => levels.includes(1),
+          canExpand: () => false,
+          collapseAll,
+          dispatch: () => {},
+          expandAll: () => {},
+          provided: true,
+          state: INITIAL_TABLE_GROUPS,
+        },
+        [1, 2],
+      );
+
+      handlers.onCollapseAll?.();
+
+      expect(collapseAll).toHaveBeenCalledWith([1, 2]);
+    });
+
     const groups = (
       overrides: Partial<TableGroupsValue>,
     ): TableGroupsValue => ({
-      canCollapse: false,
-      canExpand: false,
+      canCollapse: () => false,
+      canExpand: () => false,
       collapseAll: () => {},
       dispatch: () => {},
       expandAll: () => {},
@@ -211,7 +232,8 @@ describe("calendar-group-strip utilities", () => {
     it("offers only Collapse all while no group is collapsed", () => {
       const handlers = getCollapseHandlers(
         "table",
-        groups({ canCollapse: true }),
+        groups({ canCollapse: () => true }),
+        [0],
       );
 
       expect(handlers.onCollapseAll).toBeDefined();
@@ -221,7 +243,8 @@ describe("calendar-group-strip utilities", () => {
     it("offers only Expand all while every group is collapsed", () => {
       const handlers = getCollapseHandlers(
         "table",
-        groups({ canExpand: true }),
+        groups({ canExpand: () => true }),
+        [0],
       );
 
       expect(handlers.onCollapseAll).toBeUndefined();
@@ -231,7 +254,8 @@ describe("calendar-group-strip utilities", () => {
     it("offers both while the groups are mixed", () => {
       const handlers = getCollapseHandlers(
         "table",
-        groups({ canCollapse: true, canExpand: true }),
+        groups({ canCollapse: () => true, canExpand: () => true }),
+        [0],
       );
 
       expect(handlers.onCollapseAll).toBeDefined();
@@ -242,7 +266,8 @@ describe("calendar-group-strip utilities", () => {
       expect(
         getCollapseHandlers(
           "timeline",
-          groups({ canCollapse: true, canExpand: true }),
+          groups({ canCollapse: () => true, canExpand: () => true }),
+          [0],
         ),
       ).toStrictEqual({ onCollapseAll: undefined, onExpandAll: undefined });
     });

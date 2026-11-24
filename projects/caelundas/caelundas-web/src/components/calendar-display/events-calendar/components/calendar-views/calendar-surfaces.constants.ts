@@ -4,8 +4,6 @@
  * Whole Tailwind class names for surfaces over the sky.
  */
 export const SURFACE_CLASS_NAMES = {
-  agendaDate: "bg-muted",
-  agendaGroup: "bg-background",
   emptyCard: "bg-background/(--surface-opacity)",
   navigationTitle: "bg-background dark:bg-input/30",
   timeGutter: "bg-background",

@@ -7,7 +7,6 @@ const display = vi.hoisted(() => ({
   change: vi.fn<() => void>(),
   handlers: {
     handleClustersChange: vi.fn<(enabled: boolean) => void>(),
-    handleColorByChange: vi.fn<() => void>(),
     handleColorsChange: vi.fn<() => void>(),
     handleScaleChange: vi.fn<() => void>(),
     handleSymbolsChange: vi.fn<() => void>(),
@@ -40,8 +39,6 @@ vi.mock(
 );
 
 const PROPERTIES = {
-  colorBy: undefined,
-  facets: [],
   timeZone: "UTC",
   view: "timeline",
 } as const;
@@ -80,31 +77,60 @@ describe(CalendarDisplayMenu, () => {
     await expect(screen.findByTestId("query-cascader")).resolves.toBeDefined();
   });
 
-  it("nests Calendar, Color and Sky in its list", async () => {
+  it("lists Layout, Symbols, Colors, Crowded days and Sky", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
 
-    for (const label of ["Calendar", "Color", "Sky", "Scale", "Symbols"]) {
+    for (const label of [
+      "Layout",
+      "Symbols",
+      "Colors",
+      "Crowded days",
+      "Sky",
+      "Scale",
+    ]) {
       await expect(screen.findByText(label)).resolves.toBeDefined();
     }
 
-    expect(screen.queryByText("Color settings…")).toBeNull();
     expect(screen.queryByText("Sky settings…")).toBeNull();
   });
 
-  it("writes a choice from the list: a switch flips, and a view is set from the toggle group", async () => {
+  it("writes a choice from the list: a switch flips, and a view is ticked in its branch", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
     fireEvent.click(await screen.findByText("Crowded days"));
-    fireEvent.click(await screen.findByText("Group similar events"));
 
     expect(display.handlers.handleClustersChange).toHaveBeenCalledWith(false);
 
-    fireEvent.click(screen.getByRole("button", { name: /^back$/iu }));
-    fireEvent.click(await screen.findByText("Calendar"));
-    fireEvent.click(await screen.findByRole("radio", { name: "Week" }));
+    fireEvent.click(await screen.findByText("Week"));
 
     expect(display.handlers.handleViewChange).toHaveBeenCalledWith("week");
+
+    fireEvent.click(await screen.findByText("Symbols"));
+    fireEvent.click(await screen.findByText("Emojis"));
+
+    expect(display.handlers.handleSymbolsChange).toHaveBeenCalledWith("emojis");
+  });
+
+  it("opens with Layout expanded and the other branches closed", async () => {
+    render(<CalendarDisplayMenu {...PROPERTIES} />);
+    fireEvent.click(screen.getByRole("button", { name: "Display" }));
+
+    await expect(
+      screen.findByRole("treeitem", { name: /^Month/u }),
+    ).resolves.toBeDefined();
+    expect(screen.queryByRole("treeitem", { name: /^Emojis/u })).toBeNull();
+  });
+
+  it("lists its choices as a tree, each branch opening beneath itself", async () => {
+    render(<CalendarDisplayMenu {...PROPERTIES} />);
+    fireEvent.click(screen.getByRole("button", { name: "Display" }));
+
+    await expect(
+      screen.findByRole("treeitem", { name: /^Timeline/u }),
+    ).resolves.toBeDefined();
+    expect(screen.getByText("Layout")).toBeDefined();
+    expect(screen.queryByRole("button", { name: /^back$/iu })).toBeNull();
   });
 
   it("finds a view by searching for it", async () => {
@@ -113,11 +139,11 @@ describe(CalendarDisplayMenu, () => {
     fireEvent.change(
       await screen.findByPlaceholderText("Search display options"),
       {
-        target: { value: "agenda" },
+        target: { value: "table" },
       },
     );
-    fireEvent.click(await screen.findByRole("option", { name: /^Agenda/u }));
+    fireEvent.click(await screen.findByRole("treeitem", { name: /^Table/u }));
 
-    expect(display.handlers.handleViewChange).toHaveBeenCalledWith("agenda");
+    expect(display.handlers.handleViewChange).toHaveBeenCalledWith("table");
   });
 });

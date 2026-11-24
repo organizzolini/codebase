@@ -56,6 +56,17 @@ describe("tag-pill-label utilities", () => {
       });
     });
 
+    it("leads Unique with the fingerprint icon, to an icon the tag has", () => {
+      expect(getTagLead("tag", "Unique")).toStrictEqual({
+        kind: "icon",
+        value: "fingerprint",
+      });
+      expect(getTagLead(undefined, "Harmonic / Unique")).toStrictEqual({
+        kind: "icon",
+        value: "fingerprint",
+      });
+    });
+
     it("falls back to the tag's icon when the name has no symbol and lucide has the icon", () => {
       expect(getTagLead("moon", "Retrograde Period")).toStrictEqual({
         kind: "icon",

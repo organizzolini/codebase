@@ -23,6 +23,7 @@ const RECORD: CalendarEventRecord = {
     { depth: 0, id: "body", name: "Body", path: "Body" },
     { depth: 1, id: "sun", name: "Sun", path: "Body / Sun" },
     { depth: 2, id: "venus", name: "Venus", path: "Body / Planet / Venus" },
+    { depth: 1, id: "other", name: "Other", path: "Body / Other" },
   ],
   timezone: "UTC",
 };
@@ -54,12 +55,12 @@ describe(TableTagCell, () => {
 
     expect(
       screen.getAllByTestId("table-tag-pill").map((pill) => pill.textContent),
-    ).toStrictEqual(["Body", "☀️Sun", "♀Planet / Venus"]);
+    ).toStrictEqual(["☀️Sun", "♀Planet / Venus", "Other"]);
   });
 
   it("draws the icon the facets gave a tag, beside its name", () => {
     render(
-      <TagIconsContext value={new Map([["body", "globe"]])}>
+      <TagIconsContext value={new Map([["other", "globe"]])}>
         <TableTagCell
           prefix="Body"
           record={RECORD}
@@ -67,7 +68,7 @@ describe(TableTagCell, () => {
       </TagIconsContext>,
     );
 
-    const [body] = screen.getAllByTestId("table-tag-pill");
+    const body = screen.getAllByTestId("table-tag-pill")[2];
 
     expect(body?.querySelector("[data-testid='tag-icon']")).not.toBeNull();
   });

@@ -92,10 +92,10 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 /**
  * Renders the landing page's heading.
  */
-// The calendar fills the viewport in the data's zone; the view the link names wins, else a phone opens on agenda, wider on month.
+// The calendar fills the viewport in the data's zone; the view the link names wins, else a phone opens on the table, wider on month.
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { colorBy, dataset, emptiness, events, facets, grouping, presets } =
+  const { dataset, emptiness, events, facets, grouping, presets } =
     Route.useLoaderData();
   // The calendar's own search only: structural sharing hands back the same
   // object when a sky key alone changed, so the page is not rendered again.
@@ -121,17 +121,13 @@ function IndexPage(): ReactNode {
 
   // 💪 Handlers
   const {
-    getShowLater,
     handleColumnsChange,
     handleDateChange,
     handleFilterChange,
     handleGroupingChange,
     handleSortChange,
   } = useCalendarSearch(timeZone);
-  // The agenda grows a month at a time, up to a year, in place: the link
-  // is replaced rather than pushed, and the rows already listed stay put.
   const agendaDays = search.days ?? AGENDA_DAY_COUNT;
-  const handleShowLater = getShowLater(agendaDays);
 
   // ♻️ Lifecycle
 
@@ -157,7 +153,6 @@ function IndexPage(): ReactNode {
               anchor={anchor}
               className="min-h-0 flex-1"
               clusters={search.clusters !== false}
-              colorBy={colorBy}
               colors={search.colors !== false}
               columns={search.columns}
               compact={!isWide}
@@ -170,8 +165,6 @@ function IndexPage(): ReactNode {
                   display={
                     <CalendarDisplayMenu
                       className="contents"
-                      colorBy={colorBy}
-                      facets={facets}
                       timeZone={timeZone}
                       view={view}
                     />
@@ -179,6 +172,7 @@ function IndexPage(): ReactNode {
                   facets={facets}
                   filter={search.filter}
                   grouping={grouping}
+                  isDefaultGrouping={search.group === undefined}
                   onColumnsChange={handleColumnsChange}
                   onFilterChange={handleFilterChange}
                   onGroupingChange={handleGroupingChange}
@@ -189,8 +183,9 @@ function IndexPage(): ReactNode {
                 />
               }
               grouping={grouping}
+              onColumnsChange={handleColumnsChange}
               onDateChange={handleDateChange}
-              onShowLater={handleShowLater}
+              onSortChange={handleSortChange}
               scale={search.scale}
               sort={search.sort}
               timeZone={timeZone}
