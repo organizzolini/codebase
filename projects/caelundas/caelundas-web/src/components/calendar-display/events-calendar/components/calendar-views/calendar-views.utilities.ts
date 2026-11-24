@@ -36,7 +36,7 @@ export function parseTimelineScale(value: unknown): TimelineScale | undefined {
  * The calendar's view for one of the app's, and its day count for the N-day view; the timeline has none.
  */
 export function toEventCalendarView(
-  view: Exclude<CalendarViewName, "timeline">,
+  view: Exclude<CalendarViewName, "table" | "timeline">,
 ): {
   dayCount: number;
   view: CalendarView;

@@ -13,6 +13,7 @@ export type TagCheckState = "checked" | "partial" | "unchecked";
 export interface TagOptionData {
   depth: number;
   name: string;
+  note?: string;
 }
 
 /**

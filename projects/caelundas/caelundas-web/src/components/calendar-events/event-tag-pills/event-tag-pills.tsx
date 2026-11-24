@@ -1,3 +1,5 @@
+import { TagPillLabel } from "../tag-pill-label/tag-pill-label";
+
 import { getTagColor } from "./calendar-tag-colors.utilities";
 
 import type { CalendarEventTag } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
@@ -55,7 +57,10 @@ export function EventTagPills(
               } satisfies CSSProperties
             }
           >
-            {tag.name}
+            <TagPillLabel
+              id={tag.id}
+              label={tag.name}
+            />
           </li>
         ))}
       </ul>

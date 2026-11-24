@@ -204,7 +204,12 @@ function getVisibleDays(
     return { end: shiftDays(sunday, WEEK_DAYS), start: sunday };
   }
 
-  const length = { agenda: agendaDays, day: 1, "three-day": THREE_DAYS }[view];
+  const length = {
+    agenda: agendaDays,
+    day: 1,
+    table: agendaDays,
+    "three-day": THREE_DAYS,
+  }[view];
 
   return { end: shiftDays(day, length), start: day };
 }

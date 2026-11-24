@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useCalendarNavigation } from "../../../hooks/use-calendar-navigation/use-calendar-navigation";
 import { CalendarToolbar } from "../../calendar-controls/calendar-toolbar/calendar-toolbar";
 import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
+import { CalendarTable } from "../calendar-table/calendar-table";
 import { CalendarTimeline } from "../calendar-timeline/calendar-timeline";
 
 import { createColorScheme } from "./components/calendar-color-schemes/calendar-color-schemes.utilities";
@@ -52,6 +53,10 @@ export interface EventsCalendarProperties {
    * Whether events are drawn in color; they are when absent.
    */
   colors?: boolean;
+  /**
+   * The columns the table shows; its defaults when absent.
+   */
+  columns?: readonly string[] | undefined;
   /**
    * Narrows the calendar for a phone: the toolbar lists the views in a menu,
    * and the week scrolls sideways under a sticky hour column.
@@ -109,6 +114,7 @@ export function EventsCalendar(
     className,
     colorBy,
     colors = true,
+    columns,
     compact = false,
     events: loadedEvents,
     facets,
@@ -161,7 +167,22 @@ export function EventsCalendar(
           filters={filters}
           navigation={navigation}
         />
-        {view === "timeline" ? (
+        {view === "table" ? (
+          <CalendarTable
+            agendaDays={agendaDays}
+            anchor={anchor}
+            className="min-h-0 flex-1"
+            columns={columns}
+            events={events}
+            facets={facets}
+            grouping={grouping}
+            onDateChange={onDateChange}
+            onNavigationChange={handleNavigationChange}
+            onShowLater={properties.onShowLater}
+            sort={sort}
+            timeZone={timeZone}
+          />
+        ) : view === "timeline" ? (
           <CalendarTimeline
             anchor={anchor}
             className="min-h-0 flex-1"

@@ -1,5 +1,6 @@
 import type { CalendarEventRecord } from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { FilterOption } from "@codebase/presentation";
+import type { ReactNode } from "react";
 
 /**
  * A derived field's id: a time period or duration.
@@ -24,6 +25,10 @@ export interface EventGroupField {
    */
   description: string;
   /**
+   * The root's lucide icon, drawn beside its name, when it has one.
+   */
+  icon?: ReactNode;
+  /**
    * `tag:` and the root's id for a tag root, or a derived field's id.
    */
   id: string;
@@ -32,6 +37,10 @@ export interface EventGroupField {
    * For a tag root, the tag names at each depth below it, from depth 1; empty for a derived field.
    */
   levels: readonly (readonly string[])[];
+  /**
+   * For a tag root, the tags with tags beneath them, depth first, each one a thing to group by the children of; empty for a derived field.
+   */
+  nodes: readonly GroupNodeOption[];
   /**
    * For a tag root, its tags in filter tree order; empty for a derived field.
    */
@@ -44,11 +53,15 @@ export interface EventGroupField {
 export type EventGrouping = readonly EventGroupLevel[];
 
 /**
- * One grouping level: a field, plus tags or a `depth`.
+ * One grouping level: a field, plus for a tag root the tag whose children it groups by, none meaning the root's own. A color level reads `tags` or a `depth` instead.
  */
 export interface EventGroupLevel {
   depth?: number | undefined;
   field: string;
+  /**
+   * The id of the tag whose children the level groups by; the root's own when absent.
+   */
+  parent?: string | undefined;
   tags?: readonly string[] | undefined;
 }
 
@@ -78,8 +91,43 @@ export interface EventGroupNode {
   label: string;
   level: number;
   /**
+   * What sorts the group among its siblings: its tag's place in the tree, or its derived value.
+   */
+  order?: string;
+  /**
    * The names from beneath the tag root down to the group's tag, for a tag
    * group; just its label otherwise.
    */
   path: readonly string[];
+}
+
+/**
+ * A tag with tags beneath it, which a grouping can split by the children of.
+ */
+export interface GroupNodeOption {
+  count: number;
+  /**
+   * How far beneath its root the tag sits, so a root's children are 1.
+   */
+  depth: number;
+  icon?: ReactNode;
+  id: string;
+  name: string;
+  note?: string;
+  /**
+   * The id of the tag above, or null for a tag directly beneath the root.
+   */
+  parentId: null | string;
+  /**
+   * The names from beneath the root down to the tag, joined by " / ".
+   */
+  path: string;
+}
+
+/**
+ * A grouping level brought within its field, with where its tag sits: the id of the tag above it, null beneath the root, or nothing for the root's own children.
+ */
+export interface ResolvedGroupLevel {
+  above: null | string | undefined;
+  level: EventGroupLevel;
 }

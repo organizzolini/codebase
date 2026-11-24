@@ -9,16 +9,20 @@ import {
   PopoverTrigger,
 } from "@codebase/presentation";
 
+import { moveListItem } from "../calendar-group-strip/components/chip-menu/chip-menu.utilities";
 import { createEventGroupFields } from "../calendar-group-strip/components/event-group-model/event-group-fields.utilities";
-import { moveListItem } from "../chip-menu/chip-menu.utilities";
 import { QueryCascader } from "../query-cascader/query-cascader";
-import { JOINED_STRIP_CLASS_NAME } from "../query-cascader/query-cascader.constants";
+import { PICK_EVERY_ROW } from "../query-cascader/query-cascader.constants";
 
-import { SORT_OPTIONS, TITLE } from "./calendar-sort-strip.constants";
+import {
+  DEFAULT_SORT_LABEL,
+  DEFAULT_SORTS,
+  TITLE,
+} from "./calendar-sort-strip.constants";
 import {
   createSortItems,
   flipSortAt,
-  labelDefaultSort,
+  labelSort,
   toSorts,
   toSortValue,
 } from "./calendar-sort-strip.utilities";
@@ -26,17 +30,15 @@ import { SortChip } from "./components/sort-chip/sort-chip";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
-import type { EventGrouping } from "../calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** Facets, grouping, shown sorts, view, and the change handler. */
+/** Facets, shown sorts, view, and the change handler. */
 export interface CalendarSortStripProperties {
   className?: string;
   facets?: readonly EventFacet[] | undefined;
-  grouping?: EventGrouping | undefined;
   onSortChange: (sort: GroupSort[] | undefined) => void;
   sort: readonly GroupSort[] | undefined;
   view: CalendarViewName;
@@ -44,33 +46,26 @@ export interface CalendarSortStripProperties {
 
 // 🧩 Component
 
-/** Renders the Sort button, opening a searchable list to order groups by, with one chip per sort and its ellipsis menu. */
+/** Renders the Sort button, opening a searchable list to order groups by, with one chip per sort and its ellipsis menu. Each tag root and each tag with tags beneath it can be ticked, to rank groups by the place of their events' tags there. */
 export function CalendarSortStrip(
   properties: Readonly<CalendarSortStripProperties>,
 ): ReactNode {
-  const {
-    className,
-    facets = [],
-    grouping = [],
-    onSortChange,
-    sort,
-    view,
-  } = properties;
+  const { className, facets = [], onSortChange, sort, view } = properties;
 
   // 🪝 Hooks
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
+  const items = useMemo(() => createSortItems(fields), [fields]);
 
   // 🏗 Setup
-  const items = createSortItems();
-  const sorts = sort ?? [];
-  const isDefault = sorts.length === 0;
+  const sorts = sort === undefined || sort.length === 0 ? DEFAULT_SORTS : sort;
+  const isDefault = sort === undefined || sort.length === 0;
 
   // 💪 Handlers
 
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
-  if (view !== "timeline") {
+  if (view !== "timeline" && view !== "table") {
     return null;
   }
 
@@ -82,7 +77,7 @@ export function CalendarSortStrip(
     >
       <ButtonGroup
         aria-label={TITLE}
-        className={JOINED_STRIP_CLASS_NAME}
+        className="flex-wrap gap-y-2"
       >
         <Popover>
           <PopoverTrigger
@@ -99,64 +94,57 @@ export function CalendarSortStrip(
           <PopoverContent
             align="start"
             aria-label="Sort by"
-            className="w-72 max-w-[90vw] p-0"
+            className="w-80 max-w-[90vw] p-0"
           >
             <QueryCascader
               cascade={false}
               items={items}
+              mode="drill"
               onValueChange={(next) => {
                 onSortChange(toSorts(next, sorts));
               }}
               placeholder="Sort by"
+              selectable={PICK_EVERY_ROW}
               value={toSortValue(sorts)}
               multiple
             />
           </PopoverContent>
         </Popover>
-        {isDefault ? (
+        {sorts.map((current, index) => (
           <SortChip
-            direction="asc"
-            label={labelDefaultSort(grouping, fields)}
+            key={`${current.key}|${current.tag ?? ""}`}
+            direction={current.direction}
+            label={isDefault ? DEFAULT_SORT_LABEL : labelSort(current, fields)}
             onFlip={() => {
-              onSortChange([{ direction: "desc", key: "name" }]);
+              onSortChange(flipSortAt(sorts, index));
             }}
+            onMoveLeft={
+              index === 0
+                ? undefined
+                : () => {
+                    onSortChange(moveListItem(sorts, index, -1));
+                  }
+            }
+            onMoveRight={
+              index === sorts.length - 1
+                ? undefined
+                : () => {
+                    onSortChange(moveListItem(sorts, index, 1));
+                  }
+            }
+            onRemove={
+              isDefault
+                ? undefined
+                : () => {
+                    onSortChange(
+                      sorts.length === 1
+                        ? undefined
+                        : sorts.filter((_, position) => position !== index),
+                    );
+                  }
+            }
           />
-        ) : (
-          sorts.map((current, index) => (
-            <SortChip
-              key={current.key}
-              direction={current.direction}
-              label={
-                SORT_OPTIONS.find((option) => option.key === current.key)
-                  ?.label ?? current.key
-              }
-              onFlip={() => {
-                onSortChange(flipSortAt(sorts, index));
-              }}
-              onMoveLeft={
-                index === 0
-                  ? undefined
-                  : () => {
-                      onSortChange(moveListItem(sorts, index, -1));
-                    }
-              }
-              onMoveRight={
-                index === sorts.length - 1
-                  ? undefined
-                  : () => {
-                      onSortChange(moveListItem(sorts, index, 1));
-                    }
-              }
-              onRemove={() => {
-                onSortChange(
-                  sorts.length === 1
-                    ? undefined
-                    : sorts.filter((_, position) => position !== index),
-                );
-              }}
-            />
-          ))
-        )}
+        ))}
       </ButtonGroup>
     </div>
   );

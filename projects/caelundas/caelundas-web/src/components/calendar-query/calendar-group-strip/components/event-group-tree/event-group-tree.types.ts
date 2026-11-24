@@ -28,6 +28,10 @@ export interface GroupParent {
   children: EventGroupNode[];
   events: readonly CalendarEventRecord[];
   id: string;
+  /**
+   * The group's own key: a tag's id for a tag group.
+   */
+  key?: null | string;
 }
 
 /**
@@ -36,7 +40,43 @@ export interface GroupParent {
 export interface GroupSort {
   direction: "asc" | "desc";
   key: GroupSortKey;
+  /**
+   * For the `tag` key, the id of the tag root's field or of the tag whose children's order the group's events are ranked by.
+   */
+  tag?: string | undefined;
 }
 
-/** What groups are ordered by: name, event count, or first time. */
-export type GroupSortKey = "count" | "first" | "name";
+/** What groups are ordered by: tag order, name, event count, first time, or the place of their events' tags beneath one tag. */
+export type GroupSortKey = "count" | "first" | "name" | "order" | "tag";
+
+/**
+ * What describes a level's groups: its field and the name of what is split, how many names of a tag's path its parent already holds, and, for a level that refines the one before it, the only group it splits.
+ */
+export interface LevelContext {
+  field: string;
+  fieldLabel: string;
+  /**
+   * The tag id of the only group this level splits, when it refines the level before it in the same tag root; the others stay whole.
+   */
+  only?: string | undefined;
+  /**
+   * The names of a tag's path, from beneath the root, that the level's parent already holds.
+   */
+  skip: number;
+}
+
+/**
+ * A group, with the text it is ordered among its siblings by.
+ */
+export interface OrderedGroupNode {
+  node: EventGroupNode;
+  order: string;
+}
+
+/**
+ * How tags rank for sorting groups by a tag: each tag's place in its root's tree order, and the path prefix beneath which a tag's children are, by the tag or root field's id.
+ */
+export interface TagRanks {
+  prefixes: ReadonlyMap<string, string>;
+  ranks: ReadonlyMap<string, number>;
+}

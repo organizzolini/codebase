@@ -16,7 +16,7 @@ const HIGHLIGHTS = {
       {
         negated: false,
         operator: "is_any_of",
-        path: ["tag:tag-type"],
+        path: ["tag:tag-aspect"],
         values: ["tag-retrograde"],
       },
     ],
@@ -72,7 +72,7 @@ describe(loadCalendar, () => {
           {
             id: "rule",
             operator: "is_any_of",
-            path: ["tag:tag-planet"],
+            path: ["tag:tag-body"],
             type: "rule",
             value: ["tag-venus"],
           },
@@ -87,7 +87,7 @@ describe(loadCalendar, () => {
       rules: [
         {
           operator: "is_any_of",
-          path: ["tag:tag-planet"],
+          path: ["tag:tag-body"],
           values: ["tag-venus"],
         },
       ],
@@ -175,17 +175,17 @@ describe(loadCalendar, () => {
     const api = serveCalendarApi();
     const data = await loadCalendar({
       ...MARCH,
-      color: { depth: 1, field: "tag:tag-planet" },
+      color: { field: "tag:tag-body" },
       filter: EMPTY_EVENT_FILTER,
     });
     const conjunction = data.events.find(
       (event) => event.id === "event-mars-conjunct-venus",
     );
 
-    expect(data.colorBy).toStrictEqual({ depth: 1, field: "tag:tag-planet" });
+    expect(data.colorBy).toStrictEqual({ field: "tag:tag-body" });
     expect(data.grouping).toStrictEqual([]);
     expect(api.requests.events[0]?.grouping).toStrictEqual({
-      colorBy: { depth: 1, field: "tag:tag-planet" },
+      colorBy: { field: "tag:tag-body" },
     });
     expect(
       conjunction?.groups[0]?.map(({ key }) => key).toSorted(),

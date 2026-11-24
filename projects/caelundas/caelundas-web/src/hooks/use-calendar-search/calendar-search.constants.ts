@@ -25,6 +25,12 @@ export const groupLevelSchema = z.object({
     .transform((depth) => groupDepthSchema.safeParse(depth).data)
     .optional(),
   field: z.string().min(1),
+  // The tag whose children the level groups by; anything but an id is
+  // forgotten, which groups by the root's own.
+  parent: z
+    .unknown()
+    .transform((parent) => z.string().min(1).safeParse(parent).data)
+    .optional(),
   // Anything but a list of ids is forgotten, like a depth out of range.
   tags: z
     .unknown()
@@ -65,7 +71,14 @@ export const skySearchValueSchema = z.union([
 
 export const groupSortSchema = z.object({
   direction: z.enum(["asc", "desc"]),
-  key: z.enum(["count", "first", "name"]),
+  key: z.enum(["count", "first", "name", "order", "tag"]),
+  // The tag a `tag` sort ranks by; anything but an id is forgotten.
+  tag: z
+    .unknown()
+    .transform((tag) => z.string().min(1).safeParse(tag).data)
+    .optional(),
 });
 
 export const groupSortsSchema = z.array(groupSortSchema);
+
+export const columnsSchema = z.array(z.string().min(1));

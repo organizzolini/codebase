@@ -17,7 +17,10 @@ import type {
   EventGroupField,
   EventGrouping,
 } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
-import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
+import type {
+  GroupSort,
+  TagRanks,
+} from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CalendarEventRecord } from "../events-calendar/components/calendar-loader/calendar-records.types";
 import type {
   PendingGroup,
@@ -66,10 +69,11 @@ export function toTimelineRows(
   grouping: EventGrouping,
   options: Readonly<{
     fields: readonly EventGroupField[];
+    ranks?: TagRanks | undefined;
     sort?: readonly GroupSort[] | undefined;
   }>,
 ): TimelineRows {
-  const { fields, sort } = options;
+  const { fields, ranks, sort } = options;
 
   if (grouping.length === 0) {
     return {
@@ -86,6 +90,7 @@ export function toTimelineRows(
   const pending: PendingGroup[] = sortEventGroups(
     buildEventGroups(events, grouping, fields),
     sort,
+    ranks,
   )
     .toReversed()
     .map((node) => ({ node, parent: { children: resources, id: "" } }));
@@ -94,9 +99,7 @@ export function toTimelineRows(
     const row = placeGroupRows(group, layout);
 
     if (group.node.children.length === 0) {
-      bars.push(
-        ...group.node.events.map((record) => toGanttEvent(record, row.id)),
-      );
+      bars.push(...toLeafBars(row, group.node.events));
     } else {
       pending.push(
         ...group.node.children
@@ -172,6 +175,17 @@ export function watchVisibleRows(
     resizes.disconnect();
     viewport?.removeEventListener("scroll", schedule);
   };
+}
+
+/**
+ * Adds the row a leaf group's events are drawn on, beneath the group's own, so the group can be collapsed like any other. It is drawn with no name and no count: the group's row above names and counts it.
+ */
+function addEventsRow(row: PendingGroup["parent"]): { id: string } {
+  const id = `${row.id}:events`;
+
+  row.children.push({ children: [], id, title: "" });
+
+  return { id };
 }
 
 /**
@@ -252,4 +266,21 @@ function toGanttEvent(
     title: getEventLabel(record).glyphs,
     ...(record.color === null ? {} : { color: record.color }),
   };
+}
+
+/**
+ * The bars of a leaf group's events, drawn on a row of their own beneath the group's. A loop rather than a mapping callback keeps the call stack shallow.
+ */
+function toLeafBars(
+  row: PendingGroup["parent"],
+  events: readonly CalendarEventRecord[],
+): GanttEvent<TimelineBar>[] {
+  const eventsRow = addEventsRow(row);
+  const bars: GanttEvent<TimelineBar>[] = [];
+
+  for (const record of events) {
+    bars.push(toGanttEvent(record, eventsRow.id));
+  }
+
+  return bars;
 }

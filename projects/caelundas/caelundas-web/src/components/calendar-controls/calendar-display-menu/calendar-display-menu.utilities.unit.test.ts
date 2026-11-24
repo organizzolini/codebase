@@ -126,6 +126,7 @@ describe("calendar-display-menu utilities", () => {
         "calendar:three-day",
         "calendar:day",
         "calendar:agenda",
+        "calendar:table",
         "calendar:timeline",
       ]);
     });

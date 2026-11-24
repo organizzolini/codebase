@@ -84,14 +84,16 @@ describe(CalendarEventRow, () => {
         record={{
           ...symbolic,
           tags: [
-            { depth: 1, id: "aspect", name: "Aspect", path: "Type / Aspect" },
+            { depth: 1, id: "aspect", name: "Aspect", path: "Aspect / Simple" },
           ],
         }}
         timeZone="America/New_York"
       />,
     );
 
-    expect(screen.getByText("Aspect").dataset["path"]).toBe("Type / Aspect");
+    expect(screen.getByText("Aspect").closest("li")?.dataset["path"]).toBe(
+      "Aspect / Simple",
+    );
     expect(screen.getByText("Instant").textContent).toBe("Instant");
   });
 

@@ -8,6 +8,7 @@ import {
   Orbit,
   Square,
   Sun,
+  Table,
 } from "lucide-react";
 
 import {
@@ -43,6 +44,7 @@ export const VIEW_ICONS: Readonly<Record<CalendarViewName, LucideIcon>> = {
   agenda: List,
   day: Square,
   month: CalendarDays,
+  table: Table,
   "three-day": Columns3,
   timeline: ChartGantt,
   week: CalendarRange,

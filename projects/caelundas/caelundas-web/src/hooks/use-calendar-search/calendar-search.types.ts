@@ -27,6 +27,10 @@ export interface CalendarSearch {
    */
   colors?: false | undefined;
   /**
+   * The columns the table shows, first first: `name`, `start`, `end`, or a tag's id; its default columns when absent.
+   */
+  columns?: readonly string[] | undefined;
+  /**
    * The day the calendar shows, as `YYYY-MM-DD`; today when absent.
    */
   date?: string | undefined;

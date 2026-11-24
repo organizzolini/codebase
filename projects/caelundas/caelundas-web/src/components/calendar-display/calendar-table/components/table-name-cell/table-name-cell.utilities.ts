@@ -1,0 +1,20 @@
+import { NAME_TINT_PERCENT } from "./table-name-cell.constants";
+
+import type { CSSProperties } from "react";
+
+// 🔏 Private Functions
+
+// 🌎 Public Functions
+
+/**
+ * The tint of a colored event's name, as the calendar's chips draw it: the color mixed into the background; none for an event with no color.
+ */
+export function getNameTint(color: null | string): CSSProperties | undefined {
+  if (color === null) {
+    return undefined;
+  }
+
+  return {
+    background: `color-mix(in oklab, ${color} ${String(NAME_TINT_PERCENT)}%, hsl(var(--background)))`,
+  };
+}

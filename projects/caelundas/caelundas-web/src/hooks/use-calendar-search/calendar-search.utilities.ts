@@ -9,6 +9,7 @@ import { MAXIMUM_GROUP_LEVELS } from "../../components/calendar-query/calendar-g
 import {
   agendaDaysSchema,
   calendarDateSchema,
+  columnsSchema,
   filterGroupSchema,
   groupLevelSchema,
   groupSortsSchema,
@@ -47,6 +48,7 @@ export function readCalendarSearch(
       search["colors"] === false || search["colors"] === "false"
         ? false
         : undefined,
+    columns: parseColumns(search["columns"]),
     date: calendarDateSchema.safeParse(search["date"]).data,
     days: agendaDaysSchema.safeParse(search["days"]).data,
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),
@@ -88,6 +90,17 @@ export function validateCalendarSearch(
     "sky.top": parseSkyValue(search["sky.top"]),
     "sky.vFov": parseSkyValue(search["sky.vFov"]),
   };
+}
+
+/**
+ * Reads the table's columns from the link, one value or a list; none when there are none.
+ */
+function parseColumns(value: unknown): string[] | undefined {
+  const columns = columnsSchema.safeParse(
+    Array.isArray(value) ? value : [value],
+  ).data;
+
+  return columns === undefined || columns.length === 0 ? undefined : columns;
 }
 
 /**

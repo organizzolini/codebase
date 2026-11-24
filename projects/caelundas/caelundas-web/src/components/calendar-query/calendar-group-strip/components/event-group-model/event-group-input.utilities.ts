@@ -36,6 +36,7 @@ function toLevelInput(level: EventGroupLevel): EventGroupLevelInput {
   return {
     ...(level.depth === undefined ? {} : { depth: level.depth }),
     field: level.field,
+    ...(level.parent === undefined ? {} : { parent: level.parent }),
     ...(level.tags === undefined || level.tags.length === 0
       ? {}
       : { tags: [...level.tags] }),

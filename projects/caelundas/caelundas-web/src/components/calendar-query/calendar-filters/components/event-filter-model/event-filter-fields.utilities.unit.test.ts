@@ -5,7 +5,12 @@ import { findFixtureFacets } from "../../../../../../testing/calendar-facets";
 import { FIXTURE_TAGS } from "../../../../../../testing/calendar-fixture";
 import { findFacets } from "../../../../calendar-display/events-calendar/components/events-api/events-api.utilities";
 
-import { createEventFilterFields } from "./event-filter-fields.utilities";
+import {
+  createEventFilterFields,
+  createTagOptions,
+  describeRoot,
+  describeTagOption,
+} from "./event-filter-fields.utilities";
 
 const DERIVED_FIELDS = [
   ["date", "Date"],
@@ -13,7 +18,6 @@ const DERIVED_FIELDS = [
   ["hour", "Hour"],
   ["duration", "Duration"],
   ["duration-minutes", "Duration (minutes)"],
-  ["temporality", "Temporality"],
   ["text", "Text"],
 ];
 
@@ -32,7 +36,7 @@ const HARMONIC_TAGS = [
   { id: "tag-harmonic-4", name: "Harmonic 4", parentId: "tag-harmonic" },
 ];
 
-// A root that names a dimension the app already derives from each event.
+// A root named like Temporality, which is a tag root like any other.
 const TEMPORALITY_TAGS = MOTION_TAGS.map((tag) => ({
   ...tag,
   name: tag.name.replace("Motion", "Temporality"),
@@ -44,40 +48,39 @@ describe(createEventFilterFields, () => {
     const fields = createEventFilterFields(facets);
 
     expect(fields.map((field) => [field.id, field.label])).toStrictEqual([
+      ["tag:tag-aspect", "Aspect"],
+      ["tag:tag-body", "Body"],
       ["tag:tag-element", "Element"],
-      ["tag:tag-planet", "Planet"],
-      ["tag:tag-sign", "Sign"],
-      ["tag:tag-type", "Type"],
+      ["tag:tag-planetary", "Planetary"],
+      ["tag:tag-zodiac", "Zodiac"],
       ...DERIVED_FIELDS,
     ]);
     expect(
       fields
-        .find((field) => field.id === "tag:tag-type")
+        .find((field) => field.id === "tag:tag-aspect")
         ?.options?.map((option) => [option.value, option.label]),
     ).toStrictEqual([
-      ["tag-aspect", "Aspect"],
-      ["tag-major-aspect", "Major Aspect"],
+      ["tag-simple", "Simple"],
+      ["tag-major", "Major"],
       ["tag-conjunct", "Conjunct"],
       ["tag-square", "Square"],
-      ["tag-ingress", "Ingress"],
-      ["tag-retrograde", "Retrograde"],
     ]);
   });
 
   it("counts the events each tag matches, its descendants' included", async () => {
     const facets = await findFixtureFacets();
     const typeField = createEventFilterFields(facets).find(
-      (field) => field.id === "tag:tag-type",
+      (field) => field.id === "tag:tag-aspect",
     );
 
     expect(
       typeField?.options
         ?.filter(
           (option) =>
-            option.value === "tag-aspect" || option.value === "tag-ingress",
+            option.value === "tag-simple" || option.value === "tag-conjunct",
         )
         .map((option) => option.description),
-    ).toStrictEqual(["2 events", "3 events"]);
+    ).toStrictEqual(["2 events", "1 event"]);
   });
 
   it("offers is any of, has all of, and is none of on a tag field", async () => {
@@ -128,14 +131,14 @@ describe(createEventFilterFields, () => {
     ]);
   });
 
-  it("leaves a tag root named like a derived field to the derived one", async () => {
+  it("offers the Temporality tag root as a field, not leaving it to a derived one", async () => {
     const facets = await findFixtureFacets({ tags: TEMPORALITY_TAGS });
 
     expect(
       createEventFilterFields(facets)
         .filter((field) => field.label === "Temporality")
         .map((field) => field.id),
-    ).toStrictEqual(["temporality"]);
+    ).toStrictEqual(["tag:tag-motion"]);
   });
 
   it("makes only the derived fields for an empty database", async () => {
@@ -148,18 +151,16 @@ describe(createEventFilterFields, () => {
 
   it("picks the tags with the checkbox editor, each indented by its depth", async () => {
     const fields = createEventFilterFields(await findFixtureFacets());
-    const type = fields.find((field) => field.id === "tag:tag-type");
+    const type = fields.find((field) => field.id === "tag:tag-aspect");
 
     expect(type?.editor).toBe("tag-options");
     expect(
       type?.options?.map((option) => [option.value, option.data]),
     ).toStrictEqual([
-      ["tag-aspect", { depth: 0, name: "Aspect" }],
-      ["tag-major-aspect", { depth: 1, name: "Major Aspect" }],
+      ["tag-simple", { depth: 0, name: "Simple" }],
+      ["tag-major", { depth: 1, name: "Major" }],
       ["tag-conjunct", { depth: 2, name: "Conjunct" }],
       ["tag-square", { depth: 2, name: "Square" }],
-      ["tag-ingress", { depth: 0, name: "Ingress" }],
-      ["tag-retrograde", { depth: 0, name: "Retrograde" }],
     ]);
   });
 
@@ -238,8 +239,8 @@ describe(createEventFilterFields, () => {
     const describe = (label: string): string | undefined =>
       fields.find((field) => field.label === label)?.description;
 
-    expect(describe("Planet")).toContain("planets");
-    expect(describe("Element")).toContain("fire");
+    expect(describe("Body")).toContain("bodies");
+    expect(describe("Element")).toBe("The element of the event");
 
     // Motion is a root the app knows too; a root it does not know is described
     // from its name.
@@ -252,5 +253,52 @@ describe(createEventFilterFields, () => {
     ]);
 
     expect(unknown?.description).toBe("The zodiacal thing of the event");
+  });
+
+  describe("tag icons and notes", () => {
+    const facet = {
+      icon: "globe",
+      id: "tag-body",
+      name: "Body",
+      note: "The bodies an event involves.",
+      values: [
+        {
+          count: 2,
+          depth: 1,
+          icon: "moon",
+          id: "tag-moon",
+          name: "Moon",
+          note: "The Moon.",
+          path: "Moon",
+        },
+        { count: 1, depth: 1, id: "tag-sun", name: "Sun", path: "Sun" },
+      ],
+    };
+
+    it("describes a root by its own note before a canned one", () => {
+      expect(describeRoot(facet)).toBe("The bodies an event involves.");
+    });
+
+    it("gives a tag option its icon and carries its note", () => {
+      const [moon, sun] = createTagOptions(facet);
+
+      expect(moon?.icon).toBeDefined();
+      expect(moon?.data).toStrictEqual({
+        depth: 0,
+        name: "Moon",
+        note: "The Moon.",
+      });
+      expect(sun?.icon).toBeUndefined();
+      expect(sun?.data).toStrictEqual({ depth: 0, name: "Sun" });
+    });
+
+    it("says a tag's note before its count of events", () => {
+      const [moon, sun] = createTagOptions(facet).map((option) =>
+        describeTagOption(option),
+      );
+
+      expect(moon).toBe("The Moon. · 2 events");
+      expect(sun).toBe("1 event");
+    });
   });
 });

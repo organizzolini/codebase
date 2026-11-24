@@ -1,12 +1,16 @@
 query Facets($period: PeriodInput, $filter: EventFilterGroupInput) {
   facets(period: $period, filter: $filter) {
+    icon
     id
     name
+    note
     values {
       count
       depth
+      icon
       id
       name
+      note
       path
     }
   }

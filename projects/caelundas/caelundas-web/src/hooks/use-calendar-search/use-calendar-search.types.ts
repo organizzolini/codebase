@@ -24,6 +24,7 @@ export interface UseCalendarSearchResult {
   handleClustersChange: (enabled: boolean) => void;
   handleColorByChange: (level: EventGroupLevel | undefined) => void;
   handleColorsChange: (enabled: boolean) => void;
+  handleColumnsChange: (columns: readonly string[] | undefined) => void;
   handleDateChange: (date: Date) => void;
   handleFilterChange: (filter: EventFilterQuery) => void;
   handleGroupingChange: (grouping: EventGrouping) => void;

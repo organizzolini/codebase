@@ -49,14 +49,15 @@ describe(CalendarEventChip, () => {
   it("spells out the name and description for a screen reader", () => {
     render(
       <CalendarEventChip
-        description="Type / Aspect. Instant"
+        description="Aspect / Simple. Instant"
         event={EVENT}
       />,
     );
 
     expect(
-      screen.getByText("Mars perfective square Saturn. Type / Aspect. Instant")
-        .className,
+      screen.getByText(
+        "Mars perfective square Saturn. Aspect / Simple. Instant",
+      ).className,
     ).toBe("sr-only");
   });
 

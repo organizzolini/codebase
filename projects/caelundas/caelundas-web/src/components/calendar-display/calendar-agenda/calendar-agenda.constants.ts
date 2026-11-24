@@ -23,10 +23,11 @@ export const EVENT_ROW_CHROME_WIDTH = 160;
 export const EVENT_ROW_BASE_HEIGHT = 52;
 
 // A pill is drawn at about this width per character, plus its border and
-// padding, and a gap of 4px lies between pills and between lines of them.
+// padding and an icon or symbol before its name, and a gap of 4px lies
+// between pills and between lines of them.
 export const PILL_CHARACTER_WIDTH = 5.8;
 
-export const PILL_CHROME_WIDTH = 14;
+export const PILL_CHROME_WIDTH = 30;
 
 export const PILL_GAP = 4;
 

@@ -47,6 +47,25 @@ export function formatEventCount(count: number): string {
 }
 
 /**
+ * The day the agenda lists an event under, and whether it was already under way, or `null` if no day lists it.
+ */
+export function getAgendaListing(
+  record: CalendarEventRecord,
+  range: AgendaRange,
+): null | { day: string; ongoing: boolean } {
+  const { from, through, timeZone } = range;
+  const startDay = formatCalendarDate(record.start, timeZone);
+  // An end is not part of the event, so one ending at midnight does not
+  // reach into the day that midnight begins.
+  const ongoing =
+    startDay < from &&
+    formatCalendarDate(new Date(record.end.getTime() - 1), timeZone) >= from;
+  const day = ongoing ? from : startDay;
+
+  return day >= from && day < through ? { day, ongoing } : null;
+}
+
+/**
  * The agenda's range from the day it opens on.
  */
 export function getAgendaRange(
@@ -288,25 +307,6 @@ function countKinds(rows: readonly AgendaEventRow[]): Map<string, number> {
   }
 
   return counts;
-}
-
-/**
- * The day the agenda lists an event under, and whether it was already under way, or `null` if no day lists it.
- */
-function getAgendaListing(
-  record: CalendarEventRecord,
-  range: AgendaRange,
-): null | { day: string; ongoing: boolean } {
-  const { from, through, timeZone } = range;
-  const startDay = formatCalendarDate(record.start, timeZone);
-  // An end is not part of the event, so one ending at midnight does not
-  // reach into the day that midnight begins.
-  const ongoing =
-    startDay < from &&
-    formatCalendarDate(new Date(record.end.getTime() - 1), timeZone) >= from;
-  const day = ongoing ? from : startDay;
-
-  return day >= from && day < through ? { day, ongoing } : null;
 }
 
 /**

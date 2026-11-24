@@ -41,6 +41,8 @@ export type EventGroupLevelInput = {
   depth?: number | null | undefined;
   /** What to group by: tag:<root tag id> for a tag root, or year, quarter, month, week, day, weekday, hour or duration, derived from each event's start or duration in the zone it was observed in. */
   field: string;
+  /** For a tag root, the id of the tag whose children to make a group of each, the root's own when absent. A tag beneath no event is no group, and an event with none of the children is in no group. */
+  parent?: string | null | undefined;
   /** For a tag root, the ids of the tags to make a group of each, in place of the root's children or a depth. */
   tags?: Array<string> | null | undefined;
 };
@@ -126,7 +128,7 @@ export type EventsQueryVariables = Exact<{
 }>;
 
 
-export type EventsQuery = { events: Array<{ color: string | null, description: string, durationMinutes: number, end: string, id: string, location: string | null, start: string, startLocalDay: string, startLocalHour: number, summary: string, timezone: string, groups: Array<Array<{ key: string, label: string | null, path: string | null }>>, tags: Array<{ depth: number, id: string, name: string, path: string }> }> };
+export type EventsQuery = { events: Array<{ color: string | null, description: string, durationMinutes: number, end: string, id: string, location: string | null, start: string, startLocalDay: string, startLocalHour: number, summary: string, timezone: string, groups: Array<Array<{ key: string, label: string | null, orderKey: string | null, path: string | null }>>, tags: Array<{ depth: number, id: string, name: string, path: string }> }> };
 
 export type FacetsQueryVariables = Exact<{
   period?: PeriodInput | null | undefined;
@@ -134,7 +136,7 @@ export type FacetsQueryVariables = Exact<{
 }>;
 
 
-export type FacetsQuery = { facets: Array<{ id: string, name: string, values: Array<{ count: number, depth: number, id: string, name: string, path: string }> }> };
+export type FacetsQuery = { facets: Array<{ icon: string | null, id: string, name: string, note: string | null, values: Array<{ count: number, depth: number, icon: string | null, id: string, name: string, note: string | null, path: string }> }> };
 
 export type NightSkyQueryVariables = Exact<{
   input: NightSkyInput;

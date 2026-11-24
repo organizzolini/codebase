@@ -5,6 +5,8 @@ import { CalendarFilters } from "../calendar-filters/calendar-filters";
 import { createEventFilterFields } from "../calendar-filters/components/event-filter-model/event-filter-fields.utilities";
 import { toLinkedEventFilter } from "../calendar-filters/components/event-filter-model/event-filter-tree.utilities";
 import { CalendarGroupStrip } from "../calendar-group-strip/calendar-group-strip";
+import { CalendarPageStrip } from "../calendar-page-strip/calendar-page-strip";
+import { CalendarSelectStrip } from "../calendar-select-strip/calendar-select-strip";
 import { CalendarSortStrip } from "../calendar-sort-strip/calendar-sort-strip";
 import { CalendarViewStrip } from "../calendar-view-strip/calendar-view-strip";
 
@@ -24,10 +26,12 @@ export interface CalendarQueryControlsProperties {
   /**
    * Drawn after View, before Group: the Display menu.
    */
+  columns?: readonly string[] | undefined;
   display?: ReactNode;
   facets: readonly EventFacet[];
   filter: EventFilterQuery | undefined;
   grouping: readonly EventGroupLevel[];
+  onColumnsChange: (columns: readonly string[] | undefined) => void;
   onFilterChange: (filter: EventFilterQuery) => void;
   onGroupingChange: (grouping: EventGroupLevel[]) => void;
   onSortChange: (sort: readonly GroupSort[] | undefined) => void;
@@ -44,10 +48,12 @@ export function CalendarQueryControls(
 ): ReactNode {
   const {
     className,
+    columns,
     display,
     facets,
     filter,
     grouping,
+    onColumnsChange,
     onFilterChange,
     onGroupingChange,
     onSortChange,
@@ -92,7 +98,6 @@ export function CalendarQueryControls(
       <CalendarSortStrip
         className="contents"
         facets={facets}
-        grouping={grouping}
         onSortChange={onSortChange}
         sort={sort}
         view={view}
@@ -103,6 +108,17 @@ export function CalendarQueryControls(
         filter={filter}
         onFilterChange={onFilterChange}
         presets={presets}
+      />
+      <CalendarSelectStrip
+        className="contents"
+        columns={columns}
+        facets={facets}
+        onColumnsChange={onColumnsChange}
+        view={view}
+      />
+      <CalendarPageStrip
+        className="contents"
+        view={view}
       />
     </div>
   );

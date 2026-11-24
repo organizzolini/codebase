@@ -58,6 +58,9 @@ export function useCalendarSearch(timeZone: string): UseCalendarSearchResult {
     handleColorsChange: (enabled) => {
       updateSearch({ colors: enabled ? undefined : false }, true);
     },
+    handleColumnsChange: (columns) => {
+      updateSearch({ columns });
+    },
     handleDateChange: (date) => {
       updateSearch({ date: formatCalendarDate(date, timeZone) });
     },

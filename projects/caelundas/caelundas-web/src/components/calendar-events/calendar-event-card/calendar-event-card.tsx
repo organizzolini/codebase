@@ -1,9 +1,12 @@
 import { useContext } from "react";
 
+import { formatEventWhen } from "../../calendar-display/events-calendar/components/calendar-format/calendar-format.utilities";
 import { CalendarSymbolsContext } from "../event-glyphs/calendar-symbols.constants";
 import { getEventLabel } from "../event-glyphs/components/calendar-glyphs/calendar-glyphs.utilities";
 import { EventGlyphs } from "../event-glyphs/event-glyphs";
 import { EventTagPills } from "../event-tag-pills/event-tag-pills";
+
+import { getCardGlyphs } from "./calendar-event-card.utilities";
 
 import type { CalendarEventRecord } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { ReactNode } from "react";
@@ -19,7 +22,7 @@ export interface CalendarEventCardProperties {
 
 // 🧩 Component
 
-/** Renders an event's hover card: its symbols, English name and tags as pills, laid out by the card it sits in. */
+/** Renders an event's hover card: its symbols, English name, when it is, and tags as pills, laid out by the card it sits in. */
 export function CalendarEventCard(
   properties: Readonly<CalendarEventCardProperties>,
 ): ReactNode {
@@ -33,10 +36,7 @@ export function CalendarEventCard(
   const { details, name } = label ?? eventLabel;
   // A marker that stands for several events has no symbols of its own, and
   // an event drawn by its name has none to add.
-  const glyphs =
-    label === undefined && eventLabel.glyphs !== eventLabel.name
-      ? eventLabel.glyphs
-      : undefined;
+  const glyphs = getCardGlyphs(label, eventLabel);
 
   // 💪 Handlers
 
@@ -69,6 +69,14 @@ export function CalendarEventCard(
       {details === undefined ? null : (
         <span className="opacity-80">{details}</span>
       )}
+      {label === undefined ? (
+        <span
+          className="opacity-80"
+          data-testid="calendar-event-card-time"
+        >
+          {formatEventWhen(event)}
+        </span>
+      ) : null}
       {event.tags.length === 0 ? null : (
         <span className="mt-1 block max-w-xs">
           <EventTagPills tags={event.tags} />

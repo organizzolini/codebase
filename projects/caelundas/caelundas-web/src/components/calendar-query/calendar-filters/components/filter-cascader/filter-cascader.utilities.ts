@@ -1,5 +1,7 @@
 import { flattenFilterRules } from "@codebase/presentation";
 
+import { describeTagOption } from "../event-filter-model/event-filter-fields.utilities";
+
 import {
   COMBINATOR,
   OPTION_DEPTH,
@@ -30,6 +32,7 @@ export function createFilterItems(
       ...(field.description === undefined
         ? {}
         : { description: field.description }),
+      ...(field.icon === undefined ? {} : { icon: field.icon }),
       keywords: [field.label],
       label: field.label,
       value: `field${VALUE_SEPARATOR}${field.id}`,
@@ -144,14 +147,7 @@ function nestOptions(
 
   for (const option of options) {
     const depth = OPTION_DEPTH.safeParse(option.data).data?.depth ?? 0;
-    const node: CascaderNode = {
-      ...(option.description === undefined
-        ? {}
-        : { description: option.description }),
-      ...(option.keywords === undefined ? {} : { keywords: option.keywords }),
-      label: option.label,
-      value: `${field.id}${VALUE_SEPARATOR}${option.value}`,
-    };
+    const node = toCascaderNode(field, option);
     const parent = parents[depth - 1];
 
     if (parent === undefined) {
@@ -165,4 +161,22 @@ function nestOptions(
   }
 
   return roots;
+}
+
+/**
+ * One option as a node: its note and count beneath its name, its icon and keywords, and its value under the field's.
+ */
+function toCascaderNode(
+  field: EventFilterField,
+  option: FilterOption,
+): CascaderNode {
+  const description = describeTagOption(option);
+
+  return {
+    ...(description === undefined ? {} : { description }),
+    ...(option.icon === undefined ? {} : { icon: option.icon }),
+    ...(option.keywords === undefined ? {} : { keywords: option.keywords }),
+    label: option.label,
+    value: `${field.id}${VALUE_SEPARATOR}${option.value}`,
+  };
 }

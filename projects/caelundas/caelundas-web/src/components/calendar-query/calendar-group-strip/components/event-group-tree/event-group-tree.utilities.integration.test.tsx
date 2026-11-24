@@ -54,10 +54,10 @@ async function readGrouping(): Promise<string> {
 vi.setConfig({ testTimeout: 30_000 });
 
 describe("event grouping", () => {
-  it("groups the agenda by type unless told otherwise", async () => {
+  it("groups the agenda by aspect unless told otherwise", async () => {
     await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
-    await expect(readGrouping()).resolves.toBe("GroupType");
+    await expect(readGrouping()).resolves.toBe("GroupAspect");
   });
 
   it("reads the events again with the grouping picked", async () => {
@@ -70,48 +70,45 @@ describe("event grouping", () => {
       expect(api.requests.events.at(-1)?.grouping?.levels).toHaveLength(2);
     });
 
-    expect(api.requests.events.at(-1)?.grouping?.levels?.[1]).toStrictEqual({
-      depth: 1,
+    expect(api.requests.events.at(-1)?.grouping?.levels?.[1]).toMatchObject({
       field: "tag:tag-element",
     });
 
     await waitFor(async () => {
-      await expect(readGrouping()).resolves.toBe("GroupTypeElement");
+      await expect(readGrouping()).resolves.toBe("GroupAspectElement");
     });
   });
 
-  it("sections the agenda by type, counting each group's events", async () => {
+  it("sections the agenda by aspect, counting each group's events", async () => {
     await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
     await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
-      "Aspect 1 event",
-      "Ingress 2 events",
-      "Retrograde 1 event",
+      "Simple 1 event",
+      "No Aspect 3 events",
     ]);
     await expect(findAgendaHeadings(4)).resolves.toContain(
-      "Friday, March 20, 2026",
+      "Wednesday, March 4, 2026",
     );
   });
 
   it("lists a two-planet event under each planet but counts it once", async () => {
     await renderCalendarRoute(
       groupedAgendaLink("2026-03-04", [
-        { depth: 1, field: "tag:tag-type" },
-        { depth: 1, field: "tag:tag-planet" },
+        { field: "tag:tag-aspect" },
+        { field: "tag:tag-body" },
       ]),
     );
 
     await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
-      "Aspect 1 event",
-      "Ingress 2 events",
-      "Retrograde 1 event",
+      "Simple 1 event",
+      "No Aspect 3 events",
     ]);
     await expect(findAgendaHeadings(4)).resolves.toStrictEqual([
       "Mars 1 event",
       "Venus 1 event",
+      "Mercury 1 event",
       "Sun 1 event",
       "Venus 1 event",
-      "Mercury 1 event",
     ]);
     expect(
       within(screen.getByRole("region", { name: "Agenda" })).getAllByRole(
@@ -138,24 +135,26 @@ describe("event grouping", () => {
   it("restores the grouping a link holds", async () => {
     await renderCalendarRoute(
       groupedAgendaLink("2026-03-04", [
-        { depth: 1, field: "tag:tag-planet" },
-        { depth: 2, field: "tag:tag-type" },
+        { field: "tag:tag-body" },
+        { field: "tag:tag-aspect", parent: "tag-simple" },
       ]),
     );
 
-    await expect(readGrouping()).resolves.toBe("GroupPlanetType");
-    await expect(findAgendaHeadings(4)).resolves.toContain(
-      "Major Aspect 1 event",
-    );
+    await expect(readGrouping()).resolves.toBe("GroupBodyAspect › Simple");
+    await expect(findAgendaHeadings(4)).resolves.toContain("Major 1 event");
   });
 
   it("keeps the grouping picked in the link", async () => {
     await renderCalendarRoute("/?view=agenda&date=2026-03-04");
 
     fireEvent.click(
-      within(await findToolbar()).getByRole("button", { name: "Type options" }),
+      await within(await findToolbar()).findByRole("button", {
+        name: "Aspect options",
+      }),
     );
+
     fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
+
     fireEvent.click(within(await openGroupBy()).getByText("Month"));
 
     await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
@@ -176,25 +175,25 @@ describe("event grouping", () => {
   });
 
   it.each([
-    { expected: "GroupType", group: "not-a-grouping" },
+    { expected: "GroupAspect", group: "not-a-grouping" },
     {
       expected: "GroupMonth",
       group: [{ field: "tag:tag-moon" }, { field: "month" }],
     },
     {
-      expected: "GroupTypeMonth",
+      expected: "GroupAspectMonth",
       group: [
-        { depth: 0, field: "tag:tag-type" },
+        { depth: 0, field: "tag:tag-aspect" },
         { field: 7 },
         { field: "month" },
       ],
     },
     {
-      expected: "GroupElementMonthPlanet",
+      expected: "GroupElementMonthBodyHour",
       group: [
         { field: "tag:tag-element" },
         { field: "month" },
-        { field: "tag:tag-planet" },
+        { field: "tag:tag-body" },
         { field: "hour" },
       ],
     },

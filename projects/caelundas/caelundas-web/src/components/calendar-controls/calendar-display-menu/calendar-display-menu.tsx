@@ -13,7 +13,6 @@ import { useCalendarDisplay } from "../../../hooks/use-calendar-display/use-cale
 import { CALENDAR_VIEW_LABELS } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { QueryCascader } from "../../calendar-query/query-cascader/query-cascader";
-import { JOINED_STRIP_CLASS_NAME } from "../../calendar-query/query-cascader/query-cascader.constants";
 
 import {
   CALENDAR_BRANCH,
@@ -95,10 +94,7 @@ export function CalendarDisplayMenu(
       className={className}
       data-testid="calendar-display-menu"
     >
-      <ButtonGroup
-        aria-label={TITLE}
-        className={JOINED_STRIP_CLASS_NAME}
-      >
+      <ButtonGroup aria-label={TITLE}>
         <Popover
           onOpenChange={setIsOpen}
           open={isOpen}

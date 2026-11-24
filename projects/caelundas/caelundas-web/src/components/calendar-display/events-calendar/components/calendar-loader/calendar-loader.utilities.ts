@@ -249,7 +249,7 @@ function resolveGrouping(
 ): EventGroupLevel[] {
   const view = search.view ?? "agenda";
 
-  if (view !== "agenda" && view !== "timeline") {
+  if (view !== "agenda" && view !== "table" && view !== "timeline") {
     return [];
   }
 

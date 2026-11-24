@@ -58,13 +58,13 @@ describe(toAgendaRows, () => {
   });
 
   describe("clustering similar events", () => {
-    const MAJOR = "Type / Aspect / Simple Aspect / Major Aspect";
+    const MAJOR = "Aspect / Simple / Major";
     const range = getAgendaRange("2026-03-01", "UTC");
     const events = (): CalendarEventRecord[] => [
       event("a", "One", { path: MAJOR }),
       event("b", "Two", { path: MAJOR }),
       event("c", "Three", { path: MAJOR }),
-      event("d", "Lone", { path: "Type / Eclipse" }),
+      event("d", "Lone", { path: "Eclipse" }),
     ];
 
     const clustered = (

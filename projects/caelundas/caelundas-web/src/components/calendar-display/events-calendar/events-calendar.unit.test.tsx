@@ -103,9 +103,9 @@ describe(EventsCalendar, () => {
       tags: [
         {
           depth: 2,
-          id: "tag-sign-ingress",
+          id: "tag-zodiac-ingress",
           name: "Sign Ingress",
-          path: "Type / Ingress / Sign Ingress",
+          path: "Zodiac / Ingress / Sign Ingress",
         },
       ],
       timezone: "America/New_York",

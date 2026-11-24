@@ -1,5 +1,5 @@
 import { ListTree } from "lucide-react";
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 
 import {
   Button,
@@ -9,17 +9,23 @@ import {
   PopoverTrigger,
 } from "@codebase/presentation";
 
-import { moveListItem } from "../chip-menu/chip-menu.utilities";
+import { TableGroupsContext } from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.constants";
 import { QueryCascader } from "../query-cascader/query-cascader";
-import { JOINED_STRIP_CLASS_NAME } from "../query-cascader/query-cascader.constants";
+import { PICK_EVERY_ROW } from "../query-cascader/query-cascader.constants";
 
+import {
+  flattenGroupRuns,
+  labelGroupRun,
+  toGroupRuns,
+} from "./calendar-group-strip-runs.utilities";
 import { TITLE } from "./calendar-group-strip.constants";
 import {
   createGroupItems,
-  labelGroupLevel,
+  getCollapseHandlers,
   toGrouping,
   toGroupValue,
 } from "./calendar-group-strip.utilities";
+import { moveListItem } from "./components/chip-menu/chip-menu.utilities";
 import { createEventGroupFields } from "./components/event-group-model/event-group-fields.utilities";
 import { GroupLevelChip } from "./components/group-level-chip/group-level-chip";
 
@@ -43,7 +49,7 @@ export interface CalendarGroupStripProperties {
 
 // 🧩 Component
 
-/** Renders the Group button, opening a searchable nested checklist of what to group by, joined to one chip per level in order. */
+/** Renders the Group button, opening a searchable list of what to group by, joined to one chip per level in order. Each tag with tags beneath it can be ticked, to group by its children, or opened. */
 export function CalendarGroupStrip(
   properties: Readonly<CalendarGroupStripProperties>,
 ): ReactNode {
@@ -54,13 +60,15 @@ export function CalendarGroupStrip(
 
   // 🏗 Setup
   const items = useMemo(() => createGroupItems(fields), [fields]);
+  const runs = useMemo(() => toGroupRuns(grouping), [grouping]);
+  const collapse = getCollapseHandlers(view, use(TableGroupsContext));
 
   // 💪 Handlers
 
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
-  if (view !== "agenda" && view !== "timeline") {
+  if (view !== "agenda" && view !== "table" && view !== "timeline") {
     return null;
   }
 
@@ -72,7 +80,7 @@ export function CalendarGroupStrip(
     >
       <ButtonGroup
         aria-label={TITLE}
-        className={JOINED_STRIP_CLASS_NAME}
+        className="flex-wrap gap-y-2"
       >
         <Popover>
           <PopoverTrigger
@@ -92,37 +100,46 @@ export function CalendarGroupStrip(
             className="w-80 max-w-[90vw] p-0"
           >
             <QueryCascader
+              cascade={false}
               items={items}
+              mode="drill"
               onValueChange={(next) => {
                 onGroupingChange(toGrouping(next, grouping, fields));
               }}
               placeholder="Group by"
-              value={toGroupValue(grouping, fields)}
+              selectable={PICK_EVERY_ROW}
+              value={toGroupValue(grouping)}
               multiple
             />
           </PopoverContent>
         </Popover>
-        {grouping.map((level, index) => (
+        {runs.map((run, index) => (
           <GroupLevelChip
-            key={level.field}
-            label={labelGroupLevel(level, fields)}
+            key={run.field}
+            label={labelGroupRun(run, fields)}
+            onCollapseAll={collapse.onCollapseAll}
+            onExpandAll={collapse.onExpandAll}
             onMoveLeft={
               index === 0
                 ? undefined
                 : () => {
-                    onGroupingChange(moveListItem(grouping, index, -1));
+                    onGroupingChange(
+                      flattenGroupRuns(moveListItem(runs, index, -1)),
+                    );
                   }
             }
             onMoveRight={
-              index === grouping.length - 1
+              index === runs.length - 1
                 ? undefined
                 : () => {
-                    onGroupingChange(moveListItem(grouping, index, 1));
+                    onGroupingChange(
+                      flattenGroupRuns(moveListItem(runs, index, 1)),
+                    );
                   }
             }
             onRemove={() => {
               onGroupingChange(
-                grouping.filter((other) => other.field !== level.field),
+                flattenGroupRuns(runs.filter((_other, at) => at !== index)),
               );
             }}
           />

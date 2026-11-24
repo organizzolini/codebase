@@ -9,6 +9,7 @@ export const CALENDAR_VIEWS = [
   "three-day",
   "day",
   "agenda",
+  "table",
   "timeline",
 ] as const;
 
@@ -21,6 +22,7 @@ export const CALENDAR_VIEW_LABELS: Readonly<
   agenda: "Agenda",
   day: "Day",
   month: "Month",
+  table: "Table",
   "three-day": "3 Days",
   timeline: "Timeline",
   week: "Week",
@@ -35,6 +37,7 @@ export const CALENDAR_VIEW_PERIODS: Readonly<
   agenda: "in these days",
   day: "this day",
   month: "this month",
+  table: "in these days",
   "three-day": "in these three days",
   timeline: "in this period",
   week: "this week",

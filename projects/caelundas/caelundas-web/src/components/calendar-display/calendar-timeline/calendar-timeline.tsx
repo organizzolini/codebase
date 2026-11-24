@@ -4,6 +4,7 @@ import { Gantt, GanttView } from "@codebase/presentation";
 
 import { useBarDialog } from "../../../hooks/use-bar-dialog/use-bar-dialog";
 import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
+import { createTagRanks } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-sort.utilities";
 import { DEFAULT_SORTS } from "../../calendar-query/calendar-sort-strip/calendar-sort-strip.constants";
 import { VENDORED_SURFACE_CLASS_NAMES } from "../events-calendar/components/calendar-views/calendar-surfaces.constants";
 
@@ -122,10 +123,15 @@ export function CalendarTimeline(
   const { dialog, handleEventClick } = useBarDialog(timeZone);
   const zoom = zoomed.scale === scale ? zoomed.zoom : 1;
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
+  const ranks = useMemo(() => createTagRanks(facets), [facets]);
   const rows = useMemo(
     () =>
-      toTimelineRows(events, grouping, { fields, sort: sort ?? DEFAULT_SORTS }),
-    [events, fields, grouping, sort],
+      toTimelineRows(events, grouping, {
+        fields,
+        ranks,
+        sort: sort ?? DEFAULT_SORTS,
+      }),
+    [events, fields, grouping, ranks, sort],
   );
   // Overlapping bars are moved into lanes, so nothing is drawn over anything.
   const layout = useMemo(

@@ -52,7 +52,7 @@ export interface CalendarGridProperties {
   onNavigationChange: (navigation: CalendarNavigation) => void;
   onShowLater?: (() => void) | undefined;
   timeZone: string;
-  view: Exclude<CalendarViewName, "timeline">;
+  view: Exclude<CalendarViewName, "table" | "timeline">;
 }
 
 // 🧩 Component

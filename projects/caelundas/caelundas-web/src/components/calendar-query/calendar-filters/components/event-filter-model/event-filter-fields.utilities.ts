@@ -1,3 +1,8 @@
+import { createElement } from "react";
+
+import { TAG_NOTE } from "../../../filter-tag-editor/filter-tag-editor.constants";
+import { TagIcon } from "../../../tag-icon/tag-icon";
+
 import {
   DERIVED_FIELDS,
   DERIVED_LABELS,
@@ -17,6 +22,7 @@ import {
 import type { EventFacet } from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { EventFilterField } from "./event-filters.types";
 import type { FilterOption } from "@codebase/presentation";
+import type { ReactNode } from "react";
 
 /**
  * Builds the filter fields: one per tag root in the facets, then the derived fields; a root named like one of those is skipped.
@@ -40,24 +46,45 @@ export function createEventFilterFields(
 }
 
 /**
+ * The icon of a tag root, drawn beside its field's name.
+ */
+export function createRootIcon(facet: EventFacet): ReactNode {
+  return typeof facet.icon === "string"
+    ? createElement(TagIcon, { name: facet.icon })
+    : undefined;
+}
+
+/**
  * Lists a tag root's tags as options in tree order, labeled by name, or by path where two tags share a name.
  */
 export function createTagOptions(facet: EventFacet): FilterOption[] {
   const options: FilterOption[] = [];
-  const nameCounts = new Map<string, number>();
+  const seen = new Set<string>();
+  const shared = new Set<string>();
 
   for (const value of facet.values) {
-    nameCounts.set(value.name, (nameCounts.get(value.name) ?? 0) + 1);
+    if (seen.has(value.name)) {
+      shared.add(value.name);
+    }
+
+    seen.add(value.name);
   }
 
   for (const value of facet.values) {
+    // Written here rather than through a function, which would be one more
+    // call on every stack beneath.
     options.push({
-      data: { depth: value.depth - 1, name: value.name },
-      // Written here rather than through a function, which would be one more
-      // call on every stack beneath.
+      data: {
+        depth: value.depth - 1,
+        name: value.name,
+        ...(typeof value.note === "string" ? { note: value.note } : {}),
+      },
       description: `${String(value.count)} ${EVENT_COUNT_FORMAT.select(value.count) === "one" ? "event" : "events"}`,
+      ...(typeof value.icon === "string"
+        ? { icon: createElement(TagIcon, { name: value.icon }) }
+        : {}),
       keywords: [value.name, value.path],
-      label: (nameCounts.get(value.name) ?? 0) > 1 ? value.path : value.name,
+      label: shared.has(value.name) ? value.path : value.name,
       value: value.id,
     });
   }
@@ -70,9 +97,25 @@ export function createTagOptions(facet: EventFacet): FilterOption[] {
  */
 export function describeRoot(facet: EventFacet): string {
   return (
+    facet.note ??
     TAG_ROOT_DESCRIPTIONS[facet.name] ??
     `The ${facet.name.toLowerCase()} of the event`
   );
+}
+
+/**
+ * What a tag option says beneath its name: its note, then its count of events.
+ */
+export function describeTagOption(option: FilterOption): string | undefined {
+  const note = TAG_NOTE.safeParse(option.data).data?.note;
+
+  if (note === undefined) {
+    return option.description;
+  }
+
+  return option.description === undefined
+    ? note
+    : `${note} · ${option.description}`;
 }
 
 /**
@@ -91,6 +134,7 @@ function toTagField(facet: EventFacet): EventFilterField {
     return {
       defaultOperator: NUMBER_OPERATORS.eq,
       description: describeRoot(facet),
+      icon: createRootIcon(facet),
       id: `${TAG_FIELD_PREFIX}${facet.id}`,
       label: facet.name,
       operators: NUMBER_FIELD_OPERATORS,
@@ -104,6 +148,7 @@ function toTagField(facet: EventFacet): EventFilterField {
     defaultOperator: TAG_OPERATORS.isAnyOf,
     description: describeRoot(facet),
     editor: TAG_OPTIONS_EDITOR,
+    icon: createRootIcon(facet),
     id: `${TAG_FIELD_PREFIX}${facet.id}`,
     label: facet.name,
     operators: TAG_FIELD_OPERATORS,

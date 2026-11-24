@@ -43,6 +43,7 @@ describe(useCalendarSearch, () => {
       handleClustersChange: expect.any(Function),
       handleColorByChange: expect.any(Function),
       handleColorsChange: expect.any(Function),
+      handleColumnsChange: expect.any(Function),
       handleDateChange: expect.any(Function),
       handleFilterChange: expect.any(Function),
       handleGroupingChange: expect.any(Function),

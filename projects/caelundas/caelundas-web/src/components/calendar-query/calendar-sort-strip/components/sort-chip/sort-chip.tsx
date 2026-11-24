@@ -3,7 +3,7 @@ import { Fragment } from "react";
 
 import { Button } from "@codebase/presentation";
 
-import { ChipMenu } from "../../../chip-menu/chip-menu";
+import { ChipMenu } from "../../../calendar-group-strip/components/chip-menu/chip-menu";
 
 import type { GroupSort } from "../../../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { ReactNode } from "react";
@@ -57,14 +57,13 @@ export function SortChip(properties: Readonly<SortChipProperties>): ReactNode {
           <ArrowDown aria-hidden="true" />
         )}
       </Button>
-      {onRemove === undefined ? null : (
-        <ChipMenu
-          label={label}
-          onMoveLeft={onMoveLeft}
-          onMoveRight={onMoveRight}
-          onRemove={onRemove}
-        />
-      )}
+      <ChipMenu
+        label={label}
+        onMoveLeft={onMoveLeft}
+        onMoveRight={onMoveRight}
+        onRemove={onRemove}
+        onReverse={onFlip}
+      />
     </Fragment>
   );
 }

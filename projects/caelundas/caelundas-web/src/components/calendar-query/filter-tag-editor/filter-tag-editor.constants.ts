@@ -1,5 +1,10 @@
 // ♟️ Constants
 
+import { z } from "zod";
+
+/** The note a tag option carries in its data, if it has one. */
+export const TAG_NOTE = z.object({ note: z.string() });
+
 export const INDENT_REM = 0.875;
 
 // A partly ticked tag is a box with a dash in place of the check.

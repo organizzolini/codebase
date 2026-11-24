@@ -14,6 +14,5 @@ export const LABELS: Partial<CascaderLabels> = {
 
 export const NOTHING = (): void => {};
 
-/** Joins strip buttons and chips: flat inner edges, one border between. */
-export const JOINED_STRIP_CLASS_NAME =
-  "[&>:not(span):is(:not(span)~*)]:rounded-l-none [&>:not(span):is(:not(span)~*)]:border-l-0 [&>:not(span):has(~:not(span))]:rounded-r-none [&>[data-testid=chip-menu]>button]:rounded-l-none [&>[data-testid=chip-menu]>button]:border-l-0 [&>[data-testid=chip-menu]:has(~:not(span))>button]:rounded-r-none";
+/** Every row can be ticked, branches as well as leaves; pressing a branch's chevron opens it. */
+export const PICK_EVERY_ROW = (): boolean => true;

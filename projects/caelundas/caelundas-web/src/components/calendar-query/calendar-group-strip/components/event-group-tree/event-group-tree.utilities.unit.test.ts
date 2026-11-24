@@ -8,11 +8,13 @@ import {
 import { createEventGroupFields } from "../event-group-model/event-group-fields.utilities";
 import { formatDerivedKey } from "../event-group-model/event-group-labels.utilities";
 
+import { createTagRanks } from "./event-group-sort.utilities";
 import {
   buildEventGroups,
   sortEventGroups,
 } from "./event-group-tree.utilities";
 
+import type { EventFacet } from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type {
   EventGrouping,
   EventGroupNode,
@@ -63,31 +65,76 @@ describe("event group tree", () => {
   describe(buildEventGroups, () => {
     it("counts an event under two planets in each, and once above them", async () => {
       const tree = await group([
-        { depth: 1, field: "tag:tag-type" },
-        { depth: 1, field: "tag:tag-planet" },
+        { field: "tag:tag-aspect" },
+        { field: "tag:tag-body" },
       ]);
 
       expect(summarize(tree)).toStrictEqual([
-        ["Aspect 2", ["Mars 2", "Saturn 1", "Venus 1"]],
-        ["Ingress 3", ["Sun 2", "Venus 1"]],
-        ["Retrograde 1", ["Mercury 1"]],
+        ["Simple 2", ["Mars 2", "Saturn 1", "Venus 1"]],
+        ["No Aspect 4", ["Mercury 1", "Sun 2", "Venus 1"]],
+      ]);
+    });
+
+    it("splits a second level of a root only by the tags beneath each parent", async () => {
+      const tree = await group([
+        { field: "tag:tag-aspect" },
+        { field: "tag:tag-aspect", parent: "tag-simple" },
+      ]);
+
+      expect(summarize(tree)).toStrictEqual([
+        ["Simple 2", ["Major 2"]],
+        "No Aspect 4",
+      ]);
+    });
+
+    it("keeps refining one parent's group a level deeper, leaving the others whole", async () => {
+      const tree = await group([
+        { field: "tag:tag-aspect" },
+        { field: "tag:tag-aspect", parent: "tag-simple" },
+        { field: "tag:tag-aspect", parent: "tag-major" },
+      ]);
+
+      expect(summarize(tree)).toStrictEqual([
+        ["Simple 2", [["Major 2", ["Conjunct 1", "Square 1"]]]],
+        "No Aspect 4",
+      ]);
+    });
+
+    it('adds no "No" group beside a refinement, though it does for a level of its own', async () => {
+      const refined = await group([
+        { field: "tag:tag-aspect" },
+        { field: "tag:tag-aspect", parent: "tag-simple" },
+      ]);
+      const alone = await group([
+        { field: "tag:tag-aspect", parent: "tag-simple" },
+      ]);
+
+      expect(refined.map((node) => node.label)).not.toContain("No Simple");
+      expect(refined[0]?.children.map((node) => node.label)).toStrictEqual([
+        "Major",
+      ]);
+      expect(alone.map((node) => node.label)).toStrictEqual([
+        "Major",
+        "No Simple",
       ]);
     });
 
     it("gathers events with no tag in a dimension into a last group", async () => {
-      const tree = await group([{ depth: 1, field: "tag:tag-sign" }]);
+      const tree = await group([{ field: "tag:tag-zodiac" }]);
 
-      expect(summarize(tree)).toStrictEqual(["Aries 2", "No Sign 4"]);
+      expect(summarize(tree)).toStrictEqual([
+        "Aries 2",
+        "Ingress 3",
+        "No Zodiac 3",
+      ]);
     });
 
     it("names each group by its path and a unique id", async () => {
-      const [aspect] = await group([{ depth: 3, field: "tag:tag-type" }]);
-
-      expect(aspect?.path).toStrictEqual([
-        "Aspect",
-        "Major Aspect",
-        "Conjunct",
+      const [aspect] = await group([
+        { field: "tag:tag-aspect", parent: "tag-major" },
       ]);
+
+      expect(aspect?.path).toStrictEqual(["Conjunct"]);
       expect(aspect?.id).toBe("/0:tag-conjunct");
     });
 
@@ -95,6 +142,25 @@ describe("event group tree", () => {
       const tree = await group([{ field: "duration" }]);
 
       expect(summarize(tree)).toStrictEqual(["Instant 5", "Weeks 1"]);
+    });
+
+    it("sorts a duration key no bucket names before the buckets", async () => {
+      serveCalendarApi();
+
+      const [first] = await findEvents({ period: WINDOW });
+      const odd = { key: "eons", label: null, path: null };
+
+      expect(
+        first === undefined
+          ? []
+          : summarize(
+              buildEventGroups(
+                [{ ...first, groups: [[odd]] }],
+                [{ field: "duration" }],
+                fields,
+              ),
+            ),
+      ).toStrictEqual(["eons 1"]);
     });
 
     it("puts events read without keys in a field's last group", async () => {
@@ -121,7 +187,7 @@ describe("event group tree", () => {
           : summarize(
               buildEventGroups(
                 [{ ...first, groups: [[twice, twice]] }],
-                [{ depth: 1, field: "tag:tag-type" }],
+                [{ field: "tag:tag-aspect" }],
                 fields,
               ),
             ),
@@ -201,6 +267,31 @@ describe("event group tree", () => {
       expect(labels(sortEventGroups(nodes(), [sort]))).toStrictEqual(expected);
     });
 
+    it("orders by the tag order a group carries, or its name without one", () => {
+      const ordered = [
+        { ...node("Late", 1, "2026-01-01"), order: "b" },
+        { ...node("Early", 1, "2026-01-01"), order: "a" },
+        node("Zed", 1, "2026-01-01"),
+      ];
+
+      expect(
+        labels(sortEventGroups(ordered, [{ direction: "asc", key: "order" }])),
+      ).toStrictEqual(["Early", "Late", "Zed"]);
+    });
+
+    it("puts a group with no events first when ordering by first event", () => {
+      const empty = { ...node("Empty", 0, "2026-01-01"), events: [] };
+
+      expect(
+        labels(
+          sortEventGroups(
+            [node("Mars", 5, "2026-03-01"), empty],
+            [{ direction: "asc", key: "first" }],
+          ),
+        ),
+      ).toStrictEqual(["Empty", "Mars"]);
+    });
+
     it("breaks the ties of one sort with the next", () => {
       const tied = [
         node("Mars", 5, "2026-03-01"),
@@ -238,6 +329,169 @@ describe("event group tree", () => {
       );
 
       expect(labels(parent?.children ?? [])).toStrictEqual(["A", "Z"]);
+    });
+  });
+
+  describe(createTagRanks, () => {
+    const facets: EventFacet[] = [
+      {
+        id: "aspect",
+        name: "Aspect",
+        values: [
+          { count: 2, depth: 1, id: "simple", name: "Simple", path: "Simple" },
+          {
+            count: 1,
+            depth: 2,
+            id: "major",
+            name: "Major",
+            path: "Simple / Major",
+          },
+        ],
+      },
+      {
+        id: "body",
+        name: "Body",
+        values: [{ count: 1, depth: 1, id: "sun", name: "Sun", path: "Sun" }],
+      },
+    ];
+
+    it("ranks every tag by its place in tree order across the roots", () => {
+      const { ranks } = createTagRanks(facets);
+
+      expect([...ranks.entries()]).toStrictEqual([
+        ["simple", 0],
+        ["major", 1],
+        ["sun", 2],
+      ]);
+    });
+
+    it("gives each root's field and each tag the path its children sit beneath", () => {
+      const { prefixes } = createTagRanks(facets);
+
+      expect(prefixes.get("tag:aspect")).toBe("Aspect / ");
+      expect(prefixes.get("simple")).toBe("Aspect / Simple / ");
+      expect(prefixes.get("sun")).toBe("Body / Sun / ");
+    });
+  });
+
+  describe("sorting by a tag", () => {
+    const { prefixes, ranks } = createTagRanks([
+      {
+        id: "body",
+        name: "Body",
+        values: [
+          { count: 1, depth: 1, id: "sun", name: "Sun", path: "Sun" },
+          { count: 1, depth: 1, id: "moon", name: "Moon", path: "Moon" },
+          { count: 1, depth: 1, id: "mars", name: "Mars", path: "Mars" },
+        ],
+      },
+    ]);
+    const tagRanks = { prefixes, ranks };
+
+    function holding(
+      label: string,
+      tags: { id: string; path: string }[],
+    ): EventGroupNode {
+      return {
+        children: [],
+        count: 1,
+        events: [
+          {
+            start: new Date("2026-01-01"),
+            tags: tags.map(({ id, path }) => ({
+              depth: 1,
+              id,
+              name: id,
+              path,
+            })),
+          } as unknown as EventGroupNode["events"][number],
+        ],
+        id: label,
+        key: label,
+        label,
+        level: 0,
+        path: [label],
+      };
+    }
+
+    function tagged(label: string, ...tagIds: string[]): EventGroupNode {
+      return holding(
+        label,
+        tagIds.map((id) => ({
+          id,
+          path: `Body / ${id[0]?.toUpperCase() ?? ""}${id.slice(1)}`,
+        })),
+      );
+    }
+
+    const groups = (): EventGroupNode[] => [
+      tagged("Late", "mars"),
+      tagged("Both", "moon", "mars"),
+      tagged("None"),
+      tagged("Early", "sun"),
+    ];
+    const names = (nodes: EventGroupNode[]): string[] =>
+      nodes.map((current) => current.label);
+
+    it("ranks a group by the lowest place of its events' tags, groups with none last", () => {
+      expect(
+        names(
+          sortEventGroups(
+            groups(),
+            [{ direction: "asc", key: "tag", tag: "tag:body" }],
+            tagRanks,
+          ),
+        ),
+      ).toStrictEqual(["Early", "Both", "Late", "None"]);
+    });
+
+    it("reverses the ranking when descending", () => {
+      expect(
+        names(
+          sortEventGroups(
+            groups(),
+            [{ direction: "desc", key: "tag", tag: "tag:body" }],
+            tagRanks,
+          ),
+        ),
+      ).toStrictEqual(["None", "Late", "Both", "Early"]);
+    });
+
+    it("ignores tags beneath another root, or with no place in the ranks", () => {
+      const other = holding("Other", [{ id: "mars", path: "Zodiac / Mars" }]);
+      const absent = holding("Absent", [{ id: "ghost", path: "Body / Ghost" }]);
+
+      expect(
+        names(
+          sortEventGroups(
+            [other, absent, tagged("Ranked", "moon")],
+            [{ direction: "asc", key: "tag", tag: "tag:body" }],
+            tagRanks,
+          ),
+        ),
+      ).toStrictEqual(["Ranked", "Other", "Absent"]);
+    });
+
+    it("ranks nothing for a tag sort that names no tag", () => {
+      expect(
+        names(
+          sortEventGroups(
+            groups(),
+            [{ direction: "asc", key: "tag" }],
+            tagRanks,
+          ),
+        ),
+      ).toStrictEqual(["Late", "Both", "None", "Early"]);
+    });
+
+    it("leaves every group tied without ranks", () => {
+      expect(
+        names(
+          sortEventGroups(groups(), [
+            { direction: "asc", key: "tag", tag: "tag:body" },
+          ]),
+        ),
+      ).toStrictEqual(["Late", "Both", "None", "Early"]);
     });
   });
 });

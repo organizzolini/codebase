@@ -1,6 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
+import {
+  INITIAL_TABLE_GROUPS,
+  TableGroupsContext,
+} from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.constants";
+
 import { CalendarGroupStrip } from "./calendar-group-strip";
 
 import type { EventGroupLevel } from "./components/event-group-model/event-groups.types";
@@ -11,11 +16,18 @@ const FACETS = [
     name: "Type",
     values: [
       { count: 1, depth: 1, id: "aspect", name: "Aspect", path: "Aspect" },
+      {
+        count: 1,
+        depth: 2,
+        id: "major",
+        name: "Major",
+        path: "Aspect / Major",
+      },
     ],
   },
 ];
 
-const TYPE: EventGroupLevel = { depth: 1, field: "tag:type" };
+const TYPE: EventGroupLevel = { field: "tag:type" };
 
 function renderStrip(grouping: EventGroupLevel[] = []): {
   onGroupingChange: ReturnType<
@@ -66,6 +78,14 @@ describe(CalendarGroupStrip, () => {
     expect(group.textContent).toBe("GroupType");
   });
 
+  it("labels a level that groups by a tag's children with the tag", () => {
+    renderStrip([{ field: "tag:type", parent: "aspect" }]);
+
+    expect(screen.getByRole("group", { name: "Group" }).textContent).toBe(
+      "GroupType › Aspect",
+    );
+  });
+
   it("takes a level out from its ellipsis menu", async () => {
     const { onGroupingChange } = renderStrip([TYPE]);
 
@@ -76,13 +96,23 @@ describe(CalendarGroupStrip, () => {
   });
 
   it("moves a level left or right from its menu", async () => {
-    const other: EventGroupLevel = { depth: 1, field: "tag:other" };
+    const other: EventGroupLevel = { field: "tag:other" };
     const { onGroupingChange } = renderStrip([TYPE, other]);
 
     fireEvent.click(screen.getByRole("button", { name: "Type options" }));
     fireEvent.click(
       await screen.findByRole("menuitem", { name: "Move right" }),
     );
+
+    expect(onGroupingChange).toHaveBeenLastCalledWith([other, TYPE]);
+  });
+
+  it("moves a level left from its menu", async () => {
+    const other: EventGroupLevel = { field: "tag:other" };
+    const { onGroupingChange } = renderStrip([TYPE, other]);
+
+    fireEvent.click(screen.getByRole("button", { name: "tag:other options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Move left" }));
 
     expect(onGroupingChange).toHaveBeenLastCalledWith([other, TYPE]);
   });
@@ -111,4 +141,52 @@ describe(CalendarGroupStrip, () => {
       expect(screen.queryByTestId("calendar-group-strip")).toBeNull();
     },
   );
+
+  it("puts Collapse all and Expand all in each chip's menu in the table, as the groups allow", async () => {
+    const collapseAll = vi.fn();
+    const expandAll = vi.fn();
+
+    render(
+      <TableGroupsContext
+        value={{
+          canCollapse: true,
+          canExpand: true,
+          collapseAll,
+          dispatch: () => {},
+          expandAll,
+          provided: true,
+          state: INITIAL_TABLE_GROUPS,
+        }}
+      >
+        <CalendarGroupStrip
+          facets={FACETS}
+          grouping={[TYPE]}
+          onGroupingChange={() => {}}
+          view="table"
+        />
+      </TableGroupsContext>,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Collapse all" }),
+    );
+
+    expect(collapseAll).toHaveBeenCalledTimes(1);
+
+    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Expand all" }),
+    );
+
+    expect(expandAll).toHaveBeenCalledTimes(1);
+  });
+
+  it("leaves them out of the menu outside the table", async () => {
+    renderStrip([TYPE]);
+    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+
+    await screen.findByRole("menuitem", { name: "Remove" });
+
+    expect(screen.queryByRole("menuitem", { name: "Collapse all" })).toBeNull();
+  });
 });

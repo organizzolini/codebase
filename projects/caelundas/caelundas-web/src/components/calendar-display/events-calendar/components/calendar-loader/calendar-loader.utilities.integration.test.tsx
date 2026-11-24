@@ -15,7 +15,7 @@ describe("calendar states", () => {
     await renderCalendarRoute(
       filterLink(
         "2026-04-01",
-        filterGroup("and", tagRule("planet", "is_any_of", ["mercury"])),
+        filterGroup("and", tagRule("body", "is_any_of", ["mercury"])),
       ),
     );
 

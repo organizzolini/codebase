@@ -14,8 +14,8 @@ const OPTIONS = {
   minimum: 2,
   timeZone: ZONE,
 };
-const MAJOR = "Type / Aspect / Simple Aspect / Major Aspect / Square";
-const MINOR = "Type / Aspect / Simple Aspect / Minor Aspect / Quincunx";
+const MAJOR = "Aspect / Simple / Major / Square";
+const MINOR = "Aspect / Simple / Minor / Quincunx";
 
 function event(
   id: string,
@@ -193,8 +193,12 @@ describe(clusterEvents, () => {
   });
 
   it.each([
-    ["retrograde periods", "Type / Retrograde Period", "retrograde periods"],
-    ["sign ingresses", "Type / Ingress / Sign Ingress", "ingresses"],
+    [
+      "retrograde periods",
+      "Planetary / Direction / Retrograde Period",
+      "retrograde periods",
+    ],
+    ["sign ingresses", "Zodiac / Ingress / Sign Ingress", "ingresses"],
   ])("merges %s like aspects", (_name, path, kind) => {
     const clustered = clusterEvents(
       [
@@ -209,10 +213,10 @@ describe(clusterEvents, () => {
   });
 
   it.each([
-    ["twilights", "Type / Twilight / Civil Dawn"],
-    ["a direction", "Type / Direction / Retrograde"],
-    ["a daily cycle", "Type / Cycle / Daily Solar Cycle / Sunrise"],
-    ["an event of no kind", "Planet / Mars"],
+    ["twilights", "Daily / Twilight / Civil Dawn"],
+    ["a direction", "Planetary / Direction / Retrograde"],
+    ["a daily cycle", "Daily / Solar Cycle / Sunrise"],
+    ["an event of no kind", "Body / Mars"],
   ])("never merges %s, however close they start", (_name, path) => {
     const events = [
       event("a", "2026-03-03T10:00:00Z", "2026-03-03T10:00:00Z", path),
@@ -231,10 +235,10 @@ describe(clusterEvents, () => {
 
   it("merges every kind of aspect", () => {
     for (const path of [
-      "Type / Aspect / Simple Aspect / Major Aspect / Square",
-      "Type / Aspect / Simple Aspect / Minor Aspect / Quincunx",
-      "Type / Aspect / Simple Aspect / Specialty Aspect / Novile",
-      "Type / Aspect / Compound Aspect / Triple Aspect / Yod",
+      "Aspect / Simple / Major / Square",
+      "Aspect / Simple / Minor / Quincunx",
+      "Aspect / Simple / Specialty / Novile",
+      "Aspect / Compound / Triple Aspect / Yod",
     ]) {
       const clustered = clusterEvents(
         [

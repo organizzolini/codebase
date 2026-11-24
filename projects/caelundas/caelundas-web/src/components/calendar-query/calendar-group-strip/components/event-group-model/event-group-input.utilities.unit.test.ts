@@ -11,16 +11,16 @@ describe(toEventGroupingInput, () => {
     expect(
       toEventGroupingInput(
         [
-          { depth: 1, field: "tag:tag-type" },
-          { field: "tag:tag-planet", tags: ["tag-mars", "tag-venus"] },
+          { depth: 1, field: "tag:tag-aspect" },
+          { field: "tag:tag-body", tags: ["tag-mars", "tag-venus"] },
           { field: "month" },
         ],
         undefined,
       ),
     ).toStrictEqual({
       levels: [
-        { depth: 1, field: "tag:tag-type" },
-        { field: "tag:tag-planet", tags: ["tag-mars", "tag-venus"] },
+        { depth: 1, field: "tag:tag-aspect" },
+        { field: "tag:tag-body", tags: ["tag-mars", "tag-venus"] },
         { field: "month" },
       ],
     });
@@ -30,18 +30,18 @@ describe(toEventGroupingInput, () => {
     expect(
       toEventGroupingInput([{ field: "year" }], {
         depth: 2,
-        field: "tag:tag-planet",
+        field: "tag:tag-body",
         tags: [],
       }),
     ).toStrictEqual({
-      colorBy: { depth: 2, field: "tag:tag-planet" },
+      colorBy: { depth: 2, field: "tag:tag-body" },
       levels: [{ field: "year" }],
     });
   });
 
   it("writes a color with no grouping at all", () => {
     expect(
-      toEventGroupingInput([], { depth: 1, field: "tag:tag-planet" }),
-    ).toStrictEqual({ colorBy: { depth: 1, field: "tag:tag-planet" } });
+      toEventGroupingInput([], { depth: 1, field: "tag:tag-body" }),
+    ).toStrictEqual({ colorBy: { depth: 1, field: "tag:tag-body" } });
   });
 });

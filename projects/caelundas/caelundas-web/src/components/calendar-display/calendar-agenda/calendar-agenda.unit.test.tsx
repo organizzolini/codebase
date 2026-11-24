@@ -29,7 +29,7 @@ function aspect(id: string): CalendarEventRecord {
         depth: 3,
         id: "kind",
         name: "Major Aspect",
-        path: "Type / Aspect / Simple Aspect / Major Aspect",
+        path: "Aspect / Simple / Major",
       },
     ],
     timezone: "UTC",

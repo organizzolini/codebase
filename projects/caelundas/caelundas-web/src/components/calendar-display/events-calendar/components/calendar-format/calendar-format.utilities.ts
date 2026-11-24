@@ -60,18 +60,22 @@ export function formatEventSpan(
   end: Date,
   timeZone: string,
 ): string {
-  const write = (date: Date): string =>
-    date
-      .toLocaleString("en-US", {
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        month: "short",
-        timeZone,
-      })
-      .replaceAll(" ", " ");
+  return `${formatEventStamp(start, timeZone)} – ${formatEventStamp(end, timeZone)}`;
+}
 
-  return `${write(start)} – ${write(end)}`;
+/**
+ * Writes the day and time of one moment in a zone, such as "Mar 4, 2:03 AM".
+ */
+export function formatEventStamp(date: Date, timeZone: string): string {
+  return date
+    .toLocaleString("en-US", {
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      month: "short",
+      timeZone,
+    })
+    .replaceAll(" ", " ");
 }
 
 /**
@@ -85,4 +89,15 @@ export function formatEventTime(date: Date, timeZone: string): string {
       timeZone,
     })
     .replaceAll(" ", " ");
+}
+
+/**
+ * Writes when an event is, in its own zone: the day and time of an instant, or its span and how long it lasts, such as "Mar 4, 2:03 AM – Mar 5, 7:40 AM · 1 day, 5 hours".
+ */
+export function formatEventWhen(event: CalendarEventRecord): string {
+  if (event.durationMinutes === 0) {
+    return formatEventStamp(event.start, event.timezone);
+  }
+
+  return `${formatEventSpan(event.start, event.end, event.timezone)} · ${formatDuration(event.durationMinutes)}`;
 }

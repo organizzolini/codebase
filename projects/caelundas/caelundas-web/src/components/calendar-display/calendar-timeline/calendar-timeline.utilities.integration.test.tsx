@@ -27,6 +27,11 @@ async function findTimelineRows(): Promise<string[]> {
   ].map((row) => row.textContent);
 }
 
+// Aspect's children, then the bodies, as a link holds them.
+const NESTED_GROUPING = encodeURIComponent(
+  JSON.stringify([{ field: "tag:tag-aspect" }, { field: "tag:tag-body" }]),
+);
+
 /**
  * The fixture's events with a run of busy ones from an instant.
  */
@@ -55,39 +60,65 @@ describe("calendar timeline", () => {
     ).toBeDefined();
   });
 
-  it("nests a row per planet under each type, counting their events", async () => {
+  // Each leaf group holds its events in a row of its own with no title, so it can collapse.
+  it("draws a row per body, counting their events", async () => {
     await renderCalendarRoute("/?view=timeline&date=2026-03-04");
 
     await expect(findTimelineRows()).resolves.toStrictEqual([
-      "Aspect1",
       "Mars1",
-      "Venus1",
-      "Ingress2",
-      "Sun1",
-      "Venus1",
-      "Retrograde1",
+      "",
       "Mercury1",
+      "",
+      "Sun1",
+      "",
+      "Venus2",
+      "",
+    ]);
+  });
+
+  it("nests a row per body under each aspect, counting their events", async () => {
+    await renderCalendarRoute(
+      `/?view=timeline&date=2026-03-04&group=${NESTED_GROUPING}`,
+    );
+
+    await expect(findTimelineRows()).resolves.toStrictEqual([
+      "Simple1",
+      "Mars1",
+      "",
+      "Venus1",
+      "",
+      "No Aspect3",
+      "Mercury1",
+      "",
+      "Sun1",
+      "",
+      "Venus1",
+      "",
     ]);
   });
 
   it("collapses and expands a group", async () => {
-    await renderCalendarRoute("/?view=timeline&date=2026-03-04");
+    await renderCalendarRoute(
+      `/?view=timeline&date=2026-03-04&group=${NESTED_GROUPING}`,
+    );
 
-    const aspect = await screen.findByRole("button", { name: "Aspect" });
+    const simple = await screen.findByRole("button", { name: "Simple" });
 
-    fireEvent.click(aspect);
+    fireEvent.click(simple);
 
     await expect(findTimelineRows()).resolves.toStrictEqual([
-      "Aspect1",
-      "Ingress2",
-      "Sun1",
-      "Venus1",
-      "Retrograde1",
+      "Simple1",
+      "No Aspect3",
       "Mercury1",
+      "",
+      "Sun1",
+      "",
+      "Venus1",
+      "",
     ]);
-    expect(aspect.getAttribute("aria-expanded")).toBe("false");
+    expect(simple.getAttribute("aria-expanded")).toBe("false");
 
-    fireEvent.click(aspect);
+    fireEvent.click(simple);
 
     await expect(findTimelineRows()).resolves.toContain("Mars1");
   });
@@ -132,15 +163,16 @@ describe("calendar timeline", () => {
     await renderCalendarRoute("/?view=timeline&scale=year&date=2026-03-04");
 
     await expect(findTimelineRows()).resolves.toStrictEqual([
-      "Aspect2",
       "Mars2",
-      "Saturn1",
-      "Venus1",
-      "Ingress3",
-      "Sun2",
-      "Venus1",
-      "Retrograde1",
+      "",
       "Mercury1",
+      "",
+      "Saturn1",
+      "",
+      "Sun2",
+      "",
+      "Venus2",
+      "",
     ]);
   });
 
@@ -231,7 +263,11 @@ describe("calendar timeline", () => {
 
   it("nests a tag grouped below its root's children under each tag between", async () => {
     const grouping = encodeURIComponent(
-      JSON.stringify([{ depth: 3, field: "tag:tag-type" }]),
+      JSON.stringify([
+        { field: "tag:tag-aspect" },
+        { field: "tag:tag-aspect", parent: "tag-simple" },
+        { field: "tag:tag-aspect", parent: "tag-major" },
+      ]),
     );
 
     await renderCalendarRoute(
@@ -239,12 +275,15 @@ describe("calendar timeline", () => {
     );
 
     await expect(findTimelineRows()).resolves.toStrictEqual([
-      "Aspect2",
-      "Major Aspect2",
+      "Simple2",
+      "Major2",
       "Conjunct1",
+      "",
       "Square1",
-      "Ingress3",
-      "Retrograde1",
+      "",
+      "No Aspect4",
+      "",
+      "",
     ]);
   });
 });

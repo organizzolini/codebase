@@ -7,6 +7,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **air**: One of the four sign elements used as a filter field, with a value of fire, earth, air or water.
 - **altitude**: Height of a star above the horizon in degrees, where the pole observer sees altitude equal declination, shown by the night sky.
 - **angle**: Degree rotation the night sky star group is drawn at, derived from sidereal time as the sky turns.
+- **apogee**:
 - **appearance**:
 - **aquarius**: Zodiac sign and constellation name whose sign glyph maps to its icon file in the calendar glyphs.
 - **aspect**: Angular relationship between two bodies, such as a conjunction or a harmonic, filtered and colored as a tag root.
@@ -25,6 +26,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **cardinal**: Modality value for a zodiac sign, one of cardinal, fixed or mutable, offered as a filter value.
 - **chiron**: Centaur asteroid whose symbol maps to chiron-icon.svg in the calendar glyph constants and utility tests.
 - **civil**: Twilight stage of dawn or dusk labeled Civil Dawn or Civil Dusk, each with its own calendar glyph icon.
+- **conjunct**:
 - **conjunction**: Aspect at zero degrees between two bodies, with harmonic 1 and its own conjunction-0 icon in the glyph map.
 - **constellation**: Named star pattern the night sky draws with its own lines, from catalog records, listed as folders in the sky menu.
 - **contraparallel**: Aspect between bodies with equal declination on opposite sides of the equator; the project lists it only here.
@@ -37,7 +39,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **decile**: Aspect of 36 degrees, one tenth of the circle, drawn with its own decile-36 icon image in calendar glyphs.
 - **decuple**: Stellium label for a cluster of ten bodies, as the CLI's symbol map names it.
 - **degree**: Angle unit for all night sky coordinates, such as the 90-degree default vertical field and full turns.
-- **dignity**: Filter field for planet strength in a sign, such as domicile or exaltation, used as a tag root.
 - **duodecuple**: Stellium label for a cluster of twelve bodies, as the CLI's symbol map names it.
 - **dusk**: Evening twilight stage, labeled Astronomical Dusk, Astronomical Twilight Evening or Civil Dusk, each with its own icon.
 - **earth**: Earth-centered reference in the Eclipse Frame filter, and the element name of earth signs in the Element filter.
@@ -46,7 +47,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **elongation**: Angular distance of a planet from the Sun, its stage shown by east or west arrow glyphs on the calendar.
 - **eris**: Dwarf planet Eris, a body whose aspects the CLI's triple-aspect tests tag; the web app never names it.
 - **fire**: A value of the Element filter that marks a sign as belonging to the fire element.
-- **focal**: The body a pattern points at, such as a T-square's apex, named in the event filter's Focal Body field.
 - **fov**: The vertical angle in degrees the night sky shows, set by the sky.vFov link key read from the page link.
 - **gap**: The spacing between a flex or grid layout's items, set with Tailwind gap utilities such as gap-2 in the calendar.
 - **gemini**: The zodiac sign of the twins, mapped from ♊ to its icon and drawn as a night-sky constellation figure.
@@ -69,6 +69,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **juno**: The asteroid symbol ⚵ mapped to juno-icon.svg in the event glyph table, so that body's events get an icon.
 - **jupiter**: The planet symbol ♃ mapped to jupiter-icon.svg in the event glyph table, and named in glyph test event titles.
 - **kite**: An aspect pattern shape named in the focal body filter, whose emoji 🪁 maps to kite-icon.png.
+- **lack**:
 - **lammas**: The cross-quarter festival of early August, mapped to its PNG icon in the event glyph table.
 - **latitude**: The observer's north-south angle, read from sky.lat to place the night sky, and a column of each calendar event.
 - **leo**: The zodiac sign of the lion, whose ♌ glyph maps to leo-icon.svg and tags events as Sign / Leo.
@@ -82,7 +83,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **magnitude**: A star's brightness on the astronomical scale, lower being brighter, stored per star and capped by the faintest-star setting.
 - **makemake**: A dwarf planet of the Kuiper belt that no source or test file names, leaving only this glossary entry.
 - **mercury**: The innermost planet, named in the calendar's color scheme tests and in a Mercury retrograde filter fixture.
-- **modality**: A zodiac sign's quality, cardinal, fixed or mutable, offered as a filter field and tag group for events.
 - **moon**: Tag path naming the Moon, whose events a without-the-Moon collection excludes from its planetary aspect set.
 - **mutable**: One of the three sign modalities, alongside cardinal and fixed, offered as a value in the event filters.
 - **mystic**: Name root of the aspect pattern whose door emoji maps to a PNG icon in the event glyph set.
@@ -102,12 +102,11 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ostara**: Seasonal festival event, the spring equinox name here, mapped to a PNG icon in the glyph set.
 - **pallas**: One of the four asteroids, named in event labels such as Mars biquintile Pallas, with its own glyph.
 - **pentagram**: The star glyph for a five-pointed pattern, mapped to its own PNG icon in the glyph set.
-- **phase**: Lunar or planetary cycle stage, a filter and color field grouping events by cycle position.
+- **perigee**:
 - **pholus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
 - **pisces**: Zodiac sign whose glyph maps to its own SVG icon, and a constellation listed in the sky menu.
-- **planet**: A celestial body whose glyph, name and events the calendar shows, such as Mars or Jupiter.
+- **planetary**:
 - **pluto**: Dwarf-planet body whose glyph maps to its own SVG icon and appears in event names.
-- **polarity**: Whether a zodiac sign is positive or negative, offered as a filter field and a color group.
 - **pole**: The north celestial pole at the top of the night-sky view, where altitude equals declination.
 - **predicate**:
 - **prograde**: Direction of a planet moving forward through the zodiac, mapped to its own SVG icon.
@@ -122,23 +121,25 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **retrograde**: Apparent backward motion of a planet, a station event with its own icon in the glyph set.
 - **rise**: A planet stage relative to the Sun, such as rising or setting, in the planetary phase filter.
 - **ruler**:
+- **sagittarius**:
 - **samhain**: Seasonal festival event at a cross-quarter day, mapped to its own PNG icon in the glyph set.
 - **saturn**: Ringed planet whose glyph and aspect events, such as Mars squares, appear across the calendar.
 - **scorpio**: Zodiac sign of the scorpion, whose glyph maps to its own SVG icon in the glyph set.
-- **season**: A filter and color field giving the time of year an event falls in, such as spring.
 - **sedna**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
 - **semisextile**: The 30-degree minor aspect, mapped to its own PNG icon in the glyph set.
+- **semisquare**:
 - **septile**: The 51.43-degree aspect, a seventh harmonic, mapped to its own PNG icon in the glyph set.
 - **septuple**: Stellium label for a cluster of seven bodies, mapped to a symbol in the stellium constants.
+- **sesquiquadrate**:
 - **sextile**: The 60-degree aspect, a harmonic-six pattern, shown in event names with the star glyph.
 - **sextuple**: Stellium label for six bodies clustered together, mapped to its own PNG icon in the glyph set.
 - **sky**: The night-sky backdrop behind the calendar and its settings, such as sky.top, sky.lat and sky.lon.
+- **solar**:
 - **south**: The descending lunar node glyph, mapped to its own SVG icon beside the north node.
 - **square**: The 90-degree aspect, a harmonic-four pattern, shown in event names beside its glyph.
 - **star**: Celestial point in the night sky, as in the morning-star and evening-star icons and the sky backdrop.
 - **stellium**: Three or more bodies all in conjunction with one another, named by its count and given a glyph icon.
 - **sun**: Central body of the solar system, whose glyph and events label Sun-relative stages and twilight.
-- **synodic**: Planet-with-Sun cycle label, a filter field and tag group for each planet stage.
 - **taurus**: Zodiac sign of the bull, whose glyph maps to its own SVG icon, and a constellation in the sky menu.
 - **temporality**: Derived filter field classing an event as Instant or Duration, from whether its start equals its end.
 - **trapeze**: Four-body aspect pattern that no code in this project uses, so only this glossary names it.

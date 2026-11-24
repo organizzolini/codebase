@@ -1,3 +1,7 @@
+import { createElement } from "react";
+
+import { TagIcon } from "../../../tag-icon/tag-icon";
+
 import {
   DATE_RANGE_EDITOR,
   DERIVED_FIELD_IDS,
@@ -5,7 +9,6 @@ import {
   DURATION_BUCKETS,
   NUMBER_OPERATORS,
   TAG_OPERATORS,
-  TEMPORALITIES,
   WEEKDAY_LABELS,
 } from "./event-filters.constants";
 
@@ -121,6 +124,7 @@ export const DERIVED_FIELDS: readonly EventFilterField[] = [
     defaultOperator: DERIVED_OPERATORS.between,
     description: "The days an event overlaps",
     editor: DATE_RANGE_EDITOR,
+    icon: createElement(TagIcon, { name: "calendar" }),
     id: DERIVED_FIELD_IDS.date,
     label: "Date",
     operators: RANGE_OPERATORS,
@@ -128,6 +132,7 @@ export const DERIVED_FIELDS: readonly EventFilterField[] = [
   {
     defaultOperator: DERIVED_OPERATORS.isAnyOf,
     description: "The day of the week an event starts, in its own time zone",
+    icon: createElement(TagIcon, { name: "calendar-check" }),
     id: DERIVED_FIELD_IDS.weekday,
     label: "Weekday",
     operators: SET_OPERATORS,
@@ -140,6 +145,7 @@ export const DERIVED_FIELDS: readonly EventFilterField[] = [
   {
     defaultOperator: NUMBER_OPERATORS.eq,
     description: "The hour an event starts, from 0 to 23",
+    icon: createElement(TagIcon, { name: "clock" }),
     id: DERIVED_FIELD_IDS.hour,
     label: "Hour",
     operators: NUMBER_FIELD_OPERATORS,
@@ -149,6 +155,7 @@ export const DERIVED_FIELDS: readonly EventFilterField[] = [
     defaultOperator: DERIVED_OPERATORS.isAnyOf,
     description:
       "How long an event lasts, in steps: an instant, minutes, hours, days, weeks or months",
+    icon: createElement(TagIcon, { name: "timer" }),
     id: DERIVED_FIELD_IDS.duration,
     label: "Duration",
     operators: SET_OPERATORS,
@@ -161,26 +168,16 @@ export const DERIVED_FIELDS: readonly EventFilterField[] = [
   {
     defaultOperator: NUMBER_OPERATORS.gte,
     description: "The whole minutes from start to end, 0 for an instant",
+    icon: createElement(TagIcon, { name: "hourglass" }),
     id: DERIVED_FIELD_IDS.durationMinutes,
     label: "Duration (minutes)",
     operators: NUMBER_FIELD_OPERATORS,
     type: "number",
   },
   {
-    defaultOperator: DERIVED_OPERATORS.isAnyOf,
-    description: "Whether an event is an instant or lasts for a while",
-    id: DERIVED_FIELD_IDS.temporality,
-    label: "Temporality",
-    operators: SET_OPERATORS,
-    options: TEMPORALITIES.map((temporality) => ({
-      label: temporality,
-      value: temporality,
-    })),
-    type: "multiselect",
-  },
-  {
     defaultOperator: DERIVED_OPERATORS.contains,
     description: "The summary and description",
+    icon: createElement(TagIcon, { name: "text-search" }),
     id: DERIVED_FIELD_IDS.text,
     label: "Text",
     operators: [

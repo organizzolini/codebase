@@ -16,7 +16,12 @@ const EVENT: CalendarEventRecord = {
   start: new Date("2026-03-04T10:00:00Z"),
   summary: "Mars Retrograde",
   tags: [
-    { depth: 1, id: "tag", name: "Retrograde", path: "Type / Retrograde" },
+    {
+      depth: 1,
+      id: "tag",
+      name: "Retrograde",
+      path: "Planetary / Direction / Retrograde Period",
+    },
   ],
   timezone: "UTC",
 };
@@ -53,5 +58,40 @@ describe(CalendarEventCard, () => {
     expect(screen.getByText("3 events")).toBeDefined();
     expect(screen.getByText("Click to list them.")).toBeDefined();
     expect(screen.queryByText("Mars Retrograde")).toBeNull();
+  });
+
+  it("says the day and time of an instant in the event's zone", () => {
+    render(<CalendarEventCard event={EVENT} />);
+
+    expect(screen.getByTestId("calendar-event-card-time").textContent).toBe(
+      "Mar 4, 10:00 AM",
+    );
+  });
+
+  it("says the span of an event and how long it lasts", () => {
+    render(
+      <CalendarEventCard
+        event={{
+          ...EVENT,
+          durationMinutes: 11 * 24 * 60 + 15 * 60,
+          end: new Date("2026-03-15T01:00:00Z"),
+        }}
+      />,
+    );
+
+    expect(screen.getByTestId("calendar-event-card-time").textContent).toBe(
+      "Mar 4, 10:00 AM – Mar 15, 1:00 AM · 11 days, 15 hours",
+    );
+  });
+
+  it("says no time for a marker that stands for several events", () => {
+    render(
+      <CalendarEventCard
+        event={EVENT}
+        label={{ name: "3 events" }}
+      />,
+    );
+
+    expect(screen.queryByTestId("calendar-event-card-time")).toBeNull();
   });
 });

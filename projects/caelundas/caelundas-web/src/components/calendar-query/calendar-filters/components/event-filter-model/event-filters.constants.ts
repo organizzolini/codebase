@@ -20,7 +20,6 @@ export const DERIVED_FIELD_IDS = {
   duration: "duration",
   durationMinutes: "duration-minutes",
   hour: "hour",
-  temporality: "temporality",
   text: "text",
   weekday: "weekday",
 } as const;
@@ -83,11 +82,6 @@ export const WEEKDAY_LABELS: readonly string[] = [
 ];
 
 /**
- * The values the temporality field offers, as the derived view names them.
- */
-export const TEMPORALITIES: readonly string[] = ["Instant", "Duration"];
-
-/**
  * Numeric field operators: equality, orderings, and a range.
  */
 export const NUMBER_OPERATORS = {
@@ -105,32 +99,13 @@ export const NUMBER_OPERATORS = {
  * What each tag root means; unlisted roots show their name.
  */
 export const TAG_ROOT_DESCRIPTIONS: Readonly<Record<string, string>> = {
-  "Aspect Harmonic":
-    "The harmonic of an aspect: 1 for a conjunction, 2 an opposition, 3 a trine, 4 a square, and so on",
-  "Aspect Nature": "Whether an aspect is hard, soft or neutral",
-  "Body Class":
-    "The class of body involved: a luminary, a personal, social or outer planet, an asteroid, a node or a point",
-  Decan: "The ten-degree third of a sign a body is in",
-  Dignity:
-    "How strongly a planet sits in its sign: domicile, exaltation, detriment, fall or peregrine",
-  Domain: "Whether the event belongs to the solar, lunar or planetary sphere",
-  "Eclipse Frame":
-    "What an eclipse is measured from: the Earth's center or the observer's visibility",
-  Element: "The element of a sign: fire, earth, air or water",
-  "Focal Body":
-    "The body a pattern points at: the apex of a T-square, a yod or a kite",
-  "Lunar Phase":
-    "The Moon's phase: new, a crescent, a quarter, gibbous or full",
-  Modality: "The modality of a sign: cardinal, fixed or mutable",
-  Motion: "Whether a planet turns retrograde or direct at a station",
-  Phase:
-    "Where an event sits in its span: forming, perfective, dissolving, and so on",
-  Planet: "The planets, luminaries and other bodies the event involves",
-  Polarity: "The polarity of a sign: positive or negative",
-  Season: "The season of the year",
-  Sign: "The zodiac sign a body is in",
-  "Synodic Stage":
-    "A planet's stage in its cycle with the Sun: brightest, elongation, rise and set",
-  "Time of Day": "Whether it falls in the morning or the evening",
-  Type: "What kind of event it is: an aspect, an ingress, a station, an eclipse, a cycle, a twilight…",
+  Aspect: "Angles between bodies, and the patterns they form.",
+  Body: "The bodies an event involves, grouped by class.",
+  Daily: "Events that repeat every day.",
+  Eclipse: "Solar and lunar eclipses.",
+  Lunar: "The Moon's month and orbit.",
+  Planetary: "The planets' own cycles.",
+  Solar: "The Sun's year.",
+  Temporality: "Whether an event is an instant or progresses over time.",
+  Zodiac: "The signs and what they imply.",
 };

@@ -332,8 +332,10 @@ function findFacets(
   return roots
     .toSorted((left, right) => left.name.localeCompare(right.name))
     .map((root) => ({
+      icon: null,
       id: root.id,
       name: root.name,
+      note: null,
       values: [...tree.byId.values()]
         .filter((tag) => tag.parentId !== null && tree.root(tag.id) === root.id)
         .toSorted((left, right) =>
@@ -344,8 +346,10 @@ function findFacets(
             listEventTags(event, tree).has(tag.id),
           ).length,
           depth: tree.depth(tag.id),
+          icon: null,
           id: tag.id,
           name: tag.name,
+          note: null,
           path: tree.path(tag.id).slice(root.name.length + " / ".length),
         })),
     }));
@@ -358,10 +362,20 @@ function findGroupKeys(
   event: FixtureEvent,
   tree: Tree,
   level: EventGroupLevelInput,
-): { key: string; label: null | string; path: null | string }[] {
+): {
+  key: string;
+  label: null | string;
+  orderKey: null | string;
+  path: null | string;
+}[] {
   if (!level.field.startsWith("tag:")) {
     return [
-      { key: readDerivedKey(event, level.field), label: null, path: null },
+      {
+        key: readDerivedKey(event, level.field),
+        label: null,
+        orderKey: null,
+        path: null,
+      },
     ];
   }
 
@@ -370,6 +384,18 @@ function findGroupKeys(
     (id) => tree.root(id) === rootId && tree.depth(id) > 0,
   );
   const depth = level.depth ?? 1;
+
+  if (level.parent !== null && level.parent !== undefined) {
+    return carried
+      .filter((id) => tree.byId.get(id)?.parentId === level.parent)
+      .map((id) => ({
+        key: id,
+        label: tree.byId.get(id)?.name ?? id,
+        orderKey: null,
+        path: tree.path(id),
+      }));
+  }
+
   const picked =
     level.tags === null || level.tags === undefined || level.tags.length === 0
       ? undefined
@@ -385,6 +411,7 @@ function findGroupKeys(
   return keys.map((id) => ({
     key: id,
     label: tree.byId.get(id)?.name ?? id,
+    orderKey: null,
     path: tree.path(id),
   }));
 }

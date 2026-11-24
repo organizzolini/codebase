@@ -6,7 +6,7 @@ import { useCalendarClusters } from "./use-calendar-clusters";
 import type { CalendarEventRecord } from "../../components/calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 
-const SQUARE = "Type / Aspect / Simple Aspect / Major Aspect / Square";
+const SQUARE = "Aspect / Simple / Major / Square";
 
 function event(id: string, minute: number, path = SQUARE): CalendarEventRecord {
   const at = new Date(Date.UTC(2026, 2, 4, 10, minute));

@@ -18,6 +18,7 @@ query Events(
     groups {
       key
       label
+      orderKey
       path
     }
     tags {

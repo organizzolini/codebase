@@ -188,7 +188,9 @@ describe("events api", () => {
                 description: "d",
                 durationMinutes: 0,
                 end: period.start,
-                groups: [[{ key: "k", label: "L", path: null }]],
+                groups: [
+                  [{ key: "k", label: "L", orderKey: null, path: null }],
+                ],
                 id: "e1",
                 location: null,
                 start: period.start,
@@ -220,7 +222,7 @@ describe("events api", () => {
     });
     expect(event?.start).toStrictEqual(new Date(period.start));
     expect(event?.groups).toStrictEqual([
-      [{ key: "k", label: "L", path: null }],
+      [{ key: "k", label: "L", orderKey: null, path: null }],
     ]);
   });
 

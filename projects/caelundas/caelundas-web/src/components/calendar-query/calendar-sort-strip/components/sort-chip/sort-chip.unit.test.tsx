@@ -39,7 +39,7 @@ describe(SortChip, () => {
     ).toBeDefined();
   });
 
-  it("has no menu without a way to remove it", () => {
+  it("disables removing without a way to remove it", async () => {
     render(
       <SortChip
         direction="asc"
@@ -47,8 +47,27 @@ describe(SortChip, () => {
         onFlip={() => {}}
       />,
     );
+    fireEvent.click(screen.getByRole("button", { name: "Name options" }));
 
-    expect(screen.queryByRole("button", { name: "Name options" })).toBeNull();
+    const remove = await screen.findByRole("menuitem", { name: "Remove" });
+
+    expect(remove.getAttribute("aria-disabled")).toBe("true");
+  });
+
+  it("reverses its sort from the ellipsis menu too", async () => {
+    const onFlip = vi.fn<() => void>();
+
+    render(
+      <SortChip
+        direction="asc"
+        label="Name"
+        onFlip={onFlip}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Name options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Reverse" }));
+
+    expect(onFlip).toHaveBeenCalledExactlyOnceWith();
   });
 
   it("removes its sort from the ellipsis menu", async () => {

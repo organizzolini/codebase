@@ -31,6 +31,7 @@ export const API_VIEWS: Readonly<Record<CalendarViewName, CalendarWindow>> = {
   agenda: "AGENDA",
   day: "DAY",
   month: "MONTH",
+  table: "AGENDA",
   "three-day": "THREE_DAY",
   timeline: "TIMELINE",
   week: "WEEK",

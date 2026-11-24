@@ -1,13 +1,17 @@
 import { describe, expect, it } from "vitest";
 
+import { INITIAL_TABLE_GROUPS } from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.constants";
+
 import {
   createGroupItems,
+  getCollapseHandlers,
   labelGroupLevel,
   toGrouping,
   toGroupValue,
 } from "./calendar-group-strip.utilities";
 import { createEventGroupFields } from "./components/event-group-model/event-group-fields.utilities";
 
+import type { TableGroupsValue } from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.types";
 import type { EventGroupLevel } from "./components/event-group-model/event-groups.types";
 
 const FIELDS = createEventGroupFields([
@@ -15,7 +19,14 @@ const FIELDS = createEventGroupFields([
     id: "type",
     name: "Type",
     values: [
-      { count: 2, depth: 1, id: "aspect", name: "Aspect", path: "Aspect" },
+      {
+        count: 2,
+        depth: 1,
+        id: "aspect",
+        name: "Aspect",
+        note: "Two bodies",
+        path: "Aspect",
+      },
       {
         count: 1,
         depth: 2,
@@ -23,63 +34,103 @@ const FIELDS = createEventGroupFields([
         name: "Major Aspect",
         path: "Aspect / Major Aspect",
       },
+      {
+        count: 1,
+        depth: 3,
+        id: "conjunct",
+        name: "Conjunct",
+        path: "Aspect / Major Aspect / Conjunct",
+      },
       { count: 1, depth: 1, id: "ingress", name: "Ingress", path: "Ingress" },
     ],
   },
 ]);
-const TYPE: EventGroupLevel = { depth: 1, field: "tag:type" };
+const TYPE: EventGroupLevel = { field: "tag:type" };
 const DAY: EventGroupLevel = { field: "day" };
+const IN_ASPECT: EventGroupLevel = { field: "tag:type", parent: "aspect" };
+const IN_MAJOR: EventGroupLevel = { field: "tag:type", parent: "major" };
 
 describe("calendar-group-strip utilities", () => {
   describe(createGroupItems, () => {
-    it("nests tags that carry no depth, description or keywords at the top", () => {
-      const [item] = createGroupItems([
-        {
-          description: "Bare",
-          id: "tag:bare",
-          label: "Bare",
-          levels: [["Tag"]],
-          options: [{ label: "Tag", value: "tag" }],
-        },
-      ]);
-
-      expect(item?.children).toStrictEqual([{ label: "Tag", value: "tag" }]);
-    });
-
-    it("nests a tag root's tags under it, and leaves a derived field a leaf", () => {
+    it("nests only the tags with tags beneath them, and leaves a derived field a leaf", () => {
       const items = createGroupItems(FIELDS);
       const type = items.find((item) => item.value === "tag:type");
       const day = items.find((item) => item.value === "day");
 
       expect(type?.children?.map((child) => child.value)).toStrictEqual([
         "aspect",
-        "ingress",
       ]);
       expect(
         type?.children?.[0]?.children?.map((child) => child.value),
       ).toStrictEqual(["major"]);
       expect(day?.children).toBeUndefined();
+      expect(day?.icon).toBeDefined();
+    });
+
+    it("describes a tag by its note and event count, and a bare one by its count", () => {
+      const [item] = createGroupItems(FIELDS);
+      const [aspect] = item?.children ?? [];
+
+      expect(aspect?.description).toBe("Two bodies · 2 events");
+      expect(aspect?.children?.[0]?.description).toBe("1 event");
+    });
+
+    it("draws a tag's icon beside its name", () => {
+      const fields = createEventGroupFields([
+        {
+          icon: "orbit",
+          id: "body",
+          name: "Body",
+          values: [
+            {
+              count: 1,
+              depth: 1,
+              icon: "sun",
+              id: "star",
+              name: "Star",
+              path: "Star",
+            },
+            {
+              count: 1,
+              depth: 2,
+              id: "sun",
+              name: "Sun",
+              path: "Star / Sun",
+            },
+          ],
+        },
+      ]);
+      const [item] = createGroupItems(fields);
+
+      expect(item?.icon).toBeDefined();
+      expect(item?.children?.[0]?.icon).toBeDefined();
+    });
+
+    it("offers a root whose tags are all leaves with no children", () => {
+      const fields = createEventGroupFields([
+        {
+          id: "body",
+          name: "Body",
+          values: [{ count: 1, depth: 1, id: "sun", name: "Sun", path: "Sun" }],
+        },
+      ]);
+      const [item] = createGroupItems(fields);
+
+      expect(item?.children).toBeUndefined();
     });
   });
 
   describe(toGroupValue, () => {
-    it("ticks only the field of a level whose field the data no longer has", () => {
-      expect(toGroupValue([{ field: "retired" }], FIELDS)).toStrictEqual([
-        "retired",
+    it("ticks each level's tag, or its field when it groups by the root's own", () => {
+      expect(toGroupValue([DAY, TYPE, IN_ASPECT])).toStrictEqual([
+        "day",
+        "tag:type",
+        "aspect",
       ]);
     });
 
-    it("ticks a field alone, a first-level tag root with all its tags, and a tag choice by its tags", () => {
-      expect(toGroupValue([DAY], FIELDS)).toStrictEqual(["day"]);
-      expect(toGroupValue([TYPE], FIELDS)).toStrictEqual([
-        "tag:type",
-        "aspect",
-        "major",
-        "ingress",
-      ]);
-      expect(
-        toGroupValue([{ field: "tag:type", tags: ["ingress"] }], FIELDS),
-      ).toStrictEqual(["tag:type", "ingress"]);
+    it("ticks nothing for no grouping", () => {
+      expect(toGroupValue([])).toStrictEqual([]);
     });
   });
 
@@ -91,47 +142,109 @@ describe("calendar-group-strip utilities", () => {
       ]);
     });
 
-    it("reads a tag root ticked alone as a first-level level", () => {
+    it("reads a tag root ticked alone as a level of its own children", () => {
       expect(toGrouping(["tag:type"], [], FIELDS)).toStrictEqual([TYPE]);
     });
 
-    it("reads a ticked tag root as a first-level level, and a partly ticked one as its tags", () => {
+    it("reads a ticked tag as a level of that tag's children", () => {
+      expect(toGrouping(["aspect"], [], FIELDS)).toStrictEqual([IN_ASPECT]);
+    });
+
+    it("lets a field repeat one tag deeper, straight after itself", () => {
       expect(
-        toGrouping(["tag:type", "aspect", "major", "ingress"], [], FIELDS),
-      ).toStrictEqual([TYPE]);
-      expect(toGrouping(["ingress"], [], FIELDS)).toStrictEqual([
-        { field: "tag:type", tags: ["ingress"] },
+        toGrouping(["tag:type", "aspect", "major"], [], FIELDS),
+      ).toStrictEqual([TYPE, IN_ASPECT, IN_MAJOR]);
+      expect(toGrouping(["aspect", "day"], [], FIELDS)).toStrictEqual([
+        IN_ASPECT,
+        DAY,
+      ]);
+      expect(toGrouping(["major", "aspect"], [], FIELDS)).toStrictEqual([
+        IN_ASPECT,
+        IN_MAJOR,
       ]);
     });
 
     it("keeps the levels already there in place and adds new ones after", () => {
+      expect(toGrouping(["day", "aspect"], [DAY], FIELDS)).toStrictEqual([
+        DAY,
+        IN_ASPECT,
+      ]);
       expect(
-        toGrouping(["day", "ingress"], [DAY], FIELDS).map(
-          (level) => level.field,
-        ),
-      ).toStrictEqual(["day", "tag:type"]);
-      expect(
-        toGrouping(["ingress", "day"], [TYPE, DAY], FIELDS).map(
-          (level) => level.field,
-        ),
-      ).toStrictEqual(["tag:type", "day"]);
+        toGrouping(["aspect", "day"], [DAY, IN_ASPECT], FIELDS),
+      ).toStrictEqual([DAY, IN_ASPECT]);
     });
 
-    it("drops what is no longer ticked, and adds no level beyond the most there can be", () => {
+    it("drops what is no longer ticked, and puts no cap on the levels", () => {
       expect(toGrouping([], [DAY], FIELDS)).toStrictEqual([]);
       expect(
         toGrouping(["day", "week", "month", "year"], [], FIELDS),
-      ).toHaveLength(3);
+      ).toHaveLength(4);
     });
   });
 
   describe(labelGroupLevel, () => {
-    it("names a level by its field, with the tags it goes by, or by the id when the field is gone", () => {
+    it("names a level by its field, then the tag it groups by the children of", () => {
       expect(labelGroupLevel(TYPE, FIELDS)).toBe("Type");
-      expect(
-        labelGroupLevel({ field: "tag:type", tags: ["ingress"] }, FIELDS),
-      ).toBe("Type: Ingress");
+      expect(labelGroupLevel(IN_ASPECT, FIELDS)).toBe("Type › Aspect");
+      expect(labelGroupLevel(IN_MAJOR, FIELDS)).toBe("Type › Major Aspect");
+    });
+
+    it("names a level by its id when the field is gone", () => {
       expect(labelGroupLevel({ field: "retired" }, FIELDS)).toBe("retired");
+    });
+  });
+
+  describe(getCollapseHandlers, () => {
+    const groups = (
+      overrides: Partial<TableGroupsValue>,
+    ): TableGroupsValue => ({
+      canCollapse: false,
+      canExpand: false,
+      collapseAll: () => {},
+      dispatch: () => {},
+      expandAll: () => {},
+      provided: true,
+      state: INITIAL_TABLE_GROUPS,
+      ...overrides,
+    });
+
+    it("offers only Collapse all while no group is collapsed", () => {
+      const handlers = getCollapseHandlers(
+        "table",
+        groups({ canCollapse: true }),
+      );
+
+      expect(handlers.onCollapseAll).toBeDefined();
+      expect(handlers.onExpandAll).toBeUndefined();
+    });
+
+    it("offers only Expand all while every group is collapsed", () => {
+      const handlers = getCollapseHandlers(
+        "table",
+        groups({ canExpand: true }),
+      );
+
+      expect(handlers.onCollapseAll).toBeUndefined();
+      expect(handlers.onExpandAll).toBeDefined();
+    });
+
+    it("offers both while the groups are mixed", () => {
+      const handlers = getCollapseHandlers(
+        "table",
+        groups({ canCollapse: true, canExpand: true }),
+      );
+
+      expect(handlers.onCollapseAll).toBeDefined();
+      expect(handlers.onExpandAll).toBeDefined();
+    });
+
+    it("offers neither outside the table", () => {
+      expect(
+        getCollapseHandlers(
+          "timeline",
+          groups({ canCollapse: true, canExpand: true }),
+        ),
+      ).toStrictEqual({ onCollapseAll: undefined, onExpandAll: undefined });
     });
   });
 });

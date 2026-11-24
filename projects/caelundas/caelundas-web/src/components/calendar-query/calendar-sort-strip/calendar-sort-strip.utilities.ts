@@ -1,30 +1,34 @@
-import { labelGroupLevel } from "../calendar-group-strip/calendar-group-strip.utilities";
+import { createElement } from "react";
 
-import { SORT_OPTIONS } from "./calendar-sort-strip.constants";
+import { createGroupItems } from "../calendar-group-strip/calendar-group-strip.utilities";
+import { TagIcon } from "../tag-icon/tag-icon";
 
-import type {
-  EventGroupField,
-  EventGrouping,
-} from "../calendar-group-strip/components/event-group-model/event-groups.types";
+import { SORT_OPTIONS, TAG_SORT_PREFIX } from "./calendar-sort-strip.constants";
+
+import type { EventGroupField } from "../calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CascaderNode } from "@codebase/presentation";
 
 // 🔏 Private Functions
 
 /**
- * The nested choices: each key with its two directions beneath it.
+ * The nested choices: the keys groups are ordered by, then each tag root with its tags that have tags beneath them, to rank groups by the place of their events' tags there.
  */
-export function createSortItems(): CascaderNode[] {
-  return SORT_OPTIONS.map((option) => ({
-    children: [
-      { label: "Ascending", value: `${option.key}:asc` },
-      { label: "Descending", value: `${option.key}:desc` },
-    ],
+export function createSortItems(
+  fields: readonly EventGroupField[],
+): CascaderNode[] {
+  const keys: CascaderNode[] = SORT_OPTIONS.map((option) => ({
     description: option.description,
+    icon: createElement(TagIcon, { name: option.icon }),
     keywords: [option.label],
     label: option.label,
     value: option.key,
   }));
+  const tags = createGroupItems(
+    fields.filter((field) => field.levels.length > 0),
+  );
+
+  return [...keys, ...tags.map((item) => prefixTagItem(item))];
 }
 
 // 🌎 Public Functions
@@ -44,56 +48,97 @@ export function flipSortAt(
 }
 
 /**
- * The name of the default sort: the first group it orders, or the groups' names when there are none.
+ * The name a sort's chip shows: its key's, or for a tag its root's, then the tag when it is not the root's own.
  */
-export function labelDefaultSort(
-  grouping: EventGrouping,
+export function labelSort(
+  sort: GroupSort,
   fields: readonly EventGroupField[],
 ): string {
-  const [first] = grouping;
+  if (sort.key !== "tag") {
+    return (
+      SORT_OPTIONS.find((option) => option.key === sort.key)?.label ?? sort.key
+    );
+  }
 
-  return first === undefined ? "Name" : labelGroupLevel(first, fields);
+  for (const field of fields) {
+    if (field.id === sort.tag) {
+      return field.label;
+    }
+
+    const node = field.nodes.find((candidate) => candidate.id === sort.tag);
+
+    if (node !== undefined) {
+      return `${field.label} › ${node.name}`;
+    }
+  }
+
+  return sort.tag ?? sort.key;
 }
 
-/** The sorts after a list click: a ticked one is added, replacing its key's other direction; a cleared one is removed. */
+/** The sorts after a list click: sorts still ticked keep their place and direction, newly ticked ones follow, ascending; none means the default. */
 export function toSorts(
   next: readonly string[],
   previous: readonly GroupSort[],
 ): GroupSort[] | undefined {
-  const before = toSortValue(previous);
-  const leaf = [
-    ...before.filter((value) => !next.includes(value)),
-    ...next.filter((value) => !before.includes(value)),
-  ][0];
-  const picked = leaf === undefined ? undefined : parseSortLeaf(leaf);
+  const kept = previous.filter((sort) => next.includes(toSortToken(sort)));
+  const keptTokens = new Set(kept.map((sort) => toSortToken(sort)));
+  const added: GroupSort[] = [];
 
-  if (leaf === undefined || picked === undefined) {
-    return previous.length === 0 ? undefined : [...previous];
+  for (const token of next) {
+    const sort = keptTokens.has(token) ? undefined : parseSortToken(token);
+
+    if (sort !== undefined) {
+      added.push(sort);
+    }
   }
 
-  const rest = previous.filter((sort) => sort.key !== picked.key);
-  const sorts = next.includes(leaf)
-    ? [...rest, picked]
-    : previous.filter((sort) => `${sort.key}:${sort.direction}` !== leaf);
+  const sorts = [...kept, ...added];
 
   return sorts.length === 0 ? undefined : sorts;
 }
 
 /**
- * The values ticked for sorts: each one's key and direction.
+ * The values ticked for sorts: one for each.
  */
 export function toSortValue(sorts: readonly GroupSort[]): string[] {
-  return sorts.map((sort) => `${sort.key}:${sort.direction}`);
+  return sorts.map((sort) => toSortToken(sort));
 }
 
 /**
- * The sort a ticked value names, or nothing for a stale value.
+ * The sort a ticked value names, ascending, or nothing for a stale value.
  */
-function parseSortLeaf(leaf: string): GroupSort | undefined {
-  const [key, direction] = leaf.split(":");
-  const option = SORT_OPTIONS.find((candidate) => candidate.key === key);
+function parseSortToken(token: string): GroupSort | undefined {
+  if (token.startsWith(TAG_SORT_PREFIX)) {
+    return {
+      direction: "asc",
+      key: "tag",
+      tag: token.slice(TAG_SORT_PREFIX.length),
+    };
+  }
 
-  return option === undefined || (direction !== "asc" && direction !== "desc")
+  const option = SORT_OPTIONS.find((candidate) => candidate.key === token);
+
+  return option === undefined
     ? undefined
-    : { direction, key: option.key };
+    : { direction: "asc", key: option.key };
+}
+
+/**
+ * A tag row and the rows beneath it, their values marked as sorting by a tag, so they cannot be taken for a key.
+ */
+function prefixTagItem(item: CascaderNode): CascaderNode {
+  return {
+    ...item,
+    ...(item.children === undefined
+      ? {}
+      : { children: item.children.map((child) => prefixTagItem(child)) }),
+    value: `${TAG_SORT_PREFIX}${item.value}`,
+  };
+}
+
+/**
+ * A sort's token in the list: its key, or the tag a tag sort ranks by after a prefix.
+ */
+function toSortToken(sort: GroupSort): string {
+  return sort.key === "tag" ? `${TAG_SORT_PREFIX}${sort.tag ?? ""}` : sort.key;
 }

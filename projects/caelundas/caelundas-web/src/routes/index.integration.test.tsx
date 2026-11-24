@@ -85,7 +85,7 @@ describe("index", () => {
 
     expect(
       within(event).getByText(
-        "Planet / Mars; Planet / Venus; Type / Aspect / Major Aspect / Conjunct. Instant",
+        "Aspect / Simple / Major / Conjunct; Body / Mars; Body / Venus. Instant",
       ),
     ).toBeDefined();
   });
@@ -100,7 +100,7 @@ describe("index", () => {
     expect(span).toBeDefined();
     expect(
       within(span ?? document.body).getByText(
-        "Planet / Mercury; Type / Retrograde. 22 days, 12 hours, 44 minutes",
+        "Body / Mercury; Planetary / Direction / Retrograde Period. 22 days, 12 hours, 44 minutes",
       ),
     ).toBeDefined();
   });
@@ -218,7 +218,7 @@ describe("index", () => {
     await renderCalendarRoute(
       filterLink(
         "2026-03-01",
-        filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
+        filterGroup("and", tagRule("body", "is_any_of", ["venus"])),
       ),
     );
 
@@ -240,7 +240,7 @@ describe("index", () => {
     await renderCalendarRoute(
       filterLink(
         "2026-03-01",
-        filterGroup("and", tagRule("planet", "is_any_of", ["mercury"])),
+        filterGroup("and", tagRule("body", "is_any_of", ["mercury"])),
       ),
     );
 
@@ -262,7 +262,7 @@ describe("index", () => {
     await renderCalendarRoute(
       filterLink(
         "2026-05-01",
-        filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
+        filterGroup("and", tagRule("body", "is_any_of", ["venus"])),
       ),
     );
 
@@ -280,10 +280,10 @@ describe("index", () => {
           "and",
           filterGroup(
             "or",
-            tagRule("planet", "is_any_of", ["sun"]),
-            tagRule("planet", "is_any_of", ["venus"]),
+            tagRule("body", "is_any_of", ["sun"]),
+            tagRule("body", "is_any_of", ["venus"]),
           ),
-          { ...tagRule("type", "is_any_of", ["aspect"]), negated: true },
+          { ...tagRule("aspect", "is_any_of", ["simple"]), negated: true },
         ),
       ),
     );
@@ -310,7 +310,7 @@ describe("index", () => {
     await renderCalendarRoute(
       filterLink(
         "2026-03-01",
-        filterGroup("and", tagRule("planet", "is_any_of", [])),
+        filterGroup("and", tagRule("body", "is_any_of", [])),
       ),
     );
 
@@ -332,7 +332,7 @@ describe("index", () => {
     await expect(screen.findByTestId("filter-cascader")).resolves.toBeDefined();
     expect(screen.getByPlaceholderText("Search attributes")).toBeDefined();
     await expect(
-      screen.findByRole("option", { name: /^Planet/u }),
+      screen.findByRole("option", { name: /^Body/u }),
     ).resolves.toBeDefined();
   });
 
@@ -347,7 +347,7 @@ describe("index", () => {
         }),
       );
       fireEvent.click(
-        await screen.findByRole("option", { name: /^Planet/u }, BUILDER_WAIT),
+        await screen.findByRole("option", { name: /^Body/u }, BUILDER_WAIT),
       );
       fireEvent.click(
         await screen.findByRole("option", { name: /^Mercury/u }, BUILDER_WAIT),
@@ -374,9 +374,9 @@ describe("index", () => {
           "2026-03-01",
           filterGroup(
             "and",
-            tagRule("planet", "is_any_of", ["venus"]),
-            tagRule("sign", "is_any_of", ["aries"]),
-            tagRule("type", "is_any_of", []),
+            tagRule("body", "is_any_of", ["venus"]),
+            tagRule("zodiac", "is_any_of", ["aries"]),
+            tagRule("aspect", "is_any_of", []),
           ),
         ),
       );
@@ -387,12 +387,12 @@ describe("index", () => {
       expect(
         within(toolbar).getByRole("button", { name: "Filter, 2 active" }),
       ).toBeDefined();
-      expect(within(chips).getAllByText(/^(Planet|Sign|Type)$/u)).toHaveLength(
-        3,
-      );
+      expect(
+        within(chips).getAllByText(/^(Body|Zodiac|Aspect)$/u),
+      ).toHaveLength(3);
 
       fireEvent.click(
-        within(chips).getByRole("button", { name: "Sign filter options" }),
+        within(chips).getByRole("button", { name: "Zodiac filter options" }),
       );
       fireEvent.click(
         await screen.findByRole("menuitem", { name: "Remove" }, BUILDER_WAIT),
@@ -415,7 +415,7 @@ describe("index", () => {
     await renderCalendarRoute(
       filterLink(
         "2026-03-01",
-        filterGroup("and", tagRule("planet", "is_any_of", ["venus"])),
+        filterGroup("and", tagRule("body", "is_any_of", ["venus"])),
       ),
     );
 

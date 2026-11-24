@@ -3,19 +3,24 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { CalendarSortStrip } from "./calendar-sort-strip";
 
-import type { EventGroupLevel } from "../calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 
+const FACETS = [
+  {
+    id: "type",
+    name: "Type",
+    values: [
+      { count: 1, depth: 1, id: "aspect", name: "Aspect", path: "Aspect" },
+    ],
+  },
+];
 const NO_SORT = undefined satisfies readonly GroupSort[] | undefined;
 const NAME_ASC: GroupSort = { direction: "asc", key: "name" };
 const COUNT_DESC: GroupSort = { direction: "desc", key: "count" };
 
 function renderStrip(
   sort: readonly GroupSort[] | undefined,
-  options: Readonly<{
-    grouping?: readonly EventGroupLevel[];
-    view?: "timeline" | "week";
-  }> = {},
+  options: Readonly<{ view?: "timeline" | "week" }> = {},
 ): {
   onSortChange: ReturnType<
     typeof vi.fn<(sort: GroupSort[] | undefined) => void>
@@ -25,7 +30,7 @@ function renderStrip(
 
   render(
     <CalendarSortStrip
-      grouping={options.grouping ?? []}
+      facets={FACETS}
       onSortChange={onSortChange}
       sort={sort}
       view={options.view ?? "timeline"}
@@ -62,15 +67,46 @@ describe(CalendarSortStrip, () => {
     expect(screen.queryByTestId("calendar-sort-strip")).toBeNull();
   });
 
-  it("shows a default chip for the first group while nothing is sorted", () => {
-    renderStrip(NO_SORT, { grouping: [{ field: "tag:type" }] });
+  it("shows a default tag order chip while nothing is sorted", () => {
+    renderStrip(NO_SORT);
 
     expect(
       screen.getByRole("button", {
-        name: "Sorted by tag:type, ascending; reverse",
+        name: "Sorted by Tag order, ascending; reverse",
       }),
     ).toBeDefined();
-    expect(screen.queryByRole("button", { name: /options$/u })).toBeNull();
+  });
+
+  it("offers the default chip every menu action but removing it", async () => {
+    renderStrip(NO_SORT);
+
+    fireEvent.click(screen.getByRole("button", { name: "Tag order options" }));
+
+    const remove = await screen.findByRole("menuitem", { name: "Remove" });
+
+    expect(remove.getAttribute("aria-disabled")).toBe("true");
+    expect(screen.getByRole("menuitem", { name: "Reverse" })).toBeDefined();
+  });
+
+  it("reverses a sort from its ellipsis menu", async () => {
+    const { onSortChange } = renderStrip([NAME_ASC]);
+
+    fireEvent.click(screen.getByRole("button", { name: "Name options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Reverse" }));
+
+    expect(onSortChange).toHaveBeenCalledWith([
+      { direction: "desc", key: "name" },
+    ]);
+  });
+
+  it("names a tag sort after its root and tag", () => {
+    renderStrip([{ direction: "asc", key: "tag", tag: "tag:type" }]);
+
+    expect(
+      screen.getByRole("button", {
+        name: "Sorted by Type, ascending; reverse",
+      }),
+    ).toBeDefined();
   });
 
   it("sorts the default chip's groups the other way when it is pressed", () => {
@@ -78,12 +114,12 @@ describe(CalendarSortStrip, () => {
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Sorted by Name, ascending; reverse",
+        name: "Sorted by Tag order, ascending; reverse",
       }),
     );
 
     expect(onSortChange).toHaveBeenCalledWith([
-      { direction: "desc", key: "name" },
+      { direction: "desc", key: "order" },
     ]);
   });
 
@@ -106,9 +142,11 @@ describe(CalendarSortStrip, () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
     fireEvent.click(await screen.findByText("Event count"));
-    fireEvent.click(await screen.findByText("Descending"));
 
-    expect(onSortChange).toHaveBeenCalledWith([NAME_ASC, COUNT_DESC]);
+    expect(onSortChange).toHaveBeenCalledWith([
+      NAME_ASC,
+      { direction: "asc", key: "count" },
+    ]);
   });
 
   it("moves a sort right, and left, from its ellipsis menu", async () => {

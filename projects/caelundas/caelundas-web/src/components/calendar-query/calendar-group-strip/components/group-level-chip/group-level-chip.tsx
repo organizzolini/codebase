@@ -2,8 +2,8 @@ import { Fragment } from "react";
 
 import { ButtonGroupText } from "@codebase/presentation";
 
-import { ChipMenu } from "../../../chip-menu/chip-menu";
 import { CHIP_CLASS_NAME } from "../../calendar-group-strip.constants";
+import { ChipMenu } from "../chip-menu/chip-menu";
 
 import type { ReactNode } from "react";
 
@@ -12,6 +12,8 @@ import type { ReactNode } from "react";
 /** A level's name, its possible moves, and its remove handler. */
 export interface GroupLevelChipProperties {
   label: string;
+  onCollapseAll?: (() => void) | undefined;
+  onExpandAll?: (() => void) | undefined;
   onMoveLeft?: (() => void) | undefined;
   onMoveRight?: (() => void) | undefined;
   onRemove: () => void;
@@ -25,7 +27,14 @@ export interface GroupLevelChipProperties {
 export function GroupLevelChip(
   properties: Readonly<GroupLevelChipProperties>,
 ): ReactNode {
-  const { label, onMoveLeft, onMoveRight, onRemove } = properties;
+  const {
+    label,
+    onCollapseAll,
+    onExpandAll,
+    onMoveLeft,
+    onMoveRight,
+    onRemove,
+  } = properties;
 
   // 🪝 Hooks
 
@@ -43,6 +52,8 @@ export function GroupLevelChip(
       <ButtonGroupText className={CHIP_CLASS_NAME}>{label}</ButtonGroupText>
       <ChipMenu
         label={label}
+        onCollapseAll={onCollapseAll}
+        onExpandAll={onExpandAll}
         onMoveLeft={onMoveLeft}
         onMoveRight={onMoveRight}
         onRemove={onRemove}

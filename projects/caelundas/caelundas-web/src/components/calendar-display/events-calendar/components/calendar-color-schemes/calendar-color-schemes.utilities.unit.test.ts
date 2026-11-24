@@ -54,7 +54,7 @@ describe(createColorScheme, () => {
 
   it("gives each tag at a depth beneath a root a color of its own, in the tree's order", () => {
     const scheme = createColorScheme(
-      { depth: 1, field: "tag:tag-planet" },
+      { depth: 1, field: "tag:tag-body" },
       FIELDS,
       0,
     );
@@ -73,7 +73,7 @@ describe(createColorScheme, () => {
 
   it("colors an event by its tag, or by the first of its tags in the legend's order", () => {
     const scheme = createColorScheme(
-      { depth: 1, field: "tag:tag-planet" },
+      { depth: 1, field: "tag:tag-body" },
       FIELDS,
       0,
     );
@@ -86,7 +86,7 @@ describe(createColorScheme, () => {
 
   it("keeps the color the data gave an event with no value in the legend", () => {
     const scheme = createColorScheme(
-      { depth: 1, field: "tag:tag-planet" },
+      { depth: 1, field: "tag:tag-body" },
       FIELDS,
       0,
     );
@@ -97,7 +97,7 @@ describe(createColorScheme, () => {
 
   it("colors only the tags picked, when some are", () => {
     const scheme = createColorScheme(
-      { field: "tag:tag-planet", tags: ["tag-venus"] },
+      { field: "tag:tag-body", tags: ["tag-venus"] },
       FIELDS,
       0,
     );
@@ -130,7 +130,7 @@ describe(createColorScheme, () => {
 
   it("reads the keys at the index it is given", () => {
     const scheme = createColorScheme(
-      { depth: 1, field: "tag:tag-planet" },
+      { depth: 1, field: "tag:tag-body" },
       FIELDS,
       1,
     );
@@ -143,7 +143,7 @@ describe(createColorScheme, () => {
   });
 
   it("colors the first level of a tag root when no depth is given", () => {
-    const scheme = createColorScheme({ field: "tag:tag-planet" }, FIELDS, 0);
+    const scheme = createColorScheme({ field: "tag:tag-body" }, FIELDS, 0);
 
     expect(scheme.legend.map((entry) => entry.label)).toContain("Mars");
   });

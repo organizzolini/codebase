@@ -1,22 +1,31 @@
+import { createElement } from "react";
+
 import {
+  createRootIcon,
   createTagOptions,
   describeRoot,
 } from "../../../calendar-filters/components/event-filter-model/event-filter-fields.utilities";
 import { TAG_FIELD_PREFIX } from "../../../calendar-filters/components/event-filter-model/event-filters.constants";
+import { TagIcon } from "../../../tag-icon/tag-icon";
 
 import { DEFAULT_GROUP_ROOTS } from "./event-group-fields.constants";
 import {
   DERIVED_GROUP_DESCRIPTIONS,
+  DERIVED_GROUP_ICONS,
   DERIVED_GROUP_LABELS,
   DERIVED_GROUP_ORDER,
-  MAXIMUM_GROUP_LEVELS,
 } from "./event-groups.constants";
 
-import type { EventFacet } from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
+import type {
+  EventFacet,
+  EventFacetValue,
+} from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type {
   EventGroupField,
   EventGrouping,
   EventGroupLevel,
+  GroupNodeOption,
+  ResolvedGroupLevel,
 } from "./event-groups.types";
 
 /**
@@ -40,18 +49,22 @@ export function createEventGroupFields(
 
     tagFields.push({
       description: describeRoot(facet),
+      icon: createRootIcon(facet),
       id: `${TAG_FIELD_PREFIX}${facet.id}`,
       label: facet.name,
       levels: levels.map((names) => [...new Set(names)]),
+      nodes: listGroupNodes(facet.values),
       options: createTagOptions(facet),
     });
   }
 
   const derivedFields = DERIVED_GROUP_ORDER.map((id) => ({
     description: DERIVED_GROUP_DESCRIPTIONS[id],
+    icon: createElement(TagIcon, { name: DERIVED_GROUP_ICONS[id] }),
     id,
     label: DERIVED_GROUP_LABELS[id],
     levels: [],
+    nodes: [],
     options: [],
   }));
 
@@ -74,7 +87,7 @@ export function getDefaultGrouping(
   for (const root of roots) {
     for (const field of fields) {
       if (field.label === root && field.id.startsWith(TAG_FIELD_PREFIX)) {
-        grouping.push({ depth: 1, field: field.id });
+        grouping.push({ field: field.id });
         break;
       }
     }
@@ -84,7 +97,7 @@ export function getDefaultGrouping(
 }
 
 /**
- * Keeps the levels naming a field the data has, at most {@link MAXIMUM_GROUP_LEVELS} and each field once.
+ * Keeps the levels that make sense: each names a field the data has, and for a tag root a tag with tags beneath it. A field repeats only straight after itself, grouping by a tag one level deeper than the last, and nothing repeats.
  */
 export function resolveEventGrouping(
   grouping: EventGrouping,
@@ -94,13 +107,10 @@ export function resolveEventGrouping(
 
   for (const level of grouping) {
     const field = fields.find((candidate) => candidate.id === level.field);
+    const next = field === undefined ? undefined : resolveLevel(level, field);
 
-    if (
-      field !== undefined &&
-      resolved.length < MAXIMUM_GROUP_LEVELS &&
-      !resolved.some((kept) => kept.field === field.id)
-    ) {
-      resolved.push(resolveLevel(level, field));
+    if (next !== undefined && isAllowed(next, resolved)) {
+      resolved.push(next.level);
     }
   }
 
@@ -117,35 +127,87 @@ export function toGroupLevel(field: EventGroupField): EventGroupLevel {
 }
 
 /**
- * Brings one level within its field: a derived field takes no options, a tag field takes its picked tags or a depth.
+ * Whether a level may follow those kept: not a repeat, and for a field already used only straight after itself, refining a group a level of that run made.
+ */
+function isAllowed(
+  next: ResolvedGroupLevel,
+  resolved: readonly EventGroupLevel[],
+): boolean {
+  let used = false;
+  // Whether the run of the field ending the kept levels holds a level whose
+  // tag the new one sits beneath, siblings included; another field ends a run.
+  let refines = false;
+
+  // One loop rather than helpers or callbacks, each of which would count as
+  // one more frame.
+  for (const kept of resolved) {
+    if (kept.field !== next.level.field) {
+      refines = false;
+      continue;
+    }
+
+    used = true;
+
+    if (kept.parent === next.level.parent) {
+      return false;
+    }
+
+    refines ||= (kept.parent ?? null) === next.above;
+  }
+
+  return !used || refines;
+}
+
+/**
+ * The tags with tags beneath them, from a root's tags in tree order, each with the note and icon to show.
+ */
+function listGroupNodes(values: readonly EventFacetValue[]): GroupNodeOption[] {
+  const nodes: GroupNodeOption[] = [];
+  // The last tag seen at each depth, which the next one deeper sits beneath.
+  const above: string[] = [];
+
+  for (const [index, value] of values.entries()) {
+    above[value.depth] = value.id;
+
+    if ((values[index + 1]?.depth ?? 0) > value.depth) {
+      nodes.push({
+        count: value.count,
+        depth: value.depth,
+        ...(typeof value.icon === "string"
+          ? { icon: createElement(TagIcon, { name: value.icon }) }
+          : {}),
+        id: value.id,
+        name: value.name,
+        ...(typeof value.note === "string" ? { note: value.note } : {}),
+        parentId: above[value.depth - 1] ?? null,
+        path: value.path,
+      });
+    }
+  }
+
+  return nodes;
+}
+
+/**
+ * Brings one level within its field: a derived field takes no parent, a tag field a parent it has as a node, or the root's own.
  */
 function resolveLevel(
   level: EventGroupLevel,
   field: EventGroupField,
-): EventGroupLevel {
-  if (field.levels.length === 0) {
-    return { field: field.id };
+): ResolvedGroupLevel | undefined {
+  if (field.levels.length === 0 || level.parent === undefined) {
+    return { above: undefined, level: { field: field.id } };
   }
 
-  const known = new Set<string>();
-
-  // A loop rather than a mapping callback keeps the call stacks shallow.
-  for (const option of field.options) {
-    known.add(option.value);
-  }
-
-  const tags: string[] = [];
-
-  for (const tag of new Set(level.tags)) {
-    if (known.has(tag)) {
-      tags.push(tag);
+  // A loop rather than a callback, which would count as one more frame.
+  for (const node of field.nodes) {
+    if (node.id === level.parent) {
+      return {
+        above: node.parentId,
+        level: { field: field.id, parent: level.parent },
+      };
     }
   }
 
-  return tags.length > 0
-    ? { field: field.id, tags }
-    : {
-        depth: Math.min(Math.max(level.depth ?? 1, 1), field.levels.length),
-        field: field.id,
-      };
+  return undefined;
 }

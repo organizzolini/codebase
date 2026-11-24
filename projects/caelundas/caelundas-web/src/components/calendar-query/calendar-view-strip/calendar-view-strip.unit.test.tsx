@@ -16,7 +16,7 @@ const PRESET = {
       {
         id: "planet-sign-events-0-0",
         operator: "is_any_of",
-        path: ["tag:tag-type"],
+        path: ["tag:tag-aspect"],
         type: "rule" as const,
         value: ["tag-ingress"],
       },

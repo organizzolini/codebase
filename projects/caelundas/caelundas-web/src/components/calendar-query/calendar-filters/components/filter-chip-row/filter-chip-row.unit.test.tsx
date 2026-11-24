@@ -16,7 +16,7 @@ import type { ReactNode } from "react";
 
 const FIELDS = createEventFilterFields([
   {
-    id: "tag-type",
+    id: "tag-aspect",
     name: "Type",
     values: [
       {
@@ -40,7 +40,7 @@ function FiltersWrapper(
     <Filters<EventFilterValue>
       fields={[...FIELDS]}
       onQueryChange={vi.fn<(query: EventFilterQuery) => void>()}
-      query={filterGroup("and", tagRule("type", "is_any_of", ["ingress"]))}
+      query={filterGroup("and", tagRule("zodiac", "is_any_of", ["ingress"]))}
     >
       {properties.children}
     </Filters>

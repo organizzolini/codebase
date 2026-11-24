@@ -44,6 +44,7 @@ export const LAYOUTS: Readonly<
   agenda: "list",
   day: "columns",
   month: "grid",
+  table: "list",
   "three-day": "columns",
   timeline: "timeline",
   week: "columns",

@@ -3,7 +3,7 @@ import type { DerivedGroupId } from "./event-groups.types";
 /**
  * The most levels a grouping nests.
  */
-export const MAXIMUM_GROUP_LEVELS = 3;
+export const MAXIMUM_GROUP_LEVELS = 16;
 
 /**
  * The deepest a tag grouping may reach beneath its root.
@@ -37,6 +37,20 @@ export const DERIVED_GROUP_ORDER: readonly DerivedGroupId[] = [
   "hour",
   "duration",
 ];
+
+/**
+ * The lucide icon the picker draws beside each derived field.
+ */
+export const DERIVED_GROUP_ICONS: Readonly<Record<DerivedGroupId, string>> = {
+  day: "calendar-1",
+  duration: "timer",
+  hour: "clock",
+  month: "calendar-days",
+  quarter: "calendar-range",
+  week: "calendar-clock",
+  weekday: "calendar-check",
+  year: "calendar",
+};
 
 /**
  * What the picker calls each derived field.

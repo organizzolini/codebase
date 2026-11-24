@@ -13,14 +13,14 @@ const tag = (path: string): CalendarEventTag => ({
 
 describe(getTagColor, () => {
   it("gives every tag beneath a root that root's color", () => {
-    expect(getTagColor(tag("Type / Aspect / Major Aspect"))).toBe(
-      getTagColor(tag("Type")),
+    expect(getTagColor(tag("Aspect / Simple / Major"))).toBe(
+      getTagColor(tag("Aspect")),
     );
   });
 
   it("gives different roots different colors", () => {
-    expect(getTagColor(tag("Planet / Mars"))).not.toBe(
-      getTagColor(tag("Sign / Leo")),
+    expect(getTagColor(tag("Body / Mars"))).not.toBe(
+      getTagColor(tag("Zodiac / Leo")),
     );
   });
 

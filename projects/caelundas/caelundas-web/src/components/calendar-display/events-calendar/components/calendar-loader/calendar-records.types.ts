@@ -5,6 +5,10 @@ export interface CalendarEventGroupKey {
   key: string;
   label: null | string;
   /**
+   * What sorts a tag's group among its siblings as the tags are meant to read; null for a derived value.
+   */
+  orderKey?: null | string;
+  /**
    * A tag's names from its root down, joined by " / "; null for a derived
    * value.
    */
@@ -54,8 +58,16 @@ export interface CalendarEventTag {
  * A tag root and every tag beneath it.
  */
 export interface EventFacet {
+  /**
+   * The slug of the root's lucide icon, if it has one.
+   */
+  icon?: null | string;
   id: string;
   name: string;
+  /**
+   * What the root means, if it says.
+   */
+  note?: null | string;
   /**
    * The tags beneath the root, depth first.
    */
@@ -74,8 +86,16 @@ export interface EventFacetValue {
    * How far beneath its root the tag sits, so a root's children are 1.
    */
   depth: number;
+  /**
+   * The slug of the tag's lucide icon, if it has one.
+   */
+  icon?: null | string;
   id: string;
   name: string;
+  /**
+   * What the tag means, if it says.
+   */
+  note?: null | string;
   /**
    * The names from beneath the root down to this tag, joined by " / ".
    */

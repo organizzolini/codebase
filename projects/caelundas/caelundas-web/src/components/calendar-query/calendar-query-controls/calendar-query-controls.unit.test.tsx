@@ -21,6 +21,7 @@ describe(CalendarQueryControls, () => {
         facets={FACETS}
         filter={undefined}
         grouping={[]}
+        onColumnsChange={() => {}}
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
         onSortChange={() => {}}
@@ -41,6 +42,7 @@ describe(CalendarQueryControls, () => {
         facets={FACETS}
         filter={undefined}
         grouping={[]}
+        onColumnsChange={() => {}}
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
         onSortChange={() => {}}
@@ -63,6 +65,7 @@ describe(CalendarQueryControls, () => {
         facets={FACETS}
         filter={undefined}
         grouping={[]}
+        onColumnsChange={() => {}}
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
         onSortChange={() => {}}
@@ -73,5 +76,47 @@ describe(CalendarQueryControls, () => {
     );
 
     expect(screen.queryByRole("group", { name: "Group" })).toBeNull();
+  });
+
+  it("draws Select, for the table's columns, in the table only", () => {
+    render(
+      <CalendarQueryControls
+        facets={FACETS}
+        filter={undefined}
+        grouping={[]}
+        onColumnsChange={() => {}}
+        onFilterChange={() => {}}
+        onGroupingChange={() => {}}
+        onSortChange={() => {}}
+        presets={[]}
+        sort={undefined}
+        view="table"
+      />,
+    );
+
+    expect(screen.getByRole("group", { name: "Select" })).toBeDefined();
+  });
+
+  it("draws Page after Select, in the table only", () => {
+    render(
+      <CalendarQueryControls
+        facets={FACETS}
+        filter={undefined}
+        grouping={[]}
+        onColumnsChange={() => {}}
+        onFilterChange={() => {}}
+        onGroupingChange={() => {}}
+        onSortChange={() => {}}
+        presets={[]}
+        sort={undefined}
+        view="table"
+      />,
+    );
+
+    const names = screen
+      .getAllByRole("group")
+      .map((group) => group.getAttribute("aria-label"));
+
+    expect(names.indexOf("Page")).toBe(names.indexOf("Select") + 1);
   });
 });

@@ -37,7 +37,8 @@ export function SkeletonBody(
   let content: ReactNode;
 
   switch (view) {
-    case "agenda": {
+    case "agenda":
+    case "table": {
       content = (
         <div className="flex min-h-0 flex-1 flex-col gap-2">
           {ROW_KEYS.map((key) => (
