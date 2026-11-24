@@ -10,6 +10,7 @@ const ROW: Extract<TableRowModel, { kind: "event" }> = {
   depth: 1,
   id: "event-id",
   kind: "event",
+  position: 3,
   record: {
     color: null,
     description: "",
@@ -103,5 +104,28 @@ describe(TableEventRow, () => {
     );
 
     expect(screen.getByTestId("table-tag-pill").textContent).toBe("Sun");
+  });
+
+  it("says the event's place in its list in the leading group or number column", () => {
+    render(
+      <table>
+        <tbody>
+          <TableEventRow
+            columns={[
+              { id: "group", kind: "group", label: "Group" },
+              { id: "name", kind: "name", label: "Name" },
+            ]}
+            row={{ ...ROW, position: 26 }}
+            timeZone="UTC"
+          />
+        </tbody>
+      </table>,
+    );
+
+    const pill = screen.getByTestId("table-position-pill");
+
+    expect(pill.textContent).toBe("26");
+    expect(pill.className).toContain("tabular-nums");
+    expect(pill.className).toContain("bg-background");
   });
 });

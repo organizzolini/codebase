@@ -31,7 +31,7 @@ import type {
 } from "./event-group-tree.types";
 
 /**
- * Groups events into a tree, one level per grouping level; an event falls in each group it has a key for. A level that refines the one before it in the same tag root splits only the group of its parent tag, and the others stay whole.
+ * Groups events into a tree, a level each; an event falls in every group it has a key for.
  */
 export function buildEventGroups(
   events: readonly CalendarEventRecord[],
@@ -174,7 +174,7 @@ function compareBy(
 }
 
 /**
- * Describes a group for one key: a tag's name and path beneath the level's parent, a derived value as its heading, or the "No …" group for no key.
+ * Describes a group for one key: a tag's name and path, a derived value's heading, or the "No …" group.
  */
 function describeGroup(
   groupKey: CalendarEventGroupKey | null,
@@ -235,7 +235,7 @@ function nameLevel(
 }
 
 /**
- * Where a group falls when sorted by a tag: the lowest place, in its root's tree order, of any tag its events carry beneath that tag. A group with none comes last.
+ * Where a group falls when sorted by a tag: the lowest place of any tag its events carry beneath it.
  */
 function rankGroup(
   node: EventGroupNode,

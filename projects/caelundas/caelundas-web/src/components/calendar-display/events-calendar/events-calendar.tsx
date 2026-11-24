@@ -178,7 +178,6 @@ export function EventsCalendar(
             grouping={grouping}
             onDateChange={onDateChange}
             onNavigationChange={handleNavigationChange}
-            onShowLater={properties.onShowLater}
             sort={sort}
             timeZone={timeZone}
           />

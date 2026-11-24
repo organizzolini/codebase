@@ -1,7 +1,7 @@
 import { TableCell, TableRow } from "@codebase/presentation";
 
 import { PILL_CLASS_NAME } from "../../calendar-table.constants";
-import { getCellText } from "../../calendar-table.utilities";
+import { getCellText, isPositionColumn } from "../../calendar-table.utilities";
 import { TableNameCell } from "../table-name-cell/table-name-cell";
 import { TableTagCell } from "../table-tag-cell/table-tag-cell";
 
@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** An event row to draw, the columns of its cells, and the zone its times are in. */
+/** An event row's data, columns, and the zone its times are in. */
 export interface TableEventRowProperties {
   className?: string;
   columns: readonly TableColumn[];
@@ -53,6 +53,14 @@ export function TableEventRow(
             index === 0 ? { paddingLeft: getEventIndent(row.depth) } : undefined
           }
         >
+          {isPositionColumn(column) ? (
+            <span
+              className={`${PILL_CLASS_NAME} text-muted-foreground text-xs tabular-nums`}
+              data-testid="table-position-pill"
+            >
+              {row.position}
+            </span>
+          ) : null}
           {column.kind === "name" ? (
             <TableNameCell record={row.record} />
           ) : null}

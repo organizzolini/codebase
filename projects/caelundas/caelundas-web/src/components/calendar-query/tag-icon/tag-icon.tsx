@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * The slug of a lucide icon, and the classes it is drawn with.
+ * A lucide icon's slug and its classes.
  */
 export interface TagIconProperties {
   className?: string;

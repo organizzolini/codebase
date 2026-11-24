@@ -178,7 +178,7 @@ export function watchVisibleRows(
 }
 
 /**
- * Adds the row a leaf group's events are drawn on, beneath the group's own, so the group can be collapsed like any other. It is drawn with no name and no count: the group's row above names and counts it.
+ * Adds the row a leaf group's events are drawn on, beneath the group's own, with no name or count.
  */
 function addEventsRow(row: PendingGroup["parent"]): { id: string } {
   const id = `${row.id}:events`;
@@ -269,7 +269,7 @@ function toGanttEvent(
 }
 
 /**
- * The bars of a leaf group's events, drawn on a row of their own beneath the group's. A loop rather than a mapping callback keeps the call stack shallow.
+ * The bars of a leaf group's events, on a row of their own beneath the group's.
  */
 function toLeafBars(
   row: PendingGroup["parent"],

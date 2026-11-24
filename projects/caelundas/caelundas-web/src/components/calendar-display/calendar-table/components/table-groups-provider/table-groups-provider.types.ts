@@ -20,7 +20,7 @@ export type TableGroupsAction =
   | { type: "expand-all" };
 
 /**
- * What the toolbar and the table share: which groups are open, how many events a page holds and how many pages are loaded, and how far each list has been loaded past that.
+ * What the toolbar and table share: open groups, pages, list loading.
  */
 export interface TableGroupsState {
   /**
@@ -44,7 +44,7 @@ export interface TableGroupsState {
 }
 
 /**
- * What the toolbar and the table share of the table's groups and pages, and how to change it.
+ * What the toolbar and table share, and how to change it.
  */
 export interface TableGroupsValue {
   /**
@@ -66,7 +66,7 @@ export interface TableGroupsValue {
 }
 
 /**
- * How big the table's lists are and how much of them shows: the most events in one list, the rows of events shown, and the events in all the lists.
+ * How big the table's lists are and how much shows.
  */
 export interface TableListStats {
   longest: number;

@@ -35,7 +35,7 @@ export interface CalendarPageStripProperties {
 
 // 🧩 Component
 
-/** Renders the Page button, opening the page sizes and a checkbox for each page, joined to buttons that step through the pages and say which events show: the first, how many, and out of how many. */
+/** Renders the Page button, opening page sizes and a checkbox per page, joined to buttons stepping through them. */
 export function CalendarPageStrip(
   properties: Readonly<CalendarPageStripProperties>,
 ): ReactNode {

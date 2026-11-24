@@ -35,7 +35,7 @@ export interface ChipMenuProperties {
 // 🧩 Component
 
 /**
- * Renders an ellipsis button that opens a menu to reverse a chip, move it left or right, or remove it, and where given a way to, collapse or expand every group of a table. The button is a direct child of the strip it joins, so the strip's button group joins it too.
+ * Renders an ellipsis button opening a menu to reverse, move or remove a chip, and collapse or expand all groups.
  */
 export function ChipMenu(properties: Readonly<ChipMenuProperties>): ReactNode {
   const {

@@ -3,8 +3,9 @@ import { useMemo } from "react";
 
 import { TableCell, TableRow } from "@codebase/presentation";
 
+import { TagLead } from "../../../../calendar-events/tag-lead/tag-lead";
 import { PILL_CLASS_NAME } from "../../calendar-table.constants";
-import { getGroupCounts } from "../../calendar-table.utilities";
+import { getGroupCounts } from "../../table-groups.utilities";
 
 import {
   getGroupHeight,
@@ -17,10 +18,11 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** A group row to draw, the columns of its cells, the zone its times are in, and its open-close handler. */
+/** A group row's data, columns, zone, and open-close handler. */
 export interface TableGroupRowProperties {
   className?: string;
   columns: readonly TableColumn[];
+  levelIcons?: readonly (string | undefined)[];
   onToggle?: ((id: string) => void) | undefined;
   row: Extract<TableRowModel, { kind: "group" }>;
   timeZone: string;
@@ -29,12 +31,19 @@ export interface TableGroupRowProperties {
 // 🧩 Component
 
 /**
- * Renders a group of events as a table row with a cell for each column and no background of its own: the group column holds the pill that opens or closes it, indented by its depth, and each other column a pill counting its distinct values among the group's events.
+ * Renders a group as a row with a cell per column: the group column holds its pill, the rest count distinct values.
  */
 export function TableGroupRow(
   properties: Readonly<TableGroupRowProperties>,
 ): ReactNode {
-  const { className, columns, onToggle, row, timeZone } = properties;
+  const {
+    className,
+    columns,
+    levelIcons = [],
+    onToggle,
+    row,
+    timeZone,
+  } = properties;
 
   // 🪝 Hooks
   const counts = useMemo(
@@ -74,6 +83,11 @@ export function TableGroupRow(
               type="button"
             >
               <Chevron aria-hidden="true" />
+              <TagLead
+                icon={levelIcons[row.node.level]}
+                id={row.node.key ?? undefined}
+                label={row.node.label}
+              />
               {row.node.label}
             </button>
           ) : null}

@@ -23,7 +23,7 @@ export function getGroupIndent(depth: number): string {
 }
 
 /**
- * Where a group's header sticks, as a CSS length from the top of the table's scroll: below the table's header, and below the headers of the groups it is nested in.
+ * Where a group's header sticks, as a CSS length: below the table's header and the headers it is nested in.
  */
 export function getGroupTop(depth: number): string {
   return `${String(HEADER_HEIGHT_REM + depth * GROUP_ROW_HEIGHT_REM)}rem`;

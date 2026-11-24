@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 
-/** The note a tag option carries in its data, if it has one. */
+/** The note a tag option carries. */
 export const TAG_NOTE = z.object({ note: z.string() });
 
 export const INDENT_REM = 0.875;

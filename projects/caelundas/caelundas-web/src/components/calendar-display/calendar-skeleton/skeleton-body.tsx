@@ -40,7 +40,7 @@ export function SkeletonBody(
     case "agenda":
     case "table": {
       content = (
-        <div className="flex min-h-0 flex-1 flex-col gap-2">
+        <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
           {ROW_KEYS.map((key) => (
             <Skeleton
               key={key}
@@ -65,14 +65,16 @@ export function SkeletonBody(
     }
     case "timeline": {
       content = (
-        <div className="flex min-h-0 flex-1 flex-col gap-2">
-          {TIMELINE_BARS.map((bar) => (
+        <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
+          {ROW_KEYS.map((key, index) => (
             <div
-              key={bar}
+              key={key}
               className="flex items-center gap-2"
             >
               <Skeleton className="h-6 w-24 shrink-0" />
-              <Skeleton className={`h-6 ${bar}`} />
+              <Skeleton
+                className={`h-6 ${TIMELINE_BARS[index % TIMELINE_BARS.length] ?? ""}`}
+              />
             </div>
           ))}
         </div>

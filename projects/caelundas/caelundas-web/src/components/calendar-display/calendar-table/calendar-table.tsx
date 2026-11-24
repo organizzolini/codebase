@@ -1,23 +1,21 @@
 import { useEffect, useMemo } from "react";
 
-import {
-  Button,
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@codebase/presentation";
+import { Table, TableBody, TableHeader } from "@codebase/presentation";
 
 import { useTableRows } from "../../../hooks/use-table-rows/use-table-rows";
 import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { AGENDA_DAY_COUNT } from "../events-calendar/components/calendar-views/calendar-views.constants";
 
-import { GROUP_COLUMN, NO_COLUMNS } from "./calendar-table.constants";
+import {
+  GROUP_COLUMN,
+  NO_COLUMNS,
+  NUMBER_COLUMN,
+} from "./calendar-table.constants";
 import {
   createTableNavigation,
   resolveColumns,
 } from "./calendar-table.utilities";
+import { TableColumnHeads } from "./components/table-column-heads/table-column-heads";
 import {
   MemoEventRow,
   MemoGroupRow,
@@ -35,7 +33,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** Events, the tag roots, grouping, sorts, columns, the days shown, and the handlers. */
+/** Events, tag roots, grouping, sorts, columns, days, and handlers. */
 export interface CalendarTableProperties {
   agendaDays?: number | undefined;
   anchor: Date;
@@ -49,7 +47,6 @@ export interface CalendarTableProperties {
   grouping: readonly EventGroupLevel[];
   onDateChange: (date: Date) => void;
   onNavigationChange: (navigation: CalendarNavigation) => void;
-  onShowLater?: (() => void) | undefined;
   sort?: readonly GroupSort[] | undefined;
   timeZone: string;
 }
@@ -72,7 +69,6 @@ export function CalendarTable(
     grouping,
     onDateChange,
     onNavigationChange,
-    onShowLater,
     sort,
     timeZone,
   } = properties;
@@ -84,11 +80,11 @@ export function CalendarTable(
     const picked = resolveColumns(columnIds, groupFields);
 
     return {
-      columns: grouped ? [GROUP_COLUMN, ...picked] : picked,
+      columns: [grouped ? GROUP_COLUMN : NUMBER_COLUMN, ...picked],
       fields: groupFields,
     };
   }, [columnIds, facets, grouped]);
-  const { more, rows, toggle } = useTableRows({
+  const { levelIcons, more, rows, toggle } = useTableRows({
     anchor,
     dayCount: agendaDays,
     events,
@@ -123,17 +119,10 @@ export function CalendarTable(
       className={className}
       data-testid="calendar-table"
     >
-      <div
-        className="h-full overflow-auto border-t"
-        data-table-scroll=""
-      >
+      <div className="h-full overflow-auto border-t">
         <Table>
           <TableHeader className="bg-background sticky top-0 z-10">
-            <TableRow className="h-10">
-              {columns.map((column) => (
-                <TableHead key={column.id}>{column.label}</TableHead>
-              ))}
-            </TableRow>
+            <TableColumnHeads columns={columns} />
           </TableHeader>
           <TableBody>
             {rows.map((row) => {
@@ -142,6 +131,7 @@ export function CalendarTable(
                   <MemoGroupRow
                     key={row.id}
                     columns={columns}
+                    levelIcons={levelIcons}
                     onToggle={toggle}
                     row={row}
                     timeZone={timeZone}
@@ -171,17 +161,6 @@ export function CalendarTable(
             })}
           </TableBody>
         </Table>
-        {onShowLater === undefined ? null : (
-          <div className="flex justify-center p-3">
-            <Button
-              onClick={onShowLater}
-              size="sm"
-              variant="outline"
-            >
-              Show later
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );

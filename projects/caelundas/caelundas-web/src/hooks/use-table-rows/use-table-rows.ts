@@ -1,11 +1,7 @@
 import { use, useEffect, useMemo, useReducer } from "react";
 
 import {
-  listFirstPath,
-  listGroupIds,
   listTableEvents,
-  toListStats,
-  toResetKey,
   toTableRows,
 } from "../../components/calendar-display/calendar-table/calendar-table.utilities";
 import {
@@ -13,6 +9,13 @@ import {
   TableGroupsContext,
 } from "../../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.constants";
 import { reduceTableGroups } from "../../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.utilities";
+import {
+  getLevelIcons,
+  listFirstPath,
+  listGroupIds,
+  toListStats,
+  toResetKey,
+} from "../../components/calendar-display/calendar-table/table-groups.utilities";
 import { createTagRanks } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-sort.utilities";
 import {
   buildEventGroups,
@@ -29,7 +32,7 @@ import type {
 // 🧩 Hook
 
 /**
- * The table's rows, grouped, sorted and paged, with the handlers that open and close a group and show more of a list. Only the first path of groups is open at first, and a group that is not open adds just its header. The state of the groups and pages is the provider's when there is one, so the toolbar can change it, and the table's own otherwise; it starts over when the events, grouping, sort or days really change.
+ * The table's rows, grouped, sorted and paged, with handlers to open, close and load more; only the first path starts open.
  */
 export function useTableRows(
   options: Readonly<UseTableRowsOptions>,
@@ -43,38 +46,41 @@ export function useTableRows(
     reduceTableGroups,
     INITIAL_TABLE_GROUPS,
   );
-  const { groups, idsKey, listed, pathKey, resetKey } = useMemo(() => {
-    const inRange = listTableEvents({ anchor, dayCount, events, timeZone });
-    const tree = sortEventGroups(
-      buildEventGroups(inRange, grouping, fields),
-      sort,
-      createTagRanks(facets),
-    );
-    const ids = listGroupIds(tree).join(ID_SEPARATOR);
-
-    return {
-      groups: tree,
-      idsKey: ids,
-      listed: inRange,
-      pathKey: listFirstPath(tree).join(ID_SEPARATOR),
-      resetKey: toResetKey({
-        anchor,
-        dayCount,
-        grouping,
-        idsKey: ids,
-        listed: inRange,
+  const { groups, idsKey, levelsKey, listed, pathKey, resetKey } =
+    useMemo(() => {
+      const inRange = listTableEvents({ anchor, dayCount, events, timeZone });
+      const tree = sortEventGroups(
+        buildEventGroups(inRange, grouping, fields),
         sort,
-        timeZone,
-      }),
-    };
-  }, [anchor, dayCount, events, facets, fields, grouping, sort, timeZone]);
+        createTagRanks(facets),
+      );
+      const ids = listGroupIds(tree).join(ID_SEPARATOR);
+
+      return {
+        groups: tree,
+        idsKey: ids,
+        levelsKey: grouping.map((level) => level.field).join("|"),
+        listed: inRange,
+        pathKey: listFirstPath(tree).join(ID_SEPARATOR),
+        resetKey: toResetKey({
+          anchor,
+          dayCount,
+          grouping,
+          idsKey: ids,
+          listed: inRange,
+          sort,
+          timeZone,
+        }),
+      };
+    }, [anchor, dayCount, events, facets, fields, grouping, sort, timeZone]);
   // The ids as lists again, made anew only when they differ, so the reset below fires on a real change and not on every new array.
-  const { firstPath, groupIds } = useMemo(
+  const { firstPath, groupIds, levelIcons } = useMemo(
     () => ({
       firstPath: pathKey === "" ? [] : pathKey.split(ID_SEPARATOR),
       groupIds: idsKey === "" ? [] : idsKey.split(ID_SEPARATOR),
+      levelIcons: getLevelIcons(levelsKey),
     }),
-    [idsKey, pathKey],
+    [idsKey, levelsKey, pathKey],
   );
 
   // 🏗 Setup
@@ -115,5 +121,5 @@ export function useTableRows(
   }, [dispatch, groups, listed, rows]);
 
   // 🎁 Result
-  return { more: handlers.more, rows, toggle: handlers.toggle };
+  return { levelIcons, more: handlers.more, rows, toggle: handlers.toggle };
 }

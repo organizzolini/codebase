@@ -22,7 +22,7 @@ export function areSameIds(
 }
 
 /**
- * What can be done to the groups: close some while one is open, open some while one is closed; nothing when there are no groups.
+ * What can be done to the groups: close some while one is open, open some while one is closed.
  */
 export function getCollapseActions(
   groupIds: readonly string[],
@@ -43,7 +43,7 @@ export function getCollapseActions(
 }
 
 /**
- * The shared state after a change: a page size or a page count starts every list's own loading over, and a state that would not change is the same state, so nothing draws again.
+ * The shared state after a change, the same state when nothing changes, so nothing draws again.
  */
 export function reduceTableGroups(
   state: TableGroupsState,

@@ -48,6 +48,12 @@ const EVENTS = [
   event("c", { id: "ingress", name: "Ingress" }),
 ];
 
+function positions(): string[] {
+  return screen
+    .getAllByTestId("table-position-pill")
+    .map((pill) => pill.textContent);
+}
+
 function renderTable(
   properties: Partial<Parameters<typeof CalendarTable>[0]> = {},
 ): void {
@@ -90,7 +96,7 @@ describe(CalendarTable, () => {
 
     expect(
       screen.getAllByRole("columnheader").map((header) => header.textContent),
-    ).toStrictEqual(["Name", "Start", "End"]);
+    ).toStrictEqual(["#", "Name", "Start", "End"]);
     expect(screen.getAllByTestId("table-event-row")).toHaveLength(3);
     expect(screen.queryByTestId("table-group-row")).toBeNull();
   });
@@ -100,7 +106,7 @@ describe(CalendarTable, () => {
 
     expect(
       screen.getAllByRole("columnheader").map((header) => header.textContent),
-    ).toStrictEqual(["End", "Name"]);
+    ).toStrictEqual(["#", "End", "Name"]);
   });
 
   it("opens only the first group, and shows just the header of the rest", () => {
@@ -145,17 +151,10 @@ describe(CalendarTable, () => {
     );
   });
 
-  it("offers Show later only when it is given a way to", () => {
-    const onShowLater = vi.fn();
-
+  it("has no Show later button, as the table pages by group and not by date", () => {
     renderTable();
 
     expect(screen.queryByRole("button", { name: "Show later" })).toBeNull();
-
-    renderTable({ onShowLater });
-    fireEvent.click(screen.getByRole("button", { name: "Show later" }));
-
-    expect(onShowLater).toHaveBeenCalledTimes(1);
   });
 
   describe("paging with the toolbar's shared state", () => {
@@ -205,6 +204,20 @@ describe(CalendarTable, () => {
       });
 
       expect(screen.getAllByTestId("table-event-row")).toHaveLength(60);
+    });
+
+    it("numbers the events from 1 in each list, continuing across the pages loaded", () => {
+      render(tree(many));
+
+      expect(positions().slice(0, 2)).toStrictEqual(["1", "2"]);
+      expect(positions().at(-1)).toBe("25");
+
+      act(() => {
+        shared.current?.dispatch({ pages: 2, type: "set-pages" });
+      });
+
+      expect(positions().at(-1)).toBe("50");
+      expect(positions()[25]).toBe("26");
     });
 
     it("keeps the pages loaded when it draws again with the same data made anew", () => {

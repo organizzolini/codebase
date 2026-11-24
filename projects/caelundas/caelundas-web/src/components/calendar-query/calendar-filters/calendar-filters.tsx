@@ -39,6 +39,10 @@ export interface CalendarFiltersProperties {
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
   /**
+   * The fields the Filters list offers, when fewer than `fields`; filters already on the others stay.
+   */
+  offeredFields?: readonly EventFilterField[];
+  /**
    * Called with every edit to write back to the link: the whole tree, empty
    * once nothing is left.
    */
@@ -62,6 +66,7 @@ export function CalendarFilters(
     className,
     fields,
     filter,
+    offeredFields,
     onFilterChange,
     presets = [],
   } = properties;
@@ -109,6 +114,7 @@ export function CalendarFilters(
             >
               <FilterCascader
                 fields={fields}
+                offered={offeredFields}
                 onQueryChange={handleQueryChange}
                 query={query}
               />

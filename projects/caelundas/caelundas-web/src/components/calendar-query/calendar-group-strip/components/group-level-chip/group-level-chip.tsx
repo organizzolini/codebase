@@ -11,6 +11,10 @@ import type { ReactNode } from "react";
 
 /** A level's name, its possible moves, and its remove handler. */
 export interface GroupLevelChipProperties {
+  /**
+   * The symbol that leads the name.
+   */
+  icon?: ReactNode;
   label: string;
   onCollapseAll?: (() => void) | undefined;
   onExpandAll?: (() => void) | undefined;
@@ -28,6 +32,7 @@ export function GroupLevelChip(
   properties: Readonly<GroupLevelChipProperties>,
 ): ReactNode {
   const {
+    icon,
     label,
     onCollapseAll,
     onExpandAll,
@@ -49,7 +54,10 @@ export function GroupLevelChip(
   // 🎨 Markup
   return (
     <Fragment>
-      <ButtonGroupText className={CHIP_CLASS_NAME}>{label}</ButtonGroupText>
+      <ButtonGroupText className={CHIP_CLASS_NAME}>
+        {icon}
+        {label}
+      </ButtonGroupText>
       <ChipMenu
         label={label}
         onCollapseAll={onCollapseAll}

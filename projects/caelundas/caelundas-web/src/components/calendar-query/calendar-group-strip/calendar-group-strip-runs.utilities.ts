@@ -3,6 +3,7 @@ import type {
   EventGroupField,
   EventGroupLevel,
 } from "./components/event-group-model/event-groups.types";
+import type { ReactNode } from "react";
 
 // 🌎 Public Functions
 
@@ -18,6 +19,16 @@ export function flattenGroupRuns(runs: readonly GroupRun[]): EventGroupLevel[] {
   }
 
   return levels;
+}
+
+/**
+ * The symbol that leads a run's chip: its field's, a tag root's glyph or icon or a derived field's icon.
+ */
+export function iconGroupRun(
+  run: GroupRun,
+  fields: readonly EventGroupField[],
+): ReactNode {
+  return fields.find((candidate) => candidate.id === run.field)?.icon;
 }
 
 /**

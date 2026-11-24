@@ -22,7 +22,7 @@ export interface TableGroupsProviderProperties {
 // 🧩 Component
 
 /**
- * Holds which of the table's groups are closed and how many pages show, so the table and the toolbar's strips, which sit outside it, agree on them.
+ * Holds the table's closed groups and pages, so the table and the toolbar's strips agree.
  */
 export function TableGroupsProvider(
   properties: Readonly<TableGroupsProviderProperties>,

@@ -1,21 +1,23 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
-  countGroupValues,
   createTableNavigation,
   getCellText,
-  getGroupCounts,
   getTableRange,
   getTagCellEntries,
-  listFirstPath,
-  listGroupIds,
   listTableEvents,
   resolveColumns,
   toggleExpanded,
-  toListStats,
-  toResetKey,
   toTableRows,
 } from "./calendar-table.utilities";
+import {
+  countGroupValues,
+  getGroupCounts,
+  listFirstPath,
+  listGroupIds,
+  toListStats,
+  toResetKey,
+} from "./table-groups.utilities";
 
 import type {
   EventGroupField,
@@ -167,7 +169,12 @@ describe("calendar-table utilities", () => {
           prefix: "Aspect / Simple",
         },
         TAG_COLUMN,
-        { id: "end", kind: "end", label: "End" },
+        {
+          icon: "calendar-arrow-up",
+          id: "end",
+          kind: "end",
+          label: "End",
+        },
       ]);
     });
 
@@ -298,6 +305,33 @@ describe("calendar-table utilities", () => {
         shown: 25,
         total: 60,
       });
+    });
+
+    it("numbers each event by its place in its list, from 1", () => {
+      const rows = toTableRows(
+        [
+          group("a", { events: many.slice(0, 3) }),
+          group("b", { events: many.slice(3, 5) }),
+        ],
+        many,
+        { expanded: new Set(["a", "b"]) },
+      );
+
+      expect(
+        rows.flatMap((row) => (row.kind === "event" ? [row.position] : [])),
+      ).toStrictEqual([1, 2, 3, 1, 2]);
+    });
+
+    it("continues the numbers across the pages loaded", () => {
+      const rows = toTableRows([], many, {
+        expanded: new Set(),
+        limit: 10,
+        pages: 2,
+      });
+
+      expect(
+        rows.flatMap((row) => (row.kind === "event" ? [row.position] : [])),
+      ).toStrictEqual(Array.from({ length: 20 }, (_value, index) => index + 1));
     });
 
     it("shows what a list's limit allows, and no row when all show", () => {

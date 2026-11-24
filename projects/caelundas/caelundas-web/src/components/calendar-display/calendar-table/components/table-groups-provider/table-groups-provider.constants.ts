@@ -10,7 +10,7 @@ import type {
 // ♟️ Constants
 
 /**
- * Nothing known of the table yet: no groups, none open, the first page of the default size, and no lists.
+ * Nothing known yet: no groups, none open, first page.
  */
 export const INITIAL_TABLE_GROUPS: TableGroupsState = {
   expanded: new Set(),
@@ -22,7 +22,7 @@ export const INITIAL_TABLE_GROUPS: TableGroupsState = {
 };
 
 /**
- * What the table shares when nothing provides it: no groups, and nothing to do.
+ * What the table shares when nothing provides it.
  */
 export const UNPROVIDED_TABLE_GROUPS: TableGroupsValue = {
   canCollapse: false,
@@ -35,7 +35,7 @@ export const UNPROVIDED_TABLE_GROUPS: TableGroupsValue = {
 };
 
 /**
- * Passes the table's state from the provider to the table and the toolbar's strips.
+ * Passes the table's state to the table and strips.
  */
 export const TableGroupsContext = createContext<TableGroupsValue>(
   UNPROVIDED_TABLE_GROUPS,

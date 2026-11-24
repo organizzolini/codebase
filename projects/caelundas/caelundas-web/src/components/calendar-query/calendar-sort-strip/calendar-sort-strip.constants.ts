@@ -35,7 +35,7 @@ export const SORT_OPTIONS = [
   },
 ] as const;
 
-/** Marks a sort by a tag in the list, ahead of the tag's id. */
+/** Marks a tag sort in the list. */
 export const TAG_SORT_PREFIX = "by:";
 
 /** The default sort: each group's tag order, first to last. */

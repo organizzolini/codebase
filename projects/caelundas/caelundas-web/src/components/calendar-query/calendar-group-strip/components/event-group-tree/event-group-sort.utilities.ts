@@ -6,7 +6,7 @@ import type { EventFacet } from "../../../../calendar-display/events-calendar/co
 import type { TagRanks } from "./event-group-tree.types";
 
 /**
- * How tags rank for sorting by a tag: every tag's place in its root's tree order, and for each tag root's field and each tag the path prefix beneath which its children are.
+ * How tags rank when sorting by a tag: each tag's tree-order place, and the path prefix beneath each field or tag.
  */
 export function createTagRanks(facets: readonly EventFacet[]): TagRanks {
   const prefixes = new Map<string, string>();

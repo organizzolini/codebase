@@ -21,7 +21,7 @@ const RECORD = {
 const COLUMNS = [{ id: "name", kind: "name" as const, label: "Name" }];
 const BASE: EventRowComparison = {
   columns: COLUMNS,
-  row: { depth: 1, id: "g|a", kind: "event", record: RECORD },
+  row: { depth: 1, id: "g|a", kind: "event", position: 1, record: RECORD },
   timeZone: "UTC",
 };
 
@@ -48,6 +48,9 @@ describe("table-event-row utilities", () => {
       ).toBe(false);
       expect(
         areEventRowsEqual(BASE, { ...BASE, row: { ...BASE.row, depth: 2 } }),
+      ).toBe(false);
+      expect(
+        areEventRowsEqual(BASE, { ...BASE, row: { ...BASE.row, position: 2 } }),
       ).toBe(false);
       expect(areEventRowsEqual(BASE, { ...BASE, columns: [...COLUMNS] })).toBe(
         false,

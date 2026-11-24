@@ -8,7 +8,7 @@ import { TableMoreRow } from "./components/table-more-row/table-more-row";
 // ♟️ Constants
 
 /**
- * The event row, drawn again only when its event, depth, columns or zone change.
+ * The event row, drawn again only when its data changes.
  */
 export const MemoEventRow = memo(TableEventRow, areEventRowsEqual);
 
@@ -18,6 +18,6 @@ export const MemoEventRow = memo(TableEventRow, areEventRowsEqual);
 export const MemoGroupRow = memo(TableGroupRow);
 
 /**
- * The row that shows more of a list, drawn again only when its props change.
+ * The row showing more of a list, memoized.
  */
 export const MemoMoreRow = memo(TableMoreRow);

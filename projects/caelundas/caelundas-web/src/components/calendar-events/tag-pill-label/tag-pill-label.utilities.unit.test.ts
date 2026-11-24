@@ -49,26 +49,26 @@ describe("tag-pill-label utilities", () => {
   });
 
   describe(getTagLead, () => {
-    it("leads with the tag's icon when lucide has it", () => {
-      expect(getTagLead("moon", "Venus")).toStrictEqual({
+    it("prefers the symbol of the name, even to an icon the tag has", () => {
+      expect(getTagLead("heart", "Venus")).toStrictEqual({
+        kind: "glyph",
+        value: "♀",
+      });
+    });
+
+    it("falls back to the tag's icon when the name has no symbol and lucide has the icon", () => {
+      expect(getTagLead("moon", "Retrograde Period")).toStrictEqual({
         kind: "icon",
         value: "moon",
       });
     });
 
-    it("leads with the symbol of the name when the tag has no icon, or one lucide lacks", () => {
-      expect(getTagLead(undefined, "Venus")).toStrictEqual({
-        kind: "glyph",
-        value: "♀",
-      });
-      expect(getTagLead("not-an-icon", "Full")).toStrictEqual({
-        kind: "glyph",
-        value: "🌕",
-      });
-    });
-
-    it("leads with the generic tag icon when there is neither", () => {
+    it("falls back to the generic tag icon with no symbol and no icon lucide has", () => {
       expect(getTagLead(undefined, "Retrograde Period")).toStrictEqual({
+        kind: "icon",
+        value: "tag",
+      });
+      expect(getTagLead("not-an-icon", "Retrograde Period")).toStrictEqual({
         kind: "icon",
         value: "tag",
       });

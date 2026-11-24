@@ -3,7 +3,7 @@ import { createContext } from "react";
 // ♟️ Constants
 
 /**
- * The icon a tag gets when it has none and its name has no symbol.
+ * The icon a tag gets with no icon or symbol.
  */
 export const GENERIC_TAG_ICON = "tag";
 
@@ -13,13 +13,13 @@ export const GENERIC_TAG_ICON = "tag";
 export const NO_TAG_ICONS: ReadonlyMap<string, string> = new Map();
 
 /**
- * Passes each tag's lucide icon, by the tag's id, from the facets to the pills drawing tags.
+ * Passes each tag's icon, by id, to the pills.
  */
 export const TagIconsContext =
   createContext<ReadonlyMap<string, string>>(NO_TAG_ICONS);
 
 /**
- * The symbol a tag is known by when it has no icon, by its name: bodies, signs, and aspects.
+ * A tag's symbol by name: bodies, signs, aspects, moon phases.
  */
 export const GLYPH_BY_TAG_NAME: Readonly<Record<string, string>> = {
   // Bodies

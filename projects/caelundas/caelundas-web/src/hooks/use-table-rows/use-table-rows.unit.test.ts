@@ -50,6 +50,7 @@ describe(useTableRows, () => {
     const { result } = renderHook(() => useTableRows(OPTIONS));
 
     expect(result.current).toStrictEqual({
+      levelIcons: expect.any(Array) as unknown[],
       more: expect.any(Function) as () => void,
       rows: expect.any(Array) as unknown[],
       toggle: expect.any(Function) as () => void,

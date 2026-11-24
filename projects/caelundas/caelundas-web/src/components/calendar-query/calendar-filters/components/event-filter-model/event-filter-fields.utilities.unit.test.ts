@@ -288,7 +288,7 @@ describe(createEventFilterFields, () => {
         name: "Moon",
         note: "The Moon.",
       });
-      expect(sun?.icon).toBeUndefined();
+      expect(sun?.icon).toBeDefined();
       expect(sun?.data).toStrictEqual({ depth: 0, name: "Sun" });
     });
 

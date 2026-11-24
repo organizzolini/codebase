@@ -38,7 +38,7 @@ export interface EventGroupField {
    */
   levels: readonly (readonly string[])[];
   /**
-   * For a tag root, the tags with tags beneath them, depth first, each one a thing to group by the children of; empty for a derived field.
+   * For a tag root, its tags that have tags beneath them, depth first; empty for a derived field.
    */
   nodes: readonly GroupNodeOption[];
   /**
@@ -53,7 +53,7 @@ export interface EventGroupField {
 export type EventGrouping = readonly EventGroupLevel[];
 
 /**
- * One grouping level: a field, plus for a tag root the tag whose children it groups by, none meaning the root's own. A color level reads `tags` or a `depth` instead.
+ * One grouping level: a field and, for tags, a parent.
  */
 export interface EventGroupLevel {
   depth?: number | undefined;
@@ -102,7 +102,7 @@ export interface EventGroupNode {
 }
 
 /**
- * A tag with tags beneath it, which a grouping can split by the children of.
+ * A tag with tags beneath it, which a grouping can split.
  */
 export interface GroupNodeOption {
   count: number;
@@ -125,7 +125,7 @@ export interface GroupNodeOption {
 }
 
 /**
- * A grouping level brought within its field, with where its tag sits: the id of the tag above it, null beneath the root, or nothing for the root's own children.
+ * A grouping level within its field, with its tag above.
  */
 export interface ResolvedGroupLevel {
   above: null | string | undefined;

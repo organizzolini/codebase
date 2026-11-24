@@ -59,7 +59,7 @@ describe(TableTagCell, () => {
 
   it("draws the icon the facets gave a tag, beside its name", () => {
     render(
-      <TagIconsContext value={new Map([["sun", "sun"]])}>
+      <TagIconsContext value={new Map([["body", "globe"]])}>
         <TableTagCell
           prefix="Body"
           record={RECORD}
@@ -67,9 +67,9 @@ describe(TableTagCell, () => {
       </TagIconsContext>,
     );
 
-    const [, sun] = screen.getAllByTestId("table-tag-pill");
+    const [body] = screen.getAllByTestId("table-tag-pill");
 
-    expect(sun?.querySelector("[data-testid='tag-icon']")).not.toBeNull();
+    expect(body?.querySelector("[data-testid='tag-icon']")).not.toBeNull();
   });
 
   it("sits each tag in an opaque pill", () => {

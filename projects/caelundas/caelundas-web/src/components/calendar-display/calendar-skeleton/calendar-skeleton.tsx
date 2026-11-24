@@ -63,7 +63,7 @@ export function CalendarSkeleton(
       <div
         aria-busy="true"
         aria-label="Loading events"
-        className="flex h-dvh flex-col gap-2 p-2"
+        className="flex h-dvh flex-col gap-2 overflow-hidden p-2"
         data-layout={LAYOUTS[shown]}
         data-view={shown}
         role="status"
@@ -73,6 +73,12 @@ export function CalendarSkeleton(
           <Skeleton className="h-7 w-28" />
           <Skeleton className="h-7 w-72 max-w-full" />
           <Skeleton className="h-7 w-36" />
+        </div>
+        <div className="flex flex-wrap items-start gap-2">
+          <Skeleton className="h-7 w-24" />
+          <Skeleton className="h-7 w-56 max-w-full" />
+          <Skeleton className="h-7 w-40 max-w-full" />
+          <Skeleton className="h-7 w-32" />
         </div>
         <SkeletonBody view={shown} />
       </div>

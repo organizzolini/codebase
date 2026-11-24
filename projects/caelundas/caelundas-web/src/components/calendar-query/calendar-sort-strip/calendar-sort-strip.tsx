@@ -11,8 +11,14 @@ import {
 
 import { moveListItem } from "../calendar-group-strip/components/chip-menu/chip-menu.utilities";
 import { createEventGroupFields } from "../calendar-group-strip/components/event-group-model/event-group-fields.utilities";
+import {
+  getSelectedColumnIds,
+  restrictGroupFields,
+  restrictSortKeys,
+} from "../calendar-select-strip/calendar-select-strip-scope.utilities";
 import { QueryCascader } from "../query-cascader/query-cascader";
 import { PICK_EVERY_ROW } from "../query-cascader/query-cascader.constants";
+import { keepHiddenValues } from "../query-cascader/query-cascader.utilities";
 
 import {
   DEFAULT_SORT_LABEL,
@@ -38,6 +44,10 @@ import type { ReactNode } from "react";
 /** Facets, shown sorts, view, and the change handler. */
 export interface CalendarSortStripProperties {
   className?: string;
+  /**
+   * The columns the table shows; in the table, only they can be newly sorted by.
+   */
+  columns?: readonly string[] | undefined;
   facets?: readonly EventFacet[] | undefined;
   onSortChange: (sort: GroupSort[] | undefined) => void;
   sort: readonly GroupSort[] | undefined;
@@ -46,15 +56,33 @@ export interface CalendarSortStripProperties {
 
 // 🧩 Component
 
-/** Renders the Sort button, opening a searchable list to order groups by, with one chip per sort and its ellipsis menu. Each tag root and each tag with tags beneath it can be ticked, to rank groups by the place of their events' tags there. */
+/** Renders the Sort button, opening a searchable list to order groups by, with one chip per sort. */
 export function CalendarSortStrip(
   properties: Readonly<CalendarSortStripProperties>,
 ): ReactNode {
-  const { className, facets = [], onSortChange, sort, view } = properties;
+  const {
+    className,
+    columns,
+    facets = [],
+    onSortChange,
+    sort,
+    view,
+  } = properties;
 
   // 🪝 Hooks
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
-  const items = useMemo(() => createSortItems(fields), [fields]);
+  const items = useMemo(() => {
+    if (view !== "table") {
+      return createSortItems(fields);
+    }
+
+    const selected = getSelectedColumnIds(columns);
+
+    return createSortItems(
+      restrictGroupFields(fields, selected),
+      restrictSortKeys(selected),
+    );
+  }, [columns, fields, view]);
 
   // 🏗 Setup
   const sorts = sort === undefined || sort.length === 0 ? DEFAULT_SORTS : sort;
@@ -99,9 +127,14 @@ export function CalendarSortStrip(
             <QueryCascader
               cascade={false}
               items={items}
-              mode="drill"
+              mode="tree"
               onValueChange={(next) => {
-                onSortChange(toSorts(next, sorts));
+                onSortChange(
+                  toSorts(
+                    keepHiddenValues(next, toSortValue(sorts), items),
+                    sorts,
+                  ),
+                );
               }}
               placeholder="Sort by"
               selectable={PICK_EVERY_ROW}

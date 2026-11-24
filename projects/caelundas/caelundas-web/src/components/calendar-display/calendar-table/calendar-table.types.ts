@@ -7,8 +7,12 @@ import type { CalendarEventRecord } from "../events-calendar/components/calendar
  * A column of the table: what its cells show of each event.
  */
 export interface TableColumn {
+  /**
+   * The lucide slug that leads the header's name when it has no symbol.
+   */
+  icon?: string;
   id: string;
-  kind: "end" | "group" | "name" | "start" | "tag";
+  kind: "end" | "group" | "name" | "number" | "start" | "tag";
   label: string;
   /**
    * For a tag column, the path whose tags the cells name, a root's name or a tag's whole path.
@@ -17,7 +21,7 @@ export interface TableColumn {
 }
 
 /**
- * How much of each list shows: the size of a page, the pages loaded for every list, and how far a list's own Show more row has loaded it.
+ * How much of each list shows: page size and pages loaded.
  */
 export interface TablePaging {
   limit?: number | undefined;
@@ -26,7 +30,7 @@ export interface TablePaging {
 }
 
 /**
- * A row of the table: a group of events, which opens and closes, an event, or a row that shows more events of a list.
+ * A table row: a group, an event, or a row showing more.
  */
 export type TableRowModel =
   | {
@@ -65,11 +69,15 @@ export type TableRowModel =
       depth: number;
       id: string;
       kind: "event";
+      /**
+       * Its place in its list, from 1, counting the pages loaded before it.
+       */
+      position: number;
       record: CalendarEventRecord;
     };
 
 /**
- * A tag a tag column's cell names: its id, to find its icon by, and its name.
+ * A tag a tag column names: its id and its name.
  */
 export interface TagCellEntry {
   id: string;

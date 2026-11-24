@@ -12,12 +12,15 @@ import type { CascaderNode } from "@codebase/presentation";
 // 🔏 Private Functions
 
 /**
- * The nested choices: the keys groups are ordered by, then each tag root with its tags that have tags beneath them, to rank groups by the place of their events' tags there.
+ * The nested choices: the keys groups are ordered by, all or those offered, then each tag root with its tags beneath.
  */
 export function createSortItems(
   fields: readonly EventGroupField[],
+  keysOffered?: readonly string[],
 ): CascaderNode[] {
-  const keys: CascaderNode[] = SORT_OPTIONS.map((option) => ({
+  const keys: CascaderNode[] = SORT_OPTIONS.filter(
+    (option) => keysOffered === undefined || keysOffered.includes(option.key),
+  ).map((option) => ({
     description: option.description,
     icon: createElement(TagIcon, { name: option.icon }),
     keywords: [option.label],

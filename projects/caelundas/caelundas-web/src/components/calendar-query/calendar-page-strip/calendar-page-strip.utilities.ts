@@ -31,7 +31,7 @@ export function getPageRange(
 }
 
 /**
- * The pages loaded after a page is checked or unchecked: pages load from the first on, so checking a page loads through it and unchecking it trims to the page before; the first page stays.
+ * The pages loaded after a page is checked or unchecked: pages load from the first on, which stays.
  */
 export function toLoadedPages(page: number, checked: boolean): number {
   return checked ? page : Math.max(1, page - 1);

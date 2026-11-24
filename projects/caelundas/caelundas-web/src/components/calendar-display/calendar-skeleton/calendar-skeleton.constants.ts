@@ -18,7 +18,7 @@ export const CELL_KEYS = Array.from(
 );
 
 export const ROW_KEYS = Array.from(
-  { length: 8 },
+  { length: 24 },
   (_, index) => `row-${String(index)}`,
 );
 

@@ -8,7 +8,7 @@ export const PATH_SEPARATOR = " / ";
 export const NO_GROUP_ORDER = "￿";
 
 /**
- * What sorts each duration bucket's group, by the bucket's key: its place among the buckets, in time order.
+ * A duration bucket's group order, by its key.
  */
 export const DURATION_ORDERS: ReadonlyMap<string, string> = new Map(
   DURATION_BUCKETS.map((bucket, index) => [

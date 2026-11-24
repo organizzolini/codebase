@@ -7,7 +7,7 @@ import type { EventRowComparison } from "./table-event-row.types";
 // 🌎 Public Functions
 
 /**
- * Whether two renderings of an event row draw the same: rows are rebuilt whenever a group opens, so they are told apart by their event and depth, not by identity.
+ * Whether two renderings of an event row draw the same, by event and depth, not identity.
  */
 export function areEventRowsEqual(
   previous: Readonly<EventRowComparison>,
@@ -17,6 +17,7 @@ export function areEventRowsEqual(
     previous.columns === next.columns &&
     previous.timeZone === next.timeZone &&
     previous.row.depth === next.row.depth &&
+    previous.row.position === next.row.position &&
     previous.row.record === next.row.record
   );
 }

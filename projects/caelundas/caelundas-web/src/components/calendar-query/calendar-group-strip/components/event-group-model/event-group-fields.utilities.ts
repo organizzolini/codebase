@@ -1,5 +1,6 @@
 import { createElement } from "react";
 
+import { TagLead } from "../../../../calendar-events/tag-lead/tag-lead";
 import {
   createRootIcon,
   createTagOptions,
@@ -97,7 +98,7 @@ export function getDefaultGrouping(
 }
 
 /**
- * Keeps the levels that make sense: each names a field the data has, and for a tag root a tag with tags beneath it. A field repeats only straight after itself, grouping by a tag one level deeper than the last, and nothing repeats.
+ * Keeps the levels that make sense: a field the data has, repeating only straight after itself one tag deeper.
  */
 export function resolveEventGrouping(
   grouping: EventGrouping,
@@ -127,7 +128,7 @@ export function toGroupLevel(field: EventGroupField): EventGroupLevel {
 }
 
 /**
- * Whether a level may follow those kept: not a repeat, and for a field already used only straight after itself, refining a group a level of that run made.
+ * Whether a level may follow those kept: not a repeat, and a field used before only straight after itself.
  */
 function isAllowed(
   next: ResolvedGroupLevel,
@@ -173,9 +174,11 @@ function listGroupNodes(values: readonly EventFacetValue[]): GroupNodeOption[] {
       nodes.push({
         count: value.count,
         depth: value.depth,
-        ...(typeof value.icon === "string"
-          ? { icon: createElement(TagIcon, { name: value.icon }) }
-          : {}),
+        icon: createElement(TagLead, {
+          icon: value.icon ?? undefined,
+          id: value.id,
+          label: value.name,
+        }),
         id: value.id,
         name: value.name,
         ...(typeof value.note === "string" ? { note: value.note } : {}),
@@ -189,7 +192,7 @@ function listGroupNodes(values: readonly EventFacetValue[]): GroupNodeOption[] {
 }
 
 /**
- * Brings one level within its field: a derived field takes no parent, a tag field a parent it has as a node, or the root's own.
+ * Brings a level within its field: a derived field takes no parent, a tag field a parent it has.
  */
 function resolveLevel(
   level: EventGroupLevel,

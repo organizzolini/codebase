@@ -34,46 +34,6 @@ import type {
 // 🔏 Private Functions
 
 /**
- * How many distinct values a column has among a group's events, which the group's row says in place of a value: the group's own count for the name column, none for the group column, and for the rest the distinct texts of the cells, for a tag column the distinct tags.
- */
-export function countGroupValues(
-  node: EventGroupNode,
-  column: TableColumn,
-  timeZone: string,
-): number {
-  if (column.kind === "group") {
-    return 0;
-  }
-
-  if (column.kind === "name") {
-    return node.count;
-  }
-
-  const values = new Set<string>();
-
-  // Loops rather than mapping callbacks keep the call stacks shallow.
-  for (const record of node.events) {
-    if (column.kind === "tag") {
-      for (const entry of getTagCellEntries(record, column.prefix ?? "")) {
-        values.add(entry.label);
-      }
-    } else {
-      // Not through getCellText, which would count as more frames.
-      values.add(
-        formatCellTime(
-          column.kind === "start" ? record.start : record.end,
-          timeZone,
-        ),
-      );
-    }
-  }
-
-  values.delete("");
-
-  return values.size;
-}
-
-/**
  * What the toolbar calls on the table: the days it lists a period at a time, stepped forward or back, and today.
  */
 export function createTableNavigation(
@@ -106,6 +66,24 @@ export function createTableNavigation(
 }
 
 /**
+ * A time as the table writes it, in the data's zone.
+ */
+export function formatCellTime(date: Date, timeZone: string): string {
+  let format = TIME_FORMATS.get(timeZone);
+
+  if (format === undefined) {
+    format = new Intl.DateTimeFormat("en-US", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone,
+    });
+    TIME_FORMATS.set(timeZone, format);
+  }
+
+  return format.format(date);
+}
+
+/**
  * What a column's cell shows for an event: its name, a time, or the tags it has beneath the column's tag.
  */
 export function getCellText(
@@ -117,7 +95,7 @@ export function getCellText(
     return record.summary;
   }
 
-  if (column.kind === "group") {
+  if (column.kind === "group" || column.kind === "number") {
     return "";
   }
 
@@ -129,23 +107,6 @@ export function getCellText(
     column.kind === "start" ? record.start : record.end,
     timeZone,
   );
-}
-
-/**
- * How many distinct values a group's row says for each column, in the columns' order.
- */
-export function getGroupCounts(
-  node: EventGroupNode,
-  columns: readonly TableColumn[],
-  timeZone: string,
-): number[] {
-  const counts: number[] = [];
-
-  for (const column of columns) {
-    counts.push(countGroupValues(node, column, timeZone));
-  }
-
-  return counts;
 }
 
 /**
@@ -166,7 +127,7 @@ export function getTableRange(
 // 🌎 Public Functions
 
 /**
- * The tags an event has at or beneath a path, each with its id and its name, a tag beneath the path by its path past it.
+ * The tags an event has at or beneath a path, with their ids and names past the path.
  */
 export function getTagCellEntries(
   record: CalendarEventRecord,
@@ -186,31 +147,10 @@ export function getTagCellEntries(
 }
 
 /**
- * The ids of the first path through the groups: the first group at each level, down its first branch to the first leaf group.
+ * Whether a column leads the table and says an event's place in its list, rather than a value of it.
  */
-export function listFirstPath(groups: readonly EventGroupNode[]): string[] {
-  const path: string[] = [];
-
-  for (let node = groups[0]; node !== undefined; node = node.children[0]) {
-    path.push(node.id);
-  }
-
-  return path;
-}
-
-/**
- * The id of every group of the tree, at every level, so a group inside a closed one counts too; sorted, so the same groups give the same list.
- */
-export function listGroupIds(groups: readonly EventGroupNode[]): string[] {
-  const ids: string[] = [];
-  const pending = [...groups];
-
-  for (let node = pending.pop(); node !== undefined; node = pending.pop()) {
-    ids.push(node.id);
-    pending.push(...node.children);
-  }
-
-  return ids.toSorted();
+export function isPositionColumn(column: TableColumn): boolean {
+  return column.kind === "group" || column.kind === "number";
 }
 
 /**
@@ -243,7 +183,7 @@ export function listTableEvents(
 }
 
 /**
- * The columns a link's ids name, in its order: Name, Start and End, or a tag root or tag; an id the data does not have is left out, and no ids mean the defaults.
+ * The columns a link's ids name, in order; unknown ids are left out and none means the defaults.
  */
 export function resolveColumns(
   ids: readonly string[] | undefined,
@@ -281,65 +221,7 @@ export function toggleExpanded(
 }
 
 /**
- * How big the table's lists are: the most events in one, the events in all of them, and the rows of events shown; a list is each leaf group's events, or all of them when not grouped.
- */
-export function toListStats(
-  groups: readonly EventGroupNode[],
-  events: readonly CalendarEventRecord[],
-  rows: readonly TableRowModel[],
-): { longest: number; shown: number; total: number } {
-  let longest = groups.length === 0 ? events.length : 0;
-  let total = groups.length === 0 ? events.length : 0;
-  let shown = 0;
-  const pending = [...groups];
-
-  for (let node = pending.pop(); node !== undefined; node = pending.pop()) {
-    if (node.children.length === 0) {
-      longest = Math.max(longest, node.events.length);
-      total += node.events.length;
-    }
-
-    pending.push(...node.children);
-  }
-
-  for (const row of rows) {
-    if (row.kind === "event") {
-      shown += 1;
-    }
-  }
-
-  return { longest, shown, total };
-}
-
-/**
- * What the table's data is, by value: when it is the same, the pages loaded stay, however the lists and objects it was built from were made again.
- */
-export function toResetKey(
-  data: Readonly<{
-    anchor: Date;
-    dayCount: number;
-    grouping: unknown;
-    idsKey: string;
-    listed: readonly CalendarEventRecord[];
-    sort: unknown;
-    timeZone: string;
-  }>,
-): string {
-  return [
-    data.anchor.getTime(),
-    data.dayCount,
-    data.timeZone,
-    data.listed.length,
-    data.listed[0]?.id,
-    data.listed.at(-1)?.id,
-    JSON.stringify(data.grouping),
-    JSON.stringify(data.sort),
-    data.idsKey,
-  ].join("|");
-}
-
-/**
- * The table's rows, depth first: each group, then what is open beneath it, its sub-groups or its events, a page of each list at a time.
+ * The table's rows, depth first: each group, then what is open beneath it, a page of each list.
  */
 export function toTableRows(
   groups: readonly EventGroupNode[],
@@ -391,7 +273,7 @@ export function toTableRows(
 }
 
 /**
- * Adds the first events of a list as rows, as many as its limit allows, then a row to show more when some are left.
+ * Adds a list's first events as rows up to its limit, then a row to show more.
  */
 function appendEvents(
   rows: TableRowModel[],
@@ -410,7 +292,7 @@ function appendEvents(
   // A list shows the pages loaded for the whole table, or as many as its own Show more row has loaded, whichever is more.
   const limit = Math.max(pageSize * pages, limits.get(list.listId) ?? 0);
 
-  for (const record of list.events.slice(0, limit)) {
+  for (const [index, record] of list.events.slice(0, limit).entries()) {
     rows.push({
       depth: list.depth,
       id:
@@ -418,6 +300,7 @@ function appendEvents(
           ? record.id
           : `${list.listId}|${record.id}`,
       kind: "event",
+      position: index + 1,
       record,
     });
   }
@@ -467,24 +350,6 @@ function findColumn(
   }
 
   return undefined;
-}
-
-/**
- * A time as the table writes it, in the data's zone.
- */
-function formatCellTime(date: Date, timeZone: string): string {
-  let format = TIME_FORMATS.get(timeZone);
-
-  if (format === undefined) {
-    format = new Intl.DateTimeFormat("en-US", {
-      dateStyle: "medium",
-      timeStyle: "short",
-      timeZone,
-    });
-    TIME_FORMATS.set(timeZone, format);
-  }
-
-  return format.format(date);
 }
 
 /**

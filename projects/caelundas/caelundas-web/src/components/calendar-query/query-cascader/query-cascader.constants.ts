@@ -14,5 +14,5 @@ export const LABELS: Partial<CascaderLabels> = {
 
 export const NOTHING = (): void => {};
 
-/** Every row can be ticked, branches as well as leaves; pressing a branch's chevron opens it. */
+/** Every row can be ticked; a branch's chevron opens it. */
 export const PICK_EVERY_ROW = (): boolean => true;

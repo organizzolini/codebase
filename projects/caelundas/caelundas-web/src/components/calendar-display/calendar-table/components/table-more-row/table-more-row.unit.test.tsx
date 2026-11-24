@@ -56,8 +56,35 @@ describe(TableMoreRow, () => {
       name: "1 to 25 of 32, load 7 more",
     });
 
-    expect(button.style.marginLeft).toBe("1.25rem");
+    expect(
+      screen.getByText("1 to 25 of 32, load 7 more").style.marginLeft,
+    ).toBe("1.25rem");
+    expect(button.getAttribute("aria-label")).toBe(
+      "1 to 25 of 32, load 7 more",
+    );
     expect(screen.getByRole("cell").getAttribute("colspan")).toBe("3");
+  });
+
+  it("is one button across the whole row, which a keyboard reaches", () => {
+    renderRow();
+
+    const button = screen.getByRole("button");
+
+    expect(button.tagName).toBe("BUTTON");
+    expect(button.className).toContain("w-full");
+    expect(button.className).toContain("cursor-pointer");
+    expect(screen.getByRole("cell").contains(button)).toBe(true);
+  });
+
+  it("writes in the group pill's text, in an opaque pill led by a load icon", () => {
+    renderRow();
+
+    const pill = screen.getByText("1 to 25 of 32, load 7 more");
+
+    expect(pill.className).toContain("text-sm");
+    expect(pill.className).toContain("font-medium");
+    expect(pill.className).toContain("bg-background");
+    expect(pill.querySelector("svg")).not.toBeNull();
   });
 
   it("shows more of its list when the button is pressed", () => {
@@ -69,37 +96,31 @@ describe(TableMoreRow, () => {
     expect(onMore).toHaveBeenCalledWith("group-id", 25);
   });
 
-  it("shows more by itself when it scrolls into view", () => {
+  it("loads nothing until the button is pressed, even when it scrolls into view", () => {
     const observe = vi.fn<(target: Element) => void>();
     const onMore = vi.fn<(listId: string, shown: number) => void>();
-    let notify: IntersectionObserverCallback | undefined;
 
     vi.stubGlobal(
       "IntersectionObserver",
       class {
-        constructor(callback: IntersectionObserverCallback) {
-          notify = callback;
-        }
         observe = observe;
         disconnect(): void {}
       },
     );
     renderRow(onMore);
 
-    expect(observe).toHaveBeenCalledTimes(1);
-
-    notify?.(
-      [{ isIntersecting: false } as IntersectionObserverEntry],
-      {} as IntersectionObserver,
-    );
-
+    expect(observe).not.toHaveBeenCalled();
     expect(onMore).not.toHaveBeenCalled();
+  });
 
-    notify?.(
-      [{ isIntersecting: true } as IntersectionObserverEntry],
-      {} as IntersectionObserver,
-    );
+  it("loads the list's next page once for each press", () => {
+    const onMore = vi.fn<(listId: string, shown: number) => void>();
 
-    expect(onMore).toHaveBeenCalledWith("group-id", 25);
+    renderRow(onMore);
+    fireEvent.click(screen.getByRole("button"));
+    fireEvent.click(screen.getByRole("button"));
+
+    expect(onMore).toHaveBeenCalledTimes(2);
+    expect(onMore).toHaveBeenLastCalledWith("group-id", 25);
   });
 });

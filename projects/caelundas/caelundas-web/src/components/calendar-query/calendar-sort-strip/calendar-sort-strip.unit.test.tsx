@@ -184,4 +184,30 @@ describe(CalendarSortStrip, () => {
 
     expect(onSortChange.mock.lastCall).toStrictEqual([undefined]);
   });
+
+  it("in the table offers only the sorts of the selected columns, and keeps one already on", async () => {
+    const onSortChange = vi.fn<(sort: GroupSort[] | undefined) => void>();
+
+    render(
+      <CalendarSortStrip
+        columns={["name"]}
+        facets={FACETS}
+        onSortChange={onSortChange}
+        sort={[{ direction: "asc", key: "tag", tag: "tag:type" }]}
+        view="table"
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Sort" }));
+
+    await expect(screen.findByText("Event count")).resolves.toBeDefined();
+    expect(screen.getByText("Name")).toBeDefined();
+    expect(screen.queryByText("First event")).toBeNull();
+
+    fireEvent.click(screen.getByText("Event count"));
+
+    expect(onSortChange).toHaveBeenCalledWith([
+      { direction: "asc", key: "tag", tag: "tag:type" },
+      { direction: "asc", key: "count" },
+    ]);
+  });
 });

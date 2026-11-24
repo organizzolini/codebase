@@ -5,7 +5,7 @@ import type { EventLabel } from "../event-glyphs/components/calendar-glyphs/cale
 // 🌎 Public Functions
 
 /**
- * The symbols a card draws above the name: those of the event, none for a marker standing for several events, and none when the event is drawn by its name alone.
+ * The symbols a card draws above the name: the event's own, none for a marker of several or a name alone.
  */
 export function getCardGlyphs(
   label: undefined | { details?: string; name: string },

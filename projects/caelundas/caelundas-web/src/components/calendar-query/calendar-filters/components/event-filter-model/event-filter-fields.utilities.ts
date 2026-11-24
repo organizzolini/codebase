@@ -1,7 +1,7 @@
 import { createElement } from "react";
 
+import { TagLead } from "../../../../calendar-events/tag-lead/tag-lead";
 import { TAG_NOTE } from "../../../filter-tag-editor/filter-tag-editor.constants";
-import { TagIcon } from "../../../tag-icon/tag-icon";
 
 import {
   DERIVED_FIELDS,
@@ -49,9 +49,10 @@ export function createEventFilterFields(
  * The icon of a tag root, drawn beside its field's name.
  */
 export function createRootIcon(facet: EventFacet): ReactNode {
-  return typeof facet.icon === "string"
-    ? createElement(TagIcon, { name: facet.icon })
-    : undefined;
+  return createElement(TagLead, {
+    icon: facet.icon ?? undefined,
+    label: facet.name,
+  });
 }
 
 /**
@@ -80,9 +81,11 @@ export function createTagOptions(facet: EventFacet): FilterOption[] {
         ...(typeof value.note === "string" ? { note: value.note } : {}),
       },
       description: `${String(value.count)} ${EVENT_COUNT_FORMAT.select(value.count) === "one" ? "event" : "events"}`,
-      ...(typeof value.icon === "string"
-        ? { icon: createElement(TagIcon, { name: value.icon }) }
-        : {}),
+      icon: createElement(TagLead, {
+        icon: value.icon ?? undefined,
+        id: value.id,
+        label: value.name,
+      }),
       keywords: [value.name, value.path],
       label: shared.has(value.name) ? value.path : value.name,
       value: value.id,

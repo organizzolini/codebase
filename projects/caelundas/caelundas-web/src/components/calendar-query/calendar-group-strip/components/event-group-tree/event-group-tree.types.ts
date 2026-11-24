@@ -46,17 +46,17 @@ export interface GroupSort {
   tag?: string | undefined;
 }
 
-/** What groups are ordered by: tag order, name, event count, first time, or the place of their events' tags beneath one tag. */
+/** What groups are ordered by: tag order, name, count, time. */
 export type GroupSortKey = "count" | "first" | "name" | "order" | "tag";
 
 /**
- * What describes a level's groups: its field and the name of what is split, how many names of a tag's path its parent already holds, and, for a level that refines the one before it, the only group it splits.
+ * What describes a level's groups: field, name, parent depth, only group.
  */
 export interface LevelContext {
   field: string;
   fieldLabel: string;
   /**
-   * The tag id of the only group this level splits, when it refines the level before it in the same tag root; the others stay whole.
+   * The tag id of the only group this level splits, when it refines the level before it.
    */
   only?: string | undefined;
   /**
@@ -74,7 +74,7 @@ export interface OrderedGroupNode {
 }
 
 /**
- * How tags rank for sorting groups by a tag: each tag's place in its root's tree order, and the path prefix beneath which a tag's children are, by the tag or root field's id.
+ * How tags rank when sorting by a tag.
  */
 export interface TagRanks {
   prefixes: ReadonlyMap<string, string>;

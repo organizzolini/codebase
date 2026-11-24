@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import { QueryCascader } from "../../../query-cascader/query-cascader";
+import { keepHiddenValues } from "../../../query-cascader/query-cascader.utilities";
 
 import {
   createFilterItems,
@@ -23,6 +24,10 @@ import type { ReactNode } from "react";
 export interface FilterCascaderProperties {
   className?: string;
   fields: readonly EventFilterField[];
+  /**
+   * The fields offered to pick from, when fewer than `fields`; filters already on the others stay.
+   */
+  offered?: readonly EventFilterField[] | undefined;
   onQueryChange: (query: EventFilterQuery) => void;
   query: EventFilterQuery;
 }
@@ -33,10 +38,16 @@ export interface FilterCascaderProperties {
 export function FilterCascader(
   properties: Readonly<FilterCascaderProperties>,
 ): ReactNode {
-  const { className, fields, onQueryChange, query } = properties;
+  const {
+    className,
+    fields,
+    offered = fields,
+    onQueryChange,
+    query,
+  } = properties;
 
   // 🪝 Hooks
-  const items = useMemo(() => createFilterItems(fields), [fields]);
+  const items = useMemo(() => createFilterItems(offered), [offered]);
 
   // 🏗 Setup
 
@@ -56,7 +67,13 @@ export function FilterCascader(
         items={items}
         mode="drill"
         onValueChange={(next) => {
-          onQueryChange(toFilterQuery(next, fields, query));
+          onQueryChange(
+            toFilterQuery(
+              keepHiddenValues(next, toFilterValue(fields, query), items),
+              fields,
+              query,
+            ),
+          );
         }}
         placeholder="Search attributes"
         selectable={isValue}

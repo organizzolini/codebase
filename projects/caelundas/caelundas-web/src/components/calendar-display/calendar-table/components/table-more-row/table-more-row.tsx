@@ -1,17 +1,16 @@
-import { useEffect, useRef as useReference } from "react";
+import { ChevronsDown } from "lucide-react";
 
-import { Button, TableCell, TableRow } from "@codebase/presentation";
+import { TableCell, TableRow } from "@codebase/presentation";
 
+import { PILL_CLASS_NAME } from "../../calendar-table.constants";
 import { getGroupIndent } from "../table-group-row/table-group-row.utilities";
-
-import { LOAD_MARGIN } from "./table-more-row.constants";
 
 import type { TableRowModel } from "../../calendar-table.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** A row that shows more of a list, how many columns it spans, and its handler. */
+/** A row showing more of a list, and its handler. */
 export interface TableMoreRowProperties {
   className?: string;
   columnCount: number;
@@ -22,7 +21,7 @@ export interface TableMoreRowProperties {
 // 🧩 Component
 
 /**
- * Renders a row with a button to show the next page of a list, which is also pressed for the reader when the row scrolls into view.
+ * Renders a row, all of it one button, that loads a list's next page when pressed.
  */
 export function TableMoreRow(
   properties: Readonly<TableMoreRowProperties>,
@@ -30,64 +29,43 @@ export function TableMoreRow(
   const { className, columnCount, onMore, row } = properties;
 
   // 🪝 Hooks
-  const element = useReference<HTMLTableRowElement>(null);
 
   // 🏗 Setup
-  const { groupId, next, remaining, shown, total } = row;
+  const { groupId, next, shown, total } = row;
+  const text = `1 to ${String(shown)} of ${String(total)}, load ${String(next)} more`;
 
   // 💪 Handlers
 
   // ♻️ Lifecycle
-  // Watching again after each page, as a row still in view fires no more.
-  useEffect(() => {
-    const target = element.current;
-
-    let observer: IntersectionObserver | undefined;
-
-    if (
-      target !== null &&
-      onMore !== undefined &&
-      typeof IntersectionObserver !== "undefined"
-    ) {
-      observer = new IntersectionObserver(
-        (entries) => {
-          if (entries.some((entry) => entry.isIntersecting)) {
-            onMore(groupId, shown);
-          }
-        },
-        {
-          root: target.closest("[data-table-scroll]"),
-          rootMargin: LOAD_MARGIN,
-        },
-      );
-      observer.observe(target);
-    }
-
-    return () => {
-      observer?.disconnect();
-    };
-  }, [element, groupId, onMore, remaining, shown]);
 
   // 🏁 Early Returns
 
   // 🎨 Markup
   return (
     <TableRow
-      ref={element}
-      className={className}
+      className={`hover:bg-transparent ${className ?? ""}`}
       data-testid="table-more-row"
     >
-      <TableCell colSpan={columnCount}>
-        <Button
-          className="h-7 px-1"
+      <TableCell
+        className="p-0"
+        colSpan={columnCount}
+      >
+        <button
+          aria-label={text}
+          className="flex h-9 w-full cursor-pointer items-center px-2 text-left"
           onClick={() => {
             onMore?.(groupId, shown);
           }}
-          style={{ marginLeft: getGroupIndent(row.depth) }}
-          variant="ghost"
+          type="button"
         >
-          1 to {shown} of {total}, load {next} more
-        </Button>
+          <span
+            className={`${PILL_CLASS_NAME} text-sm font-medium`}
+            style={{ marginLeft: getGroupIndent(row.depth) }}
+          >
+            <ChevronsDown aria-hidden="true" />
+            {text}
+          </span>
+        </button>
       </TableCell>
     </TableRow>
   );

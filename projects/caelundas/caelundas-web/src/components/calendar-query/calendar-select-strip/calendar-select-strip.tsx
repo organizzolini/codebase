@@ -102,7 +102,7 @@ export function CalendarSelectStrip(
             <QueryCascader
               cascade={false}
               items={items}
-              mode="drill"
+              mode="tree"
               onValueChange={(next) => {
                 onColumnsChange(toColumnIds(next, ids));
               }}

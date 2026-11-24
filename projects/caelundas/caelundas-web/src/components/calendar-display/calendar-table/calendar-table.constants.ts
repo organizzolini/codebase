@@ -3,21 +3,32 @@
 import type { TableColumn } from "./calendar-table.types";
 
 /**
- * The columns that name an event or time it, whichever tags the data has.
+ * The columns every event has.
  */
 export const BASE_COLUMNS: readonly TableColumn[] = [
-  { id: "name", kind: "name", label: "Name" },
-  { id: "start", kind: "start", label: "Start" },
-  { id: "end", kind: "end", label: "End" },
+  { icon: "text", id: "name", kind: "name", label: "Name" },
+  { icon: "calendar-arrow-down", id: "start", kind: "start", label: "Start" },
+  { icon: "calendar-arrow-up", id: "end", kind: "end", label: "End" },
 ];
 
 /**
- * The first column of a grouped table, which holds each group's pill and nothing of an event.
+ * The first column of a grouped table, holding group pills.
  */
 export const GROUP_COLUMN: TableColumn = {
+  icon: "list-tree",
   id: "group",
   kind: "group",
   label: "Group",
+};
+
+/**
+ * The first column of an ungrouped table: each event's place.
+ */
+export const NUMBER_COLUMN: TableColumn = {
+  icon: "hash",
+  id: "number",
+  kind: "number",
+  label: "#",
 };
 
 /**
@@ -28,7 +39,7 @@ export const DEFAULT_COLUMN_IDS: readonly string[] = ["name", "start", "end"];
 export const NO_COLUMNS: readonly string[] = [];
 
 /**
- * How far a group's row is indented for each level it sits beneath.
+ * How far a group row indents per level.
  */
 export const INDENT_REM = 1.25;
 
@@ -38,13 +49,13 @@ export const INDENT_REM = 1.25;
 export const TIME_FORMATS = new Map<string, Intl.DateTimeFormat>();
 
 /**
- * The opaque pill every value in a body cell sits in, so it reads against the starfield.
+ * The opaque pill each body cell value sits in.
  */
 export const PILL_CLASS_NAME =
   "bg-background inline-flex w-fit items-center gap-1 rounded-md border px-2 py-0.5";
 
 /**
- * How many events of a list show at first, and each time it shows more.
+ * How many events of a list show per page.
  */
 export const PAGE_SIZE = 25;
 
@@ -59,11 +70,11 @@ export const FLAT_LIST_ID = "flat";
 export const NO_LIMITS: ReadonlyMap<string, number> = new Map();
 
 /**
- * How tall the table's header row is, in rem, so a group's header can stick right beneath it.
+ * The table header's height in rem.
  */
 export const HEADER_HEIGHT_REM = 2.5;
 
 /**
- * How tall a group's header row is, in rem; a nested header sticks this far below the one above it.
+ * A group header's height in rem.
  */
 export const GROUP_ROW_HEIGHT_REM = 2.25;

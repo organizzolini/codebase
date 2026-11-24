@@ -70,10 +70,10 @@ describe(TagPillLabel, () => {
 
   it("draws the tag's icon beside its name when the facets gave one", () => {
     render(
-      <TagIconsContext value={new Map([["sun", "sun"]])}>
+      <TagIconsContext value={new Map([["r", "orbit"]])}>
         <TagPillLabel
-          id="sun"
-          label="Sun"
+          id="r"
+          label="Retrograde Period"
         />
       </TagIconsContext>,
     );
@@ -81,7 +81,7 @@ describe(TagPillLabel, () => {
     const label = screen.getByTestId("tag-pill-label");
 
     expect(label.querySelector("[data-testid='tag-icon']")).not.toBeNull();
-    expect(label.textContent).toBe("Sun");
+    expect(label.textContent).toBe("Retrograde Period");
   });
 
   it("falls back to the symbol of the name, as an icon when the setting is glyphs", () => {
@@ -115,7 +115,7 @@ describe(TagPillLabel, () => {
     expect(screen.getByTestId("tag-pill-label").textContent).toBe("♀Venus");
   });
 
-  it("prefers the icon to the symbol", () => {
+  it("prefers the symbol to the icon", () => {
     render(
       <CalendarSymbolsContext value="emojis">
         <TagIconsContext value={new Map([["venus", "heart"]])}>
@@ -127,6 +127,6 @@ describe(TagPillLabel, () => {
       </CalendarSymbolsContext>,
     );
 
-    expect(screen.getByTestId("tag-pill-label").textContent).toBe("Venus");
+    expect(screen.getByTestId("tag-pill-label").textContent).toBe("♀Venus");
   });
 });

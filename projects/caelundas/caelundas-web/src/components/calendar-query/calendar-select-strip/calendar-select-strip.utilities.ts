@@ -13,7 +13,7 @@ import type { CascaderNode } from "@codebase/presentation";
 // 🌎 Public Functions
 
 /**
- * The nested choices: the name and times of an event, then each tag root with its tags that have tags beneath them, whose tags the column names.
+ * The nested choices: an event's name and times, then each tag root with its tags that have tags beneath them.
  */
 export function createColumnItems(
   fields: readonly EventGroupField[],

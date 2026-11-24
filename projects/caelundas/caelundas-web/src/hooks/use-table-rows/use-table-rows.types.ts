@@ -26,9 +26,13 @@ export interface UseTableRowsOptions {
 }
 
 /**
- * The table's rows and the handlers that page a list and open or close a group.
+ * The table's rows and its handlers.
  */
 export interface UseTableRowsResult {
+  /**
+   * The icon of each grouping level's field, for a derived field.
+   */
+  levelIcons: readonly (string | undefined)[];
   /**
    * Loads another page of a list, by its group's id and how many of it show.
    */

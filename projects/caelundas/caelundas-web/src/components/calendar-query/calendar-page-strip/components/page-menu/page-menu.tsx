@@ -10,7 +10,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** The page size and the pages loaded, how many pages there are, how long the longest list is, and the handlers. */
+/** The page size, pages loaded, page count, longest list, and handlers. */
 export interface PageMenuProperties {
   className?: string;
   count: number;
@@ -24,7 +24,7 @@ export interface PageMenuProperties {
 // 🧩 Component
 
 /**
- * Renders what the Page button opens: the page sizes to pick from, then a checkbox for each page, with the events it covers, loaded from the first on.
+ * Renders what the Page button opens: the page sizes, then a checkbox per page with the events it covers.
  */
 export function PageMenu(properties: Readonly<PageMenuProperties>): ReactNode {
   const {

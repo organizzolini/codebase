@@ -7,7 +7,7 @@ import type { CSSProperties } from "react";
 // 🌎 Public Functions
 
 /**
- * The tint of a colored event's name, as the calendar's chips draw it: the color mixed into the background; none for an event with no color.
+ * The tint of a colored event's name, as the calendar's chips draw it; none without a color.
  */
 export function getNameTint(color: null | string): CSSProperties | undefined {
   if (color === null) {

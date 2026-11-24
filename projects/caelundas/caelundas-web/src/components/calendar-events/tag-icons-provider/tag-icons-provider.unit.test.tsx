@@ -30,18 +30,18 @@ describe(TagIconsProvider, () => {
               {
                 count: 1,
                 depth: 1,
-                icon: "sun",
-                id: "sun",
-                name: "Sun",
-                path: "Sun",
+                icon: "shapes",
+                id: "aspect",
+                name: "Aspect",
+                path: "Aspect",
               },
             ],
           },
         ]}
       >
         <TagPillLabel
-          id="sun"
-          label="Sun"
+          id="aspect"
+          label="Aspect"
         />
       </TagIconsProvider>,
     );

@@ -1,6 +1,6 @@
 // ♟️ Constants
 
 /**
- * Joins the group ids into one value, so the ids can be compared as text.
+ * Joins group ids into one comparable value.
  */
 export const ID_SEPARATOR = "\u0000";

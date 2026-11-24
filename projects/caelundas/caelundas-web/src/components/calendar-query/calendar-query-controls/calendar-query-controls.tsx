@@ -7,6 +7,10 @@ import { toLinkedEventFilter } from "../calendar-filters/components/event-filter
 import { CalendarGroupStrip } from "../calendar-group-strip/calendar-group-strip";
 import { CalendarPageStrip } from "../calendar-page-strip/calendar-page-strip";
 import { CalendarSelectStrip } from "../calendar-select-strip/calendar-select-strip";
+import {
+  getSelectedColumnIds,
+  restrictFilterFields,
+} from "../calendar-select-strip/calendar-select-strip-scope.utilities";
 import { CalendarSortStrip } from "../calendar-sort-strip/calendar-sort-strip";
 import { CalendarViewStrip } from "../calendar-view-strip/calendar-view-strip";
 
@@ -24,7 +28,7 @@ import type { ReactNode } from "react";
 export interface CalendarQueryControlsProperties {
   className?: string;
   /**
-   * Drawn after View, before Group: the Display menu.
+   * Drawn after View, before Select: the Display menu.
    */
   columns?: readonly string[] | undefined;
   display?: ReactNode;
@@ -63,7 +67,17 @@ export function CalendarQueryControls(
   } = properties;
 
   // 🪝 Hooks
-  const fields = useMemo(() => createEventFilterFields(facets), [facets]);
+  const { fields, offered } = useMemo(() => {
+    const all = createEventFilterFields(facets);
+
+    return {
+      fields: all,
+      offered:
+        view === "table"
+          ? restrictFilterFields(all, getSelectedColumnIds(columns))
+          : all,
+    };
+  }, [columns, facets, view]);
 
   // 🏗 Setup
 
@@ -88,27 +102,6 @@ export function CalendarQueryControls(
         query={filter ?? getDefaultFilter(presets)}
       />
       {display}
-      <CalendarGroupStrip
-        className="contents"
-        facets={facets}
-        grouping={grouping}
-        onGroupingChange={onGroupingChange}
-        view={view}
-      />
-      <CalendarSortStrip
-        className="contents"
-        facets={facets}
-        onSortChange={onSortChange}
-        sort={sort}
-        view={view}
-      />
-      <CalendarFilters
-        className="contents"
-        fields={fields}
-        filter={filter}
-        onFilterChange={onFilterChange}
-        presets={presets}
-      />
       <CalendarSelectStrip
         className="contents"
         columns={columns}
@@ -119,6 +112,29 @@ export function CalendarQueryControls(
       <CalendarPageStrip
         className="contents"
         view={view}
+      />
+      <CalendarGroupStrip
+        className="contents"
+        facets={facets}
+        grouping={grouping}
+        onGroupingChange={onGroupingChange}
+        view={view}
+      />
+      <CalendarSortStrip
+        className="contents"
+        columns={columns}
+        facets={facets}
+        onSortChange={onSortChange}
+        sort={sort}
+        view={view}
+      />
+      <CalendarFilters
+        className="contents"
+        fields={fields}
+        filter={filter}
+        offeredFields={offered}
+        onFilterChange={onFilterChange}
+        presets={presets}
       />
     </div>
   );

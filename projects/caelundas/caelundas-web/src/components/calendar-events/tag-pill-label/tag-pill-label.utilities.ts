@@ -33,23 +33,24 @@ export function createTagIcons(
 }
 
 /**
- * The symbol of a tag with no icon, from the last name of its label: a body, sign or aspect; none when no symbol is known.
+ * The symbol of a tag with no icon, by the last name of its label; none when unknown.
  */
 export function getTagGlyph(label: string): string | undefined {
   return GLYPH_BY_TAG_NAME[label.split(" / ").at(-1) ?? label];
 }
 
 /**
- * What leads a tag's pill, so none is without one: its icon when it has one lucide knows, else the symbol of its name, else the generic tag icon.
+ * What leads a name: its symbol, else its icon, else the generic tag icon.
  */
 export function getTagLead(icon: string | undefined, label: string): TagLead {
-  if (icon !== undefined && isIconName(icon)) {
-    return { kind: "icon", value: icon };
-  }
-
   const glyph = getTagGlyph(label);
 
-  return glyph === undefined
-    ? { kind: "icon", value: GENERIC_TAG_ICON }
-    : { kind: "glyph", value: glyph };
+  if (glyph !== undefined) {
+    return { kind: "glyph", value: glyph };
+  }
+
+  return {
+    kind: "icon",
+    value: icon !== undefined && isIconName(icon) ? icon : GENERIC_TAG_ICON,
+  };
 }

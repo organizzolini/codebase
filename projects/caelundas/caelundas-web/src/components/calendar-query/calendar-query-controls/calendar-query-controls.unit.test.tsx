@@ -118,5 +118,6 @@ describe(CalendarQueryControls, () => {
       .map((group) => group.getAttribute("aria-label"));
 
     expect(names.indexOf("Page")).toBe(names.indexOf("Select") + 1);
+    expect(names.indexOf("Select")).toBeLessThan(names.indexOf("Group"));
   });
 });

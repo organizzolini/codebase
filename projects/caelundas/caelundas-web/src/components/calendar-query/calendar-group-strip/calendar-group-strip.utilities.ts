@@ -12,7 +12,7 @@ import type { CascaderNode } from "@codebase/presentation";
 // 🔏 Private Functions
 
 /**
- * The nested choices: each field, with a tag root's tags that have tags beneath them. Each is a thing to group by the children of, so tags with none are not offered.
+ * The nested choices: each field, with a tag root's tags that have tags beneath them.
  */
 export function createGroupItems(
   fields: readonly EventGroupField[],
@@ -38,7 +38,7 @@ export function createGroupItems(
 
 // 🌎 Public Functions
 
-/** What the chips' menus offer for the table's groups: collapsing all while one is open, expanding all while one is closed, in the table only. */
+/** What the chips' menus offer for the table's groups: collapse all, expand all, in the table only. */
 export function getCollapseHandlers(
   view: CalendarViewName,
   groups: TableGroupsValue,
@@ -67,7 +67,7 @@ export function labelGroupLevel(
   return parent === undefined ? label : `${label} › ${parent.name}`;
 }
 
-/** The grouping ticked values mean: levels already there keep their place, new ones follow in field order, and any that do not make sense together are left out, up to the maximum. */
+/** The grouping the ticked values mean: kept levels keep their place, new ones follow, senseless ones drop, up to the maximum. */
 export function toGrouping(
   value: readonly string[],
   grouping: readonly EventGroupLevel[],

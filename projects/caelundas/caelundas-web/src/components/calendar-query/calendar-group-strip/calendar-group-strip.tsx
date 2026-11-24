@@ -15,6 +15,7 @@ import { PICK_EVERY_ROW } from "../query-cascader/query-cascader.constants";
 
 import {
   flattenGroupRuns,
+  iconGroupRun,
   labelGroupRun,
   toGroupRuns,
 } from "./calendar-group-strip-runs.utilities";
@@ -49,7 +50,7 @@ export interface CalendarGroupStripProperties {
 
 // 🧩 Component
 
-/** Renders the Group button, opening a searchable list of what to group by, joined to one chip per level in order. Each tag with tags beneath it can be ticked, to group by its children, or opened. */
+/** Renders the Group button, opening a searchable list to group by, joined to one chip per level. */
 export function CalendarGroupStrip(
   properties: Readonly<CalendarGroupStripProperties>,
 ): ReactNode {
@@ -102,7 +103,7 @@ export function CalendarGroupStrip(
             <QueryCascader
               cascade={false}
               items={items}
-              mode="drill"
+              mode="tree"
               onValueChange={(next) => {
                 onGroupingChange(toGrouping(next, grouping, fields));
               }}
@@ -116,6 +117,7 @@ export function CalendarGroupStrip(
         {runs.map((run, index) => (
           <GroupLevelChip
             key={run.field}
+            icon={iconGroupRun(run, fields)}
             label={labelGroupRun(run, fields)}
             onCollapseAll={collapse.onCollapseAll}
             onExpandAll={collapse.onExpandAll}
