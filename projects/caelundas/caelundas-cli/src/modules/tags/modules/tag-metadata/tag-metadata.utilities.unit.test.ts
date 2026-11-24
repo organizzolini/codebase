@@ -1,7 +1,8 @@
 import { iconNames } from "lucide-react/dynamic";
 import { describe, expect, it } from "vitest";
 
-import { CONTEXT_TAG_MAPS, SHARED_TAG_MAP } from "./tag-map.constants";
+import { CONTEXT_TAG_MAPS, SHARED_TAG_MAP } from "../../tag-map.constants";
+
 import { tagMetadata } from "./tag-metadata.utilities";
 
 /** Every path the tag maps can produce, each with its ancestors. */

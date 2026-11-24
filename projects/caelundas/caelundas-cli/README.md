@@ -225,7 +225,7 @@ Cardinal` and `Zodiac / Polarity / Positive` side by side:
 | Root | Its nodes |
 | ---- | --------- |
 | `Aspect` | `Simple` (`Major`, `Minor` and `Specialty`) and `Compound` (`Triple`, `Quadruple`, `Quintuple`, `Sextuple` and `Stellium`) aspects by name, with their `Nature`, `Harmonic` (`Harmonic 1` to `Harmonic 12`), `Phase` (`Forming`, `Exact` and `Dissolving`) and `Focal Body` |
-| `Body` | Every body under its class: `Luminary`, `Planet` (holding `Personal`, `Social` and `Outer`), `Asteroid`, `Node` or `Point` |
+| `Body` | Every body under its class: `Luminary`, `Planet` (holding `Personal`, `Social` and `Outer`), `Asteroid` or `Point` |
 | `Zodiac` | `Sign`, `Element`, `Modality`, `Polarity`, `Decan`, a traditional planet's `Dignity` in the sign it enters, and the `Ingress` kinds |
 | `Solar` | The `Annual Cycle` (solstices, equinoxes, cross-quarter days, hexadecans, apsides) and its `Season` |
 | `Lunar` | The `Monthly Cycle`, with the Moon's phases, and its `Apsides` |
@@ -241,8 +241,8 @@ Conjunction`, and a focal body as `Sun Focal`, so no event carries one name
 twice.
 
 Each node also has an optional `note`, a sentence saying what it means, and
-an `icon`, the slug of a lucide icon, both from `tags/tag-metadata.constants.ts`,
-and an `order`, its place among its siblings from `tags/tag-order.constants.ts`
+an `icon`, the slug of a lucide icon, both from `tags/modules/tag-metadata/tag-metadata.constants.ts`,
+and an `order`, its place among its siblings from `tags/modules/tag-metadata/tag-metadata-order.constants.ts`
 (0 when unlisted, sorted first by name). All three are written when a node is
 first created.
 

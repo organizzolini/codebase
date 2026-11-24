@@ -30,7 +30,7 @@ export class Tag extends PostgresqlUpdatableEntity {
   @TreeChildren()
   children?: Tag[];
 
-  /** The slug of the lucide icon drawn beside the tag, such as `moon`. */
+  /** The tag's lucide icon slug, such as `moon`. */
   @Column("text", { nullable: true })
   icon?: null | string;
 
@@ -42,7 +42,7 @@ export class Tag extends PostgresqlUpdatableEntity {
   @Column("text", { nullable: true })
   note?: null | string;
 
-  /** Where the tag sits among its siblings, lowest first; ties go by name. */
+  /** Its place among siblings, lowest first. */
   @Column("smallint", { default: 0 })
   order!: number;
 

@@ -107,7 +107,7 @@ const TWILIGHT_NAMES = [
 /** The kinds of eclipse, as the eclipse detector tags them. */
 export const ECLIPSE_TYPE_NAMES = Object.values(eclipseTypeLabelByType);
 
-/** The daily cycles, with the raw tag and node of each point they mark. */
+/** The daily cycles, with each point's raw tag and node. */
 const DAILY_CYCLES = [
   [
     "Daily Lunar Cycle",

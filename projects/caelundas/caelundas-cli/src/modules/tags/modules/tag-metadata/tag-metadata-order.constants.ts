@@ -1,7 +1,7 @@
 // ♟️ Constants
 
 /**
- * The children of each node in the order they read best, keyed by the parent's path joined with ` / `, with the roots under the empty key. A child's `order` is its place here counting from 1; a node not listed has 0 and sorts first, by name.
+ * Each node's children in reading order, by parent path; roots under "".
  */
 export const TAG_CHILD_ORDER: Readonly<Record<string, readonly string[]>> = {
   "": [
@@ -48,15 +48,20 @@ export const TAG_CHILD_ORDER: Readonly<Record<string, readonly string[]>> = {
     "Tredecile",
     "Biquintile",
   ],
-  Body: ["Luminary", "Planet", "Asteroid", "Node", "Point"],
+  Body: ["Luminary", "Planet", "Asteroid", "Point"],
   "Body / Asteroid": ["Ceres", "Pallas", "Juno", "Vesta", "Chiron"],
   "Body / Luminary": ["Sun", "Moon"],
-  "Body / Node": ["North Lunar Node", "South Lunar Node"],
   "Body / Planet": ["Personal", "Social", "Outer"],
   "Body / Planet / Outer": ["Uranus", "Neptune", "Pluto"],
   "Body / Planet / Personal": ["Mercury", "Venus", "Mars"],
   "Body / Planet / Social": ["Jupiter", "Saturn"],
-  "Body / Point": ["Lilith", "Lunar Apogee", "Lunar Perigee"],
+  "Body / Point": [
+    "Lilith",
+    "North Lunar Node",
+    "South Lunar Node",
+    "Lunar Apogee",
+    "Lunar Perigee",
+  ],
   Daily: ["Solar Cycle", "Lunar Cycle", "Twilight", "Time of Day"],
   "Daily / Lunar Cycle": ["Rise", "Zenith", "Set", "Nadir"],
   "Daily / Solar Cycle": ["Rise", "Zenith", "Set", "Nadir"],

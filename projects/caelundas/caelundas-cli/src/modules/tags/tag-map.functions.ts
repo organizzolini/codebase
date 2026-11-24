@@ -12,7 +12,7 @@ import type { Sign } from "../caelundas/caelundas.types";
 import type { TagMap, TagPath } from "./tags.types";
 
 /**
- * Maps each class under `parent`, and each name in it, to its node; names are title-cased. A class is keyed by its raw tag, such as `Major Aspect`, and its node drops the ` Aspect` its parent already says.
+ * Maps each class under `parent`, and each name in it, to its node, title-cased.
  */
 export function mapClasses(
   parent: TagPath,

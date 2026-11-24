@@ -1,10 +1,10 @@
+import { TAG_NOTES } from "./tag-metadata-notes.constants";
 import { TAG_ICON_BY_NAME, TAG_METADATA } from "./tag-metadata.constants";
-import { TAG_NOTES } from "./tag-notes.constants";
 
 import type { TagMetadata } from "./tag-metadata.types";
 
 /**
- * The icon and note of the node at `path`: its entry in the tag metadata, else its note from the generated notes, else for a planetary phase a note saying what it is.
+ * The icon and note of the node at `path`, from its metadata entry or the notes.
  */
 export function tagMetadata(path: readonly string[]): TagMetadata {
   const key = path.join(" / ");

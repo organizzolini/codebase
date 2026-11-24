@@ -1,8 +1,7 @@
 // ♟️ Constants
 
 /**
- * Tag tree roots, one per caelundas-cli module group, never nested. Each
- * filter, group and sort menu opens on these, so keep them to about ten.
+ * Tag tree roots, never nested; keep to about ten.
  */
 export const TAG_ROOT = {
   aspect: "Aspect",

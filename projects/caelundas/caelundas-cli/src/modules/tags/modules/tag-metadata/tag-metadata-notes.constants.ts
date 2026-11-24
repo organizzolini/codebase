@@ -1,6 +1,9 @@
 // ♟️ Constants
 
-import { ELEMENT_BY_SIGN, MODALITY_BY_SIGN } from "./tag-dimensions.constants";
+import {
+  ELEMENT_BY_SIGN,
+  MODALITY_BY_SIGN,
+} from "../../tag-dimensions.constants";
 
 /** The animal or figure each sign is drawn as, by sign. */
 const SIGN_FIGURES: Readonly<Record<string, string>> = {
@@ -115,7 +118,7 @@ const BODY_NOTES: Readonly<Record<string, string>> = {
   Vesta: "The asteroid of devotion and focus.",
 };
 
-/** What each phase of a planet's cycle with the Sun is, whichever planet. */
+/** What each phase of a planet's cycle is. */
 const PHASE_NOTES: Readonly<Record<string, string>> = {
   "Eastern Brightest": "The planet shines brightest in the evening sky.",
   "Eastern Elongation": "The planet stands farthest east of the Sun.",
@@ -136,7 +139,7 @@ const PHASE_NOTES: Readonly<Record<string, string>> = {
   "Western Elongation": "The planet stands farthest west of the Sun.",
 };
 
-/** The point of the year each hexadecan marks, in sixteenths of the way round. */
+/** Each hexadecan's point of the year, in sixteenths. */
 const HEXADECAN_SIXTEENTHS: Readonly<Record<string, number>> = {
   Eleventh: 11,
   Fifteenth: 15,
@@ -148,7 +151,7 @@ const HEXADECAN_SIXTEENTHS: Readonly<Record<string, number>> = {
   Thirteenth: 13,
 };
 
-/** The notes of nodes named by their path, for those that are not generated. */
+/** Notes by path, for nodes that are not generated. */
 const PATH_NOTES: Readonly<Record<string, string>> = {
   "Daily / Time of Day / Evening": "The twilight falls after the Sun has set.",
   "Daily / Time of Day / Morning": "The twilight falls before the Sun rises.",
@@ -264,7 +267,7 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
 };
 
 /**
- * The note of every tag leaf that has no entry in the tag metadata, by its path joined with ` / `: aspects, patterns, harmonics, bodies and signs by name, then the rest by path.
+ * The note of each leaf with no metadata entry, by path joined with ` / `.
  */
 export const TAG_NOTES: Readonly<Record<string, string>> = {
   ...PATH_NOTES,
@@ -319,7 +322,6 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
       ...[
         "Asteroid",
         "Luminary",
-        "Node",
         "Planet / Outer",
         "Planet / Personal",
         "Planet / Social",

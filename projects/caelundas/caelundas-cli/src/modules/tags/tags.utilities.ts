@@ -1,12 +1,12 @@
 import { bodyFromDisplayName, isSign } from "../caelundas/caelundas.types";
 
+import { TAG_CHILD_ORDER } from "./modules/tag-metadata/tag-metadata-order.constants";
 import { SIGNS_BY_DIGNITY_BY_PLANET } from "./tag-dimensions.constants";
 import {
   CONTEXT_TAG_MAPS,
   ECLIPSE_TYPE_NAMES,
   SHARED_TAG_MAP,
 } from "./tag-map.constants";
-import { TAG_CHILD_ORDER } from "./tag-order.constants";
 import { TAG_ROOT } from "./tags.constants";
 
 import type { ClassifiableEvent, TagMap, TagPath } from "./tags.types";

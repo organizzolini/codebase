@@ -1,7 +1,7 @@
 // ♟️ Constants
 
 /**
- * What a node shows beside its name: a lucide icon's slug, then a note saying what it means. Keyed by the node's path from the root, joined with ` / `. A node with no entry has neither.
+ * A node's lucide icon slug and note, by its path joined with ` / `.
  */
 export const TAG_METADATA: Readonly<
   Record<string, readonly [icon: string, note: string]>
@@ -45,17 +45,13 @@ export const TAG_METADATA: Readonly<
   Body: ["globe", "The bodies an event involves, grouped by class."],
   "Body / Asteroid": ["mountain", "Asteroids and Chiron."],
   "Body / Luminary": ["sun-moon", "The Sun and the Moon."],
-  "Body / Node": [
-    "waypoints",
-    "The lunar nodes, where the Moon crosses the ecliptic.",
-  ],
   "Body / Planet": ["earth", "The planets, by how far they reach."],
   "Body / Planet / Outer": ["telescope", "Uranus, Neptune and Pluto."],
   "Body / Planet / Personal": ["user", "Mercury, Venus and Mars."],
   "Body / Planet / Social": ["users", "Jupiter and Saturn."],
   "Body / Point": [
     "map-pin",
-    "Calculated points: Lilith and the lunar apsides.",
+    "Calculated points: Lilith, the lunar nodes and apsides.",
   ],
   Daily: ["clock", "Events that repeat every day."],
   "Daily / Lunar Cycle": [
@@ -204,7 +200,7 @@ export const TAG_METADATA: Readonly<
 };
 
 /**
- * An icon for a node of a given name, where its family's icon would say too little. Keyed by the last name of the node's path.
+ * An icon by a node's last name, where its family's says too little.
  */
 export const TAG_ICON_BY_NAME: Readonly<Record<string, string>> = {
   Advancing: "arrow-right",

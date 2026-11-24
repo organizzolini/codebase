@@ -15,7 +15,7 @@ export interface ConstellationEdgeRow {
   toHip: number;
 }
 
-/** A constellation with the segments of its figure, ready to save as one. */
+/** A constellation with its figure's segments. */
 export interface ConstellationFigureRow extends ConstellationRow {
   /** The segments of its figure; the constellation supplies their key. */
   edges: ConstellationEdgeRow[];

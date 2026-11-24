@@ -65,9 +65,7 @@ export class NightSkyService {
   }
 
   /**
-   * Empties the constellations, whose edges go with them, and the stars, then
-   * writes the stars and each constellation with its edges, which refer to
-   * the stars.
+   * Replaces the stars, then each constellation with its edges.
    */
   private async replace(
     manager: EntityManager,

@@ -134,7 +134,7 @@ describe("tags utilities", () => {
       ["Saturn", "Planet", "Social"],
       ["Pluto", "Planet", "Outer"],
       ["Chiron", "Asteroid"],
-      ["North Lunar Node", "Node"],
+      ["North Lunar Node", "Point"],
       ["Lunar Apogee", "Point"],
     ])("classes %s as a %s body", (body, ...bodyClass) => {
       expect(under(classify(["Ingress", body, "Leo"]), "Body")).toStrictEqual([

@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { Tag } from "@codebase/caelundas-db";
 
-import { tagMetadata } from "./tag-metadata.utilities";
+import { tagMetadata } from "./modules/tag-metadata/tag-metadata.utilities";
 import { tagNodeKey, tagOrder, tagPathKey } from "./tags.utilities";
 
 import type { TagPath } from "./tags.types";
