@@ -17,6 +17,8 @@ Never end a turn on an unarmed wait. A wait is armed when something will wake th
 
 When woken, resume at the step you were on, not at the top. When a step finishes, start the next in the same turn: a green run is a reason to enqueue, not to stop and report.
 
+**A state that only needs time is a wait, never a question to the user.** Pending checks after a push or re-run, a running queue or release, a review not yet given, and an unresolved thread all resolve on their own, so never end a turn asking the user to say when to continue or to approve the next step. In the same turn as every push, re-run, or enqueue, start the [waiting.md](references/waiting.md) watcher in the background (`WATCH_GREEN=1` until the pull request is queued) and keep `subscribe_pr_activity` armed beside it, since a subscription alone can miss an event. Add a `send_later` check-in about 50 minutes out as a safety net on top of both, never in place of them. On every wake, re-read the pull request and carry on to the next step.
+
 Every wait is bounded. After **3 failed attempts at the same failure**, or when a step runs twice its workflow's `timeout-minutes`, stop and report.
 
 Where `gh` is unavailable, the GitHub MCP tools cover the same calls: `pull_request_read`, `update_pull_request`, `enable_pr_auto_merge`, `update_pull_request_branch`, and `get_job_logs`.
@@ -29,7 +31,7 @@ Completion: each item below holds, or is fixed and noted. Read the pull request 
 - **Metadata**: all four description headings (🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related) carry real content; one `type:*` label matching the title's type; `scope:*` labels exactly matching the title's scopes; one `source:*` label; an assignee. Fix with `gh api -X PATCH repos/{owner}/{repo}/pulls/<n>` for the title and body, and `gh api -X POST repos/{owner}/{repo}/issues/<n>/labels` or `…/assignees` for labels and assignees.
 - **Title significance**: the title's type is at least as significant as the highest commit on the branch, because the squashed title alone decides the release.
 - **Signatures**: every commit reads `verified: true` from the API (`gh api repos/<owner>/<repo>/pulls/<n>/commits --jq '.[].commit.verification.verified'`), since `required_signatures` is a repository rule. Local `git log %G?` is unreliable without the signer's public key. Unsigned commits go through [sign-commits](../sign-commits/SKILL.md).
-- **Review**: [CODEOWNERS](../../../.github/CODEOWNERS) names `@JimmyPaolini` as sole owner, and GitHub asks no one to approve a pull request its sole owner authored, so an empty `reviewDecision` is fine for their own. For another author, an approval from `@JimmyPaolini` must be on record, or stop and report. Never request, dismiss, or route around a review.
+- **Review**: [CODEOWNERS](../../../.github/CODEOWNERS) names `@JimmyPaolini` as sole owner, and GitHub asks no one to approve a pull request its sole owner authored, so an empty `reviewDecision` is fine for their own. For another author, an approval from `@JimmyPaolini` must be on record, or [wait](#watching) for it. Never request, dismiss, or route around a review.
 
 ## 1. Green CI
 
@@ -74,7 +76,7 @@ gh pr merge <n> --squash --auto          # standalone pull request, anywhere els
 gh stack merge <top-pr> --yes --squash   # stack: gh pr merge cannot merge one
 ```
 
-A missing required review or an unresolved thread is a **raise to the user**; never route around it, and never pass `--admin`.
+A missing required review or an unresolved thread is a **wait**, not a stop: say once on the pull request's thread what it is waiting on, arm the [Watching](#watching) wait, and enqueue on the wake that finds it cleared. Never route around it, and never pass `--admin`. Stop and report only when the wait hits its bound.
 
 The queue re-runs the check workflows on a merge commit built from `main` plus the queued pull requests (`merge_group` events; minimum wait 6 minutes, response timeout 32). Watch with `gh run list --event merge_group` and `gh api repos/{owner}/{repo}/pulls/<n> --jq '[.state, .merged]'`. A queued pull request reports no `auto_merge`, so judge it by that state and the queue run, not by `auto_merge`. A pull request ejected from the queue returns to step 1 with the failing run's logs; usually `main` moved, so step 2 applies. If the failing project is one the pull request never touched, see "Red that is not yours" in step 1. Re-enqueue after the fix.
 
