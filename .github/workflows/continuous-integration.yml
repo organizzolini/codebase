@@ -249,9 +249,9 @@ jobs:
           postgres-client: >-
             ${{ matrix.check['postgres-client'] && 'true' || 'false' }}
           uv: ${{ matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
-          # The infrastructure project's `terraform-format` and
-          # `terraform-validate` run as part of lint-code, and the runner image
-          # no longer ships terraform.
+          # The infrastructure project's `terraform-format`, `terraform-test`,
+          # and `terraform-validate` run as part of lint-code, and the runner
+          # image no longer ships terraform.
           terraform: >-
             ${{ (matrix.check.target == 'static-code' ||
             matrix.check.target == 'plan-terraform') && 'true' || 'false' }}

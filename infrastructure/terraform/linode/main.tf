@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.6"
+  required_version = ">= 1.7"
 
   # Same Linode Object Storage bucket and backend settings as the openrouter
   # root; see its main.tf. This root manages that bucket, which is safe because
