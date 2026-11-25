@@ -545,40 +545,7 @@
               "ruleId": "any-file"
             }
           ],
-          "name": "development"
-        },
-        {
-          "children": [
-            {
-              "ruleId": "kebab-case-folder"
-            },
-            {
-              "ruleId": "any-file"
-            }
-          ],
           "name": "openwiki"
-        },
-        {
-          "children": [
-            {
-              "ruleId": "kebab-case-folder"
-            },
-            {
-              "ruleId": "any-file"
-            }
-          ],
-          "name": "planning"
-        },
-        {
-          "children": [
-            {
-              "ruleId": "kebab-case-folder"
-            },
-            {
-              "ruleId": "any-file"
-            }
-          ],
-          "name": "research"
         },
         {
           "ruleId": "any-file"
