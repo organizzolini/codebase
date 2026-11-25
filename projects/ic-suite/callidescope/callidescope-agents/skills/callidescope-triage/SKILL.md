@@ -1,6 +1,6 @@
 ---
 name: callidescope-triage
-description: Act on a callidescope run that failed — a per-project gate reporting a stack over its limit, a breadth gate, a gate that read none of its project's own files, a stale committed report, an unreadable tsconfig, a run that traced nothing, or a rejected command line or configuration. Use when callidescope or an inferred gate target exits non-zero, when a stack got deeper in a change, when deciding whether a failing gate is a code fix or a limit fix, when picking or moving a project's maximumDepth or maximumBreadth, when a printed limit or committed report disagrees with a fresh run, when an entry-point address resolves to nothing or to several, or before reaching for maximumDepth to make a failing check pass.
+description: "Act on a failed callidescope run: a stack or breadth over its project's limit, a stale committed report, a gate that read none of its project's files, or a rejected configuration. Use when callidescope or a gate target exits non-zero, when a stack got deeper in a change, or when deciding between a code fix and a limit change."
 license: MIT
 ---
 

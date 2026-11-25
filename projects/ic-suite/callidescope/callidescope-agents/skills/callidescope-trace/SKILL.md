@@ -1,6 +1,6 @@
 ---
 name: callidescope-trace
-description: Run callidescope and read what it printed — a whole-workspace trace, one project's gate verdict, or the depth and breadth commands against callables addressed as file#qualified-name. Use when running callidescope, when reading a call stack, a breadth row, a gate's output, a readme's Limits table, or a committed markdown, mermaid, or JSON report, when a depth printed as "≥ n" needs interpreting, when a run narrowed with --directories reports frames it was never pointed at, when a depth moved without an edit that explains it, or when asking who calls this, what does it call, what would this rename touch, and where should this callable be split before a refactor.
+description: "Run callidescope and read what it prints: a workspace trace, a project's gate verdict, or the depth and breadth of a callable addressed as file#qualified-name. Use when reading a call stack or committed report, when a depth moved without an edit that explains it, or when asking who calls something, what it calls, or what a rename would touch."
 license: MIT
 ---
 
