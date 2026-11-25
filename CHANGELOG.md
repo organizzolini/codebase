@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.14.1](https://github.com/organizzolini/codebase/compare/v6.14.0...v6.14.1) (2026-11-25)
+
+### ♻️ Code Refactoring
+
+* **integration,documentation:** ♻️ remove the generated Conformetry README section ([#2559](https://github.com/organizzolini/codebase/issues/2559)) ([a117ae4](https://github.com/organizzolini/codebase/commit/a117ae45059aa2286a3e60997c118b74196ee5aa)), closes [#2558](https://github.com/organizzolini/codebase/issues/2558)
+
 ## [6.14.0](https://github.com/organizzolini/codebase/compare/v6.13.1...v6.14.0) (2026-11-24)
 
 ### ✨ Features
