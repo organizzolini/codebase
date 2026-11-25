@@ -498,6 +498,7 @@
       },
       "defaultConfiguration": "check",
       "dependsOn": [
+        "agent-instructions",
         "callidescope-restrict",
         "catalog-manifests",
         "codependix-bound",
@@ -507,6 +508,7 @@
         "project-ports",
         "pull-request-template",
         "readme-projects",
+        "skill-descriptions",
         "typeorm-migration-sql",
         "vscode-extensions"
       ],

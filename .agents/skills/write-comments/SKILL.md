@@ -1,6 +1,6 @@
 ---
 name: write-comments
-description: Apply codebase commenting conventions for TypeScript, Python, and any language. USE WHEN writing or reviewing comments, adding section comments, organizing code into logical groups, or asked about comment style. Covers when to comment, how to write good comments, section comment format (emoji + capitalized name), emoji reference table, and anti-patterns to avoid (obvious comments, redundant JSDoc, TODO lint bypasses, dash-line dividers).
+description: "Commenting conventions for TypeScript, Python, and any language: when a comment earns its place, emoji section comments, `shortcut:` for deferred work, and the anti-patterns to avoid. Use when writing or reviewing comments, or organizing code into sections."
 license: MIT
 ---
 
@@ -89,10 +89,10 @@ function process(data: any) { ... }
 function process(data: unknown) { ... }
 ```
 
-If a TODO is genuinely needed (tracked work), include a ticket reference:
+Deferred work is marked as a `shortcut:` comment, the form [ponytail](../ponytail/SKILL.md) uses and [ponytail-debt](../ponytail-debt/SKILL.md) lists in each pull request's 📝 Details. Name the limit and when to upgrade, and add the issue that tracks it when one exists. Do not write `TODO`: nothing collects it.
 
 ```typescript
-// TODO(#1234): remove once the upstream API supports batch deletes
+// shortcut: deletes one row per request, batch once the upstream API supports it (#1234)
 ```
 
 ### Divider Comments
@@ -184,32 +184,32 @@ class TestMyService(unittest.TestCase): ...
 
 ### Emoji Reference
 
-| Emoji | Typical use |
-| ----- | ----------- |
-| 🏗 | Dependency injection, constructors |
-| 🔧 | Configuration, constants |
-| 🗄️ | Types, data structures |
-| 🏷️ | Type aliases, interfaces |
-| ♟️ | Constants module |
-| 🔐 | Private fields |
-| 🔑 | Public fields |
-| 🔏 | Private methods |
-| 🌎 | Public methods |
-| 🎭 | Mocks |
-| 🧪 | Tests |
-| 🔗 | Relations, associations, links |
-| 🔎 | Queries |
-| 🖋️ | Mutations |
-| 📋 | Headings, lists |
-| 📦 | Code blocks, packages |
-| 📝 | Paragraphs, docs |
-| 🖼️ | Images |
-| ✏️ | Inline formatting |
-| ✅ | Completed / passing |
-| ➖ | Thematic breaks |
-| 💬 | Blockquotes |
-| 📊 | Tables |
-| 📚 | Grammar groups, large topic areas |
+| Emoji | Typical use                        |
+| ----- | ---------------------------------- |
+| 🏗     | Dependency injection, constructors |
+| 🔧    | Configuration, constants           |
+| 🗄️    | Types, data structures             |
+| 🏷️    | Type aliases, interfaces           |
+| ♟️    | Constants module                   |
+| 🔐    | Private fields                     |
+| 🔑    | Public fields                      |
+| 🔏    | Private methods                    |
+| 🌎    | Public methods                     |
+| 🎭    | Mocks                              |
+| 🧪    | Tests                              |
+| 🔗    | Relations, associations, links     |
+| 🔎    | Queries                            |
+| 🖋️    | Mutations                          |
+| 📋    | Headings, lists                    |
+| 📦    | Code blocks, packages              |
+| 📝    | Paragraphs, docs                   |
+| 🖼️    | Images                             |
+| ✏️    | Inline formatting                  |
+| ✅    | Completed / passing                |
+| ➖    | Thematic breaks                    |
+| 💬    | Blockquotes                        |
+| 📊    | Tables                             |
+| 📚    | Grammar groups, large topic areas  |
 
 ### Rules Summary
 

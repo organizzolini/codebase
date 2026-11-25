@@ -127,98 +127,98 @@
 
 🧑‍💻 **codebase**\
 `├` 💽 **projects**\
-`│ ├` 🐺 **lexico** — Latin-English dictionary and literature collection\
-`│ │ ├` **[lexico-web](projects/lexico/lexico-web)** - Browses and searches a Latin-English dictionary\
-`│ │ ├` **[lexico-api](projects/lexico/lexico-api)** - Serves dictionary entries and literature\
-`│ │ ├` **[lexico-cli](projects/lexico/lexico-cli)** - Collects and loads dictionary and literature data\
-`│ │ └` **[lexico-db](projects/lexico/lexico-db)** - Stores dictionary and literature data\
-`│ ├` 🛰️ **caelundas** — Finds astronomical events and creates calendars\
-`│ │ ├` **[caelundas-web](projects/caelundas/caelundas-web)** - Browses astronomical events\
-`│ │ ├` **[caelundas-api](projects/caelundas/caelundas-api)** - Serves astronomical events\
-`│ │ ├` **[caelundas-cli](projects/caelundas/caelundas-cli)** - Finds astronomical events and produces calendars\
-`│ │ └` **[caelundas-db](projects/caelundas/caelundas-db)** - Stores astronomical events for calendar applications\
-`│ ├` 🏺 **meanderaw** — Enumerates and explores Greek meander patterns\
-`│ │ ├` **[meanderaw-web](projects/meanderaw/meanderaw-web)** - Explores Greek meander patterns\
-`│ │ ├` **[meanderaw-api](projects/meanderaw/meanderaw-api)** - Serves meanders, drawings, and their characteristics\
-`│ │ ├` **[meanderaw-cli](projects/meanderaw/meanderaw-cli)** - Enumerates, measures, and classifies Greek meanders\
-`│ │ ├` **[meanderaw-db](projects/meanderaw/meanderaw-db)** - Stores meanders and their characteristics\
-`│ │ └` **[meanderaw-core](projects/meanderaw/meanderaw-core)** - Draws and analyzes Greek meander patterns\
-`│ ├` 👁️ **ic-suite**\
-`│ │ ├` 👔 **conformetry** — Generates code and checks template conformance\
-`│ │ │ ├` **[conformetry-nx](projects/ic-suite/conformetry/conformetry-nx)** - Adds generation tools to workspace projects [![npm](https://img.shields.io/npm/v/@conformetry/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/nx)\
-`│ │ │ ├` **[conformetry-cli](projects/ic-suite/conformetry/conformetry-cli)** - Runs code generation and conformance checks [![npm](https://img.shields.io/npm/v/@conformetry/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/cli)\
-`│ │ │ ├` **[conformetry-configuration](projects/ic-suite/conformetry/conformetry-configuration)** - Resolves generation and check settings [![npm](https://img.shields.io/npm/v/@conformetry/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/configuration)\
-`│ │ │ ├` **[conformetry-output](projects/ic-suite/conformetry/conformetry-output)** - Renders conformance reports and inventories [![npm](https://img.shields.io/npm/v/@conformetry/output?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/output)\
-`│ │ │ ├` **[conformetry-validation](projects/ic-suite/conformetry/conformetry-validation)** - Coordinates conformance checks [![npm](https://img.shields.io/npm/v/@conformetry/validation?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/validation)\
-`│ │ │ ├` **[conformetry-generation](projects/ic-suite/conformetry/conformetry-generation)** - Generates project files from templates [![npm](https://img.shields.io/npm/v/@conformetry/generation?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/generation)\
-`│ │ │ ├` **[conformetry-languages](projects/ic-suite/conformetry/conformetry-languages)** - Compares instances across languages [![npm](https://img.shields.io/npm/v/@conformetry/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/languages)\
-`│ │ │ ├` **[conformetry-core](projects/ic-suite/conformetry/conformetry-core)** - Shared generation and conformance contracts [![npm](https://img.shields.io/npm/v/@conformetry/core?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/core)\
-`│ │ │ ├` **[conformetry-agents](projects/ic-suite/conformetry/conformetry-agents)** - Guidance for using generation and conformance tools\
-`│ │ │ └` **[conformetry-examples](projects/ic-suite/conformetry/conformetry-examples)** - Examples of generation and conformance features\
-`│ │ ├` 🔭 **callidescope** — Traces call stacks and measures their depth and breadth\
-`│ │ │ ├` **[callidescope-nx](projects/ic-suite/callidescope/callidescope-nx)** - Adds call stack checks to workspace projects [![npm](https://img.shields.io/npm/v/@callidescope/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/nx)\
-`│ │ │ ├` **[callidescope-cli](projects/ic-suite/callidescope/callidescope-cli)** - Traces call stacks and reports their depth [![npm](https://img.shields.io/npm/v/@callidescope/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/cli)\
-`│ │ │ ├` **[callidescope-configuration](projects/ic-suite/callidescope/callidescope-configuration)** - Resolves tracing limits and output [![npm](https://img.shields.io/npm/v/@callidescope/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/configuration)\
-`│ │ │ ├` **[callidescope-output](projects/ic-suite/callidescope/callidescope-output)** - Renders call stack tracing results [![npm](https://img.shields.io/npm/v/@callidescope/output?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/output)\
-`│ │ │ ├` **[callidescope-graph](projects/ic-suite/callidescope/callidescope-graph)** - Builds call graphs and measures them [![npm](https://img.shields.io/npm/v/@callidescope/graph?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/graph)\
-`│ │ │ ├` **[callidescope-core](projects/ic-suite/callidescope/callidescope-core)** - Shared call graph and finding definitions [![npm](https://img.shields.io/npm/v/@callidescope/core?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/core)\
-`│ │ │ ├` **[callidescope-agents](projects/ic-suite/callidescope/callidescope-agents)** - Guidance for using call stack tracing tools\
-`│ │ │ └` **[callidescope-examples](projects/ic-suite/callidescope/callidescope-examples)** - Examples of call stack tracing features\
-`│ │ ├` ⏲️ **codometer** — Measures codebases and checks configured limits\
-`│ │ │ ├` **[codometer-nx](projects/ic-suite/codometer/codometer-nx)** - Adds measurement checks to workspace projects [![npm](https://img.shields.io/npm/v/@codometer/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/nx)\
-`│ │ │ ├` **[codometer-cli](projects/ic-suite/codometer/codometer-cli)** - Measures codebases and reports the results [![npm](https://img.shields.io/npm/v/@codometer/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/cli)\
-`│ │ │ ├` **[codometer-configuration](projects/ic-suite/codometer/codometer-configuration)** - Resolves measurement and output settings [![npm](https://img.shields.io/npm/v/@codometer/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/configuration)\
-`│ │ │ ├` **[codometer-output](projects/ic-suite/codometer/codometer-output)** - Renders and writes measurement reports [![npm](https://img.shields.io/npm/v/@codometer/output?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/output)\
-`│ │ │ ├` **[codometer-measurement](projects/ic-suite/codometer/codometer-measurement)** - Measures files against limits [![npm](https://img.shields.io/npm/v/@codometer/measurement?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/measurement)\
-`│ │ │ ├` **[codometer-languages](projects/ic-suite/codometer/codometer-languages)** - Analyzes languages for measurement [![npm](https://img.shields.io/npm/v/@codometer/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/languages)\
-`│ │ │ ├` **[codometer-core](projects/ic-suite/codometer/codometer-core)** - Shared measurement contracts and errors [![npm](https://img.shields.io/npm/v/@codometer/core?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/core)\
-`│ │ │ ├` **[codometer-agents](projects/ic-suite/codometer/codometer-agents)** - Guidance for using code measurement tools\
-`│ │ │ └` **[codometer-examples](projects/ic-suite/codometer/codometer-examples)** - Examples of code measurement features\
-`│ │ ├` 🕸️ **codependix** — Maps dependencies and checks architectural boundaries\
-`│ │ │ ├` **[codependix-nx](projects/ic-suite/codependix/codependix-nx)** - Adds boundary checks to workspace projects [![npm](https://img.shields.io/npm/v/@codependix/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx)\
-`│ │ │ ├` **[codependix-cli](projects/ic-suite/codependix/codependix-cli)** - Exports dependency graphs and checks boundaries [![npm](https://img.shields.io/npm/v/@codependix/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/cli)\
-`│ │ │ ├` **[codependix-configuration](projects/ic-suite/codependix/codependix-configuration)** - Resolves dependency graph settings [![npm](https://img.shields.io/npm/v/@codependix/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/configuration)\
-`│ │ │ ├` **[codependix-output](projects/ic-suite/codependix/codependix-output)** - Renders and writes dependency graphs [![npm](https://img.shields.io/npm/v/@codependix/output?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/output)\
-`│ │ │ ├` **[codependix-boundaries](projects/ic-suite/codependix/codependix-boundaries)** - Checks graphs against boundary rules [![npm](https://img.shields.io/npm/v/@codependix/boundaries?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/boundaries)\
-`│ │ │ ├` **[codependix-file-imports](projects/ic-suite/codependix/codependix-file-imports)** - Builds graphs from file imports [![npm](https://img.shields.io/npm/v/@codependix/file-imports?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/file-imports)\
-`│ │ │ ├` **[codependix-nestjs-modules](projects/ic-suite/codependix/codependix-nestjs-modules)** - Builds graphs from app modules [![npm](https://img.shields.io/npm/v/@codependix/nestjs-modules?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nestjs-modules)\
-`│ │ │ ├` **[codependix-nx-projects](projects/ic-suite/codependix/codependix-nx-projects)** - Builds graphs between workspace projects [![npm](https://img.shields.io/npm/v/@codependix/nx-projects?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx-projects)\
-`│ │ │ ├` **[codependix-core](projects/ic-suite/codependix/codependix-core)** - Shared dependency graph contracts and results [![npm](https://img.shields.io/npm/v/@codependix/core?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/core)\
-`│ │ │ ├` **[codependix-agents](projects/ic-suite/codependix/codependix-agents)** - Guidance for using dependency graph tools\
-`│ │ │ └` **[codependix-examples](projects/ic-suite/codependix/codependix-examples)** - Examples of dependency graph features\
-`│ │ └` 🪙 **coinagerie** — Collects codebase vocabulary and maintains glossaries\
-`│ │   ├` **[coinagerie-nx](projects/ic-suite/coinagerie/coinagerie-nx)** - Adds glossary checks to workspace projects [![npm](https://img.shields.io/npm/v/@coinagerie/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/nx)\
-`│ │   ├` **[coinagerie-cli](projects/ic-suite/coinagerie/coinagerie-cli)** - Collects vocabulary and keeps glossaries current [![npm](https://img.shields.io/npm/v/@coinagerie/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/cli)\
-`│ │   ├` **[coinagerie-configuration](projects/ic-suite/coinagerie/coinagerie-configuration)** - Resolves vocabulary collection settings [![npm](https://img.shields.io/npm/v/@coinagerie/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/configuration)\
-`│ │   ├` **[coinagerie-output](projects/ic-suite/coinagerie/coinagerie-output)** - Renders glossaries and checks vocabulary [![npm](https://img.shields.io/npm/v/@coinagerie/output?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/output)\
-`│ │   ├` **[coinagerie-vocabulary](projects/ic-suite/coinagerie/coinagerie-vocabulary)** - Collects vocabulary from source files [![npm](https://img.shields.io/npm/v/@coinagerie/vocabulary?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/vocabulary)\
-`│ │   ├` **[coinagerie-languages](projects/ic-suite/coinagerie/coinagerie-languages)** - Extracts identifiers from languages [![npm](https://img.shields.io/npm/v/@coinagerie/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/languages)\
-`│ │   ├` **[coinagerie-core](projects/ic-suite/coinagerie/coinagerie-core)** - Shared vocabulary and glossary contracts [![npm](https://img.shields.io/npm/v/@coinagerie/core?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/core)\
-`│ │   ├` **[coinagerie-agents](projects/ic-suite/coinagerie/coinagerie-agents)** - Guidance for using vocabulary tools\
-`│ │   └` **[coinagerie-examples](projects/ic-suite/coinagerie/coinagerie-examples)** - Examples of vocabulary collection features\
-`│ ├` 🔮 **[affirmancy](projects/affirmancy)** - Generates affirmations with an interactive agent\
-`│ ├` 🤝 **common** — Shared utilities across projects\
-`│ │ ├` **🐘 [persistence](projects/common/persistence)** - Shared database setup, migrations, migration SQL extraction, and testing utilities\
-`│ │ ├` **✉️ [interface](projects/common/interface)** - Shared application interface and pagination utilities\
-`│ │ ├` **🎨 [presentation](projects/common/presentation)** - Shared user interface components\
-`│ │ ├` **👀 [observability](projects/common/observability)** - Shared application logging\
-`│ │ └` **🧪 [testing](projects/common/testing)** - Shared application testing utilities\
-`│ └` **🧑 [JimmyPaolini](projects/JimmyPaolini)** - Personal GitHub profile site\
+`│├` 🐺 **lexico** — Latin-English dictionary and literature collection\
+`││├` **[lexico-web](projects/lexico/lexico-web)** - Browses and searches a Latin-English dictionary\
+`││├` **[lexico-api](projects/lexico/lexico-api)** - Serves dictionary entries and literature\
+`││├` **[lexico-cli](projects/lexico/lexico-cli)** - Collects and loads dictionary and literature data\
+`││└` **[lexico-db](projects/lexico/lexico-db)** - Stores dictionary and literature data\
+`│├` 🛰️ **caelundas** — Finds astronomical events and creates calendars\
+`││├` **[caelundas-web](projects/caelundas/caelundas-web)** - Browses astronomical events\
+`││├` **[caelundas-api](projects/caelundas/caelundas-api)** - Serves astronomical events\
+`││├` **[caelundas-cli](projects/caelundas/caelundas-cli)** - Finds astronomical events and produces calendars\
+`││└` **[caelundas-db](projects/caelundas/caelundas-db)** - Stores astronomical events for calendar applications\
+`│├` 🏺 **meanderaw** — Enumerates and explores Greek meander patterns\
+`││├` **[meanderaw-web](projects/meanderaw/meanderaw-web)** - Explores Greek meander patterns\
+`││├` **[meanderaw-api](projects/meanderaw/meanderaw-api)** - Serves meanders, drawings, and their characteristics\
+`││├` **[meanderaw-cli](projects/meanderaw/meanderaw-cli)** - Enumerates, measures, and classifies Greek meanders\
+`││├` **[meanderaw-db](projects/meanderaw/meanderaw-db)** - Stores meanders and their characteristics\
+`││└` **[meanderaw-core](projects/meanderaw/meanderaw-core)** - Draws and analyzes Greek meander patterns\
+`│├` 👁️ **ic-suite**\
+`││├` 👔 **conformetry** — Generates code and checks template conformance\
+`│││├` **[conformetry-nx](projects/ic-suite/conformetry/conformetry-nx)** - Adds generation tools to workspace projects [![npm](https://img.shields.io/npm/v/@conformetry/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/nx)\
+`│││├` **[conformetry-cli](projects/ic-suite/conformetry/conformetry-cli)** - Runs code generation and conformance checks [![npm](https://img.shields.io/npm/v/@conformetry/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/cli)\
+`│││├` **[conformetry-configuration](projects/ic-suite/conformetry/conformetry-configuration)** - Resolves generation and check settings [![npm](https://img.shields.io/npm/v/@conformetry/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/configuration)\
+`│││├` **[conformetry-output](projects/ic-suite/conformetry/conformetry-output)** - Renders conformance reports and inventories [![npm](https://img.shields.io/npm/v/@conformetry/output?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/output)\
+`│││├` **[conformetry-validation](projects/ic-suite/conformetry/conformetry-validation)** - Coordinates conformance checks [![npm](https://img.shields.io/npm/v/@conformetry/validation?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/validation)\
+`│││├` **[conformetry-generation](projects/ic-suite/conformetry/conformetry-generation)** - Generates project files from templates [![npm](https://img.shields.io/npm/v/@conformetry/generation?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/generation)\
+`│││├` **[conformetry-languages](projects/ic-suite/conformetry/conformetry-languages)** - Compares instances across languages [![npm](https://img.shields.io/npm/v/@conformetry/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/languages)\
+`│││├` **[conformetry-core](projects/ic-suite/conformetry/conformetry-core)** - Shared generation and conformance contracts [![npm](https://img.shields.io/npm/v/@conformetry/core?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/core)\
+`│││├` **[conformetry-agents](projects/ic-suite/conformetry/conformetry-agents)** - Guidance for using generation and conformance tools\
+`│││└` **[conformetry-examples](projects/ic-suite/conformetry/conformetry-examples)** - Examples of generation and conformance features\
+`││├` 🔭 **callidescope** — Traces call stacks and measures their depth and breadth\
+`│││├` **[callidescope-nx](projects/ic-suite/callidescope/callidescope-nx)** - Adds call stack checks to workspace projects [![npm](https://img.shields.io/npm/v/@callidescope/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/nx)\
+`│││├` **[callidescope-cli](projects/ic-suite/callidescope/callidescope-cli)** - Traces call stacks and reports their depth [![npm](https://img.shields.io/npm/v/@callidescope/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/cli)\
+`│││├` **[callidescope-configuration](projects/ic-suite/callidescope/callidescope-configuration)** - Resolves tracing limits and output [![npm](https://img.shields.io/npm/v/@callidescope/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/configuration)\
+`│││├` **[callidescope-output](projects/ic-suite/callidescope/callidescope-output)** - Renders call stack tracing results [![npm](https://img.shields.io/npm/v/@callidescope/output?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/output)\
+`│││├` **[callidescope-graph](projects/ic-suite/callidescope/callidescope-graph)** - Builds call graphs and measures them [![npm](https://img.shields.io/npm/v/@callidescope/graph?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/graph)\
+`│││├` **[callidescope-core](projects/ic-suite/callidescope/callidescope-core)** - Shared call graph and finding definitions [![npm](https://img.shields.io/npm/v/@callidescope/core?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/core)\
+`│││├` **[callidescope-agents](projects/ic-suite/callidescope/callidescope-agents)** - Guidance for using call stack tracing tools\
+`│││└` **[callidescope-examples](projects/ic-suite/callidescope/callidescope-examples)** - Examples of call stack tracing features\
+`││├` ⏲️ **codometer** — Measures codebases and checks configured limits\
+`│││├` **[codometer-nx](projects/ic-suite/codometer/codometer-nx)** - Adds measurement checks to workspace projects [![npm](https://img.shields.io/npm/v/@codometer/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/nx)\
+`│││├` **[codometer-cli](projects/ic-suite/codometer/codometer-cli)** - Measures codebases and reports the results [![npm](https://img.shields.io/npm/v/@codometer/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/cli)\
+`│││├` **[codometer-configuration](projects/ic-suite/codometer/codometer-configuration)** - Resolves measurement and output settings [![npm](https://img.shields.io/npm/v/@codometer/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/configuration)\
+`│││├` **[codometer-output](projects/ic-suite/codometer/codometer-output)** - Renders and writes measurement reports [![npm](https://img.shields.io/npm/v/@codometer/output?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/output)\
+`│││├` **[codometer-measurement](projects/ic-suite/codometer/codometer-measurement)** - Measures files against limits [![npm](https://img.shields.io/npm/v/@codometer/measurement?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/measurement)\
+`│││├` **[codometer-languages](projects/ic-suite/codometer/codometer-languages)** - Analyzes languages for measurement [![npm](https://img.shields.io/npm/v/@codometer/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/languages)\
+`│││├` **[codometer-core](projects/ic-suite/codometer/codometer-core)** - Shared measurement contracts and errors [![npm](https://img.shields.io/npm/v/@codometer/core?logo=npm&label=npm)](https://www.npmjs.com/package/@codometer/core)\
+`│││├` **[codometer-agents](projects/ic-suite/codometer/codometer-agents)** - Guidance for using code measurement tools\
+`│││└` **[codometer-examples](projects/ic-suite/codometer/codometer-examples)** - Examples of code measurement features\
+`││├` 🕸️ **codependix** — Maps dependencies and checks architectural boundaries\
+`│││├` **[codependix-nx](projects/ic-suite/codependix/codependix-nx)** - Adds boundary checks to workspace projects [![npm](https://img.shields.io/npm/v/@codependix/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx)\
+`│││├` **[codependix-cli](projects/ic-suite/codependix/codependix-cli)** - Exports dependency graphs and checks boundaries [![npm](https://img.shields.io/npm/v/@codependix/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/cli)\
+`│││├` **[codependix-configuration](projects/ic-suite/codependix/codependix-configuration)** - Resolves dependency graph settings [![npm](https://img.shields.io/npm/v/@codependix/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/configuration)\
+`│││├` **[codependix-output](projects/ic-suite/codependix/codependix-output)** - Renders and writes dependency graphs [![npm](https://img.shields.io/npm/v/@codependix/output?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/output)\
+`│││├` **[codependix-boundaries](projects/ic-suite/codependix/codependix-boundaries)** - Checks graphs against boundary rules [![npm](https://img.shields.io/npm/v/@codependix/boundaries?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/boundaries)\
+`│││├` **[codependix-file-imports](projects/ic-suite/codependix/codependix-file-imports)** - Builds graphs from file imports [![npm](https://img.shields.io/npm/v/@codependix/file-imports?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/file-imports)\
+`│││├` **[codependix-nestjs-modules](projects/ic-suite/codependix/codependix-nestjs-modules)** - Builds graphs from app modules [![npm](https://img.shields.io/npm/v/@codependix/nestjs-modules?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nestjs-modules)\
+`│││├` **[codependix-nx-projects](projects/ic-suite/codependix/codependix-nx-projects)** - Builds graphs between workspace projects [![npm](https://img.shields.io/npm/v/@codependix/nx-projects?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/nx-projects)\
+`│││├` **[codependix-core](projects/ic-suite/codependix/codependix-core)** - Shared dependency graph contracts and results [![npm](https://img.shields.io/npm/v/@codependix/core?logo=npm&label=npm)](https://www.npmjs.com/package/@codependix/core)\
+`│││├` **[codependix-agents](projects/ic-suite/codependix/codependix-agents)** - Guidance for using dependency graph tools\
+`│││└` **[codependix-examples](projects/ic-suite/codependix/codependix-examples)** - Examples of dependency graph features\
+`││└` 🪙 **coinagerie** — Collects codebase vocabulary and maintains glossaries\
+`││ ├` **[coinagerie-nx](projects/ic-suite/coinagerie/coinagerie-nx)** - Adds glossary checks to workspace projects [![npm](https://img.shields.io/npm/v/@coinagerie/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/nx)\
+`││ ├` **[coinagerie-cli](projects/ic-suite/coinagerie/coinagerie-cli)** - Collects vocabulary and keeps glossaries current [![npm](https://img.shields.io/npm/v/@coinagerie/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/cli)\
+`││ ├` **[coinagerie-configuration](projects/ic-suite/coinagerie/coinagerie-configuration)** - Resolves vocabulary collection settings [![npm](https://img.shields.io/npm/v/@coinagerie/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/configuration)\
+`││ ├` **[coinagerie-output](projects/ic-suite/coinagerie/coinagerie-output)** - Renders glossaries and checks vocabulary [![npm](https://img.shields.io/npm/v/@coinagerie/output?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/output)\
+`││ ├` **[coinagerie-vocabulary](projects/ic-suite/coinagerie/coinagerie-vocabulary)** - Collects vocabulary from source files [![npm](https://img.shields.io/npm/v/@coinagerie/vocabulary?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/vocabulary)\
+`││ ├` **[coinagerie-languages](projects/ic-suite/coinagerie/coinagerie-languages)** - Extracts identifiers from languages [![npm](https://img.shields.io/npm/v/@coinagerie/languages?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/languages)\
+`││ ├` **[coinagerie-core](projects/ic-suite/coinagerie/coinagerie-core)** - Shared vocabulary and glossary contracts [![npm](https://img.shields.io/npm/v/@coinagerie/core?logo=npm&label=npm)](https://www.npmjs.com/package/@coinagerie/core)\
+`││ ├` **[coinagerie-agents](projects/ic-suite/coinagerie/coinagerie-agents)** - Guidance for using vocabulary tools\
+`││ └` **[coinagerie-examples](projects/ic-suite/coinagerie/coinagerie-examples)** - Examples of vocabulary collection features\
+`│├` 🔮 **[affirmancy](projects/affirmancy)** - Generates affirmations with an interactive agent\
+`│├` 🤝 **common** — Shared utilities across projects\
+`││├` **🐘 [persistence](projects/common/persistence)** - Shared database setup, migrations, migration SQL extraction, and testing utilities\
+`││├` **✉️ [interface](projects/common/interface)** - Shared application interface and pagination utilities\
+`││├` **🎨 [presentation](projects/common/presentation)** - Shared user interface components\
+`││├` **👀 [observability](projects/common/observability)** - Shared application logging\
+`││└` **🧪 [testing](projects/common/testing)** - Shared application testing utilities\
+`│└` **🧔‍♂️ [JimmyPaolini](projects/JimmyPaolini)** - Personal GitHub profile site\
 `├` **🛠️ [configuration](configuration)** - Workspace configuration and quality checks\
-`├` **🧭 [compliance](compliance)** - Checks repository governance, contribution requirements, and the pull request template\
+`├` **🏛️ [compliance](compliance)** - Checks repository governance, contribution requirements, and the pull request template\
 `├` **📚 [documentation](documentation)** - Refreshes repository documentation\
 `├` **🏗️ [infrastructure](infrastructure)** - Deployment infrastructure and local services\
-`│ └` **⚙️ [workflows](.github/workflows)** - GitHub Actions workflows and the shared `setup-codebase` action\
-`├` **🛠️ [installation](installation)** - Sets up developer machines and project dependencies, and checks each new session\
-`├` **🔁 [integration](integration)** - Guards changes with commit, push, and pull request checks\
-`└` **📤 [deployment](deployment)** - Coordinates releases and package publishing
+`│└` **⚙️ [workflows](.github/workflows)** - GitHub Actions workflows and the shared `setup-codebase` action\
+`├` **💾 [installation](installation)** - Sets up developer machines and project dependencies, and checks each new session\
+`├` **🧩 [integration](integration)** - Guards changes with commit, push, and pull request checks\
+`└` **🚢 [deployment](deployment)** - Coordinates releases and package publishing
 
 ## 🚀 Start
 
 ```bash
 git clone https://github.com/organizzolini/codebase.git && cd codebase
 bash scripts/installation.sh && nx show projects
-nx affected --base=main --target=callidescope-restrict,codependix-bound,codometer-limit,coinagerie-check,conformetry-validate
+nx affected --target=conformetry-validate,callidescope-restrict,codometer-limit,codependix-bound,coinagerie-check
 nx run-many --target=start --projects=lexico-web,caelundas-web,meanderaw-web
 ```
 
@@ -234,7 +234,7 @@ nx run-many --target=start --projects=lexico-web,caelundas-web,meanderaw-web
 - [AGENTS.md](AGENTS.md) - The single source of truth for conventions; every project has its own
 - [OpenWiki](openwiki/quickstart.md) - Generated map of the architecture, domains, and workflows
 - [Skills](.agents/skills) - Domain knowledge and workflows, which are also the deep-dive documentation
-  - **Vendored:** [Superpowers](https://github.com/obra/superpowers) / [Matt Pocock's Skills](https://github.com/mattpocock/skills) / [Ponytail](https://github.com/DietrichGebert/ponytail) / [Nx](https://github.com/nrwl/nx) / [GitHub](https://github.com/github/awesome-copilot)
+  - **Vendored:** [Superpowers](https://github.com/obra/superpowers) / [Matt Pocock](https://github.com/mattpocock/skills) / [Ponytail](https://github.com/DietrichGebert/ponytail) / [Nx](https://github.com/nrwl/nx) / [GitHub](https://github.com/github/awesome-copilot)
   - **Workflows:** [Submit](.agents/skills/submit-changes/SKILL.md) / [Ship](.agents/skills/ship-changes/SKILL.md) / [Worktrees](.agents/skills/using-git-worktrees/SKILL.md) / [Projects](.agents/skills/manage-project/SKILL.md) / [Issues](.agents/skills/link-issue/SKILL.md) / [Commits](.agents/skills/commit-code/SKILL.md) / [Branches](.agents/skills/checkout-branch/SKILL.md) / [PRs](.agents/skills/create-pull-request/SKILL.md)
-  - **Quality:** [Validate Code](.agents/skills/validate-code/SKILL.md) / [Conformetry](.agents/skills/conformetry-validate/SKILL.md) / [Error Handling](.agents/skills/handle-errors/SKILL.md) / [Failing CI](.agents/skills/triage-integration/SKILL.md) / [Spell Check](.agents/skills/spell-check/SKILL.md)
-  - **Languages:** [TypeScript](.agents/skills/write-typescript/SKILL.md) / [React](.agents/skills/write-react/SKILL.md) / [Python](.agents/skills/write-python/SKILL.md) / [Comments](.agents/skills/write-comments/SKILL.md) / [Testing Strategy](.agents/skills/testing-strategy/SKILL.md) / [Testing Mocks](.agents/skills/testing-mocks/SKILL.md)
+  - **Quality:** [Validate Code](.agents/skills/validate-code/SKILL.md) / [Conformetry](.agents/skills/conformetry-validate/SKILL.md) / [Error Handling](.agents/skills/write-typescript/references/errors.md) / [Failing CI](.agents/skills/triage-integration/SKILL.md) / [Spell Check](.agents/skills/spell-check/SKILL.md)
+  - **Languages:** [TypeScript](.agents/skills/write-typescript/SKILL.md) / [React](.agents/skills/write-react/SKILL.md) / [Python](.agents/skills/write-python/SKILL.md) / [Comments](.agents/skills/write-comments/SKILL.md) / [Tests](.agents/skills/write-tests/SKILL.md)

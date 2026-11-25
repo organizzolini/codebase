@@ -1,6 +1,6 @@
 ---
 name: codometer-measure
-description: Run a codometer measurement, decide where its report goes, or read a badge block or JSON report it produced. Use when running codometer or npx @codometer/cli, choosing --output-json/--output-markdown and --check flags, wiring codometer into a CI step, splicing a badge block into a README, or reading a codometer JSON report's metrics, limits, or failures. Covers the command-line host directly, without assuming any task runner.
+description: "Run a codometer measurement and read what it produced: the README badge block and the JSON report's metrics, limits, and failures. Use when running codometer, choosing --output-json, --output-markdown, or --check, deciding where a report goes, wiring codometer into CI, or splicing badges into a README."
 license: MIT
 ---
 

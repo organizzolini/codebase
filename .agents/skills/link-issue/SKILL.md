@@ -1,6 +1,6 @@
 ---
 name: link-issue
-description: Make sure the work in hand has a GitHub issue that its pull request will close — find the planned ticket, file one before starting ad-hoc work, or backfill one for work already done. Use this skill before starting any change that has no ticket, before creating or updating a pull request, when a pull request has no linked issue, or when asked what belongs in an issue versus a pull request description.
+description: "Make sure the work has the GitHub issue its pull request will close: use the planned ticket, file one before ad-hoc work, or backfill one for finished work. Use before opening a pull request, or when it has no linked issue."
 license: MIT
 ---
 
@@ -14,7 +14,7 @@ This skill is the single place that decides **which issue** a change belongs to.
 
 - Starting work that no ticket describes (**file first**)
 - Finishing work that was done without an issue (**backfill**)
-- Creating or updating a pull request ([create-pull-request](../create-pull-request/SKILL.md), [update-pull-request](../update-pull-request/SKILL.md), [submit-changes](../submit-changes/SKILL.md))
+- Creating or updating a pull request ([create-pull-request](../create-pull-request/SKILL.md), [submit-changes](../submit-changes/SKILL.md))
 - Deciding whether a detail belongs in the issue or the pull request
 
 ## Decide Which Case You Are In

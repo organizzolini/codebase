@@ -1,6 +1,6 @@
 ---
 name: commit-code
-description: Write commit messages following this codebase's Conventional Commits standard with Gitmoji support. Use this skill when creating commits or when asked about commit message formatting.
+description: "Write commit messages in this codebase's Conventional Commits format with Gitmoji: the allowed types and scopes, release significance, signing, and closing the commit's sub-issue. Use when committing, when the commit-msg hook rejects a message, or when choosing a type or scope."
 license: MIT
 ---
 
@@ -33,19 +33,19 @@ This skill teaches how to write commit messages for this codebase. All commits *
 
 <!-- types-start -->
 
-| Type | Description |
-| ---- | ----------- |
-| `feat` | A new feature or capability that adds value for users |
-| `fix` | A bug fix that addresses a specific issue or problem |
-| `docs` | Documentation, AGENTS.md, SKILL.md, README, and planning files |
-| `test` | Adding or correcting unit, integration, or end-to-end tests |
-| `refactor` | Code restructuring that neither fixes a bug nor adds a feature |
-| `style` | Formatting, whitespace, or code structure changes with no semantic effect |
-| `perf` | A code change that improves performance (caching, query optimization, etc.) |
-| `chore` | Housekeeping that doesn't modify src or test files (gitignore, editor config, etc.) |
-| `ci` | GitHub Actions workflows, composite actions, and CI/CD scripts |
-| `build` | Build system, Vite/Docker/Helm config, or external dependency integration |
-| `revert` | Reverts a previous commit |
+| Type       | Description                                                                         |
+| ---------- | ----------------------------------------------------------------------------------- |
+| `feat`     | A new feature or capability that adds value for users                               |
+| `fix`      | A bug fix that addresses a specific issue or problem                                |
+| `docs`     | Documentation, AGENTS.md, SKILL.md, README, and planning files                      |
+| `test`     | Adding or correcting unit, integration, or end-to-end tests                         |
+| `refactor` | Code restructuring that neither fixes a bug nor adds a feature                      |
+| `style`    | Formatting, whitespace, or code structure changes with no semantic effect           |
+| `perf`     | A code change that improves performance (caching, query optimization, etc.)         |
+| `chore`    | Housekeeping that doesn't modify src or test files (gitignore, editor config, etc.) |
+| `ci`       | GitHub Actions workflows, composite actions, and CI/CD scripts                      |
+| `build`    | Build system, Vite/Docker/Helm config, or external dependency integration           |
+| `revert`   | Reverts a previous commit                                                           |
 
 <!-- types-end -->
 
@@ -53,14 +53,14 @@ This skill teaches how to write commit messages for this codebase. All commits *
 
 This repository squash-merges pull requests with `PR_TITLE`, so the **pull request title, not any individual commit, is what semantic-release reads**. [release.config.cjs](../../../configuration/repository/release.config.cjs)'s `releaseRules` map each type above to a version bump:
 
-| Types                                                                   | Bump              |
-| ----------------------------------------------------------------------- | ----------------- |
-| A breaking change (`!` after the scope, or a `BREAKING CHANGE:` footer) | `major`           |
-| `feat`                                                                  | `minor`           |
-| `fix`, `perf`, `refactor`, `build`, `revert`, `ci`                      | `patch`           |
-| `docs`, `style`, `test`, `chore`                                        | none — no release |
+| Types                                                               | Bump              |
+| ------------------------------------------------------------------- | ----------------- |
+| A breaking change (`!` after the scope; footers are forbidden here) | `major`           |
+| `feat`                                                              | `minor`           |
+| `fix`, `perf`, `refactor`, `build`, `revert`, `ci`                  | `patch`           |
+| `docs`, `style`, `test`, `chore`                                    | none — no release |
 
-**Pick the branch's type before its first commit, not after its last.** The [release-significance check](../../../compliance/src/modules/pull-request/pull-request-release-significance.service.ts) fails the pull request if any commit on the branch is more release-significant than the title ends up being — a `feat` commit on a branch titled `chore` or `ci`, for instance — and separately fails if the title names none of the scopes its commits use. Since the type only has to be _at least as_ significant, `fix` commits on a `feat`-titled branch are fine; the reverse is not.
+**Pick the branch's type before its first commit, not after its last.** The [release-significance check](../../../compliance/src/modules/pull-request/modules/release-significance/pull-request-release-significance.service.ts) fails the pull request if any commit on the branch is more release-significant than the title ends up being — a `feat` commit on a branch titled `chore` or `ci`, for instance — and separately fails if the title names none of the scopes its commits use. Since the type only has to be _at least as_ significant, `fix` commits on a `feat`-titled branch are fine; the reverse is not.
 
 Keeping a branch scoped to one project or module (see the root [AGENTS.md](../../../AGENTS.md#work-scope)) is what keeps this easy to satisfy — the fewer concerns a branch carries, the less likely a later commit outranks the type chosen at the start. If one does, either retitle the pull request to the more significant type, or move that commit to its own branch.
 
@@ -72,52 +72,51 @@ Keeping a branch scoped to one project or module (see the root [AGENTS.md](../..
 
 <!-- scopes-start -->
 
-| Scope | Description |
-| ----- | ----------- |
-| `ic-suite` | Code measurement and validation toolchains and their shared conventions |
-| `affirmancy` | Python Jupyter notebook application for LangGraph affirmation generation |
-| `caelundas` | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris) |
-| `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
-| `compliance` | GitHub issue and pull request metadata, repository governance, and external resource policies |
-| `conformetry` | Code generator templates and validation tests for generated instances |
-| `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
-| `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
-| `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
-| `deployment` | Deployment CLI: the CI release steps |
-| `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
-| `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
-| `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources |
-| `installation` | Developer-machine setup: environment files, dependencies, shell config, software |
-| `integration` | CI plumbing: steps around a CI job (affected run, Nx task-cache database) |
-| `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
-| `lexico` | TanStack Start SSR Latin dictionary web app |
-| `presentation` | Shared React/shadcn component library |
-| `lexico-db` | Shared TypeORM entities and GraphQL types |
-| `lexico-cli` | Data ingestion scripts for Lexico |
-| `meanderaw` | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads |
-| `sempientor` | Lexical gap discovery CLI for English morphological and phonotactic gaps |
-| `callidescope` | Call stack tracing and linting CLI and its configuration and rendering packages |
-| `codependix` | Dependency graph export CLI and its configuration and boundary-checking packages |
-| `codometer` | Code statistics measurement CLI and its configuration, diff, and rendering packages |
-| `coinagerie` | Codebase vocabulary CLI that lists the words a codebase uses and keeps a glossary of them in step with the code |
-| `no-release` | Escape hatch: suppress semantic-release for any commit type |
-| `release` | Version bumps and release commits generated by semantic-release |
-| `reporting` | Pull request change report generation and the packages that diff and render it |
-| `scripts` | Shell and TypeScript scripts in scripts/ (sync, setup, utilities) |
-| `testing` | Vitest configuration, shared test utilities, and coverage setup |
+| Scope            | Description                                                                                                     |
+| ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| `ic-suite`       | Code measurement and validation toolchains and their shared conventions                                         |
+| `affirmancy`     | Python Jupyter notebook application for LangGraph affirmation generation                                        |
+| `caelundas`      | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris)                                           |
+| `configuration`  | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.)                                           |
+| `compliance`     | GitHub issue and pull request metadata, repository governance, and external resource policies                   |
+| `conformetry`    | Code generator templates and validation tests for generated instances                                           |
+| `persistence`    | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations               |
+| `interface`      | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers                 |
+| `dependencies`   | Dependency version changes (upgrades, additions, removals via pnpm)                                             |
+| `deployment`     | Deployment CLI: the CI release steps                                                                            |
+| `deployments`    | GitHub Actions workflows and CI/CD pipeline configuration                                                       |
+| `documentation`  | Markdown docs, skills, planning files, and AGENTS.md files                                                      |
+| `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources                                                        |
+| `installation`   | Developer-machine setup: environment files, dependencies, shell config, software                                |
+| `integration`    | CI plumbing: steps around a CI job (affected run, Nx task-cache database)                                       |
+| `JimmyPaolini`   | Static GitHub profile README project (markdown and assets)                                                      |
+| `lexico`         | TanStack Start SSR Latin dictionary web app                                                                     |
+| `presentation`   | Shared React/shadcn component library                                                                           |
+| `lexico-db`      | Shared TypeORM entities and GraphQL types                                                                       |
+| `lexico-cli`     | Data ingestion scripts for Lexico                                                                               |
+| `meanderaw`      | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads                   |
+| `sempientor`     | Lexical gap discovery CLI for English morphological and phonotactic gaps                                        |
+| `callidescope`   | Call stack tracing and linting CLI and its configuration and rendering packages                                 |
+| `codependix`     | Dependency graph export CLI and its configuration and boundary-checking packages                                |
+| `codometer`      | Code statistics measurement CLI and its configuration, diff, and rendering packages                             |
+| `coinagerie`     | Codebase vocabulary CLI that lists the words a codebase uses and keeps a glossary of them in step with the code |
+| `no-release`     | Escape hatch: suppress semantic-release for any commit type                                                     |
+| `release`        | Version bumps and release commits generated by semantic-release                                                 |
+| `reporting`      | Pull request change report generation and the packages that diff and render it                                  |
+| `scripts`        | Shell and TypeScript scripts in scripts/ (sync, setup, utilities)                                               |
+| `testing`        | Vitest configuration, shared test utilities, and coverage setup                                                 |
 
 <!-- scopes-end -->
 
 ### Scope Selection Guidelines
 
-1. **Single project change**: Use project scope (`caelundas`, `lexico`, etc.)
-2. **Multiple projects of same type**: Use category scope (`applications`, `packages`)
-3. **Workspace config**: Use `configuration`
-4. **CI/CD**: Use `deployments`
-5. **Docs**: Use `documentation`
-6. **Dependencies**: Use `dependencies`
+1. **One project**: Use its scope (`caelundas`, `lexico`, `lexico-cli`). Every `callidescope-*`, `codependix-*`, `codometer-*`, and `conformetry-*` package commits under its toolchain's one scope.
+2. **Workspace config**: Use `configuration`
+3. **GitHub Actions workflows**: Use `deployments`
+4. **Docs and skills**: Use `documentation`
+5. **Dependency versions**: Use `dependencies`
 
-Scope each commit to the one project or module it changes. A pull request title then needs only one of the scopes its commits use, not their union.
+Scope each commit to the one project or module it changes, and split a commit that spans two rather than reaching for an umbrella scope. A pull request title then names up to three of the scopes its commits use, not their union.
 
 ## Subject
 
@@ -162,7 +161,7 @@ feat(scripts): ✨ add conventional scopes sync script
 ```text
 feat(lexico): ✨ add user profile page
 fix(caelundas): 🐛 correct aspect angle calculation
-docs(codebase): 📝 update nx workspace guide
+docs(documentation): 📝 update nx workspace guide
 chore(dependencies): ⬆️ upgrade react to v19
 ```
 
@@ -212,7 +211,7 @@ See [gitmoji.dev](https://gitmoji.dev) for the complete emoji list.
 If you need to provide:
 
 - **Issue references**: Link the PR to issues in GitHub UI, or use commit description in GitHub
-- **Breaking changes**: Prefix subject with 💥 gitmoji
+- **Breaking changes**: Add `!` after the scope, as in `feat(lexico)!: 💥 migrate to new auth API`. The `!` is what semantic-release reads as a major bump; the 💥 gitmoji alone releases as the type does
 - **Detailed explanations**: Add to PR description instead of commit message
 
 ## Full Examples
@@ -232,7 +231,7 @@ fix(lexico): 🐛 prevent crash on null user data
 ### Breaking Change
 
 ```text
-feat(lexico): 💥 migrate to new auth API
+feat(lexico)!: 💥 migrate to new auth API
 ```
 
 ## Git CLI Usage
@@ -241,11 +240,11 @@ feat(lexico): 💥 migrate to new auth API
 
 Since footer sections are forbidden, commits should not include footers. Body must be omitted unless it consists entirely of `Co-authored-by` trailers, whose casing is not checked.
 
-Commits must also be GPG-signed and verified:
+Commits must also be signed, by GPG or by SSH (`gpg.format=ssh`, which cloud sessions use), and verified:
 
 ```bash
 export GPG_TTY="$(tty)"
-git commit -S -m "feat(codebase): ✨ add new feature"
+git commit -S -m "feat(lexico): ✨ add new feature"
 git verify-commit HEAD
 ```
 
@@ -270,11 +269,11 @@ gh api -X PATCH repos/{owner}/{repo}/issues/<child> -f state=closed -f state_rea
 
 ```bash
 # This will fail - no body allowed
-git commit -m "feat(codebase): ✨ add feature" \
+git commit -m "feat(lexico): ✨ add feature" \
            -m "This is the body paragraph"
 
 # This will also fail
-git commit -m "feat(codebase): ✨ add feature
+git commit -m "feat(lexico): ✨ add feature
 This is the body"
 ```
 
@@ -328,7 +327,7 @@ Configuration files:
 - Scope: lowercase, from allowed list
 - Subject: lowercase, imperative, no period, <72 chars
 - Header: <128 chars total (count prefix + subject!)
-- Signing: commit with `-S`, then verify `HEAD` using `git verify-commit`
+- Signing: commit with `-S` (GPG or SSH), then verify `HEAD` using `git verify-commit`
 - Body: forbidden (only `Co-authored-by` trailers allowed, added automatically by tools)
 - Footer: forbidden
 - NEVER list multiple changes with commas/"and" — summarize or split commits

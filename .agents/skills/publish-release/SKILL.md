@@ -1,6 +1,6 @@
 ---
 name: publish-release
-description: Guidelines for building, packaging, and publishing projects. Use when modifying publishConfig, resolvePluginService, package.json main/types/exports for publishable libraries, checking dist folder generation, debugging package resolution for released artifacts, or rehearsing a publish against the local Verdaccio registry.
+description: "Build, pack, and publish this repository's packages: package exports, publishConfig, dist output, and rehearsing a publish on the local Verdaccio registry. Use when changing what a package ships, when a released package resolves wrongly, or before trusting a publish change."
 license: MIT
 ---
 

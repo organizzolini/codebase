@@ -1,4 +1,4 @@
-# 🔭 Callidescope Examples — Agent Guide
+# callidescope-examples
 
 A small codebase written to be traced, not run: one worked example per thing
 callidescope can report, so a failing `callidescope` run has somewhere concrete
@@ -33,28 +33,28 @@ two it is named at — `projects/ic-suite/callidescope/callidescope-examples` an
 
 ## Callidescope said X — open this example
 
-| What the run said | Open | What it means |
-| ----------------- | ---- | ------------- |
-| `🚨 [DEPTH n > limit]` and every frame's summary differs | [`deep-stack`](examples/stacks/deep-stack/README.md) | The layering is real. Question whether the stages are all needed; do not delete one layer at a time |
-| `🚨 [DEPTH n > limit]` and a run of frames all say the same thing | [`forwarding-stack`](examples/stacks/forwarding-stack/README.md) | Layers that only pass arguments along. Collapse them |
-| `depth ≥ n` rather than `depth n` | [`computed-member`](examples/resolution/computed-member/README.md) | Something on the path could not be followed. The number is a floor, not a bug |
-| `Unfollowable calls` above zero | [`computed-member`](examples/resolution/computed-member/README.md), [`implementation-fan-out`](examples/resolution/implementation-fan-out/README.md) | A computed member name, or a structural expansion dropped for exceeding the implementation-candidate cap |
-| `Stacks through recursion` above zero | [`mutual-recursion`](examples/stacks/mutual-recursion/README.md) | A cycle, collapsed before depth was measured. The depth is a floor |
-| A stack headed `· orphan-root` | [`entry-points`](examples/roots/entry-points/README.md) | Nothing claimed the callable. Either dead code, or an entry-point rule your configuration is missing |
-| A stack headed `· declared` | [`declared-entry-points`](examples/roots/declared-entry-points/README.md) | A project named that address in its own `callidescope.config.ts`. That is the surface it asked to be measured on |
-| `declares an entryPoints.addresses entry that resolves to nothing` | [`declared-entry-points`](examples/roots/declared-entry-points/README.md) | A declared address names a callable that has moved or been renamed. Fix the address; the refusal exists so a rename cannot loosen a gate in silence |
-| `which only the workspace configuration may set` | [`project-depth-limit`](examples/limits/project-depth-limit/README.md) | A project's `callidescope.config.ts` reached past `entryPoints`, `limits.maximumDepth`, `limits.maximumBreadth`, and `exclude` |
-| Different findings in one report judged against different limits | [`project-depth-limit`](examples/limits/project-depth-limit/README.md), [`gated-leaf`](examples/limits/gated-leaf/README.md) | Not a bug. A limit belongs to a project, and every project writes its own — so findings against different numbers in one report are different projects' numbers |
-| A project reporting depth 0 while carrying a real chain | [`gated-leaf`](examples/limits/gated-leaf/README.md) | It roots nothing, because everything it owns is called from above. Declare its entry points before giving it a limit |
-| `--check breadth requires at least one project in scope` | [`gated-leaf`](examples/limits/gated-leaf/README.md) | Breadth has no default anywhere. Some project in scope has to declare `limits.maximumBreadth` before the gate can run |
-| A file a project's own `exclude` names, still traced | [`gated-leaf`](examples/limits/gated-leaf/README.md) | A project's globs are anchored to that project's root. A workspace-relative glob in a project file matches nothing; drop the leading path, or move the glob to the run's own configuration |
-| A frame marked `⚠ deprecated`, or printed `(…): T` | [`frame-annotations`](examples/stacks/frame-annotations/README.md) | Annotation shortening in the printed tree. `output/report.json` carries the full text |
-| A call resolved to a class that never writes `implements` | [`structural-interface`](examples/resolution/structural-interface/README.md) | Structural matching, which is the only thing that works on an arrow-typed property |
-| A frame you did not expect, named for a declaration rather than the local name | [`plain-call`](examples/resolution/plain-call/README.md) | The checker unwraps the import alias. A report always names the declaration |
-| A frame, a stack, or a per-project row in a package the run was not pointed at | [`dependency-closure`](examples/resolution/dependency-closure/README.md) | A scoped run traces the projects its imports reach. Not a leak — a call into a dependency lands on a frame instead of stopping at the package boundary |
-| A stack that ends at a call into another directory, with no frame for it | [`dependency-closure`](examples/resolution/dependency-closure/README.md) | The destination is refused: a project root holding no `package.json` is shared settings rather than a package, and the workspace root contains every project |
-| `A configured destination is stale` | [`callidescope.workspace.config.ts`](callidescope.workspace.config.ts) | Run the `write` configuration of whichever project owns the destination |
-| `--check` rejected a value | [README, "The two flags"](README.md#the-two-flags) | The set is drawn from `breadth`, `depth`, and `reports`; an empty `--check` is refused |
+| What the run said                                                              | Open                                                                                                                                                 | What it means                                                                                                                                                                              |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `🚨 [DEPTH n > limit]` and every frame's summary differs                       | [`deep-stack`](examples/stacks/deep-stack/README.md)                                                                                                 | The layering is real. Question whether the stages are all needed; do not delete one layer at a time                                                                                        |
+| `🚨 [DEPTH n > limit]` and a run of frames all say the same thing              | [`forwarding-stack`](examples/stacks/forwarding-stack/README.md)                                                                                     | Layers that only pass arguments along. Collapse them                                                                                                                                       |
+| `depth ≥ n` rather than `depth n`                                              | [`computed-member`](examples/resolution/computed-member/README.md)                                                                                   | Something on the path could not be followed. The number is a floor, not a bug                                                                                                              |
+| `Unfollowable calls` above zero                                                | [`computed-member`](examples/resolution/computed-member/README.md), [`implementation-fan-out`](examples/resolution/implementation-fan-out/README.md) | A computed member name, or a structural expansion dropped for exceeding the implementation-candidate cap                                                                                   |
+| `Stacks through recursion` above zero                                          | [`mutual-recursion`](examples/stacks/mutual-recursion/README.md)                                                                                     | A cycle, collapsed before depth was measured. The depth is a floor                                                                                                                         |
+| A stack headed `· orphan-root`                                                 | [`entry-points`](examples/roots/entry-points/README.md)                                                                                              | Nothing claimed the callable. Either dead code, or an entry-point rule your configuration is missing                                                                                       |
+| A stack headed `· declared`                                                    | [`declared-entry-points`](examples/roots/declared-entry-points/README.md)                                                                            | A project named that address in its own `callidescope.config.ts`. That is the surface it asked to be measured on                                                                           |
+| `declares an entryPoints.addresses entry that resolves to nothing`             | [`declared-entry-points`](examples/roots/declared-entry-points/README.md)                                                                            | A declared address names a callable that has moved or been renamed. Fix the address; the refusal exists so a rename cannot loosen a gate in silence                                        |
+| `which only the workspace configuration may set`                               | [`project-depth-limit`](examples/limits/project-depth-limit/README.md)                                                                               | A project's `callidescope.config.ts` reached past `entryPoints`, `limits.maximumDepth`, `limits.maximumBreadth`, and `exclude`                                                             |
+| Different findings in one report judged against different limits               | [`project-depth-limit`](examples/limits/project-depth-limit/README.md), [`gated-leaf`](examples/limits/gated-leaf/README.md)                         | Not a bug. A limit belongs to a project, and every project writes its own — so findings against different numbers in one report are different projects' numbers                            |
+| A project reporting depth 0 while carrying a real chain                        | [`gated-leaf`](examples/limits/gated-leaf/README.md)                                                                                                 | It roots nothing, because everything it owns is called from above. Declare its entry points before giving it a limit                                                                       |
+| `--check breadth requires at least one project in scope`                       | [`gated-leaf`](examples/limits/gated-leaf/README.md)                                                                                                 | Breadth has no default anywhere. Some project in scope has to declare `limits.maximumBreadth` before the gate can run                                                                      |
+| A file a project's own `exclude` names, still traced                           | [`gated-leaf`](examples/limits/gated-leaf/README.md)                                                                                                 | A project's globs are anchored to that project's root. A workspace-relative glob in a project file matches nothing; drop the leading path, or move the glob to the run's own configuration |
+| A frame marked `⚠ deprecated`, or printed `(…): T`                             | [`frame-annotations`](examples/stacks/frame-annotations/README.md)                                                                                   | Annotation shortening in the printed tree. `output/report.json` carries the full text                                                                                                      |
+| A call resolved to a class that never writes `implements`                      | [`structural-interface`](examples/resolution/structural-interface/README.md)                                                                         | Structural matching, which is the only thing that works on an arrow-typed property                                                                                                         |
+| A frame you did not expect, named for a declaration rather than the local name | [`plain-call`](examples/resolution/plain-call/README.md)                                                                                             | The checker unwraps the import alias. A report always names the declaration                                                                                                                |
+| A frame, a stack, or a per-project row in a package the run was not pointed at | [`dependency-closure`](examples/resolution/dependency-closure/README.md)                                                                             | A scoped run traces the projects its imports reach. Not a leak — a call into a dependency lands on a frame instead of stopping at the package boundary                                     |
+| A stack that ends at a call into another directory, with no frame for it       | [`dependency-closure`](examples/resolution/dependency-closure/README.md)                                                                             | The destination is refused: a project root holding no `package.json` is shared settings rather than a package, and the workspace root contains every project                               |
+| `A configured destination is stale`                                            | [`callidescope.workspace.config.ts`](callidescope.workspace.config.ts)                                                                               | Run the `write` configuration of whichever project owns the destination                                                                                                                    |
+| `--check` rejected a value                                                     | [README, "The two flags"](README.md#the-two-flags)                                                                                                   | The set is drawn from `breadth`, `depth`, and `reports`; an empty `--check` is refused                                                                                                     |
 
 ## Layout
 
@@ -109,7 +109,7 @@ callidescope-examples/
   the rest. This is the one structural difference from the three sibling
   `*-examples` packages, and this is why.
 - `src/` is not covered by tests and should not be — see the comment in
-  [`vitest.config.ts`](vitest.config.ts).
+  [`vitest.config.ts`](configuration/vitest.config.ts).
 
 ## Adding an example
 
@@ -186,12 +186,6 @@ are exact — callable count, edge count, every stack depth. That is deliberate:
 fixture whose meaning silently changes when the resolver changes is worse than
 no fixture. Any edit under `examples/` or `src/` therefore takes three steps:
 
-```bash
-nx run callidescope-examples:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write   # first — see below
-nx run callidescope-examples:examples:write                        # regenerate output/ and the three published sections
-nx run callidescope-examples:vitest                                # update the expectations, then confirm
-```
-
 Lint **before** regenerating, never after. Every frame in every report carries a
 `file:line`, and `eslint --fix` sorts class members — so adding one method moves
 the line numbers of the ones after it, and a report written before that sort is
@@ -223,10 +217,10 @@ about fixtures.
 
 ## Key files
 
-| File | What it is |
-| ---- | ---------- |
-| [README.md](README.md) | The human guide — how to read a stack, and how to act on each finding |
-| [callidescope.workspace.config.ts](callidescope.workspace.config.ts) | Why this package's limits differ from the workspace's |
-| [callidescope.config.ts](callidescope.config.ts) | What this package declares about itself — a complete project configuration, every field written out inline rather than spread from a shared default |
-| [../callidescope-cli/README.md](../callidescope-cli/README.md) | The behavior being demonstrated |
-| [../callidescope-configuration/README.md](../callidescope-configuration/README.md) | Every configuration field |
+| File                                                                               | What it is                                                                                                                                          |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [README.md](README.md)                                                             | The human guide — how to read a stack, and how to act on each finding                                                                               |
+| [callidescope.workspace.config.ts](callidescope.workspace.config.ts)               | Why this package's limits differ from the workspace's                                                                                               |
+| [callidescope.config.ts](configuration/callidescope.config.ts)                     | What this package declares about itself — a complete project configuration, every field written out inline rather than spread from a shared default |
+| [../callidescope-cli/README.md](../callidescope-cli/README.md)                     | The behavior being demonstrated                                                                                                                     |
+| [../callidescope-configuration/README.md](../callidescope-configuration/README.md) | Every configuration field                                                                                                                           |

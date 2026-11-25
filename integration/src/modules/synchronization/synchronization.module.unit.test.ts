@@ -6,6 +6,7 @@ import {
   expectModuleProvides,
 } from "@codebase/testing/nestjs";
 
+import { AgentInstructionsModule } from "./modules/agent-instructions/agent-instructions.module";
 import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
 import { ConventionalConfigModule } from "./modules/conventional-config/conventional-config.module";
 import { DevcontainerConfigurationModule } from "./modules/devcontainer-configuration/devcontainer-configuration.module";
@@ -13,6 +14,7 @@ import { LockfileModule } from "./modules/lockfile/lockfile.module";
 import { PackageManifestsModule } from "./modules/package-manifests/package-manifests.module";
 import { ProjectPortsModule } from "./modules/project-ports/project-ports.module";
 import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
+import { SkillDescriptionsModule } from "./modules/skill-descriptions/skill-descriptions.module";
 import { SkillExclusionsModule } from "./modules/skill-exclusions/skill-exclusions.module";
 import { VscodeExtensionsModule } from "./modules/vscode-extensions/vscode-extensions.module";
 import { SynchronizationMarkersService } from "./synchronization-markers.service";
@@ -27,9 +29,11 @@ describe(SynchronizationModule, () => {
     expectModuleImports(
       SynchronizationModule,
       LoggerModule,
+      AgentInstructionsModule,
       CatalogManifestsModule,
       LockfileModule,
       ReadmeProjectsModule,
+      SkillDescriptionsModule,
       ConventionalConfigModule,
       DevcontainerConfigurationModule,
       PackageManifestsModule,

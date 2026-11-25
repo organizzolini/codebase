@@ -1,6 +1,6 @@
 ---
 name: submit-changes
-description: Automatically submit local changes through the full branch → commit → push → pull request pipeline. Includes branch-name conformance checks and automatic branch rename when needed. Use this skill when asked to submit, ship, or push changes; when you want to move from local changes to an open PR in one step; or when orchestrating the complete git workflow automatically without manual steps.
+description: "Take local changes through branch, commit, push, and pull request in one step, renaming a non-conforming branch on the way. Use when asked to submit or push changes, or to go from local changes to an open pull request. Merging afterwards is ship-changes."
 license: MIT
 ---
 
@@ -12,7 +12,7 @@ This skill automates the full pipeline from local changes to an open pull reques
 
 - Submitting local changes as a complete workflow in one step
 - Automating the branch + commit + PR process without manual intervention
-- Shipping finished work without manually running each git command
+- Opening a pull request for finished work without running each git command by hand
 
 ## Safety Rules
 
@@ -67,7 +67,7 @@ Keep the issue number; Phase 3 closes it. **Skip if:** the branch already has an
    pnpm exec validate-branch-name -t "<branch>"
    ```
 
-4. If validation fails, run the [rename-branch skill](../rename-branch/SKILL.md) to derive and apply a compliant branch name, then re-run validation.
+4. If validation fails, rename the branch with [checkout-branch](../checkout-branch/SKILL.md#rename-a-branch), then re-run validation.
 5. Push to remote and set upstream:
 
    ```bash
@@ -80,10 +80,10 @@ Branch name format: `<type>/<scope>-<description>` (kebab-case, 2–4 keyword de
 
 **Skip if:** Working tree is clean (`git status --porcelain` returns nothing).
 
-1. Stage all changes:
+1. Stage the changes this submission makes — read `git status --porcelain` first, and leave out anything the task did not produce:
 
    ```bash
-   git add -A
+   git add <paths>
    ```
 
 2. Compose commit message: `<type>(<scope>): <gitmoji> <subject>` — single line, max 128 chars, no body/footer
@@ -124,92 +124,9 @@ git push --set-upstream origin <branch>
 
 ## Phase 3 — Pull Request
 
-**Skip if:** A PR already exists for the current branch:
+**Skip if:** a pull request already exists for the branch (`gh api "repos/{owner}/{repo}/pulls?head={owner}:<branch>&state=open" --jq '.[].number'`); update it instead with [create-pull-request's Update section](../create-pull-request/SKILL.md#update-an-existing-pull-request) when the branch has moved past its description.
 
-```bash
-gh api "repos/{owner}/{repo}/pulls?head={owner}:<branch>&state=open" --jq '.[].number'
-```
-
-1. Title: Same format as the commit message — `<type>(<scope>): <gitmoji> <subject>`.
-   Keep it under 128 characters, and target about 115 or less so merge-queue
-   suffixes do not push the queued commit subject over the limit.
-2. Body: Auto-generate from the diff using the PR template structure (all 4 sections are mandatory and non-empty):
-   - **🌰 Summary**: Overall purpose as one plain paragraph of at most 48 words; the issue keeps the requirements, so do not restate them
-   - **📝 Details**: Only a bulleted list of meaningful changes, one marker throughout, at most 512 words
-   - **🧪 Testing**: Only an ordered list of `nx run <project>:<target>` commands and manual steps; indent any code block under its step
-   - **🔗 Related**: Opens with a `-` list whose first bullet is `Closes #N` for the Phase 0 issue, then any related documentation links; anything may follow the list
-3. Draft the body now; it is validated live once the pull request exists
-   (`compliance.main.ts pull-request <number>`, read-only). Fix any reported
-   issues (e.g. missing headings or leftover template comments) before
-   requesting review.
-
-   ```bash
-   cat << 'EOF' > /tmp/pr_body.md
-   <generated body>
-   EOF
-   ```
-
-4. Pre-flight gate title scopes before creating the PR:
-   - Read the commit subjects in this branch and list their scopes.
-   - Make sure every commit shares at least one scope with the proposed PR
-     title, naming at most three scopes: the ones that carry most of the
-     commits. A multi-scope title is expected for a branch that spans projects,
-     and a fourth scope fails the Comply check; never split a branch over scope
-     count.
-
-5. Assignee and labels — Comply rejects a pull request whose metadata disagrees with its title, so set all of this at creation time rather than waiting for the reconciliation step to backfill it:
-   - **Assignee**: `--assignee @me`. A pull request with no assignee fails validation.
-   - **Type label**: Exactly one `type:*` label, matching the title's type. Never more than one, never a mismatch.
-   - **Scope label(s)**: One `scope:*` label per scope named in the title — if the title carries more than one scope (`type(scope-one,scope-two): …`), add a `--label scope:<name>` for each of them, and no extra `scope:*` label beyond what the title names.
-   - **Source label**: Exactly one `source:*` label. This skill is agent-driven, so use `source:agent` — never `source:human`, and never both.
-   - **Never** apply `do-not-merge` — it blocks the pull request while present, and this workflow is opening one for immediate review, not staging a draft.
-6. Create the PR:
-
-   ```bash
-   pr_number="$(gh api repos/{owner}/{repo}/pulls \
-     -f title="<type>(<scope>): <gitmoji> <subject>" \
-     -F body=@/tmp/pr_body.md \
-     -f head=<branch> \
-     -f base=main \
-     --jq .number)"
-   gh api -X POST "repos/{owner}/{repo}/issues/${pr_number}/labels" \
-     -f 'labels[]=type:<type>' -f 'labels[]=scope:<scope>' -f 'labels[]=source:agent'
-   gh api -X POST "repos/{owner}/{repo}/issues/${pr_number}/assignees" \
-     -f "assignees[]=$(gh api user --jq .login)"
-   rm /tmp/pr_body.md
-   ```
-
-   Repeat `-f 'labels[]=scope:<name>'` for each additional scope the title names. This uses [repo-scoped REST](../../../documentation/agents/issue-tracker.md#repo-scoped-rest-instead-of-graphql), which also works where `gh pr create` cannot.
-
-7. Hard gate before finishing: validate the created PR (its title, body, labels, and release significance).
-
-   ```bash
-   pr_number="$(gh api "repos/{owner}/{repo}/pulls?head={owner}:<branch>&state=open" --jq '.[0].number')"
-   NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-     compliance/src/compliance.main.ts pull-request \
-     "${pr_number}"
-   ```
-
-   If this fails, fix the title scopes/type, then rerun
-   this command before proceeding.
-
-8. Confirm the metadata actually landed — a label GitHub silently drops (typo, not-yet-created) fails CI just as surely as never adding it:
-
-   ```bash
-   gh api repos/{owner}/{repo}/pulls/"${pr_number}" --jq '{number, labels: [.labels[].name], assignees: [.assignees[].login]}'
-   ```
-
-   If any expected label or the assignee is missing, add it with `gh api -X POST repos/{owner}/{repo}/issues/<number>/labels -f 'labels[]=<label>'` or `…/assignees -f 'assignees[]=<login>'` rather than leaving it to Validate Conventions to catch and fail on.
-
-9. Confirm GitHub recorded the issue link:
-
-   ```bash
-   gh api repos/{owner}/{repo}/pulls/"${pr_number}" --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'
-   ```
-
-   An empty result means the link is missing: fix the `Closes #N` keyword, or add the issue under Development in the pull request sidebar (a stacked pull request, whose base is not `main`, may need that). See [link-issue](../link-issue/SKILL.md#link-it).
-
-For complete PR conventions and description guidelines, see [create-pull-request skill](../create-pull-request/SKILL.md). For the full label vocabulary, the `opened`/`reopened` reconciliation step that creates missing labels, and how to fix each individual metadata failure, see the [triage-integration skill](../triage-integration/SKILL.md).
+Otherwise open one with [create-pull-request](../create-pull-request/SKILL.md#create-a-pull-request), which owns every rule this phase must meet: the title (the commit's format, at most three scopes, at least as release-significant as every commit), the four-section body with `Closes #N` for the Phase 0 issue first under Related, `source:agent` with the matching `type:*` and `scope:*` labels, the assignee, and the compliance check. **The compliance check is a hard gate**: fix what it reports before finishing, and never apply `do-not-merge`.
 
 ## Output
 
@@ -227,8 +144,7 @@ After completing all phases, print a summary table:
 ## Resources
 
 - [link-issue skill](../link-issue/SKILL.md) — Find, file, or backfill the issue the PR closes
-- [checkout-branch skill](../checkout-branch/SKILL.md) — Branch naming conventions
-- [rename-branch skill](../rename-branch/SKILL.md) — Rename non-conforming branches before commit/push
+- [checkout-branch skill](../checkout-branch/SKILL.md) — Branch naming, validation, and renaming
 - [commit-code skill](../commit-code/SKILL.md) — Commit message format, types, scopes, gitmoji
 - [create-pull-request skill](../create-pull-request/SKILL.md) — PR conventions and description template, full Labels section
 - [triage-integration skill](../triage-integration/SKILL.md) — Label vocabulary, `opened`/`reopened` reconciliation, fixing metadata failures

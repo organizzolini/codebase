@@ -12,7 +12,7 @@ import { SessionBranchNameService } from "./session-branch-name.service";
  *
  * Its standard output is the report alone, which the hook hands to the agent.
  * Silent with exit 0 when compliant, or with no branch; otherwise the error and
- * the rename-branch directive, with exit 1.
+ * the checkout-branch rename directive, with exit 1.
  */
 @Command({
   description:

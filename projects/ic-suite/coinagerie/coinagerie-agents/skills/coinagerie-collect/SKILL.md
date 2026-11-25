@@ -1,6 +1,6 @@
 ---
 name: coinagerie-collect
-description: Use when running coinagerie or npx @coinagerie/cli, printing the vocabulary of a codebase, checking or writing a glossary, choosing between --check, --write, and a bare run, reading the glossary block or JSON it printed, reading the missing and stale words a failed check named, finding which words are still undefined, or wiring a glossary check into CI, a commit hook, or an Nx target.
+description: "Run coinagerie to list the words a codebase uses and check or write its glossary. Use when running coinagerie, choosing between --check, --write, and a bare run, reading what a failed check named, or wiring a glossary check into CI or an Nx target."
 license: MIT
 ---
 
@@ -28,11 +28,11 @@ coinagerie --config packages/widgets/coinagerie.config.ts --check
 
 Every invocation also carries `--config <path>`; without it the run exits 1.
 
-| Invocation           | Writes                                 | Exits 1 when                                                                                                             |
-| -------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| no mode flag         | nothing; prints a glossary to stdout   | the configuration or command line is rejected                                                                            |
-| `--check`            | nothing                                | a destination has a missing or stale word, a glossary cannot be parsed, or the configuration or command line is rejected |
-| `--write`            | each destination whose content changes | a glossary cannot be parsed, or the configuration is rejected                                                            |
+| Invocation   | Writes                                 | Exits 1 when                                                                                                             |
+| ------------ | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| no mode flag | nothing; prints a glossary to stdout   | the configuration or command line is rejected                                                                            |
+| `--check`    | nothing                                | a destination has a missing or stale word, a glossary cannot be parsed, or the configuration or command line is rejected |
+| `--write`    | each destination whose content changes | a glossary cannot be parsed, or the configuration is rejected                                                            |
 
 - `--check` and `--write` together are refused.
 - Each needs a destination, which is an `outputs` entry in the configuration or

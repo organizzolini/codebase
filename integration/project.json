@@ -11,6 +11,30 @@
     "type:package"
   ],
   "targets": {
+    "agent-instructions": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts agent-instructions check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts agent-instructions write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Keeps a `CLAUDE.md` symlink beside every project's `AGENTS.md`, so Claude Code loads the project's instructions. A `guard-code` dependency; `check` runs on a pull request and `write` on the default branch's release.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/*/AGENTS.md",
+        "{workspaceRoot}/projects/**/AGENTS.md",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "build-projects": {},
     "catalog-manifests": {
       "cache": true,
@@ -56,8 +80,6 @@
         "{workspaceRoot}/.agents/skills/checkout-branch/SKILL.md",
         "{workspaceRoot}/.agents/skills/commit-code/SKILL.md",
         "{workspaceRoot}/.agents/skills/create-pull-request/SKILL.md",
-        "{workspaceRoot}/.agents/skills/rename-branch/SKILL.md",
-        "{workspaceRoot}/.agents/skills/triage-integration/SKILL.md",
         "{workspaceRoot}/.github/CONTRIBUTING.md",
         "{workspaceRoot}/.github/ISSUE_TEMPLATE/issue.yml",
         "{workspaceRoot}/.vscode/settings.json",
@@ -209,6 +231,35 @@
       "outputs": []
     },
     "repl": {},
+    "skill-descriptions": {
+      "cache": true,
+      "description": "Verify every skill this repository authors keeps its description within 128 words, and all of them within 12,288 characters together, so the agent's skill listing never truncates. A `guard-code` dependency, affected whenever a skill or the skills lockfile changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/.agents/skills/*/SKILL.md",
+        "{workspaceRoot}/projects/ic-suite/*/*-agents/skills/*/SKILL.md",
+        "{workspaceRoot}/skills-lock.json",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "yaml",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts skill-descriptions",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
     "skill-exclusions": {
       "cache": true,
       "configurations": {

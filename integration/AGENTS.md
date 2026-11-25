@@ -1,55 +1,8 @@
-# Integration: NestJS Command-Line Application
-
-## Quick Start
-
-**Type**: Node.js CLI application (NestJS + `nest-commander`)
+# integration
 
 **Purpose**: Everything that guards a change on its way to `main`, as tested commands. That is the local branch into its remote branch at commit and push, and a pull request into `main`. It holds the checks (catalog pins, the lockfile, the README's project rows), the derivations that keep generated files in step with their sources, and the Continuous Integration plumbing: the affected run, the Nx base and task-cache steps, codometer's baseline and pull-request report, and the weekly dependency upgrades. "Integration" in this project means that path, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
 
-### Run Locally
-
-```bash
-cp configuration/.env.default configuration/.env  # Fill in required environment variables
-nx run integration:start
-```
-
-## Architecture Overview
-
-### Tech Stack
-
-- **Framework**: NestJS (modules, dependency injection, providers)
-- **CLI runner**: `nest-commander` (`CommandRunner` + `@Command()` decorator)
-- **Env validation**: `@nestjs/config` + `zod` (`environmentSchema` in `.constants.ts`)
-- **Logging**: `@codebase/observability` — a `pino`-backed `LoggerService` (`Scope.TRANSIENT`)
-- **Language**: Strict TypeScript
-
-### Execution Flow
-
-```text
-src/integration.main.ts
-  └─ CommandFactory.run(MainModule)
-       └─ domain command modules            ← add under src/modules/
-```
-
-### Directory Layout
-
-```text
-src/
-  integration.main.ts  # Bootstrap — do not modify
-  integration.module.ts  # Root NestJS module (imports ConfigModule, LoggerModule)
-  integration.constants.ts  # Zod environmentSchema for env validation
-  modules/
-    <domain>/                       # Add feature modules here
-      <domain>.module.ts
-      <domain>.command.ts
-      <domain>.service.ts
-      <domain>.types.ts
-      <domain>.constants.ts
-      <domain>.<tier>.test.ts
-testing/                            # Shared test utilities
-```
-
-### Checks, derivations, and the aggregate
+## Checks, derivations, and the aggregate
 
 `src/modules/synchronization` holds what every check and derivation shares:
 `SynchronizableCommand` (a `synchronizationLabel` and `synchronize(mode)`, which
@@ -74,30 +27,32 @@ actions set them, print what they decide, and set the exit code. Anything that
 runs a child process goes through `ProcessRunnerService`, so a test replaces
 one class.
 
-| Command                                | Module                                                           | Called from                                                                                                                                                                                                                                       |
-| -------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `setup-codebase`                       | `src/modules/setup-codebase`                                     | the `setup-codebase` composite action, right after `pnpm install`; runs the four steps below it                                                                                                                                                   |
-| `bound-base-to-push`                   | `src/modules/bound-base-to-push`                                 | `setup-codebase`, on a push with `nx-base: push-before`                                                                                                                                                                                           |
-| `import-pr-task-cache`                 | `src/modules/import-pr-task-cache`                               | `setup-codebase`, in a merge group                                                                                                                                                                                                                |
-| `verify-task-database`                 | `src/modules/task-database/modules/verify-task-database`         | `setup-codebase` and `cleanup-codebase`                                                                                                                                                                                                           |
-| `adopt-task-database`                  | `src/modules/task-database/modules/adopt-task-database`          | `setup-codebase`                                                                                                                                                                                                                                  |
-| `cleanup-codebase`                     | `src/modules/cleanup-codebase`                                   | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it                                                                                                                                                  |
-| `keep-task-database`                   | `src/modules/task-database/modules/keep-task-database`           | `cleanup-codebase`                                                                                                                                                                                                                                |
-| `merge-task-cache`                     | `src/modules/task-database/modules/merge-task-cache`             | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory                                                                                                                                            |
-| `run-affected`                         | `src/modules/run-affected`                                       | the Continuous Integration matrix legs, for every check but Secure                                                                                                                                                                                |
-| `collect-codometer-baseline`           | `src/modules/collect-codometer-baseline`                         | the `report-integration` composite action, on a green `main` build                                                                                                                                                                                |
-| `report-codometer-changes`             | `src/modules/report-codometer-changes`                           | the `report-integration` composite action, on a pull request's build                                                                                                                                                                              |
-| `upgrade-dependencies`                 | `src/modules/upgrade-dependencies`                               | the `upgrade-dependencies` workflow                                                                                                                                                                                                               |
-| `conventional-config`                  | `src/modules/synchronization/modules/conventional-config`        | the release workflow's `write` step; derives commit types and scopes, commitlint, release configuration. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                        |
-| `devcontainer-configuration`           | `src/modules/synchronization/modules/devcontainer-configuration` | the release workflow's `write` step and `test-devcontainer.sh`; derives the cloud devcontainer's shared fields. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                 |
-| `package-manifests`                    | `src/modules/synchronization/modules/package-manifests`          | nothing in CI: run it by name; derives publishable package metadata. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                            |
-| `project-ports`                        | `src/modules/synchronization/modules/project-ports`              | `guard-code`; derives each `*-api` and `*-web` port. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                            |
-| `skill-exclusions`                     | `src/modules/synchronization/modules/skill-exclusions`           | the release workflow's `write` step; derives installed-skill exclusion lists. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                   |
-| `vscode-extensions`                    | `src/modules/synchronization/modules/vscode-extensions`          | `guard-code` and `test-devcontainer.sh`; derives both devcontainers' extension lists. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                           |
-| `catalog-manifests`                    | `src/modules/synchronization/modules/catalog-manifests`          | `guard-code`; a check, no `write`: every workspace manifest pins externals as `catalog:` and internals as `workspace:*`. Collects every violation; has no `fixCommand`                                                                            |
-| `lockfile`                             | `src/modules/synchronization/modules/lockfile`                   | `guard-code` and lint-staged; a check, no `write`: runs `pnpm install --frozen-lockfile --lockfile-only`. Sets `fixCommand` to `pnpm install`                                                                                                     |
-| `readme-projects`                      | `src/modules/synchronization/modules/readme-projects`            | `guard-code`; a check, no `write`: the root README links every workspace project. Its `fixCommand` says to add a row for each missing project                                                                                                     |
-| `synchronization` (the `start` target) | `src/modules/synchronization`                                    | a human at a terminal: `nx run integration:start` runs the nine checks and derivations above in one process, `check` by default, or `:write`. The CLI name is internal: the conformetry template fixes it, and `conformetry-validate` requires it |
+| Command                                | Module                                                           | Called from                                                                                                                                                                                                                                                                                                     |
+| -------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `setup-codebase`                       | `src/modules/setup-codebase`                                     | the `setup-codebase` composite action, right after `pnpm install`; runs the four steps below it                                                                                                                                                                                                                 |
+| `bound-base-to-push`                   | `src/modules/bound-base-to-push`                                 | `setup-codebase`, on a push with `nx-base: push-before`                                                                                                                                                                                                                                                         |
+| `import-pr-task-cache`                 | `src/modules/import-pr-task-cache`                               | `setup-codebase`, in a merge group                                                                                                                                                                                                                                                                              |
+| `verify-task-database`                 | `src/modules/task-database/modules/verify-task-database`         | `setup-codebase` and `cleanup-codebase`                                                                                                                                                                                                                                                                         |
+| `adopt-task-database`                  | `src/modules/task-database/modules/adopt-task-database`          | `setup-codebase`                                                                                                                                                                                                                                                                                                |
+| `cleanup-codebase`                     | `src/modules/cleanup-codebase`                                   | the `cleanup-codebase` composite action, before it saves the caches; runs the two steps below it                                                                                                                                                                                                                |
+| `keep-task-database`                   | `src/modules/task-database/modules/keep-task-database`           | `cleanup-codebase`                                                                                                                                                                                                                                                                                              |
+| `merge-task-cache`                     | `src/modules/task-database/modules/merge-task-cache`             | nothing in CI: `import-pr-task-cache` merges through the same service; run it by hand with a directory                                                                                                                                                                                                          |
+| `run-affected`                         | `src/modules/run-affected`                                       | the Continuous Integration matrix legs, for every check but Secure                                                                                                                                                                                                                                              |
+| `collect-codometer-baseline`           | `src/modules/collect-codometer-baseline`                         | the `report-integration` composite action, on a green `main` build                                                                                                                                                                                                                                              |
+| `report-codometer-changes`             | `src/modules/report-codometer-changes`                           | the `report-integration` composite action, on a pull request's build                                                                                                                                                                                                                                            |
+| `upgrade-dependencies`                 | `src/modules/upgrade-dependencies`                               | the `upgrade-dependencies` workflow                                                                                                                                                                                                                                                                             |
+| `conventional-config`                  | `src/modules/synchronization/modules/conventional-config`        | the release workflow's `write` step; derives commit types and scopes, commitlint, release configuration. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                                      |
+| `devcontainer-configuration`           | `src/modules/synchronization/modules/devcontainer-configuration` | the release workflow's `write` step and `test-devcontainer.sh`; derives the cloud devcontainer's shared fields. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                               |
+| `package-manifests`                    | `src/modules/synchronization/modules/package-manifests`          | nothing in CI: run it by name; derives publishable package metadata. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                                                                          |
+| `project-ports`                        | `src/modules/synchronization/modules/project-ports`              | `guard-code`; derives each `*-api` and `*-web` port. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                                                                                          |
+| `skill-exclusions`                     | `src/modules/synchronization/modules/skill-exclusions`           | the release workflow's `write` step; derives installed-skill exclusion lists. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                                                                 |
+| `vscode-extensions`                    | `src/modules/synchronization/modules/vscode-extensions`          | `guard-code` and `test-devcontainer.sh`; derives both devcontainers' extension lists. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                                                         |
+| `catalog-manifests`                    | `src/modules/synchronization/modules/catalog-manifests`          | `guard-code`; a check, no `write`: every workspace manifest pins externals as `catalog:` and internals as `workspace:*`. Collects every violation; has no `fixCommand`                                                                                                                                          |
+| `lockfile`                             | `src/modules/synchronization/modules/lockfile`                   | `guard-code` and lint-staged; a check, no `write`: runs `pnpm install --frozen-lockfile --lockfile-only`. Sets `fixCommand` to `pnpm install`                                                                                                                                                                   |
+| `readme-projects`                      | `src/modules/synchronization/modules/readme-projects`            | `guard-code`; a check, no `write`: the root README links every workspace project. Its `fixCommand` says to add a row for each missing project                                                                                                                                                                   |
+| `skill-descriptions`                   | `src/modules/synchronization/modules/skill-descriptions`         | `guard-code`; a check, no `write`: every skill this repository authors (a skills folder the lockfile does not name, or a locked skill sourced here, read at its source) keeps its description within 128 words, and all of them within 12,288 characters. Its `fixCommand` says to shorten them                 |
+| `agent-instructions`                   | `src/modules/synchronization/modules/agent-instructions`         | `guard-code` and the release workflow's `write` step; derives a `CLAUDE.md` symlink beside every project's `AGENTS.md`, because Claude Code loads `CLAUDE.md` and not `AGENTS.md`. `check` by default, `write` creates the links and never replaces a regular file; it sets `fixCommand` to its `:write` target |
+| `synchronization` (the `start` target) | `src/modules/synchronization`                                    | a human at a terminal: `nx run integration:start` runs the eleven checks and derivations above in one process, `check` by default, or `:write`. The CLI name is internal: the conformetry template fixes it, and `conformetry-validate` requires it                                                             |
 
 `setup-codebase` and `cleanup-codebase` run the services of the commands above
 themselves, in a command of their own rather than a service: one more layer
@@ -184,199 +139,3 @@ project needs no dependency on `@nx/devkit`.
 
 Steps that run before `pnpm install` cannot live here, because a command needs
 the installed dependencies.
-
-## Development
-
-### Adding Business Logic
-
-1. **Add domain command modules** — create `src/modules/<domain>/` with a NestJS module, command, service, types, and constants.
-2. **Register in root module** — import the new module in `integration.module.ts`.
-3. **Validate env vars** — extend `environmentSchema` in `integration.constants.ts` with all required environment variables.
-
-### Logging
-
-`LoggerService` and `LoggerModule` come from `@codebase/observability` — this project does not define its own logger. Add `"@codebase/observability": "workspace:*"` to `dependencies`, then import `LoggerModule` once in the root module; it is `@Global()`, so feature modules inject `LoggerService` without importing it.
-
-`LoggerService` is `Scope.TRANSIENT` — each injecting class gets its own instance. Always call `setContext` in the constructor:
-
-```ts
-constructor(private readonly logger: LoggerService) {
-  super();
-  this.logger.setContext(MyService.name);
-}
-```
-
-Outputs structured JSON in production (`NODE_ENV=production`) and pretty-printed logs in development.
-
-### Key Commands
-
-Always prefer running tasks through Nx rather than calling the underlying tools directly.
-
-```bash
-nx run integration:start           # Run the command-line application
-nx run integration:typecheck-code,lint-code,format-code,deprecate-code,guard-code   # Every static check, in one graph
-nx run integration:typecheck       # tsc --noEmit
-nx run integration:oxfmt           # Formatting
-```
-
-### Testing
-
-Follow the codebase's strict three-tier testing strategy. Co-locate test files with the source they test.
-
-```bash
-nx run integration:vitest:unit          # Fast (<100ms) — pure logic, mocked DI
-nx run integration:vitest:integration   # Moderate (1-2s) — real database/API I/O
-nx run integration:vitest:end-to-end    # Slow (30-60s) — full CLI execution
-```
-
-| Tier        | File pattern            | What to test                                     |
-| ----------- | ----------------------- | ------------------------------------------------ |
-| Unit        | `*.unit.test.ts`        | Pure functions, service methods with mocked deps |
-| Integration | `*.integration.test.ts` | Database queries, external API clients           |
-| End-to-end  | `*.end-to-end.test.ts`  | Full `CommandFactory.run()` execution            |
-
-See the [testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
-
-## Writing Modules
-
-Use the generator to scaffold new domain modules, then implement the service:
-
-```bash
-nx g conformetry:nestjs-service-module --name=<domain>
-```
-
-This creates five files in `src/modules/<domain>/`:
-
-| File                            | Purpose                                                 |
-| ------------------------------- | ------------------------------------------------------- |
-| `<domain>.module.ts`            | Declares providers, imports, and exports                |
-| `<domain>.service.ts`           | Business logic — the only place you write domain code   |
-| `<domain>.constants.ts`         | Regex, enums, static config — never inline magic values |
-| `<domain>.types.ts`             | TypeScript types scoped to this module                  |
-| `<domain>.service.unit.test.ts` | Unit tests bootstrapped with `Test.createTestingModule` |
-
-### Module file
-
-Register the service in both `providers` and `exports` so consumers can inject it:
-
-```ts
-@Module({
-  controllers: [],
-  exports: [MyDomainService],
-  imports: [TypeOrmModule.forFeature([MyEntity]), LoggerModule],
-  providers: [MyDomainService],
-})
-export class MyDomainModule {}
-```
-
-Add a JSDoc comment on the module class describing what domain it owns.
-
-### Service file
-
-Follow the section-comment layout from the template — it keeps large services scannable:
-
-```ts
-@Injectable()
-export class MyDomainService {
-  // 🏗 Dependency Injection
-  constructor(
-    @InjectRepository(MyEntity)
-    private readonly repo: Repository<MyEntity>,
-    private readonly logger: LoggerService,
-  ) {
-    this.logger.setContext(MyDomainService.name);
-  }
-
-  // 🔐 Private Fields
-
-  // 🔑 Public Fields
-
-  // 🔏 Private Methods
-
-  // 🌎 Public Methods
-}
-```
-
-Key rules:
-
-- **Call `setContext` in every constructor** — always use `MyClass.name`, never a string literal.
-- **Inject `LoggerService` as the last constructor parameter** (after repository/domain deps).
-- **Private first** — keep internal helpers in the `🔏 Private Methods` section, expose only what callers need under `🌎 Public Methods`.
-- **`readonly` everything in the constructor** — all injected deps must be `private readonly`.
-- **One service per module** — if a service grows too large, extract a sub-domain into its own module.
-
-### Constants file
-
-Move all inline values to `.constants.ts` to keep services readable:
-
-```ts
-// ♟️ Constants
-export const MY_SKIP_REGEX = /(alternative)|(archaic)|(synonym)/i;
-export const DEFAULT_PAGE_SIZE = 100;
-```
-
-### Types file
-
-Put all module-local TypeScript types and interfaces in `.types.ts`:
-
-```ts
-// 🏷️ Types
-export interface ParsedEntry {
-  word: string;
-  partOfSpeech: string;
-}
-```
-
-Do not re-export types from `index.ts` unless they are part of the public API consumed by other modules.
-
-### Registering in the root module
-
-After generating a module, import it in `integration.module.ts`:
-
-```ts
-@Module({
-  imports: [
-    ConfigModule.forRoot({ ... }),
-    LoggerModule,
-    MyDomainModule,   // ← add here
-  ],
-  providers: [],
-})
-export class MainModule {}
-```
-
-### Conformetry validation
-
-Conformetry validation measures generated and existing module structures against the templates they came from. It runs for one project, or for every project at once.
-
-```bash
-pnpm nx run-many --targets=conformetry-validate
-```
-
-## Best Practices
-
-- **Never** put business logic in `integration.main.ts` — it bootstraps `CommandFactory` only.
-- **One command per class** — split sub-commands into separate `CommandRunner` subclasses.
-- **Validate at the boundary** — all env vars must be declared in `environmentSchema`; access via `ConfigService`, not `process.env`.
-- **Type imports** — use `import { type Foo }` for type-only imports (enforced by ESLint).
-- **No `any` types** — use `unknown` or proper typing; strict mode is enabled.
-
-See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md) for strict mode patterns.
-
-## Troubleshooting
-
-- **Command not found at runtime** — ensure the command class is listed in `providers` of its module and the module is imported by the root module.
-- **Dependency injection failure** — verify the service is `@Injectable()`, exported from its module, and that module is imported by the consuming module.
-- **Unrecognized CLI flag** — check that `@Option()` decorators in the command class exactly match the flag names passed.
-- **Env var validation error on startup** — add the missing variable to `environmentSchema` in `src/integration.constants.ts` and to `configuration/.env.default`.
-
-See the [triage-integration skill](../../.agents/skills/triage-integration/SKILL.md) for lint and git hook failures.
-
-## Key Files
-
-- [src/integration.main.ts](src/integration.main.ts): Application bootstrap
-- [src/integration.module.ts](src/integration.module.ts): Root NestJS module
-- [src/integration.constants.ts](src/integration.constants.ts): `environmentSchema` (Zod)
-- `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
-- [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
-- [configuration/.env.default](configuration/.env.default): Environment variable template

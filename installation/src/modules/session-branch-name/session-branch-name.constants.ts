@@ -19,4 +19,4 @@ export const CURRENT_BRANCH_ARGUMENTS = ["branch", "--show-current"];
 
 /** Said after the configured error, so the agent fixes it first. */
 export const RENAME_BRANCH_DIRECTIVE =
-  "🚨 Invoke the rename-branch skill to rename this branch before doing anything else.";
+  "🚨 Invoke the checkout-branch skill to rename this branch before doing anything else.";

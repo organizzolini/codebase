@@ -1,58 +1,39 @@
 ---
 name: create-pull-request
-description: Create and manage pull requests following this codebase's conventions. Use this skill when creating PRs, opening PRs for review, writing PR descriptions, or asked about PR workflows and best practices.
+description: "Create or update a pull request to this codebase's conventions: the title and its allowed types and scopes, the four-section body, labels, assignee, and the issue it closes. Use when opening a pull request, when its description no longer matches the branch, or when asked about pull request rules."
 license: MIT
 ---
 
-# Pull Request Conventions
+# Create Pull Request
 
-This skill teaches how to create and manage pull requests for this codebase. Follow these conventions for consistent, reviewable PRs that pass CI validation.
-
-## When to Use This Skill
-
-- Creating a new pull request
-- Writing PR titles and descriptions
-- Preparing changes for review
-- Understanding PR workflows and requirements
-- Linking PRs to issues
+The single owner of this repository's pull request conventions: what a title, body, label set, and issue link must be, and how to open a pull request or bring an existing one back in line with its branch. [submit-changes](../submit-changes/SKILL.md) runs the whole branch-to-pull-request pipeline and calls this skill for the pull request itself; [ship-changes](../ship-changes/SKILL.md) takes it from open to merged.
 
 ## Every PR Closes an Issue
 
-Every pull request must close or reference a GitHub issue through GitHub's own link: a closing keyword in the body or the Development sidebar. Use the [link-issue skill](../link-issue/SKILL.md) to find the planned ticket, file one before starting ad-hoc work, or backfill one for work already done. Put `Closes #N` as the first bullet of 🔗 Related, then confirm GitHub recorded it:
+Every pull request must close or reference a GitHub issue through GitHub's own link: a closing keyword in the body or the Development sidebar. Use the [link-issue skill](../link-issue/SKILL.md) to find the planned ticket, file one before starting ad-hoc work, or backfill one for work already done. Put `Closes #N` as the first bullet of 🔗 Related.
 
-```bash
-gh api repos/{owner}/{repo}/pulls/<number> --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'
-```
+| Keyword                                | Effect                                                        |
+| -------------------------------------- | ------------------------------------------------------------- |
+| `Closes #N`, `Fixes #N`, `Resolves #N` | Links the issue and closes it when the PR merges              |
+| `Related to #N`                        | Mentions only; GitHub records no link, so it does not suffice |
 
 The issue holds the why, the acceptance criteria, and the discussion; the pull request holds what changed and how it was verified. Do not copy the issue's requirements into the description.
 
-## PR Title Format
-
-PR titles **must** follow the same format as commit messages:
+## Title
 
 ```text
 <type>(<scope>): <gitmoji> <subject>
 ```
 
-Keep titles under 128 characters, and target about 115 or less so merge-queue
-suffixes do not push the queued commit subject over the header limit.
+The title follows the commit format in [commit-code](../commit-code/SKILL.md), with a type and scopes from the [tables below](#allowed-types-and-scopes). On top of that:
 
-**Name at most 3 scopes.** Every scope adds its name plus a comma to the header,
-and a long list is what pushes a title over 128 characters: a six-scope title
-reached 135 characters and failed commitlint. The Comply check
-(`compliance pull-request`) rejects a fourth scope outright, even when the
-header would fit. When the commits span more, name the three that carry most of
-the work; the release-significance check needs only one scope the commits use,
-not every one. Keep the labels in step: one `scope:*` label per scope named.
+- **Length**: under 128 characters, and about 115 or less, so a merge-queue suffix does not push the queued commit subject over the limit.
+- **At most 3 scopes**, `type(scope-a,scope-b): …`, the ones that carry most of the commits. Comply rejects a fourth even when the header fits. A branch that spans projects takes a multi-scope title; that alone is never a reason to split. See [One Pull Request by Default](../../../AGENTS.md#one-pull-request-by-default).
+- **Release significance**: the repository squash-merges with the title as the commit message, so the title is the only thing semantic-release reads. Its type must be at least as significant as the most significant commit on the branch, and it must name at least one scope those commits use ([Release Significance](../commit-code/SKILL.md#release-significance)).
 
-### Structure Rules
+### Allowed Types and Scopes
 
-1. **Type**: Required, lowercase, from [allowed types](../../../configuration/repository/conventional.config.cjs)
-2. **Scope**: Required, lowercase, from [allowed scopes](../../../configuration/repository/conventional.config.cjs)
-3. **Gitmoji**: Required, emoji at start of subject
-4. **Subject**: Required, lowercase, imperative mood, no period
-
-### Valid Types
+Generated from [conventional.config.cjs](../../../configuration/repository/conventional.config.cjs) by `nx run integration:conventional-config:write`; edit the config, never the tables.
 
 <!-- types-start -->
 
@@ -71,8 +52,6 @@ not every one. Keep the labels in step: one `scope:*` label per scope named.
 | `revert` | Reverts a previous commit |
 
 <!-- types-end -->
-
-### Valid Scopes
 
 <!-- scopes-start -->
 
@@ -112,34 +91,9 @@ not every one. Keep the labels in step: one `scope:*` label per scope named.
 
 <!-- scopes-end -->
 
-### Examples
+## Description
 
-✅ **Good PR titles:**
-
-```text
-feat(lexico): ✨ add user profile page
-fix(caelundas): 🐛 correct aspect angle calculation
-docs(codebase): 📝 update contributing guide
-chore(dependencies): ⬆️ upgrade react to v19
-refactor(components): ♻️ simplify button variants
-```
-
-❌ **Bad PR titles:**
-
-```text
-feat(lexico): add user profile page           # Missing gitmoji
-feat(lexico): ✨ Added profile page.           # Wrong tense, period
-Add new feature                                # Missing type, scope, gitmoji
-fix: 🐛 fix bug                               # Missing scope
-```
-
-See [commit-code skill](../commit-code/SKILL.md) for complete formatting rules.
-
-## PR Description
-
-Write clear, comprehensive descriptions that help reviewers understand changes. The [PR template](../../../.github/PULL_REQUEST_TEMPLATE.md) provides the standard structure.
-
-### Recommended Structure
+The [PR template](../../../.github/PULL_REQUEST_TEMPLATE.md) is the structure, mirrored here by the `pull-request-template` synchronizer:
 
 <!-- pr-template-start -->
 
@@ -174,408 +128,79 @@ Write clear, comprehensive descriptions that help reviewers understand changes. 
 
 > ⚠️ **Strict Validation:** CI validates that all 4 headings (`## 🌰 Summary`, `## 📝 Details`, `## 🧪 Testing`, `## 🔗 Related`) are present and non-empty, that each holds only the shape in the table above and stays within its word limit, and that no HTML template comments (`<!-- ... -->`) remain. Words are counted as `wc -w` would. In Summary, Details, and Testing, a paragraph, heading, or code block sitting beside the list fails the section: indent a code block under its Testing step instead. Details may use `-`, `*`, or `+`, but only one of them, as markdownlint's MD004 requires. Related only has to open with its `-` list; an attribution line or any other closing content may follow. The `compliance pull-request` check also reads GitHub's issue link. A pull request with no tracking issue gets one from the [link-issue skill](../link-issue/SKILL.md), never a documentation link in its place.
 
-## Step-by-Step Workflow
+Write each section from **facts in the diff** only — no speculation or plans. Summary synthesizes the purpose; Details names each meaningful change, present tense, with file or component names, including any departure from the issue; Testing lists the `nx run <project>:<target>` commands and manual steps that verify it. [examples.md](references/examples.md) has a feature, a fix, a docs change, and a dependency upgrade.
 
-### 1. Ensure an Issue, Then Create Feature Branch
+## Labels and Assignee
 
-Settle the issue first with the [link-issue skill](../link-issue/SKILL.md): use the planned ticket, or file one before starting. Then create the branch; its name must follow conventions. See [checkout-branch skill](../checkout-branch/SKILL.md).
+Comply checks that labels agree with the title: exactly one `type:*` label matching its type, one `scope:*` label per scope it names (no extras), exactly one `source:*` label (`source:agent` when an agent opens it, `source:human` for a person), and no `do-not-merge`. The pull request also needs an assignee. Set all of it at creation rather than leaving the reconciliation step to backfill it; [triage-integration](../triage-integration/SKILL.md) covers the full label vocabulary and each metadata failure.
 
-```bash
-# Create branch from main
-git checkout main
-git pull origin main
-git checkout -b feat/lexico-user-profile
-```
+## Create a Pull Request
 
-### 2. Make Changes and Commit
-
-Commits must follow conventions. See [commit-code skill](../commit-code/SKILL.md).
-
-```bash
-# Stage and commit changes
-git add .
-git commit -m "feat(lexico): ✨ add user profile component"
-```
-
-### 3. Push Branch
-
-```bash
-git push -u origin feat/lexico-user-profile
-```
-
-### 4. Create Pull Request
-
-#### Validate PR Body Locally (Pre-flight Check)
-
-Before opening the pull request, validate the generated markdown body against repository rules:
-
-````bash
-cat << 'EOF' > /tmp/pr_body.md
-## 🌰 Summary
-
-Adds a user profile page where users can view and edit their information.
-
-## 📝 Details
-
-- Add UserProfile component
-- Add profile API endpoint
-- Add profile route to router
-
-## 🧪 Testing
-
-1. Run the unit tests:
+1. **Settle the issue** with [link-issue](../link-issue/SKILL.md), and make sure the branch is pushed and named per [checkout-branch](../checkout-branch/SKILL.md).
+2. **Validate the work** with [validate-code](../validate-code/SKILL.md) — the five targets and the quality gates.
+3. **Draft the body** to a file:
 
    ```bash
-   nx run lexico-web:vitest
+   cat << 'EOF' > /tmp/pr_body.md
+   <the four sections>
+   EOF
    ```
 
-2. Run `nx run lexico-web:start` and navigate to `/profile`.
+4. **Open it, then set labels and the assignee.** `gh pr create` runs GraphQL, which Claude Code sessions block, so use [repo-scoped REST](../../../documentation/agents/issue-tracker.md#repo-scoped-rest-instead-of-graphql):
 
-## 🔗 Related
+   ```bash
+   pr_number="$(gh api repos/{owner}/{repo}/pulls \
+     -f title="<type>(<scope>): <gitmoji> <subject>" \
+     -F body=@/tmp/pr_body.md -f head=<branch> -f base=main --jq .number)"
+   gh api -X POST "repos/{owner}/{repo}/issues/${pr_number}/labels" \
+     -f 'labels[]=type:<type>' -f 'labels[]=scope:<scope>' -f 'labels[]=source:agent'
+   gh api -X POST "repos/{owner}/{repo}/issues/${pr_number}/assignees" \
+     -f "assignees[]=$(gh api user --jq .login)"
+   rm /tmp/pr_body.md
+   ```
 
-- Closes #123
-EOF
-````
+   Repeat `-f 'labels[]=scope:<name>'` for each scope the title names. A cloud session with no `gh` uses the GitHub MCP tools: `create_pull_request`, then `issue_write` (`method: update`, same number) for `assignees` (from `get_me`) and `labels`, since `create_pull_request` takes neither.
 
-#### Using repo-scoped REST (preferred)
+5. **Check it.** Run the compliance check (read-only) and fix what it reports, then confirm the issue link and metadata landed — GitHub silently drops a mistyped label:
 
-`gh pr create` runs GraphQL, which Claude Code sessions block, so create the pull request through [repo-scoped REST](../../../documentation/agents/issue-tracker.md#repo-scoped-rest-instead-of-graphql) instead. It works everywhere:
+   ```bash
+   NODE_OPTIONS='' node --import @swc-node/register/esm-register compliance/src/compliance.main.ts pull-request "${pr_number}"
+   gh api repos/{owner}/{repo}/pulls/"${pr_number}" --jq '{labels: [.labels[].name], assignees: [.assignees[].login]}'
+   gh api repos/{owner}/{repo}/pulls/"${pr_number}" --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'
+   ```
 
-```bash
-pr_number="$(gh api repos/{owner}/{repo}/pulls \
-  -f title="feat(lexico): ✨ add user profile page" \
-  -F body=@/tmp/pr_body.md \
-  -f head=<branch> \
-  -f base=main \
-  --jq .number)"
-gh api -X POST "repos/{owner}/{repo}/issues/${pr_number}/labels" \
-  -f 'labels[]=type:feat' -f 'labels[]=scope:lexico' -f 'labels[]=source:agent'
-gh api -X POST "repos/{owner}/{repo}/issues/${pr_number}/assignees" \
-  -f "assignees[]=$(gh api user --jq .login)"
-rm /tmp/pr_body.md
-```
+   An empty last result means the link is missing: fix the keyword, or, for a stacked pull request whose base is not `main`, add the issue under Development in the sidebar (see [link-issue](../link-issue/SKILL.md#link-it)).
 
-#### Using GitHub MCP tools (cloud sessions)
+**Drafts**: add `-F draft=true` to open one. Continuous Integration skips drafts, so mark it ready before expecting checks: `gh api -X POST repos/{owner}/{repo}/pulls/<number>/ccr/ready_for_review` in a Claude Code session, `gh pr ready <number>` elsewhere.
 
-Claude Cloud sessions have no `gh`. Create the pull request with `create_pull_request`, then set
-the assignee and labels with `issue_write` (`method: update`, same issue number), because
-`create_pull_request` takes neither:
+## Update an Existing Pull Request
 
-- `assignees`: the session's user, from `get_me`
-- `labels`: `type:<type>`, `scope:<scope>` (one per scope), and `source:agent`
+Use when the title or description no longer matches the branch — after significant changes, a change of scope, or a reviewer asking for clarity.
 
-Either way, check `closingIssuesReferences` once the pull request exists (see [Every PR Closes an Issue](#every-pr-closes-an-issue)).
+1. **Find it**: `gh api "repos/{owner}/{repo}/pulls?head={owner}:$(git branch --show-current)&state=open" --jq '.[0] | {number, title, body}'`. No pull request means [Create a Pull Request](#create-a-pull-request) instead.
+2. **Read the whole branch**: `git log origin/main..HEAD --oneline` and `git diff origin/main..HEAD --stat`, then the diff itself.
+3. **Keep the issue link.** Note the `Closes #N` the body already carries and keep it as the first Related bullet; with none, settle one with [link-issue](../link-issue/SKILL.md).
+4. **Rewrite the title and body** to the rules above, from the diff alone. Recheck the title's release significance against every commit and its scopes against the labels.
+5. **Apply** with `gh api -X PATCH repos/{owner}/{repo}/pulls/<number> -f title="…" -F body=@/tmp/pr_body.md` (or `update_pull_request` over MCP), and update the `type:*` and `scope:*` labels if the title changed.
+6. **Verify** as in step 5 of creating one. A body that no longer prints `Closes #N` lost its link in the rewrite; restore it.
 
-### 5. Address Review Feedback
+## Keep the Branch Current
 
-```bash
-# Make additional commits for feedback
-git commit -m "fix(lexico): 🐛 address review feedback"
-git push
-```
-
-### 6. Merge PR
-
-After approval, merge using the GitHub UI or CLI:
-
-```bash
-gh pr merge --squash --delete-branch
-```
-
-## CI Requirements
-
-All PRs must pass these checks before merging:
-
-| Check                | Command                                                | Description                                                                                                                      |
-| -------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| Branch Name          | `validate-branch-name`                                 | Branch follows naming conventions                                                                                                |
-| PR Title             | `commitlint`, `compliance pull-request`                | Title follows commit message format and names at most 3 scopes                                                                   |
-| PR Body              | `compliance pull-request`                              | Required sections: 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related, each in its shape and within its word limit                   |
-| Issue Link           | `compliance pull-request`                              | Pull request closes or references an issue (`closingIssuesReferences` is not empty)                                              |
-| Release Significance | `compliance pull-request`                              | Title's type is at least as significant as the most significant commit, and the title names at least one scope its commits use   |
-| Lint                 | `nx affected --target=lint-code`                       | Every static check: ESLint, oxlint, oxfmt, typecheck, spell-check, knip, and more                                                |
-| Test                 | `nx affected --target=vitest --configuration=coverage` | Unit and integration tests against the coverage gates                                                                            |
-
-There is no `lint`, `format`, or `clean` target in this workspace. `nx affected
---target=lint` exits 0 printing "No tasks were run", so it is a check that
-passes without checking anything — always name a real target.
-
-Run locally before pushing:
-
-```bash
-# Run all checks on affected projects
-nx affected --target=lint-code --configuration=write --base=main
-nx affected --target=lint-code --configuration=check --base=main
-nx affected --target=vitest --configuration=coverage --base=main
-```
-
-## Draft PRs
-
-Use draft PRs for work in progress:
-
-```bash
-# Create draft PR
-gh api repos/{owner}/{repo}/pulls -F draft=true -f head=<branch> -f base=main \
-  -f title="feat(lexico): ✨ [WIP] add user profile" -f body="..."
-
-# Mark ready for review when complete (Claude Code session; elsewhere `gh pr ready`)
-gh api -X POST repos/{owner}/{repo}/pulls/<number>/ccr/ready_for_review
-```
-
-## Linking Issues and Documentation
-
-Reference the issue and relevant documentation in the PR description:
-
-### Issues
-
-| Keyword           | Effect                                                        |
-| ----------------- | ------------------------------------------------------------- |
-| `Closes #123`     | Links the issue and closes it when the PR merges              |
-| `Fixes #123`      | Links the issue and closes it when the PR merges              |
-| `Resolves #123`   | Links the issue and closes it when the PR merges              |
-| `Related to #123` | Mentions only; GitHub records no link, so it does not suffice |
-
-Use a closing keyword for the one issue this PR finishes. See the [link-issue skill](../link-issue/SKILL.md) for choosing it and for stacked pull requests.
-
-### Documentation
-
-Include relevant links to help reviewers understand context:
-
-- Internal docs: links to AGENTS.md, SKILL.md, planning files, or ADRs
-- External docs: library documentation, RFCs, specifications
-- Related PRs: links to dependent or prerequisite pull requests
-
-## Assignees
-
-Always assign PRs to yourself:
-
-```bash
-gh api -X POST repos/{owner}/{repo}/issues/<number>/assignees -f "assignees[]=$(gh api user --jq .login)"
-```
-
-## Labels
-
-Comply checks that labels agree with the title: exactly one `type:*` label matching the title's type, one `scope:*` label per scope named in the title (no extras), exactly one `source:*` label (`source:agent` or `source:human`) declaring who opened the pull request, and no `do-not-merge` label. Set them at creation time rather than waiting for the reconciliation step to backfill them:
-
-```bash
-gh api -X POST repos/{owner}/{repo}/issues/<number>/labels \
-  -f 'labels[]=type:feat' -f 'labels[]=scope:lexico' -f 'labels[]=source:human'
-```
-
-See the [triage-integration skill](../triage-integration/SKILL.md) for the full label vocabulary, the reconciliation step that creates missing labels on `opened`/`reopened`, and how to fix each metadata failure.
-
-## Review Requests
-
-Request reviews from appropriate team members:
-
-```bash
-gh api -X POST repos/{owner}/{repo}/pulls/<number>/requested_reviewers -f "reviewers[]=JimmyPaolini"
-```
-
-## Updating PR Branch
-
-Keep your branch up to date with main:
-
-If you plan to rebase and force-push, run [backup-code](../backup-code/SKILL.md) first to create a recoverable checkpoint.
-
-```bash
-# Update from main
-git fetch origin main
-git rebase origin/main
-git push --force-with-lease
-```
-
-Or use GitHub's "Update branch" button in the PR UI.
-
-## Squash Merging
-
-This codebase uses **squash merging** by default:
-
-- All commits in the PR become a single commit on main
-- PR title becomes the commit message
-- Keep PR title clean and following conventions
-- **The title is the only thing semantic-release reads** — every commit's own type is discarded once squashed. Pick the title's type and scope overlap to match the branch's work, while keeping the title at least as significant as the most significant commit; see [commit-code's Release Significance section](../commit-code/SKILL.md#release-significance) for the type-to-bump mapping and the [release-significance check](../../../compliance/src/modules/pull-request/pull-request-release-significance.service.ts) that enforces it
-
-### Scope Selection: Multi-Scope Title vs Split PR
-
-Prefer one larger pull request over several smaller ones: the single maintainer
-reviews and manually tests it as one change. See
-[One Pull Request by Default](../../../AGENTS.md#one-pull-request-by-default).
-
-- Use one scope when every commit is in one project or concern.
-- Use a multi-scope title (`type(scope-a,scope-b): ...`) whenever the commits
-  span projects — that alone is no reason to split — but name **at most 3**
-  scopes. Choose the three that carry most of the commits.
-- Split only for a mechanical reason: one part must deploy before the rest can
-  merge, or the user asked. Needing more than three scopes is not one.
-- Before opening, verify that the title names at least one scope its commits
-  use; the release-significance check requires that, not every scope.
+Merge `origin/main` into the branch rather than rebasing: a rebase rewrites signed commits and needs a force push. Take a [backup-code](../backup-code/SKILL.md) snapshot first, and follow [ship-changes](../ship-changes/SKILL.md#2-conflicts) for conflicts. A stacked branch is the exception, kept linear with [gh-stack](../gh-stack/SKILL.md).
 
 ## Pre-Flight Checklist
 
-Before creating the PR, verify:
+- [ ] The branch follows `<type>/<scope>-<description>` and is pushed
+- [ ] The title follows `<type>(<scope>): <gitmoji> <subject>`: ≤ 128 characters (target ≤ 115), at most 3 scopes, imperative and lowercase after the gitmoji
+- [ ] The title's type is at least as significant as every commit, and names at least one scope they use
+- [ ] The body has all four sections in their shapes and limits, with no template comments left
+- [ ] Related opens with `Closes #N` for an issue that exists, and GitHub recorded the link
+- [ ] One `type:*`, one `scope:*` per title scope, one `source:*` label, and an assignee
+- [ ] [validate-code](../validate-code/SKILL.md) passes, and the compliance check reports nothing
 
-- [ ] Branch name follows `<type>/<scope>-<description>` format
-- [ ] All changes are committed and pushed to remote
-- [ ] Title follows `<type>(<scope>): <gitmoji> <subject>` format (max 128 chars, target ≤ 115, at most 3 scopes)
-- [ ] Subject uses imperative mood and lowercase after gitmoji
-- [ ] Description includes Summary (one paragraph, ≤ 48 words), Details (bullets only, one marker, ≤ 512 words), and Testing (an ordered list only) sections
-- [ ] An issue exists for the work ([link-issue](../link-issue/SKILL.md)), and Related opens with a `-` list whose first bullet is `Closes #N`
-- [ ] The body's closing keyword names that issue once the PR is open: `gh api repos/{owner}/{repo}/pulls/<number> --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'`
-- [ ] The title's type and scopes are at least as release-significant as every commit on the branch — see [Release Significance](../commit-code/SKILL.md#release-significance)
-- [ ] Local CI checks pass: `nx affected --target=lint-code --configuration=check --base=main && nx affected --target=vitest --configuration=coverage --base=main`
+## References
 
-## Common Patterns
-
-### Feature PR
-
-```text
-Title: feat(lexico): ✨ add dictionary search autocomplete
-
-## 🌰 Summary
-
-Adds autocomplete suggestions to the dictionary search input.
-
-## 📝 Details
-
-- Add SearchAutocomplete component
-- Integrate with search API for suggestions
-- Add keyboard navigation support
-- Add loading and empty states
-
-## 🧪 Testing
-
-1. Run `nx run lexico-web:vitest`.
-2. Run `nx run lexico-web:start`, navigate to the search page, and type a query.
-
-## 🔗 Related
-
-- Closes #234
-```
-
-### Bug Fix PR
-
-````text
-Title: fix(caelundas): 🐛 correct timezone offset in ephemeris
-
-## 🌰 Summary
-
-Fixes incorrect timezone handling for ephemeris calculations near DST boundaries.
-
-## 📝 Details
-
-- Use moment-timezone for DST-aware calculations
-- Add edge case handling for DST transitions
-- Add regression tests
-
-## 🧪 Testing
-
-1. Run both suites:
-
-   ```bash
-   nx run caelundas-cli:vitest:unit
-   nx run caelundas-cli:vitest:integration
-   ```
-
-## 🔗 Related
-
-- Fixes #456
-````
-
-### Documentation PR
-
-```text
-Title: docs(codebase): 📝 add contributing guide
-
-## 🌰 Summary
-
-Adds comprehensive CONTRIBUTING.md with setup instructions and guidelines.
-
-## 📝 Details
-
-- Add CONTRIBUTING.md
-- Update README.md with link to contributing guide
-- Add development setup section
-
-## 🧪 Testing
-
-1. Review the documentation changes in the PR diff.
-
-## 🔗 Related
-
-- Closes #345
-- [CONTRIBUTING.md](.github/CONTRIBUTING.md), the guide this adds.
-```
-
-### Dependency Update PR
-
-```text
-Title: chore(dependencies): ⬆️ upgrade tanstack router to v1.50
-
-## 🌰 Summary
-
-Updates TanStack Router to latest version with bug fixes.
-
-## 📝 Details
-
-- Upgrade @tanstack/react-router from 1.45.0 to 1.50.0
-- Update peer dependencies
-- Fix breaking changes in route definitions
-
-## 🧪 Testing
-
-1. Run `nx run lexico-web:vitest`.
-2. Run `nx run lexico-web:start` and confirm every route works as before.
-
-## 🔗 Related
-
-- Closes #567
-- [TanStack Router releases](https://github.com/TanStack/router/releases)
-```
-
-## Troubleshooting
-
-| Issue             | Cause                                  | Solution                                                                                                   |
-| ----------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| CI failing        | Code issues                            | Run lint, typecheck, test locally                                                                          |
-| Merge conflicts   | Branch out of date                     | Rebase on main                                                                                             |
-| PR title rejected | Format incorrect                       | Follow commit message conventions                                                                          |
-| PR body rejected  | Missing required sections              | Add ## 🌰 Summary, ## 📝 Details, ## 🧪 Testing, ## 🔗 Related sections                                    |
-| PR body rejected  | Section in the wrong shape or too long | Match the [Description Guidelines](#description-guidelines) table; indent code blocks under a Testing step |
-| No linked issue   | No closing keyword, or no issue yet    | File or find one with [link-issue](../link-issue/SKILL.md); make `Closes #N` the first Related bullet      |
-| Tests failing     | Missing dependencies                   | Run `pnpm install`                                                                                         |
-| Typecheck errors  | Type issues                            | Fix TypeScript errors                                                                                      |
-
-If a rebase or force-push update goes wrong, use [restore-code](../restore-code/SKILL.md) to recover from your backup artifact.
-
-## Quick Reference
-
-```bash
-# Create branch
-git checkout -b <type>/<scope>-<description>
-
-# Create PR through repo-scoped REST (see "Using repo-scoped REST" above)
-gh api repos/{owner}/{repo}/pulls -f title="<type>(<scope>): <gitmoji> <subject>" -f head=<branch> -f base=main -f body="..."
-
-# Run CI checks locally
-nx affected --target=lint-code --configuration=check --base=main &&
-  nx affected --target=vitest --configuration=coverage --base=main
-
-# Update branch
-git fetch origin main && git rebase origin/main && git push --force-with-lease
-
-# Merge PR
-gh pr merge --squash --delete-branch
-```
-
-## Resources
-
-- [PR template](../../../.github/PULL_REQUEST_TEMPLATE.md) — Default PR description template
-- [link-issue skill](../link-issue/SKILL.md) — Find, file, or backfill the issue every PR closes
-- [commit-code skill](../commit-code/SKILL.md) — Commit and PR title format
-- [checkout-branch skill](../checkout-branch/SKILL.md) — Branch naming conventions
-- [triage-integration skill](../triage-integration/SKILL.md) — Diagnosing failing CI checks on a PR
-- [backup-code](../backup-code/SKILL.md) — Safety checkpoint before history rewrite
-- [restore-code](../restore-code/SKILL.md) — Recovery workflow after failed branch update
-- [Conventional Commits](https://www.conventionalcommits.org/)
-- [Gitmoji](https://gitmoji.dev)
+- [examples.md](references/examples.md) — Example titles and bodies by kind of change
+- [ci-checks.md](references/ci-checks.md) — The checks every pull request must pass, and troubleshooting
+- [link-issue](../link-issue/SKILL.md) — Choosing, filing, or backfilling the issue
+- [commit-code](../commit-code/SKILL.md) — Title format, types, scopes, and release significance

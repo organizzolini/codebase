@@ -1,6 +1,6 @@
 ---
 name: write-typescript
-description: TypeScript coding conventions for this codebase. Use when writing or modifying TypeScript or TSX files, when TypeScript type errors appear, or when asked about strict mode, type imports, naming conventions, return types, the no-any rule, async functions, floating promises, exhaustive switches, readonly properties, non-null assertions, control-flow style, test typing patterns, Node fs Dirent mock typing, formatting with oxfmt, import group order, enforced alphabetical ordering, the three-parameter limit, or JSDoc on public APIs.
+description: "TypeScript conventions for this codebase: strict typing, naming and imports, formatting and ordering, control flow, error handling with Zod at boundaries, and size limits. Use when writing or changing TypeScript or TSX, or when a type or lint error appears."
 license: MIT
 ---
 
@@ -16,38 +16,31 @@ Use this skill when:
 - Fixing TypeScript compile or lint errors
 - Reviewing strict-mode type-safety issues
 - Standardizing naming, import style, or control-flow patterns
-- Writing strict typed tests (including `fs.readdirSync` Dirent mocks)
 
 ## References
 
 - [Strict typing](./references/strict-typing.md)
-: strict flags, explicit return types, `any` avoidance, `unknown`, promises, exhaustive switches.
+  : strict flags, explicit return types, `any` avoidance, `unknown`, promises, exhaustive switches.
 - [Naming and imports](./references/naming-and-imports.md)
-: identifier naming, abbreviation rules, file naming, type imports, NodeNext `.js` extensions.
+  : identifier naming, abbreviation rules, file naming, type imports, NodeNext `.js` extensions.
 - [Class and control flow](./references/class-and-control-flow.md)
-: readonly properties, braces, early returns, object shorthand, template literals.
-- [Error handling and tests](./references/errors-and-tests.md)
-: catch typing, guard-first test narrowing, Node Dirent mock typing pattern.
+  : readonly properties, braces, early returns, object shorthand, template literals.
+- [Error handling](./references/errors.md)
+  : Zod at boundaries, catch typing and narrowing, logging, and bounded retries. Test typing and mocks live in [write-tests](../write-tests/SKILL.md).
 - [Formatting and ordering](./references/formatting-and-ordering.md)
-: `oxfmt` settings, import groups, enforced alphabetical order, the 3-parameter
-limit, JSDoc on public APIs.
+  : `oxfmt` settings, import groups, enforced alphabetical order, the 3-parameter
+  limit, JSDoc on public APIs.
 - [Size limits](./references/size-limits.md)
-: file length, function length, block nesting depth, parameter limits, complexity, comment block sizes.
+  : file length, function length, block nesting depth, parameter limits, complexity, comment block sizes.
 
 ## Related Skills
 
-- [Handle error](../handle-errors/SKILL.md)
 - [Write comment](../write-comments/SKILL.md)
 - [Validate code](../validate-code/SKILL.md)
 
 ## Verification
 
-After TypeScript changes:
-
-```bash
-pnpm exec nx run <project>:lint-code --configuration=write
-pnpm exec nx run <project>:lint-code --configuration=check
-```
+After TypeScript changes, run the [validate-code skill](../validate-code/SKILL.md): `typecheck-code` covers `tsc` and type coverage, and `lint-code` covers ESLint and oxlint.
 
 ## Notes
 

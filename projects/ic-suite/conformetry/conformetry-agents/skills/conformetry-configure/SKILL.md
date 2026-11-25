@@ -1,6 +1,6 @@
 ---
 name: conformetry-configure
-description: Add or change a conformetry generator, and write the template it renders. Use when a needed generator does not exist yet; when editing a conformetry configuration file; when writing or changing files under a template directory; when choosing placeholders or naming-case variants; when a generated file came out with an empty value or an odd path segment; or when a conformetry command refuses to run because the emitted generator plugin is out of date.
+description: "Add or change a conformetry generator and the template it renders, with its placeholders and naming-case variants. Use when a needed generator does not exist, when editing a conformetry configuration or template, when generated output has an empty value or odd path, or when the emitted generator plugin is stale."
 license: MIT
 ---
 
@@ -17,15 +17,15 @@ a standard as much as a starting point.
 The configuration file default-exports an array, one entry per generator. Only
 two fields are required:
 
-| Field | Required | Meaning |
-| --- | --- | --- |
-| `name` | yes | How the generator is invoked |
-| `templatePath` | yes | Template folder, relative to the workspace root |
-| `inputs` | no | Values the template renders with, as JSON Schema fragments |
-| `instances` | no | Where this generator's output already lives |
-| `description` | no | Shown when generators are listed |
-| `hooks` | no | Functions that run before and after generation; see [Hooks](#hooks) |
-| `threshold` | no | Lowest conformance score this generator's instances may have, 0 to 1 |
+| Field          | Required | Meaning                                                              |
+| -------------- | -------- | -------------------------------------------------------------------- |
+| `name`         | yes      | How the generator is invoked                                         |
+| `templatePath` | yes      | Template folder, relative to the workspace root                      |
+| `inputs`       | no       | Values the template renders with, as JSON Schema fragments           |
+| `instances`    | no       | Where this generator's output already lives                          |
+| `description`  | no       | Shown when generators are listed                                     |
+| `hooks`        | no       | Functions that run before and after generation; see [Hooks](#hooks)  |
+| `threshold`    | no       | Lowest conformance score this generator's instances may have, 0 to 1 |
 
 Unknown keys are **rejected**, so a misspelled field — or `aliases`, which was
 removed outright — fails the load rather than quietly doing nothing. Check your
@@ -87,12 +87,12 @@ compares.
 Each input is a JSON Schema fragment. These keys are honored; anything else is
 ignored:
 
-| Key | Effect |
-| --- | --- |
-| `description` | The prompt text |
-| `enum` | Turns the prompt into a list, and restricts the value |
-| `minLength` / `maxLength` | Length validation |
-| `pattern` | Tested as a unicode regular expression |
+| Key                       | Effect                                                |
+| ------------------------- | ----------------------------------------------------- |
+| `description`             | The prompt text                                       |
+| `enum`                    | Turns the prompt into a list, and restricts the value |
+| `minLength` / `maxLength` | Length validation                                     |
+| `pattern`                 | Tested as a unicode regular expression                |
 
 **The two hosts disagree about whether inputs are required, and the
 configuration cannot change that.** The Nx plugin marks every declared input
@@ -152,12 +152,12 @@ and never `{{{field}}}`. Paths use the same braces as content: a file named
 
 Four naming-case variants are always available, derived from the name:
 
-| Placeholder | `search bar` becomes |
-| --- | --- |
-| `{{nameCamelCase}}` | `searchBar` |
-| `{{nameKebabCase}}` | `search-bar` |
-| `{{namePascalCase}}` | `SearchBar` |
-| `{{nameSnakeCase}}` | `search_bar` |
+| Placeholder          | `search bar` becomes |
+| -------------------- | -------------------- |
+| `{{nameCamelCase}}`  | `searchBar`          |
+| `{{nameKebabCase}}`  | `search-bar`         |
+| `{{namePascalCase}}` | `SearchBar`          |
+| `{{nameSnakeCase}}`  | `search_bar`         |
 
 Explicit inputs and configured substitutions are applied _last_, so they always
 beat a derived variant of the same name.
