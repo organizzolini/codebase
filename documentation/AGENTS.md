@@ -1,13 +1,15 @@
 # documentation
 
-Refreshes the repository documentation from code. Its one command, `refresh-documentation`, runs OpenWiki in the workspace root and writes the generated pages under `documentation/openwiki/`; the scheduled 🧑‍🏫 Refresh Documentation workflow runs it through `nx run documentation:refresh-documentation`. Never hand-edit the generated pages: change the source and let the next run regenerate them. Re-initializing OpenWiki is the exception, covered in `documentation/agents/openwiki.md`.
+Refreshes the repository documentation from code. Its one command, `refresh-documentation`, runs OpenWiki in the workspace root and writes the generated pages under `documentation/openwiki/`; the scheduled 🧑‍🏫 Refresh Documentation workflow runs it through `nx run documentation:refresh-documentation`.
 
-## Contents
+## What it holds
 
-The project's code is the `refresh-documentation` command under `src/modules/`. The folder around it is the repository's hand-written documentation:
-
-- `agents/` — the per-repository configuration the vendored skills read: the issue tracker, handoffs, and OpenWiki.
-- `development/` — guides for developing the toolchains, such as the callidescope configuration and the examples-package standard.
-- `documentation/` — the reference pages for callidescope, codependix, codometer, and coinagerie.
-- `planning/` and `research/` — dated notes. They record what was true when written and are not kept in step with the code.
 - `openwiki/` — the generated pages, reached through the root `openwiki` symlink.
+- `agents/` — the settings the vendored skills read: the issue tracker, handoffs, and OpenWiki.
+- `documentation/` — the generated toolchain reports for callidescope, codependix, codometer, and coinagerie.
+
+Plans and specs are issues and conventions are skills, so nothing else belongs here. Never hand-edit `openwiki/` or `documentation/documentation/`: change the source and let the next run regenerate them.
+
+## Rate limits
+
+A refresh makes up to 4 attempts. After a failure it waits the longer of its growing delay and the reset time OpenRouter reported, and it stops at once when that reset is more than 15 minutes away, as a daily limit is. Every attempt is listed in the job summary. See [`agents/openwiki.md`](agents/openwiki.md) for re-initializing the wiki, and `refresh-documentation.constants.ts` for the numbers.
