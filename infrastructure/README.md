@@ -96,9 +96,10 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 | `terraform`      | `plan` (default) or `import` against the cluster                       |
 | `trivy-config`   | Trivy misconfiguration scan of the Terraform code                      |
 | `helm-lint`      | Lint the `kubernetes-job` chart against its base values                |
+| `helm-test`      | Run the helm-unittest suites under every chart with a `tests/` folder  |
 | `compose-config` | Validate the Docker Compose file                                       |
 
-`helm-lint` and `compose-config` also run in CI: `lint-code` depends on both, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. They need `helm` and `docker compose`; `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
+`helm-lint`, `helm-test`, and `compose-config` also run in CI: `lint-code` depends on them, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. They need `helm` and `docker compose` (`helm-test` installs the pinned helm-unittest plugin on first run); `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
 
 ## Documentation
 

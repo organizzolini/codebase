@@ -45,6 +45,18 @@ infrastructure/
 
 Use a Job for work that runs to completion and leaves output behind (caelundas writes iCalendar files to a PVC); use a Deployment for anything that serves requests continuously.
 
+**Values added for Indexed and ephemeral runs** (defaults keep today's rendering unchanged):
+
+- `job.completionMode`: `NonIndexed` (default) or `Indexed`. Rendered only when `Indexed`.
+- `job.backoffLimitPerIndex`: integer retries per index. Rendered only when `Indexed`, and in that case `backoffLimit` is omitted because Kubernetes rejects both together.
+- `priorityClassName`: PriorityClass name for the pod; empty (default) omits the field.
+- `persistence.type`: `persistentVolumeClaim` (default) or `emptyDir`. With `emptyDir`, `pvc.yaml` renders nothing and the output path mounts an `emptyDir`.
+- `extraEnv`: list appended after `env`, for per-run values passed with `--set-json` (the ingestion workflow uses it).
+
+`values/caelundas-cli.yaml` layers over `values/base.yaml` for the caelundas-cli ingestion Job: an Indexed job on `emptyDir` scratch space, `batch-low` priority, and the staging Postgres environment.
+
+**Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
+
 ## Helm Chart References
 
 - Chart metadata: [helm/kubernetes-job/Chart.yaml](helm/kubernetes-job/Chart.yaml)
@@ -53,7 +65,7 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 
 ## Kubernetes Deployment
 
-See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint` and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
+See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint`, `helm-test`, and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
 
 ## Moving the Terraform State Bucket
 

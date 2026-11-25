@@ -31,6 +31,21 @@
         "cwd": "{workspaceRoot}"
       }
     },
+    "helm-test": {
+      "cache": true,
+      "description": "Run the helm-unittest suites under every chart that has a tests folder. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Installs the helm-unittest plugin at a pinned version when helm plugin list lacks unittest. Requires helm on PATH and network access for the first install.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/helm/**/*",
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "command": "helm plugin list | awk 'NR > 1 { print $1 }' | grep -qx unittest || helm plugin install https://github.com/helm-unittest/helm-unittest --version v1.2.1 --verify=false; for chart in {projectRoot}/helm/*/; do if [ -d \"$chart/tests\" ]; then helm unittest \"$chart\" || exit 1; fi; done",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "lint-code": {},
     "markdown-lint": {},
     "open-webui": {

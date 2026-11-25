@@ -10,9 +10,19 @@ metadata:
     {{- if .Values.metadata.timestamp }}
     caelundas.job/timestamp: {{ .Values.metadata.timestamp | quote }}
     {{- end }}
+{{- $indexed := eq .Values.job.completionMode "Indexed" }}
+{{- $perIndex := and $indexed (not (kindIs "invalid" .Values.job.backoffLimitPerIndex)) }}
 spec:
+  {{- if not $perIndex }}
   backoffLimit: {{ .Values.job.backoffLimit }}
+  {{- end }}
   completions: {{ .Values.job.completions }}
+  {{- if $indexed }}
+  completionMode: Indexed
+  {{- end }}
+  {{- if $perIndex }}
+  backoffLimitPerIndex: {{ .Values.job.backoffLimitPerIndex }}
+  {{- end }}
   {{- if gt (int .Values.job.parallelism) 1 }}
   parallelism: {{ .Values.job.parallelism }}
   {{- end }}
@@ -36,6 +46,9 @@ spec:
     spec:
       restartPolicy: Never
       serviceAccountName: default
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -60,7 +73,8 @@ spec:
           args:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.env }}
+          {{- $env := concat (default list .Values.env) (default list .Values.extraEnv) }}
+          {{- with $env }}
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -76,8 +90,12 @@ spec:
       {{- if .Values.persistence.enabled }}
       volumes:
         - name: data
+          {{- if eq .Values.persistence.type "emptyDir" }}
+          emptyDir: {}
+          {{- else }}
           persistentVolumeClaim:
             claimName: {{ include "kubernetes-job.fullname" . }}
+          {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

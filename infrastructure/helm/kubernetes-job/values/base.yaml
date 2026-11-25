@@ -37,12 +37,19 @@ metadata:
 job:
   # Number of retries before considering a Job as failed
   backoffLimit: 3
+  # NonIndexed runs completions interchangeably; Indexed gives each pod its own index
+  completionMode: NonIndexed
   # Number of successful completions required
   completions: 1
   # Number of pods running in parallel
   parallelism: 1
+  # Retries per index, rendered only with Indexed completion and replaces backoffLimit
+  # backoffLimitPerIndex: 2
   # Time in seconds after which a finished job is automatically deleted
   ttlSecondsAfterFinished: 86400
+
+# Name of an existing PriorityClass for the pod; empty omits the field
+priorityClassName: ""
 
 # Environment variables
 env: []
@@ -54,6 +61,9 @@ env: []
 #       name: my-secret
 #       key: secret-key
 
+# Environment variables appended after env, for per-run values passed with --set-json
+extraEnv: []
+
 # Command and arguments override
 command: []
 # - "/bin/sh"
@@ -63,6 +73,8 @@ args: []
 
 persistence:
   enabled: true
+  # persistentVolumeClaim binds a PVC; emptyDir mounts scratch space and creates no PVC
+  type: persistentVolumeClaim
   storageClassName: standard
   accessMode: ReadWriteOnce
   size: 1Gi

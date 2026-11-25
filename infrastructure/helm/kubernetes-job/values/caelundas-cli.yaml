@@ -1,0 +1,42 @@
+# Values for the caelundas-cli ingestion Job. Layer after base.yaml:
+#   --values values/base.yaml --values values/caelundas-cli.yaml
+image:
+  repository: ghcr.io/organizzolini/caelundas-cli
+  # The release commit fills the tag with the codebase release version.
+  tag: ""
+
+job:
+  completionMode: Indexed
+  parallelism: 1
+  backoffLimitPerIndex: 2
+  ttlSecondsAfterFinished: 86400
+
+priorityClassName: batch-low
+
+persistence:
+  type: emptyDir
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 768Mi
+  limits:
+    cpu: "1"
+    memory: 1536Mi
+
+env:
+  - name: CAELUNDAS_POSTGRES_HOST
+    value: postgres-rw.codebase.svc.cluster.local
+  - name: CAELUNDAS_POSTGRES_PORT
+    value: "5432"
+  - name: CAELUNDAS_POSTGRES_DATABASE
+    value: caelundas_staging
+  - name: CAELUNDAS_POSTGRES_SCHEMA
+    value: caelundas
+  - name: CAELUNDAS_POSTGRES_USERNAME
+    value: caelundas_username
+  - name: CAELUNDAS_POSTGRES_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: caelundas-postgres
+        key: password

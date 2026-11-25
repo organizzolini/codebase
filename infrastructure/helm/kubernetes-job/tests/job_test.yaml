@@ -1,0 +1,95 @@
+suite: kubernetes-job
+templates:
+  - templates/job.yaml
+  - templates/pvc.yaml
+values:
+  - ../values/base.yaml
+tests:
+  - it: omits completionMode by default
+    asserts:
+      - template: templates/job.yaml
+        notExists:
+          path: spec.completionMode
+      - template: templates/pvc.yaml
+        hasDocuments:
+          count: 1
+
+  - it: renders Indexed completion with per-index backoff
+    set:
+      job.completionMode: Indexed
+      job.backoffLimitPerIndex: 2
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.completionMode
+          value: Indexed
+      - equal:
+          path: spec.backoffLimitPerIndex
+          value: 2
+
+  - it: mounts an emptyDir when persistence.type is emptyDir
+    set:
+      persistence.type: emptyDir
+    asserts:
+      - template: templates/job.yaml
+        equal:
+          path: spec.template.spec.volumes[0].emptyDir
+          value: {}
+      - template: templates/pvc.yaml
+        hasDocuments:
+          count: 0
+
+  - it: sets priorityClassName when given
+    set:
+      priorityClassName: batch-low
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.priorityClassName
+          value: batch-low
+
+  - it: appends extraEnv after env
+    set:
+      env:
+        - name: FIRST
+          value: "1"
+      extraEnv:
+        - name: SECOND
+          value: "2"
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env
+          value:
+            - name: FIRST
+              value: "1"
+            - name: SECOND
+              value: "2"
+
+  - it: caelundas-cli values render an Indexed staging job
+    values:
+      - ../values/base.yaml
+      - ../values/caelundas-cli.yaml
+    set:
+      image.tag: 1.0.0
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: ghcr.io/organizzolini/caelundas-cli:1.0.0
+      - equal:
+          path: spec.completionMode
+          value: Indexed
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CAELUNDAS_POSTGRES_DATABASE
+            value: caelundas_staging
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CAELUNDAS_POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: caelundas-postgres
+                key: password
