@@ -23,9 +23,11 @@ cluster:
     limits:
       memory: 1Gi
   postgresql:
-    shared_buffers: 256MB
     shared_preload_libraries:
       - pg_stat_statements
+    # PostgreSQL settings; CloudNativePG takes string values only
+    parameters:
+      shared_buffers: 256MB
 
 backup:
   objectStoreName: postgres-backups
