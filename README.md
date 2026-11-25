@@ -217,22 +217,18 @@
 
 ```bash
 git clone https://github.com/Organizzolini/codebase.git
-```
-
-```bash
 cd codebase && bash scripts/installation.sh
-```
-
-```bash
 nx show projects
+nx affected --base=main --target=callidescope-restrict,codependix-bound,codometer-limit,coinagerie-check,conformetry-validate
+nx run-many --target=start --projects=lexico-web,caelundas-web,meanderaw-web
 ```
 
-```bash
-nx run lexico-web:start
-```
+### 🧑 Humans
 
-- [Contributing Guide](.github/CONTRIBUTING.md) - Setup, the dev container, commands, quality gates, and the commit and pull request workflow
-- [Changelog](CHANGELOG.md) / [Security Policy](.github/SECURITY.md) / [Code of Conduct](.github/CODE_OF_CONDUCT.md)
+- [Contributing Guide](.github/CONTRIBUTING.md) - Setup, commands, quality gates, and the pull request workflow
+- [Changelog](CHANGELOG.md) - Every release and what changed in it
+- [Security Policy](.github/SECURITY.md) - How to report a vulnerability privately
+- [Code of Conduct](.github/CODE_OF_CONDUCT.md) - Expected behavior for everyone who contributes
 
 ### 🤖 Agents
 
