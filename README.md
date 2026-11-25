@@ -1,11 +1,10 @@
 # 🧑‍💻 Codebase
 
-[![Version](https://img.shields.io/github/v/release/Organizzolini/codebase?logo=semanticrelease&label=Version)](https://github.com/Organizzolini/codebase/releases/latest)
-[![License](https://img.shields.io/github/license/Organizzolini/codebase?label=License)](LICENSE)
-
 [![Continuous Integration](https://github.com/Organizzolini/codebase/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/Organizzolini/codebase/actions/workflows/continuous-integration.yml)
 [![Continuous Deployment](https://github.com/Organizzolini/codebase/actions/workflows/continuous-deployment.yml/badge.svg)](https://github.com/Organizzolini/codebase/actions/workflows/continuous-deployment.yml)
 [![Continuous Compliance](https://github.com/Organizzolini/codebase/actions/workflows/continuous-compliance.yml/badge.svg)](https://github.com/Organizzolini/codebase/actions/workflows/continuous-compliance.yml)
+[![Version](https://img.shields.io/github/v/release/Organizzolini/codebase?logo=semanticrelease&label=Version)](https://github.com/Organizzolini/codebase/releases/latest)
+[![License](https://img.shields.io/github/license/Organizzolini/codebase?label=License)](LICENSE)
 
 ## 💾 Technology
 
@@ -232,17 +231,14 @@ nx show projects
 nx run lexico-web:start
 ```
 
-The setup script installs the toolchain and dependencies; `nx show projects` lists every project, and `nx run <project>:<target>` runs a task in one of them.
-
 - [Contributing Guide](.github/CONTRIBUTING.md) - Setup, the dev container, commands, quality gates, and the commit and pull request workflow
-- [Release Process](documentation/development/release-process.md) - Automated semantic versioning and changelogs
 - [Changelog](CHANGELOG.md) / [Security Policy](.github/SECURITY.md) / [Code of Conduct](.github/CODE_OF_CONDUCT.md)
 
 ### 🤖 Agents
 
 Conventions live in [AGENTS.md](AGENTS.md) and the agent skills below, which are the single sources of truth. Every project also has its own `AGENTS.md` with project-specific patterns. The generated [OpenWiki](openwiki/quickstart.md) maps the architecture, domains, and workflows.
 
-- [View all Skills](.agents/skills) - Complete index of available skills
+- **Vendored:** [Superpowers](https://github.com/obra/superpowers) / [Matt Pocock's Skills](https://github.com/mattpocock/skills) / [Ponytail](https://github.com/DietrichGebert/ponytail), installed beside this repository's own [skills](.agents/skills)
 - **Languages:** [TypeScript](.agents/skills/write-typescript/SKILL.md) / [React](.agents/skills/write-react/SKILL.md) / [Python](.agents/skills/write-python/SKILL.md) / [Comments](.agents/skills/write-comments/SKILL.md)
 - **Quality:** [Validate Code](.agents/skills/validate-code/SKILL.md) / [Testing Strategy](.agents/skills/testing-strategy/SKILL.md) / [Testing Mocks](.agents/skills/testing-mocks/SKILL.md) / [Error Handling](.agents/skills/handle-errors/SKILL.md)
 - **Workflows:** [Git Commits](.agents/skills/commit-code/SKILL.md) / [PR Management](.agents/skills/create-pull-request/SKILL.md) / [Branch Naming](.agents/skills/checkout-branch/SKILL.md)
