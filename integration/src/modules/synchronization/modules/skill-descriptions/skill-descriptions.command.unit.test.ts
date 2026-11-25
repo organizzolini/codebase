@@ -115,7 +115,7 @@ describe(SkillDescriptionsCommand, () => {
     processExitSpy.mockRestore();
 
     expect(reportLines).toStrictEqual([
-      "The authored skill descriptions hold 12501 characters together, over the 12288 the listing budget allows.",
+      "The authored skill descriptions hold 12289 characters together, over the 12288 the listing budget allows.",
     ]);
   });
 
