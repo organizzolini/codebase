@@ -1,0 +1,54 @@
+{{- range .Values.applications }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name }}
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ .syncWave | quote }}
+spec:
+  project: default
+  source:
+    {{- if .chart }}
+    repoURL: {{ .chart.repoURL }}
+    chart: {{ .chart.name }}
+    targetRevision: {{ .chart.version | quote }}
+    {{- else }}
+    repoURL: {{ $.Values.repoURL }}
+    targetRevision: {{ $.Values.targetRevision }}
+    path: {{ .path }}
+    {{- end }}
+    {{- if or .valueFiles .helmParameters }}
+    helm:
+      {{- with .valueFiles }}
+      valueFiles:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .helmParameters }}
+      parameters:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- end }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .namespace }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 5m
+    syncOptions:
+      - SkipDryRunOnMissingResource=true
+      {{- if .createNamespace }}
+      - CreateNamespace=true
+      {{- end }}
+      {{- if .serverSideApply }}
+      - ServerSideApply=true
+      {{- end }}
+{{- end }}

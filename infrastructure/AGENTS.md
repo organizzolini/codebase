@@ -27,6 +27,7 @@ terraform apply
 ```text
 infrastructure/
 ├── helm/
+│   ├── argocd-applications/ # Argo CD app-of-apps tree and the batch-low PriorityClass
 │   ├── cloudflared/         # Cloudflare Tunnel connector, routing held in Cloudflare
 │   ├── kubernetes-deployment/  # Reusable chart for long-running services
 │   ├── kubernetes-job/      # Reusable chart for K8s Jobs
@@ -112,6 +113,24 @@ Use `caelundas_staging` in place of `caelundas_production` for staging. The same
 
 **Rehearse a restore**: bootstrap a throwaway `Cluster` from `postgres-backups` with a `recoveryTarget`, check the row counts against the live cluster, then delete it. Never restore over `postgres`.
 
+### argocd-applications Chart
+
+**Purpose**: The Argo CD app-of-apps tree. Each `applications` entry renders one `Application` in the `argocd` namespace, ordered by `argocd.argoproj.io/sync-wave` (0 cert-manager, 1 cloudnative-pg, 2 plugin-barman-cloud, 3 postgres, 4 cloudflared, 5 the two caelundas apps). The chart also renders the `batch-low` PriorityClass (value -10, `preemptionPolicy: Never`, not global), which the ingestion Job uses.
+
+- Upstream entries (`chart`) pin an exact `version`, never a range. `cert-manager` installs its CRDs through a Helm parameter and uses `ServerSideApply=true`; the two operator namespaces set `CreateNamespace=true`.
+- Repository entries (`path`) take `valueFiles` relative to the chart path. `codebase` and `caelundas` come from Terraform, so their apps do not set `CreateNamespace`.
+- Every Application auto-syncs with `prune` and `selfHeal`, retries with backoff, and sets `SkipDryRunOnMissingResource=true`.
+- The root `Application` created by the bootstrap root points at this chart's path.
+
+`tests/applications_test.yaml` asserts on rendered YAML: the wave order, exact upstream pins, automated sync, dry-run skipping, the caelundas values, and the PriorityClass.
+
+**Read drift** between the repository and the cluster:
+
+```bash
+kubectl get applications -n argocd            # Sync and Health per app
+argocd app diff --core <name>                 # the live-versus-desired diff, read from the cluster without an Argo CD server
+```
+
 ## Helm Chart References
 
 - Chart metadata: [helm/kubernetes-deployment/Chart.yaml](helm/kubernetes-deployment/Chart.yaml)
@@ -126,6 +145,9 @@ Use `caelundas_staging` in place of `caelundas_production` for staging. The same
 - Chart metadata: [helm/postgres/Chart.yaml](helm/postgres/Chart.yaml)
 - Base values: [helm/postgres/values/base.yaml](helm/postgres/values/base.yaml)
 - Templates: [helm/postgres/templates/](helm/postgres/templates/)
+- Chart metadata: [helm/argocd-applications/Chart.yaml](helm/argocd-applications/Chart.yaml)
+- Base values: [helm/argocd-applications/values/base.yaml](helm/argocd-applications/values/base.yaml)
+- Templates: [helm/argocd-applications/templates/](helm/argocd-applications/templates/)
 
 ## Kubernetes Deployment
 

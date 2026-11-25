@@ -13,9 +13,11 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **cloudflared**: Cloudflare Tunnel connector that dials out from the cluster, so it needs no Service.
 - **conn**: Short for connection, as in the PgBouncer `max_client_conn` limit on client connections.
 - **escalation**: Privilege gain after a process starts; `allowPrivilegeEscalation: false` blocks it.
+- **heal**: Argo CD's self-healing, which reverts a live object that drifts from the repository; the `selfHeal` sync policy enables it.
 - **liveness**: Probe that restarts a container when its health endpoint stops answering.
 - **pgbouncer**: Connection pooler that sits in front of PostgreSQL and multiplexes client connections.
 - **pooler**: PgBouncer deployment that the apps connect through, rather than the database directly.
+- **preemption**: the scheduler evicting a lower-priority pod to fit a higher one; `batch-low` sets `preemptionPolicy: Never` to opt out.
 - **profile**: Named security policy applied to a container, such as the `RuntimeDefault` seccomp profile.
 - **seccomp**: Linux kernel filter that limits which system calls a container may make.
 - **visibility**: Repository setting that makes the GitHub repository public, set to public in the github root.
