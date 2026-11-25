@@ -300,6 +300,18 @@ Nash and the HYG contributors; the stored catalog is a derived work under the sa
 [d3-celestial](https://github.com/ofrohn/d3-celestial)'s, BSD-3-Clause, Olaf
 Frohn, after the IAU's constellation charts.
 
+## Image
+
+```bash
+IMAGE_TAG=local nx run caelundas-cli:docker-build
+```
+
+The image is `ghcr.io/organizzolini/caelundas-cli:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with `configuration/Dockerfile`. It runs as UID 10001 and serves two purposes. By default it runs the ingest the way `nx run caelundas-cli:start` does, reading the environment, including `START_YEAR` and `JOB_COMPLETION_INDEX`, and writing calendar files to `OUTPUT_DIRECTORY`, which is `/app/output`. The Swiss Ephemeris files are baked in at build time, so a run never downloads them. The command `caelundas-migrate` runs every `caelundas-db` migration against each database in the comma-separated `CAELUNDAS_MIGRATION_DATABASES`, in order, using `CAELUNDAS_POSTGRES_*` for the host and credentials, and stops at the first failure; running it again applies nothing. Set `CAELUNDAS_API_IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
+
+Size: 2.12 GB (2,121,829,783 bytes) on `node:26.13.1-trixie-slim`, mostly the development dependencies the runtime transpiler and workspace packages need (see the `shortcut:` comment in the Dockerfile).
+
+Measured against a local Postgres 18 with the Job's limits (`--memory 1536m --cpus 1`), one year (`START_YEAR=2026`, `JOB_COMPLETION_INDEX=0`) stored 50,492 events in 45 minutes and peaked at about 802 MiB, sampled once a second with `docker stats`, well under the Job's 1.5 GiB limit. Node's default heap under that limit is about 760 MB, which the run overran after storing the events, so the image sets `NODE_OPTIONS=--max-old-space-size=1024`.
+
 ## Structure
 
 ```text

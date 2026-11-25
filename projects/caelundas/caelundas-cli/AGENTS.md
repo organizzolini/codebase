@@ -211,71 +211,31 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 
 ## Kubernetes Deployment
 
-### Architecture
-
-Caelundas runs as a **Kubernetes Job** (not Deployment):
-
-- Single execution, terminates on completion
-- Output stored in PersistentVolumeClaim
-- No network exposure needed
-
-### Workflow
-
-```bash
-# 1. Push the image (built for linux/amd64)
-docker push ghcr.io/organizzolini/caelundas:latest
-
-# 2. Deploy Job (base.yaml is a defaults template, so override the image)
-helm upgrade --install <release-name> infrastructure/helm/kubernetes-job/ \
-  --values infrastructure/helm/kubernetes-job/values/base.yaml \
-  --set image.repository=ghcr.io/organizzolini/caelundas --set image.tag=latest
-
-# 3. Monitor completion
-kubectl wait --for=condition=complete job/<job-name> --timeout=600s
-
-# 4. Clean up
-helm uninstall <release-name>
-kubectl delete pvc caelundas-output
-```
-
-### Helm Chart
-
-Uses [infrastructure/helm/kubernetes-job](../../infrastructure/helm/kubernetes-job) - reusable chart for batch jobs with PVC storage.
-
-**Values**: [base.yaml](../../infrastructure/helm/kubernetes-job/values/base.yaml) holds chart defaults only (its image is the placeholder `my-application`); there is no caelundas-specific values file, so override the image and `env` at deploy time.
-
-See [kubernetes-deployment skill](../../../.agents/skills/kubernetes-deployment/SKILL.md) for Helm chart details.
-
-### Environment Variables in K8s
-
-The chart references no Secret by default; to inject them, create one and point `env` at it with `valueFrom.secretKeyRef` (see the commented example in `base.yaml`):
-
-```bash
-kubectl create secret generic caelundas-env-secret --from-env-file=.env
-```
+Ingestion runs as an Indexed **Kubernetes Job**, one calendar year per pod
+(`START_YEAR` and `JOB_COMPLETION_INDEX`), writing events to Postgres and
+calendar files to an `emptyDir` at `/app/output`. The Job's values are
+[values/caelundas-cli.yaml](../../../infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml);
+the `.github/workflows/caelundas-ingestion.yml` workflow launches it. See
+[infrastructure/AGENTS.md](../../../infrastructure/AGENTS.md) for the cluster.
 
 ## Docker Workflow
 
-### Build
+```bash
+IMAGE_TAG=local nx run caelundas-cli:docker-build   # linux/amd64, from the workspace root
+```
 
-**Platform targeting**: Always build with `--platform linux/amd64` for K8s deployment (Apple Silicon compatibility).
-
-See [docker-workflows skill](../../../.agents/skills/docker-workflows/SKILL.md) for multi-stage builds and GHCR integration.
-
-### Dockerfile
-
-Single-stage build:
-
-- Base: Node.js 20 Alpine
-- Native deps: python3, make, g++ (for native modules)
-- Workspace: Full codebase copied (needed for path resolution)
-- Entry: `pnpm start` (runs TypeScript directly via tsx)
+[configuration/Dockerfile](configuration/Dockerfile) builds `ghcr.io/organizzolini/caelundas-cli`
+for both the ingestion Jobs (default command, same as `nx run caelundas-cli:start`)
+and the API's Argo CD PreSync hook (`caelundas-migrate`, from
+[configuration/caelundas-migrate.sh](configuration/caelundas-migrate.sh)). It runs as
+UID 10001, bakes the Swiss Ephemeris files in at build time, and compiles `sweph`
+natively. Keep `--platform linux/amd64`.
 
 ## Performance
 
 **Execution times** (1-year range, all event types):
 
-- 1-2 minutes of local computation, plus a quick upsert and read back
+- About 45 minutes on one CPU in the container image, peaking near 0.8 GiB (see the README's Image section), plus a quick upsert and read back
 
 **Optimization strategies**:
 

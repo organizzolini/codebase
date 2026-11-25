@@ -33,6 +33,24 @@
     "build-projects": {},
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "docker-build": {
+      "cache": false,
+      "description": "Build the caelundas-cli production image for linux/amd64 from the workspace root, tagged with IMAGE_TAG (default local); set CAELUNDAS_API_IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build --platform linux/amd64 -f projects/caelundas/caelundas-cli/configuration/Dockerfile${CAELUNDAS_API_IMAGE_CA_BUNDLE:+ --secret id=ca-bundle,src=$CAELUNDAS_API_IMAGE_CA_BUNDLE} -t ghcr.io/organizzolini/caelundas-cli:${IMAGE_TAG:-local} .",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "docker-push": {
+      "cache": false,
+      "description": "Push the caelundas-cli image tagged with IMAGE_TAG (default local) to GHCR",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker push ghcr.io/organizzolini/caelundas-cli:${IMAGE_TAG:-local}",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "download-ephemeris": {
       "cache": true,
       "description": "Download the Swiss Ephemeris data files to data/ephemeris/ (cached, so CI fetches them once per cache key). Runs its own entry point, which does not open the database.",
