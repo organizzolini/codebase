@@ -213,36 +213,31 @@
 `├──` **🔁 [integration](integration)** - Guards a change on its way to `main`: commit and push checks, derived configuration, and pull request checks\
 `└──` **📤 [deployment](deployment)** - Coordinates releases and package publishing\
 
-## 📖 Documentation
+## 🚀 Getting Started
 
-### Getting Started & Workflow
+```bash
+git clone https://github.com/Organizzolini/codebase.git
+```
 
-- [Contributing Guide](.github/CONTRIBUTING.md) - **Start here.** Local and dev container setup, the commands to run, code standards, branch and commit conventions, pull requests, and releases
-- [AGENTS.md](AGENTS.md) - Commands, project layout, conventions, code quality gates, and git workflow
+```bash
+cd codebase && bash scripts/installation.sh
+```
+
+```bash
+nx show projects
+```
+
+```bash
+nx run lexico-web:start
+```
+
+The setup script installs the toolchain and dependencies; `nx show projects` lists every project, and `nx run <project>:<target>` runs a task in one of them. The [Contributing Guide](.github/CONTRIBUTING.md) covers the dev container, code standards, commits, and pull requests.
+
+## 📖 Learn More
+
+- [Contributing Guide](.github/CONTRIBUTING.md) - Setup, commands, quality gates, and the commit and pull request workflow
 - [Release Process](documentation/development/release-process.md) - Automated semantic versioning and changelogs
-
-### Architecture & Systems
-
-- [CI/CD Workflows](.github/workflows) - GitHub Actions workflows and the shared `setup-codebase` composite action
-- [Infrastructure](infrastructure/README.md) - Helm charts, Terraform, and the Kubernetes deployment pipeline
-- [Dev Container](.devcontainer/README.md) - Containerized development environment
-- [Scripts](scripts/README.md) - Local setup and maintenance scripts
-
-### Conventions & Guidelines
-
-Conventions live in [AGENTS.md](AGENTS.md) and the agent skills below, which are the single sources of truth. Every project also has its own `AGENTS.md` with project-specific patterns.
-
-**🤖 Agent Skills (Domain Knowledge)**
-Skills are specialized instruction files used by our automated agents, but they also serve as excellent deep-dive documentation for human developers.
-
-- [View all Skills](.agents/skills) - Complete index of available skills
-- **Languages:** [TypeScript](.agents/skills/write-typescript/SKILL.md) / [React](.agents/skills/write-react/SKILL.md) / [Python](.agents/skills/write-python/SKILL.md) / [Comments](.agents/skills/write-comments/SKILL.md)
-- **Quality:** [Validate Code](.agents/skills/validate-code/SKILL.md) / [Testing Strategy](.agents/skills/testing-strategy/SKILL.md) / [Testing Mocks](.agents/skills/testing-mocks/SKILL.md) / [Error Handling](.agents/skills/handle-errors/SKILL.md)
-- **Workflows:** [Git Commits](.agents/skills/commit-code/SKILL.md) / [PR Management](.agents/skills/create-pull-request/SKILL.md) / [Branch Naming](.agents/skills/checkout-branch/SKILL.md)
-- **Tooling:** [Nx Workspaces](.agents/skills/nx-workspace/SKILL.md) / [Generators](.agents/skills/nx-generate/SKILL.md) / [Task Running](.agents/skills/nx-run-tasks/SKILL.md)
-- **Triage:** [Failing CI](.agents/skills/triage-integration/SKILL.md) / [Rejected Commits](.agents/skills/triage-integration/SKILL.md) / [Spell Check](.agents/skills/spell-check/SKILL.md)
-
-Other important files include [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](.github/SECURITY.md), and [CODE_OF_CONDUCT.md](.github/CODE_OF_CONDUCT.md).
+- [Changelog](CHANGELOG.md) / [Security Policy](.github/SECURITY.md) / [Code of Conduct](.github/CODE_OF_CONDUCT.md)
 
 ## 👔 Conformetry
 
