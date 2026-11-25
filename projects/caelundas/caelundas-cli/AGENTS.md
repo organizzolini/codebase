@@ -173,6 +173,7 @@ Required:
 Optional:
 
 - `EVENT_TYPES`: Comma-separated list (defaults to all)
+- `START_YEAR`, `JOB_COMPLETION_INDEX`: Integers, set together. The run covers the calendar year `START_YEAR + JOB_COMPLETION_INDEX` and ignores `START_DATE`/`END_DATE`; the derived year must be within 1900-2100
 - `OUTPUT_FORMAT`: `ical` or `json` (defaults to `ical`)
 - `OUTPUT_DIRECTORY`: Directory path (defaults to `./output`)
 

@@ -43,10 +43,18 @@ LONGITUDE="-75.17169"         # Observer longitude, -180 to 180
 START_DATE="2026-07-01"       # YYYY-MM-DD
 END_DATE="2026-07-31"         # YYYY-MM-DD
 OUTPUT_DIRECTORY="./output"
+START_YEAR="1900"             # 1900-2100; set together with JOB_COMPLETION_INDEX
+JOB_COMPLETION_INDEX="3"      # Non-negative integer; Kubernetes Indexed Jobs set it
 ```
 
 Every field is optional. Location defaults to Philadelphia, and the date range
 to a two-month window centered on today.
+
+`START_YEAR` and `JOB_COMPLETION_INDEX` select one calendar year: the run covers
+`START_YEAR + JOB_COMPLETION_INDEX`, from January 1 through December 31, and
+`START_DATE` and `END_DATE` are ignored. Set both or neither. The derived year
+must fall within 1900-2100, like any hand-set date. Consecutive indexes cover
+adjacent years with no overlap, so one Indexed Job pod per year splits a century.
 
 The database is the `caelundas` schema of `caelundas_development`, read through
 `CAELUNDAS_POSTGRES_*` only (database, host, password, port, schema and
