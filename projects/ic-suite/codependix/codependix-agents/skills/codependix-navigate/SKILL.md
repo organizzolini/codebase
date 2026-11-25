@@ -1,6 +1,6 @@
 ---
 name: codependix-navigate
-description: Answer dependency navigation and architecture questions using codependix CLI commands or committed graphs. Use when finding dependency paths between projects, files, or NestJS modules, tracing blast radius, determining what touches or imports a file or package, choosing narrowing flags to minimize run costs, or reading committed README diagrams across packages without running commands.
+description: "Answer dependency and architecture questions from codependix commands or the committed graphs: paths between projects, files, or NestJS modules, blast radius, and what imports a file or package. Use when tracing what a change touches, choosing narrowing flags to keep a run cheap, or reading README diagrams without running anything."
 license: MIT
 ---
 

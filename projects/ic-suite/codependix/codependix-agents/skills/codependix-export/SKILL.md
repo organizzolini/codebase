@@ -1,6 +1,6 @@
 ---
 name: codependix-export
-description: Run a codependix dependency graph export or boundary check, choose between --check boundaries, --check reports, and --write, point a run at a workspace root or a configuration file, or read a Mermaid block or JSON graph it produced. Use when running codependix or npx codependix, when a run exits 0 having written nothing, when --check is refused for carrying no value, when looking for a flag that selects one graph type, when wiring codependix into a CI step or an Nx task, when a codependix-bound target failed, or when reading an exported Nx Neighborhood, NestJS module graph, or file-level import graph. Covers the command-line host directly, without assuming any task runner.
+description: "Run a codependix export or boundary check and read what it produced, over Nx project, NestJS module, or file-import graphs, with --check boundaries, --check reports, or --write. Use when running codependix, wiring it into CI or an Nx task, when a run exits 0 having written nothing, or when reading an exported Mermaid block or JSON graph."
 license: MIT
 ---
 

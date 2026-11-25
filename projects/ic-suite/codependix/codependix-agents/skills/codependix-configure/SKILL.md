@@ -1,6 +1,6 @@
 ---
 name: codependix-configure
-description: Write or edit a codependix.config.ts — which graph types run, per-project overrides, include and exclude globs, the whole-workspace graph, where each export lands, and the boundary rules every built graph is judged against. Use when a workspace has no codependix configuration yet, when a run produced no output because everything resolved to target none, when adding a JSON or Markdown destination, when choosing between an anchor block and a standalone file, when a configuration is rejected for a missing destination or an empty selector, when adding a forbid, allow, or acyclic rule, when registering the per-project Nx gate, or when deciding whether one configuration can describe every project in a workspace.
+description: "Write or edit a codependix.config.ts: which graph types run, include and exclude globs, per-project overrides, where each export lands, and the forbid, allow, and acyclic boundary rules. Use when a workspace has no configuration, a run wrote nothing, a configuration is rejected, or when adding an export destination, a boundary rule, or the per-project Nx gate."
 license: MIT
 ---
 
