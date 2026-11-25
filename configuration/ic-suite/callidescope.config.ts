@@ -74,8 +74,8 @@ export const workspaceLimits = {
 } satisfies CallidescopeLimits;
 
 /**
- * What a project's own `callidescope.config.ts` spreads, then overrides. See
- * `documentation/development/callidescope-configuration.md`.
+ * What a project's own `callidescope.config.ts` spreads, then overrides. See the
+ * `callidescope-configure` skill.
  */
 export const projectDefaults = {
   entryPoints: {

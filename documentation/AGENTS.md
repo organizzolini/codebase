@@ -6,12 +6,18 @@
 
 **Purpose**: Refreshes the repository documentation from code. Its one command, `refresh-documentation`, runs OpenWiki in the workspace root; the scheduled 🧑‍🏫 Refresh Documentation workflow runs it through `nx run documentation:refresh-documentation`.
 
+**What it holds**: `openwiki/` (generated pages), `agents/` (settings the vendored skills read), and `documentation/` (generated toolchain reports). Plans and specs are issues and conventions are skills, so nothing else belongs here. Never hand-edit `openwiki/` or `documentation/documentation/`.
+
 ### Run Locally
 
 ```bash
 cp configuration/.env.default configuration/.env  # Fill in required environment variables
 nx run documentation:refresh-documentation
 ```
+
+### Rate Limits
+
+A refresh makes up to 4 attempts. After a failure it waits the longer of its growing delay and the reset time OpenRouter reported, and it stops at once when that reset is more than 15 minutes away, as a daily limit is. Every attempt is listed in the job summary. See [`agents/openwiki.md`](agents/openwiki.md) for re-initializing the wiki, and `refresh-documentation.constants.ts` for the numbers.
 
 ## Architecture Overview
 
@@ -242,5 +248,5 @@ See the [triage-integration skill](../.agents/skills/triage-integration/SKILL.md
 - [src/documentation.module.ts](src/documentation.module.ts): Root NestJS module
 - [src/documentation.constants.ts](src/documentation.constants.ts): `environmentSchema` (Zod)
 - `@codebase/observability` (`projects/common/observability`): shared pino-backed `LoggerService` and `LoggerModule`
-- [project.json](project.json): Nx targets (`start`, `build`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
+- [project.json](project.json): Nx targets (`refresh-documentation`, `vitest`, `typecheck-code`, `lint-code`, `format-code`)
 - [configuration/.env.default](configuration/.env.default): Environment variable template
