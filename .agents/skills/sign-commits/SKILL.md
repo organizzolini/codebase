@@ -1,6 +1,6 @@
 ---
 name: sign-commits
-description: Re-sign unsigned commits on the current branch or pull request without changing code content by rewriting only from the first unsigned commit onward on a temporary branch. Use when asked to sign commits, add GPG signatures to an existing branch, satisfy signed-commit requirements, or make a PR show verified commits. Creates a backup branch first, runs the rebase non-interactively, verifies the rewritten final tree exactly matches the original branch tip, and stops immediately if any check, conflict, drift, or GPG step fails.
+description: Re-sign unsigned commits on the current branch or pull request without changing code content, rewriting only from the first unsigned commit onward on a temporary branch with a backup first. Use when asked to sign commits, satisfy signed-commit requirements, or make a PR show verified commits. Stops on any conflict, tree drift, or signing failure.
 license: MIT
 ---
 
@@ -231,16 +231,16 @@ Stop and report to the user if the push fails.
 
 ## Troubleshooting
 
-| Problem | Cause | Fix |
-| --- | --- | --- |
-| Working tree is dirty | Local changes would be mixed into the rewrite | Stop and clean or stash changes first |
-| Signing configuration check fails | Git or GPG is not configured for commit signing | Run `bash scripts/git/check-commit-signing-configuration.sh`, fix the reported issue, and stop until it passes |
-| Branch is behind `origin/main` | The rewrite would also need to integrate upstream changes | Stop and rebase or merge `origin/main` first |
-| Rebase conflict occurs | A commit does not replay cleanly | Stop and let the user decide whether to resolve or abort; the original branch remains untouched because the rewrite runs on a temporary branch |
-| Final code differs after re-signing | The replay did not produce the original branch tip's exact tree | Compare the temporary branch against the original tip and stop; do not move the original branch ref |
-| VS Code opens the interactive rebase or commit-message editor | Git is using VS Code as its editor | Use `GIT_SEQUENCE_EDITOR=:` and `GIT_EDITOR=:` for this workflow |
-| GPG prompts repeatedly | GPG agent is not caching the passphrase | Prime `gpg-agent` before running the workflow |
-| Push is rejected | Remote branch changed since last fetch | Review remote changes, then retry with care |
+| Problem                                                       | Cause                                                           | Fix                                                                                                                                            |
+| ------------------------------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Working tree is dirty                                         | Local changes would be mixed into the rewrite                   | Stop and clean or stash changes first                                                                                                          |
+| Signing configuration check fails                             | Git or GPG is not configured for commit signing                 | Run `bash scripts/git/check-commit-signing-configuration.sh`, fix the reported issue, and stop until it passes                                 |
+| Branch is behind `origin/main`                                | The rewrite would also need to integrate upstream changes       | Stop and rebase or merge `origin/main` first                                                                                                   |
+| Rebase conflict occurs                                        | A commit does not replay cleanly                                | Stop and let the user decide whether to resolve or abort; the original branch remains untouched because the rewrite runs on a temporary branch |
+| Final code differs after re-signing                           | The replay did not produce the original branch tip's exact tree | Compare the temporary branch against the original tip and stop; do not move the original branch ref                                            |
+| VS Code opens the interactive rebase or commit-message editor | Git is using VS Code as its editor                              | Use `GIT_SEQUENCE_EDITOR=:` and `GIT_EDITOR=:` for this workflow                                                                               |
+| GPG prompts repeatedly                                        | GPG agent is not caching the passphrase                         | Prime `gpg-agent` before running the workflow                                                                                                  |
+| Push is rejected                                              | Remote branch changed since last fetch                          | Review remote changes, then retry with care                                                                                                    |
 
 ## Completion Criteria
 

@@ -234,8 +234,8 @@ pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-co
 For new/untracked files not yet picked up by `nx affected`:
 
 ```bash
-pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write
-pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check
+pnpm exec nx run-many --targets=typecheck-code,lint-code,format-code,deprecate-code,guard-code --projects=<project> --configuration=write
+pnpm exec nx run-many --targets=typecheck-code,lint-code,format-code,deprecate-code,guard-code --projects=<project> --configuration=check
 ```
 
 **Do not commit until both commands pass cleanly.** If they fail, use the [triage-integration skill](.agents/skills/triage-integration/SKILL.md) to diagnose and fix the errors.

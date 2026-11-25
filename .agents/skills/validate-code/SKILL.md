@@ -1,6 +1,6 @@
 ---
 name: validate-code
-description: Run the full code quality validation suite for this codebase. Use this skill when you have finished implementing code changes and want to verify they are clean before committing, when told to "validate", "check quality", or "run linting", or before invoking the submit-changes skill. Runs lint-code (format, lint, typecheck, knip, spell-check) using the write configuration to auto-fix what it can, then checks that nothing remains.
+description: Run the codebase's quality suite before committing — typecheck-code, format-code, lint-code, deprecate-code, and guard-code, first with write to auto-fix, then with check — and clear the quality gates (test coverage, type coverage, compiled size). Use after finishing any implementation task, when told to "validate", "check quality", or "run linting", or before submit-changes.
 license: MIT
 ---
 
@@ -13,25 +13,21 @@ Run the codebase's full automated quality suite against your changes **before co
 - After finishing implementation of any task — TypeScript, Python, Markdown, YAML, JSON
 - Before invoking the [submit-changes skill](../submit-changes/SKILL.md)
 - When asked to "validate", "check code quality", "run linting", or "verify changes are clean"
-- Anytime you add new dependencies, exports, or files (Knip detects unused ones)
+- Anytime you add new dependencies, exports, or files (knip and fallow detect unused ones)
 
-## What `lint-code` Covers
+## What the Five Targets Cover
 
-The `lint-code` Nx target hangs every quality tool off `dependsOn`, so one invocation builds one task graph:
+Each target is an aggregator that hangs its tools off `dependsOn`, so one `nx affected` invocation builds one task graph. CI runs the first four in its Static leg and `guard-code` in its Guard leg.
 
-| Tool | Purpose | Configuration |
-| ---- | ------- | ------------- |
-| `oxfmt` + `prettier` | Code formatting | `configuration/lint/oxfmt.config.ts`, `configuration/lint/prettier.config.ts` |
-| `eslint` + `oxlint` | Linting (TS/JS) | project `eslint.config.ts`, `configuration/lint/oxlint.config.ts` |
-| `ruff` | Format + lint (Python) | `pyproject.toml` |
-| `tsc --noEmit` | TypeScript type checking | project `tsconfig.json` → `configuration/tsconfig.base.json` |
-| `pyright` + `ty` | Python type checking | `pyproject.toml` |
-| `knip` | Unused TS files, exports, deps | `configuration/typescript/knip.config.ts` |
-| `fallow dead-code` | The same, workspace-wide in one pass | `configuration/typescript/fallow.config.jsonc` |
-| `vulture` | Unused Python code | `configuration/python/vulture_whitelist.py` |
-| `cspell` | Spell checking | `configuration/lint/cspell.config.yaml` |
-| `markdownlint` | Markdown linting | `configuration/lint/markdownlint-cli2.config.jsonc` |
-| `yamllint` | YAML linting | `configuration/lint/yamllint.yaml` |
+| Target           | Runs                                                                                                                                                                                      |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `typecheck-code` | `typecheck` (TypeScript `tsc`, Python `pyright` and `ty`) and `type-coverage`                                                                                                             |
+| `format-code`    | `oxfmt`, `ruff-format`, `sqlfluff-format`, `markdown-lint`, `yaml-lint`, and `spell-check` (cspell)                                                                                       |
+| `lint-code`      | `eslint`, `oxlint`, `ruff-lint`, `stylelint`, `shellcheck`, `sqlfluff-lint`, `helm-lint`, `compose-config`, and the Terraform checks                                                      |
+| `deprecate-code` | `knip`, `fallow-dead-code`, `vulture`, `dependency-cruiser`, `sherif`, `syncpack`, `squawk`, and `nbstripout`                                                                             |
+| `guard-code`     | `callidescope-restrict`, `codependix-bound`, `coinagerie-check`, `conformetry-validate`, and the `integration` checks (`lockfile`, `readme-projects`, `skill-descriptions`, and the rest) |
+
+`nx.json`'s `targetDefaults` is the source of truth for each list; read it when a tool seems missing here.
 
 `guard-code` also runs `coinagerie-check`, which judges each project's glossary against the words the code uses. Its `write` pass is what you run to repair it: a new word gains a bare `- **word**:` bullet, which you then define with the [coinagerie-define skill](../coinagerie-define/SKILL.md), and a word the code no longer uses loses its bullet and definition. Never hand-edit the generated listing.
 
@@ -39,23 +35,23 @@ The `lint-code` Nx target hangs every quality tool off `dependsOn`, so one invoc
 
 ### Step 1 — Auto-fix
 
-Run `lint-code` in `write` mode to automatically fix all auto-fixable issues (formatting, linting, unused-code whitelist entries, sync checks):
+Run the five targets in `write` mode to fix everything that fixes itself (formatting, lint autofixes, unused-code whitelist entries, sync checks):
 
 ```bash
 pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write --base=main
 ```
 
-> For new/untracked files that `nx affected` won't detect, target the relevant project(s) directly:
->
-> ```bash
-> pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write
-> ```
+`nx affected` misses new, untracked files. Name the project instead — `nx run` takes one target, so several targets go through `run-many`:
 
-Review the changes made. If any files were modified, inspect them to ensure the auto-fixes are correct.
+```bash
+pnpm exec nx run-many --targets=typecheck-code,lint-code,format-code,deprecate-code,guard-code --projects=<project> --configuration=write
+```
+
+Review what the write pass changed before going on.
 
 ### Step 2 — Verify
 
-Run `lint-code` in `check` mode to confirm no issues remain:
+Run the same targets in `check` mode to confirm nothing remains:
 
 ```bash
 pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check --base=main
@@ -63,14 +59,15 @@ pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-co
 
 **All checks must pass before proceeding.** If any fail, triage each failure:
 
-- **Format/lint**: Fix the reported violations manually, then re-run.
-- **Typecheck**: Fix type errors — see [write-typescript skill](../write-typescript/SKILL.md) for patterns.
-- **Spell-check**: Either fix the typo, or add the word to the appropriate dictionary in `configuration/lint/.cspell/`.
-- **Knip (unused code)**: Remove the unused export/file/dependency, or add an exception in `configuration/typescript/knip.config.ts`.
-- **Fallow dead-code (unused code)**: The same finding from the other direction — `knip` runs once per workspace, `fallow` once over all of them. The two configurations are kept in step, so fix the code and both pass; if an exception is genuinely warranted, add it to `configuration/typescript/fallow.config.jsonc` _and_ its counterpart in `configuration/typescript/knip.config.ts`, or the next run of the other tool reports what you just excused. Prefer `overrides` to `ignorePatterns` when suppressing a file: `ignorePatterns` also drops what that file imports out of the module graph, which makes reachable files read as dead.
-- **Glossary (`coinagerie-check`)**: Run `pnpm exec nx run <project>:coinagerie-check:write`, then write the definition of any bare bullet it added with the [coinagerie-define skill](../coinagerie-define/SKILL.md). See [coinagerie-triage](../coinagerie-triage/SKILL.md) for a failure that survives the write.
+- **Format/lint**: Fix the reported violations, then re-run.
+- **Typecheck**: Fix type errors — see the [write-typescript skill](../write-typescript/SKILL.md) for patterns.
+- **Type coverage**: Type the untyped expressions it names; `typecheck` passing does not mean this passes.
+- **Spell-check**: Fix the typo or reword. Add a word to a dictionary only when it is a genuine domain term, following the [spell-check skill](../spell-check/SKILL.md) — never to silence a misspelling.
+- **Knip (unused code)**: Remove the unused export, file, or dependency, or add an exception in `configuration/typescript/knip.config.ts`.
+- **Fallow dead-code (unused code)**: The same finding from the other direction — `knip` runs once per workspace, `fallow` once over all of them. The two configurations are kept in step, so fix the code and both pass; if an exception is genuinely warranted, add it to `configuration/typescript/fallow.config.jsonc` _and_ its counterpart in `configuration/typescript/knip.config.ts`. Prefer `overrides` to `ignorePatterns` when suppressing a file: `ignorePatterns` also drops what that file imports out of the module graph, which makes reachable files read as dead.
+- **Glossary (`coinagerie-check`)**: Run `pnpm exec nx run <project>:coinagerie-check:write`, then define any bare bullet it added with the [coinagerie-define skill](../coinagerie-define/SKILL.md). See [coinagerie-triage](../coinagerie-triage/SKILL.md) for a failure that survives the write.
+- **Skill descriptions (`skill-descriptions`)**: Shorten each named description to 128 words, moving trigger detail into the skill body.
 - **Sync checks**: Run the failing synchronization's own `write` configuration (e.g., `nx run integration:conventional-config:write`), or `nx run-many --targets=conventional-config,devcontainer-configuration,pull-request-template,skill-exclusions --configuration=write` for every derivation at once.
-- **Check skill exclusions**: Add the exclusion lines the failure names to `configuration/lint/.prettierignore`, `configuration/ic-suite/.codometerignore`, and `.gitattributes`. This leaf has no `write` variant.
 
 See [triage-integration](../triage-integration/SKILL.md) for detailed per-tool fix instructions.
 
@@ -78,57 +75,13 @@ See [triage-integration](../triage-integration/SKILL.md) for detailed per-tool f
 
 Once both `write` and `check` pass cleanly, code quality is confirmed. Proceed to commit or hand off.
 
-### Step 4 — Coverage Gate (when required)
-
-`lint-code` does not enforce Vitest coverage thresholds. If the task, project, or CI requires a coverage target, run the coverage configuration explicitly after Step 3:
-
-```bash
-pnpm exec nx run <project>:vitest --configuration=coverage
-```
-
-If the threshold fails by a small margin, prioritize adding targeted tests for uncovered guard branches (`if (!value)`, fallback paths, sparse/undefined handling) instead of broad test rewrites.
-
-### Step 5 — Type Coverage Gate (TypeScript projects with target)
-
-If a touched TypeScript project defines a `type-coverage` target, treat it as a required gate and run it explicitly after Step 3.
-
-```bash
-pnpm exec nx run <project>:typecheck
-pnpm exec nx run <project>:type-coverage
-```
-
-> ✅ **Best practice:** Run `typecheck` and `type-coverage` back-to-back for the same project while stabilizing changes to avoid late iteration loops.
-
 ## Common Patterns
-
-### New TypeScript files added
-
-```bash
-# Target the specific project since affected may not pick up new files
-pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write
-pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check
-```
-
-### Refactor-heavy test changes
-
-```bash
-# 1) Auto-fix + quality checks
-pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write
-pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check
-
-# 2) Re-verify coverage gates explicitly
-pnpm exec nx run <project>:vitest --configuration=coverage
-
-# 3) If available, enforce type coverage gate too
-pnpm exec nx run <project>:typecheck
-pnpm exec nx run <project>:type-coverage
-```
 
 ### New skill added
 
 A skill is one directory, `.agents/skills/<skill-name>/SKILL.md`. `.claude/skills` and `.github/skills` are symlinks to `.agents/skills`, so that one copy already serves both harnesses — there is no second copy to create and no table of contents to regenerate. AGENTS.md deliberately does not list the skills; agents are handed the installed set directly.
 
-The only extra command applies to a skill installed from another repository, which `skills update` records in `skills-lock.json`:
+Keep its description within 128 words (`nx run integration:skill-descriptions`). The only extra command applies to a skill installed from another repository, which `skills update` records in `skills-lock.json`:
 
 ```bash
 # Regenerate the exclusion blocks that keep locked skills out of prettier,
@@ -136,9 +89,9 @@ The only extra command applies to a skill installed from another repository, whi
 pnpm exec nx run integration:skill-exclusions:write
 ```
 
-### AGENTS.md edited
+### Generated tables edited
 
-The types and scopes tables in AGENTS.md are generated between marker comments from [configuration/repository/conventional.config.cjs](../../../configuration/repository/conventional.config.cjs). Edit the config, never the table, then regenerate:
+The types and scopes tables in [CONTRIBUTING.md](../../../.github/CONTRIBUTING.md) and the [commit-code skill](../commit-code/SKILL.md) are generated between marker comments from [configuration/repository/conventional.config.cjs](../../../configuration/repository/conventional.config.cjs). Edit the config, never the table, then regenerate:
 
 ```bash
 pnpm exec nx run integration:conventional-config:write

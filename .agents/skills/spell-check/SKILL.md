@@ -1,6 +1,6 @@
 ---
 name: spell-check
-description: Run and triage cspell in this codebase. Use when spell-check fails in lint-staged, nx affected, or nx run-many, when cspell reports Unknown word entries, or when adding domain vocabulary to the correct dictionary under configuration/.cspell. Covers full-workspace checks, project-targeted checks, and dictionary update validation.
+description: Run and triage cspell in this codebase. Use when spell-check fails in lint-staged, nx affected, or nx run-many, when cspell reports Unknown word entries, or when a genuine domain term belongs in a dictionary under configuration/lint/.cspell. Covers full-workspace checks, project-targeted checks, and dictionary updates.
 license: MIT
 ---
 
@@ -19,18 +19,11 @@ Use this skill to run cspell consistently in this codebase and fix failures by u
 
 - Main config file: `configuration/lint/cspell.config.yaml`
 - Dictionary folder: `configuration/lint/.cspell/`
-- Active custom dictionaries:
-  - `configuration/lint/.cspell/lexico.txt`
-  - `configuration/lint/.cspell/affirmancy.txt`
-  - `configuration/lint/.cspell/ai.txt`
-  - `configuration/lint/.cspell/astronomy.txt`
-  - `configuration/lint/.cspell/ics.txt`
-  - `configuration/lint/.cspell/infrastructure.txt`
-  - `configuration/lint/.cspell/nasa-horizons.txt`
-  - `configuration/lint/.cspell/python.txt`
-  - `configuration/lint/.cspell/tooling.txt`
+- Custom dictionaries: every `.txt` file in `configuration/lint/.cspell/`, each registered under `dictionaryDefinitions` in the config. List them with `ls configuration/lint/.cspell/` rather than trusting a copy here.
 
-Important: In this repository, use `configuration/lint/.cspell/*` as the source of truth for dictionary updates.
+## Fix the Word First
+
+Most unknown words are typos or coinages. Fix the spelling, or reword the sentence, before reaching for a dictionary. A dictionary entry is for a **genuine domain term** — a Latin headword, an astronomy term, a tool's name — that the code or prose must use as written. Never add a word only to make a failing check pass; a word added to code you wrote this session is usually a rename waiting to happen.
 
 ## Workflow
 
@@ -70,11 +63,15 @@ Use the exact casing reported by cspell when adding dictionary words.
 
 Select dictionary by domain:
 
-- Lexico, Latin, lexico-cli, lexico-db: `configuration/lint/.cspell/lexico.txt`
-- Astronomy or caelundas domain terms: `configuration/lint/.cspell/astronomy.txt`
-- Infrastructure/Kubernetes/Terraform terms: `configuration/lint/.cspell/infrastructure.txt`
-- Python toolchain terms: `configuration/lint/.cspell/python.txt`
-- Generic build/dev tooling terms: `configuration/lint/.cspell/tooling.txt`
+- Lexico, Latin, lexico-cli, lexico-db: `lexico.txt`
+- Astronomy or caelundas domain terms: `astronomy.txt`; iCalendar fields: `ics.txt`
+- Meander and classical-ornament terms (meanderaw): `meanders.txt`
+- Linguistics, phonology, and coined words (sempientor, coinagerie): `linguistics.txt`
+- Affirmancy and AI/LLM tooling: `affirmancy.txt`, `ai.txt`
+- Infrastructure/Kubernetes/Terraform terms: `infrastructure.txt`
+- Python toolchain terms: `python.txt`
+- Editor extensions and settings: `editor.txt`
+- Generic build/dev tooling terms: `tooling.txt`
 
 When in doubt for Lexico-family projects, prefer `configuration/lint/.cspell/lexico.txt`.
 

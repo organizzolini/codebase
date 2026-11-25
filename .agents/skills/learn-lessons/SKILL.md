@@ -1,7 +1,7 @@
 ---
 name: learn-lessons
-description: 'Retrospective skill that analyzes a coding agent session, a set of local changes, or a branch/pull request, then extracts reusable coding patterns, architectural decisions, and best practices — and writes them into skills and AGENTS.md so future agents apply the same patterns automatically. Primary use: capturing HOW code was written (naming, structure, TypeScript idioms, module patterns, error handling), not just what the agent did. Use when asked to "learn from this session", "capture patterns from this PR", "remember how we did this", "document this approach", "improve skills from this work", or "make sure future agents do it this way".'
-argument-hint: 'Provide the branch name, PR number, or describe the coding patterns to capture.'
+description: 'Retrospective that turns a session, a set of local changes, or a branch or pull request into lasting rules: the coding patterns, architectural decisions, and practices worth repeating, written into the skill or AGENTS.md that owns each one. Use when asked to "learn from this session", "capture patterns from this PR", "remember how we did this", or "make sure future agents do it this way", and at the end of non-trivial work.'
+argument-hint: "Provide the branch name, PR number, or describe the coding patterns to capture."
 license: MIT
 ---
 
@@ -34,13 +34,13 @@ Your output is not a report. It is **concrete updates to skills and AGENTS.md** 
 
 The skill examines one or more of these inputs — use whichever are available:
 
-| Input | How to Access |
-| ----- | ------------- |
-| **Session log** | Read the Copilot session debug log at `{{VSCODE_TARGET_SESSION_LOG}}` (current session) |
-| **Local changes** | Run `git diff HEAD` or `git diff main` to see uncommitted/unmerged changes |
-| **Branch diff** | Run `git log main..HEAD --oneline` then `git diff main...HEAD` |
-| **Pull request** | Use `gh api repos/{owner}/{repo}/pulls/<number>` and `…/pulls/<number>/files`, and `gh api repos/{owner}/{repo}/pulls/<number> -H 'Accept: application/vnd.github.diff'` for the diff |
-| **Conversation history** | Review the current conversation for retries, corrections, and course changes |
+| Input                    | How to Access                                                                                                                                                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Session log**          | Read the Copilot session debug log at `{{VSCODE_TARGET_SESSION_LOG}}` (current session)                                                                                               |
+| **Local changes**        | Run `git diff HEAD` or `git diff main` to see uncommitted/unmerged changes                                                                                                            |
+| **Branch diff**          | Run `git log main..HEAD --oneline` then `git diff main...HEAD`                                                                                                                        |
+| **Pull request**         | Use `gh api repos/{owner}/{repo}/pulls/<number>` and `…/pulls/<number>/files`, and `gh api repos/{owner}/{repo}/pulls/<number> -H 'Accept: application/vnd.github.diff'` for the diff |
+| **Conversation history** | Review the current conversation for retries, corrections, and course changes                                                                                                          |
 
 ## Step-by-Step Workflow
 
@@ -109,25 +109,25 @@ Before looking for gaps, explicitly identify **patterns worth reinforcing and re
 
 ### Coding patterns (primary focus)
 
-| # | Pattern | Signal to Look For |
-| - | ------- | ------------------ |
-| 1 | **Naming convention established** | A new naming pattern used consistently (file names, function names, type names) |
-| 2 | **TypeScript idiom applied correctly** | Discriminated unions, type guards, mapped types, or generics used well |
-| 3 | **Error handling done right** | Zod at boundaries, typed errors, early returns, no bare `catch (e)` |
-| 4 | **Module structure pattern** | How files, folders, and barrel exports were organized in a new module |
-| 5 | **Test structure worth repeating** | How tests were named, arranged, or parameterized |
-| 6 | **Architectural decision made** | A deliberate design choice (composition vs. inheritance, service boundary, etc.) |
-| 7 | **Reusable abstraction created** | A utility, hook, or helper that solves a class of problems |
-| 8 | **Convention applied first-try** | Naming, import order, TypeScript strict rules correct from the start — no corrections needed |
+| #   | Pattern                                | Signal to Look For                                                                           |
+| --- | -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 1   | **Naming convention established**      | A new naming pattern used consistently (file names, function names, type names)              |
+| 2   | **TypeScript idiom applied correctly** | Discriminated unions, type guards, mapped types, or generics used well                       |
+| 3   | **Error handling done right**          | Zod at boundaries, typed errors, early returns, no bare `catch (e)`                          |
+| 4   | **Module structure pattern**           | How files, folders, and barrel exports were organized in a new module                        |
+| 5   | **Test structure worth repeating**     | How tests were named, arranged, or parameterized                                             |
+| 6   | **Architectural decision made**        | A deliberate design choice (composition vs. inheritance, service boundary, etc.)             |
+| 7   | **Reusable abstraction created**       | A utility, hook, or helper that solves a class of problems                                   |
+| 8   | **Convention applied first-try**       | Naming, import order, TypeScript strict rules correct from the start — no corrections needed |
 
 ### Agent workflow patterns (secondary)
 
-| # | Pattern | Signal to Look For |
-| - | ------- | ------------------ |
-| 9 | **Skill loaded proactively** | Read the relevant SKILL.md before starting work, not after a mistake |
-| 10 | **Validation before completion** | Ran `validate-code` or tests without being prompted |
-| 11 | **Scope respected** | Stayed within the stated project/task scope, no unrelated changes |
-| 12 | **Context gathered before implementing** | Read existing code or config before writing new code |
+| #   | Pattern                                  | Signal to Look For                                                   |
+| --- | ---------------------------------------- | -------------------------------------------------------------------- |
+| 9   | **Skill loaded proactively**             | Read the relevant SKILL.md before starting work, not after a mistake |
+| 10  | **Validation before completion**         | Ran `validate-code` or tests without being prompted                  |
+| 11  | **Scope respected**                      | Stayed within the stated project/task scope, no unrelated changes    |
+| 12  | **Context gathered before implementing** | Read existing code or config before writing new code                 |
 
 ---
 
@@ -141,25 +141,25 @@ Analyze the evidence for patterns that were missing, applied incorrectly, or cor
 
 #### Coding Gap Checklist (primary focus)
 
-| # | Gap | Signal to Look For |
-| - | --- | ------------------ |
-| 1 | **Missing naming convention** | Inconsistent names, abbreviated identifiers where the codebase requires explicit ones, or names corrected after first draft |
-| 2 | **Wrong TypeScript pattern** | `any` used, non-null assertion `!` used, or type narrowing done with a cast instead of a guard |
-| 3 | **Error handling gap** | Bare `catch`, swallowed error, or error surfaced as `string` instead of typed error |
-| 4 | **Module structure inconsistency** | New module organized differently from existing modules without a deliberate reason |
-| 5 | **Convention applied late** | Naming, import order, or strict TypeScript rule applied only after a correction prompt |
-| 6 | **Stale knowledge** | Used an outdated API, command, or pattern that has since changed in the codebase |
-| 7 | **Over-engineering** | Added abstractions, helpers, or documentation strings not requested or not needed |
-| 8 | **Scope creep** | Changed files outside the stated scope of the task |
+| #   | Gap                                | Signal to Look For                                                                                                          |
+| --- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Missing naming convention**      | Inconsistent names, abbreviated identifiers where the codebase requires explicit ones, or names corrected after first draft |
+| 2   | **Wrong TypeScript pattern**       | `any` used, non-null assertion `!` used, or type narrowing done with a cast instead of a guard                              |
+| 3   | **Error handling gap**             | Bare `catch`, swallowed error, or error surfaced as `string` instead of typed error                                         |
+| 4   | **Module structure inconsistency** | New module organized differently from existing modules without a deliberate reason                                          |
+| 5   | **Convention applied late**        | Naming, import order, or strict TypeScript rule applied only after a correction prompt                                      |
+| 6   | **Stale knowledge**                | Used an outdated API, command, or pattern that has since changed in the codebase                                            |
+| 7   | **Over-engineering**               | Added abstractions, helpers, or documentation strings not requested or not needed                                           |
+| 8   | **Scope creep**                    | Changed files outside the stated scope of the task                                                                          |
 
 #### Agent Workflow Gap Checklist (secondary)
 
-| # | Gap | Signal to Look For |
-| - | --- | ------------------ |
-| 9 | **Skill not consulted** | Jumped to implementation without reading the relevant skill or AGENTS.md |
-| 10 | **Missing validation** | Did not run `validate-code` before declaring completion; skipped tests |
-| 11 | **Repeated retries** | Same command or file edit attempted 2+ times with minor variation |
-| 12 | **Unsafe operation without backup** | Ran destructive git commands without using the `backup-code` skill first |
+| #   | Gap                                 | Signal to Look For                                                       |
+| --- | ----------------------------------- | ------------------------------------------------------------------------ |
+| 9   | **Skill not consulted**             | Jumped to implementation without reading the relevant skill or AGENTS.md |
+| 10  | **Missing validation**              | Did not run `validate-code` before declaring completion; skipped tests   |
+| 11  | **Repeated retries**                | Same command or file edit attempted 2+ times with minor variation        |
+| 12  | **Unsafe operation without backup** | Ran destructive git commands without using the `backup-code` skill first |
 
 ---
 
@@ -169,12 +169,12 @@ For each failure pattern **and** positive pattern found, classify the **correct 
 
 Priority order: prefer skills and AGENTS.md. Only fall back to memory for facts that have no better home.
 
-| Fix Type | Priority | When to Use | Target File |
-| -------- | -------- | ----------- | ----------- |
-| **Existing skill** | 1 — preferred | The skill exists but is missing a step, warning, or reinforcement note | `.github/skills/<name>/SKILL.md` |
-| **New skill** | 1 — preferred | A repeatable multi-step workflow has no skill yet | `.github/skills/<new-name>/SKILL.md` |
-| **AGENTS.md** | 2 — preferred | A short rule must be always-visible to every agent in this workspace | `AGENTS.md` or `<project>/AGENTS.md` |
-| **Memory** | 3 — last resort | A highly specific fact with no natural skill home, or a personal cross-workspace preference | `/memories/*.md` or `/memories/repo/*.md` |
+| Fix Type           | Priority        | When to Use                                                                                 | Target File                               |
+| ------------------ | --------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **Existing skill** | 1 — preferred   | The skill exists but is missing a step, warning, or reinforcement note                      | `.github/skills/<name>/SKILL.md`          |
+| **New skill**      | 1 — preferred   | A repeatable multi-step workflow has no skill yet                                           | `.github/skills/<new-name>/SKILL.md`      |
+| **AGENTS.md**      | 2 — preferred   | A short rule must be always-visible to every agent in this workspace                        | `AGENTS.md` or `<project>/AGENTS.md`      |
+| **Memory**         | 3 — last resort | A highly specific fact with no natural skill home, or a personal cross-workspace preference | `/memories/*.md` or `/memories/repo/*.md` |
 
 ---
 
@@ -259,24 +259,27 @@ Output a concise retrospective report:
 ## Lessons Learned — <date>
 
 ### Session / Changes Analyzed
+
 - <brief description of what was analyzed>
 
 ### What Went Well — Reinforce These
 
-| # | Pattern | Reinforcement Applied |
-| - | ------- | --------------------- |
-| 1 | <pattern> | Added ✅ callout to skill X / Added memory note / etc. |
+| #   | Pattern   | Reinforcement Applied                                  |
+| --- | --------- | ------------------------------------------------------ |
+| 1   | <pattern> | Added ✅ callout to skill X / Added memory note / etc. |
 
 ### What Could Be Improved — Fix These
 
-| # | Pattern | Severity | Fix Applied |
-| - | ------- | -------- | ----------- |
-| 1 | <pattern> | high/medium/low | Updated skill X / Added memory note / etc. |
+| #   | Pattern   | Severity        | Fix Applied                                |
+| --- | --------- | --------------- | ------------------------------------------ |
+| 1   | <pattern> | high/medium/low | Updated skill X / Added memory note / etc. |
 
 ### Changes Made
+
 - `<file path>`: <one-line description of what changed>
 
 ### Recommendations for Next Session
+
 - <actionable suggestion for the next agent>
 ```
 

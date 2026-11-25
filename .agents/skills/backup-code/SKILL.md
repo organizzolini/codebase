@@ -3,11 +3,6 @@ name: backup-code
 description: "Create a safety backup before potentially destructive actions. Use when running risky git commands (reset, rebase, clean, restore, checkout with overwrite, force push), applying large sweeping edits, mass refactors, broad search-and-replace, generator rewrites, or any operation that may be hard to undo. Produces a recoverable snapshot via backup branch, stash, or both, and verifies recovery commands."
 user-invocable: true
 argument-hint: "Describe what risky operation you are about to run and whether you prefer branch backup, stash backup, or both."
-compatibility:
-   environments:
-      - vscode
-      - github-copilot
-      - copilot-cli
 license: MIT
 ---
 
@@ -140,12 +135,12 @@ Only continue after backup artifact and recovery commands are confirmed.
 
 ## Troubleshooting
 
-| Problem | Cause | Fix |
-| --- | --- | --- |
-| `nothing to commit` on backup branch | No file changes staged | Keep branch as baseline checkpoint or proceed with stash-only if needed |
-| `No local changes to save` from stash | Clean worktree | Create branch checkpoint only |
-| Cannot switch branches | Ongoing merge/rebase/cherry-pick | Resolve or abort in-progress operation first, then create backup |
-| Backup commit rejected by hooks | Strict hooks on commit | Use stash strategy for local checkpoint, then revisit backup commit approach |
+| Problem                               | Cause                            | Fix                                                                          |
+| ------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------- |
+| `nothing to commit` on backup branch  | No file changes staged           | Keep branch as baseline checkpoint or proceed with stash-only if needed      |
+| `No local changes to save` from stash | Clean worktree                   | Create branch checkpoint only                                                |
+| Cannot switch branches                | Ongoing merge/rebase/cherry-pick | Resolve or abort in-progress operation first, then create backup             |
+| Backup commit rejected by hooks       | Strict hooks on commit           | Use stash strategy for local checkpoint, then revisit backup commit approach |
 
 ## Notes
 

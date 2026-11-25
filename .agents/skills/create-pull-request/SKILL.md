@@ -56,19 +56,19 @@ not every one. Keep the labels in step: one `scope:*` label per scope named.
 
 <!-- types-start -->
 
-| Type | Description |
-| ---- | ----------- |
-| `feat` | A new feature or capability that adds value for users |
-| `fix` | A bug fix that addresses a specific issue or problem |
-| `docs` | Documentation, AGENTS.md, SKILL.md, README, and planning files |
-| `test` | Adding or correcting unit, integration, or end-to-end tests |
-| `refactor` | Code restructuring that neither fixes a bug nor adds a feature |
-| `style` | Formatting, whitespace, or code structure changes with no semantic effect |
-| `perf` | A code change that improves performance (caching, query optimization, etc.) |
-| `chore` | Housekeeping that doesn't modify src or test files (gitignore, editor config, etc.) |
-| `ci` | GitHub Actions workflows, composite actions, and CI/CD scripts |
-| `build` | Build system, Vite/Docker/Helm config, or external dependency integration |
-| `revert` | Reverts a previous commit |
+| Type       | Description                                                                         |
+| ---------- | ----------------------------------------------------------------------------------- |
+| `feat`     | A new feature or capability that adds value for users                               |
+| `fix`      | A bug fix that addresses a specific issue or problem                                |
+| `docs`     | Documentation, AGENTS.md, SKILL.md, README, and planning files                      |
+| `test`     | Adding or correcting unit, integration, or end-to-end tests                         |
+| `refactor` | Code restructuring that neither fixes a bug nor adds a feature                      |
+| `style`    | Formatting, whitespace, or code structure changes with no semantic effect           |
+| `perf`     | A code change that improves performance (caching, query optimization, etc.)         |
+| `chore`    | Housekeeping that doesn't modify src or test files (gitignore, editor config, etc.) |
+| `ci`       | GitHub Actions workflows, composite actions, and CI/CD scripts                      |
+| `build`    | Build system, Vite/Docker/Helm config, or external dependency integration           |
+| `revert`   | Reverts a previous commit                                                           |
 
 <!-- types-end -->
 
@@ -76,39 +76,39 @@ not every one. Keep the labels in step: one `scope:*` label per scope named.
 
 <!-- scopes-start -->
 
-| Scope | Description |
-| ----- | ----------- |
-| `ic-suite` | Code measurement and validation toolchains and their shared conventions |
-| `affirmancy` | Python Jupyter notebook application for LangGraph affirmation generation |
-| `caelundas` | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris) |
-| `configuration` | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.) |
-| `compliance` | GitHub issue and pull request metadata, repository governance, and external resource policies |
-| `conformetry` | Code generator templates and validation tests for generated instances |
-| `persistence` | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations |
-| `interface` | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers |
-| `dependencies` | Dependency version changes (upgrades, additions, removals via pnpm) |
-| `deployment` | Deployment CLI: the CI release steps |
-| `deployments` | GitHub Actions workflows and CI/CD pipeline configuration |
-| `documentation` | Markdown docs, skills, planning files, and AGENTS.md files |
-| `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources |
-| `installation` | Developer-machine setup: environment files, dependencies, shell config, software |
-| `integration` | CI plumbing: steps around a CI job (affected run, Nx task-cache database) |
-| `JimmyPaolini` | Static GitHub profile README project (markdown and assets) |
-| `lexico` | TanStack Start SSR Latin dictionary web app |
-| `presentation` | Shared React/shadcn component library |
-| `lexico-db` | Shared TypeORM entities and GraphQL types |
-| `lexico-cli` | Data ingestion scripts for Lexico |
-| `meanderaw` | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads |
-| `sempientor` | Lexical gap discovery CLI for English morphological and phonotactic gaps |
-| `callidescope` | Call stack tracing and linting CLI and its configuration and rendering packages |
-| `codependix` | Dependency graph export CLI and its configuration and boundary-checking packages |
-| `codometer` | Code statistics measurement CLI and its configuration, diff, and rendering packages |
-| `coinagerie` | Codebase vocabulary CLI that lists the words a codebase uses and keeps a glossary of them in step with the code |
-| `no-release` | Escape hatch: suppress semantic-release for any commit type |
-| `release` | Version bumps and release commits generated by semantic-release |
-| `reporting` | Pull request change report generation and the packages that diff and render it |
-| `scripts` | Shell and TypeScript scripts in scripts/ (sync, setup, utilities) |
-| `testing` | Vitest configuration, shared test utilities, and coverage setup |
+| Scope            | Description                                                                                                     |
+| ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| `ic-suite`       | Code measurement and validation toolchains and their shared conventions                                         |
+| `affirmancy`     | Python Jupyter notebook application for LangGraph affirmation generation                                        |
+| `caelundas`      | Node.js CLI for astronomical calendar generation (NASA JPL ephemeris)                                           |
+| `configuration`  | Workspace root config files (tsconfig, eslint, vitest, nx.json, etc.)                                           |
+| `compliance`     | GitHub issue and pull request metadata, repository governance, and external resource policies                   |
+| `conformetry`    | Code generator templates and validation tests for generated instances                                           |
+| `persistence`    | Shared Postgres package: environment, TypeORM module, base entities, test harness, and migrations               |
+| `interface`      | Shared GraphQL package: Relay helpers, entity-to-object types, client codegen, and test helpers                 |
+| `dependencies`   | Dependency version changes (upgrades, additions, removals via pnpm)                                             |
+| `deployment`     | Deployment CLI: the CI release steps                                                                            |
+| `deployments`    | GitHub Actions workflows and CI/CD pipeline configuration                                                       |
+| `documentation`  | Markdown docs, skills, planning files, and AGENTS.md files                                                      |
+| `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources                                                        |
+| `installation`   | Developer-machine setup: environment files, dependencies, shell config, software                                |
+| `integration`    | CI plumbing: steps around a CI job (affected run, Nx task-cache database)                                       |
+| `JimmyPaolini`   | Static GitHub profile README project (markdown and assets)                                                      |
+| `lexico`         | TanStack Start SSR Latin dictionary web app                                                                     |
+| `presentation`   | Shared React/shadcn component library                                                                           |
+| `lexico-db`      | Shared TypeORM entities and GraphQL types                                                                       |
+| `lexico-cli`     | Data ingestion scripts for Lexico                                                                               |
+| `meanderaw`      | Greek meander (key/fret) SVG generator CLI and the composable motif/modifier library it reads                   |
+| `sempientor`     | Lexical gap discovery CLI for English morphological and phonotactic gaps                                        |
+| `callidescope`   | Call stack tracing and linting CLI and its configuration and rendering packages                                 |
+| `codependix`     | Dependency graph export CLI and its configuration and boundary-checking packages                                |
+| `codometer`      | Code statistics measurement CLI and its configuration, diff, and rendering packages                             |
+| `coinagerie`     | Codebase vocabulary CLI that lists the words a codebase uses and keeps a glossary of them in step with the code |
+| `no-release`     | Escape hatch: suppress semantic-release for any commit type                                                     |
+| `release`        | Version bumps and release commits generated by semantic-release                                                 |
+| `reporting`      | Pull request change report generation and the packages that diff and render it                                  |
+| `scripts`        | Shell and TypeScript scripts in scripts/ (sync, setup, utilities)                                               |
+| `testing`        | Vitest configuration, shared test utilities, and coverage setup                                                 |
 
 <!-- scopes-end -->
 
@@ -119,9 +119,9 @@ not every one. Keep the labels in step: one `scope:*` label per scope named.
 ```text
 feat(lexico): ✨ add user profile page
 fix(caelundas): 🐛 correct aspect angle calculation
-docs(codebase): 📝 update contributing guide
+docs(documentation): 📝 update contributing guide
 chore(dependencies): ⬆️ upgrade react to v19
-refactor(components): ♻️ simplify button variants
+refactor(presentation): ♻️ simplify button variants
 ```
 
 ❌ **Bad PR titles:**
@@ -192,9 +192,9 @@ git checkout -b feat/lexico-user-profile
 Commits must follow conventions. See [commit-code skill](../commit-code/SKILL.md).
 
 ```bash
-# Stage and commit changes
-git add .
-git commit -m "feat(lexico): ✨ add user profile component"
+# Stage the files you changed, then commit
+git add <paths>
+git commit -S -m "feat(lexico): ✨ add user profile component"
 ```
 
 ### 3. Push Branch
@@ -274,38 +274,32 @@ git commit -m "fix(lexico): 🐛 address review feedback"
 git push
 ```
 
-### 6. Merge PR
+### 6. Ship It
 
-After approval, merge using the GitHub UI or CLI:
-
-```bash
-gh pr merge --squash --delete-branch
-```
+Once the pull request is reviewed, the [ship-changes skill](../ship-changes/SKILL.md) carries it through CI, the merge queue, and release, and checks it on `main`.
 
 ## CI Requirements
 
 All PRs must pass these checks before merging:
 
-| Check                | Command                                                | Description                                                                                                                      |
-| -------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
-| Branch Name          | `validate-branch-name`                                 | Branch follows naming conventions                                                                                                |
-| PR Title             | `commitlint`, `compliance pull-request`                | Title follows commit message format and names at most 3 scopes                                                                   |
-| PR Body              | `compliance pull-request`                              | Required sections: 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related, each in its shape and within its word limit                   |
-| Issue Link           | `compliance pull-request`                              | Pull request closes or references an issue (`closingIssuesReferences` is not empty)                                              |
-| Release Significance | `compliance pull-request`                              | Title's type is at least as significant as the most significant commit, and the title names at least one scope its commits use   |
-| Lint                 | `nx affected --target=lint-code`                       | Every static check: ESLint, oxlint, oxfmt, typecheck, spell-check, knip, and more                                                |
-| Test                 | `nx affected --target=vitest --configuration=coverage` | Unit and integration tests against the coverage gates                                                                            |
+| Check                | Command                                                                    | Description                                                                                                                    |
+| -------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Branch Name          | `validate-branch-name`                                                     | Branch follows naming conventions                                                                                              |
+| PR Title             | `commitlint`, `compliance pull-request`                                    | Title follows commit message format and names at most 3 scopes                                                                 |
+| PR Body              | `compliance pull-request`                                                  | Required sections: 🌰 Summary, 📝 Details, 🧪 Testing, 🔗 Related, each in its shape and within its word limit                 |
+| Issue Link           | `compliance pull-request`                                                  | Pull request closes or references an issue (`closingIssuesReferences` is not empty)                                            |
+| Release Significance | `compliance pull-request`                                                  | Title's type is at least as significant as the most significant commit, and the title names at least one scope its commits use |
+| Static               | `nx affected --target=typecheck-code,format-code,lint-code,deprecate-code` | Typecheck and type coverage; formatting and spelling; ESLint and oxlint; knip and fallow                                       |
+| Guard                | `nx affected --target=guard-code`                                          | Depth, boundaries, glossaries, conformance, and the repository's own sync checks                                               |
+| Test                 | `nx affected --target=vitest --configuration=coverage`                     | Unit and integration tests against the coverage gates                                                                          |
 
 There is no `lint`, `format`, or `clean` target in this workspace. `nx affected
 --target=lint` exits 0 printing "No tasks were run", so it is a check that
 passes without checking anything — always name a real target.
 
-Run locally before pushing:
+Run the [validate-code skill](../validate-code/SKILL.md) before pushing, then the coverage gate:
 
 ```bash
-# Run all checks on affected projects
-nx affected --target=lint-code --configuration=write --base=main
-nx affected --target=lint-code --configuration=check --base=main
 nx affected --target=vitest --configuration=coverage --base=main
 ```
 
@@ -318,8 +312,9 @@ Use draft PRs for work in progress:
 gh api repos/{owner}/{repo}/pulls -F draft=true -f head=<branch> -f base=main \
   -f title="feat(lexico): ✨ [WIP] add user profile" -f body="..."
 
-# Mark ready for review when complete (Claude Code session; elsewhere `gh pr ready`)
-gh api -X POST repos/{owner}/{repo}/pulls/<number>/ccr/ready_for_review
+# Mark ready for review when complete
+gh api -X POST repos/{owner}/{repo}/pulls/<number>/ccr/ready_for_review   # Claude Code session
+gh pr ready <number>                                                      # anywhere else (GraphQL)
 ```
 
 ## Linking Issues and Documentation
@@ -341,7 +336,7 @@ Use a closing keyword for the one issue this PR finishes. See the [link-issue sk
 
 Include relevant links to help reviewers understand context:
 
-- Internal docs: links to AGENTS.md, SKILL.md, planning files, or ADRs
+- Internal docs: links to AGENTS.md, SKILL.md, a project README, or the spec issue
 - External docs: library documentation, RFCs, specifications
 - Related PRs: links to dependent or prerequisite pull requests
 
@@ -423,7 +418,7 @@ Before creating the PR, verify:
 - [ ] An issue exists for the work ([link-issue](../link-issue/SKILL.md)), and Related opens with a `-` list whose first bullet is `Closes #N`
 - [ ] The body's closing keyword names that issue once the PR is open: `gh api repos/{owner}/{repo}/pulls/<number> --jq .body | grep -oiE '(close[sd]?|fix(e[sd])?|resolve[sd]?):? +#[0-9]+'`
 - [ ] The title's type and scopes are at least as release-significant as every commit on the branch — see [Release Significance](../commit-code/SKILL.md#release-significance)
-- [ ] Local CI checks pass: `nx affected --target=lint-code --configuration=check --base=main && nx affected --target=vitest --configuration=coverage --base=main`
+- [ ] [validate-code](../validate-code/SKILL.md) passes, and so does `nx affected --target=vitest --configuration=coverage --base=main`
 
 ## Common Patterns
 
@@ -485,7 +480,7 @@ Fixes incorrect timezone handling for ephemeris calculations near DST boundaries
 ### Documentation PR
 
 ```text
-Title: docs(codebase): 📝 add contributing guide
+Title: docs(documentation): 📝 add contributing guide
 
 ## 🌰 Summary
 
@@ -558,14 +553,11 @@ git checkout -b <type>/<scope>-<description>
 gh api repos/{owner}/{repo}/pulls -f title="<type>(<scope>): <gitmoji> <subject>" -f head=<branch> -f base=main -f body="..."
 
 # Run CI checks locally
-nx affected --target=lint-code --configuration=check --base=main &&
+nx affected --target=typecheck-code,format-code,lint-code,deprecate-code,guard-code --configuration=check --base=main &&
   nx affected --target=vitest --configuration=coverage --base=main
 
 # Update branch
 git fetch origin main && git rebase origin/main && git push --force-with-lease
-
-# Merge PR
-gh pr merge --squash --delete-branch
 ```
 
 ## Resources

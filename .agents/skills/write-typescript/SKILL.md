@@ -21,18 +21,18 @@ Use this skill when:
 ## References
 
 - [Strict typing](./references/strict-typing.md)
-: strict flags, explicit return types, `any` avoidance, `unknown`, promises, exhaustive switches.
+  : strict flags, explicit return types, `any` avoidance, `unknown`, promises, exhaustive switches.
 - [Naming and imports](./references/naming-and-imports.md)
-: identifier naming, abbreviation rules, file naming, type imports, NodeNext `.js` extensions.
+  : identifier naming, abbreviation rules, file naming, type imports, NodeNext `.js` extensions.
 - [Class and control flow](./references/class-and-control-flow.md)
-: readonly properties, braces, early returns, object shorthand, template literals.
+  : readonly properties, braces, early returns, object shorthand, template literals.
 - [Error handling and tests](./references/errors-and-tests.md)
-: catch typing, guard-first test narrowing, Node Dirent mock typing pattern.
+  : catch typing, guard-first test narrowing, Node Dirent mock typing pattern.
 - [Formatting and ordering](./references/formatting-and-ordering.md)
-: `oxfmt` settings, import groups, enforced alphabetical order, the 3-parameter
-limit, JSDoc on public APIs.
+  : `oxfmt` settings, import groups, enforced alphabetical order, the 3-parameter
+  limit, JSDoc on public APIs.
 - [Size limits](./references/size-limits.md)
-: file length, function length, block nesting depth, parameter limits, complexity, comment block sizes.
+  : file length, function length, block nesting depth, parameter limits, complexity, comment block sizes.
 
 ## Related Skills
 
@@ -42,12 +42,7 @@ limit, JSDoc on public APIs.
 
 ## Verification
 
-After TypeScript changes:
-
-```bash
-pnpm exec nx run <project>:lint-code --configuration=write
-pnpm exec nx run <project>:lint-code --configuration=check
-```
+After TypeScript changes, run the [validate-code skill](../validate-code/SKILL.md): `typecheck-code` covers `tsc` and type coverage, and `lint-code` covers ESLint and oxlint.
 
 ## Notes
 
