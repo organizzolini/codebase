@@ -5,7 +5,8 @@ the steps that run around a Continuous Integration job.
 - **Checks**, which run in check mode and say what to fix: `catalog-manifests`
   pins externals to `catalog:`, `lockfile` runs the frozen install,
   `readme-projects` links every workspace project from the root README, and
-  `skill-descriptions` holds every authored skill description to 128 words.
+  `skill-descriptions` holds every authored skill description to 64 words
+  and all of them to a listing budget of 12,500 characters.
 - **Derivations**, which check by default and rewrite with `:write`:
   `conventional-config`, `devcontainer-configuration`,
   `package-manifests`, `project-ports`, `skill-exclusions`, and

@@ -212,12 +212,12 @@ describe(SkillDescriptionsService, () => {
       writeWorkspaceFile(
         workspaceRoot,
         "fits/SKILL.md",
-        renderSkill("fits", "word ".repeat(128).trim()),
+        renderSkill("fits", "word ".repeat(64).trim()),
       );
       writeWorkspaceFile(
         workspaceRoot,
         "overlong/SKILL.md",
-        renderSkill("overlong", "word ".repeat(129).trim()),
+        renderSkill("overlong", "word ".repeat(65).trim()),
       );
 
       expect(
@@ -225,7 +225,27 @@ describe(SkillDescriptionsService, () => {
           "fits/SKILL.md",
           "overlong/SKILL.md",
         ]),
-      ).toStrictEqual([{ skillPath: "overlong/SKILL.md", words: 129 }]);
+      ).toStrictEqual([{ skillPath: "overlong/SKILL.md", words: 65 }]);
+    });
+  });
+
+  describe("measureTotalCharacters", () => {
+    it("adds up every description's characters, counting a missing one as none", () => {
+      expect.hasAssertions();
+
+      const workspaceRoot = createTemporaryDirectory("skill-descriptions");
+
+      writeWorkspaceFile(workspaceRoot, "a/SKILL.md", renderSkill("a", "abc"));
+      writeWorkspaceFile(workspaceRoot, "b/SKILL.md", renderSkill("b", "de"));
+      writeWorkspaceFile(workspaceRoot, "c/SKILL.md", "# No front matter\n");
+
+      expect(
+        service.measureTotalCharacters(workspaceRoot, [
+          "a/SKILL.md",
+          "b/SKILL.md",
+          "c/SKILL.md",
+        ]),
+      ).toBe(5);
     });
   });
 });

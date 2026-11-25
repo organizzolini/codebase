@@ -3,7 +3,10 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { MAXIMUM_DESCRIPTION_WORDS } from "./skill-descriptions.constants";
+import {
+  MAXIMUM_DESCRIPTION_WORDS,
+  MAXIMUM_TOTAL_DESCRIPTION_CHARACTERS,
+} from "./skill-descriptions.constants";
 import { SkillDescriptionsService } from "./skill-descriptions.service";
 
 import type { SynchronizableCommand } from "../../synchronization.types";
@@ -16,7 +19,7 @@ import type { SynchronizableCommand } from "../../synchronization.types";
  * Exits 0 when every description fits and 1 when any does not.
  */
 @Command({
-  description: `Check that every authored skill description holds at most ${String(MAXIMUM_DESCRIPTION_WORDS)} words`,
+  description: `Check that every authored skill description holds at most ${String(MAXIMUM_DESCRIPTION_WORDS)} words, and all of them ${String(MAXIMUM_TOTAL_DESCRIPTION_CHARACTERS)} characters`,
   name: "skill-descriptions",
 })
 @Injectable()
@@ -38,7 +41,7 @@ export class SkillDescriptionsCommand
 
   // 🔑 Public Fields
 
-  readonly fixCommand = `shorten each named description to ${String(MAXIMUM_DESCRIPTION_WORDS)} words, moving detail into the skill body`;
+  readonly fixCommand = `shorten the descriptions to ${String(MAXIMUM_DESCRIPTION_WORDS)} words each and ${String(MAXIMUM_TOTAL_DESCRIPTION_CHARACTERS)} characters together, moving detail into the skill bodies`;
 
   readonly synchronizationLabel = "skill-descriptions";
 
@@ -66,21 +69,35 @@ export class SkillDescriptionsCommand
         workspaceRoot,
         skillPaths,
       );
+    const totalCharacters =
+      this.skillDescriptionsService.measureTotalCharacters(
+        workspaceRoot,
+        skillPaths,
+      );
+    const fitsBudget = totalCharacters <= MAXIMUM_TOTAL_DESCRIPTION_CHARACTERS;
 
-    if (overlongDescriptions.length === 0) {
+    if (overlongDescriptions.length === 0 && fitsBudget) {
       console.info(
-        `All ${String(skillPaths.length)} authored skill descriptions hold at most ${String(MAXIMUM_DESCRIPTION_WORDS)} words.`,
+        `All ${String(skillPaths.length)} authored skill descriptions hold at most ${String(MAXIMUM_DESCRIPTION_WORDS)} words, ${String(totalCharacters)} of ${String(MAXIMUM_TOTAL_DESCRIPTION_CHARACTERS)} characters together.`,
       );
 
       return true;
     }
 
-    console.error(
-      `These skill descriptions hold more than ${String(MAXIMUM_DESCRIPTION_WORDS)} words:`,
-    );
+    if (overlongDescriptions.length > 0) {
+      console.error(
+        `These skill descriptions hold more than ${String(MAXIMUM_DESCRIPTION_WORDS)} words:`,
+      );
 
-    for (const { skillPath, words } of overlongDescriptions) {
-      console.error(`- ${skillPath} (${String(words)} words)`);
+      for (const { skillPath, words } of overlongDescriptions) {
+        console.error(`- ${skillPath} (${String(words)} words)`);
+      }
+    }
+
+    if (!fitsBudget) {
+      console.error(
+        `The authored skill descriptions hold ${String(totalCharacters)} characters together, over the ${String(MAXIMUM_TOTAL_DESCRIPTION_CHARACTERS)} the listing budget allows.`,
+      );
     }
 
     return false;

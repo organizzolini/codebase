@@ -2,8 +2,11 @@ import { z } from "zod";
 
 // ♟️ Constants
 
-/** Most words a skill description may hold before agent listings truncate. */
-export const MAXIMUM_DESCRIPTION_WORDS = 128;
+/** Most words one skill description may hold. */
+export const MAXIMUM_DESCRIPTION_WORDS = 64;
+
+/** Most characters all authored descriptions may hold together in the listing. */
+export const MAXIMUM_TOTAL_DESCRIPTION_CHARACTERS = 12_500;
 
 /** Where every installed skill lives, relative to the workspace root. */
 export const SKILLS_DIRECTORY = ".agents/skills";

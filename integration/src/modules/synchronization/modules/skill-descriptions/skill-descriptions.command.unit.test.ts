@@ -39,6 +39,9 @@ describe(SkillDescriptionsCommand, () => {
       ".agents/skills/commit-code/SKILL.md",
       ".agents/skills/write-tests/SKILL.md",
     ]);
+    vi.mocked(skillDescriptionsService.measureTotalCharacters).mockReturnValue(
+      600,
+    );
   });
 
   it("resolves with its dependencies", async () => {
@@ -68,7 +71,7 @@ describe(SkillDescriptionsCommand, () => {
     await command.run();
 
     expect(reportLines).toStrictEqual([
-      "All 2 authored skill descriptions hold at most 128 words.",
+      "All 2 authored skill descriptions hold at most 64 words, 600 of 12500 characters together.",
     ]);
   });
 
@@ -78,7 +81,7 @@ describe(SkillDescriptionsCommand, () => {
     vi.mocked(
       skillDescriptionsService.findOverlongDescriptions,
     ).mockReturnValue([
-      { skillPath: ".agents/skills/commit-code/SKILL.md", words: 129 },
+      { skillPath: ".agents/skills/commit-code/SKILL.md", words: 65 },
       { skillPath: ".agents/skills/write-tests/SKILL.md", words: 200 },
     ]);
 
@@ -89,16 +92,37 @@ describe(SkillDescriptionsCommand, () => {
     processExitSpy.mockRestore();
 
     expect(reportLines).toStrictEqual([
-      "These skill descriptions hold more than 128 words:",
-      "- .agents/skills/commit-code/SKILL.md (129 words)",
+      "These skill descriptions hold more than 64 words:",
+      "- .agents/skills/commit-code/SKILL.md (65 words)",
       "- .agents/skills/write-tests/SKILL.md (200 words)",
+    ]);
+  });
+
+  it("reports descriptions over the listing budget together and exits non-zero", async () => {
+    expect.hasAssertions();
+
+    vi.mocked(
+      skillDescriptionsService.findOverlongDescriptions,
+    ).mockReturnValue([]);
+    vi.mocked(skillDescriptionsService.measureTotalCharacters).mockReturnValue(
+      12_501,
+    );
+
+    const processExitSpy = mockProcessExit();
+
+    await expect(command.run()).rejects.toThrow("process.exit:1");
+
+    processExitSpy.mockRestore();
+
+    expect(reportLines).toStrictEqual([
+      "The authored skill descriptions hold 12501 characters together, over the 12500 the listing budget allows.",
     ]);
   });
 
   it("tells the user to shorten each description as the fix", () => {
     expect(command.synchronizationLabel).toBe("skill-descriptions");
     expect(command.fixCommand).toBe(
-      "shorten each named description to 128 words, moving detail into the skill body",
+      "shorten the descriptions to 64 words each and 12500 characters together, moving detail into the skill bodies",
     );
   });
 
@@ -108,7 +132,7 @@ describe(SkillDescriptionsCommand, () => {
     vi.mocked(
       skillDescriptionsService.findOverlongDescriptions,
     ).mockReturnValue([
-      { skillPath: ".agents/skills/commit-code/SKILL.md", words: 129 },
+      { skillPath: ".agents/skills/commit-code/SKILL.md", words: 65 },
     ]);
 
     await expect(command.synchronize()).resolves.toBe(false);

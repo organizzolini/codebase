@@ -209,7 +209,7 @@
     "repl": {},
     "skill-descriptions": {
       "cache": true,
-      "description": "Verify every skill this repository authors keeps its description within 128 words, so the agent's skill listing never truncates. A `guard-code` dependency, affected whenever a skill or the skills lockfile changes.",
+      "description": "Verify every skill this repository authors keeps its description within 64 words, and all of them within 12,500 characters together, so the agent's skill listing never truncates. A `guard-code` dependency, affected whenever a skill or the skills lockfile changes.",
       "executor": "nx:run-commands",
       "inputs": [
         "^production",

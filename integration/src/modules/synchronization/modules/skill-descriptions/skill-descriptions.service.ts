@@ -96,6 +96,18 @@ export class SkillDescriptionsService {
       .filter(({ words }) => words > MAXIMUM_DESCRIPTION_WORDS);
   }
 
+  /** How many characters the skills' descriptions hold together. */
+  public measureTotalCharacters(
+    workspaceRoot: string,
+    skillPaths: string[],
+  ): number {
+    return skillPaths.reduce(
+      (total, skillPath) =>
+        total + this.readDescription(workspaceRoot, skillPath).length,
+      0,
+    );
+  }
+
   /** A skill file's description, or an empty string when it declares none. */
   public readDescription(workspaceRoot: string, skillPath: string): string {
     const contents = readFileSync(path.join(workspaceRoot, skillPath), "utf8");
