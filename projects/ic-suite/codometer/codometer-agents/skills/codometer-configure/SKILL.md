@@ -1,6 +1,6 @@
 ---
 name: codometer-configure
-description: Write or edit a codometer.config.ts, declaring inputs, limits, custom convention counters, comment budgets, exclusions, or output destinations. Use when a repository has no codometer configuration yet, when adding a size or count limit, when bounding how long a comment block or a JSDoc comment may run, when declaring an input for compiled or generated output, when counting a naming convention no built-in analyzer knows about, when a limit fails to bind or an input matches no files, or when deciding whether one configuration can describe every project in a workspace.
+description: "Write or edit a codometer.config.ts: inputs, size and count limits, comment and JSDoc budgets, custom convention counters, exclusions, and output destinations. Use when a repository has no configuration, when adding a limit or budget, when counting a naming convention no analyzer knows, or when a limit fails to bind or an input matches no files."
 license: MIT
 ---
 
