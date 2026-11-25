@@ -13,6 +13,7 @@ import { LockfileModule } from "./modules/lockfile/lockfile.module";
 import { PackageManifestsModule } from "./modules/package-manifests/package-manifests.module";
 import { ProjectPortsModule } from "./modules/project-ports/project-ports.module";
 import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
+import { SkillDescriptionsModule } from "./modules/skill-descriptions/skill-descriptions.module";
 import { SkillExclusionsModule } from "./modules/skill-exclusions/skill-exclusions.module";
 import { VscodeExtensionsModule } from "./modules/vscode-extensions/vscode-extensions.module";
 import { SynchronizationMarkersService } from "./synchronization-markers.service";
@@ -30,6 +31,7 @@ describe(SynchronizationModule, () => {
       CatalogManifestsModule,
       LockfileModule,
       ReadmeProjectsModule,
+      SkillDescriptionsModule,
       ConventionalConfigModule,
       DevcontainerConfigurationModule,
       PackageManifestsModule,

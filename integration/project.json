@@ -209,6 +209,35 @@
       "outputs": []
     },
     "repl": {},
+    "skill-descriptions": {
+      "cache": true,
+      "description": "Verify every skill this repository authors keeps its description within 128 words, so the agent's skill listing never truncates. A `guard-code` dependency, affected whenever a skill or the skills lockfile changes.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/.agents/skills/*/SKILL.md",
+        "{workspaceRoot}/projects/ic-suite/*/*-agents/skills/*/SKILL.md",
+        "{workspaceRoot}/skills-lock.json",
+        "production",
+        {
+          "externalDependencies": [
+            "@nestjs/common",
+            "@nestjs/config",
+            "@nestjs/core",
+            "@swc-node/register",
+            "nest-commander",
+            "reflect-metadata",
+            "yaml",
+            "zod"
+          ]
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts skill-descriptions",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": []
+    },
     "skill-exclusions": {
       "cache": true,
       "configurations": {

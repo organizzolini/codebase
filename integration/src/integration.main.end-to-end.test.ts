@@ -30,6 +30,7 @@ const COMMAND_NAMES = [
   "report-codometer-changes",
   "run-affected",
   "setup-codebase",
+  "skill-descriptions",
   "skill-exclusions",
   "synchronization",
   "upgrade-dependencies",

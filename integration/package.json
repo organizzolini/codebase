@@ -8,6 +8,7 @@
     "lodash": "catalog:",
     "nest-commander": "catalog:",
     "reflect-metadata": "catalog:",
+    "yaml": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
