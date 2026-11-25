@@ -13,11 +13,15 @@ import {
   TAG_NAMES_SQL,
   tagNameRowSchema,
 } from "./event-metrics.constants";
+import { factsRowSchema } from "./modules/facts/event-metrics-facts.constants";
+import { EventMetricsFactsService } from "./modules/facts/event-metrics-facts.service";
+import { toMeasuredRows } from "./modules/facts/event-metrics-facts.utilities";
 import { EventMetricsQueryService } from "./modules/query-building/event-metrics-query.service";
 import { rollupZoneSchema } from "./modules/rollups/event-metrics-rollup.constants";
 import {
   compileRollupGuard,
   compileRollupRead,
+  findRollupTarget,
   isRollupRequest,
 } from "./modules/rollups/event-metrics-rollup.utilities";
 import {
@@ -32,6 +36,10 @@ import type {
   EventMetricsRow,
   MetricsPeriod,
 } from "./event-metrics.types";
+import type {
+  CompiledFactsQuery,
+  MeasuredRows,
+} from "./modules/facts/event-metrics-facts.types";
 import type { EventMetricsInputEntity } from "./modules/inputs/event-metrics-input.entities";
 import type { EventMetricsResultEntity } from "./modules/results/event-metrics-result.entities";
 
@@ -49,11 +57,30 @@ export class EventMetricsService {
     private readonly filterService: EventFilterService,
     @Inject(EventGroupingService)
     private readonly groupingService: EventGroupingService,
+    @Inject(EventMetricsFactsService)
+    private readonly factsService: EventMetricsFactsService,
     @Inject(EventMetricsQueryService)
     private readonly queryService: EventMetricsQueryService,
   ) {}
 
   // 🔏 Private Methods
+
+  /**
+   * The facts statement for a request the rollups do not wholly cover, or none
+   * when the facts cannot answer it either.
+   */
+  private compileFacts(
+    request: EventMetricsQueryRequest,
+    zone: null | string,
+  ): CompiledFactsQuery | null {
+    const covered =
+      zone !== null &&
+      request.grouping.every(
+        (_, level) => findRollupTarget({ ...request, level }) !== null,
+      );
+
+    return covered ? null : this.factsService.compile(request);
+  }
 
   /**
    * The zone the rollups answer in, when they hold the periods exactly as the
@@ -74,6 +101,38 @@ export class EventMetricsService {
     );
 
     return row?.timezone ?? null;
+  }
+
+  /**
+   * Measures the whole set and every level: with the facts in one statement,
+   * else with a statement each over the rollups or the events.
+   */
+  private async measure(
+    request: EventMetricsQueryRequest,
+    zone: null | string,
+  ): Promise<MeasuredRows> {
+    const facts = this.compileFacts(request, zone);
+
+    if (facts !== null) {
+      const rows = await this.eventsService.selectTuned(
+        facts.sql,
+        facts.parameters,
+        factsRowSchema,
+      );
+
+      return toMeasuredRows(rows, { ...facts, metrics: request.metrics });
+    }
+
+    const [total, levels] = await Promise.all([
+      this.readRows(request, zone),
+      Promise.all(
+        request.grouping.map(async (_, level) =>
+          this.readRows({ ...request, level }, zone),
+        ),
+      ),
+    ]);
+
+    return { levels, total };
   }
 
   /**
@@ -119,7 +178,7 @@ export class EventMetricsService {
   ): Promise<EventMetricsRow[]> {
     const rollup = zone === null ? null : compileRollupRead(request, zone);
     const { parameters, sql } = rollup ?? this.queryService.compile(request);
-    const rows = await this.eventsService.select(
+    const rows = await this.eventsService.selectTuned(
       sql,
       parameters,
       metricRowSchema,
@@ -181,15 +240,10 @@ export class EventMetricsService {
       tagRoot: input.tagRoot ?? null,
     };
     const zone = await this.findZone(base);
-    const [total, names, dataset, rows] = await Promise.all([
-      this.readRows(base, zone),
+    const [{ levels: rows, total }, names, dataset] = await Promise.all([
+      this.measure(base, zone),
       this.readNames(grouping),
       this.eventsService.describeDataset(),
-      Promise.all(
-        grouping.map(async (_, level) =>
-          this.readRows({ ...base, level }, zone),
-        ),
-      ),
     ]);
 
     return {

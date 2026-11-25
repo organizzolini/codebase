@@ -52,11 +52,12 @@ export class DatabaseService {
    */
   async refreshReadModel(manager: EntityManager): Promise<void> {
     await manager.transaction(async (transaction) => {
-      for (const statement of READ_MODEL_STATEMENTS) {
+      for (const statement of [
+        ...READ_MODEL_STATEMENTS,
+        ...METRICS_REFRESH_STATEMENTS,
+      ]) {
         await transaction.query<unknown>(statement);
       }
-
-      await this.refreshMetrics(transaction);
     });
   }
 }

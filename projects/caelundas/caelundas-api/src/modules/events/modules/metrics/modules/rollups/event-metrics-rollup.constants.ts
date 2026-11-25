@@ -13,7 +13,7 @@ import type {
 /** The day rollup: one row a local day, no tag. */
 export const DAY_ROLLUP_TABLE = "calendar_event_day_rollups";
 
-/** The day and tag rollup: one row a local day and tag node. */
+/** The day and tag rollup: a row a local day and tag. */
 export const DAY_TAG_ROLLUP_TABLE = "calendar_event_day_tag_rollups";
 
 /** The events that start before a period and reach into it. */
@@ -35,7 +35,7 @@ const EVENT_ROW_SQL = `1::bigint, (case when {e}.is_instant then 1 else 0 end)::
       {e}."start", {e}."start", tstzmultirange({e}.span),
       case when {e}.is_instant then '{}'::bigint[] else array[{e}.duration_seconds] end, {e}.direct_tag_ids`;
 
-/** The events of a tag level that carry none of the root's tags. */
+/** The events of a tag level with none of the root's tags. */
 const UNTAGGED_SQL = `where not f.tag_ids && (
       select coalesce(array_agg(tn.id), '{}'::uuid[])
       from tag_nodes tn
@@ -63,7 +63,7 @@ export const ROLLUP_UNTAGGED_ROWS_SQL = `
       ${EVENT_ROW_SQL.replaceAll("{e}", "c")}
     from c`;
 
-/** The metrics' columns, over a rollup's row `r` or a crossing event `x`. */
+/** The metrics' columns over a rollup row `r` or crossing event `x`. */
 const ROLLUP_ROWS_SQL = `
     select p.period, r.local_day{rollupExtra},
       r.events, r.instants, r.spans, r.duration_seconds, r.progressive_seconds,
@@ -156,7 +156,7 @@ export const ROLLUP_DIRECTS_SQL = `,
     group by z.period{zGroup}
   )`;
 
-/** The distinct names of the events of the whole set or a calendar group. */
+/** The distinct event names of the whole set or a calendar group. */
 export const ROLLUP_NAMES_SQL = `,
   names as (
     select z.period{zGroup}, count(*) as names

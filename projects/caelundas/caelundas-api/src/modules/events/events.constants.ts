@@ -158,5 +158,8 @@ export const facetRowSchema = z.object({
   root_id: z.string(),
 });
 
+/** Turns JIT off and widens sort memory for a transaction. */
+export const TUNING_SQL = `select set_config('jit', 'off', true), set_config('work_mem', '64MB', true)`;
+
 /** Compares text counting digits as numbers: "Harmonic 2" precedes "Harmonic 10". */
 export const NATURAL_COLLATOR = new Intl.Collator("en-US", { numeric: true });

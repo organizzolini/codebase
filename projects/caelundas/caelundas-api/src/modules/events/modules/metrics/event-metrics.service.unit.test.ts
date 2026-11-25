@@ -11,6 +11,7 @@ import { EventFilterValuesService } from "../filtering/modules/values/event-filt
 import { EventGroupingService } from "../grouping/event-grouping.service";
 
 import { EventMetricsService } from "./event-metrics.service";
+import { EventMetricsFactsService } from "./modules/facts/event-metrics-facts.service";
 import { EventMetric } from "./modules/inputs/event-metric.entities";
 import { EventMetricsQueryService } from "./modules/query-building/event-metrics-query.service";
 
@@ -20,6 +21,7 @@ const ROOT = "0199b1a0-0000-7000-8000-000000000002";
 const MARS = "0199b1a0-0000-7000-8000-000000000001";
 
 const select = vi.fn<(...parameters: unknown[]) => Promise<unknown[]>>();
+const compileFacts = vi.fn<EventMetricsFactsService["compile"]>();
 const describeDataset = vi.fn<() => Promise<null | { timezone: string }>>();
 
 /** An input for March, with the parts given changed. */
@@ -47,7 +49,11 @@ describe(EventMetricsService, () => {
     EventFilterValuesService,
     EventGroupingService,
     EventMetricsQueryService,
-    { provide: EventsService, useValue: { describeDataset, select } },
+    { provide: EventMetricsFactsService, useValue: { compile: compileFacts } },
+    {
+      provide: EventsService,
+      useValue: { describeDataset, select, selectTuned: select },
+    },
   ];
 
   beforeAll(async () => {
@@ -58,6 +64,9 @@ describe(EventMetricsService, () => {
 
   beforeEach(() => {
     select.mockReset();
+    compileFacts.mockReset();
+    // The facts answer nothing unless a test says so, leaving the events.
+    compileFacts.mockReturnValue(null);
     describeDataset.mockReset();
     describeDataset.mockResolvedValue({ timezone: "Europe/London" });
   });
@@ -128,10 +137,9 @@ describe(EventMetricsService, () => {
   it("runs a statement a level, one for the tag names, and builds the tree", async () => {
     expect.hasAssertions();
 
-    // The statements start in order: the whole set, the names, the level.
+    // The statements start in order: the whole set, the level, the names.
     select
       .mockResolvedValueOnce([{ m0: 2, m1: null, period: 0 }])
-      .mockResolvedValueOnce([{ id: ROOT, name: "Planet" }])
       .mockResolvedValueOnce([
         {
           id: "/0:",
@@ -144,7 +152,8 @@ describe(EventMetricsService, () => {
           path: null,
           period: 0,
         },
-      ]);
+      ])
+      .mockResolvedValueOnce([{ id: ROOT, name: "Planet" }]);
 
     const result = await service.findMetrics(
       input({
@@ -266,6 +275,67 @@ describe(EventMetricsService, () => {
 
       expect(statements()).toContain("from calendar_event_day_tag_rollups r");
       expect(statements()).toContain("calendar_event_derived_times");
+    });
+  });
+
+  describe("over the facts", () => {
+    it("reads the whole set and every level from one statement", async () => {
+      expect.hasAssertions();
+
+      compileFacts.mockReturnValue({
+        levels: 1,
+        measures: ["events"],
+        parameters: [7],
+        sql: "select facts",
+      });
+      select.mockResolvedValue([
+        { level: -1, m_events: 3, period: 0 },
+        { level: 0, m_events: 2, period: 0, t0: "2026" },
+      ]);
+
+      const result = await service.findMetrics(
+        input({ grouping: [{ field: "year" }], metrics: [EventMetric.EVENTS] }),
+      );
+
+      // The rollups' guard asks first, and answers no zone.
+      expect(select).toHaveBeenCalledTimes(2);
+      expect(select).toHaveBeenLastCalledWith(
+        "select facts",
+        [7],
+        expect.anything(),
+      );
+      expect(result.total[0]?.value).toBe(3);
+      expect(result.groups).toMatchObject([
+        { id: "/0:2026", key: "2026", level: 0 },
+      ]);
+    });
+
+    it("asks the facts for what the rollups cannot answer", async () => {
+      expect.hasAssertions();
+
+      select.mockResolvedValue([]);
+
+      await service.findMetrics(input());
+
+      expect(compileFacts).toHaveBeenCalledWith(
+        expect.objectContaining({ filter: null, grouping: [] }),
+      );
+    });
+
+    it("leaves what the rollups wholly cover to the rollups", async () => {
+      expect.hasAssertions();
+
+      select.mockImplementation(async (sql: unknown) => {
+        const text = await Promise.resolve(String(sql));
+
+        return text.includes("from zone z") ? [{ timezone: "UTC" }] : [];
+      });
+
+      await service.findMetrics(
+        input({ grouping: [], metrics: [EventMetric.EVENTS] }),
+      );
+
+      expect(compileFacts).not.toHaveBeenCalled();
     });
   });
 

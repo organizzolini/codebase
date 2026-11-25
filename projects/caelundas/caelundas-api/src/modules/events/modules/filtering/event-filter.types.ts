@@ -16,6 +16,8 @@ export interface EventFilterGroup {
 /** Values a compiled expression binds, numbered after the existing offset. */
 export interface EventFilterParameters {
   readonly offset: number;
+  /** Selects an event's tags, in place of its tag table. */
+  readonly tagsMatching?: string | undefined;
   readonly values: unknown[];
 }
 

@@ -19,6 +19,10 @@ import { WindowsService } from "./modules/windows/windows.service";
 import type { EntityManager } from "typeorm";
 
 const query = vi.fn<EntityManager["query"]>();
+const transaction = vi.fn(
+  async (run: (manager: { query: typeof query }) => Promise<unknown>) =>
+    run({ query }),
+);
 
 describe(EventsService, () => {
   let service: EventsService;
@@ -34,7 +38,7 @@ describe(EventsService, () => {
         EventGroupingService,
         PresetsService,
         WindowsService,
-        { provide: getEntityManagerToken(), useValue: { query } },
+        { provide: getEntityManagerToken(), useValue: { query, transaction } },
       ],
     }));
   });
@@ -66,6 +70,24 @@ describe(EventsService, () => {
       service.select("select 1", [7], z.object({ count: z.coerce.number() })),
     ).resolves.toStrictEqual([{ count: 3 }, { count: 4 }]);
     expect(query).toHaveBeenCalledWith("select 1", [7]);
+  });
+
+  it("tunes the transaction, then runs the statement and parses its rows", async () => {
+    expect.hasAssertions();
+
+    query.mockResolvedValueOnce([]).mockResolvedValueOnce([{ count: "5" }]);
+
+    await expect(
+      service.selectTuned(
+        "select 2",
+        [8],
+        z.object({ count: z.coerce.number() }),
+      ),
+    ).resolves.toStrictEqual([{ count: 5 }]);
+    expect(query.mock.calls.at(-2)?.[0]).toContain(
+      "set_config('jit', 'off', true)",
+    );
+    expect(query).toHaveBeenLastCalledWith("select 2", [8]);
   });
 
   it("works out the windows a view and a timeline scale read", () => {

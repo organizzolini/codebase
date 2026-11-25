@@ -13,6 +13,7 @@ import {
 import { EventsService } from "../../../../events.service";
 import { EventFilterCombinator } from "../../../filtering/modules/rules/event-filter-combinator.entities";
 import { EventMetricsService } from "../../event-metrics.service";
+import { EventMetricsFactsService } from "../facts/event-metrics-facts.service";
 import { EventMetric } from "../inputs/event-metric.entities";
 
 import {
@@ -23,13 +24,13 @@ import {
 import type { EventsApplication } from "../../../../../../../testing/events-application";
 import type { EventMetricsInputEntity } from "../inputs/event-metrics-input.entities";
 
-/** A period of ten New York days, from and to a local midnight. */
+/** Ten New York days, midnight to midnight. */
 const WINDOW = {
   end: "2026-01-20T05:00:00.000Z",
   start: "2026-01-10T05:00:00.000Z",
 };
 
-/** The same ten days, but for an event reaching into it from before. */
+/** The same days, less three, so an event reaches in. */
 const NARROWER = {
   end: "2026-01-20T05:00:00.000Z",
   start: "2026-01-13T05:00:00.000Z",
@@ -54,7 +55,7 @@ const ROLLUP_METRICS = [
   EventMetric.UNIQUE_TAGS,
 ];
 
-/** One event of the fixture, in New York, with the tags it is given. */
+/** One New York event of the fixture, with its tags. */
 interface Seed {
   end: string;
   start: string;
@@ -237,6 +238,12 @@ describe("event metrics rollups", () => {
     });
 
     const select = eventsService.select.bind(eventsService);
+    const selectTuned = eventsService.selectTuned.bind(eventsService);
+    const factsService = application.database.module.get(
+      EventMetricsFactsService,
+      { strict: false },
+    );
+    const compile = factsService.compile.bind(factsService);
 
     vi.spyOn(eventsService, "select").mockImplementation(
       async (sql, parameters, schema) => {
@@ -246,6 +253,17 @@ describe("event metrics rollups", () => {
           ? []
           : select(sql, parameters, schema);
       },
+    );
+    vi.spyOn(eventsService, "selectTuned").mockImplementation(
+      async (sql, parameters, schema) => {
+        queries.push(sql);
+
+        return selectTuned(sql, parameters, schema);
+      },
+    );
+    // The fallback is the events themselves, so the facts stand aside too.
+    vi.spyOn(factsService, "compile").mockImplementation((request) =>
+      fallback ? null : compile(request),
     );
 
     for (const [name, parent] of TAGS) {

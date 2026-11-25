@@ -68,7 +68,7 @@ describe(DatabaseService, () => {
 
     await service.refreshReadModel(manager);
 
-    expect(manager.transaction).toHaveBeenCalledTimes(2);
+    expect(manager.transaction).toHaveBeenCalledTimes(1);
     expect(vi.mocked(manager.query).mock.calls).toStrictEqual(
       [...READ_MODEL_STATEMENTS, ...METRICS_REFRESH_STATEMENTS].map(
         (statement) => [statement],

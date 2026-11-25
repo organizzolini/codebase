@@ -18,6 +18,8 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **declination**: A sky point's north-south coordinate in degrees.
 - **degree**: The angle unit of night-sky inputs and geometry, as in `latitudeDegrees`.
 - **designation**: A constellation's three-letter IAU abbreviation, such as `UMa`.
+- **dimension**:
+- **divide**:
 - **dubhe**: A bright star of Ursa Major, used as a fixture in the night-sky unit tests.
 - **earth**: The planet whose rotation rate sets how fast the night sky turns, `EARTH_ROTATION_RADIANS_PER_SECOND`.
 - **ecliptic**: The Sun's yearly path across the sky, which the night sky draws as a line on request.
@@ -40,6 +42,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **lyra**: A constellation used as a fixture when no database is present.
 - **magnitude**: A star's brightness, where a lower number is brighter; `faintestMagnitude` limits which stars are drawn.
 - **median**:
+- **midday**:
 - **moon**: The Moon, as a body named in sample events and tag paths.
 - **narrower**:
 - **north**: The direction of positive declination, as in the ecliptic's northernmost point.

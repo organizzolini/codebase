@@ -252,3 +252,116 @@ array once per reference and doubled the time.
 
 Storage added: about 22 MB for the facts, 32 MB for the day × tag rollups,
 99 MB for the name rollups and 2 MB for the day rollups, with their indexes.
+
+## Where the time went: profile of the real web requests
+
+The Charts and Totals layouts send one `eventMetrics` call each. Captured from
+the browser: a three-part tag filter (nine rules), and the default Tags grouping
+of **four levels that each pick tags** (9 roots, then the 34, 150 and 67 tags at
+depths 1 to 3; no `parent`). Picked levels cross: a group is the events that
+carry one tag from every level, so a 30-day window of 175 filtered events makes
+**6,973 groups and a 5.8 MB response** (23,000 groups and 19 MB with no filter).
+Charts asks 3 metrics, Totals 8. Measured on the 50,113-event development
+database before any change (the API ran a statement per level, in parallel):
+
+| Cost                      | Finding                                                                                                                                                                                           |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Which path                | Filter, picked levels and percents never used a rollup: all of it ran on the base tables.                                                                                                         |
+| Statements                | 5 (total + 4 levels) at once, each re-running the event filter and every earlier level. Wall time is the slowest: level 3, 1.3 to 2.7 s.                                                          |
+| JIT                       | Planner estimates (700,000 rows against 26,000) tripped JIT: level 0 took 789 ms with it and 76 ms without; level 3, 2.7 s against 1.3 s. Pure overhead.                                          |
+| Group order keys          | The ordering key of each group row was a correlated subquery over the tag closure, run per row: 26,151 times in level 3, about 500 ms.                                                            |
+| Rows scanned              | Level 3 expands 175 events to 26,151 rows, then a 13 MB disk sort. The filter's `exists` subqueries hashed 30,000 tag rows each, in every statement (45 to 96 ms).                                |
+| Per metric                | `UNIQUE_TAGS` is a correlated subquery per group (5,586 of them, 100 ms). The others are cheap beside the expansion.                                                                              |
+| Compare                   | One statement already; it doubles events and groups (about 1.9 times the time), not the statements.                                                                                               |
+| Serialization             | 5.8 MB, 6,973 groups: about 150 to 250 ms of the request, and unavoidable while the contract returns the whole tree.                                                                              |
+| Floor: one pass           | All of it from the event facts with array operations in one pass: **116 ms** (`EXPLAIN ANALYZE`).                                                                                                 |
+
+The profile settles the design: the cost is not a missing aggregate over days but
+(a) per-level recomputation, (b) per-row subqueries and (c) JIT. A day × tag
+rollup cannot answer these requests at all: a filter and a four-level crossing
+need the events that carry several tags together, which no per-tag day row
+holds. A pair rollup would not help either (the crossing is four deep, so a
+group has a four-tag key; the 30 days alone make 6,973 groups). The event grain
+with a GIN index on the tag ids, which `calendar_event_facts` already is, is the
+right pre-aggregate for these, and the day rollups keep serving the unfiltered
+whole-set and one-level shapes.
+
+## The design as built
+
+**Measures** (additive or exact per group, selected by SQL; `modules/measures`
+in the API): `events`, `instants`, `spans`, `seconds`, `progressiveSeconds`,
+`firstStart`, `lastStart`, `days`, `names`, `tags`, `coveredSeconds`,
+`longestSeconds`, `shortestSeconds`, `medianSeconds`, and the percent measures
+`clippedSeconds`, `coveredClippedSeconds`, their progressive twins and
+`periodSeconds`. The clipped ones clip each event to its period, so a percent
+needs no midnight alignment.
+
+**Metrics** are one declarative table (`METRIC_DEFINITIONS`): each is a
+calculation over measures and other metrics, evaluated in the service (average
+duration is total minutes over spans; each percent is clipped seconds over
+`periodSeconds`). The statement selects only the measures the metrics asked for
+need (`findMeasures`).
+
+**Statement** (`modules/facts`): periods (current and previous) join the facts by
+overlap (`extent && [from, to)`, the events' own test, so any period works). The
+filter compiles as before, but its tag rules read the fact's `tag_ids` array
+instead of a tag-node lookup. Each level's keys per event are an array (picked
+tags intersected with `tag_ids`, or a calendar key); a step per level expands
+each event by its keys (an event with none is the group of no key), and each
+level aggregates from its own step, so no level re-runs another. `UNIQUE_TAGS`
+counts distinct direct tags per group in a side CTE that hashes (it multiplies
+rows). The names, label, path and order keys come from a small dimension CTE for
+the picked tags only, joined after aggregating.
+
+**Routing.** Unfiltered requests the rollups wholly cover (whole set, a calendar
+level, a root's first level, no percent) still use them. Everything else that is
+only calendar levels and picked-tag levels uses the facts. A tag level with a
+`parent` or no picks, the one thing left, keeps the statement per level on the
+base tables, which also stay the reference every test compares against.
+
+**Every metrics statement** runs in a transaction with `jit = off` and
+`work_mem = 64MB` (`EventsService.selectTuned`).
+
+**Not built, and why.** New day-grain views for the clipped hours and the
+counted-overlap minutes would only serve unfiltered, midnight-aligned requests,
+which the day rollups plus the facts already answer in tens of milliseconds, and
+the web's requests carry filters. A day × node × filter-node pair rollup was
+sized and dropped: the grouping crosses four levels deep. Distinct counts keep
+exact sets (arrays in the day rollups, `count(distinct)` over the facts); no
+bitmap or HyperLogLog extension is installed in the Postgres image, and none is
+needed. The median keeps `percentile_cont` over the group's spans. A result
+cache was left out: with answers of a few hundred milliseconds it adds a
+staleness rule (the API cannot see the CLI's refresh) for little, and identical
+requests would otherwise defeat the tests that compare two paths. No new
+materialized view and no migration change were needed, so the unreleased
+migration `1795568633626` is untouched.
+
+## Benchmarks: the real web requests, before and after
+
+Wall time of the GraphQL call from the API, on the development database, three to
+five runs each, medians (the machine was about 1.3 times slower for the after
+runs on the unfiltered cases, after Docker restarted). Results are identical,
+group by group, to the previous API's (6,973, 6,955, 8,329, 6,891, 22,586 groups
+compared, no difference at 1e-6).
+
+| Request                                      | Before       | After          | Times faster   |
+| -------------------------------------------- | ------------ | -------------- | -------------- |
+| Charts default (filter, 4 levels, 3 metrics) | 2.0 to 3.1 s | 0.22 to 0.27 s | about 10       |
+| Charts, compare                              | 2.5 to 4.7 s | 0.42 to 0.5 s  | about 7        |
+| Totals default (filter, 4 levels, 8 metrics) | 1.3 to 2.5 s | 0.65 to 0.7 s  | about 2.5 to 3 |
+| Totals without `UNIQUE_TAGS`                 | n/a          | 0.25 s         | n/a            |
+| Totals, compare                              | 1.9 to 3.8 s | 1.4 to 1.7 s   | about 1.5      |
+| Totals, single-rule filter, compare          | 3.8 to 5.3 s | 1.7 to 2.0 s   | about 2.5      |
+| Charts, no filter (22,586 groups, 11.9 MB)   | 6.9 to 13 s  | 2.2 s          | 3 to 6         |
+| Totals, no filter (22,988 groups, 19 MB)     | 10 to 11 s   | 6.0 to 6.4 s   | about 1.7      |
+
+Honest limits: Totals stays slow because of `UNIQUE_TAGS` (distinct direct tags
+per group, 280 ms of 500 ms in the default case and the lion's share without a
+filter) and the unfiltered crossing is simply 23,000 groups, about 1.4 million
+expanded rows for the deepest level. Both could shrink further by interning keys
+as small integers, which was measured to be worth less than the added code. The
+statement itself is 116 to 400 ms; the rest of a request is serialization of a
+multi-megabyte tree the contract returns whole.
+
+Profile run: `log_min_duration_statement = 0` on the development database, the
+five statements replayed with `EXPLAIN (ANALYZE, BUFFERS)`.

@@ -102,7 +102,7 @@ export function compileRollupRead(
 
 /**
  * What a request groups by in the rollups: the whole set, a calendar field or
- * the children of a tag at its first level; none for any other level.
+ * a tag's children at the first level; else none.
  */
 export function findRollupTarget(
   request: EventMetricsQueryRequest,

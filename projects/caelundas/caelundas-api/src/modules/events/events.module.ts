@@ -10,6 +10,7 @@ import { EventFilterValuesService } from "./modules/filtering/modules/values/eve
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { EventMetricsResolver } from "./modules/metrics/event-metrics.resolver";
 import { EventMetricsService } from "./modules/metrics/event-metrics.service";
+import { EventMetricsFactsService } from "./modules/metrics/modules/facts/event-metrics-facts.service";
 import { EventMetricsQueryService } from "./modules/metrics/modules/query-building/event-metrics-query.service";
 import { PresetsService } from "./modules/presets/presets.service";
 import { WindowsService } from "./modules/windows/windows.service";
@@ -30,6 +31,7 @@ import { WindowsService } from "./modules/windows/windows.service";
     EventFilterService,
     EventFilterValuesService,
     EventGroupingService,
+    EventMetricsFactsService,
     EventMetricsQueryService,
     EventMetricsResolver,
     EventMetricsService,

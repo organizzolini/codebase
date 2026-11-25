@@ -10,6 +10,7 @@ import {
   facetRowSchema,
   FACETS_SQL,
   groupKeysSchema,
+  TUNING_SQL,
 } from "./events.constants";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
@@ -228,6 +229,24 @@ export class EventsService {
     schema: z.ZodType<Row>,
   ): Promise<Row[]> {
     const rows = await this.manager.query<unknown[]>(sql, [...parameters]);
+
+    return rows.map((row) => schema.parse(row));
+  }
+
+  /**
+   * Runs one statement as `select` does, in a transaction with JIT off and
+   * room to sort in memory.
+   */
+  public async selectTuned<Row>(
+    sql: string,
+    parameters: readonly unknown[],
+    schema: z.ZodType<Row>,
+  ): Promise<Row[]> {
+    const rows = await this.manager.transaction(async (transaction) => {
+      await transaction.query(TUNING_SQL);
+
+      return transaction.query<unknown[]>(sql, [...parameters]);
+    });
 
     return rows.map((row) => schema.parse(row));
   }

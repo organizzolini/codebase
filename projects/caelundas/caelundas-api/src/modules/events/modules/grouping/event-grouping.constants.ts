@@ -67,7 +67,7 @@ export const NO_GROUP_SQL = `select null::text as "key", null::text as label, nu
 /**
  * A tag's ordering key: each ancestor's padded `order`, then its name.
  */
-const TAG_ORDER_KEY_SQL = `(
+export const TAG_ORDER_KEY_SQL = `(
       select string_agg(
         lpad(a."order"::text, 5, '0') || ':' || a."name",
         ' / '
