@@ -40,9 +40,9 @@ infrastructure/
 **Purpose**: Deploy long-running services as a Deployment and Service, with an optional PreSync hook Job (migrations run before each rollout).
 
 - `image.tag: ""` (default) renders nothing, so Argo CD reports the app Synced/Healthy before the first release. The release commit sets the tag.
-- `hook.image.tag` falls back to `image.tag` when empty, so one release tags both images.
+- `hook.image.tag` has no fallback. With `image.tag` set and the hook enabled, an empty `hook.image.tag` fails the render (`required`), so a release never skips migrations or pulls the CLI at the API's tag.
 - The Deployment exposes `containerPort` as `http`, and a `probes` port when liveness probes use another port (Lightship uses 9000).
-- Hook pods carry `app.kubernetes.io/component: hook` so the Service never selects a migration pod.
+- The Deployment pods and the Service selector both carry `app.kubernetes.io/component: server`. Hook pods carry `app.kubernetes.io/component: hook` instead, so the Service selector does not match them. The Service selects on subset match, so the extra label alone would not exclude a hook pod.
 
 `values/caelundas-api.yaml` and `values/caelundas-web.yaml` layer over `values/base.yaml`.
 

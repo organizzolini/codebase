@@ -10,11 +10,11 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "kubernetes-deployment.selectorLabels" . | nindent 6 }}
+      {{- include "kubernetes-deployment.serverLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "kubernetes-deployment.selectorLabels" . | nindent 8 }}
+        {{- include "kubernetes-deployment.serverLabels" . | nindent 8 }}
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}

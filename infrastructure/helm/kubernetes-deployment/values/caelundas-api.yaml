@@ -44,7 +44,7 @@ hook:
   enabled: true
   image:
     repository: ghcr.io/organizzolini/caelundas-cli
-    # Set by the release commit; empty falls back to image.tag
+    # Set by the release commit; required while the hook is enabled
     tag: ""
   # The caelundas-migrate command ships in the CLI image from a later commit
   command:

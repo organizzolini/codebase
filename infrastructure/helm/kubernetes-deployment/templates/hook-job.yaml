@@ -1,5 +1,6 @@
 {{- /* PreSync Job that runs before each rollout. Renders only with the app image, so it never runs ahead of a release. */ -}}
 {{- if and .Values.hook.enabled .Values.image.tag }}
+{{- $hookTag := required "hook.image.tag must be set when the hook is enabled" .Values.hook.image.tag }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -15,7 +16,7 @@ spec:
     metadata:
       labels:
         {{- include "kubernetes-deployment.selectorLabels" . | nindent 8 }}
-        {{- /* Keeps migration pods out of the Service selector */}}
+        {{- /* Lacks component server, so the Service and Deployment selectors never match migration pods */}}
         app.kubernetes.io/component: hook
     spec:
       restartPolicy: Never
@@ -29,7 +30,7 @@ spec:
       {{- end }}
       containers:
         - name: hook
-          image: "{{ .Values.hook.image.repository }}:{{ .Values.hook.image.tag | default .Values.image.tag }}"
+          image: "{{ .Values.hook.image.repository }}:{{ $hookTag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.hook.command }}
           command:

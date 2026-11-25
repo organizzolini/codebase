@@ -47,7 +47,7 @@ hook:
   enabled: false
   image:
     repository: my-application
-    # Empty falls back to image.tag, so one release tags both images
+    # Required when the hook is enabled and image.tag is set
     tag: ""
   command: []
   env: []

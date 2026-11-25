@@ -27,6 +27,7 @@ tests:
       - ../values/caelundas-api.yaml
     set:
       image.tag: 1.0.0
+      hook.image.tag: 1.0.0
     asserts:
       - template: templates/deployment.yaml
         equal:
@@ -52,6 +53,7 @@ tests:
       - ../values/caelundas-api.yaml
     set:
       image.tag: 1.0.0
+      hook.image.tag: 1.0.1
     template: templates/hook-job.yaml
     asserts:
       - equal:
@@ -62,10 +64,43 @@ tests:
           value: BeforeHookCreation,HookSucceeded
       - equal:
           path: spec.template.spec.containers[0].image
-          value: ghcr.io/organizzolini/caelundas-cli:1.0.0
+          value: ghcr.io/organizzolini/caelundas-cli:1.0.1
       - equal:
           path: spec.template.metadata.labels["app.kubernetes.io/component"]
           value: hook
+
+  - it: fails when the hook is enabled without a hook image tag
+    values:
+      - ../values/base.yaml
+      - ../values/caelundas-api.yaml
+    set:
+      image.tag: 1.0.0
+      hook.image.tag: ""
+    template: templates/hook-job.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: hook.image.tag must be set when the hook is enabled
+
+  - it: separates the Service and Deployment from hook pods by component
+    values:
+      - ../values/base.yaml
+      - ../values/caelundas-api.yaml
+    set:
+      image.tag: 1.0.0
+      hook.image.tag: 1.0.0
+    asserts:
+      - template: templates/service.yaml
+        equal:
+          path: spec.selector["app.kubernetes.io/component"]
+          value: server
+      - template: templates/deployment.yaml
+        equal:
+          path: spec.template.metadata.labels["app.kubernetes.io/component"]
+          value: server
+      - template: templates/deployment.yaml
+        equal:
+          path: spec.selector.matchLabels["app.kubernetes.io/component"]
+          value: server
 
   - it: api values reach production through the pooler and migrate directly
     values:
@@ -73,6 +108,7 @@ tests:
       - ../values/caelundas-api.yaml
     set:
       image.tag: 1.0.0
+      hook.image.tag: 1.0.0
     asserts:
       - template: templates/deployment.yaml
         contains:

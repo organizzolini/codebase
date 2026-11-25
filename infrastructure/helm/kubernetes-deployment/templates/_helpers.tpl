@@ -14,6 +14,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Server pod labels: the Deployment pods and the Service selector. Hook pods lack the component label, so no Service matches them.
+*/}}
+{{- define "kubernetes-deployment.serverLabels" -}}
+{{ include "kubernetes-deployment.selectorLabels" . }}
+app.kubernetes.io/component: server
+{{- end }}
+
+{{/*
 Common labels
 */}}
 {{- define "kubernetes-deployment.labels" -}}
