@@ -6,7 +6,7 @@ the steps that run around a Continuous Integration job.
   pins externals to `catalog:`, `lockfile` runs the frozen install,
   `readme-projects` links every workspace project from the root README, and
   `skill-descriptions` holds every authored skill description to 64 words
-  and all of them to a listing budget of 12,500 characters.
+  and all of them to a listing budget of 12,288 characters.
 - **Derivations**, which check by default and rewrite with `:write`:
   `agent-instructions`, `conventional-config`, `devcontainer-configuration`,
   `package-manifests`, `project-ports`, `skill-exclusions`, and

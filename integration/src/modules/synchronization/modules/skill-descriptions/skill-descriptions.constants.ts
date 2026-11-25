@@ -6,7 +6,7 @@ import { z } from "zod";
 export const MAXIMUM_DESCRIPTION_WORDS = 64;
 
 /** Most characters all authored descriptions may hold together in the listing. */
-export const MAXIMUM_TOTAL_DESCRIPTION_CHARACTERS = 12_500;
+export const MAXIMUM_TOTAL_DESCRIPTION_CHARACTERS = 12_288;
 
 /** Where every installed skill lives, relative to the workspace root. */
 export const SKILLS_DIRECTORY = ".agents/skills";

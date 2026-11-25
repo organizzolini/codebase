@@ -71,7 +71,7 @@ describe(SkillDescriptionsCommand, () => {
     await command.run();
 
     expect(reportLines).toStrictEqual([
-      "All 2 authored skill descriptions hold at most 64 words, 600 of 12500 characters together.",
+      "All 2 authored skill descriptions hold at most 64 words, 600 of 12288 characters together.",
     ]);
   });
 
@@ -105,7 +105,7 @@ describe(SkillDescriptionsCommand, () => {
       skillDescriptionsService.findOverlongDescriptions,
     ).mockReturnValue([]);
     vi.mocked(skillDescriptionsService.measureTotalCharacters).mockReturnValue(
-      12_501,
+      12_289,
     );
 
     const processExitSpy = mockProcessExit();
@@ -115,14 +115,14 @@ describe(SkillDescriptionsCommand, () => {
     processExitSpy.mockRestore();
 
     expect(reportLines).toStrictEqual([
-      "The authored skill descriptions hold 12501 characters together, over the 12500 the listing budget allows.",
+      "The authored skill descriptions hold 12501 characters together, over the 12288 the listing budget allows.",
     ]);
   });
 
   it("tells the user to shorten each description as the fix", () => {
     expect(command.synchronizationLabel).toBe("skill-descriptions");
     expect(command.fixCommand).toBe(
-      "shorten the descriptions to 64 words each and 12500 characters together, moving detail into the skill bodies",
+      "shorten the descriptions to 64 words each and 12288 characters together, moving detail into the skill bodies",
     );
   });
 
