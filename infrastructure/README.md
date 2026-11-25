@@ -18,6 +18,7 @@
 | [terraform/github](terraform/github)                     | GitHub repository settings, `main` ruleset, and Actions variables |
 | [terraform/linode](terraform/linode)                     | The Object Storage bucket that holds Terraform state              |
 | [terraform/kubernetes](terraform/kubernetes)             | LKE cluster, Cloudflare tunnel, and the caelundas DNS record      |
+| [terraform/bootstrap](terraform/bootstrap)               | Namespaces, secrets, Argo CD core, and the root Application       |
 
 ## Quick Start
 
@@ -53,6 +54,10 @@ Continuous Integration plans a pull request that changes the root and comments t
 ### Manage the Kubernetes Root with Terraform
 
 The `terraform/kubernetes` root creates the `organizzolini-codebase` LKE cluster (region `us-iad`, one `g6-standard-2` pool whose autoscaler keeps 1 to 2 nodes) and everything Cloudflare does for the public host `caelundas.organizzolini.net`. It imports the existing `organizzolini.net` zone, which it refuses to destroy, and manages no zone settings or other records. Its tunnel routes `/graphql` to `caelundas-api:3000` and everything else to `caelundas-web:80`, and a proxied CNAME points the host at the tunnel. It needs `TF_VAR_linode_token`, plus `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_account_id`, and `TF_VAR_cloudflare_zone_id`. The optional `TF_VAR_k8s_version` pins the LKE Kubernetes version; unset, the cluster takes the newest available.
+
+### Manage the Bootstrap Root with Terraform
+
+The `terraform/bootstrap` root holds what lives inside the cluster but must not live in git, or must exist before Argo CD: the secrets, Argo CD core, and the root Application that hands everything else to Argo CD. **It creates the `codebase` and `caelundas` namespaces**, because the Argo CD applications do not set `CreateNamespace` for them. It generates the `caelundas_username` role's password and writes it as the `caelundas-postgres` secret in both namespaces, writes `postgres-backups` and `cloudflared-token` into `codebase`, installs the pinned `argo-cd` chart in the core profile (no API server, Dex, or notifications; zero ApplicationSet replicas, since the chart has no switch for that controller), and installs the `argocd-apps` chart with one `root` Application that follows `infrastructure/helm/argocd-applications` on `main`. It reads the cluster's kubeconfig and the tunnel token from the `kubernetes` root, and the backups key from the `linode` root, so both must be applied first. It uses the `kubernetes_namespace_v1` and `kubernetes_secret_v1` resources, since the unsuffixed ones are deprecated in provider 3.x. It needs `TF_VAR_state_bucket`. The first pull request's plan of this root is skipped by CI until the cluster exists.
 
 The Cloudflare token needs these permissions, and nothing else:
 

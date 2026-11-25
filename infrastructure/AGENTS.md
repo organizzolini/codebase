@@ -33,6 +33,7 @@ infrastructure/
 │   ├── kubernetes-job/      # Reusable chart for K8s Jobs
 │   └── postgres/            # Shared PostgreSQL as CloudNativePG resources
 └── terraform/               # Cluster provisioning
+    ├── bootstrap/           # Namespaces, secrets, Argo CD core and the root Application
     ├── github/              # Repository settings, ruleset, Actions variables
     ├── kubernetes/          # LKE cluster, Cloudflare tunnel and DNS record for caelundas
     ├── linode/              # Object Storage buckets: the state, the shared Nx cache, and Postgres backups
@@ -74,6 +75,8 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
 
 **Kubernetes root**: `terraform/kubernetes` creates the LKE cluster and the Cloudflare tunnel, routing and DNS record. `k8s_version` is optional and pins the cluster's Kubernetes version; unset, it takes the newest from `linode_lke_versions`.
+
+**Bootstrap root**: `terraform/bootstrap` creates the `codebase` and `caelundas` namespaces (the apps do not set `CreateNamespace` for them), the `caelundas-postgres` secret in both, `postgres-backups` and `cloudflared-token`, then Argo CD core and a `root` Application on `main`. `state_bucket` (`TF_VAR_state_bucket`) locates the `linode` and `kubernetes` states it reads. The providers are configured from the kubeconfig output, so the first pull request's plan is skipped by CI until the cluster exists. The `argo-cd` chart has no ApplicationSet switch, so `argocd-values.yaml` sets `applicationSet.replicas: 0`. The namespaces and secrets use the `kubernetes_namespace_v1` and `kubernetes_secret_v1` resources, since the unsuffixed ones are deprecated in provider 3.x.
 
 **Terraform tests**: `tests/` holds the `terraform test` suites written in HCL, which run against `mock_provider` blocks, so they need no credentials. `nx run infrastructure:terraform-test` initializes each root with `-backend=false` and runs its tests, for every root that has a `tests/` folder.
 
@@ -202,4 +205,7 @@ serving all three roots, so the move can stop at any point.
 - [helm/kubernetes-job/templates/\_helpers.tpl](helm/kubernetes-job/templates/_helpers.tpl): Helpers
 - [terraform/kubernetes/cluster.tf](terraform/kubernetes/cluster.tf): LKE cluster and its readiness wait
 - [terraform/kubernetes/cloudflare.tf](terraform/kubernetes/cloudflare.tf): Zone import, tunnel, routing, and DNS record
+- [terraform/bootstrap/main.tf](terraform/bootstrap/main.tf): Backend, remote state, and the provider wiring from the kubeconfig
+- [terraform/bootstrap/argocd.tf](terraform/bootstrap/argocd.tf): Argo CD core and the root Application
+- [terraform/bootstrap/secrets.tf](terraform/bootstrap/secrets.tf): Generated password and cluster secrets
 - [terraform/openrouter/main.tf](terraform/openrouter/main.tf): OpenRouter resources and the S3-compatible state backend
