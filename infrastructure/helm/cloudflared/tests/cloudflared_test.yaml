@@ -1,0 +1,41 @@
+suite: cloudflared
+templates:
+  - templates/deployment.yaml
+values:
+  - ../values/base.yaml
+tests:
+  - it: reads the tunnel token from its Secret
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].env[0].name
+          value: TUNNEL_TOKEN
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.name
+          value: cloudflared-token
+      - equal:
+          path: spec.template.spec.containers[0].env[0].valueFrom.secretKeyRef.key
+          value: token
+
+  - it: runs the connector without auto-update
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: --no-autoupdate
+      - contains:
+          path: spec.template.spec.containers[0].args
+          content: run
+
+  - it: probes the metrics endpoint
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.path
+          value: /ready
+      - equal:
+          path: spec.template.spec.containers[0].readinessProbe.httpGet.port
+          value: 2000
+
+  - it: pins the image tag
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: ^cloudflare/cloudflared:\d+\.\d+\.\d+$

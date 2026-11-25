@@ -27,6 +27,7 @@ terraform apply
 ```text
 infrastructure/
 ├── helm/
+│   ├── cloudflared/         # Cloudflare Tunnel connector, routing held in Cloudflare
 │   ├── kubernetes-deployment/  # Reusable chart for long-running services
 │   ├── kubernetes-job/      # Reusable chart for K8s Jobs
 │   └── postgres/            # Shared PostgreSQL as CloudNativePG resources
@@ -70,6 +71,17 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
 
+### cloudflared Chart
+
+**Purpose**: Run the remotely managed Cloudflare Tunnel connector in the `codebase` namespace. The connector dials out, so the chart has no Service and no ingress rules: routing lives in Cloudflare.
+
+- The token comes from the `cloudflared-token` Secret (key `token`) through `TUNNEL_TOKEN`. The bootstrap root creates that Secret.
+- `image.tag` is pinned to an exact release, never `latest`. Bump it deliberately.
+- `metricsPort` (2000) serves `/ready` for both probes. It binds `0.0.0.0` so the kubelet can reach it.
+- Pods run as uid 65532 with a read-only root filesystem, no privilege escalation, all capabilities dropped, and the `RuntimeDefault` seccomp profile.
+
+`tests/cloudflared_test.yaml` asserts on rendered YAML only, so it needs no cluster or tunnel.
+
 ### postgres Chart
 
 **Purpose**: The shared PostgreSQL cluster in the `codebase` namespace, as CloudNativePG resources: a `Cluster` (`postgres`, PostgreSQL 18 pinned to an exact minor), a managed role and `Database` per project database, a `Pooler` (`postgres-pooler-rw`, PgBouncer in transaction mode), and Barman Cloud backups (`ObjectStore` `postgres-backups` with 30-day retention, and a daily `ScheduledBackup` at 03:00 UTC).
@@ -108,6 +120,9 @@ Use `caelundas_staging` in place of `caelundas_production` for staging. The same
 - Chart metadata: [helm/kubernetes-job/Chart.yaml](helm/kubernetes-job/Chart.yaml)
 - Base values: [helm/kubernetes-job/values/base.yaml](helm/kubernetes-job/values/base.yaml)
 - Templates: [helm/kubernetes-job/templates/](helm/kubernetes-job/templates/)
+- Chart metadata: [helm/cloudflared/Chart.yaml](helm/cloudflared/Chart.yaml)
+- Base values: [helm/cloudflared/values/base.yaml](helm/cloudflared/values/base.yaml)
+- Templates: [helm/cloudflared/templates/](helm/cloudflared/templates/)
 - Chart metadata: [helm/postgres/Chart.yaml](helm/postgres/Chart.yaml)
 - Base values: [helm/postgres/values/base.yaml](helm/postgres/values/base.yaml)
 - Templates: [helm/postgres/templates/](helm/postgres/templates/)
