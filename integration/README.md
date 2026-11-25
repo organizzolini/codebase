@@ -6,7 +6,7 @@ the steps that run around a Continuous Integration job.
   pins externals to `catalog:`, `lockfile` runs the frozen install, and
   `readme-projects` links every workspace project from the root README.
 - **Derivations**, which check by default and rewrite with `:write`:
-  `conformetry-generators`, `conventional-config`, `devcontainer-configuration`,
+  `conventional-config`, `devcontainer-configuration`,
   `package-manifests`, `project-ports`, `skill-exclusions`, and
   `vscode-extensions`.
 - **Continuous Integration plumbing**: `setup-codebase` and `cleanup-codebase`
@@ -18,7 +18,7 @@ the steps that run around a Continuous Integration job.
   `report-codometer-changes` keep codometer's baseline and its pull request
   report. `upgrade-dependencies` runs the weekly dependency upgrades.
 
-`nx run integration:start` runs the ten checks and derivations in one process,
+`nx run integration:start` runs the nine checks and derivations in one process,
 and names the command that fixes each failure. The aggregate's CLI command is
 still named `synchronization`, a name the conformetry template fixes. "Integration"
 here means the change's path to `main`, not the `vitest:integration` test kind.

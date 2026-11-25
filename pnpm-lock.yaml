@@ -1296,9 +1296,6 @@ importers:
       '@codebase/observability':
         specifier: workspace:*
         version: link:../projects/common/observability
-      '@conformetry/configuration':
-        specifier: workspace:*
-        version: link:../projects/ic-suite/conformetry/conformetry-configuration
       '@nestjs/common':
         specifier: 'catalog:'
         version: 12.1.0(reflect-metadata@0.2.2)(rxjs@7.8.2)(supports-color@8.1.1)

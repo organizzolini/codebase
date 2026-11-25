@@ -7,7 +7,6 @@ import {
 } from "@codebase/testing/nestjs";
 
 import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
-import { ConformetryGeneratorsModule } from "./modules/conformetry-generators/conformetry-generators.module";
 import { ConventionalConfigModule } from "./modules/conventional-config/conventional-config.module";
 import { DevcontainerConfigurationModule } from "./modules/devcontainer-configuration/devcontainer-configuration.module";
 import { LockfileModule } from "./modules/lockfile/lockfile.module";
@@ -31,7 +30,6 @@ describe(SynchronizationModule, () => {
       CatalogManifestsModule,
       LockfileModule,
       ReadmeProjectsModule,
-      ConformetryGeneratorsModule,
       ConventionalConfigModule,
       DevcontainerConfigurationModule,
       PackageManifestsModule,
