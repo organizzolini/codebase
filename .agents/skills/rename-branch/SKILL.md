@@ -11,6 +11,7 @@ This skill provides a standardized workflow for renaming a Git branch to comply 
 
 - When the user asks to "rename this branch" or "give this branch a better name".
 - When a branch name is rejected by a pre-push hook or CI validation and needs to be fixed.
+- When a session hook or `pre-push` reports an invalid branch name. The agent renames without asking, even a branch the platform assigned.
 - When the user wants the agent to automatically deduce a conventional branch name based on the current local changes.
 
 ## Workflow

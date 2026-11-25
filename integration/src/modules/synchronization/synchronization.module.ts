@@ -4,8 +4,6 @@ import { LoggerModule } from "@codebase/observability";
 
 import { CatalogManifestsCommand } from "./modules/catalog-manifests/catalog-manifests.command";
 import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
-import { ConformetryGeneratorsCommand } from "./modules/conformetry-generators/conformetry-generators.command";
-import { ConformetryGeneratorsModule } from "./modules/conformetry-generators/conformetry-generators.module";
 import { ConventionalConfigCommand } from "./modules/conventional-config/conventional-config.command";
 import { ConventionalConfigModule } from "./modules/conventional-config/conventional-config.module";
 import { DevcontainerConfigurationCommand } from "./modules/devcontainer-configuration/devcontainer-configuration.command";
@@ -46,7 +44,6 @@ import type { SynchronizableCommand } from "./synchronization.types";
     CatalogManifestsModule,
     LockfileModule,
     ReadmeProjectsModule,
-    ConformetryGeneratorsModule,
     ConventionalConfigModule,
     DevcontainerConfigurationModule,
     PackageManifestsModule,
@@ -63,7 +60,6 @@ import type { SynchronizableCommand } from "./synchronization.types";
         CatalogManifestsCommand,
         LockfileCommand,
         ReadmeProjectsCommand,
-        ConformetryGeneratorsCommand,
         ConventionalConfigCommand,
         DevcontainerConfigurationCommand,
         PackageManifestsCommand,
