@@ -208,7 +208,7 @@
 `├──` **🧭 [compliance](compliance)** - Checks repository governance, contribution requirements, and the pull request template\
 `├──` **📚 [documentation](documentation)** - Refreshes repository documentation\
 `├──` **🏗️ [infrastructure](infrastructure)** - Deployment infrastructure and local services\
-`│   └──` **⚙️ [CI/CD workflows](.github/workflows)** - GitHub Actions workflows and the shared `setup-codebase` action\
+`│   └──` **⚙️ [workflows](.github/workflows)** - GitHub Actions workflows and the shared `setup-codebase` action\
 `├──` **🛠️ [installation](installation)** - Sets up developer machines and project dependencies, and checks each new session\
 `├──` **🔁 [integration](integration)** - Guards a change on its way to `main`: commit and push checks, derived configuration, and pull request checks\
 `└──` **📤 [deployment](deployment)** - Coordinates releases and package publishing\
@@ -235,6 +235,6 @@ nx run-many --target=start --projects=lexico-web,caelundas-web,meanderaw-web
 - [OpenWiki](openwiki/quickstart.md) - Generated map of the architecture, domains, and workflows
 - [Skills](.agents/skills) - Domain knowledge and workflows, which are also the deep-dive documentation
   - **Vendored:** [Superpowers](https://github.com/obra/superpowers) / [Matt Pocock's Skills](https://github.com/mattpocock/skills) / [Ponytail](https://github.com/DietrichGebert/ponytail) / [Nx](https://github.com/nrwl/nx) / [GitHub](https://github.com/github/awesome-copilot)
-  - **Workflows:** [Submit Changes](.agents/skills/submit-changes/SKILL.md) / [Ship Changes](.agents/skills/ship-changes/SKILL.md) / [Issues](.agents/skills/link-issue/SKILL.md) / [Commits](.agents/skills/commit-code/SKILL.md) / [Branches](.agents/skills/checkout-branch/SKILL.md) / [PRs](.agents/skills/create-pull-request/SKILL.md)
-  - **Quality:** [Validate Code](.agents/skills/validate-code/SKILL.md) / [Testing Strategy](.agents/skills/testing-strategy/SKILL.md) / [Testing Mocks](.agents/skills/testing-mocks/SKILL.md) / [Error Handling](.agents/skills/handle-errors/SKILL.md) / [Failing CI](.agents/skills/triage-integration/SKILL.md) / [Spell Check](.agents/skills/spell-check/SKILL.md)
-  - **Languages:** [TypeScript](.agents/skills/write-typescript/SKILL.md) / [React](.agents/skills/write-react/SKILL.md) / [Python](.agents/skills/write-python/SKILL.md) / [Comments](.agents/skills/write-comments/SKILL.md)
+  - **Workflows:** [Submit](.agents/skills/submit-changes/SKILL.md) / [Ship](.agents/skills/ship-changes/SKILL.md) / [Worktrees](.agents/skills/using-git-worktrees/SKILL.md) / [Projects](.agents/skills/manage-project/SKILL.md) / [Issues](.agents/skills/link-issue/SKILL.md) / [Commits](.agents/skills/commit-code/SKILL.md) / [Branches](.agents/skills/checkout-branch/SKILL.md) / [PRs](.agents/skills/create-pull-request/SKILL.md)
+  - **Quality:** [Validate Code](.agents/skills/validate-code/SKILL.md) / [Conformetry](.agents/skills/conformetry-validate/SKILL.md) / [Error Handling](.agents/skills/handle-errors/SKILL.md) / [Failing CI](.agents/skills/triage-integration/SKILL.md) / [Spell Check](.agents/skills/spell-check/SKILL.md)
+  - **Languages:** [TypeScript](.agents/skills/write-typescript/SKILL.md) / [React](.agents/skills/write-react/SKILL.md) / [Python](.agents/skills/write-python/SKILL.md) / [Comments](.agents/skills/write-comments/SKILL.md) / [Testing Strategy](.agents/skills/testing-strategy/SKILL.md) / [Testing Mocks](.agents/skills/testing-mocks/SKILL.md)
