@@ -203,22 +203,22 @@
 `│ │ ├` **🎨 [presentation](projects/common/presentation)** - Shared user interface components\
 `│ │ ├` **👀 [observability](projects/common/observability)** - Shared application logging\
 `│ │ └` **🧪 [testing](projects/common/testing)** - Shared application testing utilities\
-`│ └` **🧑 [JimmyPaolini](projects/JimmyPaolini)** - Personal GitHub profile site\
+`│ └` **🧔‍♂️ [JimmyPaolini](projects/JimmyPaolini)** - Personal GitHub profile site\
 `├` **🛠️ [configuration](configuration)** - Workspace configuration and quality checks\
-`├` **🧭 [compliance](compliance)** - Checks repository governance, contribution requirements, and the pull request template\
+`├` **🏛️ [compliance](compliance)** - Checks repository governance, contribution requirements, and the pull request template\
 `├` **📚 [documentation](documentation)** - Refreshes repository documentation\
 `├` **🏗️ [infrastructure](infrastructure)** - Deployment infrastructure and local services\
 `│ └` **⚙️ [workflows](.github/workflows)** - GitHub Actions workflows and the shared `setup-codebase` action\
-`├` **🛠️ [installation](installation)** - Sets up developer machines and project dependencies, and checks each new session\
-`├` **🔁 [integration](integration)** - Guards changes with commit, push, and pull request checks\
-`└` **📤 [deployment](deployment)** - Coordinates releases and package publishing
+`├` **💾 [installation](installation)** - Sets up developer machines and project dependencies, and checks each new session\
+`├` **🧩 [integration](integration)** - Guards changes with commit, push, and pull request checks\
+`└` **🚢 [deployment](deployment)** - Coordinates releases and package publishing
 
 ## 🚀 Start
 
 ```bash
 git clone https://github.com/organizzolini/codebase.git && cd codebase
 bash scripts/installation.sh && nx show projects
-nx affected --base=main --target=callidescope-restrict,codependix-bound,codometer-limit,coinagerie-check,conformetry-validate
+nx affected --target=conformetry-validate,callidescope-restrict,codometer-limit,codependix-bound,coinagerie-check
 nx run-many --target=start --projects=lexico-web,caelundas-web,meanderaw-web
 ```
 
@@ -234,7 +234,7 @@ nx run-many --target=start --projects=lexico-web,caelundas-web,meanderaw-web
 - [AGENTS.md](AGENTS.md) - The single source of truth for conventions; every project has its own
 - [OpenWiki](openwiki/quickstart.md) - Generated map of the architecture, domains, and workflows
 - [Skills](.agents/skills) - Domain knowledge and workflows, which are also the deep-dive documentation
-  - **Vendored:** [Superpowers](https://github.com/obra/superpowers) / [Matt Pocock's Skills](https://github.com/mattpocock/skills) / [Ponytail](https://github.com/DietrichGebert/ponytail) / [Nx](https://github.com/nrwl/nx) / [GitHub](https://github.com/github/awesome-copilot)
+  - **Vendored:** [Superpowers](https://github.com/obra/superpowers) / [Matt Pocock](https://github.com/mattpocock/skills) / [Ponytail](https://github.com/DietrichGebert/ponytail) / [Nx](https://github.com/nrwl/nx) / [GitHub](https://github.com/github/awesome-copilot)
   - **Workflows:** [Submit](.agents/skills/submit-changes/SKILL.md) / [Ship](.agents/skills/ship-changes/SKILL.md) / [Worktrees](.agents/skills/using-git-worktrees/SKILL.md) / [Projects](.agents/skills/manage-project/SKILL.md) / [Issues](.agents/skills/link-issue/SKILL.md) / [Commits](.agents/skills/commit-code/SKILL.md) / [Branches](.agents/skills/checkout-branch/SKILL.md) / [PRs](.agents/skills/create-pull-request/SKILL.md)
   - **Quality:** [Validate Code](.agents/skills/validate-code/SKILL.md) / [Conformetry](.agents/skills/conformetry-validate/SKILL.md) / [Error Handling](.agents/skills/write-typescript/references/errors.md) / [Failing CI](.agents/skills/triage-integration/SKILL.md) / [Spell Check](.agents/skills/spell-check/SKILL.md)
   - **Languages:** [TypeScript](.agents/skills/write-typescript/SKILL.md) / [React](.agents/skills/write-react/SKILL.md) / [Python](.agents/skills/write-python/SKILL.md) / [Comments](.agents/skills/write-comments/SKILL.md) / [Tests](.agents/skills/write-tests/SKILL.md)
