@@ -1,6 +1,6 @@
 ---
 name: callidescope-triage
-description: "Act on a failed callidescope run: a stack or breadth over its project's limit, a stale committed report, a gate that read none of its project's files, or a rejected configuration. Use when callidescope or a gate target exits non-zero, when a stack got deeper in a change, or when deciding between a code fix and a limit change."
+description: "Act on a failed callidescope run: a stack or breadth over its limit, a stale committed report, a gate that read none of its project's files, or a rejected configuration. Use when callidescope or a gate target exits non-zero, or before changing a limit to make it pass."
 license: MIT
 ---
 

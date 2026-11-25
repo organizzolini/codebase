@@ -34,7 +34,7 @@ Skills are model-invoked: omit `disable-model-invocation` and write a
 that should fire it, in the language an agent would actually be prompted with.
 The description is the entire trigger surface, and every installed skill's
 description shares one listing budget, so keep it to about 40 words and never
-over 64.
+over 128.
 
 Content rules worth knowing before editing:
 

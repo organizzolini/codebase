@@ -1,6 +1,6 @@
 ---
 name: codometer-configure
-description: "Write or edit a codometer.config.ts: inputs, size and count limits, comment and JSDoc budgets, custom convention counters, exclusions, and output destinations. Use when a repository has no configuration, when adding a limit or budget, when counting a naming convention no analyzer knows, or when a limit fails to bind or an input matches no files."
+description: "Write or edit a codometer.config.ts: inputs, size and count limits, comment budgets, custom counters, exclusions, and outputs. Use when a repository has no configuration, when adding a limit or budget, or when a limit fails to bind or an input matches no files."
 license: MIT
 ---
 
@@ -52,9 +52,9 @@ spreads a shared object across them, the way this repository's own
 `excludeFrom` are for files that are **kept** but that nobody wrote by hand —
 lockfiles, vendored bundles, generated documentation:
 
-| Option | Syntax | Use it for |
-| ------ | ------ | ---------- |
-| `exclude` | Globs | A handful of paths named inline |
+| Option        | Syntax                          | Use it for                                      |
+| ------------- | ------------------------------- | ----------------------------------------------- |
+| `exclude`     | Globs                           | A handful of paths named inline                 |
 | `excludeFrom` | Paths to gitignore-syntax files | A list a repository would rather keep in a file |
 
 Reusing an existing ignore file is a trap worth knowing about: most are written
@@ -71,14 +71,14 @@ over it. The measured directory is always an input of its own, named
 `.gitignore` excludes, and that therefore needs an input rather than an
 exclusion to reach at all.
 
-| Field | Required | Default | Meaning |
-| ----- | -------- | ------- | ------- |
-| `name` | yes | — | Unique name for this input |
-| `include` | yes | — | Globs that add files; at least one must add rather than only remove |
-| `exclude` | no | none | Globs that remove files |
-| `analyses` | yes | — | `"language"`, `"size"`, or both |
-| `compression` | no | `gzip` | `gzip`, `brotli`, or `none`, for `size` analysis |
-| `directory` | no | `.` | Where this input's globs start, relative to the process's working directory |
+| Field         | Required | Default | Meaning                                                                     |
+| ------------- | -------- | ------- | --------------------------------------------------------------------------- |
+| `name`        | yes      | —       | Unique name for this input                                                  |
+| `include`     | yes      | —       | Globs that add files; at least one must add rather than only remove         |
+| `exclude`     | no       | none    | Globs that remove files                                                     |
+| `analyses`    | yes      | —       | `"language"`, `"size"`, or both                                             |
+| `compression` | no       | `gzip`  | `gzip`, `brotli`, or `none`, for `size` analysis                            |
+| `directory`   | no       | `.`     | Where this input's globs start, relative to the process's working directory |
 
 A `!` prefix in `include` removes files; every negation across the array forms
 one set applied to the whole input, so reordering the array can never change
@@ -107,12 +107,12 @@ limits: [
 ],
 ```
 
-| Field | Required | Default | Meaning |
-| ----- | -------- | ------- | ------- |
-| `metric` | yes | — | Dotted path of the metric this bounds |
-| `value` | yes | — | Ceiling, as a number or a string carrying a unit |
-| `severity` | no | `fail` | `fail` stops the run on a breach; `warn` only reports it |
-| `label` | no | the path | What the report calls this limit |
+| Field      | Required | Default  | Meaning                                                  |
+| ---------- | -------- | -------- | -------------------------------------------------------- |
+| `metric`   | yes      | —        | Dotted path of the metric this bounds                    |
+| `value`    | yes      | —        | Ceiling, as a number or a string carrying a unit         |
+| `severity` | no       | `fail`   | `fail` stops the run on a breach; `warn` only reports it |
+| `label`    | no       | the path | What the report calls this limit                         |
 
 A metric is addressed as its input's name followed by its path within that
 input. Setting `defaultInput` lets an unqualified path resolve to that input's
@@ -224,14 +224,14 @@ custom: [
 limits: [{ metric: "custom.YAML Comment Budget", value: 0 }],
 ```
 
-| Field | Required | Default | Meaning |
-| ----- | -------- | ------- | ------- |
-| `language` | no | every language with comments | Narrows to one of `css`, `hcl`, `python`, `shell`, `sql`, `toml`, `typescript`, `yaml` |
-| `kind` | no | a plain comment block | Narrows to a documented declaration's JSDoc-style comment for this declaration kind |
-| `maximumCharacters` | no | — | Characters a block may hold, markers and newlines and all |
-| `maximumLines` | no | — | Lines a block may span |
-| `maximumWords` | no | — | Words of prose a block may hold, once markers are stripped |
-| `severity` | no | `fail` | `fail` stops the run on a breach; `warn` only reports it |
+| Field               | Required | Default                      | Meaning                                                                                |
+| ------------------- | -------- | ---------------------------- | -------------------------------------------------------------------------------------- |
+| `language`          | no       | every language with comments | Narrows to one of `css`, `hcl`, `python`, `shell`, `sql`, `toml`, `typescript`, `yaml` |
+| `kind`              | no       | a plain comment block        | Narrows to a documented declaration's JSDoc-style comment for this declaration kind    |
+| `maximumCharacters` | no       | —                            | Characters a block may hold, markers and newlines and all                              |
+| `maximumLines`      | no       | —                            | Lines a block may span                                                                 |
+| `maximumWords`      | no       | —                            | Words of prose a block may hold, once markers are stripped                             |
+| `severity`          | no       | `fail`                       | `fail` stops the run on a breach; `warn` only reports it                               |
 
 Its count is how many blocks broke the selector's own maxima, and its
 `instances` names each breaching block's `file` and 1-indexed `line`, plus how
@@ -305,11 +305,11 @@ limits: [
 ],
 ```
 
-| Field | Required | Default | Meaning |
-| ----- | -------- | ------- | ------- |
-| `maximumBreadth` | one of the two | — | Entries one directory may hold directly, files and folders counted alike |
-| `maximumDepth` | one of the two | — | Folders deep a directory may sit, the measured root being depth `0` |
-| `exclude` | no | none | Directory globs exempt from the ceiling, their descendants included |
+| Field            | Required       | Default | Meaning                                                                  |
+| ---------------- | -------------- | ------- | ------------------------------------------------------------------------ |
+| `maximumBreadth` | one of the two | —       | Entries one directory may hold directly, files and folders counted alike |
+| `maximumDepth`   | one of the two | —       | Folders deep a directory may sit, the measured root being depth `0`      |
+| `exclude`        | no             | none    | Directory globs exempt from the ceiling, their descendants included      |
 
 **A selector names exactly one ceiling.** Breadth and depth are separate
 problems with separate fixes, so one selector holding both is refused —
@@ -367,14 +367,14 @@ report says and where it lands, replacing what used to be two separate
 }
 ```
 
-| Argument | Meaning |
-| -------- | ------- |
-| `description` | The configured description, for a writer that wants to place it itself |
-| `renderBadges()` | The built-in badge rendering of these same statistics — call it to build the default content, or to add to it |
-| `statistics` | The measured statistics |
-| `check` | True when nothing may be written and the file is only being inspected |
-| `path` | The configured path, resolved against the process's working directory |
-| `anchors` | The marker mechanics — `syncAnchoredBlock`, `wrapInAnchors`, `startMarker`/`endMarker` — so choosing a different file does not mean reimplementing the splice |
+| Argument         | Meaning                                                                                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `description`    | The configured description, for a writer that wants to place it itself                                                                                        |
+| `renderBadges()` | The built-in badge rendering of these same statistics — call it to build the default content, or to add to it                                                 |
+| `statistics`     | The measured statistics                                                                                                                                       |
+| `check`          | True when nothing may be written and the file is only being inspected                                                                                         |
+| `path`           | The configured path, resolved against the process's working directory                                                                                         |
+| `anchors`        | The marker mechanics — `syncAnchoredBlock`, `wrapInAnchors`, `startMarker`/`endMarker` — so choosing a different file does not mean reimplementing the splice |
 
 Leaving `write` unset keeps the built-in rendering and writing. A `write`
 function returns `false` to report its destination as stale, which is what

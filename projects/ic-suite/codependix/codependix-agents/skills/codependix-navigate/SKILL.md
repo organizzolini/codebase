@@ -1,6 +1,6 @@
 ---
 name: codependix-navigate
-description: "Answer dependency and architecture questions from codependix commands or the committed graphs: paths between projects, files, or NestJS modules, blast radius, and what imports a file or package. Use when tracing what a change touches, choosing narrowing flags to keep a run cheap, or reading README diagrams without running anything."
+description: "Answer dependency and architecture questions from codependix: paths between projects, files, or NestJS modules, blast radius, and what imports a file or package. Use when tracing what a change touches, or reading README diagrams without running anything."
 license: MIT
 ---
 
@@ -37,17 +37,17 @@ Running across a full workspace can be expensive because it parses Nx projects,
 TypeScript ASTs, and container registrations across the entire monorepo. Use
 narrowing flags to scope the run and minimize execution time:
 
-| Flag | Purpose |
-| ---- | ------- |
-| `-f, --format <format>` | Output format: `markdown` (default), `json`, or `mermaid` |
-| `--nx-projects` / `--no-nx-projects` | Toggle Nx workspace project dependency graph search |
-| `--file-imports` / `--no-file-imports` | Toggle internal file-level import graph search |
-| `--nestjs-modules` / `--no-nestjs-modules` | Toggle NestJS container module graph search |
-| `--projects <names>` | Comma-separated project names or globs to search across |
-| `-d, --directory <dir>` | Directory whose Nx workspace to read |
-| `--include <globs>` / `--exclude <globs>` | Override configured project inclusion or exclusion globs |
-| `--tags <tags>` | Comma-separated Nx project tags to filter by |
-| `--config <path>` | **Required.** Path to the codependix configuration file; every example here passes it |
+| Flag                                       | Purpose                                                                               |
+| ------------------------------------------ | ------------------------------------------------------------------------------------- |
+| `-f, --format <format>`                    | Output format: `markdown` (default), `json`, or `mermaid`                             |
+| `--nx-projects` / `--no-nx-projects`       | Toggle Nx workspace project dependency graph search                                   |
+| `--file-imports` / `--no-file-imports`     | Toggle internal file-level import graph search                                        |
+| `--nestjs-modules` / `--no-nestjs-modules` | Toggle NestJS container module graph search                                           |
+| `--projects <names>`                       | Comma-separated project names or globs to search across                               |
+| `-d, --directory <dir>`                    | Directory whose Nx workspace to read                                                  |
+| `--include <globs>` / `--exclude <globs>`  | Override configured project inclusion or exclusion globs                              |
+| `--tags <tags>`                            | Comma-separated Nx project tags to filter by                                          |
+| `--config <path>`                          | **Required.** Path to the codependix configuration file; every example here passes it |
 
 ### Path results
 
@@ -84,12 +84,12 @@ disk:
 
 ## The four graph types and their questions
 
-| Graph | Scope | Answers |
-| ----- | ----- | ------- |
-| **Nx Neighborhood** | Project | What one project reaches (dependencies) and who breaks if it changes (dependents) |
-| **Workspace graph** | Workspace | High-level architectural layering and cross-package relationships |
-| **NestJS module graph** | Container | What modules the DI container wires together at runtime |
-| **File import graph** | Project files | File-to-file import relationships, cycles, and local refactoring fan-out |
+| Graph                   | Scope         | Answers                                                                           |
+| ----------------------- | ------------- | --------------------------------------------------------------------------------- |
+| **Nx Neighborhood**     | Project       | What one project reaches (dependencies) and who breaks if it changes (dependents) |
+| **Workspace graph**     | Workspace     | High-level architectural layering and cross-package relationships                 |
+| **NestJS module graph** | Container     | What modules the DI container wires together at runtime                           |
+| **File import graph**   | Project files | File-to-file import relationships, cycles, and local refactoring fan-out          |
 
 ## Interpreting graph artifacts
 

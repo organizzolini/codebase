@@ -1,6 +1,6 @@
 ---
 name: conformetry-validate
-description: "Run a conformetry conformance check and act on what it reports: a missing file, declaration, or comment, a placeholder it could not infer, or an ambiguous or unmatched instance. Use when a conformetry-validate target fails, when deciding whether to edit an instance or regenerate it, or before calling generated code finished."
+description: "Run a conformetry conformance check and act on its report: a missing file, declaration, or comment, a placeholder it could not infer, or an ambiguous or unmatched instance. Use when a conformetry-validate target fails, or when deciding whether to edit an instance or regenerate it."
 license: MIT
 ---
 
