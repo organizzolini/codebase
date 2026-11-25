@@ -20,6 +20,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **preemption**: the scheduler evicting a lower-priority pod to fit a higher one; `batch-low` sets `preemptionPolicy: Never` to opt out.
 - **profile**: Named security policy applied to a container, such as the `RuntimeDefault` seccomp profile.
 - **seccomp**: Linux kernel filter that limits which system calls a container may make.
+- **tftest**: Terraform test file, written in HCL and read by `terraform test` against mock providers, so it needs no credentials.
 - **visibility**: Repository setting that makes the GitHub repository public, set to public in the github root.
 - **wal**: Write-ahead log, the sequence of changes that backups archive for point-in-time recovery.
 

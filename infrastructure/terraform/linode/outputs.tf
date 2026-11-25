@@ -53,3 +53,25 @@ output "terraform_state_secret_key" {
   value       = linode_object_storage_key.terraform_state.secret_key
   sensitive   = true
 }
+
+output "postgres_backups_bucket" {
+  description = "Value for the CloudNativePG backup destination: the bucket Postgres backups are archived to."
+  value       = linode_object_storage_bucket.postgres_backups.label
+}
+
+output "postgres_backups_endpoint" {
+  description = "Value for the CloudNativePG backup endpoint: the bucket's S3 endpoint."
+  value       = "https://${linode_object_storage_bucket.postgres_backups.s3_endpoint}"
+}
+
+output "postgres_backups_access_key" {
+  description = "Access key of the key that can read and write the backups bucket only."
+  value       = linode_object_storage_key.postgres_backups.access_key
+  sensitive   = true
+}
+
+output "postgres_backups_secret_key" {
+  description = "Secret key of the key that can read and write the backups bucket only."
+  value       = linode_object_storage_key.postgres_backups.secret_key
+  sensitive   = true
+}

@@ -34,7 +34,7 @@ infrastructure/
 │   └── postgres/            # Shared PostgreSQL as CloudNativePG resources
 └── terraform/               # Cluster provisioning
     ├── github/              # Repository settings, ruleset, Actions variables
-    ├── linode/              # Object Storage buckets: the state and the shared Nx cache
+    ├── linode/              # Object Storage buckets: the state, the shared Nx cache, and Postgres backups
     └── openrouter/          # OpenRouter workspace, key, guardrail, preset
 ```
 
@@ -71,6 +71,8 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 `values/caelundas-cli.yaml` layers over `values/base.yaml` for the caelundas-cli ingestion Job: an Indexed job on `emptyDir` scratch space, `batch-low` priority, and the staging Postgres environment.
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
+
+**Terraform tests**: `tests/` holds the `terraform test` suites written in HCL, which run against `mock_provider` blocks, so they need no credentials. `nx run infrastructure:terraform-test` initializes each root with `-backend=false` and runs its tests, for every root that has a `tests/` folder.
 
 ### cloudflared Chart
 
@@ -151,7 +153,7 @@ argocd app diff --core <name>                 # the live-versus-desired diff, re
 
 ## Kubernetes Deployment
 
-See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint`, `helm-test`, and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
+See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint`, `helm-test`, `terraform-test`, and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
 
 ## Moving the Terraform State Bucket
 

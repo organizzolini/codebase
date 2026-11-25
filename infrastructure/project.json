@@ -213,6 +213,22 @@
         "command": "terraform plan -input=false -lock=false -out=plan.tfplan"
       }
     },
+    "terraform-test": {
+      "cache": true,
+      "description": "Run the Terraform unit tests of every root under terraform/ that has a tests folder, against mock providers. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Needs no credentials: each root is initialized with -backend=false, so only the provider download needs network access. Requires terraform on PATH.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/terraform/**/*.tf",
+        "{projectRoot}/terraform/**/tests/**/*",
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "command": "for root in */; do if [ -d \"$root/tests\" ]; then (cd \"$root\" && terraform init -input=false -backend=false && terraform test) || exit 1; fi; done",
+        "cwd": "{projectRoot}/terraform"
+      }
+    },
     "terraform-validate": {
       "cache": true,
       "description": "Validate the OpenRouter, GitHub, and Linode Terraform without a backend or credentials. Part of lint-code. Requires terraform on PATH and downloads the provider, so it needs network access.",
