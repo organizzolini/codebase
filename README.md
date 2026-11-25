@@ -213,7 +213,7 @@
 `├──` **🔁 [integration](integration)** - Guards a change on its way to `main`: commit and push checks, derived configuration, and pull request checks\
 `└──` **📤 [deployment](deployment)** - Coordinates releases and package publishing\
 
-## 🚀 Getting Started
+## 🚀 Startup
 
 ```bash
 git clone https://github.com/Organizzolini/codebase.git
@@ -233,7 +233,7 @@ nx run lexico-web:start
 
 The setup script installs the toolchain and dependencies; `nx show projects` lists every project, and `nx run <project>:<target>` runs a task in one of them. The [Contributing Guide](.github/CONTRIBUTING.md) covers the dev container, code standards, commits, and pull requests.
 
-## 📖 Learn More
+## 📖 Resources
 
 - [Contributing Guide](.github/CONTRIBUTING.md) - Setup, commands, quality gates, and the commit and pull request workflow
 - [Release Process](documentation/development/release-process.md) - Automated semantic versioning and changelogs
