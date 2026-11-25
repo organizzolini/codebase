@@ -111,6 +111,13 @@ inherit a larger session model.
    request through CI, conflicts, the merge queue, and release, and is done only
    once the change is observed working on `main`. Without that request, an open
    pull request ends the run; merging is the user's call.
+10. **Learn**: At the end of every non-trivial run, run
+    [learn-lessons](.agents/skills/learn-lessons/SKILL.md) over the session and
+    the branch: corrections from the user, review feedback, CI failures, and
+    patterns worth repeating. It writes each lesson as a lasting rule into the
+    skill or `AGENTS.md` that owns it, checked for duplicates first, so the next
+    agent starts where this one finished. Commit the lessons on the open branch,
+    or on a follow-up `docs` branch once it has merged.
 
 Steps 5 through 9 run once per pull request. For the usual one-pull-request
 spec this session runs them for the whole spec; for a split spec each dispatched
@@ -316,7 +323,7 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
 ## Agent Context
 
 `.agents/skills/` and this file are the single sources of truth.
-Use the [symlink-files](.agents/skills/symlink-files/SKILL.md) skill to understand how other entry points mirror them.
+Use the [install-skills](.agents/skills/install-skills/SKILL.md#where-agent-instructions-live) skill to understand how other entry points mirror them.
 
 ### Documentation Lives in `documentation/`
 

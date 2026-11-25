@@ -171,8 +171,8 @@ Priority order: prefer skills and AGENTS.md. Only fall back to memory for facts 
 
 | Fix Type           | Priority        | When to Use                                                                                 | Target File                               |
 | ------------------ | --------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| **Existing skill** | 1 — preferred   | The skill exists but is missing a step, warning, or reinforcement note                      | `.github/skills/<name>/SKILL.md`          |
-| **New skill**      | 1 — preferred   | A repeatable multi-step workflow has no skill yet                                           | `.github/skills/<new-name>/SKILL.md`      |
+| **Existing skill** | 1 — preferred   | The skill exists but is missing a step, warning, or reinforcement note                      | `.agents/skills/<name>/SKILL.md`          |
+| **New skill**      | 1 — preferred   | A repeatable multi-step workflow has no skill yet                                           | `.agents/skills/<new-name>/SKILL.md`      |
 | **AGENTS.md**      | 2 — preferred   | A short rule must be always-visible to every agent in this workspace                        | `AGENTS.md` or `<project>/AGENTS.md`      |
 | **Memory**         | 3 — last resort | A highly specific fact with no natural skill home, or a personal cross-workspace preference | `/memories/*.md` or `/memories/repo/*.md` |
 
@@ -182,39 +182,33 @@ Priority order: prefer skills and AGENTS.md. Only fall back to memory for facts 
 
 For each finding classified in Phase 4, make the change.
 
+### Write Lasting Rules
+
+Every lesson lands as a rule the next agent can apply cold. Before writing one:
+
+1. **Find its owner.** Each fact has one home: commit format in `commit-code`, pull request shape in `create-pull-request`, test mechanics in `write-tests`, gates in `validate-code`, a project's quirks in its `AGENTS.md`. Write it there, and link to it from anywhere else that needs it — never copy it.
+2. **Search before adding.** `grep -rn` the owner and its `references/` for the topic. If the rule exists, sharpen or correct it in place; if a stale rule contradicts it, replace that rule. Appending a second version beside the first is how skills rot.
+3. **Write it timeless.** State the rule and the reason, not the story: "Fix clocks with `mockDates` for date math, so branch tests stay deterministic", never "In the recent 96% coverage work we found…". No dates, session references, or pull request numbers in a rule.
+4. **Keep it the size of the lesson.** One or two sentences, with a short before/after snippet only when the rule is about code shape.
+
 ### For skill updates
 
 (adding a coding pattern, warning, or reinforcement to an existing skill):
 
-- **Coding patterns go in the most specific domain skill** — TypeScript patterns → `write-typescript`, React patterns → `write-react`, NestJS patterns → the relevant NestJS skill, etc.
-- If no domain skill covers the pattern, add it to the project's `AGENTS.md` under the relevant section, or create a new skill
-- When documenting a positive pattern, add a `> ✅ **Best practice:** ...` callout
-- When documenting a gap or mistake, add a `> ⚠️ **Warning:** ...` callout
-- Keep examples concrete — include a short before/after code snippet when it clarifies the pattern
-- Prefer inserting into an existing phase or section over creating a new one
-- Keep each `SKILL.md` focused and under 512 lines. Treat 512 lines as a hard cap when updating any skill.
-- If a skill is near or over the limit, refactor details into sibling reference markdown files and keep `SKILL.md` as the concise entry point.
-- Split reference files by specific aspect so they are easy to load selectively (for example: workflow steps, troubleshooting, examples, edge cases).
-- Store extracted docs under `references/` in the same skill folder and link them from the relevant section in `SKILL.md`.
-- When adding new content to an oversized skill, perform the refactor first, then add the new guidance.
-
-### Skill File Size Refactor Pattern
-
-Use this pattern whenever a skill is becoming too large:
-
-1. Keep discovery-critical content in `SKILL.md` (frontmatter, when-to-use triggers, concise workflow outline).
-2. Move deep, single-topic details into `references/<aspect>.md` files.
-3. Add short links in `SKILL.md` to each reference file from the matching section.
-4. Ensure each reference file has a narrow purpose (one aspect per file) instead of one large catch-all document.
-5. Re-check the line count and keep `SKILL.md` under 512 lines after the refactor.
+- **Coding patterns go in the most specific domain skill** — TypeScript patterns → `write-typescript`, React patterns → `write-react`, test patterns → `write-tests`.
+- If no skill covers the pattern, add it to the project's `AGENTS.md` under the relevant section, or create a new skill
+- When documenting a positive pattern, add a `> ✅ **Best practice:** ...` callout; for a gap or mistake, a `> ⚠️ **Warning:** ...` callout
+- Prefer inserting into an existing section over creating a new one
+- Keep `SKILL.md` to discovery and workflow, under 512 lines; deep, single-topic detail goes in `references/<aspect>.md`, linked from the matching section. When a skill is near the cap, move detail into `references/` first, then add the new guidance.
+- A description that grows past 128 words fails `nx run integration:skill-descriptions`: move trigger detail into the body.
 
 ### For new skills
 
 (a repeatable workflow not yet covered):
 
-- Follow the [agent-skills instructions](../../../.github/instructions/agent-skills.instructions.md) template precisely
-- Place at `.github/skills/<name>/SKILL.md`
-- Write a keyword-rich `description` field — this is the primary discovery surface
+- Follow [writing-skills](../writing-skills/SKILL.md), which covers how a skill is built and verified
+- Place it at `.agents/skills/<name>/SKILL.md`; `.claude/skills` and `.github/skills` are symlinks to that folder
+- Write a `description` of at most 128 words saying what it does and when to use it — the primary discovery surface
 - Include a step-by-step workflow, not just a description
 
 ### For AGENTS.md updates
@@ -235,23 +229,11 @@ Use this pattern whenever a skill is becoming too large:
 
 ### Phase 6 — Validate and Summarize
 
-#### 6.1 Verify all changes compile and link correctly
+#### 6.1 Validate
 
-For any modified skill files:
+Run the [validate-code skill](../validate-code/SKILL.md) on every changed file: it covers markdownlint, cspell, and the skill-description check. Follow each relative link you added, and confirm each touched `SKILL.md` stays under 512 lines (`wc -l`).
 
-```bash
-# Check no broken relative links in the skill
-grep -oP '\[.*?\]\(\K[^)]+' .github/skills/<name>/SKILL.md
-
-# Verify SKILL.md stays under the hard cap
-wc -l .github/skills/<name>/SKILL.md
-```
-
-#### 6.2 Run spell check on modified files
-
-Use the `spell-check` skill if any `cspell` errors are reported.
-
-#### 6.3 Produce a summary
+#### 6.2 Produce a summary
 
 Output a concise retrospective report:
 

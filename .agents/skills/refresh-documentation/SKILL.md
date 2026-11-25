@@ -1,60 +1,50 @@
 ---
 name: refresh-documentation
-description: Review and update all project documentation to keep it accurate and current. Use this skill when asked to refresh, update, or audit documentation, README files, AGENTS.md files, skill descriptions, or any markdown docs across the codebase.
+description: Review and update the hand-written documentation — READMEs, AGENTS.md files, skills, and documentation/ — so it matches the code. Use when asked to refresh, update, or audit documentation, after a change that moved commands, paths, or conventions, or when a skill or README states something the code no longer does.
 license: MIT
 ---
 
 # Refresh Documentation
 
-This skill guides a systematic review and refresh of all documentation across the codebase. It is also invoked automatically each week by the `refresh-documentation` GitHub Actions workflow, which creates a GitHub issue assigned to Copilot.
-
-## When to Use This Skill
-
-- When asked to "refresh documentation", "update docs", or "audit documentation"
-- When documentation may be stale after significant code changes
-- On the weekly scheduled cadence (triggered automatically via GitHub issue)
+Audit the hand-written documentation against the code and fix what drifted. The generated documentation is not part of this: the weekly 🧑‍🏫 Refresh Documentation workflow regenerates the OpenWiki pages under `documentation/openwiki/` with `nx run documentation:refresh-documentation`, and nobody hand-edits them (see [openwiki.md](../../../documentation/agents/openwiki.md)).
 
 ## Scope
 
-Documentation to review and update:
+| Path                                         | What it is                                                                                                            |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `README.md`                                  | The root README, with its project table (`nx run integration:readme-projects` checks it)                              |
+| `AGENTS.md`                                  | Workspace instructions; `.claude/CLAUDE.md` and `.github/copilot-instructions.md` are symlinks to it                  |
+| `<project>/AGENTS.md`, `<project>/README.md` | Per-project instructions and readmes                                                                                  |
+| `.github/CONTRIBUTING.md`                    | The contributor narrative                                                                                             |
+| `documentation/**/*.md`                      | Agent configuration, guides, and research, except `documentation/openwiki/` and dated `documentation/planning/` notes |
+| `.agents/skills/*`                           | Skills this repository authors; never vendored ones, which `skills-lock.json` lists                                   |
 
-| Path                         | Description                                                          |
-| ---------------------------- | -------------------------------------------------------------------- |
-| `README.md`                  | Root codebase README                                                 |
-| `documentation/**/*.md`      | Core documentation files                                             |
-| `AGENTS.md`                  | Workspace-level Copilot instructions — skill table must stay in sync |
-| `*/AGENTS.md`                | Per-project Copilot instructions                                     |
-| `*/README.md`                | Project README files                                                 |
-| `.github/skills/**/SKILL.md` | Skill files (mirrored to `documentation/skills/`)                    |
+Leave generated blocks alone — anything between marker comments (types and scopes tables, the PR template, codometer badges, glossaries, codependix and callidescope reports). Regenerate them with their own `write` target instead.
 
-## Step-by-Step Workflow
+## Workflow
 
-### Phase 1 — Audit
+### 1. Audit
 
-For each path in scope, read the documentation and cross-check it against the actual codebase. Classify every finding into one of three categories:
+For each file in scope, cross-check every command, path, target, and claim against the code. Run commands rather than trusting them; read `nx.json` and `project.json` for targets; follow every relative link. Classify each finding:
 
-| Category       | Criteria                                                                               | Action                              |
-| -------------- | -------------------------------------------------------------------------------------- | ----------------------------------- |
-| **Deprecated** | Documents a feature, command, file, or API that no longer exists                       | **Remove** the section or file      |
-| **Outdated**   | Content exists but is inaccurate — wrong path, outdated command, incorrect description | **Update** to match current reality |
-| **Missing**    | A feature, project, convention, or workflow exists in the codebase but is undocumented | **Create** new documentation        |
+| Category       | Criteria                                                                | Action                    |
+| -------------- | ----------------------------------------------------------------------- | ------------------------- |
+| **Deprecated** | Documents a feature, command, file, or skill that no longer exists      | **Remove**                |
+| **Outdated**   | Exists but is described wrongly: a path, a command, a count, a behavior | **Update**                |
+| **Missing**    | A project, convention, or workflow exists but nothing documents it      | **Create**                |
+| **Duplicated** | The same fact stated in several places that can drift apart             | **Link** to the one owner |
 
-### Phase 2 — Act
+### 2. Act
 
-1. **Remove deprecated content** — Delete sections, files, or entries that document things that no longer exist. This includes dead links, removed commands, retired projects, and superseded conventions.
+- Fix each finding where the fact is **owned**, and link to it from elsewhere rather than copying it.
+- Keep each skill description within 128 words (`nx run integration:skill-descriptions`), and each skill's long reference material under its `references/`.
+- Match a table's style to its file: some are column-aligned, others are not, and markdownlint holds each table to its own header.
 
-2. **Update outdated content** — Fix inaccurate content by cross-checking against actual source files:
-   - Code examples: verify commands, file paths, and APIs against the codebase
-   - README files: check that project structure, commands, and purpose are accurate
-   - AGENTS.md files: verify quick-reference commands still work and descriptions match current conventions
-   - Cross-references: fix broken internal links
+### 3. Validate
 
-3. **Create missing documentation** — Write new content for undocumented areas:
-   - New projects added since the last documentation refresh
-   - New conventions, tools, or workflows not yet documented
-   - Features documented in code comments but absent from markdown docs
+Run the [validate-code skill](../validate-code/SKILL.md) on what changed, which covers markdownlint, cspell, and the skill and README checks.
 
 ## References
 
 - [AGENTS.md](../../../AGENTS.md) — Workspace-level instructions
-- [documentation/](../../../documentation/) — Core documentation directory
+- [install-skills](../install-skills/SKILL.md) — Where skills live and which are vendored
