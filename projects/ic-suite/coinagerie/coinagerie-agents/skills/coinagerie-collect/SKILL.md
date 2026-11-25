@@ -1,6 +1,6 @@
 ---
 name: coinagerie-collect
-description: Use when running coinagerie or npx @coinagerie/cli, printing the vocabulary of a codebase, checking or writing a glossary, choosing between --check, --write, and a bare run, reading the glossary block or JSON it printed, reading the missing and stale words a failed check named, finding which words are still undefined, or wiring a glossary check into CI, a commit hook, or an Nx target.
+description: "Run coinagerie to list the words a codebase uses and check or write its glossary. Use when running coinagerie, choosing between --check, --write, and a bare run, reading the missing and stale words a failed check named, finding undefined words, or wiring a glossary check into CI, a commit hook, or an Nx target."
 license: MIT
 ---
 

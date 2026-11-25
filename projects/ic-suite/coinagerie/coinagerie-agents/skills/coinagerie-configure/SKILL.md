@@ -1,6 +1,6 @@
 ---
 name: coinagerie-configure
-description: Use when writing or changing a coinagerie.config.ts, choosing which files are scanned, excluding paths or words, reading another glossary into exclude.words, merging a word family with fold, declaring markdown or JSON glossary destinations, sharing one base configuration across folders, or when a configuration is rejected, a keyword list will not import, or a word is wrongly listed in the glossary.
+description: "Write or change a coinagerie.config.ts: which files are scanned, excluded paths and words, word families merged with fold, shared base configurations, and markdown or JSON glossary destinations. Use when setting coinagerie up, when a configuration is rejected or a keyword list will not import, or when a word is wrongly listed in the glossary."
 license: MIT
 ---
 
