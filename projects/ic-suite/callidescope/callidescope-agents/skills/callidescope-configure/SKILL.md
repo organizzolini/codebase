@@ -1,6 +1,6 @@
 ---
 name: callidescope-configure
-description: "Configure callidescope: the callidescope.config.ts and the command-line flags that override it, covering depth and breadth limits, entry points, exclusions, and where JSON, markdown, and mermaid reports go. Use when setting up a depth gate, giving a project its own limit, or when a run is slow, measures nothing, judges code it should not, or reports everything as an orphan root."
+description: "Configure callidescope: the callidescope.config.ts and the command-line flags that override it, covering limits, entry points, exclusions, and report destinations. Use when setting up a depth gate, giving a project its own limit, or when a run is slow, measures nothing, judges code it should not, or reports everything as an orphan root."
 license: MIT
 ---
 

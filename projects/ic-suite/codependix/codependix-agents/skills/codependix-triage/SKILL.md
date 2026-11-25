@@ -1,6 +1,6 @@
 ---
 name: codependix-triage
-description: "Act on a failed or drifting codependix run: a boundary violation or cycle, stale exports, a missing anchor block, a NestJS container that failed to boot, or a --write that produced nothing. Use when codependix or a codependix-bound target exits non-zero, when a committed diagram disagrees with a fresh run, or before hand-editing a diagram or loosening a rule."
+description: "Act on a failed or drifting codependix run: a boundary violation or cycle, stale exports, a missing anchor block, or a --write that produced nothing. Use when codependix or a codependix-bound target exits non-zero, when a committed diagram disagrees with a fresh run, or before hand-editing a diagram or loosening a rule."
 license: MIT
 ---
 
