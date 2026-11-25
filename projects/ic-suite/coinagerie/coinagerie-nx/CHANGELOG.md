@@ -1,3 +1,13 @@
+## 0.0.35 (2026-11-25)
+
+### 🚀 Features
+
+- **integration,documentation,callidescope:** ✨ reorganize agent skills and cap description length ([#2595](https://github.com/organizzolini/codebase/pull/2595), [#2562](https://github.com/organizzolini/codebase/issues/2562))
+
+### 🧱 Updated Dependencies
+
+- Updated coinagerie-configuration to 0.0.35
+
 ## 0.0.34 (2026-11-25)
 
 ### 🧱 Updated Dependencies

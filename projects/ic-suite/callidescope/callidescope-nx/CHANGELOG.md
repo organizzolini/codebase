@@ -1,3 +1,17 @@
+## 0.0.98 (2026-11-25)
+
+### 🚀 Features
+
+- **integration,documentation,callidescope:** ✨ reorganize agent skills and cap description length ([#2595](https://github.com/organizzolini/codebase/pull/2595), [#2562](https://github.com/organizzolini/codebase/issues/2562))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.97
+- Updated callidescope-output to 0.0.96
+- Updated callidescope-graph to 0.0.96
+- Updated callidescope-core to 0.0.96
+- Updated callidescope-cli to 0.0.97
+
 ## 0.0.97 (2026-11-25)
 
 ### 🧱 Updated Dependencies
