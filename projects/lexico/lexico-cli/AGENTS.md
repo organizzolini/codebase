@@ -165,7 +165,25 @@ nx run lexico-cli:vitest:end-to-end    # Slow (30-60s) — full CLI execution
 
 Project-specific integration tests also cover Wiktionary HTML parsing.
 
-See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
+See the [write-tests skill](../../../.agents/skills/write-tests/SKILL.md) for patterns and mock conventions.
+
+#### Cheerio parsers
+
+Parser and service tests load real Cheerio documents rather than mocking the module. The helpers in [`testing/mocks.ts`](testing/mocks.ts) build them and throw a clear error when a required node is missing:
+
+| Helper | Returns |
+| ------ | ------- |
+| `loadCheerioWithRoot(html)` | `{ $, rootElement }` for an HTML string |
+| `loadCheerioXmlWithRoot(xml)` | `{ $, rootElement }` for an XML string |
+| `loadCheerioElement(html, selector)` | `{ $, element }` for the selected node |
+| `loadCheerioXmlElement(xml, selector)` | `{ $, element }` for the selected node |
+
+```ts
+const { $, element } = loadCheerioElement('<p id="entry">word</p>', "#entry");
+const result = parser.parse({ $, elt: element, ...context });
+```
+
+Keep each fixture snippet minimal and specific to its assertion, cover both the node-found and node-missing paths of a selector, and exercise fallback branches with sparse or malformed markup rather than broad snapshots.
 
 ## Moving Data Between Databases
 

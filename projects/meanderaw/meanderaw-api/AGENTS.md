@@ -99,7 +99,7 @@ nx run meanderaw-api:vitest:end-to-end    # Full GraphQL requests against a migr
 | Unit       | `*.unit.test.ts`       | Resolver and service methods with mocked deps                 |
 | End-to-end | `*.end-to-end.test.ts` | GraphQL request/response cycles against a seeded database     |
 
-See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
+See the [write-tests skill](../../../.agents/skills/write-tests/SKILL.md) for patterns and mock conventions.
 
 ## Key Files
 

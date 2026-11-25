@@ -143,7 +143,7 @@ components are not code-split into lazy chunks under test.
 
 See the [write-react skill](/.agents/skills/write-react/SKILL.md) for
 component conventions and the
-[testing-strategy skill](/.agents/skills/testing-strategy/SKILL.md) for
+[write-tests skill](/.agents/skills/write-tests/SKILL.md) for
 test tiers.
 
 ## The Gallery

@@ -273,7 +273,7 @@ requires.
 
 ### Testing & Coverage
 
-Tests must accompany code. Run tests via `nx run <project>:vitest:<unit|integration>`. Coverage and size gates are strictly enforced; do not lower thresholds to pass CI. Consult the [testing-strategy skill](.agents/skills/testing-strategy/SKILL.md) for testing requirements and patterns.
+Tests must accompany code. Run tests via `nx run <project>:vitest:<unit|integration>`. Coverage and size gates are strictly enforced; do not lower thresholds to pass CI. Consult the [write-tests skill](.agents/skills/write-tests/SKILL.md) for testing patterns, and [validate-code's quality gates](.agents/skills/validate-code/SKILL.md#quality-gates) for the thresholds.
 
 ### Language Conventions & Size Limits
 

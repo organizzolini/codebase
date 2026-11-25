@@ -218,7 +218,7 @@ A consumer rehearsal needs a directory **outside** this repository: Node
 resolves bare specifiers by climbing parent directories, so a consumer under
 `tmp/` silently borrows this workspace's `node_modules`.
 
-See the [testing-strategy skill](../../../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
+See the [write-tests skill](../../../../.agents/skills/write-tests/SKILL.md) for patterns and mock conventions.
 
 Follow the codebase's strict three-tier testing strategy. Co-locate test files with the source they test.
 
@@ -234,7 +234,7 @@ nx run codependix-nx:vitest:end-to-end    # Slow (30-60s) — full service initi
 | Integration | `*.integration.test.ts` | Database queries, external API clients |
 | End-to-end | `*.end-to-end.test.ts` | Full `NestFactory.create()` execution |
 
-See the [testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
+See the [write-tests skill](../../.agents/skills/write-tests/SKILL.md) for patterns and mock conventions.
 
 ## Writing Modules
 

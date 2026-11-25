@@ -154,7 +154,7 @@ nx run {{nameKebabCase}}:vitest:end-to-end    # Slow (30-60s) — full server ex
 | Integration | `*.integration.test.ts` | Database queries, external API clients             |
 | End-to-end  | `*.end-to-end.test.ts`  | Full GraphQL request/response cycles               |
 
-See the [testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md) and [testing-mocks skill](../../.agents/skills/testing-mocks/SKILL.md) for patterns and mock conventions.
+See the [write-tests skill](../../.agents/skills/write-tests/SKILL.md) for patterns and mock conventions.
 
 ## Writing GraphQL Modules
 

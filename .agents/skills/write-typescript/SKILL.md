@@ -1,6 +1,6 @@
 ---
 name: write-typescript
-description: TypeScript coding conventions for this codebase. Use when writing or modifying TypeScript or TSX files, when TypeScript type errors appear, or when asked about strict mode, type imports, naming conventions, return types, the no-any rule, async functions, floating promises, exhaustive switches, readonly properties, non-null assertions, control-flow style, test typing patterns, Node fs Dirent mock typing, formatting with oxfmt, import group order, enforced alphabetical ordering, the three-parameter limit, or JSDoc on public APIs.
+description: TypeScript coding conventions for this codebase. Use when writing or modifying TypeScript or TSX files, when TypeScript type errors appear, or when asked about strict mode, type imports, naming conventions, return types, the no-any rule, async functions, floating promises, exhaustive switches, readonly properties, non-null assertions, control-flow style, formatting with oxfmt, import group order, enforced alphabetical ordering, the three-parameter limit, or JSDoc on public APIs.
 license: MIT
 ---
 
@@ -16,7 +16,6 @@ Use this skill when:
 - Fixing TypeScript compile or lint errors
 - Reviewing strict-mode type-safety issues
 - Standardizing naming, import style, or control-flow patterns
-- Writing strict typed tests (including `fs.readdirSync` Dirent mocks)
 
 ## References
 
@@ -26,8 +25,8 @@ Use this skill when:
   : identifier naming, abbreviation rules, file naming, type imports, NodeNext `.js` extensions.
 - [Class and control flow](./references/class-and-control-flow.md)
   : readonly properties, braces, early returns, object shorthand, template literals.
-- [Error handling and tests](./references/errors-and-tests.md)
-  : catch typing, guard-first test narrowing, Node Dirent mock typing pattern.
+- [Error handling](./references/errors.md)
+  : catch typing and narrowing. Test typing and mocks live in [write-tests](../write-tests/SKILL.md).
 - [Formatting and ordering](./references/formatting-and-ordering.md)
   : `oxfmt` settings, import groups, enforced alphabetical order, the 3-parameter
   limit, JSDoc on public APIs.

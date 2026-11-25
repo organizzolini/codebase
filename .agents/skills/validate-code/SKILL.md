@@ -71,9 +71,28 @@ pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-co
 
 See [triage-integration](../triage-integration/SKILL.md) for detailed per-tool fix instructions.
 
-### Step 3 — Done
+### Step 3 — Clear the Quality Gates
 
-Once both `write` and `check` pass cleanly, code quality is confirmed. Proceed to commit or hand off.
+Run every [quality gate](#quality-gates) that applies to a project you touched.
+
+### Step 4 — Done
+
+Once `write`, `check`, and every applicable gate pass, code quality is confirmed. Proceed to commit or hand off.
+
+## Quality Gates
+
+The five targets do not run the coverage gates. Run each gate that applies to a project you touched:
+
+| Gate          | Threshold                                                                                                                                                                   | How to run                                                      |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Test coverage | 96% branches, functions, lines, and statements, set once in `configuration/typescript/vitest.config.ts`                                                                     | `nx run <project>:vitest --configuration=coverage`              |
+| Type coverage | Per project, `typeCoverage.atLeast` in its `package.json` (most are 100 with `strict: true`); the workspace-wide 95 is a `--at-least` flag on `configuration:type-coverage` | `nx run <project>:type-coverage`, also part of `typecheck-code` |
+| Compiled size | Per project, in its own `codometer.config.ts`; only projects that emit something declare one                                                                                | `nx run <project>:codometer`                                    |
+| Duplication   | **Not a gate.** Advisory only; nothing in CI runs it                                                                                                                        | `nx run configuration:jscpd`                                    |
+
+**Type coverage is the one most often forgotten**: `typecheck` asks whether the types are consistent, `type-coverage` asks how much of the code is typed, and a project can pass the first and fail the second. A compiled-size breach belongs to [codometer-triage](../codometer-triage/SKILL.md).
+
+When coverage falls short, raise it with tests of real behavior, following [raising-coverage.md](references/raising-coverage.md). **Never lower a threshold, or raise a limit, to make a change pass.**
 
 ## Common Patterns
 

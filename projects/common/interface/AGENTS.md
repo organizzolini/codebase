@@ -75,4 +75,4 @@ nx run interface:type-coverage
 ```
 
 Unit tests co-locate with the source as `*.unit.test.ts`; see the
-[testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.md).
+[write-tests skill](../../../.agents/skills/write-tests/SKILL.md).

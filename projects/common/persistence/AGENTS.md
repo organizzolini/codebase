@@ -184,4 +184,4 @@ formatted, and `write` rewrites the files. It imports nothing from `integration`
 edge to the CI plumbing.
 
 See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)
-and the [testing-strategy skill](../../.agents/skills/testing-strategy/SKILL.md).
+and the [write-tests skill](../../.agents/skills/write-tests/SKILL.md).
