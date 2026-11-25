@@ -77,6 +77,9 @@
         },
         "night-sky": {
           "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/caelundas-cli.main.ts night-sky {args}"
+        },
+        "refresh-metrics": {
+          "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/caelundas-cli.main.ts refresh-metrics"
         }
       },
       "defaultConfiguration": "caelundas",

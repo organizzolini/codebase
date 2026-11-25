@@ -1,5 +1,5 @@
 import moment from "moment-timezone";
-import { In } from "typeorm";
+import { In, Like } from "typeorm";
 import {
   afterAll,
   afterEach,
@@ -159,9 +159,32 @@ describe("calendar events service integration", () => {
 
       expect(refresh).toHaveBeenCalledTimes(1);
       expect(stored).toStrictEqual([2]);
+
+      await repository.delete({ summary: Like("Refresh %") });
+      await repository.delete({ summary: "Refresh first" });
     },
     BULK_UPSERT_TIMEOUT_MILLISECONDS,
   );
+
+  it("refreshes the metrics views with the read model, so a rollup counts the new event", async () => {
+    expect.hasAssertions();
+
+    await service.upsert(
+      [event("Metrics rollup", "2032-02-03T15:00:00Z", "2032-02-03T17:30:00Z")],
+      philadelphia,
+    );
+    const [day] = await repository.manager.query<
+      { duration_seconds: string; events: string }[]
+    >(
+      `select events, duration_seconds from calendar_event_day_rollups where local_day = '2032-02-03'`,
+    );
+    const [tagRollups] = await repository.manager.query<{ count: string }[]>(
+      `select count(*) from calendar_event_day_tag_rollups where local_day = '2032-02-03'`,
+    );
+
+    expect(day).toStrictEqual({ duration_seconds: "9000", events: "1" });
+    expect(Number(tagRollups?.count)).toBeGreaterThan(0);
+  });
 
   it("stores no event when the read model rebuild fails", async () => {
     expect.hasAssertions();
@@ -328,6 +351,9 @@ describe("calendar events service integration", () => {
           .where("event.summary LIKE 'Bulk %'")
           .getCount(),
       ).resolves.toBe(count);
+
+      // Later upserts refresh the metrics views, whose cost grows with the rows.
+      await repository.delete({ summary: Like("Bulk %") });
     },
     BULK_UPSERT_TIMEOUT_MILLISECONDS,
   );

@@ -272,6 +272,22 @@ there is no separate build step.
 Postgres takes concurrent writers, but two runs that insert the same missing
 tag at once make the second fail on the tag's unique name; run it again.
 
+## Metrics views
+
+An ingest rebuilds the read model and then refreshes the four materialized views
+the Charts and Totals layouts read (`calendar_event_facts` and the day rollups),
+inside the same transaction, so nothing else is needed after a run. To refresh
+them alone, after editing events or tags by hand:
+
+```bash
+nx run caelundas-cli:start:refresh-metrics
+```
+
+It refreshes them concurrently, so readers are never blocked, and logs the time
+it took (about 4.5 seconds for 50,000 events). The views and the SQL that reads
+them are in
+[`caelundas-db`'s `metrics-rollups.md`](../caelundas-db/documentation/metrics-rollups.md).
+
 ## Night sky
 
 The `night-sky` command fills the tables the night sky behind `caelundas-web`
