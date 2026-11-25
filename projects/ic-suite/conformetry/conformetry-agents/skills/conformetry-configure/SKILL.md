@@ -1,6 +1,6 @@
 ---
 name: conformetry-configure
-description: Add or change a conformetry generator, and write the template it renders. Use when a needed generator does not exist yet; when editing a conformetry configuration file; when writing or changing files under a template directory; when choosing placeholders or naming-case variants; when a generated file came out with an empty value or an odd path segment; or when a conformetry command refuses to run because the emitted generator plugin is out of date.
+description: "Add or change a conformetry generator and the template it renders, with its placeholders and naming-case variants. Use when a needed generator does not exist, when editing a conformetry configuration or template, when generated output has an empty value or odd path segment, or when a command refuses to run because the emitted generator plugin is stale."
 license: MIT
 ---
 
