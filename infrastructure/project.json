@@ -129,17 +129,17 @@
     "terraform-apply": {
       "cache": false,
       "configurations": {
+        "bootstrap": {
+          "cwd": "{projectRoot}/terraform/bootstrap"
+        },
         "github": {
           "cwd": "{projectRoot}/terraform/github"
-        },
-        "linode": {
-          "cwd": "{projectRoot}/terraform/linode"
         },
         "kubernetes": {
           "cwd": "{projectRoot}/terraform/kubernetes"
         },
-        "bootstrap": {
-          "cwd": "{projectRoot}/terraform/bootstrap"
+        "linode": {
+          "cwd": "{projectRoot}/terraform/linode"
         },
         "openrouter": {
           "cwd": "{projectRoot}/terraform/openrouter"
@@ -176,17 +176,17 @@
     "terraform-init": {
       "cache": false,
       "configurations": {
+        "bootstrap": {
+          "cwd": "{projectRoot}/terraform/bootstrap"
+        },
         "github": {
           "cwd": "{projectRoot}/terraform/github"
-        },
-        "linode": {
-          "cwd": "{projectRoot}/terraform/linode"
         },
         "kubernetes": {
           "cwd": "{projectRoot}/terraform/kubernetes"
         },
-        "bootstrap": {
-          "cwd": "{projectRoot}/terraform/bootstrap"
+        "linode": {
+          "cwd": "{projectRoot}/terraform/linode"
         },
         "openrouter": {
           "cwd": "{projectRoot}/terraform/openrouter"
@@ -202,17 +202,17 @@
     "terraform-plan": {
       "cache": false,
       "configurations": {
+        "bootstrap": {
+          "cwd": "{projectRoot}/terraform/bootstrap"
+        },
         "github": {
           "cwd": "{projectRoot}/terraform/github"
-        },
-        "linode": {
-          "cwd": "{projectRoot}/terraform/linode"
         },
         "kubernetes": {
           "cwd": "{projectRoot}/terraform/kubernetes"
         },
-        "bootstrap": {
-          "cwd": "{projectRoot}/terraform/bootstrap"
+        "linode": {
+          "cwd": "{projectRoot}/terraform/linode"
         },
         "openrouter": {
           "cwd": "{projectRoot}/terraform/openrouter"
