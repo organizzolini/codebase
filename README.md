@@ -210,8 +210,8 @@
 `├──` **🏗️ [infrastructure](infrastructure)** - Deployment infrastructure and local services\
 `│   └──` **⚙️ [workflows](.github/workflows)** - GitHub Actions workflows and the shared `setup-codebase` action\
 `├──` **🛠️ [installation](installation)** - Sets up developer machines and project dependencies, and checks each new session\
-`├──` **🔁 [integration](integration)** - Guards a change on its way to `main`: commit and push checks, derived configuration, and pull request checks\
-`└──` **📤 [deployment](deployment)** - Coordinates releases and package publishing\
+`├──` **🔁 [integration](integration)** - Guards changes with commit, push, and pull request checks\
+`└──` **📤 [deployment](deployment)** - Coordinates releases and package publishing
 
 ## 🚀 Start
 
