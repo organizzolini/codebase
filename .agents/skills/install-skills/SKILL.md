@@ -9,7 +9,7 @@ This skill explains how agent skills are maintained in this repository, includin
 
 ## When to Use This Skill
 
-- When adding a new skill (vendored or native). Keep a native skill's description to about 40 words and never over 64, within a shared 12,288-character budget: `nx run integration:skill-descriptions` checks every skill this repository authors.
+- When adding a new skill (vendored or native). Keep a native skill's description to about 40 words and never over 128, within a shared 12,288-character budget: `nx run integration:skill-descriptions` checks every skill this repository authors.
 - When a skill goes missing and needs to be restored.
 - When you need to understand the `skills update` process.
 - When configuring exclusions for tools like Prettier, CSpell, Codometer, etc.
