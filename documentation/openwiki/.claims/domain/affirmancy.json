@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:9fa13c2246840fbe370ad039ffa493c87929c2491def7b714a2d039cf32278a1",
+  "pageVersion": "sha256:5aa26b584bcd8e0f7c47bccf40387e07512f3419b551f5c812f81ac330003e3c",
   "claims": [
     {
       "id": "claim_e121b6d5ed5f4ad09d0d24bad4bb38e0",
@@ -87,8 +87,8 @@
           "version": "repo-lines-v1:sha256:7cbe08c73719c1cef00ccc0d688d11005fd324a7a11d2535e1157391ec8f5a93:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYTEzZjdhOGIyZTIxMzdlODgyNDZhZjc2MWFiNjEzMWY5YzBhM2Y0MzQzNjVhNWJiZTc4MjYwMjE4NWEyNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNhMmQyOTFiNWQ5MDJiNGZkZDEwYzJhNzIxZDQxNjMyNzNlYjQ2YTEyZWI3ZTE5ZjA1NjYzZjhmYWY1ZDYwMWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1NzZjNGE5M2ZlN2FjZmRmNzJlYzM5ZWFjOWU0MzYzOTE4ZDgyZWJhNDNhNDc0Mjc0ZWNkZmZiMzBmNTVkMzEifQ"
         },
         {
-          "resource": "repo://projects/affirmancy/project.json#L12-L52",
-          "version": "repo-lines-v1:sha256:94281b5d51203b810b5480e0651cc060fd24ffc246f328d73bc1f65d2ba7ecdd:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4NmMwYzgzYzMxYzgyZTM4YTQyZDEzYjQ4YmU0ZmEzYTI4YmI1ODkxNTlkYjBiNTc2ZTZmYmQ2NmRkNDgwMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0ZWQ0MzUwMDQ5MzZiM2RlZjQwZDRmYWRiMTkyNzQ4OTQxYTc5YTg1MjM1YmI2NTdlZjU4OTJhYWZiMjYwZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1ZTQwNDI1ZjBkYTI0N2NkYTRhMzAxMGRmNjQyNGNkZDAzZjU3NDc0MGU0NDdkYzBiMmU5NTlkNDRkNWUxMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1MTFkMWFhMTRlNmY4ZmQwMTg4YzliNjE0Y2JmZjEwODY2ZTQ4ZGNmNDEzZGQzMjFjYTg2MmVlYjBlM2MxOWQifQ"
+          "resource": "repo://projects/affirmancy/project.json#L12-L51",
+          "version": "repo-lines-v1:sha256:b6e334f17c538f220ab8e5c6102335e775cb8f72fd72ea4a62fb76ea976e1c20:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4NmMwYzgzYzMxYzgyZTM4YTQyZDEzYjQ4YmU0ZmEzYTI4YmI1ODkxNTlkYjBiNTc2ZTZmYmQ2NmRkNDgwMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0ZWQ0MzUwMDQ5MzZiM2RlZjQwZDRmYWRiMTkyNzQ4OTQxYTc5YTg1MjM1YmI2NTdlZjU4OTJhYWZiMjYwZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1ZTQwNDI1ZjBkYTI0N2NkYTRhMzAxMGRmNjQyNGNkZDAzZjU3NDc0MGU0NDdkYzBiMmU5NTlkNDRkNWUxMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ1MTFkMWFhMTRlNmY4ZmQwMTg4YzliNjE0Y2JmZjEwODY2ZTQ4ZGNmNDEzZGQzMjFjYTg2MmVlYjBlM2MxOWQifQ"
         }
       ]
     },
@@ -183,10 +183,20 @@
           "version": "repo-lines-v1:sha256:6609de83a583eefcbf32a2bb8de2e3fe4017629d89394bb0431b687e93a570b9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkOTIxNzU4MGIxNjY0YzExYWFmMzBjNTQ4OGY5NTVmMDQ1NWIxNDI1MDZjOTBmM2VjYzA0ZTU0Njg1ZTYxZmJmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzMGMxZjE4OGYxNDJlZDdhODI0NjgwYjIwNzE3MmM1NTE5YmM2MTRhNDhmZGE3Y2YxNjdlZGI4ZGRmNzk5NTZjIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJjMTRmNDMzMWEyZGViMjgzZTE5MzM5MDk2N2JhZTgxNWM2ZjQxNGFkYTVhMDk2ZWQyODIwZTUyOWE5NDI5ZTk3IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwNjc3YTE5Njg0ZWFhZmMzZDJhODk5NGQzMTI1YzJmOTlkZTZkYTE2MDhkY2M1NGFkNGE0Nzg0NTE4YmE1NzkzIn0"
         }
       ]
+    },
+    {
+      "id": "claim_d363836a9ec749ee8bd2b541f61a3c9e",
+      "statement": "Nx targets include bandit, lint-codebase, markdown-lint, nbstripout, ollama (with configurations: start, stop, pull-small (gemma4:e2b), pull-medium (gemma4:e4b), pull-large (gemma4:e26b)), pyright, pytest, ruff-format, ruff-lint, spell-check, test-coverage, ty, typecheck, vulture, yaml-lint, and composite targets build-projects, deprecate-code, format-code, guard-code, lint-code, test-code, typecheck-code.",
+      "evidence": [
+        {
+          "resource": "repo://projects/affirmancy/project.json#L12-L52",
+          "version": "repo-lines-v1:sha256:91b62072ddf396d5848b120deaf77d4e00278aa74faa6841afad3cf1c2b886e3:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE4NmMwYzgzYzMxYzgyZTM4YTQyZDEzYjQ4YmU0ZmEzYTI4YmI1ODkxNTlkYjBiNTc2ZTZmYmQ2NmRkNDgwMWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUyYzgwMDBlY2VkZmYwY2UyMGI3MGVkMmFjMzEyMGVjMjE1MTVlYmI3ZmZlNTViODI2MWM1MDE5MjNiOTc1YmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1ZTQwNDI1ZjBkYTI0N2NkYTRhMzAxMGRmNjQyNGNkZDAzZjU3NDc0MGU0NDdkYzBiMmU5NTlkNDRkNWUxMTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY5Y2ZlZDRlMmU0NWIxNTkxMjdiOTlhZmM1YmFjMWM4NTgyOWExMjBmZGY2NGFmOWQzZTU5ZWViY2YxYjBlODYifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

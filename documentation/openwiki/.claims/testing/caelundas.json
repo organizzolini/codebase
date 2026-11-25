@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:9903a97b16ff240da9b97a661900e6a7f80bf81ffac9bacbc872015436ef5515",
+  "pageVersion": "sha256:e9406a4684601549106e8ea53a42126914bac5230c625472ab461deea68e2bfb",
   "claims": [
     {
       "id": "claim_a1cc8f0d72204aa1b98d74d6cdb4f960",
@@ -172,7 +172,7 @@
       "evidence": [
         {
           "resource": "repo://projects/caelundas/caelundas-web/src/components/calendar-controls/calendar-toolbar/calendar-toolbar.unit.test.tsx",
-          "version": "repo-file-v1:sha256:4136d8a6bf7518e911b0f8da615a689062c053fae8f774b4c6feae5fdb276545"
+          "version": "repo-file-v1:sha256:d35374029950630e8688f939906f5fa4e1163d8f29361c73615fb7dc30919081"
         }
       ]
     },
@@ -181,8 +181,8 @@
       "statement": "Route integration tests render the full TanStack Start router at a given path using renderRoute, which mocks the __root route with a bare root, serves the mocked calendar API, runs the route loader, and uses createMemoryHistory for navigation simulation.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-web/src/routes/index.integration.test.tsx#L1-L100",
-          "version": "repo-lines-v1:sha256:bc9f244334c7e67e83a262a352bff26610ac9228aebda182725c7b29514eef0a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI3OGIxZDU1NDZhNmEwNWUzZWY5ZDY3MTFjMmI4YTU0ZDgwNTQ0MzNiMDk3NjYzYzhlNzg1ZTc0YjY0NmEyOTE1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmMmY4MmIwZGYzMGQ5NGYxMDYxZDBiMjEzMTIyOGMwMWI1ZmQwMGQwMjIxMzc5MGU1MGYwMmNjMTYwNTZlOTYzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJmZWIzNmVjMjcxY2QxYTM2ZjBjMzUzMzg2ODQ1NDJlNjVlMmUwY2Q4ZDkxNmYwM2E3NzIwMzI0YzAyNDc5NjI0In0"
+          "resource": "repo://projects/caelundas/caelundas-web/src/routes/index.integration.test.tsx#L1-L93",
+          "version": "repo-lines-v1:sha256:77ea75bbcf8bc4c9534ddca888ef01dbd2c1a7c87c100bc1954533f570273219:eyJzZWxlY3RlZExpbmVDb3VudCI6OTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4YjFkNTU0NmE2YTA1ZTNlZjlkNjcxMWMyYjhhNTRkODA1NDQzM2IwOTc2NjNjOGU3ODVlNzRiNjQ2YTI5MTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyZjgyYjBkZjMwZDk0ZjEwNjFkMGIyMTMxMjI4YzAxYjVmZDAwZDAyMjEzNzkwZTUwZjAyY2MxNjA1NmU5NjMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZlYjM2ZWMyNzFjZDFhMzZmMGMzNTMzODY4NDU0MmU2NWUyZTBjZDhkOTE2ZjAzYTc3MjAzMjRjMDI0Nzk2MjQifQ"
         },
         {
           "resource": "repo://projects/caelundas/caelundas-web/testing/render-route.tsx#L1-L70",
@@ -231,10 +231,138 @@
           "version": "repo-lines-v1:sha256:25196ff70be0376870638d1db24af6a62cf0fd9bac6b48ed7ff88696da66e315:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzgyYjVkMzhhYmRiODNmYTgwYTBiMGNiNjEyMzkxOThkMDk2MjVlODQyMGQ5YzNlNTkzODNmMmVmN2FiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
+    },
+    {
+      "id": "claim_f585d33be7d946d1934f80a3b359bb22",
+      "statement": "CLI unit tests mock nest-commander's CommandFactory.run to verify bootstrap behavior: CommandFactory runs once with MainModule, options include bufferLogs and logger, and serviceErrorHandler sets process.exitCode = 1.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/src/caelundas-cli.main.unit.test.ts",
+          "version": "repo-file-v1:sha256:2170ae84d866e8f895903563ec220c4f905c459462b26b6a9a30934a06281aa6"
+        }
+      ]
+    },
+    {
+      "id": "claim_6feb8984346146ea940a4acfb83192e6",
+      "statement": "CLI end-to-end tests boot a real NestJS application via runCalendarCommand utility, replacing only PerfectiveService and ProgressiveService with stand-ins while input parsing, ephemeris verification, calendar rendering, and Postgres persistence run for real.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/src/caelundas-cli.main.end-to-end.test.ts",
+          "version": "repo-file-v1:sha256:07ebb3f569c4d924e7d34ac2956a8264b3fcf0309ea4710c75400a47adde56ad"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/support/calendar-command.utilities.ts",
+          "version": "repo-file-v1:sha256:e0b2740a54e7653ce2619d3daf017164b664b5bab8c047a721caeaaadd419697"
+        }
+      ]
+    },
+    {
+      "id": "claim_4ec6637c0e434a72b8d8245fd06d31ab",
+      "statement": "CLI event detection accuracy is verified against committed reference fixtures from USNO, JPL Horizons, and NASA using assertReferenceEvents utility that pairs detected events with reference events by summary, checks start/end deltas against tolerance, and enforces absent and counts constraints.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/aspects/compound-aspects.end-to-end.test.ts",
+          "version": "repo-file-v1:sha256:eba54978ea4f233164e5ba727dec1ef8c0755eac8b50e48a16350ec51307990c"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/pipeline/moon-phases-reference.end-to-end.test.ts",
+          "version": "repo-file-v1:sha256:05f50edde954e3982254a94c9a0459fdcec2fa2b495f6f074cc5dd2781b2b93f"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/reference/reference-fixtures.utilities.ts",
+          "version": "repo-file-v1:sha256:0918e441fe8de119743a641d6cb4b56d53fe78f4fe28c46c97c06a47cf11a356"
+        }
+      ]
+    },
+    {
+      "id": "claim_a37b327c5d894c369b84f724989db860",
+      "statement": "Pipeline window tests assemble a minimal Nest module (PerfectiveModule + ProgressiveModule) and run the full detection pipeline minute-by-minute over real ephemeris data, used by compound-aspect, moon-phase, and seeding tests.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/pipeline/pipeline-window.functions.ts",
+          "version": "repo-file-v1:sha256:df9f1505ade662bb60a2063b39d16eb96a925d395d90be7c718027649385cc9c"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/testing/pipeline/pipeline-window.module.ts",
+          "version": "repo-file-v1:sha256:04c13ecad8bf0248ce08056cb103d0d68b3c11b2ac36bd64ad0cacfb037a17fe"
+        }
+      ]
+    },
+    {
+      "id": "claim_11d59a4e7b3e41a1a0855a6146bfb9f0",
+      "statement": "API GraphQL resolver unit tests use buildTestingModule from @codebase/testing/nestjs with mocked EntityManager or DataSource to verify parameter binding, Zod parsing, window calculation, and dataset aggregation logic.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-api/src/modules/events/events.resolver.unit.test.ts",
+          "version": "repo-file-v1:sha256:f878047eb7d29821901adcb44edbc3ad33dd3585587e27eecbaf8a70ad7a2582"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-api/src/modules/events/events.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:727fc7d2103b7ff85fe19d2305eff228d5b712b7f9e12f36520e8b0c86e65084"
+        }
+      ]
+    },
+    {
+      "id": "claim_7a45a736db55458592a52cb38fb4bf41",
+      "statement": "API GraphQL resolver end-to-end tests boot a full NestJS application against a Testcontainers Postgres with real migrations applied, seed known fixture data, and execute GraphQL queries over HTTP to verify resolver behavior including dataset, events, facets, windows, and presets.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-api/src/modules/events/events.resolver.end-to-end.test.ts",
+          "version": "repo-file-v1:sha256:eef5423a8e783219522deaf727f5bab622e77a4fec4fb782be5ef66331107e0f"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-api/testing/events-application.ts",
+          "version": "repo-file-v1:sha256:76638de9f70e0ba0c5d780346666b05dfc0d68af7d9a6e75acc0ac65056ac9b0"
+        }
+      ]
+    },
+    {
+      "id": "claim_bcdb55bbd65740b5ba0c2a4eef88ac3a",
+      "statement": "Night Sky CLI service tests use a NestJS testing module with mocked DataSource transaction wrapper, temporary directory for output files, inline CSV/JSON fixtures, and verify ingestion order: delete constellations (cascades), delete stars, insert stars, insert constellations with parameter chunking.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.unit.test.ts",
+          "version": "repo-file-v1:sha256:e65382190267dd8623492c70221ecad0482477ed75754345a3c2cb40069b595a"
+        }
+      ]
+    },
+    {
+      "id": "claim_482d6f84dcb64b5b8019b4938fecfb14",
+      "statement": "Database package integration tests boot DatabaseModule via startDatabaseTestingModule against Testcontainers Postgres with real migrations, asserting exact schema (table names, constraint names, UUID v7 PKs, natural key uniqueness, tag closure table, derived read model tables).",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-db/src/modules/database/database.module.integration.test.ts",
+          "version": "repo-file-v1:sha256:135211b6a18fe8eb926b90ac2135544c0b094ae880ba9c6587714d11a2b5f03c"
+        }
+      ]
+    },
+    {
+      "id": "claim_5d28221563c84ac086a71a7a8ef9aa96",
+      "statement": "Database service integration tests seed tag hierarchy and calendar events, call refreshReadModel, and assert tag_nodes (depth, root, path), calendar_event_tag_nodes (event to ancestor tag links), and calendar_event_derived_times view (local day/hour).",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-db/src/modules/database/database.service.integration.test.ts",
+          "version": "repo-file-v1:sha256:9541e407baa8f7ff0cc29d8a485e9dca83345674d19895dc3ec3c427f25e33ab"
+        }
+      ]
+    },
+    {
+      "id": "claim_8eec15abf5854806bde5644ebe65c9d2",
+      "statement": "Web route integration tests use the shared @codebase/testing/react/renderRoute utility which replaces the __root route shell with a PageOnly component, creates memory history, runs router.load() to execute route loaders against the mocked calendar API, and renders the full RouterProvider.",
+      "evidence": [
+        {
+          "resource": "repo://projects/caelundas/caelundas-web/testing/render-route.tsx",
+          "version": "repo-file-v1:sha256:a0aecb06eb5fba6a3baf12ecced51b3ae3a557e069ec9c617b165609868f1ff9"
+        },
+        {
+          "resource": "repo://projects/common/testing/src/modules/browser-stand-ins/modules/route-render/route-render.utilities.tsx",
+          "version": "repo-file-v1:sha256:602b6cd51da0936f5ae9c8d8c69ed2e664a78d36d1b37f4586fece54ffbb500f"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

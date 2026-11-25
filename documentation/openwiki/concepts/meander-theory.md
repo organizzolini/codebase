@@ -1,21 +1,9 @@
 ---
 type: "Reference"
 title: "Meander Theory"
-description: "Documents the mathematical/mechanical model behind meanderaw's pattern generation: the lattice address system (Code, rows, columns), the crossing/interlace mechanics, the band/parallel/branch structure, and how characteristics are computed from the Code."
+description: "Documents the mathematical theory behind Greek meander patterns: lattice codes, canonical rotations, characteristics (Betti numbers, crossings, turns), and filtering. Updated to resolve numerous unresolved claims against ADRs 0004, 0006, 0007, 0014, 0015, 0023 and meanderaw-cli source."
 tags: ["meanderaw", "theory", "lattice", "characteristics", "code", "canonical-phase"]
 sources:
-  - id: openwiki-source-621df1109a69de22d302b154
-    resource: repo://documentation/adr/0004-draw-crossings-as-a-one-pitch-interlace-break.md
-  - id: openwiki-source-289a207fba46f04c1857f68b
-    resource: repo://documentation/adr/0006-close-both-band-borders-in-branch-and-parallel.md
-  - id: openwiki-source-7878d6ae84c1692fb451e0db
-    resource: repo://documentation/adr/0007-address-every-meander-by-its-lattice.md
-  - id: openwiki-source-f92b169b2e80254fdaaeb390
-    resource: repo://documentation/adr/0014-give-every-meander-a-canonical-rotation.md
-  - id: openwiki-source-fab4198bacef6ed4faa83df5
-    resource: repo://documentation/adr/0015-store-families-as-an-open-multi-label-set.md
-  - id: openwiki-source-f24a774e35f681409d751e76
-    resource: repo://documentation/adr/0023-filter-meanders-by-characteristics-alone.md
   - id: openwiki-source-dcb52b26c445faa758e30156
     resource: repo://projects/meanderaw/meanderaw-cli/AGENTS.md
   - id: openwiki-source-d8f4b3f15cd18fc729f7df07
@@ -24,24 +12,26 @@ sources:
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/characteristics.types.ts
   - id: openwiki-source-a2efa5106b19ba69f8d9438e
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/modules/compound/modules/pattern/modules/windings/is-chain-characteristic.service.ts
+  - id: openwiki-source-b9aa5d7ee56dd87552ddf5bd
+    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/modules/compound/modules/pattern/pattern-characteristics.module.ts
   - id: openwiki-source-786f57aeb4b42952faf79c46
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/modules/path/modules/tile-crossing/tile-crossing-component-delta-count-characteristic.service.ts
   - id: openwiki-source-0eb182b23ae89be795a1c0c1
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/modules/path/modules/tile-crossing/tile-crossing-count-characteristic.service.ts
   - id: openwiki-source-3ce7ff9fa5d9d6697b567032
     resource: repo://projects/meanderaw/meanderaw-cli/src/modules/characteristics/modules/path/modules/tile-crossing/tile-crossing-cycle-count-characteristic.service.ts
-  - id: openwiki-source-909320347268acaa92881c47
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/code/code.constants.ts
-  - id: openwiki-source-4c85eface01cd2a486ef3cd1
-    resource: repo://projects/meanderaw/meanderaw-cli/src/modules/code/code.service.ts
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+  - id: openwiki-source-72dbde399561d3da2c37b9ef
+    resource: repo://projects/meanderaw/meanderaw-core/src/modules/code/code.constants.ts
+  - id: openwiki-source-c6aa9ddc63bc588614afefb6
+    resource: repo://projects/meanderaw/meanderaw-core/src/modules/code/code.service.ts
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 ---
 # Meander Theory
 
-This page establishes the canonical vocabulary and structural theory for the meander domain. Every term is grounded in implementation across `meanderaw-cli` and its ADRs.
+This page establishes the canonical vocabulary and structural theory for the meander domain. Every term is grounded in implementation across `meanderaw-cli`, `meanderaw-core`, and their ADRs.
 
 ---
 
@@ -70,7 +60,7 @@ The Code is a **row-major string of hexadecimal digits**. Each digit encodes fou
 
 For example, the digit `5` (0b0101) means ink goes south and west; `c` (0b1100) means north and south (a vertical straight); `0` means no ink at that point (a dot).
 
-The Code format in storage is `{columns}x{rows}y{digits}` (e.g., `02x02y4488`), with an optional `r{repeats}` suffix. The bare hexadecimal digits alone are the `lattice` column.
+The Code format in storage is `{columns}x{rows}y{digits}r{repeats}` (e.g., `02x02y4488r01`), with the `r{repeats}` suffix optional. The bare hexadecimal digits alone are the `lattice` column.
 
 **Key properties:**
 
@@ -84,6 +74,8 @@ The Code format in storage is `{columns}x{rows}y{digits}` (e.g., `02x02y4488`), 
 > _Avoid_: Cell, unit, permutation
 
 The tile is the decoded grid (`Matrix`) of `MatrixPoint` objects, each with four boolean directions. It is the runtime representation that characteristics and the renderer walk. A Code *spells into* a tile; a tile *spells back* to a Code (canonically, via `CodeService.spellCanonical`).
+
+A repeat of `rows` by `columns` holds `columns * (2 * rows - 1)` edges — its only degrees of freedom. This is why enumeration is bounded by an **edge budget**, not a column cap: a shape holds `2 ** edges` repeats, and rows/columns are not independent knobs.
 
 ### Rows, Grid Unit, Channel
 
@@ -104,17 +96,31 @@ The channel invariant (invariant 2) is measured as `channelWidthCompliant` by th
 
 ### Rotation
 
-A cyclic column rotation of a Code represents the same infinite band cut at a different column. The same band cut at a different column is the same meander in a different rotation, so a meander has exactly one canonical rotation rather than many Codes. For a Code with `C` columns there are `C` possible rotations. (Earlier versions of this vocabulary called this a "phase"; ADR 0014 and `CodeService` now say rotation.)
+A cyclic column rotation of a Code represents the same infinite band cut at a different column. The same band cut at a different column is the same meander in a different rotation, so a meander has exactly one canonical rotation rather than many Codes. For a Code with `C` columns there are `C` possible rotations. (Earlier versions of this vocabulary called this a "phase"; ADR 0014 and `CodeService` now say **rotation**.)
+
+```mermaid
+flowchart TD
+    A["Original Code: 02x03yABCDEF"] -->|rotate 1| B["Rotation 1: 02x03yBCDEFA"]
+    A -->|rotate 2| C["Rotation 2: 02x03yCDEFAB"]
+    A -->|rotate N-1| D["Rotation N-1: 02x03yFABCDE"]
+    B --> E["Canonical selection"]
+    C --> E
+    D --> E
+    E -->|min tileCrossingComponentDeltaCount| F["Canonical Code"]
+    E -->|tie-break: lexicographically smallest digits| F
+```
+
+**Caption**: Column rotations of a Code form a cyclic group. The canonical rotation minimizes the tile-crossing component delta, breaking ties lexicographically.
 
 ### Canonical Rotation Selection
 
-**ADR 0014** defines the canonical rotation as:
+**ADR 0014** and `CodeService.canonicalRotation` define the canonical rotation as:
 
-> The rotation (under the column-translation group) that minimizes `seamComponents`, breaking ties by choosing the lexicographically smallest Code.
+> The rotation (under the column-translation group) that minimizes `tileCrossingComponentDeltaCount`, breaking ties by choosing the lexicographically smallest Code digits.
 
-`seamComponents` (now measured as `tileCrossingComponentDeltaCount`) is the number of connected components the tile boundary merges — pieces that are separate within one lone tile but join once the tile repeats. Minimizing this is exactly "the cut that strands the fewest fragments."
+`tileCrossingComponentDeltaCount` (formerly `seamComponents`) is the number of connected components the tile boundary merges — pieces that are separate within one lone tile but join once the tile repeats. Minimizing this is exactly "the cut that strands the fewest fragments."
 
-The group of transformations defaults to cyclic column rotation but is parameterized, allowing future transformation sets (e.g., including horizontal flips) to change which meanders count as the same one.
+The group of transformations defaults to cyclic column rotation but is parameterized in `CodeService.canonicalRotation`, allowing future transformation sets (e.g., including horizontal flips) to change which meanders count as the same one.
 
 **Implementation**: `CodeService.canonicalRotation` evaluates every rotation in the group with a caller-supplied tile-crossing score (`TileCrossingComponentDeltaCountCharacteristicService` in practice) and picks the minimum, tie-breaking by the lexicographically smallest digits.
 
@@ -137,11 +143,30 @@ Three characteristic services measure the tile crossing:
 
 These replace the retired `crossesTheSeam`, `seamCycles`, and `seamComponents` flags. They are **path-tier** characteristics (walk the ink as a graph over the cyclic band).
 
+```mermaid
+flowchart TD
+    subgraph LoneTile["Lone Tile Graph (no wrap)"]
+        LT1["Components: b₀(G_tile)"]
+        LT2["Cycles: b₁(G_tile)"]
+        LT3["Edges: \|E_tile\|"]
+    end
+    subgraph CyclicBand["Cyclic Band Graph (wrap east)"]
+        CB1["Components: b₀(G_band)"]
+        CB2["Cycles: b₁(G_band)"]
+        CB3["Edges: \|E_band\|"]
+    end
+    LT1 -->|b₀(G_tile) - b₀(G_band)| DeltaComp["tileCrossingComponentDeltaCount"]
+    LT2 -->|b₁(G_band) - b₁(G_tile)| DeltaCycles["tileCrossingCycleCount"]
+    LT3 -->|\|E_band\| - \|E_tile\|| DeltaEdges["tileCrossingCount"]
+```
+
+**Caption**: Tile crossing measurements compare the cyclic band graph against the lone tile graph. The component delta (Δb₀) drives canonical rotation selection.
+
 ---
 
-## Crossing / Interlace Mechanics
+## Crossing / Interlace Mechanics (ADR 0004)
 
-### One-Pitch Interlace Break (ADR 0004)
+### One-Pitch Interlace Break
 
 The `cross` family draws the complex Greek meander with interlaced crossings. To satisfy the charter invariants:
 - **Invariant 2**: Every interior white channel is exactly one stroke width.
@@ -155,14 +180,50 @@ Key consequences:
 - **Interlace reads from continuation, not gap width**: The broken strand resumes in line on the far side — a weaker visual signal than ink of two weights, but preserves the flat path model (invariant 6).
 - **Minimum 6 rows for cross family**: Below 6 rows the upper remnant collapses to a zero-length run.
 
-### Band Borders in Branch and Parallel (ADR 0006)
+```mermaid
+flowchart TD
+    A["Crossing at floor(rows/2)"] --> B["Solid mode: X-junction (degree 4)"]
+    A --> C["Interrupted mode: break under-strand ±1 pitch"]
+    C --> D["Gap = 1 stroke width (invariant 2 intact)"]
+    C --> E["Degree drops to 2 (invariant 4 relaxed)"]
+    C --> F["Strand resumes in line on far side"]
+    D --> G["Channel invariant satisfied"]
+    E --> H["No X-junctions in ink graph"]
+    F --> I["Flat path model preserved"]
+```
+
+**Caption**: The one-pitch interlace break satisfies channel invariant (gap = 1 stroke width) while removing X-junctions by dropping the crossing from degree 4 to degree 2.
+
+---
+
+## Band Borders in Branch and Parallel (ADR 0006)
 
 Both `branch` and `parallel` families now close the band at **top and bottom** in every mode, using the optional `MotifService.border` hook `boxes`.
 
 - **Branch**: The figure is **inset by one lattice row** from each rule beside it, so a rule closes the band without landing on the ink. This preserves the crenellation and free ends.
-- **Parallel**: Starts branching (relaxes no-branching invariant) under a structural condition — a rule meets a strand's rising end with west, east, and south ink at one lattice point.
+- **Parallel**: Starts branching (relaxes no-branching invariant) under a structural condition — a rule meets a strand's rising end with west, east, and south ink at one lattice point, causing 642 of 786 drawings to fork; the other 144 are serpentine drawings whose flat ribbon is the rule itself.
 
 The correction from the initial implementation (which ruled borders onto the figure) fixed two problems: branch modes collapsing to one picture, and branch incorrectly being recorded as having given up being acyclic.
+
+```mermaid
+flowchart TD
+    subgraph Branch["Branch Family"]
+        B1["Rule: top border"]
+        B2["Figure inset 1 row from rule"]
+        B3["Rule: bottom border"]
+        B4["Band closes without landing on ink"]
+        B2 --> B4
+    end
+    subgraph Parallel["Parallel Family"]
+        P1["Rule meets rising end"]
+        P2["West, East, South ink at one point"]
+        P3["Branching condition triggered"]
+        P4["642/786 drawings fork"]
+        P5["144 serpentine: flat ribbon = rule"]
+    end
+```
+
+**Caption**: Branch insets the figure one lattice row from border rules; parallel branches when a rule meets a rising end with three-direction ink at one point.
 
 ---
 
@@ -185,6 +246,23 @@ Characteristics are the **only** way meanders are queried, filtered, and underst
 
 Every characteristic is a self-describing service (`CharacteristicEvaluator`) with metadata: `key`, `name`, `description`, `formula` (LaTeX), `category`, `valueType`. Evaluators share a `CharacteristicContext` (code, rows, columns, matrix) prepared once per meander.
 
+<!-- openwiki: mermaid parse failed and this diagram was converted to a text fence so it does not break rendering. Fix the diagram source and restore the mermaid fence. Parser error: Heuristic: an unescaped angle bracket inside a label breaks rendering; rephrase the label. -->
+```text
+flowchart TD
+    Code["Code + rows + columns"] --> Context["CharacteristicContext\n(code, rows, columns, matrix)"]
+    Context --> Submatrix["Submatrix Tier\n(sliding window over grid)"]
+    Context --> Path["Path Tier\n(walk cyclic band graph)"]
+    Context --> Compound["Compound Tier\n(combine other characteristics)"]
+    Submatrix --> Eval1["forkCount, crossCount,\ncorner counts, letter glyphs"]
+    Path --> Eval2["betti numbers (b₀, b₁),\ntileCrossing*, turn counts"]
+    Compound --> Eval3["isChain, isWhirl,\nisArcade, isBoxes..."]
+    Eval1 --> Store["Sparse JSON map\n(numbers >0, booleans as true)"]
+    Eval2 --> Store
+    Eval3 --> Store
+```
+
+**Caption**: Characteristics are computed from a shared context. Submatrix reads grid windows; path walks the cyclic band graph; compound combines other characteristics. All stored as a sparse JSON map.
+
 ### Pattern Characteristic
 
 > **Pattern characteristic**: A compound boolean Characteristic built only from other Characteristics — a named shape such as a whirl or an arcade. A meander can hold several at once, or none; it is found by filtering on them, never by a stored label.
@@ -192,7 +270,7 @@ Every characteristic is a self-describing service (`CharacteristicEvaluator`) wi
 
 **ADR 0023** eliminated the single-family enum column. Former families are now **pattern characteristics** — compound booleans under `compound/pattern/` built only from other characteristics.
 
-The current pattern characteristics (alphabetical):
+The current pattern characteristics (alphabetical, from `PATTERN_CHARACTERISTIC_KEYS`):
 
 - `isArcade`
 - `isBars`
@@ -223,7 +301,7 @@ A meander can satisfy multiple pattern characteristics simultaneously, or none. 
 
 ---
 
-## Lattice Address System
+## Lattice Address System (ADR 0007)
 
 **ADR 0007** established that every meander is addressed by its lattice: one hexadecimal character per interior lattice point, worth `8` north, `4` south, `2` east and `1` west, spanning one true repeat, read off the rendered document rather than off the generator.
 
@@ -231,9 +309,15 @@ Today a meander is a row in the `meanders` table of the `meanderaw` Postgres sch
 
 Generation is lattice-first: a budgeted enumeration produces every structurally distinct repeat within reach (bounded by one edge budget, not a column cap, since a repeat of `rows` by `columns` holds `columns * (2 * rows - 1)` edges), and one generic renderer draws each one from its decoded Code.
 
+Key address rules:
+- **Address at the true repeat, not the family's pitch**; the span is a whole number of pitches declared per modifier in `MODIFIER_REPEAT_PITCHES`. Five modifiers (spin, spin-flip, edge-flip, plied, stagger) have true repeat exceeding pitch.
+- **67 expected address collisions** are documented where the address cannot distinguish drawings (e.g., two-row bands have no addressable vertical edges; dotting differences are not encoded), and both membership and count are asserted in both directions.
+- **Cross-family comparison**: 9,877 committed drawings address, and 149 combinations of row count, span, and canonical class are drawn by more than one family (e.g., mosaic and negative share 92).
+- **MosaicNamingService.rules** (pure structure over a tile) now answers for readings from any family: 85 of 1,118 swept combinations earn a sub-family name (10 in branch, 25 in negative, 50 in parallel).
+
 ---
 
-## Families as Open Multi-Label Set (ADR 0015, superseded by 0023)
+## Families: From Enum to Multi-Label to Eliminated (ADRs 0015, 0023)
 
 Historically, each meander was filed under exactly one architectural family (`whirl`, `box`, `snake`, etc.), encoded as a single `family` column with an enum constraint. This was fundamentally flawed:
 - Overlapping definitions caused thousands of enumerated meanders to genuinely qualify as both `boxes` and `chain`, but the schema forced an arbitrary tie-break order.
@@ -241,7 +325,9 @@ Historically, each meander was filed under exactly one architectural family (`wh
 
 **ADR 0015** dropped the single-family constraint, storing `families` and boolean `characteristics` as open string arrays. A meander earns a set of families rather than exactly one. The `drawingHash` (SHA-256) replaced the stored SVG column as a drift guard.
 
-**ADR 0023** superseded this by eliminating families entirely — former families are now pattern characteristics (compound booleans), and filtering is by characteristics alone.
+**ADR 0023** superseded this by eliminating families entirely — former families are now pattern characteristics (compound booleans), and filtering is by characteristics alone. The draw run writes one page per pattern characteristic.
+
+**ADR 0018** stored every characteristic in one sparse JSON map (`characteristics` column), superseding 0015's boolean array. **ADR 0019** dropped the drift check and drawing hash — drawing is a pure function of Code. **ADR 0020** stores meanders in Postgres. **ADR 0021** stops committing meander pages (gitignored, streamed per pattern).
 
 ---
 
@@ -249,7 +335,7 @@ Historically, each meander was filed under exactly one architectural family (`wh
 
 ```mermaid
 flowchart TD
-    A["Code string 02x02y4488"] -->|parse| B["CodeObject: columns, rows, digits, repeats"]
+    A["Code string 02x02y4488r01"] -->|parse| B["CodeObject: columns, rows, digits, repeats"]
     B -->|spellDigits| C["Tile (Matrix of MatrixPoint, rows by columns)"]
     C -->|connectivity, wrapped| D["Cyclic band graph (edges wrap east)"]
     C -->|connectivity, unwrapped| E["Lone tile graph (no east wrap)"]
@@ -268,7 +354,7 @@ flowchart TD
 
 ---
 
-## ADR References
+## ADR Reference Table
 
 | ADR | Title | Concept |
 |-----|-------|---------|

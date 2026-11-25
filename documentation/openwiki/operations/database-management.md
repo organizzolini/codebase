@@ -5,14 +5,16 @@ description: Documents Postgres database operations including migrations, schema
 tags: [database, postgres, migrations, testcontainers, export-import, operations]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
-  - id: openwiki-source-fde0a41d410be4adddc7d9c3
-    resource: repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md
+  - id: openwiki-source-5af1e140a8c8b0f50fd8ad35
+    resource: repo://infrastructure/docker/docker-compose.yml
   - id: openwiki-source-e84c9845fa1929e0b3fde349
     resource: repo://infrastructure/README.md
-  - id: openwiki-source-3a9867dedac0acd2f55b360d
-    resource: repo://projects/caelundas/caelundas-db/README.md
+  - id: openwiki-source-6ba748254f38112b13d529da
+    resource: repo://nx.json
+  - id: openwiki-source-05a0bb4271c4f9caf2161a2b
+    resource: repo://projects/caelundas/caelundas-db/project.json
   - id: openwiki-source-de4dffad77fdd24cedfe1707
     resource: repo://projects/common/persistence/project.json
   - id: openwiki-source-bb47f0ae03a5325f0d8fdea7
@@ -23,13 +25,11 @@ sources:
     resource: repo://projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts
   - id: openwiki-source-79618aae32d9845bfacb091d
     resource: repo://projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts
-  - id: openwiki-source-02fa1cfa852d65c0cb15fcaf
-    resource: repo://projects/common/persistence/src/persistence.main.ts
   - id: openwiki-source-d43cf1b76d511df31f2fb62d
     resource: repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts
   - id: openwiki-source-c647017e373aa4231d115310
     resource: repo://projects/common/persistence/testing/postgres-container/postgres-container.utilities.ts
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Database Management
@@ -40,7 +40,7 @@ All database projects share a single package, `@codebase/persistence`, which cen
 
 ---
 
-## Naming Conventions (ADR 0022)
+## Naming Conventions
 
 Every project owns its own database, schema, and role. The database name carries the environment; the schema name never does. This allows a migration generated locally to apply unchanged in any environment because TypeORM writes the schema name into generated SQL.
 
@@ -54,11 +54,11 @@ Every project owns its own database, schema, and role. The database name carries
 
 **Project name rules:** Lowercase letters, digits, and underscores, starting with a letter, so the name can prefix a variable and name a database unquoted.
 
-**Reference:** `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md` (ADR 0022: Give Every Database Project Its Own Database, Schema, and Role)
+**Reference:** `repo://projects/common/persistence/README.md#L12-L28` (naming convention table), `repo://infrastructure/docker/docker-compose.yml#L50-L54` (POSTGRES_PROJECTS list)
 
 ### meanderaw Exception
 
-meanderaw's database already exists from ADR 0020's initialization. When adding it to an existing volume, the standard init script would fail on the `CREATE DATABASE` step. The workaround uses `psql` directly with an `ALTER DATABASE` instead:
+meanderaw's database already exists from an earlier initialization. When adding it to an existing volume, the standard init script would fail on the `CREATE DATABASE` step. The workaround uses `psql` directly with an `ALTER DATABASE` instead:
 
 ```bash
 docker exec -i postgres psql -U postgres -d postgres <<'SQL'
@@ -73,21 +73,21 @@ SQL
 
 ## Migration Workflow
 
-Migrations are the **only** way the schema changes. The runtime never runs them: `synchronize` and `migrationsRun` are hard-coded to `false` in the shared `postgresDataSourceOptions` factory. Running migrations is a separate step, executed via Nx commands.
+Migrations are the **only** way the schema changes. The runtime never runs them: `synchronize` and `migrationsRun` are hard-coded to `false` in the shared `postgresDataSourceOptions` factory in `@codebase/persistence`. Running migrations is a separate step, executed via Nx commands.
 
 ### Project Setup
 
-Each project keeps its own database module at `src/modules/<project>-database/`:
+Each project keeps its own database module at `src/modules/<project>-database/` (e.g., `src/modules/database` for caelundas, `src/modules/lexico-database` for lexico):
 
 - `data-source.constants.ts` — exports a `DataSource` created by `createDataSource({ entities, migrations, project })`; this is what the TypeORM CLI reads.
 - `migrations/` — generated migration files and their extracted `.sql` counterparts.
 
-The project opts in to the shared `migration` target by declaring one option:
+The project opts in to the shared `migration` target by declaring one option in its `project.json`:
 
 ```jsonc
 // project.json
 "migration": {
-  "options": { "module": "src/modules/<project>-database" }
+  "options": { "module": "src/modules/database" }
 }
 ```
 
@@ -97,6 +97,8 @@ The target reads two conventional paths from that option:
 | --- | --- |
 | `<module>/data-source.constants.ts` | The `createDataSource(...)` the TypeORM command line reads |
 | `<module>/migrations/` | Each generated migration and its extracted `.sql` |
+
+**Reference:** `repo://nx.json#L606-L636` (shared migration target defaults), `repo://projects/caelundas/caelundas-db/project.json#L44-L46` (project opt-in)
 
 ### Commands
 
@@ -120,7 +122,9 @@ Run from the workspace root or the project directory:
 
 **Search path pinning:** Every pooled connection pins its session's `search_path` to the project's schema alone (no `public`). Unqualified SQL lands in the project's schema or fails if the schema is missing. TypeORM's `current_schema()` fallback also names the project's schema.
 
-**Reference:** `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md` (ADR 0022, Migrations section)
+**Migration linting:** Each migration has its `-up.sql` and `-down.sql` beside it, linted by `sqlfluff` and checked by `squawk`. Projects opt in by adding the `framework:typeorm` tag and declaring `sqlfluff-format`, `sqlfluff-lint`, and `squawk` targets in their `project.json`.
+
+**Reference:** `repo://projects/common/persistence/README.md#L122-L180` (migrations section), `repo://nx.json#L606-L636` (migration target configurations), `repo://projects/caelundas/caelundas-db/project.json#L44-L46` (project opt-in), `repo://projects/caelundas/caelundas-db/README.md#L130-L145` (caelundas migration details)
 
 ---
 
@@ -189,6 +193,8 @@ Both commands need the PostgreSQL 18 client tools (`pg_dump` for export, `pg_res
 ### Credentials
 
 A URI's password reaches the client tools only through their `PG*` environment variables, never their arguments, and is masked in every log line and error. The tools run with every inherited `PG*` variable removed. A URI carrying query parameters is refused, so nothing can set a TLS mode or any other connection option. The truncate for `--clean --data` connects through the `pg` driver with no `ssl` option at all; a server that requires TLS is therefore not reachable through these commands today.
+
+**Reference:** `repo://projects/common/persistence/project.json#L60-L80` (start target configurations), `repo://projects/common/persistence/README.md#L301-L400` (export/import documentation), `repo://projects/common/persistence/src/modules/postgresql-export/postgresql-export.command.ts`, `repo://projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts`
 
 ---
 
@@ -259,7 +265,7 @@ When the modules under test import the project's own database module, pass it as
 
 **Dependency note:** Testcontainers and `@nestjs/testing` are dependencies of this entry. `dependency-cruiser`'s `no-test-imports-in-app` rule lets only a `testing/` path import test tooling, so import it only from tests and `testing/` harnesses. Docker must be running.
 
-**Reference:** `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md` (ADR 0022, Integration tests section)
+**Reference:** `repo://projects/common/persistence/testing/postgres-container/postgres-container.utilities.ts` (container startup and migration running), `repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts` (testing module setup), `repo://projects/common/persistence/README.md#L200-L280` (integration tests documentation)
 
 ---
 
@@ -272,7 +278,7 @@ The shared `postgresDataSourceOptions` factory **hard-codes** `synchronize: fals
 
 This is enforced by unit tests in `postgresql.utilities.unit.test.ts` and documented in the AGENTS.md guardrails.
 
-**Reference:** `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md` (ADR 0022, No migrations on application start)
+**Reference:** `repo://projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts#L101-L135` (postgresDataSourceOptions factory), `repo://projects/common/persistence/README.md#L12-L28` (runtime never runs migrations)
 
 ---
 
@@ -285,10 +291,12 @@ The `POSTGRES_PROJECTS` list is defined in `infrastructure/docker/docker-compose
 ```yaml
 environment:
   # Every database-backed project: adding one is adding its name here.
-  POSTGRES_PROJECTS: lexico meanderaw
+  POSTGRES_PROJECTS: caelundas lexico meanderaw
 ```
 
 An inline config script (`databases.sh`) runs on first start and loops over `POSTGRES_PROJECTS` to create each role, its `_development` database, and its schema.
+
+**Reference:** `repo://infrastructure/docker/docker-compose.yml#L45-L78` (Compose service and init script)
 
 ### Adding a Project to an Existing Volume
 
@@ -304,6 +312,8 @@ The script stops at the first object that already exists, so name **only the pro
 See the meanderaw exception section above for the special case.
 
 Confirm with `\l` (databases), `\dn` (schemas), and `\du` (roles) in `psql`.
+
+**Reference:** `repo://infrastructure/README.md#L55-L70` (existing volume instructions)
 
 ---
 
