@@ -98,6 +98,18 @@ A command-line project's `<name>.main.ts` only calls `CommandFactory.run`, and a
 | A dependency resolves in the app, not a test | The test gave `buildTestingModule` a `mocks` entry or `providers` for it, per [write-tests](../write-tests/SKILL.md) |
 | Env validation fails on startup              | The variable is in the schema and in `configuration/.env.default`                                                    |
 | A resolver is never called                   | It is in a module's `providers` and that module reaches the root module                                              |
+| `Unrecognized` flag on a command             | The `@Option()` decorators on the command class match the flag names passed                                          |
+| A TypeORM entity is not found                | The module that uses it registers it with `TypeOrmModule.forFeature([Entity])`                                       |
+
+## A Project's AGENTS.md
+
+The generator leaves only a title and a `Modules` (or `Commands`) heading, and conformetry holds every instance to those headings. Fill them with what only this project knows:
+
+- what it is for and what it deliberately is not;
+- each module or command, in a line, from its code's own JSDoc;
+- the environment, ports, and data it depends on, and the gotchas and decisions a reader cannot see from the code.
+
+Leave out whatever a skill already owns: the logger, the module layout, the test kinds. Claude Code loads the nearest `CLAUDE.md` when it works in a folder, and every project's is a symlink to its `AGENTS.md`, so each word here is read whenever someone edits the project.
 
 ## References
 

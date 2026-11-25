@@ -205,6 +205,8 @@ import { cn } from "@codebase/presentation";
 
 ## TanStack Start Routes
 
+A web application is TanStack Start on Vite, with file-based TanStack Router from `src/routes/`, React 19 and Tailwind CSS 4, shared UI from `@codebase/presentation`, and Vitest with React Testing Library under jsdom. An application may build as a static single-page app with no server functions; its own `AGENTS.md` says so when it does.
+
 Routes are files in `src/routes/`, named the way TanStack Router names them:
 `index.tsx` serves `/`, `word.$id.tsx` serves `/word/$id`. A route file holds
 its `Route` under a `// 🧭 Route` marker and the page it renders. Reusable
