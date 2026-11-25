@@ -28,7 +28,8 @@ terraform apply
 infrastructure/
 ├── helm/
 │   ├── kubernetes-deployment/  # Reusable chart for long-running services
-│   └── kubernetes-job/      # Reusable chart for K8s Jobs
+│   ├── kubernetes-job/      # Reusable chart for K8s Jobs
+│   └── postgres/            # Shared PostgreSQL as CloudNativePG resources
 └── terraform/               # Cluster provisioning
     ├── github/              # Repository settings, ruleset, Actions variables
     ├── linode/              # Object Storage buckets: the state and the shared Nx cache
@@ -69,6 +70,36 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
 
+### postgres Chart
+
+**Purpose**: The shared PostgreSQL cluster in the `codebase` namespace, as CloudNativePG resources: a `Cluster` (`postgres`, PostgreSQL 18 pinned to an exact minor), a managed role and `Database` per project database, a `Pooler` (`postgres-pooler-rw`, PgBouncer in transaction mode), and Barman Cloud backups (`ObjectStore` `postgres-backups` with 30-day retention, and a daily `ScheduledBackup` at 03:00 UTC).
+
+- `projects` lists each project with its `databases`. Each project gets role `<name>_username` (password from the `<name>-postgres` Secret) and each database a `Database` resource whose PostgreSQL name is `<name>_<database>`, owned by that role, with schema `<name>`. Adding a project is adding a list entry, as with `POSTGRES_PROJECTS` in the local Compose file.
+- The direct service is `postgres-rw`; the app and jobs address the pooler, `postgres-pooler-rw`.
+- The volume uses the `linode-block-storage-retain` storage class, so deleting the `Cluster` keeps its data.
+- The chart needs the CloudNativePG operator and the Barman Cloud plugin CRDs, and the `postgres-backups` and `<name>-postgres` Secrets from the bootstrap root.
+
+`tests/postgres_test.yaml` asserts on rendered YAML only, since the CRDs are not installed locally.
+
+### postgres Runbooks
+
+**Connect to the database**: forward the direct service and read the password from the `caelundas-postgres` Secret:
+
+```bash
+kubectl port-forward -n codebase svc/postgres-rw 5433:5432
+```
+
+**Copy local data up**: dump the local schema, then restore it into a cluster database as the project role:
+
+```bash
+pg_dump --schema caelundas --format custom --dbname caelundas_development > caelundas.dump
+pg_restore --no-owner --role caelundas_username --dbname caelundas_production caelundas.dump
+```
+
+Use `caelundas_staging` in place of `caelundas_production` for staging. The same pair copies staging to production until the merge spec lands.
+
+**Rehearse a restore**: bootstrap a throwaway `Cluster` from `postgres-backups` with a `recoveryTarget`, check the row counts against the live cluster, then delete it. Never restore over `postgres`.
+
 ## Helm Chart References
 
 - Chart metadata: [helm/kubernetes-deployment/Chart.yaml](helm/kubernetes-deployment/Chart.yaml)
@@ -77,6 +108,9 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 - Chart metadata: [helm/kubernetes-job/Chart.yaml](helm/kubernetes-job/Chart.yaml)
 - Base values: [helm/kubernetes-job/values/base.yaml](helm/kubernetes-job/values/base.yaml)
 - Templates: [helm/kubernetes-job/templates/](helm/kubernetes-job/templates/)
+- Chart metadata: [helm/postgres/Chart.yaml](helm/postgres/Chart.yaml)
+- Base values: [helm/postgres/values/base.yaml](helm/postgres/values/base.yaml)
+- Templates: [helm/postgres/templates/](helm/postgres/templates/)
 
 ## Kubernetes Deployment
 

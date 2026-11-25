@@ -328,6 +328,8 @@ words:
   # A headword the coinagerie singularizer or lemmatizer makes of a word the
   # code wrote, which the shared coinagerie configuration folds back.
   - caelunda
+  # The CloudNativePG operator's image and API group, which the postgres chart names.
+  - cloudnative
   # The rc-style conformetry config filenames the Nx plugin looks for.
   - conformetryrc
   # Dependabot's dependabot.yml field name for delaying a version update.
@@ -352,7 +354,11 @@ words:
   # A headword the coinagerie singularizer or lemmatizer makes of a word the
   # code wrote, which the shared coinagerie configuration folds back.
   - postgre
+  # PgBouncer, the connection pooler the postgres chart's Pooler runs.
+  - pgbouncer
   - protobufj
+  # The Barman Cloud plugin's API group, which the postgres chart's ObjectStore names.
+  - barmancloud
   # The git feature (`git rerere`) that replays a recorded conflict resolution.
   - rerere
   # Observer sites in caelundas reference fixtures, checked against USNO.
@@ -370,3 +376,5 @@ words:
   # code wrote, which the shared coinagerie configuration folds back.
   - vitej
   - xarg
+  # The Debian release name of the CloudNativePG PostgreSQL image tag.
+  - trixie

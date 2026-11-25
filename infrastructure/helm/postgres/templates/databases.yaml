@@ -1,0 +1,21 @@
+{{- range .Values.projects }}
+{{- $project := .name }}
+{{- range .databases }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: {{ $project }}-{{ . }}
+spec:
+  name: {{ $project }}_{{ . }}
+  owner: {{ $project }}_username
+  cluster:
+    name: {{ $.Values.cluster.name }}
+  schemas:
+    - name: {{ $project }}
+      owner: {{ $project }}_username
+  extensions:
+    - name: pg_stat_statements
+      ensure: present
+{{- end }}
+{{- end }}

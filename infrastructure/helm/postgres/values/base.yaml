@@ -1,0 +1,46 @@
+# Default values for postgres.
+# This is a YAML-formatted file.
+
+# Each entry gets a managed role `<name>_username` and one Database per
+# `databases` item, named `<name>_<database>`, with schema `<name>`.
+projects:
+  - name: caelundas
+    databases:
+      - production
+      - staging
+
+cluster:
+  name: postgres
+  instances: 1
+  # Exact PostgreSQL 18 minor, pinned
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.4-standard-trixie
+  storage:
+    size: 20Gi
+    storageClass: linode-block-storage-retain
+  resources:
+    requests:
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+  postgresql:
+    shared_buffers: 256MB
+    shared_preload_libraries:
+      - pg_stat_statements
+
+backup:
+  objectStoreName: postgres-backups
+  destinationPath: s3://organizzolini-codebase-postgres-backups/
+  endpointURL: https://us-iad-18.linodeobjects.com
+  retentionPolicy: 30d
+  credentialsSecretName: postgres-backups
+  schedule: 0 0 3 * * *
+  scheduledBackupName: postgres-daily
+
+pooler:
+  name: postgres-pooler-rw
+  instances: 1
+  poolMode: transaction
+  parameters:
+    max_prepared_statements: "100"
+    default_pool_size: "10"
+    max_client_conn: "100"

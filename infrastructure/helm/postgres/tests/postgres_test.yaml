@@ -1,0 +1,115 @@
+suite: postgres
+templates:
+  - templates/cluster.yaml
+  - templates/databases.yaml
+  - templates/pooler.yaml
+  - templates/object-store.yaml
+  - templates/scheduled-backup.yaml
+values:
+  - ../values/base.yaml
+tests:
+  - it: declares one managed role per project
+    template: templates/cluster.yaml
+    asserts:
+      - equal:
+          path: spec.managed.roles[0].name
+          value: caelundas_username
+      - equal:
+          path: spec.managed.roles[0].passwordSecret.name
+          value: caelundas-postgres
+
+  - it: renders a Database per project database
+    template: templates/databases.yaml
+    asserts:
+      - hasDocuments:
+          count: 2
+      - isKind:
+          of: Database
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: caelundas-production
+        documentIndex: 0
+      - equal:
+          path: spec.name
+          value: caelundas_production
+        documentIndex: 0
+      - equal:
+          path: spec.owner
+          value: caelundas_username
+        documentIndex: 0
+      - equal:
+          path: spec.schemas[0].name
+          value: caelundas
+        documentIndex: 0
+      - equal:
+          path: metadata.name
+          value: caelundas-staging
+        documentIndex: 1
+      - equal:
+          path: spec.name
+          value: caelundas_staging
+        documentIndex: 1
+      - equal:
+          path: spec.owner
+          value: caelundas_username
+        documentIndex: 1
+      - equal:
+          path: spec.schemas[0].name
+          value: caelundas
+        documentIndex: 1
+
+  - it: archives WAL through the Barman Cloud plugin
+    template: templates/cluster.yaml
+    asserts:
+      - equal:
+          path: spec.plugins[0].name
+          value: barman-cloud.cloudnative-pg.io
+      - equal:
+          path: spec.plugins[0].isWALArchiver
+          value: true
+      - equal:
+          path: spec.plugins[0].parameters.barmanObjectName
+          value: postgres-backups
+
+  - it: object store targets the Linode bucket with 30-day retention
+    template: templates/object-store.yaml
+    asserts:
+      - equal:
+          path: spec.configuration.destinationPath
+          value: s3://organizzolini-codebase-postgres-backups/
+      - equal:
+          path: spec.configuration.endpointURL
+          value: https://us-iad-18.linodeobjects.com
+      - equal:
+          path: spec.retentionPolicy
+          value: 30d
+
+  - it: pooler runs transaction mode with prepared statements
+    template: templates/pooler.yaml
+    asserts:
+      - equal:
+          path: spec.pgbouncer.poolMode
+          value: transaction
+      - isNotNull:
+          path: spec.pgbouncer.parameters.max_prepared_statements
+
+  - it: keeps the volume when the cluster goes
+    template: templates/cluster.yaml
+    asserts:
+      - equal:
+          path: spec.storage.storageClass
+          value: linode-block-storage-retain
+
+  - it: a second project adds its own role and databases
+    values:
+      - ../values/base.yaml
+      - fixtures/two-projects.yaml
+    asserts:
+      - template: templates/cluster.yaml
+        lengthEqual:
+          path: spec.managed.roles
+          count: 2
+      - template: templates/databases.yaml
+        hasDocuments:
+          count: 3
