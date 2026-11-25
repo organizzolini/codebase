@@ -1,7 +1,9 @@
 import {
   DURATION_BUCKETS,
+  TAG_FIELD_PREFIX,
   WEEKDAY_LABELS,
 } from "../../../../calendar-query/calendar-filters/components/event-filter-model/event-filters.constants";
+import { ALL_TAGS_FIELD } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.constants";
 import { formatDerivedKey } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-labels.utilities";
 import { readDepth } from "../../../../calendar-query/filter-tag-editor/event-filter-tag-tree.utilities";
 import { EVENT_COLOR_RULES } from "../calendar-colors/calendar-colors.constants";
@@ -14,6 +16,7 @@ import type {
   EventGroupField,
   EventGroupLevel,
 } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { CalendarEventRecord } from "../calendar-loader/calendar-records.types";
 import type {
   ColorLegendEntry,
   ColorScheme,
@@ -39,22 +42,26 @@ export function createColorScheme(
 
   for (const [index, level] of grouping.entries()) {
     const field = fields.find((candidate) => candidate.id === level.field);
+    let painter: LevelPainter | undefined;
 
-    if (field !== undefined && !seen.has(field.id)) {
+    // The levels over every root's tags color by the roots, in the first.
+    if (level.field === ALL_TAGS_FIELD) {
+      painter = paintRoots(fields, used, level);
+    } else if (field !== undefined && !seen.has(field.id)) {
       seen.add(field.id);
-      const painter =
+      painter =
         field.options.length > 0
           ? paintTags(level, field, used)
           : paintValues(field, index);
+    }
 
+    if (painter !== undefined) {
       used += painter.tops;
       painters.push(painter);
     }
   }
 
-  const [first] = painters;
-
-  if (first === undefined) {
+  if (painters[0] === undefined) {
     return {
       colorOf: getEventColor,
       legend: EVENT_COLOR_RULES.map((rule) => ({
@@ -78,7 +85,7 @@ export function createColorScheme(
 
       return getEventColor(event);
     },
-    legend: first.legend,
+    legend: painters[0].legend,
   };
 }
 
@@ -110,6 +117,32 @@ function buildTagTree(
   }
 
   return roots;
+}
+
+/**
+ * The color of the first root an event has a tag of, from its deepest tag there.
+ */
+function findRootColor(
+  painted: readonly PaintContext["colors"][],
+  event: CalendarEventRecord,
+): null | string {
+  for (const colors of painted) {
+    let best: undefined | { color: string; depth: number };
+
+    for (const tag of event.tags) {
+      const found = colors.get(tag.id);
+
+      if (found !== undefined && found.depth > (best?.depth ?? -2)) {
+        best = found;
+      }
+    }
+
+    if (best !== undefined) {
+      return best.color;
+    }
+  }
+
+  return null;
 }
 
 /**
@@ -205,6 +238,60 @@ function paintNode(context: PaintContext, step: PaintStep): void {
       siblings: node.children.length,
     });
   }
+}
+
+/**
+ * Gives each tag root a palette color, its tags near it; an event takes its first root's. Only the roots' level paints.
+ */
+function paintRoots(
+  fields: readonly EventGroupField[],
+  offset: number,
+  level: EventGroupLevel,
+): LevelPainter {
+  const legend: ColorLegendEntry[] = [];
+  const painted: PaintContext["colors"][] = [];
+
+  // Loops rather than mapping callbacks keep the call stacks shallow.
+  for (const field of fields) {
+    if (level.depth === undefined && field.id.startsWith(TAG_FIELD_PREFIX)) {
+      const color = pickColor(offset + painted.length);
+      const rootId = field.id.slice(TAG_FIELD_PREFIX.length);
+      const depths: number[] = [];
+
+      for (const option of field.options) {
+        depths.push(readDepth(option));
+      }
+
+      const tree = buildTagTree(field.options, depths);
+      const context: PaintContext = {
+        colors: new Map([[rootId, { color, depth: -1 }]]),
+        legend,
+        offset,
+        tops: new Set(),
+        used: 0,
+      };
+
+      legend.push({ color, depth: 0, key: rootId, label: field.label });
+
+      for (const [index, node] of tree.entries()) {
+        paintNode(context, {
+          depth: 1,
+          index,
+          node,
+          parent: color,
+          siblings: tree.length,
+        });
+      }
+
+      painted.push(context.colors);
+    }
+  }
+
+  return {
+    colorOf: (event) => findRootColor(painted, event),
+    legend,
+    tops: painted.length,
+  };
 }
 
 /**

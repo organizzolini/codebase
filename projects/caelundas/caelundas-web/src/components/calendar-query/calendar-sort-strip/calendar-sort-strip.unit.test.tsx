@@ -3,6 +3,7 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { CalendarSortStrip } from "./calendar-sort-strip";
 
+import type { EventMetric } from "../../../graphql/generated/operations";
 import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 
 const FACETS = [
@@ -20,7 +21,10 @@ const COUNT_DESC: GroupSort = { direction: "desc", key: "count" };
 
 function renderStrip(
   sort: readonly GroupSort[] | undefined,
-  options: Readonly<{ view?: "timeline" | "week" }> = {},
+  options: Readonly<{
+    metrics?: readonly EventMetric[];
+    view?: "charts" | "timeline" | "totals" | "week";
+  }> = {},
 ): {
   onSortChange: ReturnType<
     typeof vi.fn<(sort: GroupSort[] | undefined) => void>
@@ -31,6 +35,7 @@ function renderStrip(
   render(
     <CalendarSortStrip
       facets={FACETS}
+      metrics={options.metrics}
       onSortChange={onSortChange}
       sort={sort}
       view={options.view ?? "timeline"}
@@ -59,6 +64,16 @@ describe(CalendarSortStrip, () => {
     expect(screen.getByTestId("calendar-sort-strip").className).toBe(
       "calendar-sort-strip",
     );
+  });
+
+  it("flags each of its buttons as an item of one wrapping strip", () => {
+    renderStrip(NO_SORT);
+
+    const strip = screen.getByRole("group", { name: "Sort" });
+
+    expect(Object.hasOwn(strip.dataset, "stripButtons")).toBe(true);
+    expect(strip.className).toContain("flex-wrap");
+    expect(strip.className).toContain("[&>[data-line-start]]:border-l!");
   });
 
   it("draws nothing outside the timeline, which orders by time", () => {
@@ -183,6 +198,77 @@ describe(CalendarSortStrip, () => {
     fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
     expect(onSortChange.mock.lastCall).toStrictEqual([undefined]);
+  });
+
+  it("draws in the Charts and Totals, defaulting to the Tags chip", () => {
+    for (const view of ["charts", "totals"] as const) {
+      const { unmount } = render(
+        <CalendarSortStrip
+          onSortChange={() => {}}
+          sort={undefined}
+          view={view}
+        />,
+      );
+
+      expect(
+        screen.getByRole("button", {
+          name: "Sorted by Tags, ascending; reverse",
+        }),
+      ).toBeDefined();
+
+      unmount();
+    }
+  });
+
+  it("in the Charts offers the tag order, the name and each metric measured", async () => {
+    renderStrip(NO_SORT, { metrics: ["EVENTS", "SPANS"], view: "charts" });
+    fireEvent.click(screen.getByRole("button", { name: "Sort" }));
+
+    await expect(screen.findByText("Spans")).resolves.toBeDefined();
+    expect(screen.getByText("Tag order")).toBeDefined();
+    expect(screen.getByText("Name")).toBeDefined();
+    expect(screen.getByText("Events")).toBeDefined();
+    expect(screen.queryByText("Event count")).toBeNull();
+    expect(screen.queryByText("Unique names")).toBeNull();
+  });
+
+  it("in the Totals offers the layout's metrics when it is given none", async () => {
+    renderStrip(NO_SORT, { view: "totals" });
+    fireEvent.click(screen.getByRole("button", { name: "Sort" }));
+
+    await expect(screen.findByText("Progressive hours")).resolves.toBeDefined();
+  });
+
+  it("sorts by a metric picked from the list, after the sorts already on", async () => {
+    const { onSortChange } = renderStrip([NAME_ASC], {
+      metrics: ["EVENTS", "SPANS"],
+      view: "charts",
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Sort" }));
+    fireEvent.click(await screen.findByText("Spans"));
+
+    expect(onSortChange).toHaveBeenCalledWith([
+      NAME_ASC,
+      { direction: "asc", key: "metric", metric: "SPANS" },
+    ]);
+  });
+
+  it("names a metric sort after the metric, and reverses it", () => {
+    const { onSortChange } = renderStrip(
+      [{ direction: "desc", key: "metric", metric: "SPANS" }],
+      { metrics: ["SPANS"], view: "charts" },
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Sorted by Spans, descending; reverse",
+      }),
+    );
+
+    expect(onSortChange).toHaveBeenCalledWith([
+      { direction: "asc", key: "metric", metric: "SPANS" },
+    ]);
   });
 
   it("in the table offers only the sorts of the selected columns, and keeps one already on", async () => {

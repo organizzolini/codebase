@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import {
   DatasetDocument,
+  EventMetricsDocument,
   EventsDocument,
   FacetsDocument,
   PresetsDocument,
@@ -17,10 +18,12 @@ import {
 } from "./events-api.constants";
 
 import type {
+  EventMetricsInput,
   EventsQuery,
   FacetsQuery,
   PresetsQuery,
 } from "../../../../../graphql/generated/operations";
+import type { EventMetricsData } from "../../../calendar-metrics/calendar-metrics.types";
 import type {
   CalendarEventRecord,
   EventFacet,
@@ -50,6 +53,17 @@ export async function describeDataset(): Promise<EventsDataset | null> {
         start: new Date(dataset.start),
         timezone: dataset.timezone,
       };
+}
+
+/**
+ * Reads a period's event metrics, for the whole set and each group, with the previous period's when asked.
+ */
+export async function findEventMetrics(
+  input: EventMetricsInput,
+): Promise<EventMetricsData> {
+  const { eventMetrics } = await queryApi(EventMetricsDocument, { input });
+
+  return eventMetrics;
 }
 
 /**

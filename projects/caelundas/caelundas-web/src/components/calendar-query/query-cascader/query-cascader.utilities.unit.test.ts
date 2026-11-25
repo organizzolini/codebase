@@ -3,9 +3,23 @@ import { describe, expect, it } from "vitest";
 import {
   keepHiddenValues,
   resolveSelectable,
+  toExpansion,
 } from "./query-cascader.utilities";
 
 describe("query-cascader utilities", () => {
+  describe(toExpansion, () => {
+    it("carries only the expansion props it is given", () => {
+      const change = (): void => undefined;
+
+      expect(toExpansion(undefined, undefined, undefined)).toStrictEqual({});
+      expect(toExpansion(["a"], ["b"], change)).toStrictEqual({
+        defaultExpanded: ["a"],
+        expanded: ["b"],
+        onExpandedChange: change,
+      });
+    });
+  });
+
   describe(resolveSelectable, () => {
     it("gives every row to a cascade, and only leaves to anything else", () => {
       expect(resolveSelectable(true, undefined)).toBe("any");

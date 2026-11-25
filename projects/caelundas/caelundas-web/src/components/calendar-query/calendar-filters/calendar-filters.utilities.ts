@@ -16,6 +16,23 @@ import type { ReactElement } from "react";
 // 🌎 Public Functions
 
 /**
+ * What the Filter list's Date item does: closes the list, then opens the picker; none without a picker.
+ */
+export function createDateOpener(
+  openPicker: (() => void) | null,
+  setOpen: (open: boolean) => void,
+): (() => void) | undefined {
+  if (openPicker === null) {
+    return undefined;
+  }
+
+  return () => {
+    setOpen(false);
+    openPicker();
+  };
+}
+
+/**
  * The Filters button, squared on its right when chips join it; an element, not a component, so the surface's trigger can clone it.
  */
 export function renderFiltersButton(

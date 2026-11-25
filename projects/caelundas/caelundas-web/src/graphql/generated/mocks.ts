@@ -54,6 +54,43 @@ export type EventGroupingInput = {
   levels?: Array<EventGroupLevelInput> | null | undefined;
 };
 
+/** A number computed in SQL over the distinct events of a group. Durations are in minutes and cover spans only, except the total; a start is epoch milliseconds. Percents are of the period's length, clipped to it: COVERED_ counts overlaps once (0 to 100), TOTAL_TIME_ counts them per event (may pass 100), and PROGRESSIVE_ reads only progressive events. */
+export type EventMetric =
+  | 'AVERAGE_DURATION_MINUTES'
+  | 'COVERED_MINUTES'
+  | 'COVERED_PERCENT'
+  | 'DAYS_WITH_EVENTS'
+  | 'EVENTS'
+  | 'FIRST_START'
+  | 'INSTANTS'
+  | 'LAST_START'
+  | 'LONGEST_DURATION_MINUTES'
+  | 'MEDIAN_DURATION_MINUTES'
+  | 'PROGRESSIVE_COVERED_PERCENT'
+  | 'PROGRESSIVE_HOURS'
+  | 'PROGRESSIVE_TOTAL_PERCENT'
+  | 'SHORTEST_DURATION_MINUTES'
+  | 'SPANS'
+  | 'TOTAL_DURATION_MINUTES'
+  | 'TOTAL_TIME_PERCENT'
+  | 'UNIQUE_NAMES'
+  | 'UNIQUE_TAGS';
+
+export type EventMetricsInput = {
+  /** Also computes every metric over the period of equal length right before this one, to set as each value's previous. */
+  compareToPrevious?: boolean | null | undefined;
+  /** Keeps only the events that meet this nested AND/OR filter. */
+  filter?: EventFilterGroupInput | null | undefined;
+  /** The levels to group by, outermost first, as the events query reads them; each group holds its subgroups, one per level. */
+  grouping?: Array<EventGroupLevelInput> | null | undefined;
+  /** The metrics to compute for the whole set and each group. */
+  metrics: Array<EventMetric>;
+  /** The events that overlap this period are measured. */
+  period: PeriodInput;
+  /** Restricts UNIQUE_TAGS to the tags beneath this tag, which itself is not counted. */
+  tagRoot?: string | null | undefined;
+};
+
 export type NightSkyInput = {
   /** Hexadecimal color at the bottom of the background. */
   backgroundBottomColor?: string | null | undefined;
@@ -121,6 +158,29 @@ export type DatasetQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type DatasetQuery = { dataset: { count: number, end: string, start: string, timezone: string } | null };
 
+export type EventMetricsQueryVariables = Exact<{
+  input: EventMetricsInput;
+}>;
+
+
+export type EventMetricsQuery = { eventMetrics: { timezone: string, total: Array<{ metric: EventMetric, previous: number | null, value: number | null }>, groups: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }> } };
+
+export type EventMetricValueFieldsFragment = { metric: EventMetric, previous: number | null, value: number | null };
+
+export type EventMetricGroupFieldsFragment = { id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> };
+
+export type EventMetricGroupLevel0Fragment = { id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> };
+
+export type EventMetricGroupLevel1Fragment = { id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> };
+
+export type EventMetricGroupLevel2Fragment = { id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> };
+
+export type EventMetricGroupLevel3Fragment = { id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> };
+
+export type EventMetricGroupLevel4Fragment = { id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, children: Array<{ id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> }>, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> };
+
+export type EventMetricGroupLevel5Fragment = { id: string, key: string | null, label: string, level: number, orderKey: string | null, path: string | null, values: Array<{ metric: EventMetric, previous: number | null, value: number | null }> };
+
 export type EventsQueryVariables = Exact<{
   period: PeriodInput;
   filter?: EventFilterGroupInput | null | undefined;
@@ -182,6 +242,28 @@ export type WindowsQuery = { windows: { columnMinutes: number | null, visible: {
 export const mockDatasetQuery = (resolver: GraphQLResponseResolver<DatasetQuery, DatasetQueryVariables>, options?: RequestHandlerOptions) =>
   graphql.query<DatasetQuery, DatasetQueryVariables>(
     'Dataset',
+    resolver,
+    options
+  )
+
+/**
+ * @param resolver A function that accepts [resolver arguments](https://mswjs.io/docs/api/graphql#resolver-argument) and must always return the instruction on what to do with the intercepted request. ([see more](https://mswjs.io/docs/concepts/response-resolver#resolver-instructions))
+ * @param options Options object to customize the behavior of the mock. ([see more](https://mswjs.io/docs/api/graphql#handler-options))
+ * @see https://mswjs.io/docs/basics/response-resolver
+ * @example
+ * mockEventMetricsQuery(
+ *   ({ query, variables }) => {
+ *     const { input } = variables;
+ *     return HttpResponse.json({
+ *       data: { eventMetrics }
+ *     })
+ *   },
+ *   requestOptions
+ * )
+ */
+export const mockEventMetricsQuery = (resolver: GraphQLResponseResolver<EventMetricsQuery, EventMetricsQueryVariables>, options?: RequestHandlerOptions) =>
+  graphql.query<EventMetricsQuery, EventMetricsQueryVariables>(
+    'EventMetrics',
     resolver,
     options
   )

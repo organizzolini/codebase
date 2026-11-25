@@ -26,7 +26,7 @@ export interface SkyColorControl {
 }
 
 /**
- * A link key the sky menu sets, such as `sky.lat`.
+ * A link key the sky menu sets, such as `skyfield.lat`.
  */
 export type SkyParameterKey = Extract<keyof CalendarSearch, `sky${string}`>;
 

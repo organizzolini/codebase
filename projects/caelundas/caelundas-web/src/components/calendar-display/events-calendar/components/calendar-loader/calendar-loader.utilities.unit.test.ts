@@ -191,22 +191,31 @@ describe(loadCalendar, () => {
     ).toStrictEqual(["tag-mars", "tag-venus"]);
   });
 
-  it("drops a grouping field the data lacks, and ignores a stale color", async () => {
+  it("falls back to every tag root when the link's grouping names only fields the data lacks, or none", async () => {
     serveCalendarApi();
 
-    await expect(
-      loadCalendar({ ...MARCH, group: [{ field: "tag:tag-missing" }] }).then(
-        (data) => data.grouping,
-      ),
-    ).resolves.toStrictEqual([]);
+    const fallback = await loadCalendar(MARCH);
+    const missing = await loadCalendar({
+      ...MARCH,
+      group: [{ field: "tag:tag-missing" }],
+    });
+    const none = await loadCalendar({ ...MARCH, group: [] });
+
+    expect(fallback.grouping.length).toBeGreaterThan(1);
+    expect(missing.grouping).toStrictEqual(fallback.grouping);
+    expect(none.grouping).toStrictEqual(fallback.grouping);
   });
 
-  it("reads the timeline's events by every tag root, and the month's by the first", async () => {
+  it("resolves every tag root on every view, and reads the month's events by the first alone", async () => {
     const api = serveCalendarApi();
+    const timeline = await loadCalendar({
+      date: "2026-03-15",
+      view: "timeline",
+    });
+    const month = await loadCalendar(MARCH);
 
-    await loadCalendar({ date: "2026-03-15", view: "timeline" });
-    await loadCalendar(MARCH);
-
+    expect(month.grouping).toStrictEqual(timeline.grouping);
+    expect(month.grouping.length).toBeGreaterThan(1);
     expect(api.requests.events[0]?.grouping?.levels?.length).toBeGreaterThan(1);
     expect(api.requests.events[1]?.grouping?.levels).toHaveLength(1);
   });

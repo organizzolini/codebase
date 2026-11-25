@@ -35,6 +35,7 @@ export function useCalendarDisplay(timeZone: string): UseCalendarDisplayResult {
     handlers: {
       handleClustersChange: handlers.handleClustersChange,
       handleColorsChange: handlers.handleColorsChange,
+      handleCompareChange: handlers.handleCompareChange,
       handleScaleChange: handlers.handleScaleChange,
       handleSymbolsChange: handlers.handleSymbolsChange,
       handleViewChange: handlers.handleViewChange,
@@ -43,6 +44,7 @@ export function useCalendarDisplay(timeZone: string): UseCalendarDisplayResult {
     state: {
       clusters: search.clusters !== false,
       colors: search.colors !== false,
+      compare: search.compare === true,
       scale: search.scale ?? DEFAULT_TIMELINE_SCALE,
       symbols: search.symbols ?? DEFAULT_CALENDAR_SYMBOLS,
     },

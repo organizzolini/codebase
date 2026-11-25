@@ -66,7 +66,7 @@ export function ChipMenu(properties: Readonly<ChipMenuProperties>): ReactNode {
         render={
           <Button
             aria-label={`${label} options`}
-            className={className}
+            className={`w-5 px-0 ${className ?? ""}`.trim()}
             data-testid="chip-menu"
             size="sm"
             variant="outline"

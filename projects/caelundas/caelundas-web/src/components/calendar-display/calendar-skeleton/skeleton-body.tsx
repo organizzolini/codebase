@@ -7,6 +7,8 @@ import {
   ROW_KEYS,
   TIMELINE_BARS,
 } from "./calendar-skeleton.constants";
+import { SkeletonBars } from "./skeleton-bars";
+import { SkeletonCards } from "./skeleton-cards";
 
 import type { CalendarViewName } from "../events-calendar/components/calendar-views/calendar-views.types";
 import type { ReactNode } from "react";
@@ -37,6 +39,13 @@ export function SkeletonBody(
   let content: ReactNode;
 
   switch (view) {
+    case "charts": {
+      content = (
+        <SkeletonBars className="flex min-h-0 flex-1 items-end gap-3 overflow-hidden" />
+      );
+
+      break;
+    }
     case "month": {
       content = (
         <div className="grid min-h-0 flex-1 grid-cols-7 grid-rows-6 gap-1">
@@ -77,6 +86,13 @@ export function SkeletonBody(
             </div>
           ))}
         </div>
+      );
+
+      break;
+    }
+    case "totals": {
+      content = (
+        <SkeletonCards className="grid min-h-0 flex-1 grid-cols-2 gap-2 overflow-hidden md:grid-cols-4" />
       );
 
       break;

@@ -20,6 +20,11 @@ export interface PendingGroup {
  */
 export interface RowLayout {
   children: Map<string, GanttResource[]>;
+  /**
+   * Each group node's color by node id; absent when colors are off.
+   */
+  colors?: ReadonlyMap<string, string> | undefined;
+  groups: Map<string, TimelineGroup>;
   members: Map<string, Set<string>>;
 }
 
@@ -35,10 +40,30 @@ export interface TimelineBar {
 }
 
 /**
+ * What a group row knows: its color, tag, and level.
+ */
+export interface TimelineGroup {
+  color?: string | undefined;
+  /**
+   * Whether the group holds the events with no value at its level.
+   */
+  fallback: boolean;
+  /**
+   * The group's tag id; null for a fallback, and for the upper rows of a deep tag's path.
+   */
+  key: null | string;
+  level: number;
+}
+
+/**
  * The timeline's rows and bars, with each row's event count.
  */
 export interface TimelineRows {
   counts: ReadonlyMap<string, number>;
   events: GanttEvent<TimelineBar>[];
+  /**
+   * The group rows by id; the rows holding bars, lanes and the one ungrouped row are not here.
+   */
+  groups: ReadonlyMap<string, TimelineGroup>;
   resources: GanttResource[];
 }

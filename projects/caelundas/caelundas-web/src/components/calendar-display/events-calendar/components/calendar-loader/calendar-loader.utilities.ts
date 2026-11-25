@@ -1,3 +1,4 @@
+import { METRICS_CACHE } from "../../../../../hooks/use-metric-layout/hooks/use-event-metrics/use-event-metrics.constants";
 import { toEventFilterInput } from "../../../../calendar-query/calendar-filters/components/event-filter-model/event-filter-input.utilities";
 import { toPreset } from "../../../../calendar-query/calendar-filters/components/presets/presets.utilities";
 import {
@@ -6,6 +7,7 @@ import {
   resolveEventGrouping,
 } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { toEventGroupingInput } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-input.utilities";
+import { isMetricView } from "../calendar-views/calendar-views.utilities";
 import { parseCalendarDate } from "../calendar-window/calendar-window.utilities";
 import {
   describeDataset,
@@ -41,6 +43,7 @@ export function clearCalendarCaches(): void {
   CONSTANTS_CACHE.clear();
   EVENTS_CACHE.clear();
   FACETS_CACHE.clear();
+  METRICS_CACHE.clear();
 }
 
 /**
@@ -59,7 +62,7 @@ export async function loadCalendar(
   const grouping = resolveGrouping(search, facets);
   const query = {
     filter,
-    grouping: toEventGroupingInput(grouping),
+    grouping: toQueriedGrouping(search, grouping),
     period: read,
   };
   const events = await readCached(
@@ -226,18 +229,17 @@ async function readConstants(): Promise<{
 }
 
 /**
- * The grouping for any view, kept to the fields the data has.
+ * The grouping for any view, kept to the fields the data has, the default's
+ * every tag root when the link leaves none.
  */
 function resolveGrouping(
   search: CalendarSearch,
   facets: readonly EventFacet[],
 ): EventGroupLevel[] {
   const fields = createEventGroupFields(facets);
+  const resolved = resolveEventGrouping(search.group ?? [], fields);
 
-  return resolveEventGrouping(
-    search.group ?? getDefaultGrouping(search.view ?? "table", fields),
-    fields,
-  );
+  return resolved.length === 0 ? [...getDefaultGrouping(fields)] : resolved;
 }
 
 /**
@@ -260,4 +262,23 @@ async function resolveWindows(search: CalendarSearch): Promise<{
       view: search.view,
     })),
   };
+}
+
+/**
+ * The grouping the API reads: the default's first root alone on the month, week and day, which only color by it.
+ */
+function toQueriedGrouping(
+  search: CalendarSearch,
+  grouping: readonly EventGroupLevel[],
+): ReturnType<typeof toEventGroupingInput> {
+  const isSectioned =
+    search.view === "timeline" ||
+    search.view === "table" ||
+    isMetricView(search.view);
+
+  return toEventGroupingInput(
+    search.group === undefined && search.view !== undefined && !isSectioned
+      ? grouping.slice(0, 1)
+      : grouping,
+  );
 }

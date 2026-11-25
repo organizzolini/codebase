@@ -70,9 +70,16 @@ export const FLAT_LIST_ID = "flat";
 export const NO_LIMITS: ReadonlyMap<string, number> = new Map();
 
 /**
- * The table header's height in rem.
+ * Each kind of column's width in rem.
  */
-export const HEADER_HEIGHT_REM = 2.5;
+export const COLUMN_WIDTH_REM: Readonly<Record<TableColumn["kind"], number>> = {
+  end: 13,
+  group: 18,
+  name: 20,
+  number: 4,
+  start: 13,
+  tag: 14,
+};
 
 /**
  * A group header's height in rem.
@@ -83,3 +90,18 @@ export const GROUP_ROW_HEIGHT_REM = 2.25;
  * How much of a group's color tints its pill, in percent.
  */
 export const GROUP_TINT_PERCENT = 32;
+
+/**
+ * How near its place a row counts as stuck.
+ */
+export const STICKY_TOLERANCE = 1;
+
+/**
+ * The clip that hides a whole row.
+ */
+export const FULL_CLIP = "inset(100%)";
+
+/**
+ * The row before the first, so no group has a section end.
+ */
+export const NO_ROW = { depth: -1, top: Infinity };

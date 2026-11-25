@@ -9,13 +9,11 @@ import {
   PopoverTrigger,
 } from "@codebase/presentation";
 
+import { useStripLines } from "../../../hooks/use-strip-lines/use-strip-lines";
+import { BUTTON_STRIP_CLASS_NAME } from "../../../hooks/use-strip-lines/use-strip-lines.constants";
+import { isMetricView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
 import { moveListItem } from "../calendar-group-strip/components/chip-menu/chip-menu.utilities";
 import { createEventGroupFields } from "../calendar-group-strip/components/event-group-model/event-group-fields.utilities";
-import {
-  getSelectedColumnIds,
-  restrictGroupFields,
-  restrictSortKeys,
-} from "../calendar-select-strip/calendar-select-strip-scope.utilities";
 import { QueryCascader } from "../query-cascader/query-cascader";
 import { PICK_EVERY_ROW } from "../query-cascader/query-cascader.constants";
 import { keepHiddenValues } from "../query-cascader/query-cascader.utilities";
@@ -26,15 +24,16 @@ import {
   TITLE,
 } from "./calendar-sort-strip.constants";
 import {
-  createSortItems,
+  createViewSortItems,
   flipSortAt,
-  getSortIcon,
-  labelSort,
+  getSortChipIcon,
+  labelSortChip,
   toSorts,
   toSortValue,
 } from "./calendar-sort-strip.utilities";
 import { SortChip } from "./components/sort-chip/sort-chip";
 
+import type { EventMetric } from "../../../graphql/generated/operations";
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
@@ -50,6 +49,10 @@ export interface CalendarSortStripProperties {
    */
   columns?: readonly string[] | undefined;
   facets?: readonly EventFacet[] | undefined;
+  /**
+   * The metrics the metric layouts measure; they can be sorted by any of these.
+   */
+  metrics?: readonly EventMetric[] | undefined;
   onSortChange: (sort: GroupSort[] | undefined) => void;
   sort: readonly GroupSort[] | undefined;
   view: CalendarViewName;
@@ -65,25 +68,20 @@ export function CalendarSortStrip(
     className,
     columns,
     facets = [],
+    metrics,
     onSortChange,
     sort,
     view,
   } = properties;
 
   // 🪝 Hooks
+  const isShown = view === "timeline" || view === "table" || isMetricView(view);
+  const { reference } = useStripLines(isShown);
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
-  const items = useMemo(() => {
-    if (view !== "table") {
-      return createSortItems(fields);
-    }
-
-    const selected = getSelectedColumnIds(columns);
-
-    return createSortItems(
-      restrictGroupFields(fields, selected),
-      restrictSortKeys(selected),
-    );
-  }, [columns, fields, view]);
+  const items = useMemo(
+    () => createViewSortItems(view, { columns, fields, metrics }),
+    [columns, fields, metrics, view],
+  );
 
   // 🏗 Setup
   const sorts = sort === undefined || sort.length === 0 ? DEFAULT_SORTS : sort;
@@ -94,7 +92,7 @@ export function CalendarSortStrip(
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
-  if (view !== "timeline" && view !== "table") {
+  if (!isShown) {
     return null;
   }
 
@@ -105,8 +103,10 @@ export function CalendarSortStrip(
       data-testid="calendar-sort-strip"
     >
       <ButtonGroup
+        ref={reference}
         aria-label={TITLE}
-        className="flex-wrap gap-y-2"
+        className={BUTTON_STRIP_CLASS_NAME}
+        data-strip-buttons=""
       >
         <Popover>
           <PopoverTrigger
@@ -148,8 +148,10 @@ export function CalendarSortStrip(
           <SortChip
             key={`${current.key}|${current.tag ?? ""}`}
             direction={current.direction}
-            icon={getSortIcon(current, fields)}
-            label={isDefault ? DEFAULT_SORT_LABEL : labelSort(current, fields)}
+            icon={getSortChipIcon(current, fields)}
+            label={
+              isDefault ? DEFAULT_SORT_LABEL : labelSortChip(current, fields)
+            }
             onFlip={() => {
               onSortChange(flipSortAt(sorts, index));
             }}

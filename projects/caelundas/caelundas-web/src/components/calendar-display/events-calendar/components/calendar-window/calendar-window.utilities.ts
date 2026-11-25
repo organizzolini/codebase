@@ -204,8 +204,10 @@ function getVisibleDays(
   }
 
   const length = {
+    charts: agendaDays,
     day: 1,
     table: agendaDays,
+    totals: agendaDays,
   }[view];
 
   return { end: shiftDays(day, length), start: day };

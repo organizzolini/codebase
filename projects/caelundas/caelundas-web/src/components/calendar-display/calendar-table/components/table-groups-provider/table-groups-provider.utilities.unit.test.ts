@@ -129,6 +129,149 @@ describe("table-groups-provider utilities", () => {
       ).toBe(0);
     });
 
+    it("toggles on the groups a layout shows when it hands them over", () => {
+      const open = reduceTableGroups(
+        { ...state, expanded: new Set(["a", "b"]) },
+        { base: new Set(), id: "a", type: "toggle" },
+      );
+
+      expect([...open.expanded]).toStrictEqual(["a"]);
+    });
+
+    it("opens or closes the levels over the groups a layout shows when it hands them over", () => {
+      const lazy = { ...state, expanded: new Set(["a", "b"]) };
+      const base = new Set<string>();
+      const open = reduceTableGroups(lazy, {
+        base,
+        levels: [0],
+        type: "expand-all",
+      });
+
+      expect([...open.expanded]).toStrictEqual(["a"]);
+      expect(
+        reduceTableGroups(open, {
+          base: open.expanded,
+          levels: [0],
+          type: "collapse-all",
+        }).expanded.size,
+      ).toBe(0);
+    });
+
+    it("remembers a group opened by name and forgets it once closed", () => {
+      const named = { color: "red", id: "a", label: "Alpha" };
+      const open = reduceTableGroups(state, {
+        id: "a",
+        picked: named,
+        type: "toggle",
+      });
+
+      expect(open.picked).toStrictEqual([named]);
+      expect(
+        reduceTableGroups(open, { id: "a", type: "toggle" }).picked,
+      ).toStrictEqual([]);
+    });
+
+    it("does not remember a group opened without a name", () => {
+      expect(
+        reduceTableGroups(state, { id: "a", type: "toggle" }).picked,
+      ).toStrictEqual([]);
+    });
+
+    it("opens the groups named and remembers the last, once", () => {
+      const named = { color: undefined, id: "b", label: "Beta" };
+      const open = reduceTableGroups(state, {
+        ids: ["a", "b"],
+        picked: named,
+        type: "open",
+      });
+
+      expect([...open.expanded]).toStrictEqual(["a", "b"]);
+      expect(open.picked).toStrictEqual([named]);
+      expect(open.touched).toBe(true);
+      expect(
+        reduceTableGroups(open, {
+          ids: ["a", "b"],
+          picked: named,
+          type: "open",
+        }).picked,
+      ).toStrictEqual([named]);
+    });
+
+    it("opens the groups named over the ones a layout shows", () => {
+      const open = reduceTableGroups(
+        { ...state, expanded: new Set(["x"]) },
+        {
+          base: new Set(),
+          ids: ["a"],
+          picked: { color: undefined, id: "a", label: "Alpha" },
+          type: "open",
+        },
+      );
+
+      expect([...open.expanded]).toStrictEqual(["a"]);
+    });
+
+    it("forgets a remembered group a bulk change closes", () => {
+      const open = reduceTableGroups(state, {
+        ids: ["a", "b"],
+        picked: { color: undefined, id: "b", label: "Beta" },
+        type: "open",
+      });
+
+      expect(
+        reduceTableGroups(open, { levels: [1], type: "collapse-all" }).picked,
+      ).toStrictEqual([]);
+      expect(
+        reduceTableGroups(open, { levels: [0], type: "collapse-all" }).picked,
+      ).toHaveLength(1);
+    });
+
+    it("forgets every remembered group when the data is reset", () => {
+      const open = reduceTableGroups(state, {
+        ids: ["a"],
+        picked: { color: undefined, id: "a", label: "Alpha" },
+        type: "open",
+      });
+
+      expect(
+        reduceTableGroups(open, {
+          firstPath: ["a"],
+          groupIds: ["a", "b"],
+          groupLevels: [0, 1],
+          type: "reset",
+        }).picked,
+      ).toStrictEqual([]);
+    });
+
+    it("is untouched until a group is toggled or opened or closed in bulk, and again after a reset", () => {
+      const levels = [0];
+      const data = {
+        firstPath: ["a"],
+        groupIds: ["a", "b"],
+        groupLevels: [0, 1],
+      };
+
+      expect(state.touched).toBe(false);
+      expect(
+        reduceTableGroups(state, { id: "a", type: "toggle" }).touched,
+      ).toBe(true);
+      expect(
+        reduceTableGroups(state, { levels, type: "expand-all" }).touched,
+      ).toBe(true);
+      expect(
+        reduceTableGroups(state, { levels, type: "collapse-all" }).touched,
+      ).toBe(true);
+
+      const touched = reduceTableGroups(state, { id: "a", type: "toggle" });
+
+      expect(
+        reduceTableGroups(touched, { ...data, type: "register" }).touched,
+      ).toBe(true);
+      expect(
+        reduceTableGroups(touched, { ...data, type: "reset" }).touched,
+      ).toBe(false);
+    });
+
     it("loads a list a page past what shows, by its own id", () => {
       const more = reduceTableGroups(state, {
         listId: "a",
@@ -183,6 +326,76 @@ describe("table-groups-provider utilities", () => {
       expect([...reset.expanded]).toStrictEqual(["a"]);
       expect(reset.pages).toBe(1);
       expect(reset.limits.size).toBe(0);
+    });
+
+    it("keeps which groups are open when a layout registers the groups already known", () => {
+      const first = reduceTableGroups(state, {
+        firstPath: ["a"],
+        groupIds: ["a", "b"],
+        groupLevels: [0, 1],
+        type: "reset",
+      });
+      const opened = reduceTableGroups(first, { id: "b", type: "toggle" });
+
+      expect(
+        reduceTableGroups(opened, {
+          firstPath: ["a"],
+          groupIds: ["a", "b"],
+          groupLevels: [0, 1],
+          type: "register",
+        }),
+      ).toBe(opened);
+    });
+
+    it("opens only the first path of groups it does not know, keeping the rest", () => {
+      const first = reduceTableGroups(state, {
+        firstPath: ["a"],
+        groupIds: ["a", "b"],
+        groupLevels: [0, 1],
+        type: "reset",
+      });
+      const registered = reduceTableGroups(
+        reduceTableGroups(first, { id: "b", type: "toggle" }),
+        {
+          firstPath: ["x"],
+          groupIds: ["x", "y"],
+          groupLevels: [0, 1],
+          type: "register",
+        },
+      );
+
+      expect(registered.groupIds).toStrictEqual(["x", "y"]);
+      expect([...registered.expanded].toSorted()).toStrictEqual([
+        "a",
+        "b",
+        "x",
+      ]);
+    });
+
+    it("keeps a closed group closed when another layout registers and the first comes back", () => {
+      const first = reduceTableGroups(state, {
+        firstPath: ["a"],
+        groupIds: ["a", "b"],
+        groupLevels: [0, 1],
+        type: "reset",
+      });
+      const closed = reduceTableGroups(first, { id: "a", type: "toggle" });
+      const away = reduceTableGroups(closed, {
+        firstPath: ["x"],
+        groupIds: ["x", "y"],
+        groupLevels: [0, 1],
+        type: "register",
+      });
+      const back = reduceTableGroups(away, {
+        firstPath: ["a"],
+        groupIds: ["a", "b"],
+        groupLevels: [0, 1],
+        type: "register",
+      });
+
+      expect(back.groupIds).toStrictEqual(["a", "b"]);
+      expect(back.expanded.has("a")).toBe(false);
+      expect(back.expanded.has("x")).toBe(true);
     });
 
     it("takes the groups of the new data on a reset", () => {

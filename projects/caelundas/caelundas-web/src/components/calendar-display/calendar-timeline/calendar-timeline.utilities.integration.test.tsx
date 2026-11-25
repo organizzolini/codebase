@@ -37,6 +37,9 @@ const BODY_GROUPING = encodeURIComponent(
   JSON.stringify([{ field: "tag:tag-body" }]),
 );
 
+// Grouped by year, which holds every event once, as the markers these tests count are.
+const YEAR_GROUPING = encodeURIComponent(JSON.stringify([{ field: "year" }]));
+
 /**
  * The fixture's events with a run of busy ones from an instant.
  */
@@ -65,7 +68,7 @@ describe("calendar timeline", () => {
     ).toBeDefined();
   });
 
-  // Each leaf group holds its events in a row of its own with no title, so it can collapse.
+  // Each leaf group holds its events in a row of its own with no title, so it can collapse; only the first path of groups starts open.
   it("draws a row per body, counting their events", async () => {
     await renderCalendarRoute(
       `/?view=timeline&date=2026-03-04&group=${BODY_GROUPING}`,
@@ -75,11 +78,8 @@ describe("calendar timeline", () => {
       "Mars1",
       "",
       "Mercury1",
-      "",
       "Sun1",
-      "",
       "Venus2",
-      "",
     ]);
   });
 
@@ -93,14 +93,7 @@ describe("calendar timeline", () => {
       "Mars1",
       "",
       "Venus1",
-      "",
       "No Aspect3",
-      "Mercury1",
-      "",
-      "Sun1",
-      "",
-      "Venus1",
-      "",
     ]);
   });
 
@@ -109,25 +102,72 @@ describe("calendar timeline", () => {
       `/?view=timeline&date=2026-03-04&group=${NESTED_GROUPING}`,
     );
 
-    const simple = await screen.findByRole("button", { name: "Simple" });
+    // The tree pane draws a group's caret toggle and, in its label, a second one: the first is the tree's own.
+    const timeline = await screen.findByTestId("calendar-timeline");
+    const [simple] = await within(
+      timeline.querySelector<HTMLElement>('[data-slot="gantt-tree-pane"]') ??
+        timeline,
+    ).findAllByRole("button", { name: "Simple" });
+
+    if (simple === undefined) {
+      throw new Error("No toggle named Simple");
+    }
 
     fireEvent.click(simple);
 
     await expect(findTimelineRows()).resolves.toStrictEqual([
       "Simple1",
       "No Aspect3",
-      "Mercury1",
-      "",
-      "Sun1",
-      "",
-      "Venus1",
-      "",
     ]);
     expect(simple.getAttribute("aria-expanded")).toBe("false");
 
     fireEvent.click(simple);
 
     await expect(findTimelineRows()).resolves.toContain("Mars1");
+  });
+
+  it("collapses and expands every group of a chip's level from its menu", async () => {
+    await renderCalendarRoute(
+      `/?view=timeline&date=2026-03-04&group=${NESTED_GROUPING}`,
+    );
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Aspect options" }),
+    );
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Expand all" }),
+    );
+
+    await expect(findTimelineRows()).resolves.toContain("No Aspect3");
+
+    await waitFor(async () => {
+      await expect(findTimelineRows()).resolves.toContain("Mars1");
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Aspect options" }));
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Collapse all" }),
+    );
+
+    await waitFor(async () => {
+      await expect(findTimelineRows()).resolves.toStrictEqual([
+        "Simple1",
+        "No Aspect3",
+      ]);
+    });
+  });
+
+  it("leads each group's name with its own symbol", async () => {
+    await renderCalendarRoute(
+      `/?view=timeline&date=2026-03-04&group=${NESTED_GROUPING}`,
+    );
+
+    const timeline = await screen.findByTestId("calendar-timeline");
+    const labels = await within(timeline).findAllByTestId("timeline-row-label");
+
+    expect(
+      labels.every((label) => label.querySelector('[data-testid="tag-lead"]')),
+    ).toBe(true);
   });
 
   it.each([
@@ -175,26 +215,23 @@ describe("calendar timeline", () => {
       "Mars2",
       "",
       "Mercury1",
-      "",
       "Saturn1",
-      "",
       "Sun2",
-      "",
       "Venus2",
-      "",
     ]);
   });
 
   it("draws an instant as a circle and a span as a bar", async () => {
-    await renderCalendarRoute("/?view=timeline&date=2026-03-04");
+    await renderCalendarRoute(
+      `/?view=timeline&date=2026-03-04&group=${YEAR_GROUPING}`,
+    );
 
-    // Under Mars and under Venus.
     const instants = await screen.findAllByRole("button", {
       name: /^Mars Conjunct Venus/u,
     });
     const span = screen.getByRole("button", { name: /^Mercury Retrograde/u });
 
-    expect(instants).toHaveLength(2);
+    expect(instants).toHaveLength(1);
     expect(
       instants[0]?.querySelector('[data-slot="timeline-instant"]'),
     ).not.toBeNull();
@@ -204,7 +241,7 @@ describe("calendar timeline", () => {
 
   it("clusters crowded markers into a count", async () => {
     await renderCalendarRoute(
-      `/?view=timeline&date=2026-03-10&group=${BODY_GROUPING}`,
+      `/?view=timeline&date=2026-03-10&group=${YEAR_GROUPING}`,
       {
         api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
       },
@@ -225,7 +262,7 @@ describe("calendar timeline", () => {
 
   it("lists the events behind a count when it is clicked", async () => {
     await renderCalendarRoute(
-      `/?view=timeline&date=2026-03-10&group=${BODY_GROUPING}`,
+      `/?view=timeline&date=2026-03-10&group=${YEAR_GROUPING}`,
       {
         api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
       },
@@ -254,7 +291,9 @@ describe("calendar timeline", () => {
   });
 
   it("opens one event by its name when its marker is clicked", async () => {
-    await renderCalendarRoute("/?view=timeline&date=2026-03-04");
+    await renderCalendarRoute(
+      `/?view=timeline&date=2026-03-04&group=${YEAR_GROUPING}`,
+    );
 
     fireEvent.click(
       await screen.findByRole("button", { name: /^Mercury Retrograde/u }),
@@ -265,15 +304,14 @@ describe("calendar timeline", () => {
     expect(within(dialog).getAllByText(/Mercury Retrograde/u)).toHaveLength(2);
   });
 
-  it("draws every event in one row when not grouped", async () => {
-    await renderCalendarRoute("/?view=timeline&date=2026-03-04&group=%5B%5D");
+  it("draws every event in one row when grouped by a year alone", async () => {
+    await renderCalendarRoute(
+      `/?view=timeline&date=2026-03-04&group=${YEAR_GROUPING}`,
+    );
 
     // The events that overlap in time are drawn in a second lane beneath,
     // a row with no title.
-    await expect(findTimelineRows()).resolves.toStrictEqual([
-      "All events4",
-      "",
-    ]);
+    await expect(findTimelineRows()).resolves.toStrictEqual(["20264", "", ""]);
   });
 
   it("nests a tag grouped below its root's children under each tag between", async () => {
@@ -295,10 +333,7 @@ describe("calendar timeline", () => {
       "Conjunct1",
       "",
       "Square1",
-      "",
       "No Aspect4",
-      "",
-      "",
     ]);
   });
 });

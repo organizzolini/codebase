@@ -1,3 +1,7 @@
+import { NONE_OPEN } from "../../../hooks/use-metric-layout/use-metric-layout.constants";
+import { isMetricView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
+
+import { COLOR_HINT } from "./calendar-group-strip.constants";
 import { resolveEventGrouping } from "./components/event-group-model/event-group-fields.utilities";
 
 import type { TableGroupsValue } from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.types";
@@ -38,7 +42,7 @@ export function createGroupItems(
 
 // 🌎 Public Functions
 
-/** What a chip's menu offers for its run's groups, at the levels given: collapse all, expand all, in the table only. */
+/** What a chip's menu offers for its run's levels: collapse all, expand all, in the table and timeline. */
 export function getCollapseHandlers(
   view: CalendarViewName,
   groups: TableGroupsValue,
@@ -47,22 +51,39 @@ export function getCollapseHandlers(
   onCollapseAll: (() => void) | undefined;
   onExpandAll: (() => void) | undefined;
 } {
-  const inTable = view === "table";
+  const hasGroups = hasGroupRows(view);
+  // The Charts and Totals show only the top-level groups until a group is toggled, whatever lazy first path the state holds.
+  const base =
+    isMetricView(view) && !groups.state.touched ? NONE_OPEN : undefined;
 
   return {
     onCollapseAll:
-      inTable && groups.canCollapse(levels)
+      hasGroups && groups.canCollapse(levels, base)
         ? () => {
-            groups.collapseAll(levels);
+            groups.collapseAll(levels, base);
           }
         : undefined,
     onExpandAll:
-      inTable && groups.canExpand(levels)
+      hasGroups && groups.canExpand(levels, base)
         ? () => {
-            groups.expandAll(levels);
+            groups.expandAll(levels, base);
           }
         : undefined,
   };
+}
+
+/**
+ * What the strip says where the first group only colors: the month, week and day have no rows to section.
+ */
+export function getGroupHint(view: CalendarViewName): string | undefined {
+  return hasGroupRows(view) ? undefined : COLOR_HINT;
+}
+
+/**
+ * Whether a view has groups of rows to open and close: the table, the timeline and the metric layouts.
+ */
+export function hasGroupRows(view: CalendarViewName): boolean {
+  return view === "table" || view === "timeline" || isMetricView(view);
 }
 
 /** The name a level's chip shows: its field's label, then the tag whose children it groups by when that is not the root's own. */
@@ -134,7 +155,15 @@ function nestNodes(options: readonly GroupNodeOption[]): CascaderNode[] {
   const parents: CascaderNode[] = [];
 
   for (const option of options) {
-    const node = toCascaderNode(option);
+    const events = `${String(option.count)} ${option.count === 1 ? "event" : "events"}`;
+    const node: CascaderNode = {
+      description:
+        option.note === undefined ? events : `${option.note} · ${events}`,
+      ...(option.icon === undefined ? {} : { icon: option.icon }),
+      keywords: [option.name, option.path],
+      label: option.name,
+      value: option.id,
+    };
     const parent = parents[option.depth - 1];
 
     if (parent === undefined) {
@@ -148,20 +177,4 @@ function nestNodes(options: readonly GroupNodeOption[]): CascaderNode[] {
   }
 
   return roots;
-}
-
-/**
- * One tag as a node: its note and count beneath its name, its icon and keywords.
- */
-function toCascaderNode(option: GroupNodeOption): CascaderNode {
-  const events = `${String(option.count)} ${option.count === 1 ? "event" : "events"}`;
-
-  return {
-    description:
-      option.note === undefined ? events : `${option.note} · ${events}`,
-    ...(option.icon === undefined ? {} : { icon: option.icon }),
-    keywords: [option.name, option.path],
-    label: option.name,
-    value: option.id,
-  };
 }

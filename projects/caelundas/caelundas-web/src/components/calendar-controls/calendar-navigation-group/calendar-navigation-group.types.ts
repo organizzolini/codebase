@@ -1,4 +1,14 @@
+import type { CalendarDatePickerProperties } from "../calendar-date-picker/calendar-date-picker";
+
 // 🏷️ Types
+
+/**
+ * What the title's picker takes: range, open state, handlers.
+ */
+export type CalendarDatePickerBinding = Omit<
+  CalendarDatePickerProperties,
+  "className" | "title" | "triggerClassName"
+>;
 
 /**
  * Moves the view and titles its period: calendar or timeline.

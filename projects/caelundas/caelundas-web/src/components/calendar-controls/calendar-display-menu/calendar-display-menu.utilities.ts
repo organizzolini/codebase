@@ -1,11 +1,8 @@
 import {
   Galaxy,
+  GitCompareArrows,
   Layers,
-  LayoutDashboard,
   Palette,
-  Ruler,
-  Shapes,
-  Smile,
   Sparkles,
 } from "lucide-react";
 import { createElement } from "react";
@@ -15,21 +12,13 @@ import {
   toEclipticChange,
   toVisibilityChange,
 } from "../../../hooks/use-night-sky/hooks/use-night-sky-controls/night-sky-controls.utilities";
-import {
-  CALENDAR_VIEW_LABELS,
-  CALENDAR_VIEWS,
-  TIMELINE_SCALE_LABELS,
-  TIMELINE_SCALES,
-} from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
-import { parseCalendarView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
+import { isMetricView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
 
 import {
   CONSTELLATION_CHOICES,
-  LAYOUT_BRANCH,
-  SCALE_BRANCH,
-  SCALE_ICONS,
+  DISPLAY_DESCRIPTIONS,
+  SYMBOL_CHOICES,
   SYMBOLS_BRANCH,
-  VIEW_ICONS,
 } from "./calendar-display-menu.constants";
 import {
   applySkyLeaf,
@@ -68,18 +57,14 @@ export function applyDisplayLeaf(
   const group = colon === -1 ? leaf : leaf.slice(0, colon);
   const value = colon === -1 ? "" : leaf.slice(colon + 1);
   const actions: Readonly<Record<string, () => void>> = {
-    calendar: () => {
-      const view = parseCalendarView(value);
-
-      if (view !== undefined) {
-        handlers.handleViewChange(view);
-      }
-    },
     clusters: () => {
       handlers.handleClustersChange(!choices.clusters);
     },
     colors: () => {
       handlers.handleColorsChange(!choices.colors);
+    },
+    compare: () => {
+      handlers.handleCompareChange(!choices.compare);
     },
     constellation: () => {
       applySkyLeaf(group, value, skyContext);
@@ -91,13 +76,6 @@ export function applyDisplayLeaf(
 
       if (choice !== undefined) {
         onSkyChange(toConstellationsChange(choice.words));
-      }
-    },
-    scale: () => {
-      const scale = TIMELINE_SCALES.find((candidate) => candidate === value);
-
-      if (scale !== undefined) {
-        handlers.handleScaleChange(scale);
       }
     },
     setting: () => {
@@ -123,60 +101,22 @@ export function applyDisplayLeaf(
 // 🌎 Public Functions
 
 /**
- * The nested choices: each part of how the calendar looks, with its own icon; the scale only where the timeline has one.
+ * The nested choices: each part of how the calendar looks, with its own icon.
  */
 export function createDisplayItems(
   choices: Readonly<{
     listing: readonly ConstellationListing[];
-    view: CalendarViewName;
+    view?: CalendarViewName;
   }>,
 ): CascaderNode[] {
-  const { view } = choices;
-  const scale: CascaderNode[] =
-    view === "timeline"
-      ? [
-          {
-            children: TIMELINE_SCALES.map((value) => ({
-              icon: toIcon(SCALE_ICONS[value]),
-              label: TIMELINE_SCALE_LABELS[value],
-              radio: true,
-              value: `scale:${value}`,
-            })),
-            icon: toIcon(Ruler),
-            label: "Scale",
-            value: SCALE_BRANCH,
-          },
-        ]
-      : [];
-
-  return [
+  return describeItems([
     {
-      children: CALENDAR_VIEWS.map((value) => ({
-        icon: toIcon(VIEW_ICONS[value]),
-        label: CALENDAR_VIEW_LABELS[value],
+      children: (["glyphs", "emojis"] as const).map((symbols) => ({
+        icon: toIcon(SYMBOL_CHOICES[symbols].icon),
+        label: SYMBOL_CHOICES[symbols].label,
         radio: true,
-        value: `calendar:${value}`,
+        value: `symbols:${symbols}`,
       })),
-      icon: toIcon(LayoutDashboard),
-      label: "Layout",
-      value: LAYOUT_BRANCH,
-    },
-    ...scale,
-    {
-      children: [
-        {
-          icon: toIcon(Shapes),
-          label: "Glyphs",
-          radio: true,
-          value: "symbols:glyphs",
-        },
-        {
-          icon: toIcon(Smile),
-          label: "Emojis",
-          radio: true,
-          value: "symbols:emojis",
-        },
-      ],
       icon: toIcon(Sparkles),
       label: "Symbols",
       value: SYMBOLS_BRANCH,
@@ -187,18 +127,26 @@ export function createDisplayItems(
       value: "colors",
     },
     {
-      description: "Group similar events",
       icon: toIcon(Layers),
       label: "Crowded days",
       value: "clusters",
     },
+    ...(isMetricView(choices.view)
+      ? [
+          {
+            icon: toIcon(GitCompareArrows),
+            label: "Compare to previous period",
+            value: "compare",
+          },
+        ]
+      : []),
     {
       children: createSkyItems(choices.listing),
       icon: toIcon(Galaxy),
-      label: "Sky",
+      label: "Skyfield",
       value: "branch:sky",
     },
-  ];
+  ]);
 }
 
 /**
@@ -226,18 +174,45 @@ export function findToggledLeaf(
 }
 
 /**
+ * Whether a row can be picked: every one but the branches that only group.
+ */
+export function isDisplayChoice(node: Readonly<CascaderNode>): boolean {
+  return !node.value.startsWith("branch:");
+}
+
+/**
  * What to tick in the list for the choices the link makes.
  */
 export function toDisplayValue(choices: DisplayChoices): string[] {
   return [
-    `calendar:${choices.view}`,
-    ...(choices.view === "timeline" ? [`scale:${choices.scale}`] : []),
     `symbols:${choices.symbols}`,
     ...(choices.clusters ? ["clusters"] : []),
     ...(choices.colors ? ["colors"] : []),
+    ...(choices.compare && isMetricView(choices.view) ? ["compare"] : []),
     `constellations:${describeConstellations(choices.sky.constellations)}`,
     ...toSkyValue(choices.sky, choices.listing),
   ];
+}
+
+/**
+ * The nodes with a description beneath each, from its value unless it has one.
+ */
+function describeItems(nodes: readonly CascaderNode[]): CascaderNode[] {
+  const described: CascaderNode[] = [];
+
+  for (const node of nodes) {
+    const description = node.description ?? DISPLAY_DESCRIPTIONS[node.value];
+
+    described.push({
+      ...node,
+      ...(description === undefined ? {} : { description }),
+      ...(node.children === undefined
+        ? {}
+        : { children: describeItems(node.children) }),
+    });
+  }
+
+  return described;
 }
 
 /**

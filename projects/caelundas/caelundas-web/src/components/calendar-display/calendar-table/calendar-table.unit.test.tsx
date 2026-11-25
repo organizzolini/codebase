@@ -91,6 +91,29 @@ describe(CalendarTable, () => {
     );
   });
 
+  it("keeps the header out of the scroller, in step with it", () => {
+    renderTable();
+
+    const head = screen.getByTestId("table-head-strip");
+    const body = screen.getByTestId("calendar-table-body");
+
+    expect(head.contains(screen.getByTestId("table-column-heads"))).toBe(true);
+    expect(body.contains(screen.getByTestId("table-column-heads"))).toBe(false);
+    expect(head.querySelectorAll("th[style]")).toHaveLength(4);
+    expect(body.querySelectorAll("th[style]")).toHaveLength(4);
+
+    for (const table of [head, body]) {
+      const element = table.querySelector("table");
+
+      expect(element?.style.width).toMatch(/^max\(100%, \d+rem\)$/u);
+    }
+
+    body.scrollLeft = 24;
+    fireEvent.scroll(body);
+
+    expect(head.scrollLeft).toBe(24);
+  });
+
   it("heads the default columns and lists a row for each event", () => {
     renderTable();
 

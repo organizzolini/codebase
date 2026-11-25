@@ -1,5 +1,10 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
+import {
+  readServedApi,
+  serveCalendarApi,
+} from "../../../../testing/calendar-api";
 
 import { EventsCalendar } from "./events-calendar";
 
@@ -62,6 +67,39 @@ describe(EventsCalendar, () => {
 
     expect(screen.getByTestId("calendar-toolbar")).toBe(toolbar);
   });
+
+  it.each([
+    ["charts", "calendar-charts"],
+    ["totals", "calendar-totals"],
+  ] as const)(
+    "draws the %s layout, and keeps the toolbar, over the table's days",
+    async (view, testId) => {
+      serveCalendarApi();
+      render(
+        <EventsCalendar
+          anchor={new Date("2026-03-01T12:00:00.000Z")}
+          events={[]}
+          facets={[]}
+          grouping={[{ field: "tag:body" }]}
+          metrics={["EVENTS"]}
+          onDateChange={() => {}}
+          timeZone="America/New_York"
+          view={view}
+          compare
+        />,
+      );
+
+      expect(screen.getByTestId(testId)).toBeDefined();
+      expect(screen.getByTestId("calendar-toolbar")).toBeDefined();
+
+      await waitFor(() => {
+        expect(readServedApi().requests.metrics[0]).toMatchObject({
+          compareToPrevious: true,
+          metrics: ["EVENTS"],
+        });
+      });
+    },
+  );
 
   it.each(["month", "timeline"] as const)(
     "moves the %s view from the toolbar's buttons",

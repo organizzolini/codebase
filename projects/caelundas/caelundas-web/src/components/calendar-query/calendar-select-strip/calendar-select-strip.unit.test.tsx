@@ -63,6 +63,22 @@ describe(CalendarSelectStrip, () => {
     expect(screen.queryByTestId("calendar-select-strip")).toBeNull();
   });
 
+  it("draws nothing in the Charts and Totals, which list metrics instead", () => {
+    for (const view of ["charts", "totals"] as const) {
+      const { unmount } = render(
+        <CalendarSelectStrip
+          columns={undefined}
+          onColumnsChange={() => {}}
+          view={view}
+        />,
+      );
+
+      expect(screen.queryByTestId("calendar-select-strip")).toBeNull();
+
+      unmount();
+    }
+  });
+
   it("shows a chip for each default column while none are picked", () => {
     renderStrip([]);
 

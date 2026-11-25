@@ -8,6 +8,7 @@ import {
 
 import { CalendarGroupStrip } from "./calendar-group-strip";
 
+import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { EventGroupLevel } from "./components/event-group-model/event-groups.types";
 
 const FACETS = [
@@ -32,6 +33,7 @@ const TYPE: EventGroupLevel = { field: "tag:type" };
 function renderStrip(
   grouping: EventGroupLevel[] = [],
   isDefaultGrouping = false,
+  view: CalendarViewName = "timeline",
 ): {
   onGroupingChange: ReturnType<
     typeof vi.fn<(grouping: EventGroupLevel[]) => void>
@@ -45,7 +47,7 @@ function renderStrip(
       grouping={grouping}
       isDefaultGrouping={isDefaultGrouping}
       onGroupingChange={onGroupingChange}
-      view="timeline"
+      view={view}
     />,
   );
 
@@ -56,6 +58,16 @@ describe(CalendarGroupStrip, () => {
   // The list scrolls its active item into view, which jsdom cannot do.
   beforeAll(() => {
     globalThis.HTMLElement.prototype.scrollIntoView = vi.fn<() => void>();
+  });
+
+  it("flags each of its buttons as an item of one wrapping strip", () => {
+    renderStrip();
+
+    const strip = screen.getByRole("group", { name: "Group" });
+
+    expect(Object.hasOwn(strip.dataset, "stripButtons")).toBe(true);
+    expect(strip.className).toContain("flex-wrap");
+    expect(strip.className).toContain("[&>[data-line-start]]:border-l!");
   });
 
   it("applies its class name", () => {
@@ -82,13 +94,29 @@ describe(CalendarGroupStrip, () => {
     );
   });
 
-  it("removes the Tags chip into no grouping at all", async () => {
+  it.each(["month", "week", "day", "table", "timeline"] as const)(
+    "draws the one Tags chip on the %s too",
+    (view) => {
+      renderStrip([], true, view);
+
+      expect(screen.getByRole("group", { name: "Group" }).textContent).toBe(
+        "GroupTags",
+      );
+    },
+  );
+
+  it("cannot remove the Tags chip, so some grouping always stays", async () => {
     const { onGroupingChange } = renderStrip([], true);
 
     fireEvent.click(screen.getByRole("button", { name: "Tags options" }));
     fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
-    expect(onGroupingChange).toHaveBeenCalledWith([]);
+    expect(
+      screen
+        .getByRole("menuitem", { name: "Remove" })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
+    expect(onGroupingChange).not.toHaveBeenCalled();
   });
 
   it("draws one chip per level, in order, joined to the Group button", () => {
@@ -166,46 +194,114 @@ describe(CalendarGroupStrip, () => {
     },
   );
 
-  it("puts Collapse all and Expand all in each chip's menu in the table, as the groups allow", async () => {
-    const collapseAll = vi.fn();
-    const expandAll = vi.fn();
+  it.each(["table", "timeline"] as const)(
+    "puts Collapse all and Expand all in each chip's menu in the %s, as the groups allow",
+    async (view) => {
+      const collapseAll = vi.fn();
+      const expandAll = vi.fn();
 
+      render(
+        <TableGroupsContext
+          value={{
+            canCollapse: () => true,
+            canExpand: () => true,
+            collapseAll,
+            dispatch: () => {},
+            expandAll,
+            provided: true,
+            state: INITIAL_TABLE_GROUPS,
+          }}
+        >
+          <CalendarGroupStrip
+            facets={FACETS}
+            grouping={[TYPE]}
+            onGroupingChange={() => {}}
+            view={view}
+          />
+        </TableGroupsContext>,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+      fireEvent.click(
+        await screen.findByRole("menuitem", { name: "Collapse all" }),
+      );
+
+      expect(collapseAll).toHaveBeenCalledWith([0], undefined);
+
+      fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+      fireEvent.click(
+        await screen.findByRole("menuitem", { name: "Expand all" }),
+      );
+
+      expect(expandAll).toHaveBeenCalledWith([0], undefined);
+    },
+  );
+
+  it("reads the Charts' open groups as none until one is toggled, so its chips offer only Expand all", async () => {
     render(
       <TableGroupsContext
         value={{
-          canCollapse: () => true,
+          // The state holds the table's lazy first path, which the chart does not draw.
+          canCollapse: (_levels, base) => (base ?? new Set(["a"])).size > 0,
           canExpand: () => true,
-          collapseAll,
+          collapseAll: () => {},
           dispatch: () => {},
-          expandAll,
+          expandAll: () => {},
           provided: true,
-          state: INITIAL_TABLE_GROUPS,
+          state: { ...INITIAL_TABLE_GROUPS, expanded: new Set(["a"]) },
         }}
       >
         <CalendarGroupStrip
           facets={FACETS}
           grouping={[TYPE]}
           onGroupingChange={() => {}}
-          view="table"
+          view="charts"
         />
       </TableGroupsContext>,
     );
     fireEvent.click(screen.getByRole("button", { name: "Type options" }));
-    fireEvent.click(
-      await screen.findByRole("menuitem", { name: "Collapse all" }),
-    );
 
-    expect(collapseAll).toHaveBeenCalledWith([0]);
+    await screen.findByRole("menuitem", { name: "Expand all" });
 
-    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
-    fireEvent.click(
-      await screen.findByRole("menuitem", { name: "Expand all" }),
-    );
-
-    expect(expandAll).toHaveBeenCalledWith([0]);
+    expect(screen.queryByRole("menuitem", { name: "Collapse all" })).toBeNull();
   });
 
-  it("leaves them out of the menu outside the table", async () => {
+  it("lists the groups opened by name after the levels, closing one from its chip", async () => {
+    const dispatch = vi.fn();
+
+    render(
+      <TableGroupsContext
+        value={{
+          canCollapse: () => false,
+          canExpand: () => false,
+          collapseAll: () => {},
+          dispatch,
+          expandAll: () => {},
+          provided: true,
+          state: {
+            ...INITIAL_TABLE_GROUPS,
+            groupIds: ["/0:alpha"],
+            picked: [{ color: "red", id: "/0:alpha", label: "Alpha" }],
+          },
+        }}
+      >
+        <CalendarGroupStrip
+          facets={FACETS}
+          grouping={[TYPE]}
+          onGroupingChange={() => {}}
+          view="charts"
+        />
+      </TableGroupsContext>,
+    );
+
+    expect(screen.getByText("Alpha")).toBeDefined();
+
+    fireEvent.click(screen.getByRole("button", { name: "Alpha options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
+
+    expect(dispatch).toHaveBeenCalledWith({ id: "/0:alpha", type: "toggle" });
+  });
+
+  it("leaves them out of the menu when no groups are registered", async () => {
     renderStrip([TYPE]);
     fireEvent.click(screen.getByRole("button", { name: "Type options" }));
 

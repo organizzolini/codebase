@@ -1,3 +1,7 @@
+import {
+  ALL_TAGS_FIELD,
+  DEFAULT_GROUP_LABEL,
+} from "../event-group-model/event-group-fields.constants";
 import { formatDerivedKey } from "../event-group-model/event-group-labels.utilities";
 import { compareNatural } from "../event-group-model/event-group-order.utilities";
 import { DERIVED_GROUP_IDS } from "../event-group-model/event-groups.constants";
@@ -51,12 +55,11 @@ export function buildEventGroups(
       if (context.only === undefined || parent.key === context.only) {
         // Ordered here rather than where the groups are made, which would
         // put the comparison one frame deeper.
-        const nodes = splitParent(parent, level, context)
-          .toSorted((left, right) => compareNatural(left.order, right.order))
-          .map(({ node }) => node);
+        const split = splitParent(parent, level, context).toSorted(
+          (left, right) => compareNatural(left.order, right.order),
+        );
 
-        parent.children.push(...nodes);
-        next.push(...nodes);
+        promoteGroups(split, parent, next);
       } else {
         next.push(parent);
       }
@@ -106,13 +109,13 @@ export function sortEventGroups(
  */
 function collectGroups(
   events: readonly CalendarEventRecord[],
-  level: number,
+  keyLists: readonly (readonly CalendarEventGroupKey[])[],
 ): GroupBucket[] {
   const buckets = new Map<string, GroupBucket>();
   const lacking: CalendarEventRecord[] = [];
 
-  for (const event of events) {
-    const keys = event.groups[level] ?? [];
+  for (const [index, event] of events.entries()) {
+    const keys = keyLists[index] ?? [];
 
     // An event with no key at the level goes under its "No …" group.
     if (keys.length === 0) {
@@ -167,8 +170,14 @@ function compareBy(
     return sign * compareNatural(left.label, right.label);
   }
 
-  const measure = (node: EventGroupNode): number =>
-    sort.key === "count" ? node.count : (node.events[0]?.start.getTime() ?? 0);
+  // A metric orders the metric layouts' groups; events have none to measure.
+  const measure = (node: EventGroupNode): number => {
+    if (sort.key === "count") {
+      return node.count;
+    }
+
+    return sort.key === "first" ? (node.events[0]?.start.getTime() ?? 0) : 0;
+  };
 
   return sign * (measure(left) - measure(right));
 }
@@ -213,25 +222,87 @@ function describeLevel(
 ): LevelContext {
   const field = fields.find((candidate) => candidate.id === current.field);
   const parent = field?.nodes.find((node) => node.id === current.parent);
-  const refines = previous?.field === current.field && parent !== undefined;
 
   return {
     field: current.field,
-    fieldLabel: nameLevel(field, parent, current.field),
-    only: refines ? current.parent : undefined,
-    skip: parent?.depth ?? 0,
+    fieldLabel: nameLevel(field, parent, current),
+    only: onlyLevel(previous, current, parent),
+    scoped: current.field === ALL_TAGS_FIELD && current.depth !== undefined,
+    skip: skipLevel(parent, current),
   };
 }
 
 /**
- * The name a level's "No …" group uses: its parent tag's, or its field's, or the field's id when the data lacks it.
+ * The keys each event has at a level, kept to those beneath a tag path when given one.
+ */
+function listLevelKeys(
+  events: readonly CalendarEventRecord[],
+  level: number,
+  within: string | undefined,
+): (readonly CalendarEventGroupKey[])[] {
+  const lists: (readonly CalendarEventGroupKey[])[] = [];
+
+  // Loops rather than filter callbacks keep the call stacks shallow.
+  for (const event of events) {
+    const keys: CalendarEventGroupKey[] = [];
+
+    for (const key of event.groups[level] ?? []) {
+      if (within === undefined || key.path?.startsWith(within) === true) {
+        keys.push(key);
+      }
+    }
+
+    lists.push(keys);
+  }
+
+  return lists;
+}
+
+/**
+ * The name a level's "No …" group uses: its parent tag's, its field's, or the field's id; the default's over every root's tags.
  */
 function nameLevel(
   field: EventGroupField | undefined,
   parent: GroupNodeOption | undefined,
-  fallback: string,
+  current: EventGroupLevel,
 ): string {
-  return parent?.name ?? field?.label ?? fallback;
+  return current.field === ALL_TAGS_FIELD
+    ? DEFAULT_GROUP_LABEL
+    : (parent?.name ?? field?.label ?? current.field);
+}
+
+/**
+ * The tag id of the only group a level splits: its parent tag, when it refines the level before it.
+ */
+function onlyLevel(
+  previous: EventGroupLevel | undefined,
+  current: EventGroupLevel,
+  parent: GroupNodeOption | undefined,
+): string | undefined {
+  return previous?.field === current.field && parent !== undefined
+    ? current.parent
+    : undefined;
+}
+
+/**
+ * Adds the groups of a split to their parent and to the parents of the next level.
+ */
+function promoteGroups(
+  split: readonly OrderedGroupNode[],
+  parent: GroupParent,
+  next: GroupParent[],
+): void {
+  for (const { node, tagPath } of split) {
+    parent.children.push(node);
+    next.push({
+      children: node.children,
+      events: node.events,
+      id: node.id,
+      key: node.key,
+      label: node.label,
+      tagPath,
+    });
+  }
 }
 
 /**
@@ -261,6 +332,45 @@ function rankGroup(
 }
 
 /**
+ * What a level over every root's tags reads of a parent: its tag path and "No …" name; none without a tag.
+ */
+function scopeLevel(
+  parent: GroupParent,
+  context: LevelContext,
+): null | { named: LevelContext; within: string | undefined } {
+  if (context.scoped !== true) {
+    return { named: context, within: undefined };
+  }
+
+  if (parent.tagPath === null) {
+    return null;
+  }
+
+  return {
+    named:
+      parent.label === undefined
+        ? context
+        : { ...context, fieldLabel: parent.label },
+    within:
+      parent.tagPath === undefined
+        ? undefined
+        : `${parent.tagPath}${PATH_SEPARATOR}`,
+  };
+}
+
+/**
+ * How many names of a tag's path, from beneath the root, the level's parent already holds; the roots keep all theirs.
+ */
+function skipLevel(
+  parent: GroupNodeOption | undefined,
+  current: EventGroupLevel,
+): number {
+  return current.field === ALL_TAGS_FIELD
+    ? (current.depth ?? 0) - 1
+    : (parent?.depth ?? 0);
+}
+
+/**
  * Splits one parent's events into the groups of a level, each with the text it is ordered by, in no order yet.
  */
 function splitParent(
@@ -268,7 +378,22 @@ function splitParent(
   level: number,
   context: LevelContext,
 ): OrderedGroupNode[] {
-  const buckets = collectGroups(parent.events, level);
+  const scope = scopeLevel(parent, context);
+
+  if (scope === null) {
+    return [];
+  }
+
+  const buckets = collectGroups(
+    parent.events,
+    listLevelKeys(parent.events, level, scope.within),
+  );
+
+  // A group none of whose events have a tag beneath its own stays whole.
+  if (context.scoped === true && buckets[0]?.groupKey === null) {
+    return [];
+  }
+
   const descriptions: GroupDescription[] = [];
 
   // Described here rather than by the node builder, so describing a key
@@ -277,7 +402,7 @@ function splitParent(
   for (const bucket of buckets) {
     const heading = formatDerivedKey(context.field, bucket.groupKey?.key ?? "");
 
-    descriptions.push(describeGroup(bucket.groupKey, context, heading));
+    descriptions.push(describeGroup(bucket.groupKey, scope.named, heading));
   }
 
   return toGroupNodes(parent, { buckets, descriptions }, level);
@@ -320,6 +445,7 @@ function toGroupNodes(
         path: description.path,
       },
       order: description.order,
+      tagPath: bucket.groupKey?.path ?? null,
     });
   }
 

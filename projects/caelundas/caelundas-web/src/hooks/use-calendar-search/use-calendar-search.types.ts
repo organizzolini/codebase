@@ -1,3 +1,4 @@
+import type { DateRangeValue } from "../../components/calendar-controls/calendar-date-picker/calendar-date-picker.types";
 import type {
   CalendarViewName,
   TimelineScale,
@@ -6,6 +7,7 @@ import type { CalendarSymbols } from "../../components/calendar-events/event-gly
 import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 import type { EventGrouping } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
+import type { EventMetric } from "../../graphql/generated/operations";
 import type { CalendarSearch } from "./calendar-search.types";
 
 // 🏷️ Types
@@ -17,9 +19,12 @@ export interface UseCalendarSearchResult {
   handleClustersChange: (enabled: boolean) => void;
   handleColorsChange: (enabled: boolean) => void;
   handleColumnsChange: (columns: readonly string[] | undefined) => void;
+  handleCompareChange: (enabled: boolean) => void;
   handleDateChange: (date: Date) => void;
   handleFilterChange: (filter: EventFilterQuery) => void;
   handleGroupingChange: (grouping: EventGrouping) => void;
+  handleMetricsChange: (metrics: readonly EventMetric[] | undefined) => void;
+  handleRangeChange: (view: CalendarViewName, range: DateRangeValue) => void;
   handleScaleChange: (scale: TimelineScale) => void;
   handleSortChange: (sort: readonly GroupSort[] | undefined) => void;
   handleSymbolsChange: (symbols: CalendarSymbols) => void;

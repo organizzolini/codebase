@@ -38,6 +38,9 @@ export const SORT_OPTIONS = [
 /** Marks a tag sort in the list. */
 export const TAG_SORT_PREFIX = "by:";
 
+/** Marks a metric sort in the list. */
+export const METRIC_SORT_PREFIX = "metric:";
+
 /** The default sort: each group's tag order, first to last. */
 export const DEFAULT_SORTS: readonly GroupSort[] = [
   { direction: "asc", key: "order" },

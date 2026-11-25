@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 
 import { getDefaultFilter } from "../../../hooks/use-filter-query/use-filter-query.utilities";
+import { resolveMetrics } from "../../calendar-display/calendar-metrics/calendar-metrics.utilities";
+import { isMetricView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
 import { CalendarFilters } from "../calendar-filters/calendar-filters";
 import { createEventFilterFields } from "../calendar-filters/components/event-filter-model/event-filter-fields.utilities";
 import { toLinkedEventFilter } from "../calendar-filters/components/event-filter-model/event-filter-tree.utilities";
@@ -11,9 +13,11 @@ import {
   getSelectedColumnIds,
   restrictFilterFields,
 } from "../calendar-select-strip/calendar-select-strip-scope.utilities";
+import { MetricSelectStrip } from "../calendar-select-strip/components/metric-select-strip/metric-select-strip";
 import { CalendarSortStrip } from "../calendar-sort-strip/calendar-sort-strip";
 import { CalendarViewStrip } from "../calendar-view-strip/calendar-view-strip";
 
+import type { EventMetric } from "../../../graphql/generated/operations";
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { EventFilterQuery } from "../calendar-filters/components/event-filter-model/event-filters.types";
@@ -27,19 +31,30 @@ import type { ReactNode } from "react";
 /** Facets, view, grouping, filter, their change handlers, and presets. */
 export interface CalendarQueryControlsProperties {
   className?: string;
-  /**
-   * Drawn after View, before Select: the Display menu.
-   */
   columns?: readonly string[] | undefined;
+  /**
+   * Drawn after Layout, before View: the Display menu.
+   */
   display?: ReactNode;
   facets: readonly EventFacet[];
   filter: EventFilterQuery | undefined;
   grouping: readonly EventGroupLevel[];
   /** Whether the link names no grouping. */
   isDefaultGrouping?: boolean | undefined;
+  /**
+   * Drawn first, before Display: the Layout menu.
+   */
+  layout?: ReactNode;
+  /**
+   * The metrics the Charts and Totals layouts measure; their defaults when absent.
+   */
+  metrics?: readonly EventMetric[] | undefined;
   onColumnsChange: (columns: readonly string[] | undefined) => void;
   onFilterChange: (filter: EventFilterQuery) => void;
   onGroupingChange: (grouping: EventGroupLevel[]) => void;
+  onMetricsChange?:
+    | ((metrics: readonly EventMetric[] | undefined) => void)
+    | undefined;
   onSortChange: (sort: readonly GroupSort[] | undefined) => void;
   presets: readonly ResolvedPreset[];
   sort: readonly GroupSort[] | undefined;
@@ -48,7 +63,7 @@ export interface CalendarQueryControlsProperties {
 
 // 🧩 Component
 
-/** Renders what asks the calendar a question, in a row: view, look, grouping, sorting, then filter. */
+/** Renders what asks the calendar a question, in a row: layout, look, view, paging, selecting, grouping, sorting, then filter. */
 export function CalendarQueryControls(
   properties: Readonly<CalendarQueryControlsProperties>,
 ): ReactNode {
@@ -60,9 +75,12 @@ export function CalendarQueryControls(
     filter,
     grouping,
     isDefaultGrouping,
+    layout,
+    metrics,
     onColumnsChange,
     onFilterChange,
     onGroupingChange,
+    onMetricsChange,
     onSortChange,
     presets,
     sort,
@@ -96,6 +114,8 @@ export function CalendarQueryControls(
       className={className}
       data-testid="calendar-query-controls"
     >
+      {layout}
+      {display}
       <CalendarViewStrip
         className="contents"
         onSelect={(next) => {
@@ -104,18 +124,26 @@ export function CalendarQueryControls(
         presets={presets}
         query={filter ?? getDefaultFilter(presets)}
       />
-      {display}
-      <CalendarSelectStrip
-        className="contents"
-        columns={columns}
-        facets={facets}
-        onColumnsChange={onColumnsChange}
-        view={view}
-      />
       <CalendarPageStrip
         className="contents"
         view={view}
       />
+      {isMetricView(view) ? (
+        <MetricSelectStrip
+          className="contents"
+          metrics={metrics ?? resolveMetrics(view)}
+          onMetricsChange={onMetricsChange}
+          view={view}
+        />
+      ) : (
+        <CalendarSelectStrip
+          className="contents"
+          columns={columns}
+          facets={facets}
+          onColumnsChange={onColumnsChange}
+          view={view}
+        />
+      )}
       <CalendarGroupStrip
         className="contents"
         facets={facets}
@@ -128,6 +156,7 @@ export function CalendarQueryControls(
         className="contents"
         columns={columns}
         facets={facets}
+        metrics={metrics}
         onSortChange={onSortChange}
         sort={sort}
         view={view}

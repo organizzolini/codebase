@@ -159,26 +159,26 @@ derived work under the same license, so keep this credit wherever it is
 documented. The figures are d3-celestial's (BSD-3-Clause, Olaf Frohn,
 <https://github.com/ofrohn/d3-celestial>). The 88 constellations the menu
 lists are a constant in `night-sky.constants.ts`. This app owns the link:
-`readNightSkyOverrides` reads `sky.*` keys, reading a color like `sky.top`,
+`readNightSkyOverrides` reads `skyfield.*` keys, reading a color like `skyfield.top`,
 clamping the opacity to 0-1 and the width to 0-10 pixels, and falling back to
 the `DEFAULT_OPTIONS` default with one console warning for a value it cannot
 read, as for an unknown constellation name; `toNightSkyInput` turns them into
-the query's input. `sky.constellations` (the zodiac when absent, none for `none`
-or empty) selects the figures, and `sky.ecliptic` with its three style keys
+the query's input. `skyfield.constellations` (the zodiac when absent, none for `none`
+or empty) selects the figures, and `skyfield.ecliptic` with its three style keys
 the ecliptic, both drawn by the API. `src/components/calendar-appearance/night-sky-menu/`
-is the toolbar's Sky menu, with no headings: each control's label says what
-it sets ("Sky top color", "Star drift speed", "Ecliptic line width"), and
+is the toolbar's Skyfield menu, with no headings: each control's label says what
+it sets ("Skyfield top color", "Star drift speed", "Ecliptic line width"), and
 `NightSkySection` names its group with a hidden legend. Four columns on a wide
 screen, one on a phone: the sky and stars, the angles, the constellation
 lines over the ecliptic, then the constellation tree. The tree's column has no visible
 heading, its folder checkboxes picking all or none; it takes
 no height of its own on a wide screen, so the other columns set the panel's
-height and the tree scrolls inside it. An absent `sky.constellations` is the
+height and the tree scrolls inside it. An absent `skyfield.constellations` is the
 zodiac everywhere, the tree included: `useNightSkySettings` reads the same keys through
 `readNightSkyOverrides` and writes them with `navigate({ replace: true })`, the
 `night-sky-menu.utilities.ts` mappings remove a key set back to its default
 and the Default button beside the sky's switch removes them all but
-`sky.debug`, the colors are the
+`skyfield.debug`, the colors are the
 ReUI color picker, and the panel keeps arrow and letter keys from the menu
 around it so a slider keeps focus.
 
@@ -262,7 +262,7 @@ test tiers.
 ## Layout
 
 The page is the calendar across the whole viewport under a toolbar of two
-rows: the View, Color and Sky menus, with today, previous and next and the
+rows: the View, Color and Skyfield menus, with today, previous and next and the
 period's title at the right; then the Filters button with a count of the
 finished rules, Clear and the active filters as chips, with the view selector
 at the right. The menus' triggers carry an icon and no arrow. Times render in the zone the dataset's events carry.
@@ -274,6 +274,20 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   month above, read synchronously so the first render is already right. A link
   from before the agenda and the three-day view were cut still opens: `view=agenda`
   as the table, `view=three-day` as the week (`RETIRED_VIEWS`).
+- Charts and Totals measure the events of the table's days (`date` and `days`,
+  the same window and the same filter and grouping) instead of listing them.
+  `useEventMetrics` reads the API's `eventMetrics` query through `queryApi`,
+  keyed by its input and keeping the last answer while the next loads;
+  `useMetricLayout` adds the sorts, navigation by days and the table's shared
+  open groups (`TableGroupsContext`, which both layouts register their group ids
+  in, so open groups carry across Table, Charts and Totals), and
+  `useMetricGroupRows` flattens the tree to the groups shown now. The `metrics`
+  search parameter lists `EventMetric` names (unknown ones dropped; each layout's
+  `DEFAULT_METRICS` when absent) and `compare` asks for the period before. The
+  catalog of labels, notes, icons, formats and `formatMetricValue` and
+  `formatMetricChange` is in `src/components/calendar-display/calendar-metrics/`.
+  Their Select strip lists metrics, there is no Page strip, and Sort may order
+  by a metric (`key: "metric"`).
 - Three widths are told apart, in `src/components/calendar-display/events-calendar/components/calendar-window/calendar-viewport.utilities.ts`: a
   phone below 768 pixels, a tablet from 768, and a desktop from 1024. Below a
   desktop the view selector is a menu, as five buttons do not fit beside the
@@ -313,9 +327,13 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   planets is listed under both, and a group counts its distinct events. A
   tag above the chosen depth stands for itself, and events with no key at a
   level, or under none of the tags ticked, gather in a last "No …" group.
-- Without a `group` search parameter, the table groups by nothing and the
-  timeline by Body; an empty list groups by nothing. Levels that
-  do not parse or name a field the data lacks are dropped one by one.
+- Without a `group` search parameter, or with an empty or unparsable one,
+  every view groups by Tags: every tag root, in order, one "Tags" chip
+  whose menu cannot remove it. Removing the last chip, or clearing every
+  root, returns to it, and the link drops the parameter. The sort follows
+  the same rule: an empty `sort` is the "Tags" sort, which cannot be
+  removed. Levels that do not parse or name a field the data lacks are
+  dropped one by one.
 - Events are colored by a level picked the way a grouping's level is: the
   `color` search parameter holds one, a field and, for a tag root, the tags or
   the depth of its tree, from the same fields the filters and the grouping

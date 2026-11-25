@@ -14,7 +14,7 @@ import type { TagLead } from "./tag-pill-label.types";
 // 🌎 Public Functions
 
 /**
- * The lucide slug of each tag that has an icon, by its id, across the facets' tags.
+ * The lucide slug of each root and tag that has an icon, by its id, across the facets.
  */
 export function createTagIcons(
   facets: readonly EventFacet[],
@@ -23,6 +23,10 @@ export function createTagIcons(
 
   // Loops rather than mapping callbacks keep the call stacks shallow.
   for (const facet of facets) {
+    if (typeof facet.icon === "string") {
+      icons.set(facet.id, facet.icon);
+    }
+
     for (const value of facet.values) {
       if (typeof value.icon === "string") {
         icons.set(value.id, value.icon);

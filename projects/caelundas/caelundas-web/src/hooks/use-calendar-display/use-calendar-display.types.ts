@@ -10,6 +10,7 @@ import type { UseNightSkySettingsResult } from "../use-night-sky/hooks/use-night
 export interface CalendarDisplayState {
   clusters: boolean;
   colors: boolean;
+  compare: boolean;
   scale: TimelineScale;
   symbols: CalendarSymbols;
 }
@@ -28,6 +29,7 @@ export interface UseCalendarDisplayResult {
     UseCalendarSearchResult,
     | "handleClustersChange"
     | "handleColorsChange"
+    | "handleCompareChange"
     | "handleScaleChange"
     | "handleSymbolsChange"
     | "handleViewChange"

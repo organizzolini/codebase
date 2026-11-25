@@ -5,7 +5,6 @@ import {
 import {
   GROUP_ROW_HEIGHT_REM,
   GROUP_TINT_PERCENT,
-  HEADER_HEIGHT_REM,
   INDENT_REM,
 } from "../../calendar-table.constants";
 import { getNameTint } from "../table-name-cell/table-name-cell.utilities";
@@ -114,8 +113,8 @@ export function getGroupTint(
 }
 
 /**
- * Where a group's header sticks, as a CSS length: below the table's header and the headers it is nested in.
+ * Where a group's header sticks, as a CSS length: below the headers it is nested in.
  */
 export function getGroupTop(depth: number): string {
-  return `${String(HEADER_HEIGHT_REM + depth * GROUP_ROW_HEIGHT_REM)}rem`;
+  return `${String(depth * GROUP_ROW_HEIGHT_REM)}rem`;
 }

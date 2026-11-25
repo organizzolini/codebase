@@ -20,7 +20,7 @@ import type {
 export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "latitudeDegrees",
-    key: "sky.lat",
+    key: "skyfield.lat",
     label: "Latitude",
     maximum: 90,
     minimum: 1,
@@ -29,7 +29,7 @@ export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
   },
   {
     field: "longitudeDegrees",
-    key: "sky.lon",
+    key: "skyfield.lon",
     label: "Longitude",
     maximum: 180,
     minimum: -180,
@@ -38,7 +38,7 @@ export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
   },
   {
     field: "verticalFieldOfViewDegrees",
-    key: "sky.vFov",
+    key: "skyfield.vFov",
     label: "Height of view",
     maximum: 90,
     minimum: 2,
@@ -47,7 +47,7 @@ export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
   },
   {
     field: "bottomAltitudeDegrees",
-    key: "sky.altBottom",
+    key: "skyfield.altBottom",
     label: "Lowest altitude",
     maximum: 60,
     minimum: MINIMUM_BOTTOM_ALTITUDE_DEGREES,
@@ -56,27 +56,16 @@ export const ANGLE_SLIDERS: readonly SkySliderControl[] = [
   },
 ];
 
-/** Sky and calendar opacity, for readable text. */
-export const OPACITY_SLIDERS: readonly SkySliderControl[] = [
-  {
-    field: "skyOpacity",
-    key: "sky.opacity",
-    label: "Sky opacity",
-    maximum: OPACITY_RANGE.maximum,
-    minimum: OPACITY_RANGE.minimum,
-    step: 0.01,
-    unit: "",
-  },
-  {
-    field: "surfaceOpacity",
-    key: "sky.surfaceOpacity",
-    label: "Calendar opacity",
-    maximum: OPACITY_RANGE.maximum,
-    minimum: OPACITY_RANGE.minimum,
-    step: 0.01,
-    unit: "",
-  },
-];
+/** The skyfield opacity, for readable text. */
+export const OPACITY_SLIDER: SkySliderControl = {
+  field: "skyOpacity",
+  key: "skyfield.opacity",
+  label: "Opacity",
+  maximum: OPACITY_RANGE.maximum,
+  minimum: OPACITY_RANGE.minimum,
+  step: 0.01,
+  unit: "",
+};
 
 /**
  * How the stars drift, how faint they are drawn, and how large.
@@ -84,7 +73,7 @@ export const OPACITY_SLIDERS: readonly SkySliderControl[] = [
 export const STAR_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "pixelsPerSecond",
-    key: "sky.pixelsPerSecond",
+    key: "skyfield.pixelsPerSecond",
     label: "Star drift speed",
     maximum: 100,
     minimum: 1,
@@ -93,7 +82,7 @@ export const STAR_SLIDERS: readonly SkySliderControl[] = [
   },
   {
     field: "faintestMagnitude",
-    key: "sky.maxMag",
+    key: "skyfield.maxMag",
     label: "Faintest star",
     maximum: 6.5,
     minimum: 1,
@@ -102,7 +91,7 @@ export const STAR_SLIDERS: readonly SkySliderControl[] = [
   },
   {
     field: "starScale",
-    key: "sky.starScale",
+    key: "skyfield.starScale",
     label: "Star size",
     maximum: 4,
     minimum: 0.25,
@@ -117,7 +106,7 @@ export const STAR_SLIDERS: readonly SkySliderControl[] = [
 export const LINE_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "lineOpacity",
-    key: "sky.lineOpacity",
+    key: "skyfield.lineOpacity",
     label: "Constellation line opacity",
     maximum: LINE_OPACITY_RANGE.maximum,
     minimum: LINE_OPACITY_RANGE.minimum,
@@ -126,7 +115,7 @@ export const LINE_SLIDERS: readonly SkySliderControl[] = [
   },
   {
     field: "lineWidth",
-    key: "sky.lineWidth",
+    key: "skyfield.lineWidth",
     label: "Constellation line width",
     maximum: 4,
     minimum: 0,
@@ -141,7 +130,7 @@ export const LINE_SLIDERS: readonly SkySliderControl[] = [
 export const ECLIPTIC_SLIDERS: readonly SkySliderControl[] = [
   {
     field: "eclipticOpacity",
-    key: "sky.eclipticOpacity",
+    key: "skyfield.eclipticOpacity",
     label: "Ecliptic line opacity",
     maximum: LINE_OPACITY_RANGE.maximum,
     minimum: LINE_OPACITY_RANGE.minimum,
@@ -150,7 +139,7 @@ export const ECLIPTIC_SLIDERS: readonly SkySliderControl[] = [
   },
   {
     field: "eclipticWidth",
-    key: "sky.eclipticWidth",
+    key: "skyfield.eclipticWidth",
     label: "Ecliptic line width",
     maximum: 4,
     minimum: 0,
@@ -164,7 +153,7 @@ export const ECLIPTIC_SLIDERS: readonly SkySliderControl[] = [
  */
 export const SKY_SLIDERS: readonly SkySliderControl[] = [
   ...ANGLE_SLIDERS,
-  ...OPACITY_SLIDERS,
+  OPACITY_SLIDER,
   ...STAR_SLIDERS,
   ...LINE_SLIDERS,
   ...ECLIPTIC_SLIDERS,
@@ -174,11 +163,15 @@ export const SKY_SLIDERS: readonly SkySliderControl[] = [
  * The colors of the sky's gradient, top then bottom.
  */
 export const BACKGROUND_COLORS: readonly SkyColorControl[] = [
-  { field: "backgroundTopColor", key: "sky.top", label: "Sky top color" },
+  {
+    field: "backgroundTopColor",
+    key: "skyfield.top",
+    label: "Skyfield top color",
+  },
   {
     field: "backgroundBottomColor",
-    key: "sky.bottom",
-    label: "Sky bottom color",
+    key: "skyfield.bottom",
+    label: "Skyfield bottom color",
   },
 ];
 
@@ -187,7 +180,7 @@ export const BACKGROUND_COLORS: readonly SkyColorControl[] = [
  */
 export const LINE_COLOR: SkyColorControl = {
   field: "lineColor",
-  key: "sky.lineColor",
+  key: "skyfield.lineColor",
   label: "Constellation line color",
 };
 
@@ -196,7 +189,7 @@ export const LINE_COLOR: SkyColorControl = {
  */
 export const ECLIPTIC_COLOR: SkyColorControl = {
   field: "eclipticColor",
-  key: "sky.eclipticColor",
+  key: "skyfield.eclipticColor",
   label: "Ecliptic line color",
 };
 
@@ -215,32 +208,31 @@ export const SKY_COLORS: readonly SkyColorControl[] = [
 export const SKY_DEFAULTS: Readonly<
   Partial<Record<SkyParameterKey, number | string>>
 > = {
-  "sky.altBottom": DEFAULT_OPTIONS.bottomAltitudeDegrees,
-  "sky.bottom": DEFAULT_OPTIONS.backgroundBottomColor,
-  "sky.eclipticColor": DEFAULT_OPTIONS.eclipticColor,
-  "sky.eclipticOpacity": DEFAULT_OPTIONS.eclipticOpacity,
-  "sky.eclipticWidth": DEFAULT_OPTIONS.eclipticWidth,
-  "sky.lat": DEFAULT_OBSERVER.latitudeDegrees,
-  "sky.lineColor": DEFAULT_OPTIONS.lineColor,
-  "sky.lineOpacity": DEFAULT_OPTIONS.lineOpacity,
-  "sky.lineWidth": DEFAULT_OPTIONS.lineWidth,
-  "sky.lon": DEFAULT_OBSERVER.longitudeDegrees,
-  "sky.maxMag": DEFAULT_OPTIONS.faintestMagnitude,
-  "sky.opacity": DEFAULT_OPTIONS.skyOpacity,
-  "sky.pixelsPerSecond": DEFAULT_OPTIONS.pixelsPerSecond,
-  "sky.starScale": DEFAULT_OPTIONS.starScale,
-  "sky.surfaceOpacity": DEFAULT_OPTIONS.surfaceOpacity,
-  "sky.top": DEFAULT_OPTIONS.backgroundTopColor,
-  "sky.vFov": DEFAULT_OPTIONS.verticalFieldOfViewDegrees,
+  "skyfield.altBottom": DEFAULT_OPTIONS.bottomAltitudeDegrees,
+  "skyfield.bottom": DEFAULT_OPTIONS.backgroundBottomColor,
+  "skyfield.eclipticColor": DEFAULT_OPTIONS.eclipticColor,
+  "skyfield.eclipticOpacity": DEFAULT_OPTIONS.eclipticOpacity,
+  "skyfield.eclipticWidth": DEFAULT_OPTIONS.eclipticWidth,
+  "skyfield.lat": DEFAULT_OBSERVER.latitudeDegrees,
+  "skyfield.lineColor": DEFAULT_OPTIONS.lineColor,
+  "skyfield.lineOpacity": DEFAULT_OPTIONS.lineOpacity,
+  "skyfield.lineWidth": DEFAULT_OPTIONS.lineWidth,
+  "skyfield.lon": DEFAULT_OBSERVER.longitudeDegrees,
+  "skyfield.maxMag": DEFAULT_OPTIONS.faintestMagnitude,
+  "skyfield.opacity": DEFAULT_OPTIONS.skyOpacity,
+  "skyfield.pixelsPerSecond": DEFAULT_OPTIONS.pixelsPerSecond,
+  "skyfield.starScale": DEFAULT_OPTIONS.starScale,
+  "skyfield.top": DEFAULT_OPTIONS.backgroundTopColor,
+  "skyfield.vFov": DEFAULT_OPTIONS.verticalFieldOfViewDegrees,
 };
 
 /**
- * Keys the Default button removes; `sky.debug` stays.
+ * Keys the Default button removes; `skyfield.debug` stays.
  */
 export const RESET_SKY_KEYS: readonly SkyParameterKey[] = [
-  "sky",
-  "sky.constellations",
-  "sky.ecliptic",
+  "skyfield",
+  "skyfield.constellations",
+  "skyfield.ecliptic",
   ...SKY_SLIDERS.map((slider) => slider.key),
   ...SKY_COLORS.map((color) => color.key),
 ];

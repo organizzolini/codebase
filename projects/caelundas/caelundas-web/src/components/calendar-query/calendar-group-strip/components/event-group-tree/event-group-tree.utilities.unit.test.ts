@@ -5,7 +5,10 @@ import {
   findEvents,
   findFacets,
 } from "../../../../calendar-display/events-calendar/components/events-api/events-api.utilities";
-import { createEventGroupFields } from "../event-group-model/event-group-fields.utilities";
+import {
+  createEventGroupFields,
+  getDefaultGrouping,
+} from "../event-group-model/event-group-fields.utilities";
 import { formatDerivedKey } from "../event-group-model/event-group-labels.utilities";
 
 import { createTagRanks } from "./event-group-sort.utilities";
@@ -63,6 +66,18 @@ describe("event group tree", () => {
   });
 
   describe(buildEventGroups, () => {
+    it("nests the default grouping as the tag tree: roots, then each tag level beneath, skipping none", async () => {
+      const tree = await group(getDefaultGrouping(fields));
+
+      expect(summarize(tree)).toStrictEqual([
+        ["Aspect 2", [["Simple 2", [["Major 2", ["Conjunct 1", "Square 1"]]]]]],
+        ["Body 6", ["Mars 2", "Mercury 1", "Saturn 1", "Sun 2", "Venus 2"]],
+        ["Element 2", ["Fire 2"]],
+        ["Planetary 1", [["Direction 1", ["Retrograde Period 1"]]]],
+        ["Zodiac 3", ["Aries 2", "Ingress 3"]],
+      ]);
+    });
+
     it("counts an event under two planets in each, and once above them", async () => {
       const tree = await group([
         { field: "tag:tag-aspect" },
@@ -307,6 +322,16 @@ describe("event group tree", () => {
           ]),
         ),
       ).toStrictEqual(["Moon", "Mars", "Venus"]);
+    });
+
+    it("leaves the groups as built for a metric, which only the metric layouts measure", () => {
+      expect(
+        labels(
+          sortEventGroups(nodes(), [
+            { direction: "desc", key: "metric", metric: "EVENTS" },
+          ]),
+        ),
+      ).toStrictEqual(["Mars", "Venus", "Moon"]);
     });
 
     it("leaves the groups as built for an empty list of sorts", () => {

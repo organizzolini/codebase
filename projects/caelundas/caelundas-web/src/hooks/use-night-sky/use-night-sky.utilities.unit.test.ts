@@ -14,7 +14,10 @@ describe("use-night-sky utilities", () => {
   describe(readNightSkyOverrides, () => {
     it("reads the background colors with or without the #, as lowercase #rrggbb", () => {
       expect(
-        readNightSkyOverrides({ "sky.bottom": "#ABC", "sky.top": "112233" }),
+        readNightSkyOverrides({
+          "skyfield.bottom": "#ABC",
+          "skyfield.top": "112233",
+        }),
       ).toMatchObject({
         backgroundBottomColor: "#aabbcc",
         backgroundTopColor: "#112233",
@@ -22,14 +25,16 @@ describe("use-night-sky utilities", () => {
     });
 
     it("reads an all-digit color written with the #", () => {
-      expect(readNightSkyOverrides({ "sky.top": "#123456" })).toMatchObject({
+      expect(
+        readNightSkyOverrides({ "skyfield.top": "#123456" }),
+      ).toMatchObject({
         backgroundTopColor: "#123456",
       });
     });
 
     it("falls back for a number, which the router makes of 1e5 and cannot give back", () => {
       for (const value of [123_456, 1e5, 100, 0]) {
-        expect(readNightSkyOverrides({ "sky.top": value })).toMatchObject({
+        expect(readNightSkyOverrides({ "skyfield.top": value })).toMatchObject({
           backgroundTopColor: "#04060f",
         });
       }
@@ -48,7 +53,10 @@ describe("use-night-sky utilities", () => {
         [1],
       ]) {
         expect(
-          readNightSkyOverrides({ "sky.bottom": value, "sky.top": value }),
+          readNightSkyOverrides({
+            "skyfield.bottom": value,
+            "skyfield.top": value,
+          }),
         ).toMatchObject({
           backgroundBottomColor: "#0d1533",
           backgroundTopColor: "#04060f",
@@ -56,31 +64,32 @@ describe("use-night-sky utilities", () => {
       }
     });
 
-    it("reads sky.constellations as normalized names, and only from text", () => {
+    it("reads skyfield.constellations as normalized names, and only from text", () => {
       expect(
         readNightSkyOverrides({
-          "sky.constellations": "Zodiac, Ursa Major,canis-major,,",
+          "skyfield.constellations": "Zodiac, Ursa Major,canis-major,,",
         }).constellations,
       ).toStrictEqual(["zodiac", "ursa_major", "canis_major"]);
       expect(
-        readNightSkyOverrides({ "sky.constellations": 5 }).constellations,
+        readNightSkyOverrides({ "skyfield.constellations": 5 }).constellations,
       ).toStrictEqual(["all"]);
     });
 
     it("draws every figure by default, the zodiac or none when asked", () => {
       expect(readNightSkyOverrides({}).constellations).toStrictEqual(["all"]);
       expect(
-        readNightSkyOverrides({ "sky.constellations": "zodiac" })
+        readNightSkyOverrides({ "skyfield.constellations": "zodiac" })
           .constellations,
       ).toStrictEqual(["zodiac"]);
       expect(
-        readNightSkyOverrides({ "sky.constellations": "" }).constellations,
+        readNightSkyOverrides({ "skyfield.constellations": "" }).constellations,
       ).toStrictEqual([]);
       expect(
-        readNightSkyOverrides({ "sky.constellations": "none" }).constellations,
+        readNightSkyOverrides({ "skyfield.constellations": "none" })
+          .constellations,
       ).toStrictEqual([]);
       expect(
-        readNightSkyOverrides({ "sky.constellations": "zodiac,none" })
+        readNightSkyOverrides({ "skyfield.constellations": "zodiac,none" })
           .constellations,
       ).toStrictEqual([]);
     });
@@ -97,70 +106,78 @@ describe("use-night-sky utilities", () => {
     });
 
     it("reads the color like the background's, with or without the #", () => {
-      expect(readNightSkyOverrides({ "sky.lineColor": "#F80" })).toMatchObject({
+      expect(
+        readNightSkyOverrides({ "skyfield.lineColor": "#F80" }),
+      ).toMatchObject({
         lineColor: "#ff8800",
         rejectedKeys: [],
       });
       expect(
-        readNightSkyOverrides({ "sky.lineColor": "102040" }).lineColor,
+        readNightSkyOverrides({ "skyfield.lineColor": "102040" }).lineColor,
       ).toBe("#102040");
     });
 
     it("clamps an opacity or a width out of range", () => {
       expect(
-        readNightSkyOverrides({ "sky.lineOpacity": 3, "sky.lineWidth": 50 }),
+        readNightSkyOverrides({
+          "skyfield.lineOpacity": 3,
+          "skyfield.lineWidth": 50,
+        }),
       ).toMatchObject({ lineOpacity: 1, lineWidth: 10, rejectedKeys: [] });
       expect(
-        readNightSkyOverrides({ "sky.lineOpacity": -1, "sky.lineWidth": -2 }),
+        readNightSkyOverrides({
+          "skyfield.lineOpacity": -1,
+          "skyfield.lineWidth": -2,
+        }),
       ).toMatchObject({ lineOpacity: 0, lineWidth: 0, rejectedKeys: [] });
     });
 
     it("falls back to the default for a value it cannot read, and names its key", () => {
       expect(
         readNightSkyOverrides({
-          "sky.lineColor": 123_456,
-          "sky.lineOpacity": "half",
-          "sky.lineWidth": "thick",
+          "skyfield.lineColor": 123_456,
+          "skyfield.lineOpacity": "half",
+          "skyfield.lineWidth": "thick",
         }),
       ).toMatchObject({
         lineColor: "#ffffff",
         lineOpacity: 0.24,
         lineWidth: 0.8,
-        rejectedKeys: ["sky.lineColor", "sky.lineOpacity", "sky.lineWidth"],
+        rejectedKeys: [
+          "skyfield.lineColor",
+          "skyfield.lineOpacity",
+          "skyfield.lineWidth",
+        ],
       });
     });
   });
 
   describe("the opacities", () => {
-    it("dims the sky and keeps the calendar's surfaces mostly opaque by default", () => {
-      expect(readNightSkyOverrides({})).toMatchObject({
-        skyOpacity: 0.6,
-        surfaceOpacity: 0.7,
-      });
+    it("draws the sky faintly by default", () => {
+      expect(readNightSkyOverrides({})).toMatchObject({ skyOpacity: 0.25 });
     });
 
-    it("reads sky.opacity and sky.surfaceOpacity, clamped to 0 and 1", () => {
-      expect(
-        readNightSkyOverrides({
-          "sky.opacity": 0.3,
-          "sky.surfaceOpacity": 0.6,
-        }),
-      ).toMatchObject({ skyOpacity: 0.3, surfaceOpacity: 0.6 });
-      expect(
-        readNightSkyOverrides({
-          "sky.opacity": 3,
-          "sky.surfaceOpacity": -1,
-        }),
-      ).toMatchObject({ skyOpacity: 1, surfaceOpacity: 0 });
+    it("reads skyfield.opacity, clamped to 0 and 1", () => {
+      expect(readNightSkyOverrides({ "skyfield.opacity": 0.3 })).toMatchObject({
+        skyOpacity: 0.3,
+      });
+      expect(readNightSkyOverrides({ "skyfield.opacity": 3 })).toMatchObject({
+        skyOpacity: 1,
+      });
     });
 
     it("falls back to the default for a value it cannot read", () => {
       expect(
-        readNightSkyOverrides({
-          "sky.opacity": "dim",
-          "sky.surfaceOpacity": "solid",
-        }),
-      ).toMatchObject({ skyOpacity: 0.6, surfaceOpacity: 0.7 });
+        readNightSkyOverrides({ "skyfield.opacity": "dim" }),
+      ).toMatchObject({
+        skyOpacity: 0.25,
+      });
+    });
+
+    it("ignores the calendar opacity an old link carries", () => {
+      expect(
+        readNightSkyOverrides({ "skyfield.surfaceOpacity": 0.2 }),
+      ).not.toHaveProperty("surfaceOpacity");
     });
   });
 
@@ -174,13 +191,13 @@ describe("use-night-sky utilities", () => {
       });
     });
 
-    it("turns off for sky.ecliptic=false, and reads and clamps its style", () => {
+    it("turns off for skyfield.ecliptic=false, and reads and clamps its style", () => {
       expect(
         readNightSkyOverrides({
-          "sky.ecliptic": false,
-          "sky.eclipticColor": "#abc",
-          "sky.eclipticOpacity": 2,
-          "sky.eclipticWidth": -1,
+          "skyfield.ecliptic": false,
+          "skyfield.eclipticColor": "#abc",
+          "skyfield.eclipticOpacity": 2,
+          "skyfield.eclipticWidth": -1,
         }),
       ).toMatchObject({
         ecliptic: false,
@@ -194,14 +211,14 @@ describe("use-night-sky utilities", () => {
     it("falls back for a style it cannot read, and names its key", () => {
       expect(
         readNightSkyOverrides({
-          "sky.ecliptic": "yes",
-          "sky.eclipticColor": "orange",
-          "sky.lineWidth": "thick",
+          "skyfield.ecliptic": "yes",
+          "skyfield.eclipticColor": "orange",
+          "skyfield.lineWidth": "thick",
         }),
       ).toMatchObject({
         ecliptic: true,
         eclipticColor: "#ffffff",
-        rejectedKeys: ["sky.lineWidth", "sky.eclipticColor"],
+        rejectedKeys: ["skyfield.lineWidth", "skyfield.eclipticColor"],
       });
     });
   });
@@ -209,9 +226,9 @@ describe("use-night-sky utilities", () => {
   describe(describeNightSkyProblems, () => {
     it("names each line style key it ignored, then each unknown constellation", () => {
       expect(
-        describeNightSkyProblems(["sky.lineWidth"], ["narnia"]),
+        describeNightSkyProblems(["skyfield.lineWidth"], ["narnia"]),
       ).toStrictEqual([
-        "The night sky ignored sky.lineWidth, whose value does not parse",
+        "The night sky ignored skyfield.lineWidth, whose value does not parse",
         "The night sky has no constellation named narnia",
       ]);
     });
@@ -265,7 +282,6 @@ describe("use-night-sky utilities", () => {
       const drawing = toNightSkyDrawing(readNightSkyOverrides({}));
 
       expect(drawing).not.toHaveProperty("skyOpacity");
-      expect(drawing).not.toHaveProperty("surfaceOpacity");
       expect(drawing).toMatchObject({ latitudeDegrees: 90 });
     });
   });
@@ -303,10 +319,10 @@ describe("use-night-sky utilities", () => {
       expect(
         toNightSkyInput(
           readNightSkyOverrides({
-            "sky.constellations": "",
-            "sky.debug": true,
-            "sky.lat": 51.5,
-            "sky.maxMag": 4,
+            "skyfield.constellations": "",
+            "skyfield.debug": true,
+            "skyfield.lat": 51.5,
+            "skyfield.maxMag": 4,
           }),
           { ...view, still: true },
         ),
@@ -319,7 +335,9 @@ describe("use-night-sky utilities", () => {
       });
       expect(
         toNightSkyInput(
-          readNightSkyOverrides({ "sky.constellations": "ursa_major,leo" }),
+          readNightSkyOverrides({
+            "skyfield.constellations": "ursa_major,leo",
+          }),
           view,
         ).constellations,
       ).toStrictEqual(["ursa_major", "leo"]);

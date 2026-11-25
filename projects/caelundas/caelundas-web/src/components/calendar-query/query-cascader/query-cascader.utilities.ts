@@ -36,3 +36,24 @@ export function resolveSelectable(
 
   return cascade ? "any" : "leaf";
 }
+
+/**
+ * The cascader's expansion props, leaving out the ones not given.
+ */
+export function toExpansion(
+  defaultExpanded: readonly string[] | undefined,
+  expanded: readonly string[] | undefined,
+  onExpandedChange: ((expanded: string[]) => void) | undefined,
+): {
+  defaultExpanded?: string[];
+  expanded?: string[];
+  onExpandedChange?: (expanded: string[]) => void;
+} {
+  return {
+    ...(defaultExpanded === undefined
+      ? {}
+      : { defaultExpanded: [...defaultExpanded] }),
+    ...(expanded === undefined ? {} : { expanded: [...expanded] }),
+    ...(onExpandedChange === undefined ? {} : { onExpandedChange }),
+  };
+}

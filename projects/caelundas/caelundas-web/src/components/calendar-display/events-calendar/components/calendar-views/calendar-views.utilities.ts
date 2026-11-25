@@ -1,10 +1,16 @@
 import {
   calendarViewSchema,
+  METRIC_VIEWS,
   RETIRED_VIEWS,
   timelineScaleSchema,
 } from "./calendar-views.constants";
 
-import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
+import type {
+  CalendarViewName,
+  GridViewName,
+  MetricViewName,
+  TimelineScale,
+} from "./calendar-views.types";
 import type { CalendarView } from "@codebase/presentation";
 
 /**
@@ -13,6 +19,17 @@ import type { CalendarView } from "@codebase/presentation";
  */
 export function getDefaultCalendarView(isWide: boolean): CalendarViewName {
   return isWide ? "month" : "table";
+}
+
+/**
+ * Whether a view measures the events, drawing metrics and not the events.
+ */
+export function isMetricView(
+  view: CalendarViewName | undefined,
+): view is MetricViewName {
+  return (
+    view !== undefined && (METRIC_VIEWS as readonly string[]).includes(view)
+  );
 }
 
 /**
@@ -35,10 +52,8 @@ export function parseTimelineScale(value: unknown): TimelineScale | undefined {
 }
 
 /**
- * The calendar's view for one of the app's; the table and the timeline have none.
+ * The calendar's view for one of the app's; the table, timeline and metric layouts have none.
  */
-export function toEventCalendarView(
-  view: Exclude<CalendarViewName, "table" | "timeline">,
-): CalendarView {
+export function toEventCalendarView(view: GridViewName): CalendarView {
   return view;
 }

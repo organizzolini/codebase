@@ -7,8 +7,10 @@ import {
   describeRoot,
 } from "../../../calendar-filters/components/event-filter-model/event-filter-fields.utilities";
 import { TAG_FIELD_PREFIX } from "../../../calendar-filters/components/event-filter-model/event-filters.constants";
+import { readDepth } from "../../../filter-tag-editor/event-filter-tag-tree.utilities";
 import { TagIcon } from "../../../tag-icon/tag-icon";
 
+import { ALL_TAGS_FIELD } from "./event-group-fields.constants";
 import {
   DERIVED_GROUP_DESCRIPTIONS,
   DERIVED_GROUP_ICONS,
@@ -72,10 +74,45 @@ export function createEventGroupFields(
 }
 
 /**
- * The grouping a view starts with when the link names none: every tag root, in order.
+ * The grouping every view starts with when the link names none: the tag roots, then each depth of tags beneath them.
  */
 export function getDefaultGrouping(
-  view: string,
+  fields: readonly EventGroupField[],
+): EventGrouping {
+  const roots: string[] = [];
+  // The tags at each depth beneath a root, across every root; depth 1 first.
+  const beneath: string[][] = [];
+
+  // Loops rather than filter callbacks keep the call stacks shallow.
+  for (const field of fields) {
+    if (field.id.startsWith(TAG_FIELD_PREFIX)) {
+      roots.push(field.id.slice(TAG_FIELD_PREFIX.length));
+
+      for (const option of field.options) {
+        const depth = readDepth(option);
+
+        beneath[depth] = [...(beneath[depth] ?? []), option.value];
+      }
+    }
+  }
+
+  if (roots.length === 0) {
+    return [];
+  }
+
+  const grouping: EventGroupLevel[] = [{ field: ALL_TAGS_FIELD, tags: roots }];
+
+  for (const [index, tags] of beneath.entries()) {
+    grouping.push({ depth: index + 1, field: ALL_TAGS_FIELD, tags });
+  }
+
+  return grouping;
+}
+
+/**
+ * Every tag root as a level of its own, in order: what the Group menu ticks while the link names none.
+ */
+export function getRootGrouping(
   fields: readonly EventGroupField[],
 ): EventGrouping {
   const grouping: EventGroupLevel[] = [];
@@ -87,9 +124,7 @@ export function getDefaultGrouping(
     }
   }
 
-  return view === "table" || view === "timeline"
-    ? grouping
-    : grouping.slice(0, 1);
+  return grouping;
 }
 
 /**

@@ -1,6 +1,13 @@
+import { MousePointer2 } from "lucide-react";
+
+import type { LucideIcon } from "lucide-react";
+
 // ♟️ Constants
 
 export const TITLE = "Select";
+
+/** The cursor icon leading the Select button on every layout. */
+export const SelectIcon: LucideIcon = MousePointer2;
 
 /**
  * The columns every event has, with what each shows.

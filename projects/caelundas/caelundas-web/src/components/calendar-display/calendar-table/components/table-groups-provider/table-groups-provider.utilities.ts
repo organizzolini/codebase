@@ -1,6 +1,7 @@
 import { toggleExpanded } from "../../calendar-table.utilities";
 
 import type {
+  PickedGroup,
   TableGroupsAction,
   TableGroupsState,
   TableListStats,
@@ -51,6 +52,8 @@ export function reduceTableGroups(
   if (
     action.type === "collapse-all" ||
     action.type === "expand-all" ||
+    action.type === "open" ||
+    action.type === "register" ||
     action.type === "reset" ||
     action.type === "toggle"
   ) {
@@ -84,24 +87,75 @@ function hasSameMembers(
 // 🌎 Public Functions
 
 /**
+ * The groups opened by name that are still open, with one more when it is open.
+ */
+function keepPickedGroups(
+  state: Pick<TableGroupsState, "picked">,
+  expanded: ReadonlySet<string>,
+  added?: PickedGroup,
+): readonly PickedGroup[] {
+  const kept = state.picked.filter(
+    (group) => expanded.has(group.id) && group.id !== added?.id,
+  );
+
+  return added !== undefined && expanded.has(added.id)
+    ? [...kept, added]
+    : kept;
+}
+
+/**
  * The state after a change to which groups are open, or to which groups there are.
  */
 function reduceGroupActions(
   state: TableGroupsState,
   action: Extract<
     TableGroupsAction,
-    { type: "collapse-all" | "expand-all" | "reset" | "toggle" }
+    {
+      type:
+        | "collapse-all"
+        | "expand-all"
+        | "open"
+        | "register"
+        | "reset"
+        | "toggle";
+    }
   >,
 ): TableGroupsState {
   if (action.type === "collapse-all" || action.type === "expand-all") {
     return setLevelsExpanded(state, action);
   }
 
+  if (action.type === "open") {
+    const expanded = new Set([
+      ...(action.base ?? state.expanded),
+      ...action.ids,
+    ]);
+
+    return {
+      ...state,
+      expanded,
+      picked: keepPickedGroups(state, expanded, action.picked),
+      touched: true,
+    };
+  }
+
+  // A layout that arrives keeps which groups are open: it opens only the first path of groups no layout has shown yet.
+  if (action.type === "register") {
+    return registerTableGroups(state, action);
+  }
+
   if (action.type === "reset") {
     return resetTableGroups(state, action);
   }
 
-  return { ...state, expanded: toggleExpanded(state.expanded, action.id) };
+  const expanded = toggleExpanded(action.base ?? state.expanded, action.id);
+
+  return {
+    ...state,
+    expanded,
+    picked: keepPickedGroups(state, expanded, action.picked),
+    touched: true,
+  };
 }
 
 /**
@@ -138,6 +192,48 @@ function reducePageActions(
 }
 
 /**
+ * The state once a layout shows its groups: seen ones keep their state, and the first path of unseen ones opens.
+ */
+function registerTableGroups(
+  state: TableGroupsState,
+  data: Readonly<{
+    firstPath: readonly string[];
+    groupIds: readonly string[];
+    groupLevels: readonly number[];
+  }>,
+): TableGroupsState {
+  const expanded = new Set(state.expanded);
+  const seen = new Set(state.seen);
+
+  for (const id of data.firstPath) {
+    if (!seen.has(id)) {
+      expanded.add(id);
+    }
+  }
+
+  for (const id of data.groupIds) {
+    seen.add(id);
+  }
+
+  if (
+    areSameIds(state.groupIds, data.groupIds) &&
+    areSameIds(state.groupLevels.map(String), data.groupLevels.map(String)) &&
+    expanded.size === state.expanded.size &&
+    seen.size === state.seen.size
+  ) {
+    return state;
+  }
+
+  return {
+    ...state,
+    expanded,
+    groupIds: data.groupIds,
+    groupLevels: data.groupLevels,
+    seen,
+  };
+}
+
+/**
  * The state after the table's data changed: every list starts over at the first page, and only the first path of groups is open.
  */
 function resetTableGroups(
@@ -152,7 +248,9 @@ function resetTableGroups(
     areSameIds(state.groupIds, data.groupIds) &&
     areSameIds(state.groupLevels.map(String), data.groupLevels.map(String)) &&
     hasSameMembers(state.expanded, data.firstPath) &&
-    state.limits.size === 0 &&
+    hasSameMembers(state.seen, data.groupIds) &&
+    !state.touched &&
+    state.picked.length + state.limits.size === 0 &&
     state.pages === 1
   ) {
     return state;
@@ -165,6 +263,9 @@ function resetTableGroups(
     groupLevels: data.groupLevels,
     limits: new Map(),
     pages: 1,
+    picked: [],
+    seen: new Set(data.groupIds),
+    touched: false,
   };
 }
 
@@ -175,7 +276,7 @@ function setLevelsExpanded(
   state: TableGroupsState,
   action: Extract<TableGroupsAction, { type: "collapse-all" | "expand-all" }>,
 ): TableGroupsState {
-  const expanded = new Set(state.expanded);
+  const expanded = new Set(action.base ?? state.expanded);
 
   for (const [index, id] of state.groupIds.entries()) {
     if (action.levels.includes(state.groupLevels[index] ?? -1)) {
@@ -187,5 +288,10 @@ function setLevelsExpanded(
     }
   }
 
-  return { ...state, expanded };
+  return {
+    ...state,
+    expanded,
+    picked: keepPickedGroups(state, expanded),
+    touched: true,
+  };
 }

@@ -1,7 +1,10 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { findFixtureFacets } from "../../../../../../testing/calendar-facets";
-import { createEventGroupFields } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
+import {
+  createEventGroupFields,
+  getDefaultGrouping,
+} from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { EVENT_COLOR_RULES } from "../calendar-colors/calendar-colors.constants";
 
 import { COLOR_PALETTE } from "./calendar-color-schemes.constants";
@@ -86,6 +89,34 @@ describe(createColorScheme, () => {
     expect(scheme.colorOf(event(["tag-body", "tag-venus"]))).toBe(
       COLOR_PALETTE[4],
     );
+  });
+
+  it("colors by tag root under the default grouping, the tags beneath each root in shades of it", () => {
+    const scheme = createColorScheme(getDefaultGrouping(FIELDS), FIELDS);
+
+    expect(scheme.legend.filter((entry) => entry.depth === 0)).toHaveLength(
+      FIELDS.filter((field) => field.id.startsWith("tag:")).length,
+    );
+    expect(scheme.legend[0]).toMatchObject({
+      color: COLOR_PALETTE[0],
+      depth: 0,
+    });
+    expect(scheme.legend[1]).toMatchObject({ depth: 1, label: "Simple" });
+    expect(scheme.colorOf(event(["tag-venus"]))).toBe(
+      scheme.legend.find((entry) => entry.label === "Venus")?.color,
+    );
+    expect(scheme.colorOf(event(["tag-body"]))).toBe(
+      scheme.legend.find((entry) => entry.label === "Body")?.color,
+    );
+  });
+
+  it("colors an event by the first root it has a tag of, and none by none", () => {
+    const scheme = createColorScheme(getDefaultGrouping(FIELDS), FIELDS);
+
+    expect(scheme.colorOf(event(["tag-venus", "tag-simple"]))).toBe(
+      scheme.legend.find((entry) => entry.label === "Simple")?.color,
+    );
+    expect(scheme.colorOf(event(["tag-missing"]))).toBeNull();
   });
 
   it("nests colors: tags beneath a group's tag take colors near it, indented in the legend", () => {

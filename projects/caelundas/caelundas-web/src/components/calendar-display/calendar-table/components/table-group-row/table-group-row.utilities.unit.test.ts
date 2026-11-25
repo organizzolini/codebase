@@ -87,13 +87,13 @@ describe("table-group-row utilities", () => {
   });
 
   describe(getGroupTop, () => {
-    it("sticks the first level right below the table's header", () => {
-      expect(getGroupTop(0)).toBe("2.5rem");
+    it("sticks the first level at the top of the scroller", () => {
+      expect(getGroupTop(0)).toBe("0rem");
     });
 
     it("stacks each deeper level one header lower", () => {
-      expect(getGroupTop(1)).toBe("4.75rem");
-      expect(getGroupTop(2)).toBe("7rem");
+      expect(getGroupTop(1)).toBe("2.25rem");
+      expect(getGroupTop(2)).toBe("4.5rem");
     });
   });
 

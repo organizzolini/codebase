@@ -8,6 +8,7 @@ import { getViewWindows } from "../src/components/calendar-display/events-calend
 import { DURATION_BUCKETS } from "../src/components/calendar-query/calendar-filters/components/event-filter-model/event-filters.constants";
 import {
   mockDatasetQuery,
+  mockEventMetricsQuery,
   mockEventsQuery,
   mockFacetsQuery,
   mockNightSkyQuery,
@@ -16,12 +17,14 @@ import {
 } from "../src/graphql/generated/mocks";
 
 import { FIXTURE_EVENTS, FIXTURE_TAGS } from "./calendar-fixture";
+import { findMetrics } from "./calendar-metrics";
 import { serveGraphqlApi } from "./graphql-api";
 
 import type {
   EventFilterGroupInput,
   EventFilterRuleInput,
   EventGroupLevelInput,
+  EventMetricsInput,
   EventsQuery,
   EventsQueryVariables,
   FacetsQuery,
@@ -45,6 +48,7 @@ export interface CalendarApi {
   requests: {
     events: EventsQueryVariables[];
     facets: FacetsQueryVariables[];
+    metrics: EventMetricsInput[];
     nightSky: NightSkyInput[];
     presets: number;
     windows: WindowsQueryVariables[];
@@ -66,6 +70,11 @@ export interface CalendarApiOptions {
    * Answers no read at all, like an API that is never reached.
    */
   hang?: boolean;
+  /**
+   * Fails only the metrics' reads with this message, the calendar's reads
+   * answering as usual.
+   */
+  metricsError?: string;
   /**
    * Builds the sky for each request; a bare SVG the size asked for by
    * default.
@@ -133,6 +142,7 @@ export function serveCalendarApi(
     requests: {
       events: [],
       facets: [],
+      metrics: [],
       nightSky: [],
       presets: 0,
       windows: [],
@@ -165,6 +175,17 @@ export function serveCalendarApi(
       return answer(() => ({
         events: findEvents(events, tree, variables),
       }));
+    }),
+    mockEventMetricsQuery(async ({ variables }) => {
+      api.requests.metrics.push(variables.input);
+
+      if (options.metricsError !== undefined) {
+        return HttpResponse.json({
+          errors: [{ message: options.metricsError }],
+        });
+      }
+
+      return answer(() => ({ eventMetrics: findMetrics(variables.input) }));
     }),
     mockFacetsQuery(async ({ variables }) => {
       api.requests.facets.push(variables);
@@ -380,8 +401,14 @@ function findGroupKeys(
   }
 
   const rootId = level.field.slice("tag:".length);
+  const picked =
+    level.tags === null || level.tags === undefined || level.tags.length === 0
+      ? undefined
+      : level.tags;
+  // Picked tags are read from every root, roots included, as the API does.
   const carried = [...listEventTags(event, tree)].filter(
-    (id) => tree.root(id) === rootId && tree.depth(id) > 0,
+    (id) =>
+      picked !== undefined || (tree.root(id) === rootId && tree.depth(id) > 0),
   );
   const depth = level.depth ?? 1;
 
@@ -396,10 +423,6 @@ function findGroupKeys(
       }));
   }
 
-  const picked =
-    level.tags === null || level.tags === undefined || level.tags.length === 0
-      ? undefined
-      : level.tags;
   const keys = carried.filter((id) =>
     picked === undefined
       ? tree.depth(id) === depth ||

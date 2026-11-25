@@ -2,14 +2,13 @@ import { createElement } from "react";
 
 import { TimelineBarCard } from "./components/timeline-bar-card/timeline-bar-card";
 import { TimelineBarContent } from "./components/timeline-bar-content/timeline-bar-content";
-import { TIMELINE_UNIT_WIDTHS } from "./components/timeline-clusters/calendar-timeline-clusters.constants";
-import { TimelineRowLabel } from "./components/timeline-row-label/timeline-row-label";
+import {
+  TIMELINE_DAY_INTERVAL,
+  TIMELINE_UNIT_WIDTHS,
+} from "./components/timeline-clusters/calendar-timeline-clusters.constants";
 
 import type { TimelineBar } from "./calendar-timeline.types";
-import type {
-  GanttRenderEventProps,
-  GanttResource,
-} from "@codebase/presentation";
+import type { GanttRenderEventProps } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
 // ♟️ Constants
@@ -30,6 +29,16 @@ export const LANE_ROWS =
 
 export const QUIET_LABELS = "[&_[data-slot=gantt-bar-label]]:hidden";
 
+/**
+ * The timeline body's classes at a scale of a day.
+ */
+export const DAY_VIEW_CLASS = "min-h-0 flex-1 border-t";
+
+/**
+ * The timeline body's classes at a coarser scale, with no bar titles.
+ */
+export const QUIET_VIEW_CLASS = `${DAY_VIEW_CLASS} ${QUIET_LABELS}`;
+
 // The column widths the clusters are sized by, handed to the Gantt rather
 // than left to its defaults, so the two always agree.
 // The lanes are taller than the Gantt's own, to give the symbols room.
@@ -42,6 +51,32 @@ export const TIMELINE_METRICS = {
 export const COMPACT_TREE = { minWidth: 120, nameColumnWidth: 104, width: 168 };
 
 export const TREE = { nameColumnWidth: 176, width: 272 };
+
+/**
+ * The pixels the count column takes.
+ */
+export const COUNT_COLUMN_WIDTH = 88;
+
+/**
+ * The Gantt props that never change: the tree column is named Groups.
+ */
+export const TIMELINE_GANTT_PROPS = {
+  barLabel: "auto",
+  i18n: { labels: { resources: "Groups" } },
+  infiniteScroll: false,
+  initialCenter: "anchor",
+  interactions: INTERACTIONS,
+  interval: TIMELINE_DAY_INTERVAL,
+  metrics: TIMELINE_METRICS,
+  rowCheckboxes: false,
+  scheduleMode: "single",
+  summaryBars: false,
+} as const;
+
+// The tree pane grows past its set width to the one the rows need, which a
+// drag may still widen; the width is a variable on the timeline's wrapper.
+export const TREE_PANE_FIT =
+  "[&_[data-slot=gantt-tree-pane]]:min-w-(--timeline-tree-width)";
 
 export const TIMELINE_VIEWPORT =
   '[data-slot="gantt-timeline-pane"] [data-slot="scroll-area-viewport"]';
@@ -62,14 +97,6 @@ export const renderBar = (
   properties: GanttRenderEventProps<TimelineBar>,
 ): ReactNode =>
   createElement(TimelineBarContent, { occurrence: properties.occurrence });
-
-/**
- * Draws a Gantt row's name, led by its symbol.
- */
-export const renderRowLabel = (properties: {
-  resource: GanttResource;
-}): ReactNode =>
-  createElement(TimelineRowLabel, { title: properties.resource.title });
 
 /**
  * Draws the hover card of a bar the Gantt hands over.

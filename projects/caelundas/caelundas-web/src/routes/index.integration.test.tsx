@@ -73,8 +73,11 @@ describe("index", () => {
       within(toolbar).getByRole("button", { name: /Next/u }),
     ).toBeDefined();
     expect(
+      within(toolbar).getByRole("group", { name: "Layout" }).textContent,
+    ).toBe("LayoutMonth");
+    expect(
       within(toolbar).getByRole("group", { name: "Display" }).textContent,
-    ).toBe("DisplayMonth");
+    ).toBe("DisplayGlyphs");
   });
 
   it("shows each event at its time in the observer's zone", async () => {
@@ -466,12 +469,10 @@ describe("index", () => {
       fireEvent.click(await findDisplayOption("Symbols", name));
 
       // The link now holds the pick, and the list reads it back.
-      await waitFor(() => {
-        expect(
-          screen
-            .getByRole("treeitem", { name: new RegExp(`^${name}(,|$)`, "u") })
-            .getAttribute("aria-selected"),
-        ).toBe("true");
+      await waitFor(async () => {
+        const option = await findDisplayOption("Symbols", name);
+
+        expect(option.getAttribute("aria-selected")).toBe("true");
       });
     }
   });
@@ -494,7 +495,7 @@ describe("index", () => {
 
   describe("sky link parameters", () => {
     it("keeps them through the calendar's own navigation", async () => {
-      await renderCalendarRoute("/?date=2026-03-01&sky.lat=51.5");
+      await renderCalendarRoute("/?date=2026-03-01&skyfield.lat=51.5");
       const router = getRenderedRouter();
       const toolbar = await findToolbar();
 
@@ -504,7 +505,7 @@ describe("index", () => {
 
       expect(router.state.location.search).toMatchObject({
         date: "2026-04-01",
-        "sky.lat": 51.5,
+        "skyfield.lat": 51.5,
       });
     });
 
@@ -520,16 +521,18 @@ describe("index", () => {
       const loads = api.requests.windows.length;
 
       await router.navigate({
-        search: (previous) => ({ ...previous, "sky.lat": 51.5 }),
+        search: (previous) => ({ ...previous, "skyfield.lat": 51.5 }),
         to: "/",
       });
 
       expect(api.requests.windows).toHaveLength(loads);
-      expect(router.state.location.search).toMatchObject({ "sky.lat": 51.5 });
+      expect(router.state.location.search).toMatchObject({
+        "skyfield.lat": 51.5,
+      });
     });
 
     it("still runs the loader for a change to the calendar", async () => {
-      await renderCalendarRoute("/?date=2026-03-01&sky.lat=51.5");
+      await renderCalendarRoute("/?date=2026-03-01&skyfield.lat=51.5");
       const api = readServedApi();
       const router = getRenderedRouter();
 

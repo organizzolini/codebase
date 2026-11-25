@@ -1,5 +1,5 @@
-import { ListTree, Tags } from "lucide-react";
-import { use, useMemo } from "react";
+import { ListTree } from "lucide-react";
+import { useMemo } from "react";
 
 import {
   Button,
@@ -9,31 +9,29 @@ import {
   PopoverTrigger,
 } from "@codebase/presentation";
 
-import { TableGroupsContext } from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.constants";
+import { useStripLines } from "../../../hooks/use-strip-lines/use-strip-lines";
+import { BUTTON_STRIP_CLASS_NAME } from "../../../hooks/use-strip-lines/use-strip-lines.constants";
 import { QueryCascader } from "../query-cascader/query-cascader";
 import { PICK_EVERY_ROW } from "../query-cascader/query-cascader.constants";
 
 import {
-  flattenGroupRuns,
-  iconGroupRun,
-  labelGroupRun,
   toGroupRuns,
   toRunLevels,
 } from "./calendar-group-strip-runs.utilities";
-import { COLOR_HINT, TITLE } from "./calendar-group-strip.constants";
+import { TITLE } from "./calendar-group-strip.constants";
 import {
   createGroupItems,
-  getCollapseHandlers,
+  getGroupHint,
   toGrouping,
   toGroupValue,
 } from "./calendar-group-strip.utilities";
-import { moveListItem } from "./components/chip-menu/chip-menu.utilities";
-import { DEFAULT_GROUP_LABEL } from "./components/event-group-model/event-group-fields.constants";
 import {
   createEventGroupFields,
   getDefaultGrouping,
+  getRootGrouping,
 } from "./components/event-group-model/event-group-fields.utilities";
-import { GroupLevelChip } from "./components/group-level-chip/group-level-chip";
+import { GroupRunChips } from "./components/group-run-chips/group-run-chips";
+import { PickedGroupChips } from "./components/picked-group-chips/picked-group-chips";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
@@ -49,7 +47,7 @@ export interface CalendarGroupStripProperties {
   className?: string;
   facets: readonly EventFacet[];
   grouping: readonly EventGroupLevel[];
-  /** Whether the link names no grouping, so one "Tags" chip stands for every root. */
+  /** Whether the link names no grouping, so one "Tags" chip, which stays, stands for every root. */
   isDefaultGrouping?: boolean | undefined;
   onGroupingChange: (grouping: EventGroupLevel[]) => void;
   view: CalendarViewName;
@@ -71,18 +69,24 @@ export function CalendarGroupStrip(
   } = properties;
 
   // 🪝 Hooks
+  const { reference } = useStripLines();
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
-  // The default stands for every tag root, so the first change edits that list.
-  const grouping = useMemo(
-    () => (isDefaultGrouping ? getDefaultGrouping("table", fields) : linked),
+  // The default's menu ticks every tag root, so a change edits that list; its chip opens the levels it draws.
+  const { defaultLevels, grouping } = useMemo(
+    () => ({
+      defaultLevels: [...getDefaultGrouping(fields).keys()],
+      grouping: isDefaultGrouping ? getRootGrouping(fields) : linked,
+    }),
     [fields, isDefaultGrouping, linked],
   );
 
   // 🏗 Setup
   const items = useMemo(() => createGroupItems(fields), [fields]);
-  const runs = useMemo(() => toGroupRuns(grouping), [grouping]);
-  const tableGroups = use(TableGroupsContext);
-  const runLevels = useMemo(() => toRunLevels(runs), [runs]);
+  const { runLevels, runs } = useMemo(() => {
+    const grouped = toGroupRuns(grouping);
+
+    return { runLevels: toRunLevels(grouped), runs: grouped };
+  }, [grouping]);
 
   // 💪 Handlers
 
@@ -91,8 +95,7 @@ export function CalendarGroupStrip(
   // 🏁 Early Returns
 
   // 🎨 Markup
-  // The month, week and day have no rows to section, so the first group only colors their events.
-  const hint = view === "table" || view === "timeline" ? undefined : COLOR_HINT;
+  const hint = getGroupHint(view);
 
   return (
     <div
@@ -100,8 +103,10 @@ export function CalendarGroupStrip(
       data-testid="calendar-group-strip"
     >
       <ButtonGroup
+        ref={reference}
         aria-label={TITLE}
-        className="flex-wrap gap-y-2"
+        className={BUTTON_STRIP_CLASS_NAME}
+        data-strip-buttons=""
         title={hint}
       >
         <Popover>
@@ -136,47 +141,16 @@ export function CalendarGroupStrip(
             />
           </PopoverContent>
         </Popover>
-        {isDefaultGrouping ? (
-          <GroupLevelChip
-            icon={<Tags aria-hidden="true" />}
-            label={DEFAULT_GROUP_LABEL}
-            {...getCollapseHandlers(view, tableGroups, [...grouping.keys()])}
-            onRemove={() => {
-              onGroupingChange([]);
-            }}
-          />
-        ) : null}
-        {(isDefaultGrouping ? [] : runs).map((run, index) => (
-          <GroupLevelChip
-            key={run.field}
-            icon={iconGroupRun(run, fields)}
-            label={labelGroupRun(run, fields)}
-            {...getCollapseHandlers(view, tableGroups, runLevels[index] ?? [])}
-            onMoveLeft={
-              index === 0
-                ? undefined
-                : () => {
-                    onGroupingChange(
-                      flattenGroupRuns(moveListItem(runs, index, -1)),
-                    );
-                  }
-            }
-            onMoveRight={
-              index === runs.length - 1
-                ? undefined
-                : () => {
-                    onGroupingChange(
-                      flattenGroupRuns(moveListItem(runs, index, 1)),
-                    );
-                  }
-            }
-            onRemove={() => {
-              onGroupingChange(
-                flattenGroupRuns(runs.filter((_other, at) => at !== index)),
-              );
-            }}
-          />
-        ))}
+        <GroupRunChips
+          defaultLevels={defaultLevels}
+          fields={fields}
+          isDefaultGrouping={isDefaultGrouping}
+          onGroupingChange={onGroupingChange}
+          runLevels={runLevels}
+          runs={runs}
+          view={view}
+        />
+        <PickedGroupChips view={view} />
       </ButtonGroup>
     </div>
   );

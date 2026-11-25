@@ -22,15 +22,13 @@ export async function findDisplayOption(
 ): Promise<HTMLElement> {
   await openDisplayMenu();
 
-  const branchName = new RegExp(`^${branch}(,|$)`, "u");
-  const leafName = new RegExp(`^${leaf}(,|$)`, "u");
   const opened = await waitFor(() => {
     const row = screen
       .getAllByRole("treeitem")
       .find(
         (item) =>
           item.getAttribute("aria-level") === "1" &&
-          branchName.test(item.getAttribute("aria-label") ?? item.textContent),
+          getRowName(item) === branch,
       );
 
     if (row === undefined) {
@@ -52,9 +50,7 @@ export async function findDisplayOption(
     const match = items
       .slice(items.indexOf(opened) + 1)
       .filter((item) => item.getAttribute("aria-level") !== "1")
-      .find((item) =>
-        leafName.test(item.getAttribute("aria-label") ?? item.textContent),
-      );
+      .find((item) => getRowName(item) === leaf);
 
     if (found === undefined || match === undefined) {
       throw new Error(`No option named ${leaf} under ${branch}`);
@@ -70,19 +66,39 @@ export async function findDisplayOption(
 export async function findDisplayRow(label: string): Promise<HTMLElement> {
   await openDisplayMenu();
 
-  const name = new RegExp(`^${label}`, "u");
-
   return waitFor(() => {
     const row = screen
       .getAllByRole("treeitem")
       .find(
         (item) =>
-          item.getAttribute("aria-level") === "1" &&
-          name.test(item.getAttribute("aria-label") ?? item.textContent),
+          item.getAttribute("aria-level") === "1" && getRowName(item) === label,
       );
 
     if (row === undefined) {
       throw new Error(`No row named ${label}`);
+    }
+
+    return row;
+  }, BUILDER_WAIT);
+}
+
+/**
+ * Finds a Layout menu row, a layout or a shown timeline's scale, by its label, opening the menu as needed.
+ */
+export async function findLayoutOption(label: string): Promise<HTMLElement> {
+  if (screen.queryByLabelText("Layout options") === null) {
+    fireEvent.click(
+      within(await findToolbar()).getByRole("button", { name: "Layout" }),
+    );
+  }
+
+  return waitFor(() => {
+    const row = screen
+      .getAllByRole("treeitem")
+      .find((item) => getRowName(item) === label);
+
+    if (row === undefined) {
+      throw new Error(`No layout option named ${label}`);
     }
 
     return row;
@@ -97,38 +113,75 @@ export async function findToolbar(): Promise<HTMLElement> {
 }
 
 /**
- * Picks a calendar view by its label from the Display menu's Layout branch.
+ * Picks a calendar view by its label from the Layout menu.
  */
 export async function pickCalendarView(label: string): Promise<void> {
-  await pickDisplayRadio("Layout", label);
+  fireEvent.click(await findLayoutOption(label));
 }
 
 /**
- * Ticks a choice by its label under a Display branch that offers one of several.
- */
-export async function pickDisplayRadio(
-  branch: string,
-  label: string,
-): Promise<void> {
-  fireEvent.click(await findDisplayOption(branch, label));
-}
-
-/**
- * Picks a timeline scale by its label from the Display menu's Scale branch.
+ * Picks a timeline scale by its label from beneath the Timeline layout in the Layout menu, expanding that layout as needed.
  */
 export async function pickTimelineScale(label: string): Promise<void> {
-  await pickDisplayRadio("Scale", label);
+  const timeline = await findLayoutOption("Timeline");
+
+  if (timeline.getAttribute("aria-expanded") !== "true") {
+    const expander = timeline.querySelector(
+      '[data-slot="cascader-item-expander"]',
+    );
+
+    if (expander !== null) {
+      fireEvent.click(expander);
+    }
+  }
+
+  const scale = await waitFor(() => {
+    const items = screen.getAllByRole("treeitem");
+    const match = items
+      .slice(items.indexOf(timeline) + 1)
+      .find(
+        (item) =>
+          item.getAttribute("aria-level") === "2" && getRowName(item) === label,
+      );
+
+    if (match === undefined) {
+      throw new Error(`No timeline scale named ${label}`);
+    }
+
+    return match;
+  }, BUILDER_WAIT);
+
+  fireEvent.click(scale);
 }
 
 /**
- * What the toolbar's Display chip says is shown, such as "Week".
+ * What the toolbar's Layout chip says is shown, such as "Week".
  */
 export async function readCalendarView(): Promise<string> {
   const group = await within(await findToolbar()).findByRole("group", {
-    name: "Display",
+    name: "Layout",
   });
 
-  return group.textContent.replace(/^Display/u, "");
+  return group.textContent.replace(/^Layout/u, "");
+}
+
+/**
+ * A menu row's own name: its text without the description, details and count beside it.
+ */
+function getRowName(row: Element): string {
+  const clone = row.cloneNode(true);
+
+  if (!(clone instanceof Element)) {
+    return row.textContent.trim();
+  }
+
+  for (const extra of clone.querySelectorAll(
+    '[data-slot="cascader-item-description"], [data-slot="cascader-item-details"], [data-slot="cascader-item-count"]',
+  )) {
+    extra.remove();
+  }
+
+  return clone.textContent.trim();
 }
 
 /**

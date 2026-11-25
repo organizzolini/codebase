@@ -1,9 +1,7 @@
-import { MousePointer2 } from "lucide-react";
-import { Fragment, useMemo } from "react";
+import { useMemo } from "react";
 
 import {
   Button,
-  ButtonGroup,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -21,11 +19,12 @@ import { createEventGroupFields } from "../calendar-group-strip/components/event
 import { QueryCascader } from "../query-cascader/query-cascader";
 import { PICK_EVERY_ROW } from "../query-cascader/query-cascader.constants";
 
-import { TITLE } from "./calendar-select-strip.constants";
+import { SelectIcon, TITLE } from "./calendar-select-strip.constants";
 import {
   createColumnItems,
   toColumnIds,
 } from "./calendar-select-strip.utilities";
+import { SelectStripFlow } from "./components/select-strip-flow/select-strip-flow";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
@@ -63,6 +62,7 @@ export function CalendarSelectStrip(
   // 🏗 Setup
   const ids = columns.length === 0 ? DEFAULT_COLUMN_IDS : columns;
   const shown = resolveColumns(ids, fields);
+  const order = shown.map((entry) => entry.id);
 
   // 💪 Handlers
 
@@ -79,97 +79,86 @@ export function CalendarSelectStrip(
       className={className}
       data-testid="calendar-select-strip"
     >
-      <ButtonGroup
-        aria-label={TITLE}
-        className="flex-wrap gap-y-2"
-      >
-        <Popover>
-          <PopoverTrigger
-            render={
+      <SelectStripFlow
+        chips={shown.map((column, index) => ({
+          content: (
+            <>
               <Button
+                className="bg-background dark:bg-input/30"
                 size="sm"
                 variant="outline"
               >
-                <MousePointer2 aria-hidden="true" />
-                {TITLE}
+                <TagLead
+                  icon={column.icon}
+                  id={column.id}
+                  label={column.label}
+                />
+                {column.label}
               </Button>
-            }
-          />
-          <PopoverContent
-            align="start"
-            aria-label="Select columns"
-            className="w-80 max-w-[90vw] p-0"
-          >
-            <QueryCascader
-              cascade={false}
-              items={items}
-              mode="tree"
-              onValueChange={(next) => {
-                onColumnsChange(toColumnIds(next, ids));
-              }}
-              placeholder="Select columns"
-              selectable={PICK_EVERY_ROW}
-              value={[...ids]}
-              multiple
-            />
-          </PopoverContent>
-        </Popover>
-        {shown.map((column, index) => (
-          <Fragment key={column.id}>
-            <Button
-              className="bg-background dark:bg-input/30"
-              size="sm"
-              variant="outline"
-            >
-              <TagLead
-                icon={column.icon}
-                id={column.id}
+              <ChipMenu
                 label={column.label}
+                onMoveLeft={
+                  index === 0
+                    ? undefined
+                    : () => {
+                        onColumnsChange(moveListItem(order, index, -1));
+                      }
+                }
+                onMoveRight={
+                  index === shown.length - 1
+                    ? undefined
+                    : () => {
+                        onColumnsChange(moveListItem(order, index, 1));
+                      }
+                }
+                onRemove={() => {
+                  onColumnsChange(
+                    toColumnIds(
+                      order.filter((_entry, at) => at !== index),
+                      ids,
+                    ),
+                  );
+                }}
               />
-              {column.label}
-            </Button>
-            <ChipMenu
-              label={column.label}
-              onMoveLeft={
-                index === 0
-                  ? undefined
-                  : () => {
-                      onColumnsChange(
-                        moveListItem(
-                          shown.map((entry) => entry.id),
-                          index,
-                          -1,
-                        ),
-                      );
-                    }
+            </>
+          ),
+          id: column.id,
+        }))}
+        label={TITLE}
+        trigger={
+          <Popover>
+            <PopoverTrigger
+              render={
+                <Button
+                  size="sm"
+                  variant="outline"
+                >
+                  <SelectIcon aria-hidden="true" />
+                  {TITLE}
+                </Button>
               }
-              onMoveRight={
-                index === shown.length - 1
-                  ? undefined
-                  : () => {
-                      onColumnsChange(
-                        moveListItem(
-                          shown.map((entry) => entry.id),
-                          index,
-                          1,
-                        ),
-                      );
-                    }
-              }
-              onRemove={() => {
-                onColumnsChange(
-                  toColumnIds(
-                    shown
-                      .filter((_entry, at) => at !== index)
-                      .map((entry) => entry.id),
-                    ids,
-                  ),
-                );
-              }}
             />
-          </Fragment>
-        ))}
-      </ButtonGroup>
+            <PopoverContent
+              align="start"
+              aria-label="Select columns"
+              className="w-80 max-w-[90vw] p-0"
+            >
+              <QueryCascader
+                cascade={false}
+                items={items}
+                mode="tree"
+                onValueChange={(next) => {
+                  onColumnsChange(toColumnIds(next, ids));
+                }}
+                placeholder="Select columns"
+                selectable={PICK_EVERY_ROW}
+                value={[...ids]}
+                multiple
+              />
+            </PopoverContent>
+          </Popover>
+        }
+      />
     </div>
   );
 }

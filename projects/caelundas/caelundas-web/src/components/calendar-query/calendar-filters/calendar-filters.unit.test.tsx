@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { CalendarFilters } from "./calendar-filters";
+import { STRIP_CLASS_NAME } from "./calendar-filters.constants";
 
 describe(CalendarFilters, () => {
   it("applies its class name", () => {
@@ -35,6 +36,36 @@ describe(CalendarFilters, () => {
     expect(group.contains(filter)).toBe(true);
     expect(filter.textContent).toBe("Filter");
     expect(filter.className).not.toContain("rounded-r-none");
+  });
+
+  it("keeps Filter in a head that closes its own line", () => {
+    render(
+      <CalendarFilters
+        fields={[]}
+        filter={undefined}
+        onFilterChange={vi.fn<(filter: unknown) => void>()}
+      />,
+    );
+
+    const head = screen
+      .getByRole("group", { name: "Filter" })
+      .closest<HTMLElement>("[data-strip-item]");
+
+    expect(head).not.toBeNull();
+    expect(head?.dataset["lineEnd"]).toBe("");
+  });
+
+  it("squares every joint, so no corner rounds at a line break", () => {
+    expect(STRIP_CLASS_NAME).not.toContain("data-line-end");
+    expect(STRIP_CLASS_NAME).not.toContain(
+      "[data-line-start]>:first-child]:rounded",
+    );
+    expect(STRIP_CLASS_NAME).toContain(
+      "[&_[data-slot=filter-chip][data-line-start]>:first-child]:border-l!",
+    );
+    expect(STRIP_CLASS_NAME).toContain(
+      "[&_[data-slot=filter-chip]:not(:last-child)>[data-slot]:last-child]:rounded-r-none!",
+    );
   });
 
   describe("presets", () => {

@@ -115,16 +115,43 @@ describe(useTableRows, () => {
     });
 
     expect(dispatch).toHaveBeenCalledWith({ id: "a", type: "toggle" });
+    // The first groups are registered, so groups opened on the same ids elsewhere stay open.
     expect(dispatch).toHaveBeenCalledWith({
       firstPath: [],
       groupIds: [],
       groupLevels: [],
-      type: "reset",
+      type: "register",
     });
     expect(dispatch).toHaveBeenCalledWith({
       stats: { longest: 250, shown: 100, total: 250 },
       type: "set-stats",
     });
+  });
+
+  it("starts over the groups for new data, and registers the same data again", () => {
+    const dispatch = vi.fn<(action: TableGroupsAction) => void>();
+    const { rerender } = renderHook(
+      (options: UseTableRowsOptions) => useTableRows(options),
+      {
+        initialProps: OPTIONS,
+        wrapper: ({ children }: { children: ReactNode }) =>
+          createElement(
+            TableGroupsContext,
+            {
+              value: { ...UNPROVIDED_TABLE_GROUPS, dispatch, provided: true },
+            },
+            children,
+          ),
+      },
+    );
+
+    rerender({ ...OPTIONS, dayCount: 29 });
+
+    const types = dispatch.mock.calls
+      .map(([action]) => action.type)
+      .filter((type) => type === "register" || type === "reset");
+
+    expect(types).toStrictEqual(["register", "reset"]);
   });
 
   it("shows the pages and the page size a provider holds", () => {

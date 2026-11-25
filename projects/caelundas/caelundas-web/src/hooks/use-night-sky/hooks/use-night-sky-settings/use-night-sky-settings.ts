@@ -2,7 +2,10 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useCallback } from "react";
 
 import { CONSTELLATIONS } from "../../night-sky.constants";
-import { readNightSkyOverrides } from "../../use-night-sky.utilities";
+import {
+  omitOldSkyKeys,
+  readNightSkyOverrides,
+} from "../../use-night-sky.utilities";
 
 import type { CalendarSearch } from "../../../use-calendar-search/calendar-search.types";
 import type { UseNightSkySettingsResult } from "./use-night-sky-settings.types";
@@ -28,7 +31,7 @@ export function useNightSkySettings(): UseNightSkySettingsResult {
     (next: Partial<CalendarSearch>): void => {
       void navigate({
         replace: true,
-        search: (previous) => ({ ...previous, ...next }),
+        search: (previous) => ({ ...omitOldSkyKeys(previous), ...next }),
       });
     },
     [navigate],

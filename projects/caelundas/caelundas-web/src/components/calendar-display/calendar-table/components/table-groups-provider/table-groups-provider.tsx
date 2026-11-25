@@ -33,16 +33,22 @@ export function TableGroupsProvider(
   const [state, dispatch] = useReducer(reduceTableGroups, INITIAL_TABLE_GROUPS);
   const value = useMemo(
     () => ({
-      canCollapse: (levels: readonly number[]) =>
-        getCollapseActions(state, levels).canCollapse,
-      canExpand: (levels: readonly number[]) =>
-        getCollapseActions(state, levels).canExpand,
-      collapseAll: (levels: readonly number[]) => {
-        dispatch({ levels, type: "collapse-all" });
+      canCollapse: (levels: readonly number[], base?: ReadonlySet<string>) =>
+        getCollapseActions(
+          { ...state, expanded: base ?? state.expanded },
+          levels,
+        ).canCollapse,
+      canExpand: (levels: readonly number[], base?: ReadonlySet<string>) =>
+        getCollapseActions(
+          { ...state, expanded: base ?? state.expanded },
+          levels,
+        ).canExpand,
+      collapseAll: (levels: readonly number[], base?: ReadonlySet<string>) => {
+        dispatch({ base, levels, type: "collapse-all" });
       },
       dispatch,
-      expandAll: (levels: readonly number[]) => {
-        dispatch({ levels, type: "expand-all" });
+      expandAll: (levels: readonly number[], base?: ReadonlySet<string>) => {
+        dispatch({ base, levels, type: "expand-all" });
       },
       provided: true,
       state,

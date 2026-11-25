@@ -16,6 +16,13 @@ describe(ChipMenu, () => {
     expect(screen.getByTestId("chip-menu").className).toContain("chip-menu");
   });
 
+  it("drops its horizontal padding", () => {
+    render(<ChipMenu label="Type" />);
+
+    expect(screen.getByTestId("chip-menu").className).toContain("px-0");
+    expect(screen.getByTestId("chip-menu").className).toContain("w-5");
+  });
+
   it("puts its test id on the button, a direct child of the strip", () => {
     render(
       <div data-testid="strip">

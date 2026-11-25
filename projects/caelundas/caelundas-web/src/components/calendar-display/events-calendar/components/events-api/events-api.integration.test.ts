@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { serveGraphqlApi } from "../../../../../../testing/graphql-api";
 import {
   mockDatasetQuery,
+  mockEventMetricsQuery,
   mockEventsQuery,
   mockFacetsQuery,
   mockNightSkyQuery,
@@ -21,6 +22,7 @@ import {
 
 import {
   describeDataset,
+  findEventMetrics,
   findEvents,
   findFacets,
   findPresets,
@@ -72,6 +74,44 @@ describe("events api", () => {
       events: [],
     });
     expect(received).toStrictEqual(variables);
+  });
+
+  it("reads the metrics of a period, grouped, with the previous period's", async () => {
+    expect.hasAssertions();
+
+    let received: unknown;
+    const values = [{ metric: "EVENTS" as const, previous: 4, value: 5 }];
+    const answer = {
+      groups: [
+        {
+          children: [],
+          id: "/0:2026",
+          key: "2026",
+          label: "2026",
+          level: 0,
+          orderKey: "2026",
+          path: null,
+          values,
+        },
+      ],
+      timezone: "UTC",
+      total: values,
+    };
+    serveGraphqlApi(
+      mockEventMetricsQuery(({ variables }) => {
+        received = variables;
+        return HttpResponse.json({ data: { eventMetrics: answer } });
+      }),
+    );
+    const input = {
+      compareToPrevious: true,
+      grouping: [{ field: "year" }],
+      metrics: ["EVENTS" as const],
+      period,
+    };
+
+    await expect(findEventMetrics(input)).resolves.toStrictEqual(answer);
+    expect(received).toStrictEqual({ input });
   });
 
   it("reads the facets", async () => {

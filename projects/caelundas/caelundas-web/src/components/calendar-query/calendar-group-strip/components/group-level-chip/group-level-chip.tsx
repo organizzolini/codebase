@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** A level's name, its possible moves, and its remove handler. */
+/** A level's name, its possible moves, and its optional remove. */
 export interface GroupLevelChipProperties {
   /**
    * The symbol that leads the name.
@@ -20,7 +20,7 @@ export interface GroupLevelChipProperties {
   onExpandAll?: (() => void) | undefined;
   onMoveLeft?: (() => void) | undefined;
   onMoveRight?: (() => void) | undefined;
-  onRemove: () => void;
+  onRemove?: (() => void) | undefined;
 }
 
 // 🧩 Component

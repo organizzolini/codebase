@@ -23,7 +23,7 @@ import type { ReactNode } from "react";
 export interface TableGroupRowProperties {
   className?: string;
   columns: readonly TableColumn[];
-  levelIcons?: readonly (string | undefined)[];
+  levelIcons?: readonly (string | undefined)[] | undefined;
   /**
    * Colors by group id; absent when colors are off.
    */
@@ -70,6 +70,7 @@ export function TableGroupRow(
   return (
     <TableRow
       className={`sticky z-[5] hover:bg-transparent has-aria-expanded:bg-transparent ${className ?? ""}`}
+      data-depth={row.depth}
       data-testid="table-group-row"
       style={{ height: getGroupHeight(), top: getGroupTop(row.depth) }}
     >

@@ -16,7 +16,7 @@ import { CalendarGridNavigation } from "./calendar-grid-navigation";
 
 import type { CalendarNavigation } from "../../../../calendar-controls/calendar-navigation-group/calendar-navigation-group.types";
 import type { CalendarEventRecord } from "../calendar-loader/calendar-records.types";
-import type { CalendarViewName } from "../calendar-views/calendar-views.types";
+import type { GridViewName } from "../calendar-views/calendar-views.types";
 import type { EventCalendarRenderEventProps } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
@@ -38,7 +38,7 @@ export interface CalendarGridProperties {
   onDateChange: (date: Date) => void;
   onNavigationChange: (navigation: CalendarNavigation) => void;
   timeZone: string;
-  view: Exclude<CalendarViewName, "table" | "timeline">;
+  view: GridViewName;
 }
 
 // 🧩 Component

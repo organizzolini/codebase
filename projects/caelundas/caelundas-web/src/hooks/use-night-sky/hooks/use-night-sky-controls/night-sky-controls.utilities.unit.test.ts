@@ -31,16 +31,16 @@ describe("night-sky-controls utilities", () => {
   describe(toConstellationsChange, () => {
     it("removes all, the default, writes the zodiac and none, and joins the rest", () => {
       expect(toConstellationsChange(["all"])).toStrictEqual({
-        "sky.constellations": undefined,
+        "skyfield.constellations": undefined,
       });
       expect(toConstellationsChange(["zodiac"])).toStrictEqual({
-        "sky.constellations": "zodiac",
+        "skyfield.constellations": "zodiac",
       });
       expect(toConstellationsChange([])).toStrictEqual({
-        "sky.constellations": "none",
+        "skyfield.constellations": "none",
       });
       expect(toConstellationsChange(["zodiac", "ursa_major"])).toStrictEqual({
-        "sky.constellations": "zodiac,ursa_major",
+        "skyfield.constellations": "zodiac,ursa_major",
       });
     });
   });
@@ -89,32 +89,34 @@ describe("night-sky-controls utilities", () => {
   describe(toEclipticChange, () => {
     it("removes the key to draw the ecliptic and writes false to hide it", () => {
       expect(toEclipticChange(true)).toStrictEqual({
-        "sky.ecliptic": undefined,
+        "skyfield.ecliptic": undefined,
       });
-      expect(toEclipticChange(false)).toStrictEqual({ "sky.ecliptic": false });
+      expect(toEclipticChange(false)).toStrictEqual({
+        "skyfield.ecliptic": false,
+      });
     });
   });
 
   describe(toVisibilityChange, () => {
     it("removes sky to show the sky and writes off to hide it", () => {
-      expect(toVisibilityChange(true)).toStrictEqual({ sky: undefined });
-      expect(toVisibilityChange(false)).toStrictEqual({ sky: "off" });
+      expect(toVisibilityChange(true)).toStrictEqual({ skyfield: undefined });
+      expect(toVisibilityChange(false)).toStrictEqual({ skyfield: "off" });
     });
   });
 
   describe(toSkyParameterChange, () => {
     it("writes a setting, and removes it when it is set back to its default", () => {
-      expect(toSkyParameterChange("sky.lat", 45)).toStrictEqual({
-        "sky.lat": 45,
+      expect(toSkyParameterChange("skyfield.lat", 45)).toStrictEqual({
+        "skyfield.lat": 45,
       });
-      expect(toSkyParameterChange("sky.lat", 90)).toStrictEqual({
-        "sky.lat": undefined,
+      expect(toSkyParameterChange("skyfield.lat", 90)).toStrictEqual({
+        "skyfield.lat": undefined,
       });
-      expect(toSkyParameterChange("sky.top", "#04060F")).toStrictEqual({
-        "sky.top": undefined,
+      expect(toSkyParameterChange("skyfield.top", "#04060F")).toStrictEqual({
+        "skyfield.top": undefined,
       });
-      expect(toSkyParameterChange("sky.top", "#ffffff")).toStrictEqual({
-        "sky.top": "#ffffff",
+      expect(toSkyParameterChange("skyfield.top", "#ffffff")).toStrictEqual({
+        "skyfield.top": "#ffffff",
       });
     });
   });
@@ -126,8 +128,8 @@ describe("night-sky-controls utilities", () => {
       expect(Object.values(change).every((value) => value === undefined)).toBe(
         true,
       );
-      expect(Object.keys(change)).toContain("sky.constellations");
-      expect(Object.keys(change)).toContain("sky.lat");
+      expect(Object.keys(change)).toContain("skyfield.constellations");
+      expect(Object.keys(change)).toContain("skyfield.lat");
     });
   });
 });

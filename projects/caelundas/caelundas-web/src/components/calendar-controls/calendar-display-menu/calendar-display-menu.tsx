@@ -10,18 +10,20 @@ import {
 } from "@codebase/presentation";
 
 import { useCalendarDisplay } from "../../../hooks/use-calendar-display/use-calendar-display";
-import { CALENDAR_VIEW_LABELS } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { QueryCascader } from "../../calendar-query/query-cascader/query-cascader";
 
 import {
   CHIP_CLASS_NAME,
-  LAYOUT_BRANCH,
+  SYMBOL_CHOICES,
+  SYMBOLS_BRANCH,
   TITLE,
+  TREE_CLASS_NAME,
 } from "./calendar-display-menu.constants";
 import {
   applyDisplayLeaf,
   createDisplayItems,
   findToggledLeaf,
+  isDisplayChoice,
   toDisplayValue,
 } from "./calendar-display-menu.utilities";
 
@@ -30,7 +32,7 @@ import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** Props: zone and the view shown. */
+/** Props: zone, and the view shown. */
 export interface CalendarDisplayMenuProperties {
   className?: string;
   timeZone: string;
@@ -39,7 +41,7 @@ export interface CalendarDisplayMenuProperties {
 
 // 🧩 Component
 
-/** Renders the Display button, opening a searchable Cascader of how the calendar looks; the chip beside it names the view. */
+/** Renders the Display button, opening a searchable Cascader of how the calendar looks, joined to a chip naming the symbols drawn. */
 export function CalendarDisplayMenu(
   properties: Readonly<CalendarDisplayMenuProperties>,
 ): ReactNode {
@@ -49,11 +51,13 @@ export function CalendarDisplayMenu(
   const { change, constellations, handlers, sky, state } =
     useCalendarDisplay(timeZone);
   const [isOpen, setIsOpen] = useState(false);
+  const [opened, setOpened] = useState<string[]>([SYMBOLS_BRANCH]);
 
   // 🏗 Setup
   const choices = { ...state, listing: constellations, sky, view };
   const items = createDisplayItems(choices);
   const value = toDisplayValue(choices);
+  const SymbolsIcon = SYMBOL_CHOICES[state.symbols].icon;
 
   // 💪 Handlers
   const applyLeaf = (leaf: string): void => {
@@ -71,6 +75,14 @@ export function CalendarDisplayMenu(
     }
   };
 
+  const handleOpenChange = (open: boolean): void => {
+    if (open) {
+      setOpened([SYMBOLS_BRANCH]);
+    }
+
+    setIsOpen(open);
+  };
+
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
@@ -83,7 +95,7 @@ export function CalendarDisplayMenu(
     >
       <ButtonGroup aria-label={TITLE}>
         <Popover
-          onOpenChange={setIsOpen}
+          onOpenChange={handleOpenChange}
           open={isOpen}
         >
           <PopoverTrigger
@@ -104,11 +116,14 @@ export function CalendarDisplayMenu(
           >
             <QueryCascader
               cascade={false}
-              defaultExpanded={[LAYOUT_BRANCH]}
+              className={TREE_CLASS_NAME}
+              expanded={opened}
               items={items}
               mode="tree"
+              onExpandedChange={setOpened}
               onValueChange={handleValueChange}
               placeholder="Search display options"
+              selectable={isDisplayChoice}
               value={value}
               multiple
             />
@@ -122,7 +137,8 @@ export function CalendarDisplayMenu(
           size="sm"
           variant="outline"
         >
-          {CALENDAR_VIEW_LABELS[view]}
+          <SymbolsIcon aria-hidden="true" />
+          {SYMBOL_CHOICES[state.symbols].label}
         </Button>
       </ButtonGroup>
     </div>

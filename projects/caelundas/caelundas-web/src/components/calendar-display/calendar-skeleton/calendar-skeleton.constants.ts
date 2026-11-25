@@ -35,14 +35,32 @@ export const TIMELINE_BARS = [
 export const EVENT_HEIGHTS = ["h-8", "h-12", "h-8", "h-16", "h-8"] as const;
 
 /**
- * Each view's skeleton layout: grid, columns, list, or bars.
+ * Each view's skeleton layout: grid, columns, list, bars, cards, or timeline.
  */
 export const LAYOUTS: Readonly<
-  Record<CalendarViewName, "columns" | "grid" | "list" | "timeline">
+  Record<
+    CalendarViewName,
+    "bars" | "cards" | "columns" | "grid" | "list" | "timeline"
+  >
 > = {
+  charts: "bars",
   day: "columns",
   month: "grid",
   table: "list",
   timeline: "timeline",
+  totals: "cards",
   week: "columns",
 };
+
+export const BAR_HEIGHTS = [
+  "h-1/3",
+  "h-2/3",
+  "h-1/2",
+  "h-5/6",
+  "h-2/5",
+] as const;
+
+export const CARD_KEYS = Array.from(
+  { length: 8 },
+  (_, index) => `card-${String(index)}`,
+);

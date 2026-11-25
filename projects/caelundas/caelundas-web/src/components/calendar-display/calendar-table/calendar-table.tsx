@@ -1,6 +1,11 @@
-import { useEffect, useMemo } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef as useReference,
+} from "react";
 
-import { Table, TableBody, TableHeader } from "@codebase/presentation";
+import { Table } from "@codebase/presentation";
 
 import { useTableRows } from "../../../hooks/use-table-rows/use-table-rows";
 import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
@@ -13,15 +18,14 @@ import {
 } from "./calendar-table.constants";
 import {
   createTableNavigation,
+  getTableWidth,
   resolveColumns,
 } from "./calendar-table.utilities";
-import { TableColumnHeads } from "./components/table-column-heads/table-column-heads";
+import { TableBodyRows } from "./components/table-body-rows/table-body-rows";
 import { createRowColors } from "./components/table-group-row/table-group-row.utilities";
-import {
-  MemoEventRow,
-  MemoGroupRow,
-  MemoMoreRow,
-} from "./table-rows.constants";
+import { TableHeadStrip } from "./components/table-head-strip/table-head-strip";
+import { TableSizer } from "./components/table-sizer/table-sizer";
+import { clipUnderStickyStack } from "./table-sticky.utilities";
 
 import type { CalendarNavigation } from "../../calendar-controls/calendar-navigation-group/calendar-navigation-group.types";
 import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
@@ -30,7 +34,7 @@ import type {
   CalendarEventRecord,
   EventFacet,
 } from "../events-calendar/components/calendar-loader/calendar-records.types";
-import type { ReactNode } from "react";
+import type { ReactNode, UIEvent } from "react";
 
 // 🔖 Type
 
@@ -113,10 +117,24 @@ export function CalendarTable(
   );
 
   // 🏗 Setup
+  const headReference = useReference<HTMLDivElement>(null);
+  const bodyReference = useReference<HTMLDivElement>(null);
+  const tableStyle = { width: getTableWidth(columns) };
 
   // 💪 Handlers
+  const syncScroll = (event: UIEvent<HTMLDivElement>): void => {
+    if (headReference.current !== null) {
+      headReference.current.scrollLeft = event.currentTarget.scrollLeft;
+    }
+
+    clipUnderStickyStack(event.currentTarget);
+  };
 
   // ♻️ Lifecycle
+  useLayoutEffect(() => {
+    clipUnderStickyStack(bodyReference.current);
+  }, [bodyReference, columns, rows]);
+
   useEffect(() => {
     onNavigationChange(
       createTableNavigation({
@@ -136,54 +154,36 @@ export function CalendarTable(
       className={className}
       data-testid="calendar-table"
     >
-      <div className="h-full overflow-auto border-t [&>div]:overflow-visible">
-        <Table>
-          <TableHeader className="sticky top-0 z-10">
-            <TableColumnHeads
+      <div className="flex h-full flex-col border-t">
+        <TableHeadStrip
+          columns={columns}
+          onColumnsChange={onColumnsChange}
+          onSortChange={onSortChange}
+          scrollReference={headReference}
+          sort={sort}
+        />
+        <div
+          ref={bodyReference}
+          className="min-h-0 flex-1 overflow-auto [&>div]:overflow-visible"
+          data-testid="calendar-table-body"
+          onScroll={syncScroll}
+        >
+          <Table
+            className="table-fixed [&_td]:overflow-hidden"
+            style={tableStyle}
+          >
+            <TableSizer columns={columns} />
+            <TableBodyRows
               columns={columns}
-              onColumnsChange={onColumnsChange}
-              onSortChange={onSortChange}
-              sort={sort}
+              levelIcons={levelIcons}
+              more={more}
+              nodeColors={nodeColors}
+              onToggle={toggle}
+              rows={rows}
+              timeZone={timeZone}
             />
-          </TableHeader>
-          <TableBody>
-            {rows.map((row) => {
-              if (row.kind === "group") {
-                return (
-                  <MemoGroupRow
-                    key={row.id}
-                    columns={columns}
-                    levelIcons={levelIcons}
-                    nodeColors={nodeColors}
-                    onToggle={toggle}
-                    row={row}
-                    timeZone={timeZone}
-                  />
-                );
-              }
-
-              if (row.kind === "more") {
-                return (
-                  <MemoMoreRow
-                    key={row.id}
-                    columnCount={columns.length}
-                    onMore={more}
-                    row={row}
-                  />
-                );
-              }
-
-              return (
-                <MemoEventRow
-                  key={row.id}
-                  columns={columns}
-                  row={row}
-                  timeZone={timeZone}
-                />
-              );
-            })}
-          </TableBody>
-        </Table>
+          </Table>
+        </div>
       </div>
     </div>
   );

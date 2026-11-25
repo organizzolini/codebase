@@ -1,0 +1,70 @@
+query EventMetrics($input: EventMetricsInput!) {
+  eventMetrics(input: $input) {
+    timezone
+    total {
+      metric
+      previous
+      value
+    }
+    groups {
+      ...EventMetricGroupLevel0
+    }
+  }
+}
+
+fragment EventMetricValueFields on EventMetricValue {
+  metric
+  previous
+  value
+}
+
+fragment EventMetricGroupFields on EventMetricGroup {
+  id
+  key
+  label
+  level
+  orderKey
+  path
+  values {
+    ...EventMetricValueFields
+  }
+}
+
+fragment EventMetricGroupLevel0 on EventMetricGroup {
+  ...EventMetricGroupFields
+  children {
+    ...EventMetricGroupLevel1
+  }
+}
+
+fragment EventMetricGroupLevel1 on EventMetricGroup {
+  ...EventMetricGroupFields
+  children {
+    ...EventMetricGroupLevel2
+  }
+}
+
+fragment EventMetricGroupLevel2 on EventMetricGroup {
+  ...EventMetricGroupFields
+  children {
+    ...EventMetricGroupLevel3
+  }
+}
+
+fragment EventMetricGroupLevel3 on EventMetricGroup {
+  ...EventMetricGroupFields
+  children {
+    ...EventMetricGroupLevel4
+  }
+}
+
+fragment EventMetricGroupLevel4 on EventMetricGroup {
+  ...EventMetricGroupFields
+  children {
+    ...EventMetricGroupLevel5
+  }
+}
+
+fragment EventMetricGroupLevel5 on EventMetricGroup {
+  ...EventMetricGroupFields
+}

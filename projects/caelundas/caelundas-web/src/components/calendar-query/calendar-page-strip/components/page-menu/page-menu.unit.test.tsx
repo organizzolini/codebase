@@ -44,22 +44,18 @@ describe(PageMenu, () => {
     expect(screen.getByTestId("page-menu").className).toBe("page-menu");
   });
 
-  it("offers the page sizes, and marks the current one", () => {
-    renderMenu();
+  it("offers only the larger page sizes, and marks the current one", () => {
+    renderMenu(2, 250);
 
     expect(
-      ["10", "25", "50", "100", "250", "500", "1000"].map((name) =>
+      ["100", "250", "500", "1000"].map((name) =>
         screen.getByRole("button", { name }).getAttribute("aria-pressed"),
       ),
-    ).toStrictEqual([
-      "false",
-      "true",
-      "false",
-      "false",
-      "false",
-      "false",
-      "false",
-    ]);
+    ).toStrictEqual(["false", "true", "false", "false"]);
+
+    for (const name of ["10", "25", "50"]) {
+      expect(screen.queryByRole("button", { name })).toBeNull();
+    }
   });
 
   it("changes the page size", () => {

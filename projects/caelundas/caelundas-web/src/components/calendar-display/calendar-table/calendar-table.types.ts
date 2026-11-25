@@ -13,6 +13,25 @@ export interface DayRange {
 }
 
 /**
+ * A row's clip-path and divider color.
+ */
+export interface StickyPlan {
+  clip: string;
+  line: string;
+  shift: string;
+}
+
+/**
+ * A body row's edges, group depth, and whether it is stuck.
+ */
+export interface StickyRow {
+  bottom: number;
+  depth: number | undefined;
+  stuck: boolean;
+  top: number;
+}
+
+/**
  * A column of the table: what its cells show of each event.
  */
 export interface TableColumn {

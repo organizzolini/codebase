@@ -32,6 +32,14 @@ export interface GroupParent {
    * The group's own key: a tag's id for a tag group.
    */
   key?: null | string;
+  /**
+   * The group's name, which a "No …" group under it takes.
+   */
+  label?: string;
+  /**
+   * The tag's full path, none for the top and null for a "No …" group, which has no tag.
+   */
+  tagPath?: null | string;
 }
 
 /**
@@ -41,13 +49,23 @@ export interface GroupSort {
   direction: "asc" | "desc";
   key: GroupSortKey;
   /**
+   * For the `metric` key, the name of the metric the metric layouts order by.
+   */
+  metric?: string | undefined;
+  /**
    * For the `tag` key, the id of the tag root's field or of the tag whose children's order the group's events are ranked by.
    */
   tag?: string | undefined;
 }
 
-/** What groups are ordered by: tag order, name, count, time. */
-export type GroupSortKey = "count" | "first" | "name" | "order" | "tag";
+/** What groups are ordered by: tag order, name, count, time, metric. */
+export type GroupSortKey =
+  | "count"
+  | "first"
+  | "metric"
+  | "name"
+  | "order"
+  | "tag";
 
 /**
  * What describes a level's groups: field, name, parent depth, only group.
@@ -60,6 +78,10 @@ export interface LevelContext {
    */
   only?: string | undefined;
   /**
+   * Whether the level's groups are the tags beneath its parent group's tag, for a level over every root's tags.
+   */
+  scoped?: boolean;
+  /**
    * The names of a tag's path, from beneath the root, that the level's parent already holds.
    */
   skip: number;
@@ -71,6 +93,10 @@ export interface LevelContext {
 export interface OrderedGroupNode {
   node: EventGroupNode;
   order: string;
+  /**
+   * The tag's full path, null for a "No …" group.
+   */
+  tagPath: null | string;
 }
 
 /**

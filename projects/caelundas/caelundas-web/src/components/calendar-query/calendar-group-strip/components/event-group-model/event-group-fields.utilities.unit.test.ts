@@ -3,9 +3,11 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { serveCalendarApi } from "../../../../../../testing/calendar-api";
 import { findFacets } from "../../../../calendar-display/events-calendar/components/events-api/events-api.utilities";
 
+import { ALL_TAGS_FIELD } from "./event-group-fields.constants";
 import {
   createEventGroupFields,
   getDefaultGrouping,
+  getRootGrouping,
   resolveEventGrouping,
   toGroupLevel,
 } from "./event-group-fields.utilities";
@@ -123,23 +125,38 @@ describe("event group fields", () => {
   });
 
   describe(getDefaultGrouping, () => {
-    const listRoots = (): { field: string }[] =>
-      fields
+    it("opens on the tag roots, then each depth of tags beneath them", () => {
+      const grouping = getDefaultGrouping(fields);
+      const roots = fields
+        .filter((field) => field.id.startsWith("tag:"))
+        .map((field) => field.id.slice("tag:".length));
+
+      expect(roots.length).toBeGreaterThan(1);
+      expect(grouping.map((level) => level.depth)).toStrictEqual([
+        undefined,
+        1,
+        2,
+        3,
+      ]);
+      expect(grouping.every((level) => level.field === ALL_TAGS_FIELD)).toBe(
+        true,
+      );
+      expect(grouping[0]?.tags).toStrictEqual(roots);
+      expect(grouping[2]?.tags).toStrictEqual(["tag-major", "tag-retrograde"]);
+    });
+
+    it("is no grouping when the data has no tag root", () => {
+      expect(getDefaultGrouping([])).toStrictEqual([]);
+    });
+  });
+
+  describe(getRootGrouping, () => {
+    it("lists every tag root as a level of its own, in order", () => {
+      const listRoots = fields
         .filter((field) => field.id.startsWith("tag:"))
         .map((field) => ({ field: field.id }));
 
-    it.each(["table", "timeline"])(
-      "groups the %s by every tag root, in order",
-      (view) => {
-        expect(listRoots().length).toBeGreaterThan(1);
-        expect(getDefaultGrouping(view, fields)).toStrictEqual(listRoots());
-      },
-    );
-
-    it("colors the month by the first tag root alone", () => {
-      expect(getDefaultGrouping("month", fields)).toStrictEqual(
-        listRoots().slice(0, 1),
-      );
+      expect(getRootGrouping(fields)).toStrictEqual(listRoots);
     });
   });
 

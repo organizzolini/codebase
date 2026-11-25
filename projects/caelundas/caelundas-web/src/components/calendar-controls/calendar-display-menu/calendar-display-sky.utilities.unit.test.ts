@@ -32,10 +32,12 @@ describe("calendar-display-sky utilities", () => {
       const sky = createSkyItems(LISTING);
       const opacity = sky.find((item) => item.label === "Opacity");
       const background = sky.find((item) => item.label === "Background");
-      const first = opacity?.children?.[0];
 
-      expect(first?.children?.length).toBeGreaterThan(1);
-      expect(first?.children?.[0]?.value).toMatch(/^setting:sky\.opacity=/u);
+      expect(opacity?.children?.length).toBeGreaterThan(1);
+      expect(opacity?.children?.[0]?.value).toMatch(
+        /^setting:skyfield\.opacity=/u,
+      );
+      expect(sky.some((item) => item.label === "Calendar opacity")).toBe(false);
       expect(background?.children?.[0]?.children?.[0]?.icon).toBeDefined();
     });
   });
@@ -43,7 +45,7 @@ describe("calendar-display-sky utilities", () => {
   describe(toSkyValue, () => {
     it("ticks the switches, the figures drawn, the nearest value and the swatch set", () => {
       const value = toSkyValue(
-        readNightSkyOverrides({ "sky.top": "#04060f" }),
+        readNightSkyOverrides({ "skyfield.top": "#04060f" }),
         LISTING,
       );
 
@@ -51,15 +53,15 @@ describe("calendar-display-sky utilities", () => {
       expect(value).toContain("sky:ecliptic");
       expect(value).toContain("constellation:Aries");
       expect(value).toContain("constellation:Orion");
-      expect(value).toContain("setting:sky.top=#04060f");
+      expect(value).toContain("setting:skyfield.top=#04060f");
       expect(
-        value.some((leaf) => leaf.startsWith("setting:sky.opacity=")),
+        value.some((leaf) => leaf.startsWith("setting:skyfield.opacity=")),
       ).toBe(true);
     });
 
     it("leaves out what is off", () => {
       const value = toSkyValue(
-        readNightSkyOverrides({ sky: "off", "sky.ecliptic": false }),
+        readNightSkyOverrides({ skyfield: "off", "skyfield.ecliptic": false }),
         LISTING,
       );
 
@@ -81,27 +83,27 @@ describe("calendar-display-sky utilities", () => {
 
     it("hides a figure that shows, naming the rest in the fewest words", () => {
       expect(apply("constellation", "Orion")).toHaveBeenCalledWith({
-        "sky.constellations": "zodiac",
+        "skyfield.constellations": "zodiac",
       });
     });
 
     it("sets a number as a number, and a color as it is", () => {
-      expect(apply("setting", "sky.lat=45")).toHaveBeenCalledWith({
-        "sky.lat": 45,
+      expect(apply("setting", "skyfield.lat=45")).toHaveBeenCalledWith({
+        "skyfield.lat": 45,
       });
-      expect(apply("setting", "sky.top=#ffffff")).toHaveBeenCalledWith({
-        "sky.top": "#ffffff",
+      expect(apply("setting", "skyfield.top=#ffffff")).toHaveBeenCalledWith({
+        "skyfield.top": "#ffffff",
       });
     });
 
     it("puts the sky back to its default", () => {
       expect(apply("sky", "reset")).toHaveBeenCalledWith(
-        expect.objectContaining({ "sky.lat": undefined }),
+        expect.objectContaining({ "skyfield.lat": undefined }),
       );
     });
 
     it("ignores a setting it does not know", () => {
-      expect(apply("setting", "sky.narnia=1")).not.toHaveBeenCalled();
+      expect(apply("setting", "skyfield.narnia=1")).not.toHaveBeenCalled();
     });
   });
 });

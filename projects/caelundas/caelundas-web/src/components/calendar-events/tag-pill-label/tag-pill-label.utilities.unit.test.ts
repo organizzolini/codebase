@@ -8,7 +8,7 @@ import {
 
 describe("tag-pill-label utilities", () => {
   describe(createTagIcons, () => {
-    it("maps each tag with an icon by its id, across the facets", () => {
+    it("maps each root and each tag with an icon by its id, across the facets", () => {
       const icons = createTagIcons([
         {
           icon: "orbit",
@@ -28,7 +28,10 @@ describe("tag-pill-label utilities", () => {
         },
       ]);
 
-      expect([...icons]).toStrictEqual([["sun", "sun"]]);
+      expect([...icons]).toStrictEqual([
+        ["body", "orbit"],
+        ["sun", "sun"],
+      ]);
     });
   });
 

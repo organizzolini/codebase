@@ -1,4 +1,10 @@
-import { use, useEffect, useMemo, useReducer } from "react";
+import {
+  use,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef as useReference,
+} from "react";
 
 import {
   listTableEvents,
@@ -43,6 +49,7 @@ export function useTableRows(
 
   // 🪝 Hooks
   const shared = use(TableGroupsContext);
+  const seenKey = useReference<null | string>(null);
   const [own, dispatchOwn] = useReducer(
     reduceTableGroups,
     INITIAL_TABLE_GROUPS,
@@ -120,9 +127,18 @@ export function useTableRows(
 
   // ♻️ Lifecycle
   useEffect(() => {
-    dispatch({ firstPath, groupIds, groupLevels, type: "reset" });
+    // The table's first groups, or the same data again, keep what is open: a metric layout may have opened groups on these very ids.
+    const isSameData = seenKey.current === null || seenKey.current === resetKey;
+
+    seenKey.current = resetKey;
+    dispatch({
+      firstPath,
+      groupIds,
+      groupLevels,
+      type: isSameData ? "register" : "reset",
+    });
     // The key is the data by value; the ids come from the same data.
-  }, [dispatch, firstPath, groupIds, groupLevels, resetKey]);
+  }, [dispatch, firstPath, groupIds, groupLevels, resetKey, seenKey]);
   useEffect(() => {
     dispatch({ stats: toListStats(groups, listed, rows), type: "set-stats" });
   }, [dispatch, groups, listed, rows]);

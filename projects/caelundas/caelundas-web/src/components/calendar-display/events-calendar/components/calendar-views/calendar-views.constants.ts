@@ -8,6 +8,8 @@ export const CALENDAR_VIEWS = [
   "week",
   "day",
   "table",
+  "charts",
+  "totals",
   "timeline",
 ] as const;
 
@@ -17,10 +19,12 @@ export const CALENDAR_VIEWS = [
 export const CALENDAR_VIEW_LABELS: Readonly<
   Record<(typeof CALENDAR_VIEWS)[number], string>
 > = {
+  charts: "Charts",
   day: "Day",
   month: "Month",
   table: "Table",
   timeline: "Timeline",
+  totals: "Totals",
   week: "Week",
 };
 
@@ -30,12 +34,19 @@ export const CALENDAR_VIEW_LABELS: Readonly<
 export const CALENDAR_VIEW_PERIODS: Readonly<
   Record<(typeof CALENDAR_VIEWS)[number], string>
 > = {
+  charts: "in these days",
   day: "this day",
   month: "this month",
   table: "in these days",
   timeline: "in this period",
+  totals: "in these days",
   week: "this week",
 };
+
+/**
+ * The layouts that measure the table's days instead of listing them.
+ */
+export const METRIC_VIEWS = ["charts", "totals"] as const;
 
 /**
  * How many days the table lists from the day it opens on.

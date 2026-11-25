@@ -1,3 +1,4 @@
+import { CalendarDays } from "lucide-react";
 import { useMemo } from "react";
 
 import { QueryCascader } from "../../../query-cascader/query-cascader";
@@ -28,6 +29,10 @@ export interface FilterCascaderProperties {
    * The fields offered to pick from, when fewer than `fields`; filters already on the others stay.
    */
   offered?: readonly EventFilterField[] | undefined;
+  /**
+   * Opens the picker of the days the view shows, as a Date item below the list; no such item when absent.
+   */
+  onDateOpen?: (() => void) | undefined;
   onQueryChange: (query: EventFilterQuery) => void;
   query: EventFilterQuery;
 }
@@ -42,12 +47,34 @@ export function FilterCascader(
     className,
     fields,
     offered = fields,
+    onDateOpen,
     onQueryChange,
     query,
   } = properties;
 
   // 🪝 Hooks
   const items = useMemo(() => createFilterItems(offered), [offered]);
+  const actions = useMemo(
+    () =>
+      onDateOpen === undefined
+        ? []
+        : [
+            {
+              icon: <CalendarDays aria-hidden="true" />,
+              label: (
+                <span className="flex flex-col">
+                  Date
+                  <span className="text-xs text-muted-foreground">
+                    The days the view shows
+                  </span>
+                </span>
+              ),
+              onSelect: onDateOpen,
+              value: "date",
+            },
+          ],
+    [onDateOpen],
+  );
 
   // 🏗 Setup
 
@@ -64,6 +91,7 @@ export function FilterCascader(
       data-testid="filter-cascader"
     >
       <QueryCascader
+        actions={actions}
         cascade={false}
         items={items}
         mode="tree"

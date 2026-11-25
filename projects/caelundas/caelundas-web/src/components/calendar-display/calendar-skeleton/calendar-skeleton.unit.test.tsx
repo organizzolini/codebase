@@ -38,12 +38,24 @@ describe(CalendarSkeleton, () => {
     ["week", "columns"],
     ["day", "columns"],
     ["table", "list"],
+    ["charts", "bars"],
+    ["totals", "cards"],
     ["timeline", "timeline"],
   ] as const)("takes the %s view's layout when it is named", (view, layout) => {
     render(<CalendarSkeleton view={view} />);
 
     expect(screen.getByRole("status").dataset["layout"]).toBe(layout);
     expect(screen.getByRole("status").dataset["view"]).toBe(view);
+  });
+
+  it("draws bars for the Charts and cards for the Totals", () => {
+    const { container, rerender } = render(<CalendarSkeleton view="charts" />);
+
+    expect(container.querySelectorAll("[class*=' w-full']")).toHaveLength(10);
+
+    rerender(<CalendarSkeleton view="totals" />);
+
+    expect(container.querySelectorAll("[class*='h-28']")).toHaveLength(8);
   });
 
   it("draws a column for each day a view shows", () => {

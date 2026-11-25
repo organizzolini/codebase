@@ -3,7 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 import {
   createTableNavigation,
   getCellText,
-  getTableRange,
+  getColumnWidth,
+  getTableWidth,
   getTagCellEntries,
   listTableEvents,
   resolveColumns,
@@ -461,22 +462,6 @@ describe("calendar-table utilities", () => {
     });
   });
 
-  describe(getTableRange, () => {
-    it("counts the days from the anchor's day in the data's zone", () => {
-      expect(
-        getTableRange(
-          new Date("2026-03-01T02:00:00.000Z"),
-          "America/New_York",
-          7,
-        ),
-      ).toStrictEqual({
-        from: "2026-02-28",
-        through: "2026-03-07",
-        timeZone: "America/New_York",
-      });
-    });
-  });
-
   describe(listTableEvents, () => {
     it("keeps only the events in the range, in the order given", () => {
       const listed = listTableEvents({
@@ -676,6 +661,30 @@ describe("calendar-table utilities", () => {
           "UTC",
         ),
       ).toStrictEqual([0, 1, 1]);
+    });
+  });
+
+  describe(getColumnWidth, () => {
+    it("gives each kind of column its width in rem", () => {
+      expect(
+        getColumnWidth({
+          icon: "hash",
+          id: "number",
+          kind: "number",
+          label: "#",
+        }),
+      ).toBe("4rem");
+    });
+  });
+
+  describe(getTableWidth, () => {
+    it("fills the room, or adds the columns' widths up if more", () => {
+      expect(
+        getTableWidth([
+          { icon: "hash", id: "number", kind: "number", label: "#" },
+          { icon: "text", id: "name", kind: "name", label: "Name" },
+        ]),
+      ).toBe("max(100%, 24rem)");
     });
   });
 });

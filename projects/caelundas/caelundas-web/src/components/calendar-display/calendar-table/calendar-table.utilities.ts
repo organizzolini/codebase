@@ -7,6 +7,7 @@ import {
 
 import {
   BASE_COLUMNS,
+  COLUMN_WIDTH_REM,
   DEFAULT_COLUMN_IDS,
   FLAT_LIST_ID,
   NO_LIMITS,
@@ -42,7 +43,11 @@ export function createTableNavigation(
   }>,
 ): CalendarNavigation {
   const { anchor, dayCount, onDateChange, timeZone } = context;
-  const range = getTableRange(anchor, timeZone, dayCount);
+  const range = getDayRange(
+    formatCalendarDate(anchor, timeZone),
+    timeZone,
+    dayCount,
+  );
 
   return {
     next: () => {
@@ -107,6 +112,15 @@ export function getCellText(
 }
 
 /**
+ * A column's width as a CSS length.
+ */
+export function getColumnWidth(column: TableColumn): string {
+  return `${String(COLUMN_WIDTH_REM[column.kind])}rem`;
+}
+
+// 🌎 Public Functions
+
+/**
  * The day the table lists an event under, and whether it was already under way, or `null` if no day lists it.
  */
 export function getDayListing(
@@ -125,8 +139,6 @@ export function getDayListing(
   return day >= from && day < through ? { day, ongoing } : null;
 }
 
-// 🌎 Public Functions
-
 /**
  * The range of days from the day it opens on.
  */
@@ -139,14 +151,15 @@ export function getDayRange(
 }
 
 /**
- * The days the table lists: a count of them from the anchor's day, read in the data's zone.
+ * The width of the table, the whole of its room or the columns' widths together if more.
  */
-export function getTableRange(
-  anchor: Date,
-  timeZone: string,
-  dayCount: number,
-): DayRange {
-  return getDayRange(formatCalendarDate(anchor, timeZone), timeZone, dayCount);
+export function getTableWidth(columns: readonly TableColumn[]): string {
+  const total = columns.reduce(
+    (sum, column) => sum + COLUMN_WIDTH_REM[column.kind],
+    0,
+  );
+
+  return `max(100%, ${String(total)}rem)`;
 }
 
 /**
@@ -189,7 +202,6 @@ export function listTableEvents(
     timeZone: string;
   }>,
 ): CalendarEventRecord[] {
-  // Not through getTableRange, which would count as one more frame.
   const range = getDayRange(
     formatCalendarDate(context.anchor, context.timeZone),
     context.timeZone,

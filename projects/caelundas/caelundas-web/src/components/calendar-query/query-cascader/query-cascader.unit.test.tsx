@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { QueryCascader } from "./query-cascader";
@@ -81,5 +81,41 @@ describe(QueryCascader, () => {
     expect(onValueChange).toHaveBeenCalledWith(
       expect.arrayContaining(["name", "name:asc", "name:desc"]),
     );
+  });
+
+  it("scrolls a branch to the top of the list when it opens", async () => {
+    const scrollBy = vi.fn<(options: ScrollToOptions) => void>();
+
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({ matches: false })),
+    );
+    render(
+      <QueryCascader
+        items={ITEMS}
+        onValueChange={() => {}}
+        placeholder="Sort by"
+        value={[]}
+      />,
+    );
+    const row = screen.getByRole("treeitem", { name: /Name/u });
+    const viewport =
+      row.closest('[data-slot="scroll-area-viewport"]') ?? document.body;
+
+    Object.defineProperty(viewport, "scrollHeight", { value: 500 });
+    Object.defineProperty(viewport, "scrollBy", { value: scrollBy });
+
+    vi.spyOn(row, "getBoundingClientRect").mockReturnValue({
+      top: 100,
+    } as DOMRect);
+    fireEvent.click(row);
+
+    await waitFor(() => {
+      expect(scrollBy).toHaveBeenCalledWith(
+        expect.objectContaining({ behavior: "smooth" }),
+      );
+    });
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 });

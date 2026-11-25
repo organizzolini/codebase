@@ -19,7 +19,10 @@ export const INITIAL_TABLE_GROUPS: TableGroupsState = {
   limit: PAGE_SIZE,
   limits: new Map(),
   pages: 1,
+  picked: [],
+  seen: new Set(),
   stats: { longest: 0, shown: 0, total: 0 },
+  touched: false,
 };
 
 /**
@@ -45,4 +48,4 @@ export const TableGroupsContext = createContext<TableGroupsValue>(
 /**
  * The page sizes the Page strip offers.
  */
-export const PAGE_LIMITS: readonly number[] = [10, 25, 50, 100, 250, 500, 1000];
+export const PAGE_LIMITS: readonly number[] = [100, 250, 500, 1000];

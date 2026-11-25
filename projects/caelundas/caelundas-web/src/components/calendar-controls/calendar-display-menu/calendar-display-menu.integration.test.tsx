@@ -41,7 +41,7 @@ vi.mock(import("../../../router"), async (importOriginal) => {
 
 /** Finds a Display option by label, a leaf or a branch with its item count. */
 async function findOption(label: string): Promise<HTMLElement> {
-  const name = new RegExp(`^${label}(,|$)`, "u");
+  const name = new RegExp(`^${label}(,|$|[A-Z])`, "u");
 
   return waitFor(() => {
     const found =
@@ -72,13 +72,12 @@ async function findSky(): Promise<SVGSVGElement> {
 }
 
 /**
- * Opens the Display list, closes Layout to keep the deep rows in view, and expands the branches named, one beneath the other.
+ * Opens the Display list and expands the branches named, one beneath the other.
  */
 async function openBranches(...labels: string[]): Promise<void> {
   fireEvent.click(
     await within(await findToolbar()).findByRole("button", { name: "Display" }),
   );
-  fireEvent.click(await findOption("Layout"));
 
   for (const label of labels) {
     fireEvent.click(await findOption(label));
@@ -106,17 +105,17 @@ describe("display menu's sky options", () => {
   it("hides the sky and shows it again, writing the link", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await findSky();
-    await openBranches("Sky");
-    fireEvent.click(await findOption("Show the sky"));
+    await openBranches("Skyfield");
+    fireEvent.click(await findOption("Show the skyfield"));
 
     await waitFor(() => {
-      expect(readSearch()).toMatchObject({ sky: "off" });
+      expect(readSearch()).toMatchObject({ skyfield: "off" });
     });
 
-    fireEvent.click(await findOption("Show the sky"));
+    fireEvent.click(await findOption("Show the skyfield"));
 
     await waitFor(() => {
-      expect(readSearch()).not.toHaveProperty("sky");
+      expect(readSearch()).not.toHaveProperty("skyfield");
     });
   });
 
@@ -125,11 +124,13 @@ describe("display menu's sky options", () => {
     const api = readServedApi();
 
     await findSky();
-    await openBranches("Sky", "Constellations");
+    await openBranches("Skyfield", "Constellations");
     fireEvent.click(await findOption("Zodiac"));
 
     await waitFor(() => {
-      expect(readSearch()).toMatchObject({ "sky.constellations": "zodiac" });
+      expect(readSearch()).toMatchObject({
+        "skyfield.constellations": "zodiac",
+      });
     });
     await waitFor(() => {
       expect(api.requests.nightSky.at(-1)?.constellations).toStrictEqual([
@@ -140,7 +141,7 @@ describe("display menu's sky options", () => {
     fireEvent.click(await findOption("All"));
 
     await waitFor(() => {
-      expect(readSearch()).not.toHaveProperty("sky.constellations");
+      expect(readSearch()).not.toHaveProperty("skyfield.constellations");
     });
     await waitFor(() => {
       expect(api.requests.nightSky.at(-1)?.constellations).toStrictEqual([
@@ -152,44 +153,48 @@ describe("display menu's sky options", () => {
   it("hides one figure of all, naming the rest", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await findSky();
-    await openBranches("Sky", "Constellations", "Other figures");
+    await openBranches("Skyfield", "Constellations", "Other figures");
     fireEvent.click(await findOption("Orion"));
 
     await waitFor(() => {
-      expect(String(readSearch()["sky.constellations"])).toMatch(/^zodiac,/u);
+      expect(String(readSearch()["skyfield.constellations"])).toMatch(
+        /^zodiac,/u,
+      );
     });
 
-    expect(String(readSearch()["sky.constellations"])).not.toContain("orion");
+    expect(String(readSearch()["skyfield.constellations"])).not.toContain(
+      "orion",
+    );
   });
 
   it("sets a setting to one of its values", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await findSky();
-    await openBranches("Sky", "Opacity", "Sky opacity");
+    await openBranches("Skyfield", "Opacity");
     fireEvent.click(await findOption("0.5"));
 
     await waitFor(() => {
-      expect(readSearch()).toMatchObject({ "sky.opacity": 0.5 });
+      expect(readSearch()).toMatchObject({ "skyfield.opacity": 0.5 });
     });
   });
 
   it("sets a color to one of its swatches", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await findSky();
-    await openBranches("Sky", "Background", "Sky top color");
+    await openBranches("Skyfield", "Background", "Skyfield top color");
     fireEvent.click(await findOption("Amber"));
 
     await waitFor(() => {
-      expect(readSearch()).toMatchObject({ "sky.top": "#fbbf24" });
+      expect(readSearch()).toMatchObject({ "skyfield.top": "#fbbf24" });
     });
   });
 
   it("ticks what the link sets, and puts the sky back to its default", async () => {
     await renderCalendarRoute(
-      "/?date=2026-03-01&sky.constellations=zodiac&sky.opacity=0.5",
+      "/?date=2026-03-01&skyfield.constellations=zodiac&skyfield.opacity=0.5",
     );
     await findSky();
-    await openBranches("Sky", "Constellations");
+    await openBranches("Skyfield", "Constellations");
 
     const zodiac = await findOption("Zodiac");
     const all = await findOption("All");
@@ -197,11 +202,11 @@ describe("display menu's sky options", () => {
     expect(zodiac.getAttribute("aria-selected")).toBe("true");
     expect(all.getAttribute("aria-selected")).toBe("false");
 
-    fireEvent.click(await findOption("Default sky"));
+    fireEvent.click(await findOption("Default skyfield"));
 
     await waitFor(() => {
       expect(
-        Object.keys(readSearch()).filter((key) => key.startsWith("sky")),
+        Object.keys(readSearch()).filter((key) => key.startsWith("skyfield")),
       ).toStrictEqual([]);
     });
   });

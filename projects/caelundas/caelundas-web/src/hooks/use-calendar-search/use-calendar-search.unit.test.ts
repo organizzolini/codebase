@@ -39,9 +39,12 @@ describe(useCalendarSearch, () => {
       handleClustersChange: expect.any(Function),
       handleColorsChange: expect.any(Function),
       handleColumnsChange: expect.any(Function),
+      handleCompareChange: expect.any(Function),
       handleDateChange: expect.any(Function),
       handleFilterChange: expect.any(Function),
       handleGroupingChange: expect.any(Function),
+      handleMetricsChange: expect.any(Function),
+      handleRangeChange: expect.any(Function),
       handleScaleChange: expect.any(Function),
       handleSortChange: expect.any(Function),
       handleSymbolsChange: expect.any(Function),
@@ -69,6 +72,94 @@ describe(useCalendarSearch, () => {
     expect(readWritten()).toStrictEqual({
       replace: true,
       search: { clusters: false },
+    });
+  });
+
+  it("drops an empty grouping or sort from the link, the default standing for none", () => {
+    const { result } = renderHook(() => useCalendarSearch("UTC"));
+
+    result.current.handleGroupingChange([]);
+
+    expect(readWritten().search.group).toBeUndefined();
+
+    result.current.handleSortChange([]);
+
+    expect(readWritten().search.sort).toBeUndefined();
+
+    result.current.handleGroupingChange([{ field: "tag:type" }]);
+
+    expect(readWritten().search.group).toStrictEqual([{ field: "tag:type" }]);
+  });
+
+  it("writes the comparison in place, dropping it when off", () => {
+    const { result } = renderHook(() => useCalendarSearch("UTC"));
+
+    result.current.handleCompareChange(true);
+
+    expect(readWritten()).toStrictEqual({
+      replace: true,
+      search: { compare: true },
+    });
+
+    result.current.handleCompareChange(false);
+
+    expect(readWritten().search.compare).toBeUndefined();
+  });
+
+  it("writes the metrics, dropping an empty list for the layout's defaults", () => {
+    const { result } = renderHook(() => useCalendarSearch("UTC"));
+
+    result.current.handleMetricsChange(["EVENTS", "SPANS"]);
+
+    expect(readWritten()).toStrictEqual({
+      replace: false,
+      search: { metrics: ["EVENTS", "SPANS"] },
+    });
+
+    result.current.handleMetricsChange([]);
+
+    expect(readWritten().search.metrics).toBeUndefined();
+
+    result.current.handleMetricsChange(undefined);
+
+    expect(readWritten().search.metrics).toBeUndefined();
+  });
+
+  it("writes a range as the table's days, the timeline's scale, or the first day", () => {
+    const { result } = renderHook(() => useCalendarSearch("UTC"));
+    const november = { from: "2026-11-01", to: "2026-11-30" };
+
+    result.current.handleRangeChange("table", november);
+
+    expect(readWritten().search).toStrictEqual({
+      date: "2026-11-01",
+      days: 30,
+    });
+
+    result.current.handleRangeChange("timeline", november);
+
+    expect(readWritten().search).toStrictEqual({
+      date: "2026-11-01",
+      scale: "month",
+    });
+
+    result.current.handleRangeChange("month", november);
+
+    expect(readWritten().search).toStrictEqual({ date: "2026-11-01" });
+
+    // The metric layouts read the table's days.
+    result.current.handleRangeChange("charts", november);
+
+    expect(readWritten().search).toStrictEqual({
+      date: "2026-11-01",
+      days: 30,
+    });
+
+    result.current.handleRangeChange("totals", november);
+
+    expect(readWritten().search).toStrictEqual({
+      date: "2026-11-01",
+      days: 30,
     });
   });
 });

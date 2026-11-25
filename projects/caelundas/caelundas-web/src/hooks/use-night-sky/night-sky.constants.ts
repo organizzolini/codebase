@@ -2,7 +2,7 @@ import type { ConstellationListing } from "./night-sky.types";
 
 // 🔭 Defaults
 
-/** The backdrop's defaults: a dimmed sky, opaque surfaces. */
+/** The backdrop's defaults: a faint sky. */
 export const DEFAULT_OPTIONS = {
   backgroundBottomColor: "#0d1533",
   backgroundTopColor: "#04060f",
@@ -17,10 +17,9 @@ export const DEFAULT_OPTIONS = {
   lineOpacity: 0.24,
   lineWidth: 0.8,
   pixelsPerSecond: 3,
-  skyOpacity: 0.6,
+  skyOpacity: 0.25,
   starScale: 1,
   still: false,
-  surfaceOpacity: 0.7,
   verticalFieldOfViewDegrees: 90,
 } as const;
 
@@ -49,7 +48,7 @@ export const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 export const POLE_MARGIN_DEGREES = 1;
 
 /**
- * Lowest `sky.altBottom`, below the horizon for a pole view.
+ * Lowest `skyfield.altBottom`, below the horizon for a pole view.
  */
 export const MINIMUM_BOTTOM_ALTITUDE_DEGREES = -45;
 
@@ -62,7 +61,7 @@ export const COLOR_DIGITS_PATTERN = /^#?(?:[\da-f]{3}|[\da-f]{6})$/iu;
 // ✳️ Constellations
 
 /**
- * Words `sky.constellations` takes besides names: all, none, zodiac.
+ * Words `skyfield.constellations` takes besides names: all, none, zodiac.
  */
 export const CONSTELLATION_WORDS = ["all", "none", "zodiac"] as const;
 
@@ -74,10 +73,10 @@ export const DEFAULT_CONSTELLATIONS: readonly string[] = ["all"];
 /** The opacities the sky, its surfaces and its strokes are clamped to. */
 export const OPACITY_RANGE = { maximum: 1, minimum: 0 } as const;
 
-/** The opacities `sky.lineOpacity` is clamped to. */
+/** The opacities `skyfield.lineOpacity` is clamped to. */
 export const LINE_OPACITY_RANGE = { maximum: 1, minimum: 0 } as const;
 
-/** The widths, in on-screen pixels, `sky.lineWidth` is clamped to. */
+/** The widths, in on-screen pixels, `skyfield.lineWidth` is clamped to. */
 export const LINE_WIDTH_RANGE = { maximum: 10, minimum: 0 } as const;
 
 /**

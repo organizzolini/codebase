@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Gantt, GanttView } from "@codebase/presentation";
 
 import { useBarDialog } from "../../../hooks/use-bar-dialog/use-bar-dialog";
+import { useTimelineGroups } from "../../../hooks/use-timeline-tree/hooks/use-timeline-groups/use-timeline-groups";
+import { useTimelineTree } from "../../../hooks/use-timeline-tree/use-timeline-tree";
 import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { createTagRanks } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-sort.utilities";
 import { DEFAULT_SORTS } from "../../calendar-query/calendar-sort-strip/calendar-sort-strip.constants";
@@ -10,15 +12,15 @@ import { VENDORED_SURFACE_CLASS_NAMES } from "../events-calendar/components/cale
 
 import {
   COMPACT_TREE,
+  DAY_VIEW_CLASS,
   DAY_ZOOM,
-  INTERACTIONS,
   LANE_ROWS,
-  QUIET_LABELS,
+  QUIET_VIEW_CLASS,
   renderBar,
   renderBarCard,
-  renderRowLabel,
-  TIMELINE_METRICS,
+  TIMELINE_GANTT_PROPS,
   TREE,
+  TREE_PANE_FIT,
   ZOOM,
 } from "./calendar-timeline.constants";
 import {
@@ -26,7 +28,6 @@ import {
   toTimelineRows,
   watchVisibleRows,
 } from "./calendar-timeline.utilities";
-import { TIMELINE_DAY_INTERVAL } from "./components/timeline-clusters/calendar-timeline-clusters.constants";
 import { createTimelineLayout } from "./components/timeline-lanes/calendar-timeline-lanes.utilities";
 import { TimelineNavigation } from "./components/timeline-navigation/timeline-navigation";
 import {
@@ -63,6 +64,10 @@ export interface CalendarTimelineProperties {
    * The tag roots the data has, which name the rows.
    */
   facets: readonly EventFacet[];
+  /**
+   * The colors of the groups by tag id, for the rows' names; absent when colors are off.
+   */
+  groupColors?: ReadonlyMap<string, string> | undefined;
   /**
    * The levels the rows nest by, which the events' `groups` were read for.
    */
@@ -102,6 +107,7 @@ export function CalendarTimeline(
     compact = false,
     events,
     facets,
+    groupColors,
     grouping,
     onDateChange,
     onNavigationChange,
@@ -111,8 +117,7 @@ export function CalendarTimeline(
   } = properties;
 
   // 🪝 Hooks
-  // The zoom belongs to the scale it was set at; another scale starts at
-  // rest.
+  // The zoom belongs to the scale it was set at; another starts at rest.
   const [zoomed, setZoomed] = useState({ scale, zoom: 1 });
   // The rows on screen, which alone are handed their bars, as last measured
   // for the rows then laid out; `null` until the body is laid out.
@@ -123,17 +128,17 @@ export function CalendarTimeline(
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const { dialog, handleEventClick } = useBarDialog(timeZone);
   const zoom = zoomed.scale === scale ? zoomed.zoom : 1;
-  const fields = useMemo(() => createEventGroupFields(facets), [facets]);
-  const ranks = useMemo(() => createTagRanks(facets), [facets]);
   const rows = useMemo(
     () =>
       toTimelineRows(events, grouping, {
-        fields,
-        ranks,
+        fields: createEventGroupFields(facets),
+        ranks: createTagRanks(facets),
         sort: sort ?? DEFAULT_SORTS,
+        tagColors: groupColors,
       }),
-    [events, fields, grouping, ranks, sort],
+    [events, facets, groupColors, grouping, sort],
   );
+  const groups = useTimelineGroups(rows, grouping);
   // Overlapping bars are moved into lanes, so nothing is drawn over anything.
   const layout = useMemo(
     () => createTimelineLayout(rows, { scale, zoom }),
@@ -147,6 +152,12 @@ export function CalendarTimeline(
     [layout, visibleRows],
   );
   const columns = useMemo(() => toCountColumns(rows.counts), [rows]);
+  // The names column fits the widest row showing, so it follows every open and close.
+  const tree = useTimelineTree(
+    layout.resources,
+    groups.collapsedGroups,
+    compact ? COMPACT_TREE : TREE,
+  );
 
   // 🏗 Setup
 
@@ -178,18 +189,15 @@ export function CalendarTimeline(
       ref={setContainer}
       className={className}
       data-testid="calendar-timeline"
+      style={tree.style}
     >
       <Gantt<TimelineBar>
-        barLabel="auto"
-        className={`h-full ${LANE_ROWS} ${VENDORED_SURFACE_CLASS_NAMES.ganttHeaders} ${VENDORED_SURFACE_CLASS_NAMES.ganttScrollbars} ${VENDORED_SURFACE_CLASS_NAMES.ganttTreePills}`}
+        {...TIMELINE_GANTT_PROPS}
+        className={`h-full ${LANE_ROWS} ${VENDORED_SURFACE_CLASS_NAMES.ganttHeaders} ${VENDORED_SURFACE_CLASS_NAMES.ganttScrollbars} ${VENDORED_SURFACE_CLASS_NAMES.ganttTreePills} ${TREE_PANE_FIT}`}
         columns={columns}
+        {...groups}
         date={anchor}
         events={shownBars}
-        infiniteScroll={false}
-        initialCenter="anchor"
-        interactions={INTERACTIONS}
-        interval={TIMELINE_DAY_INTERVAL}
-        metrics={TIMELINE_METRICS}
         onDateChange={onDateChange}
         onEventClick={handleEventClick}
         onZoomChange={(next: number) => {
@@ -197,24 +205,16 @@ export function CalendarTimeline(
         }}
         renderEvent={renderBar}
         renderEventTooltip={renderBarCard}
-        renderResourceLabel={renderRowLabel}
         resources={layout.resources}
-        rowCheckboxes={false}
         scale={scale}
-        scheduleMode="single"
-        summaryBars={false}
         timeZone={timeZone}
-        treePanel={compact ? COMPACT_TREE : TREE}
+        treePanel={tree.panel}
         zoom={zoom}
         zoomRange={scale === "day" ? DAY_ZOOM : ZOOM}
       >
         <TimelineNavigation onNavigationChange={onNavigationChange} />
         <GanttView
-          className={
-            scale === "day"
-              ? "min-h-0 flex-1 border-t"
-              : `min-h-0 flex-1 border-t ${QUIET_LABELS}`
-          }
+          className={scale === "day" ? DAY_VIEW_CLASS : QUIET_VIEW_CLASS}
         />
       </Gantt>
       {dialog}

@@ -121,7 +121,7 @@ describe(TableGroupRow, () => {
     );
   });
 
-  it("sticks beneath the table's header and the headers it is nested in, with no background of its own", () => {
+  it("sticks beneath the headers it is nested in, frosted rather than opaque", () => {
     renderRow(ROW);
 
     const row = screen.getByTestId("table-group-row");
@@ -131,7 +131,11 @@ describe(TableGroupRow, () => {
     expect(row.className).toContain("has-aria-expanded:bg-transparent");
     expect(row.className).not.toMatch(/(^| )bg-(muted|background)( |$)/u);
     expect(row.style.height).toBe("2.25rem");
-    expect(row.style.top).toBe("7rem");
+    expect(screen.getAllByRole("cell")[0]?.className).not.toMatch(
+      /backdrop|bg-/u,
+    );
+    expect(row.style.top).toBe("4.5rem");
+    expect(row.dataset["depth"]).toBe(String(ROW.depth));
   });
 
   it("has a cell for each column", () => {

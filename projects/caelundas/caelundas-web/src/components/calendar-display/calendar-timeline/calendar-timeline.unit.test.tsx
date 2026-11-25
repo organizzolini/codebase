@@ -23,6 +23,23 @@ describe(CalendarTimeline, () => {
     );
   });
 
+  it("names the tree column Groups", () => {
+    render(
+      <CalendarTimeline
+        anchor={new Date("2026-03-15T12:00:00.000Z")}
+        events={[]}
+        facets={[]}
+        grouping={[]}
+        onDateChange={() => {}}
+        onNavigationChange={() => {}}
+        timeZone="America/New_York"
+      />,
+    );
+
+    expect(screen.getByText("Groups")).toBeDefined();
+    expect(screen.queryByText("Resources")).toBeNull();
+  });
+
   it("draws every event in one row when not grouped, titling its period", () => {
     const onNavigationChange = vi.fn();
     render(

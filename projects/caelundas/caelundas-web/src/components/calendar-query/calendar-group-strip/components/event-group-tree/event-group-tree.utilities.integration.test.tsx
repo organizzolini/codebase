@@ -49,6 +49,27 @@ describe("event grouping", () => {
     await expect(readGrouping()).resolves.toBe("GroupTags");
   });
 
+  it("starts the table with the tag roots as its first rows, then the tags beneath each", async () => {
+    await renderCalendarRoute("/?view=table&date=2026-03-04");
+    const api = readServedApi();
+
+    await waitFor(() => {
+      expect(
+        api.requests.events
+          .at(-1)
+          ?.grouping?.levels?.map((level) => level.depth),
+      ).toStrictEqual([undefined, 1, 2, 3]);
+    });
+
+    // The roots head the rows, and the first is open to the tags beneath it.
+    await expect(
+      screen.findByRole("button", { name: "Zodiac" }),
+    ).resolves.toBeDefined();
+    await expect(
+      screen.findByRole("button", { name: "Simple" }),
+    ).resolves.toBeDefined();
+  });
+
   it("reads the events again with the grouping picked", async () => {
     await renderCalendarRoute(
       groupedLink("2026-03-04", [{ field: "tag:tag-aspect" }]),
@@ -81,7 +102,7 @@ describe("event grouping", () => {
     await expect(readGrouping()).resolves.toBe("GroupBodyAspect › Simple");
   });
 
-  it("removes a level from the link", async () => {
+  it("returns to the Tags chip when the last level is removed from the link", async () => {
     await renderCalendarRoute(
       groupedLink("2026-03-04", [{ field: "tag:tag-aspect" }]),
     );
@@ -94,7 +115,7 @@ describe("event grouping", () => {
     fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
     await waitFor(async () => {
-      await expect(readGrouping()).resolves.toBe("Group");
+      await expect(readGrouping()).resolves.toBe("GroupTags");
     });
   });
 
@@ -143,6 +164,28 @@ describe("event grouping", () => {
 
     await expect(readGrouping()).resolves.toBe("GroupMonth");
   });
+
+  it.each(["Charts", "Totals"])(
+    "keeps a closed group closed through the %s layout and back to the table",
+    async (layout) => {
+      await renderCalendarRoute("/?view=table&date=2026-03-04");
+
+      const simple = await screen.findByRole("button", { name: "Simple" });
+
+      fireEvent.click(simple);
+      await waitFor(() => {
+        expect(simple.getAttribute("aria-expanded")).toBe("false");
+      });
+
+      await pickCalendarView(layout);
+      await screen.findByTestId(`calendar-${layout.toLowerCase()}`);
+      await pickCalendarView("Table");
+
+      const back = await screen.findByRole("button", { name: "Simple" });
+
+      expect(back.getAttribute("aria-expanded")).toBe("false");
+    },
+  );
 
   it("colors the month by the first group, shown as Tags", async () => {
     await renderCalendarRoute("/?view=month&date=2026-03-04");

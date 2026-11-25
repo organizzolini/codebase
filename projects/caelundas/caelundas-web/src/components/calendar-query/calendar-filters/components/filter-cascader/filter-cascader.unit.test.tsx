@@ -101,4 +101,35 @@ describe(FilterCascader, () => {
       expect.objectContaining({ rules: [] }),
     );
   });
+
+  it("lists a Date item that opens the picker, when it is given a way to", () => {
+    const onDateOpen = vi.fn<() => void>();
+
+    render(
+      <FilterCascader
+        fields={FIELDS}
+        onDateOpen={onDateOpen}
+        onQueryChange={() => {}}
+        query={EMPTY_EVENT_FILTER}
+      />,
+    );
+
+    expect(screen.getByText("The days the view shows")).toBeDefined();
+
+    fireEvent.click(screen.getByText("Date"));
+
+    expect(onDateOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it("has no Date item without one", () => {
+    render(
+      <FilterCascader
+        fields={FIELDS}
+        onQueryChange={() => {}}
+        query={EMPTY_EVENT_FILTER}
+      />,
+    );
+
+    expect(screen.queryByText("Date")).toBeNull();
+  });
 });

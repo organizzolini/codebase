@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 
+import { toWindowSearch } from "../../components/calendar-controls/calendar-date-picker/calendar-date-picker.utilities";
 import { formatCalendarDate } from "../../components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
 
 import type { CalendarSearch } from "./calendar-search.types";
@@ -40,6 +41,9 @@ export function useCalendarSearch(timeZone: string): UseCalendarSearchResult {
     handleColumnsChange: (columns) => {
       updateSearch({ columns });
     },
+    handleCompareChange: (enabled) => {
+      updateSearch({ compare: enabled ? true : undefined }, true);
+    },
     handleDateChange: (date) => {
       updateSearch({ date: formatCalendarDate(date, timeZone) });
     },
@@ -47,13 +51,24 @@ export function useCalendarSearch(timeZone: string): UseCalendarSearchResult {
       updateSearch({ filter }, true);
     },
     handleGroupingChange: (group) => {
-      updateSearch({ group });
+      // An empty grouping is the default, so the link drops it.
+      updateSearch({ group: group.length === 0 ? undefined : group });
+    },
+    handleMetricsChange: (metrics) => {
+      // No metrics are the layout's defaults, so the link drops an empty list.
+      updateSearch({ metrics: metrics?.length === 0 ? undefined : metrics });
+    },
+    handleRangeChange: (view, range) => {
+      // The table's days and the timeline's scale are the view's own; the other
+      // views open on the range's first day, and keep what they are.
+      updateSearch(toWindowSearch(view, range));
     },
     handleScaleChange: (scale) => {
       updateSearch({ scale });
     },
     handleSortChange: (sort) => {
-      updateSearch({ sort });
+      // No sort is the default, so the link drops an empty list.
+      updateSearch({ sort: sort?.length === 0 ? undefined : sort });
     },
     handleSymbolsChange: (symbols) => {
       updateSearch(

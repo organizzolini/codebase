@@ -14,6 +14,7 @@ import type { TableGroupsAction } from "../../calendar-display/calendar-table/co
 function renderStrip(
   state: Partial<typeof INITIAL_TABLE_GROUPS> = {},
   view: "table" | "timeline" = "table",
+  stats?: { longest: number; shown: number; total: number },
 ): ReturnType<typeof vi.fn<(action: TableGroupsAction) => void>> {
   const dispatch = vi.fn<(action: TableGroupsAction) => void>();
 
@@ -25,7 +26,7 @@ function renderStrip(
         provided: true,
         state: {
           ...INITIAL_TABLE_GROUPS,
-          stats: { longest: 100, shown: 25, total: 130 },
+          stats: stats ?? { longest: 100, shown: 25, total: 130 },
           ...state,
         },
       }}
@@ -38,6 +39,16 @@ function renderStrip(
 }
 
 describe(CalendarPageStrip, () => {
+  it("flags each of its buttons as an item of one wrapping strip", () => {
+    renderStrip();
+
+    const strip = screen.getByRole("group", { name: "Page" });
+
+    expect(Object.hasOwn(strip.dataset, "stripButtons")).toBe(true);
+    expect(strip.className).toContain("flex-wrap");
+    expect(strip.className).toContain("[&>[data-line-start]]:border-l!");
+  });
+
   it("applies its class name", () => {
     render(
       <CalendarPageStrip
@@ -60,76 +71,77 @@ describe(CalendarPageStrip, () => {
   it("says which events show: the first, how many, and out of how many", () => {
     renderStrip();
 
-    expect(screen.getByText("1")).toBeDefined();
-    expect(screen.getByText("to 25")).toBeDefined();
-    expect(screen.getByText("of 130")).toBeDefined();
+    expect(screen.getByText("1 to 25 of 130")).toBeDefined();
   });
 
   it("starts at 0 when no event shows, such as when every group is collapsed", () => {
     renderStrip({ stats: { longest: 100, shown: 0, total: 572 } });
 
-    expect(screen.getByText("0")).toBeDefined();
-    expect(screen.getByText("to 0")).toBeDefined();
-    expect(screen.getByText("of 572")).toBeDefined();
+    expect(screen.getByText("0 to 0 of 572")).toBeDefined();
   });
 
-  it("disables stepping back on the first page, and steps forward and to the last", () => {
-    const dispatch = renderStrip({ limit: 25 });
+  it("has no arrow buttons stepping between pages", () => {
+    renderStrip({ limit: 100 });
 
-    expect(
-      screen.getByRole<HTMLButtonElement>("button", { name: "First page" })
-        .disabled,
-    ).toBe(true);
-    expect(
-      screen.getByRole<HTMLButtonElement>("button", {
-        name: "Previous page",
-      }).disabled,
-    ).toBe(true);
-
-    fireEvent.click(screen.getByRole("button", { name: "Next page" }));
-    fireEvent.click(screen.getByRole("button", { name: "Last page" }));
-
-    expect(dispatch).toHaveBeenNthCalledWith(1, {
-      pages: 2,
-      type: "set-pages",
-    });
-    expect(dispatch).toHaveBeenNthCalledWith(2, {
-      pages: 4,
-      type: "set-pages",
-    });
+    for (const name of [
+      "First page",
+      "Previous page",
+      "Next page",
+      "Last page",
+    ]) {
+      expect(screen.queryByRole("button", { name })).toBeNull();
+    }
   });
 
-  it("disables stepping forward on the last page, and steps back and to the first", () => {
-    const dispatch = renderStrip({ limit: 25, pages: 4 });
+  it("keeps two or more buttons in the strip", () => {
+    renderStrip();
 
     expect(
-      screen.getByRole<HTMLButtonElement>("button", { name: "Next page" })
-        .disabled,
-    ).toBe(true);
-    expect(
-      screen.getByRole<HTMLButtonElement>("button", { name: "Last page" })
-        .disabled,
-    ).toBe(true);
+      screen.getByRole("group", { name: "Page" }).children.length,
+    ).toBeGreaterThanOrEqual(2);
+  });
 
-    fireEvent.click(screen.getByRole("button", { name: "Previous page" }));
-    fireEvent.click(screen.getByRole("button", { name: "First page" }));
+  it("shows the range as one button reading x to y of z, named after the Page", () => {
+    renderStrip();
 
-    expect(dispatch).toHaveBeenNthCalledWith(1, {
-      pages: 3,
-      type: "set-pages",
+    const range = screen.getByRole("button", { name: "Page 1 to 25 of 130" });
+
+    expect(range.textContent).toBe("1 to 25 of 130");
+    expect(range.className).toBe(
+      screen.getByRole("button", { name: "Page" }).className,
+    );
+  });
+
+  it("opens the same Page menu from the range button", async () => {
+    const dispatch = renderStrip();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Page 1 to 25 of 130" }),
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "500" }));
+
+    expect(dispatch).toHaveBeenCalledWith({ limit: 500, type: "set-limit" });
+  });
+
+  it("loads more pages from the checkboxes in the Page menu", async () => {
+    const dispatch = renderStrip({ limit: 100 }, "table", {
+      longest: 300,
+      shown: 100,
+      total: 300,
     });
-    expect(dispatch).toHaveBeenNthCalledWith(2, {
-      pages: 1,
-      type: "set-pages",
-    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Page" }));
+    fireEvent.click(await screen.findByRole("checkbox", { name: "Page 3" }));
+
+    expect(dispatch).toHaveBeenCalledWith({ pages: 3, type: "set-pages" });
   });
 
   it("opens the page sizes and the pages, and changes the page size", async () => {
     const dispatch = renderStrip();
 
     fireEvent.click(screen.getByRole("button", { name: "Page" }));
-    fireEvent.click(await screen.findByRole("button", { name: "50" }));
+    fireEvent.click(await screen.findByRole("button", { name: "500" }));
 
-    expect(dispatch).toHaveBeenCalledWith({ limit: 50, type: "set-limit" });
+    expect(dispatch).toHaveBeenCalledWith({ limit: 500, type: "set-limit" });
   });
 });

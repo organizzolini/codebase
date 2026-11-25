@@ -1,3 +1,4 @@
+import { parseMetrics } from "../../components/calendar-display/calendar-metrics/calendar-metrics.utilities";
 import {
   parseCalendarView,
   parseTimelineScale,
@@ -22,12 +23,16 @@ import type { GroupSort } from "../../components/calendar-query/calendar-group-s
 import type { CalendarSearch, SkySearchValue } from "./calendar-search.types";
 
 /**
- * The loader's result depends on the calendar's own search, so the route reloads for a calendar change, not a sky one.
+ * The route reloads for a calendar's search change, not a sky or metrics one, which the layouts read themselves.
  */
 export function getCalendarReloadKey(
   search: Readonly<Record<string, unknown>>,
 ): string {
-  return JSON.stringify(readCalendarSearch(search));
+  return JSON.stringify({
+    ...readCalendarSearch(search),
+    compare: undefined,
+    metrics: undefined,
+  });
 }
 
 /**
@@ -48,10 +53,15 @@ export function readCalendarSearch(
         ? false
         : undefined,
     columns: parseColumns(search["columns"]),
+    compare:
+      search["compare"] === true || search["compare"] === "true"
+        ? true
+        : undefined,
     date: calendarDateSchema.safeParse(search["date"]).data,
     days: agendaDaysSchema.safeParse(search["days"]).data,
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),
     group: parseGrouping(search["group"]),
+    metrics: parseMetrics(search["metrics"]),
     scale: parseTimelineScale(search["scale"]),
     sort: parseSorts(search["sort"]),
     symbols: parseCalendarSymbols(search["symbols"]),
@@ -67,27 +77,32 @@ export function validateCalendarSearch(
 ): CalendarSearch {
   return {
     ...readCalendarSearch(search),
-    sky: parseSkyValue(search["sky"]),
-    "sky.altBottom": parseSkyValue(search["sky.altBottom"]),
-    "sky.bottom": parseSkyValue(search["sky.bottom"]),
-    "sky.constellations": parseSkyValue(search["sky.constellations"]),
-    "sky.debug": parseSkyValue(search["sky.debug"]),
-    "sky.ecliptic": parseSkyValue(search["sky.ecliptic"]),
-    "sky.eclipticColor": parseSkyValue(search["sky.eclipticColor"]),
-    "sky.eclipticOpacity": parseSkyValue(search["sky.eclipticOpacity"]),
-    "sky.eclipticWidth": parseSkyValue(search["sky.eclipticWidth"]),
-    "sky.lat": parseSkyValue(search["sky.lat"]),
-    "sky.lineColor": parseSkyValue(search["sky.lineColor"]),
-    "sky.lineOpacity": parseSkyValue(search["sky.lineOpacity"]),
-    "sky.lineWidth": parseSkyValue(search["sky.lineWidth"]),
-    "sky.lon": parseSkyValue(search["sky.lon"]),
-    "sky.maxMag": parseSkyValue(search["sky.maxMag"]),
-    "sky.opacity": parseSkyValue(search["sky.opacity"]),
-    "sky.pixelsPerSecond": parseSkyValue(search["sky.pixelsPerSecond"]),
-    "sky.starScale": parseSkyValue(search["sky.starScale"]),
-    "sky.surfaceOpacity": parseSkyValue(search["sky.surfaceOpacity"]),
-    "sky.top": parseSkyValue(search["sky.top"]),
-    "sky.vFov": parseSkyValue(search["sky.vFov"]),
+    skyfield: readSkyValue(search, "skyfield"),
+    "skyfield.altBottom": readSkyValue(search, "skyfield.altBottom"),
+    "skyfield.bottom": readSkyValue(search, "skyfield.bottom"),
+    "skyfield.constellations": readSkyValue(search, "skyfield.constellations"),
+    "skyfield.debug": readSkyValue(search, "skyfield.debug"),
+    "skyfield.ecliptic": readSkyValue(search, "skyfield.ecliptic"),
+    "skyfield.eclipticColor": readSkyValue(search, "skyfield.eclipticColor"),
+    "skyfield.eclipticOpacity": readSkyValue(
+      search,
+      "skyfield.eclipticOpacity",
+    ),
+    "skyfield.eclipticWidth": readSkyValue(search, "skyfield.eclipticWidth"),
+    "skyfield.lat": readSkyValue(search, "skyfield.lat"),
+    "skyfield.lineColor": readSkyValue(search, "skyfield.lineColor"),
+    "skyfield.lineOpacity": readSkyValue(search, "skyfield.lineOpacity"),
+    "skyfield.lineWidth": readSkyValue(search, "skyfield.lineWidth"),
+    "skyfield.lon": readSkyValue(search, "skyfield.lon"),
+    "skyfield.maxMag": readSkyValue(search, "skyfield.maxMag"),
+    "skyfield.opacity": readSkyValue(search, "skyfield.opacity"),
+    "skyfield.pixelsPerSecond": readSkyValue(
+      search,
+      "skyfield.pixelsPerSecond",
+    ),
+    "skyfield.starScale": readSkyValue(search, "skyfield.starScale"),
+    "skyfield.top": readSkyValue(search, "skyfield.top"),
+    "skyfield.vFov": readSkyValue(search, "skyfield.vFov"),
   };
 }
 
@@ -103,13 +118,15 @@ function parseColumns(value: unknown): string[] | undefined {
 }
 
 /**
- * Reads a grouping from the link, dropping unparsable levels and keeping at most the levels a grouping nests.
+ * Reads a grouping from the link, dropping unparsable levels, keeping at most the levels a grouping nests; none when there are none.
  */
 function parseGrouping(value: unknown): EventGrouping | undefined {
-  return levelsSchema
+  const levels = levelsSchema
     .safeParse(value)
     .data?.flatMap((level) => groupLevelSchema.safeParse(level).data ?? [])
     .slice(0, MAXIMUM_GROUP_LEVELS);
+
+  return levels === undefined || levels.length === 0 ? undefined : levels;
 }
 
 /**
@@ -128,4 +145,17 @@ function parseSorts(value: unknown): GroupSort[] | undefined {
   ).data;
 
   return sorts === undefined || sorts.length === 0 ? undefined : sorts;
+}
+
+/**
+ * Reads a skyfield key, falling back to its old `sky` spelling, so a link from before the rename still opens.
+ */
+function readSkyValue(
+  search: Readonly<Record<string, unknown>>,
+  key: string,
+): SkySearchValue | undefined {
+  return (
+    parseSkyValue(search[key]) ??
+    parseSkyValue(search[key.replace(/^skyfield/u, "sky")])
+  );
 }

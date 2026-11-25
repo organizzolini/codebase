@@ -213,7 +213,7 @@ describe("calendar-group-strip utilities", () => {
 
       handlers.onCollapseAll?.();
 
-      expect(collapseAll).toHaveBeenCalledWith([1, 2]);
+      expect(collapseAll).toHaveBeenCalledWith([1, 2], undefined);
     });
 
     const groups = (
@@ -227,6 +227,30 @@ describe("calendar-group-strip utilities", () => {
       provided: true,
       state: INITIAL_TABLE_GROUPS,
       ...overrides,
+    });
+
+    it("offers Collapse all and Expand all in the Charts and Totals too", () => {
+      for (const view of ["charts", "totals"] as const) {
+        const handlers = getCollapseHandlers(
+          view,
+          groups({ canCollapse: () => true, canExpand: () => true }),
+          [0],
+        );
+
+        expect(handlers.onCollapseAll).toBeDefined();
+        expect(handlers.onExpandAll).toBeDefined();
+      }
+    });
+
+    it("offers neither in the views of days", () => {
+      const handlers = getCollapseHandlers(
+        "week",
+        groups({ canCollapse: () => true, canExpand: () => true }),
+        [0],
+      );
+
+      expect(handlers.onCollapseAll).toBeUndefined();
+      expect(handlers.onExpandAll).toBeUndefined();
     });
 
     it("offers only Collapse all while no group is collapsed", () => {
@@ -262,10 +286,57 @@ describe("calendar-group-strip utilities", () => {
       expect(handlers.onExpandAll).toBeDefined();
     });
 
-    it("offers neither outside the table", () => {
+    it("offers them in the timeline too", () => {
+      const handlers = getCollapseHandlers(
+        "timeline",
+        groups({ canCollapse: () => true, canExpand: () => true }),
+        [0],
+      );
+
+      expect(handlers.onCollapseAll).toBeDefined();
+      expect(handlers.onExpandAll).toBeDefined();
+    });
+
+    it("judges the Charts and Totals by no group open until a group is opened or closed", () => {
+      const canCollapse = vi.fn<(levels: readonly number[]) => boolean>();
+      const expandAll = vi.fn();
+
+      for (const view of ["charts", "totals"] as const) {
+        const handlers = getCollapseHandlers(
+          view,
+          groups({ canCollapse, canExpand: () => true, expandAll }),
+          [0],
+        );
+
+        handlers.onExpandAll?.();
+      }
+
+      expect(canCollapse).toHaveBeenCalledTimes(2);
+
+      for (const call of [...canCollapse.mock.calls, ...expandAll.mock.calls]) {
+        expect(call[1]).toStrictEqual(new Set());
+      }
+    });
+
+    it("judges them by the groups open once one has been opened or closed", () => {
+      const canCollapse = vi.fn<(levels: readonly number[]) => boolean>();
+
+      getCollapseHandlers(
+        "charts",
+        groups({
+          canCollapse,
+          state: { ...INITIAL_TABLE_GROUPS, touched: true },
+        }),
+        [0],
+      );
+
+      expect(canCollapse).toHaveBeenCalledWith([0], undefined);
+    });
+
+    it("offers neither where there are no rows to close", () => {
       expect(
         getCollapseHandlers(
-          "timeline",
+          "month",
           groups({ canCollapse: () => true, canExpand: () => true }),
           [0],
         ),

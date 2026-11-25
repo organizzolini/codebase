@@ -49,12 +49,13 @@ describe(CalendarNavigationGroup, () => {
     expect(screen.getByRole("heading", { name: "March 2026" })).toBeDefined();
   });
 
-  it("holds one width, or lets a phone's title shrink", () => {
+  it("sizes the title to its text so no space pads the arrows, but lets a phone's title shrink", () => {
     const { rerender } = render(
       <CalendarNavigationGroup navigation={NAVIGATION} />,
     );
 
-    expect(screen.getByRole("heading").className).toContain("w-60");
+    expect(screen.getByRole("heading").className).not.toMatch(/\bw-\d/u);
+    expect(screen.getByRole("heading").className).toContain("px-0");
 
     rerender(
       <CalendarNavigationGroup
@@ -63,7 +64,33 @@ describe(CalendarNavigationGroup, () => {
       />,
     );
 
-    expect(screen.getByRole("heading").className).not.toContain("w-60");
+    expect(screen.getByRole("heading").className).toContain("grow");
+  });
+
+  it("opens the date picker from the title when it is given one", () => {
+    const onOpenChange = vi.fn<(open: boolean) => void>();
+
+    render(
+      <CalendarNavigationGroup
+        navigation={NAVIGATION}
+        picker={{
+          onApply: () => {},
+          onOpenChange,
+          open: false,
+          range: { from: "2026-03-01", to: "2026-03-31" },
+          timeZone: "UTC",
+        }}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "March 2026" }));
+
+    expect(onOpenChange).toHaveBeenCalledWith(true, expect.anything());
+  });
+
+  it("leaves the title plain without a picker", () => {
+    render(<CalendarNavigationGroup navigation={NAVIGATION} />);
+
+    expect(screen.queryByRole("button", { name: "March 2026" })).toBeNull();
   });
 
   it("hides Today while the days shown include today", () => {

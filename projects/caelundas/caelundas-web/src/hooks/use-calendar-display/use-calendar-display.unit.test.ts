@@ -39,6 +39,7 @@ describe(useCalendarDisplay, () => {
     expect(result.current.state).toStrictEqual({
       clusters: true,
       colors: true,
+      compare: false,
       scale: "month",
       symbols: "glyphs",
     });
@@ -49,6 +50,7 @@ describe(useCalendarDisplay, () => {
     router.search = {
       clusters: false,
       colors: false,
+      compare: true,
       scale: "week",
       symbols: "emojis",
     };
@@ -58,6 +60,7 @@ describe(useCalendarDisplay, () => {
     expect(result.current.state).toStrictEqual({
       clusters: false,
       colors: false,
+      compare: true,
       scale: "week",
       symbols: "emojis",
     });
@@ -72,6 +75,7 @@ describe(useCalendarDisplay, () => {
       handlers: {
         handleClustersChange: expect.any(Function),
         handleColorsChange: expect.any(Function),
+        handleCompareChange: expect.any(Function),
         handleScaleChange: expect.any(Function),
         handleSymbolsChange: expect.any(Function),
         handleViewChange: expect.any(Function),
@@ -80,6 +84,7 @@ describe(useCalendarDisplay, () => {
       state: {
         clusters: true,
         colors: true,
+        compare: false,
         scale: "month",
         symbols: "glyphs",
       },

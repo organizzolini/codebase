@@ -2,9 +2,11 @@ import { useState } from "react";
 
 import { Cascader } from "@codebase/presentation";
 
+import { useScrollExpandedToTop } from "../../../hooks/use-tag-picker/hooks/use-scroll-expanded-to-top/use-scroll-expanded-to-top";
+
 import { QueryCascaderPanel } from "./components/query-cascader-panel/query-cascader-panel";
 import { LABELS, NOTHING } from "./query-cascader.constants";
-import { resolveSelectable } from "./query-cascader.utilities";
+import { resolveSelectable, toExpansion } from "./query-cascader.utilities";
 
 import type { CascaderActionItem, CascaderNode } from "@codebase/presentation";
 import type { ReactNode } from "react";
@@ -26,6 +28,10 @@ export interface QueryCascaderProperties {
    * Values of the branches open at first; only as a tree.
    */
   defaultExpanded?: readonly string[];
+  /**
+   * Values of the branches open, when the parent keeps them; only as a tree.
+   */
+  expanded?: readonly string[];
   items: readonly CascaderNode[];
   /**
    * Whether branches open beneath their parent, as a tree, or in columns to the right; a tree when absent.
@@ -35,6 +41,10 @@ export interface QueryCascaderProperties {
    * Whether several can be picked, with a branch ticking all beneath it; one when absent.
    */
   multiple?: boolean;
+  /**
+   * Called with the branches open after one opens or closes.
+   */
+  onExpandedChange?: (expanded: string[]) => void;
   onValueChange: (value: string[]) => void;
   /**
    * Content drawn in place of the list when a branch is opened, by the branch's value; only when drilling.
@@ -60,8 +70,10 @@ export function QueryCascader(
     cascade = multiple,
     className,
     defaultExpanded,
+    expanded,
     items,
     mode = "tree",
+    onExpandedChange,
     onValueChange,
     panels,
     placeholder,
@@ -71,6 +83,7 @@ export function QueryCascader(
 
   // 🪝 Hooks
   const [query, setQuery] = useState("");
+  const { reference } = useScrollExpandedToTop();
 
   // 🏗 Setup
   const panel = (
@@ -80,10 +93,7 @@ export function QueryCascader(
       placeholder={placeholder}
     />
   );
-  const expansion =
-    defaultExpanded === undefined
-      ? {}
-      : { defaultExpanded: [...defaultExpanded] };
+  const expansion = toExpansion(defaultExpanded, expanded, onExpandedChange);
   const shared = {
     ...expansion,
     indicator: multiple,
@@ -106,6 +116,7 @@ export function QueryCascader(
   // 🎨 Markup
   return (
     <div
+      ref={reference}
       className={className}
       data-testid="query-cascader"
     >

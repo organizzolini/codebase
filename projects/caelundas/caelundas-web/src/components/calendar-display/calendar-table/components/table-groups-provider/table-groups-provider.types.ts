@@ -3,18 +3,61 @@
 import type { Dispatch } from "react";
 
 /**
+ * A group opened by clicking it, named for the Group strip.
+ */
+export interface PickedGroup {
+  color: string | undefined;
+  id: string;
+  label: string;
+}
+
+/**
  * Every change to the shared state.
  */
 export type TableGroupsAction =
+  | {
+      /**
+       * The open groups to toggle on, when a layout shows fewer than the state holds.
+       */
+      base?: ReadonlySet<string> | undefined;
+      id: string;
+      /**
+       * The group's name, kept while it is open, so the Group strip can list it.
+       */
+      picked?: PickedGroup | undefined;
+      type: "toggle";
+    }
+  | {
+      base?: ReadonlySet<string> | undefined;
+      /**
+       * The groups to open, the one picked last.
+       */
+      ids: readonly string[];
+      picked: PickedGroup;
+      type: "open";
+    }
+  | {
+      base?: ReadonlySet<string> | undefined;
+      levels: readonly number[];
+      type: "collapse-all";
+    }
+  | {
+      base?: ReadonlySet<string> | undefined;
+      levels: readonly number[];
+      type: "expand-all";
+    }
+  | {
+      firstPath: readonly string[];
+      groupIds: readonly string[];
+      groupLevels: readonly number[];
+      type: "register";
+    }
   | {
       firstPath: readonly string[];
       groupIds: readonly string[];
       groupLevels: readonly number[];
       type: "reset";
     }
-  | { id: string; type: "toggle" }
-  | { levels: readonly number[]; type: "collapse-all" }
-  | { levels: readonly number[]; type: "expand-all" }
   | { limit: number; type: "set-limit" }
   | { listId: string; shown: number; type: "more" }
   | { pages: number; type: "set-pages" }
@@ -45,7 +88,19 @@ export interface TableGroupsState {
    * How many pages, from the first, every list shows.
    */
   pages: number;
+  /**
+   * The groups opened by name, in the order they were, while they stay open.
+   */
+  picked: readonly PickedGroup[];
+  /**
+   * Every group any layout has registered since the data last changed, so a group seen once keeps its state across layouts.
+   */
+  seen: ReadonlySet<string>;
   stats: TableListStats;
+  /**
+   * Whether anyone has opened or closed a group since the data last changed; until then `expanded` is the lazy default.
+   */
+  touched: boolean;
 }
 
 /**
@@ -55,14 +110,17 @@ export interface TableGroupsValue {
   /**
    * Whether a group at the levels is open, so there is something to close.
    */
-  canCollapse: (levels: readonly number[]) => boolean;
+  canCollapse: (
+    levels: readonly number[],
+    base?: ReadonlySet<string>,
+  ) => boolean;
   /**
    * Whether a group at the levels is closed, so there is something to open.
    */
-  canExpand: (levels: readonly number[]) => boolean;
-  collapseAll: (levels: readonly number[]) => void;
+  canExpand: (levels: readonly number[], base?: ReadonlySet<string>) => boolean;
+  collapseAll: (levels: readonly number[], base?: ReadonlySet<string>) => void;
   dispatch: Dispatch<TableGroupsAction>;
-  expandAll: (levels: readonly number[]) => void;
+  expandAll: (levels: readonly number[], base?: ReadonlySet<string>) => void;
   /**
    * False when no provider holds the state, so the table keeps its own.
    */

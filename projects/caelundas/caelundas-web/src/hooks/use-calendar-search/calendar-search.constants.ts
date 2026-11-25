@@ -71,7 +71,12 @@ export const skySearchValueSchema = z.union([
 
 export const groupSortSchema = z.object({
   direction: z.enum(["asc", "desc"]),
-  key: z.enum(["count", "first", "name", "order", "tag"]),
+  key: z.enum(["count", "first", "metric", "name", "order", "tag"]),
+  // The metric a `metric` sort orders by; anything but a name is forgotten.
+  metric: z
+    .unknown()
+    .transform((metric) => z.string().min(1).safeParse(metric).data)
+    .optional(),
   // The tag a `tag` sort ranks by; anything but an id is forgotten.
   tag: z
     .unknown()

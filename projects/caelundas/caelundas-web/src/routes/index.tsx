@@ -6,8 +6,10 @@ import {
 import { type ReactNode, useMemo, useSyncExternalStore } from "react";
 
 import { CalendarDisplayMenu } from "../components/calendar-controls/calendar-display-menu/calendar-display-menu";
+import { CalendarLayoutMenu } from "../components/calendar-controls/calendar-layout-menu/calendar-layout-menu";
 import { CalendarEmpty } from "../components/calendar-display/calendar-empty/calendar-empty";
 import { CalendarError } from "../components/calendar-display/calendar-error/calendar-error";
+import { resolveMetrics } from "../components/calendar-display/calendar-metrics/calendar-metrics.utilities";
 import { CalendarSkeleton } from "../components/calendar-display/calendar-skeleton/calendar-skeleton";
 import { TableGroupsProvider } from "../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider";
 import { loadedKeys } from "../components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.constants";
@@ -95,7 +97,7 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 // The calendar fills the viewport in the data's zone; the view the link names wins, else a phone opens on the table, wider on month.
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { dataset, emptiness, events, facets, grouping, presets } =
+  const { dataset, emptiness, events, facets, filter, grouping, presets } =
     Route.useLoaderData();
   // The calendar's own search only: structural sharing hands back the same
   // object when a sky key alone changed, so the page is not rendered again.
@@ -118,6 +120,8 @@ function IndexPage(): ReactNode {
   // 🏗 Setup
   const view = search.view ?? getDefaultCalendarView(isWide);
   const timeZone = readTimeZone(dataset);
+  const metrics = resolveMetrics(view, search.metrics);
+  const menu = { className: "contents", timeZone, view };
 
   // 💪 Handlers
   const {
@@ -125,6 +129,8 @@ function IndexPage(): ReactNode {
     handleDateChange,
     handleFilterChange,
     handleGroupingChange,
+    handleMetricsChange,
+    handleRangeChange,
     handleSortChange,
   } = useCalendarSearch(timeZone);
   const agendaDays = search.days ?? AGENDA_DAY_COUNT;
@@ -156,26 +162,25 @@ function IndexPage(): ReactNode {
               colors={search.colors !== false}
               columns={search.columns}
               compact={!isWide}
+              compare={search.compare === true}
+              eventFilter={filter}
               events={events}
               facets={facets}
               filters={
                 <CalendarQueryControls
                   className="contents"
                   columns={search.columns}
-                  display={
-                    <CalendarDisplayMenu
-                      className="contents"
-                      timeZone={timeZone}
-                      view={view}
-                    />
-                  }
+                  display={<CalendarDisplayMenu {...menu} />}
                   facets={facets}
                   filter={search.filter}
                   grouping={grouping}
                   isDefaultGrouping={search.group === undefined}
+                  layout={<CalendarLayoutMenu {...menu} />}
+                  metrics={metrics}
                   onColumnsChange={handleColumnsChange}
                   onFilterChange={handleFilterChange}
                   onGroupingChange={handleGroupingChange}
+                  onMetricsChange={handleMetricsChange}
                   onSortChange={handleSortChange}
                   presets={presets}
                   sort={search.sort}
@@ -183,8 +188,12 @@ function IndexPage(): ReactNode {
                 />
               }
               grouping={grouping}
+              metrics={metrics}
               onColumnsChange={handleColumnsChange}
               onDateChange={handleDateChange}
+              onRangeChange={(range) => {
+                handleRangeChange(view, range);
+              }}
               onSortChange={handleSortChange}
               scale={search.scale}
               sort={search.sort}

@@ -62,64 +62,69 @@ describe(CalendarDisplayMenu, () => {
     );
   });
 
-  it("names the view shown on a chip beside the Display button", () => {
+  it("joins the Display button to a chip naming the symbols drawn, not the view", () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
 
     expect(screen.getByRole("group", { name: "Display" }).textContent).toBe(
-      "DisplayTimeline",
+      "DisplayGlyphs",
     );
+  });
+
+  it("leads the chip with the icon the symbol set has in the list", () => {
+    render(<CalendarDisplayMenu {...PROPERTIES} />);
+
+    expect(
+      screen
+        .getByRole("button", { name: "Glyphs" })
+        .querySelector("svg")
+        ?.classList.contains("lucide-shapes"),
+    ).toBe(true);
   });
 
   it("opens its list from the chip as well as the button", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
-    fireEvent.click(screen.getByRole("button", { name: "Timeline" }));
+    fireEvent.click(screen.getByRole("button", { name: "Glyphs" }));
 
     await expect(screen.findByTestId("query-cascader")).resolves.toBeDefined();
   });
 
-  it("lists Layout, Symbols, Colors, Crowded days and Sky", async () => {
+  it("lists Symbols, Colors, Crowded days and Skyfield, and no Layout", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
 
-    for (const label of [
-      "Layout",
-      "Symbols",
-      "Colors",
-      "Crowded days",
-      "Sky",
-      "Scale",
-    ]) {
+    for (const label of ["Symbols", "Colors", "Crowded days", "Skyfield"]) {
       await expect(screen.findByText(label)).resolves.toBeDefined();
     }
 
-    expect(screen.queryByText("Sky settings…")).toBeNull();
+    expect(screen.queryByText("Layout")).toBeNull();
+    expect(screen.queryByText("Quarter")).toBeNull();
+
+    expect(screen.queryByText("Skyfield settings…")).toBeNull();
   });
 
-  it("writes a choice from the list: a switch flips, and a view is ticked in its branch", async () => {
+  it("writes a choice from the list: a switch flips, and a symbol set is ticked in its branch", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
     fireEvent.click(await screen.findByText("Crowded days"));
 
     expect(display.handlers.handleClustersChange).toHaveBeenCalledWith(false);
 
-    fireEvent.click(await screen.findByText("Week"));
-
-    expect(display.handlers.handleViewChange).toHaveBeenCalledWith("week");
-
-    fireEvent.click(await screen.findByText("Symbols"));
+    // Symbols is open already, so its Emojis row needs no click on the branch.
     fireEvent.click(await screen.findByText("Emojis"));
 
     expect(display.handlers.handleSymbolsChange).toHaveBeenCalledWith("emojis");
   });
 
-  it("opens with Layout expanded and the other branches closed", async () => {
+  it("opens with Symbols expanded and the other branches closed", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
 
     await expect(
-      screen.findByRole("treeitem", { name: /^Month/u }),
+      screen.findByRole("treeitem", { name: /^Emojis/u }),
     ).resolves.toBeDefined();
-    expect(screen.queryByRole("treeitem", { name: /^Emojis/u })).toBeNull();
+    expect(
+      screen.queryByRole("treeitem", { name: /^Constellations/u }),
+    ).toBeNull();
   });
 
   it("lists its choices as a tree, each branch opening beneath itself", async () => {
@@ -127,23 +132,22 @@ describe(CalendarDisplayMenu, () => {
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
 
     await expect(
-      screen.findByRole("treeitem", { name: /^Timeline/u }),
+      screen.findByRole("treeitem", { name: /^Symbols/u }),
     ).resolves.toBeDefined();
-    expect(screen.getByText("Layout")).toBeDefined();
     expect(screen.queryByRole("button", { name: /^back$/iu })).toBeNull();
   });
 
-  it("finds a view by searching for it", async () => {
+  it("finds a choice by searching for it", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
     fireEvent.change(
       await screen.findByPlaceholderText("Search display options"),
       {
-        target: { value: "table" },
+        target: { value: "emojis" },
       },
     );
-    fireEvent.click(await screen.findByRole("treeitem", { name: /^Table/u }));
+    fireEvent.click(await screen.findByRole("treeitem", { name: /^Emojis/u }));
 
-    expect(display.handlers.handleViewChange).toHaveBeenCalledWith("table");
+    expect(display.handlers.handleSymbolsChange).toHaveBeenCalledWith("emojis");
   });
 });
