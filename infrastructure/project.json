@@ -33,7 +33,7 @@
     },
     "helm-test": {
       "cache": true,
-      "description": "Run the helm-unittest suites under every chart that has a tests folder. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Installs the helm-unittest v1.2.1 plugin when helm plugin list lacks unittest: the linux-amd64 release tarball must match its hard-coded sha256 (that check is the integrity gate), then copies the verified contents into the plugins directory, without its install hook (which would download the same tarball again). Helm's local install would symlink to a temp directory, so it is not used. Requires helm, curl, and sha256sum on PATH, and linux-amd64 for the first install.",
+      "description": "Run the helm-unittest suites under every chart that has a tests folder. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Installs the helm-unittest v1.2.1 plugin when helm plugin list lacks unittest, for Linux amd64 or arm64 (the architecture picks its tarball, and any other platform fails before downloading). The tarball must match its hard-coded sha256 (that check is the integrity gate; both hashes match the release's helm-unittest-checksum.sha), then is copied into the plugins directory without its install hook, which would download the tarball again. Requires helm, curl, and sha256sum on PATH.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/helm/**/*",
@@ -42,7 +42,7 @@
         }
       ],
       "options": {
-        "command": "helm plugin list | awk 'NR > 1 { print $1 }' | grep -qx unittest || { d=$(mktemp -d) && curl --proto '=https' --tlsv1.2 -fsSL -o \"$d/helm-unittest.tgz\" https://github.com/helm-unittest/helm-unittest/releases/download/v1.2.1/helm-unittest-linux-amd64-1.2.1.tgz && echo \"48e86ecc1467b009630e5954375e5d8494139f73b466df5fe8c04fa45b634939  $d/helm-unittest.tgz\" | sha256sum -c - && mkdir \"$d/plugin\" && tar xzf \"$d/helm-unittest.tgz\" -C \"$d/plugin\" && sed -i '/^platformHooks:/,$d' \"$d/plugin/plugin.yaml\" && mkdir -p \"$(helm env HELM_PLUGINS)/unittest\" && cp -R \"$d/plugin/.\" \"$(helm env HELM_PLUGINS)/unittest/\"; status=$?; rm -rf \"$d\"; [ \"$status\" -eq 0 ] || exit 1; }; for chart in {projectRoot}/helm/*/; do if [ -d \"$chart/tests\" ]; then helm unittest \"$chart\" || exit 1; fi; done",
+        "command": "helm plugin list | awk 'NR > 1 { print $1 }' | grep -qx unittest || { case \"$(uname -s)-$(uname -m)\" in Linux-x86_64) a=amd64; s=48e86ecc1467b009630e5954375e5d8494139f73b466df5fe8c04fa45b634939;; Linux-aarch64|Linux-arm64) a=arm64; s=c66062713cd3cbb1a80d7098bd1d4a48db8438f56b43fb6377df65447f93f8de;; *) echo 'unsupported platform for the helm-unittest plugin: Linux amd64 or arm64 only' >&2; exit 1;; esac && d=$(mktemp -d) && curl --proto '=https' --tlsv1.2 -fsSL -o \"$d/helm-unittest.tgz\" \"https://github.com/helm-unittest/helm-unittest/releases/download/v1.2.1/helm-unittest-linux-$a-1.2.1.tgz\" && echo \"$s  $d/helm-unittest.tgz\" | sha256sum -c - && mkdir \"$d/plugin\" && tar xzf \"$d/helm-unittest.tgz\" -C \"$d/plugin\" && sed -i '/^platformHooks:/,$d' \"$d/plugin/plugin.yaml\" && mkdir -p \"$(helm env HELM_PLUGINS)/unittest\" && cp -R \"$d/plugin/.\" \"$(helm env HELM_PLUGINS)/unittest/\"; status=$?; rm -rf \"$d\"; [ \"$status\" -eq 0 ] || exit 1; }; for chart in {projectRoot}/helm/*/; do if [ -d \"$chart/tests\" ]; then helm unittest \"$chart\" || exit 1; fi; done",
         "cwd": "{workspaceRoot}"
       }
     },
