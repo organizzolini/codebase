@@ -18,7 +18,6 @@ const COMMAND_NAMES = [
   "catalog-manifests",
   "cleanup-codebase",
   "collect-codometer-baseline",
-  "conformetry-generators",
   "conventional-config",
   "devcontainer-configuration",
   "import-pr-task-cache",

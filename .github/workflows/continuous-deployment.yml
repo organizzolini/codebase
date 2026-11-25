@@ -283,16 +283,6 @@ jobs:
           env.RELEASE_SUPERSEDED != 'true'
         run: pnpm exec nx affected --target=erd --configuration=write
 
-      - name: 👔 Inventory Generators
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.target.id == 'push-releases' &&
-          env.RELEASE_SUPERSEDED != 'true'
-        run: |
-          pnpm exec nx run-many \
-            --target=conformetry-generators \
-            --configuration=write
-
       - name: 🔗 Synchronize
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
