@@ -17,6 +17,7 @@
 | [terraform/openrouter](terraform/openrouter)             | OpenRouter workspace, API key, guardrail, and ranked-model preset |
 | [terraform/github](terraform/github)                     | GitHub repository settings, `main` ruleset, and Actions variables |
 | [terraform/linode](terraform/linode)                     | The Object Storage bucket that holds Terraform state              |
+| [terraform/kubernetes](terraform/kubernetes)             | LKE cluster, Cloudflare tunnel, and the caelundas DNS record      |
 
 ## Quick Start
 
@@ -48,6 +49,18 @@ nx run infrastructure:terraform-apply:openrouter     # applies; CI does this on 
 ```
 
 Continuous Integration plans a pull request that changes the root and comments the creates, updates, replaces, and deletes on it. Continuous Deployment applies a push to `main` that changes it. Both read the `TERRAFORM_STATE_BUCKET`, `TERRAFORM_STATE_ENDPOINT`, `TERRAFORM_STATE_ACCESS_KEY_ID`, `TERRAFORM_STATE_SECRET_ACCESS_KEY`, and `OPENROUTER_MANAGEMENT_KEY` repository secrets. The management key also writes the preset, because OpenRouter rejects an inference key for that.
+
+### Manage the Kubernetes Root with Terraform
+
+The `terraform/kubernetes` root creates the `organizzolini-codebase` LKE cluster (region `us-iad`, one `g6-standard-2` pool whose autoscaler keeps 1 to 2 nodes) and everything Cloudflare does for the public host `caelundas.organizzolini.net`. It imports the existing `organizzolini.net` zone, which it refuses to destroy, and manages no zone settings or other records. Its tunnel routes `/graphql` to `caelundas-api:3000` and everything else to `caelundas-web:80`, and a proxied CNAME points the host at the tunnel. It needs `TF_VAR_linode_token`, plus `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_account_id`, and `TF_VAR_cloudflare_zone_id`. The optional `TF_VAR_k8s_version` pins the LKE Kubernetes version; unset, the cluster takes the newest available.
+
+The Cloudflare token needs these permissions, and nothing else:
+
+- Account → Cloudflare Tunnel → Edit
+- Zone → Zone → Read, on `organizzolini.net` only
+- Zone → DNS → Edit, on `organizzolini.net` only
+
+The readiness wait writes the kubeconfig to a temporary file and needs `kubectl` on the runner. Its `kubeconfig` output and the tunnel token are sensitive.
 
 ### Run Local Services
 

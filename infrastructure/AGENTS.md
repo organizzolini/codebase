@@ -34,6 +34,7 @@ infrastructure/
 │   └── postgres/            # Shared PostgreSQL as CloudNativePG resources
 └── terraform/               # Cluster provisioning
     ├── github/              # Repository settings, ruleset, Actions variables
+    ├── kubernetes/          # LKE cluster, Cloudflare tunnel and DNS record for caelundas
     ├── linode/              # Object Storage buckets: the state, the shared Nx cache, and Postgres backups
     └── openrouter/          # OpenRouter workspace, key, guardrail, preset
 ```
@@ -71,6 +72,8 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 `values/caelundas-cli.yaml` layers over `values/base.yaml` for the caelundas-cli ingestion Job: an Indexed job on `emptyDir` scratch space, `batch-low` priority, and the staging Postgres environment.
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
+
+**Kubernetes root**: `terraform/kubernetes` creates the LKE cluster and the Cloudflare tunnel, routing and DNS record. `k8s_version` is optional and pins the cluster's Kubernetes version; unset, it takes the newest from `linode_lke_versions`.
 
 **Terraform tests**: `tests/` holds the `terraform test` suites written in HCL, which run against `mock_provider` blocks, so they need no credentials. `nx run infrastructure:terraform-test` initializes each root with `-backend=false` and runs its tests, for every root that has a `tests/` folder.
 
@@ -197,5 +200,6 @@ serving all three roots, so the move can stop at any point.
 - [helm/kubernetes-job/templates/job.yaml](helm/kubernetes-job/templates/job.yaml): Job template
 - [helm/kubernetes-job/templates/pvc.yaml](helm/kubernetes-job/templates/pvc.yaml): PVC template
 - [helm/kubernetes-job/templates/\_helpers.tpl](helm/kubernetes-job/templates/_helpers.tpl): Helpers
-- [terraform/main.tf](terraform/main.tf): Cluster definition
+- [terraform/kubernetes/cluster.tf](terraform/kubernetes/cluster.tf): LKE cluster and its readiness wait
+- [terraform/kubernetes/cloudflare.tf](terraform/kubernetes/cloudflare.tf): Zone import, tunnel, routing, and DNS record
 - [terraform/openrouter/main.tf](terraform/openrouter/main.tf): OpenRouter resources and the S3-compatible state backend
