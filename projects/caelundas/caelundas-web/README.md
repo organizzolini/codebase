@@ -56,6 +56,16 @@ nx run caelundas-web:codegen-watch    # Start the API and regenerate on change
 nx run caelundas-web:vitest
 ```
 
+## Image
+
+```bash
+IMAGE_TAG=local nx run caelundas-web:docker-build
+```
+
+The image is `ghcr.io/organizzolini/caelundas-web:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with `configuration/Dockerfile`. It serves the single-page app, built with its shell rendered ahead of time, from `dist/client` with `nginxinc/nginx-unprivileged` on port 8080, as UID 101. Client-side routes fall back to `index.html`, which is never cached, and hashed files under `/assets/` are cached as immutable. The API address is baked in at build time from `VITE_CAELUNDAS_API_URL`, default `https://caelundas.organizzolini.net/graphql`; set it in the environment to build against another API. Set `CAELUNDAS_API_IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
+
+Size: 92.3 MB (92,268,967 bytes), on `nginxinc/nginx-unprivileged:1.30.6-alpine3.24`.
+
 ## Night sky link parameters
 
 The backdrop reads these from the page link; a value that does not parse falls

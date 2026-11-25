@@ -90,6 +90,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **nautical**: Sun-altitude twilight events, the Dawn, Dusk and Evening variants, each mapped to its own SVG icon.
 - **neptune**: A planet whose glyph and icon label its events, as in Moon sextile Neptune.
 - **nessus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
+- **nginx**: The unprivileged web server that serves the built app from the caelundas-web image on port 8080.
 - **nonuple**: Stellium label for a cluster of nine bodies, mapped to a symbol in the stellium constants.
 - **north**: The lunar north node glyph, mapped to its own SVG icon, and the north pole facing the sky view.
 - **novile**: Harmonic aspect at 40 degrees, the ninth harmonic, named in event labels such as Sun novile Pluto.

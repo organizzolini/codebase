@@ -65,6 +65,25 @@
     },
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "docker-build": {
+      "cache": false,
+      "description": "Build the caelundas-web production image for linux/amd64 from the workspace root, tagged with IMAGE_TAG (default local) and baking VITE_CAELUNDAS_API_URL into the app; set CAELUNDAS_API_IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker build --platform linux/amd64 -f projects/caelundas/caelundas-web/configuration/Dockerfile${CAELUNDAS_API_IMAGE_CA_BUNDLE:+ --secret id=ca-bundle,src=$CAELUNDAS_API_IMAGE_CA_BUNDLE}${VITE_CAELUNDAS_API_URL:+ --build-arg VITE_CAELUNDAS_API_URL=$VITE_CAELUNDAS_API_URL} -t ghcr.io/organizzolini/caelundas-web:${IMAGE_TAG:-local} .",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "docker-push": {
+      "cache": false,
+      "dependsOn": ["docker-build"],
+      "description": "Push the caelundas-web image tagged with IMAGE_TAG (default local) to GHCR",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker push ghcr.io/organizzolini/caelundas-web:${IMAGE_TAG:-local}",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "eslint": {},
     "format-code": {},
     "guard-code": {},
