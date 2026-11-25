@@ -235,7 +235,7 @@ nx run-many --target=start --projects=lexico-web,caelundas-web,meanderaw-web
 - [AGENTS.md](AGENTS.md) - The single source of truth for conventions; every project has its own
 - [OpenWiki](openwiki/quickstart.md) - Generated map of the architecture, domains, and workflows
 - [Skills](.agents/skills) - Domain knowledge and workflows, which are also the deep-dive documentation
-  - **Vendored:** [Superpowers](https://github.com/obra/superpowers) / [Matt Pocock's Skills](https://github.com/mattpocock/skills) / [Ponytail](https://github.com/DietrichGebert/ponytail), installed beside this repository's own [skills](.agents/skills)
+  - **Vendored:** [Superpowers](https://github.com/obra/superpowers) / [Matt Pocock's Skills](https://github.com/mattpocock/skills) / [Ponytail](https://github.com/DietrichGebert/ponytail)
   - **Languages:** [TypeScript](.agents/skills/write-typescript/SKILL.md) / [React](.agents/skills/write-react/SKILL.md) / [Python](.agents/skills/write-python/SKILL.md) / [Comments](.agents/skills/write-comments/SKILL.md)
   - **Quality:** [Validate Code](.agents/skills/validate-code/SKILL.md) / [Testing Strategy](.agents/skills/testing-strategy/SKILL.md) / [Testing Mocks](.agents/skills/testing-mocks/SKILL.md) / [Error Handling](.agents/skills/handle-errors/SKILL.md)
   - **Workflows:** [Submit Changes](.agents/skills/submit-changes/SKILL.md) / [Ship Changes](.agents/skills/ship-changes/SKILL.md) / [Link Issue](.agents/skills/link-issue/SKILL.md) / [Git Commits](.agents/skills/commit-code/SKILL.md) / [PR Management](.agents/skills/create-pull-request/SKILL.md) / [Branch Naming](.agents/skills/checkout-branch/SKILL.md)
