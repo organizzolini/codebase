@@ -1047,7 +1047,7 @@ function FilterChipImpl<V, O>({ rule, index }: FilterChipProps<V>) {
               /* The same surface the three text segments force. Styles whose
                  outline button is transparent in dark (sera, luma, rhea) left
                  the kebab as a notch in an otherwise filled pill. */
-              className="bg-background dark:bg-input/30"
+              className="bg-background w-5 dark:bg-input/30"
               aria-label={actions.labels.chipMenu(field.label)}
               onPointerDown={() => focusSegment("menu")}
             />
