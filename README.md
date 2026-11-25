@@ -213,7 +213,7 @@
 `├──` **🔁 [integration](integration)** - Guards a change on its way to `main`: commit and push checks, derived configuration, and pull request checks\
 `└──` **📤 [deployment](deployment)** - Coordinates releases and package publishing\
 
-## 🚀 Startup
+## 🚀 Start
 
 ```bash
 git clone https://github.com/Organizzolini/codebase.git
@@ -231,13 +231,22 @@ nx show projects
 nx run lexico-web:start
 ```
 
-The setup script installs the toolchain and dependencies; `nx show projects` lists every project, and `nx run <project>:<target>` runs a task in one of them. The [Contributing Guide](.github/CONTRIBUTING.md) covers the dev container, code standards, commits, and pull requests.
+The setup script installs the toolchain and dependencies; `nx show projects` lists every project, and `nx run <project>:<target>` runs a task in one of them.
 
-## 📖 Resources
-
-- [Contributing Guide](.github/CONTRIBUTING.md) - Setup, commands, quality gates, and the commit and pull request workflow
+- [Contributing Guide](.github/CONTRIBUTING.md) - Setup, the dev container, commands, quality gates, and the commit and pull request workflow
 - [Release Process](documentation/development/release-process.md) - Automated semantic versioning and changelogs
 - [Changelog](CHANGELOG.md) / [Security Policy](.github/SECURITY.md) / [Code of Conduct](.github/CODE_OF_CONDUCT.md)
+
+## 🤖 Agents
+
+Conventions live in [AGENTS.md](AGENTS.md) and the agent skills below, which are the single sources of truth. Every project also has its own `AGENTS.md` with project-specific patterns. The generated [OpenWiki](openwiki/quickstart.md) maps the architecture, domains, and workflows.
+
+- [View all Skills](.agents/skills) - Complete index of available skills
+- **Languages:** [TypeScript](.agents/skills/write-typescript/SKILL.md) / [React](.agents/skills/write-react/SKILL.md) / [Python](.agents/skills/write-python/SKILL.md) / [Comments](.agents/skills/write-comments/SKILL.md)
+- **Quality:** [Validate Code](.agents/skills/validate-code/SKILL.md) / [Testing Strategy](.agents/skills/testing-strategy/SKILL.md) / [Testing Mocks](.agents/skills/testing-mocks/SKILL.md) / [Error Handling](.agents/skills/handle-errors/SKILL.md)
+- **Workflows:** [Git Commits](.agents/skills/commit-code/SKILL.md) / [PR Management](.agents/skills/create-pull-request/SKILL.md) / [Branch Naming](.agents/skills/checkout-branch/SKILL.md)
+- **Tooling:** [Nx Workspaces](.agents/skills/nx-workspace/SKILL.md) / [Generators](.agents/skills/nx-generate/SKILL.md) / [Task Running](.agents/skills/nx-run-tasks/SKILL.md)
+- **Triage:** [Failing CI](.agents/skills/triage-integration/SKILL.md) / [Spell Check](.agents/skills/spell-check/SKILL.md)
 
 ## 👔 Conformetry
 
