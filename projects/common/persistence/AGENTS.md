@@ -1,6 +1,4 @@
-# Persistence: Shared Postgres Package
-
-## Quick Start
+# persistence
 
 **Type**: NestJS library package (`@codebase/persistence`) and nest-commander
 command line (`postgresql-export`, `postgresql-import`, `typeorm-migration-sql`,
@@ -25,15 +23,9 @@ inherits that edge. Logging has no workspace dependencies, so the edge makes
 no cycle, and lexico-cli, lexico-api, meanderaw-cli, and caelundas-cli
 already depend on it; lexico-db gains it only transitively.
 
-## Architecture Overview
-
-### Tech Stack
-
 - **ORM**: TypeORM against Postgres 18, with `typeorm-naming-strategies`' snake case
 - **Env validation**: `zod`, as a fragment each application spreads into its own schema
 - **Language**: Strict TypeScript
-
-### Directory Layout
 
 ```text
 src/
@@ -75,9 +67,7 @@ testing/
   setup.ts, mocks.ts                # Vitest setup and mocks
 ```
 
-## Development
-
-### Rules this package holds
+## Rules this package holds
 
 - **Never read an unprefixed `POSTGRES_*` variable.** They are the shared
   container's admin login, loaded by Nx into every task.
@@ -156,18 +146,6 @@ testing/
   does not exist when a node entity is defined, so a data source that builds the
   node entity must also build the graph entity.
 
-### Key Commands
-
-```bash
-nx run persistence:typecheck-code,lint-code,format-code,deprecate-code,guard-code
-nx run persistence:vitest:unit
-nx run persistence:type-coverage
-nx run persistence:start:postgresql-export --args="--source-uri <uri> --table <schema.table> --data --file <path>"
-nx run persistence:start:postgresql-import --args="--target-uri <uri> --table <schema.table> --data --file <path>"
-nx run persistence:start --args="render-tree-data --source-uri <uri> --schema <schema> --entities '<glob>'"
-nx run persistence:typeorm-migration-sql      # check (default); `:write` rewrites the migration SQL
-```
-
 `postgresql-import --clean` never prompts and has no `--yes`; the preview is
 `postgresql-import --dry-run`, which names what `--clean` would drop or truncate. Run it
 first.
@@ -182,6 +160,3 @@ the README's [Moving data between databases](README.md#moving-data-between-datab
 drift, comparing normalized SQL because the committed files are lint-fixed and
 formatted, and `write` rewrites the files. It imports nothing from `integration`, so it adds no
 edge to the CI plumbing.
-
-See the [write-typescript skill](../../.agents/skills/write-typescript/SKILL.md)
-and the [write-tests skill](../../.agents/skills/write-tests/SKILL.md).
