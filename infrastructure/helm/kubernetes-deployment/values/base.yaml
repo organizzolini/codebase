@@ -1,0 +1,53 @@
+# Default values for kubernetes-deployment.
+# This is a YAML-formatted file.
+
+replicaCount: 1
+
+image:
+  repository: my-application
+  pullPolicy: IfNotPresent
+  # Empty renders nothing: no Deployment, Service, or hook Job until a release sets it.
+  tag: ""
+
+imagePullSecrets: []
+
+podAnnotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+
+# Port the application listens on, and the port the Service targets
+containerPort: 8080
+
+service:
+  port: 80
+
+# Liveness and readiness probes, each on its own port
+probes:
+  liveness:
+    path: /
+    port: 8080
+  readiness:
+    path: /
+    port: 8080
+
+# Environment variables
+env: []
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# PreSync Job that runs before each rollout, such as database migrations
+hook:
+  enabled: false
+  image:
+    repository: my-application
+    # Empty falls back to image.tag, so one release tags both images
+    tag: ""
+  command: []
+  env: []

@@ -1,0 +1,67 @@
+# Values for the caelundas-api Deployment. Layer after base.yaml:
+#   --values values/base.yaml --values values/caelundas-api.yaml
+image:
+  repository: ghcr.io/organizzolini/caelundas-api
+
+containerPort: 3000
+
+service:
+  port: 3000
+
+# Lightship serves probes on 9000, separate from the application port
+probes:
+  liveness:
+    path: /live
+    port: 9000
+  readiness:
+    path: /ready
+    port: 9000
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 192Mi
+  limits:
+    cpu: 500m
+    memory: 384Mi
+
+env:
+  - name: CAELUNDAS_POSTGRES_HOST
+    value: postgres-pooler-rw.codebase.svc.cluster.local
+  - name: CAELUNDAS_POSTGRES_DATABASE
+    value: caelundas_production
+  - name: CAELUNDAS_POSTGRES_SCHEMA
+    value: caelundas
+  - name: CAELUNDAS_POSTGRES_USERNAME
+    value: caelundas_username
+  - name: CAELUNDAS_POSTGRES_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: caelundas-postgres
+        key: password
+
+hook:
+  enabled: true
+  image:
+    repository: ghcr.io/organizzolini/caelundas-cli
+    # Set by the release commit; empty falls back to image.tag
+    tag: ""
+  # The caelundas-migrate command ships in the CLI image from a later commit
+  command:
+    - caelundas-migrate
+  env:
+    - name: CAELUNDAS_POSTGRES_HOST
+      value: postgres-rw.codebase.svc.cluster.local
+    - name: CAELUNDAS_POSTGRES_DATABASE
+      value: caelundas_production
+    - name: CAELUNDAS_POSTGRES_SCHEMA
+      value: caelundas
+    - name: CAELUNDAS_POSTGRES_USERNAME
+      value: caelundas_username
+    - name: CAELUNDAS_POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: caelundas-postgres
+          key: password
+    - name: CAELUNDAS_MIGRATION_DATABASES
+      value: caelundas_production,caelundas_staging

@@ -27,12 +27,24 @@ terraform apply
 ```text
 infrastructure/
 ├── helm/
+│   ├── kubernetes-deployment/  # Reusable chart for long-running services
 │   └── kubernetes-job/      # Reusable chart for K8s Jobs
 └── terraform/               # Cluster provisioning
     ├── github/              # Repository settings, ruleset, Actions variables
     ├── linode/              # Object Storage buckets: the state and the shared Nx cache
     └── openrouter/          # OpenRouter workspace, key, guardrail, preset
 ```
+
+### kubernetes-deployment Chart
+
+**Purpose**: Deploy long-running services as a Deployment and Service, with an optional PreSync hook Job (migrations run before each rollout).
+
+- `image.tag: ""` (default) renders nothing, so Argo CD reports the app Synced/Healthy before the first release. The release commit sets the tag.
+- `hook.image.tag` falls back to `image.tag` when empty, so one release tags both images.
+- The Deployment exposes `containerPort` as `http`, and a `probes` port when liveness probes use another port (Lightship uses 9000).
+- Hook pods carry `app.kubernetes.io/component: hook` so the Service never selects a migration pod.
+
+`values/caelundas-api.yaml` and `values/caelundas-web.yaml` layer over `values/base.yaml`.
 
 ### kubernetes-job Chart
 
@@ -59,6 +71,9 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 
 ## Helm Chart References
 
+- Chart metadata: [helm/kubernetes-deployment/Chart.yaml](helm/kubernetes-deployment/Chart.yaml)
+- Base values: [helm/kubernetes-deployment/values/base.yaml](helm/kubernetes-deployment/values/base.yaml)
+- Templates: [helm/kubernetes-deployment/templates/](helm/kubernetes-deployment/templates/)
 - Chart metadata: [helm/kubernetes-job/Chart.yaml](helm/kubernetes-job/Chart.yaml)
 - Base values: [helm/kubernetes-job/values/base.yaml](helm/kubernetes-job/values/base.yaml)
 - Templates: [helm/kubernetes-job/templates/](helm/kubernetes-job/templates/)

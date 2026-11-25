@@ -1,0 +1,29 @@
+# Values for the caelundas-web Deployment. Layer after base.yaml:
+#   --values values/base.yaml --values values/caelundas-web.yaml
+image:
+  repository: ghcr.io/organizzolini/caelundas-web
+
+# Unprivileged nginx listens on 8080; the Service exposes it on 80
+containerPort: 8080
+
+service:
+  port: 80
+
+probes:
+  liveness:
+    path: /
+    port: 8080
+  readiness:
+    path: /
+    port: 8080
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 16Mi
+  limits:
+    cpu: 100m
+    memory: 64Mi
+
+hook:
+  enabled: false

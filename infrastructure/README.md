@@ -6,13 +6,14 @@
 
 ## Contents
 
-| Directory                                    | Purpose                                                           |
-| -------------------------------------------- | ----------------------------------------------------------------- |
-| [helm/kubernetes-job](helm/kubernetes-job)   | Reusable Helm chart for batch job deployments with PVC storage    |
-| [terraform/](terraform)                      | Linode LKE (Kubernetes) cluster provisioning                      |
-| [terraform/openrouter](terraform/openrouter) | OpenRouter workspace, API key, guardrail, and ranked-model preset |
-| [terraform/github](terraform/github)         | GitHub repository settings, `main` ruleset, and Actions variables |
-| [terraform/linode](terraform/linode)         | The Object Storage bucket that holds Terraform state              |
+| Directory                                                | Purpose                                                           |
+| -------------------------------------------------------- | ----------------------------------------------------------------- |
+| [helm/kubernetes-job](helm/kubernetes-job)               | Reusable Helm chart for batch job deployments with PVC storage    |
+| [helm/kubernetes-deployment](helm/kubernetes-deployment) | Reusable Helm chart for services with an optional PreSync hook    |
+| [terraform/](terraform)                                  | Linode LKE (Kubernetes) cluster provisioning                      |
+| [terraform/openrouter](terraform/openrouter)             | OpenRouter workspace, API key, guardrail, and ranked-model preset |
+| [terraform/github](terraform/github)                     | GitHub repository settings, `main` ruleset, and Actions variables |
+| [terraform/linode](terraform/linode)                     | The Object Storage bucket that holds Terraform state              |
 
 ## Quick Start
 
@@ -95,7 +96,7 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 | `open-webui`     | `up`, `down`, `open` for the Open WebUI service                        |
 | `terraform`      | `plan` (default) or `import` against the cluster                       |
 | `trivy-config`   | Trivy misconfiguration scan of the Terraform code                      |
-| `helm-lint`      | Lint the `kubernetes-job` chart against its base values                |
+| `helm-lint`      | Lint every Helm chart under `helm/` against its base values            |
 | `helm-test`      | Run the helm-unittest suites under every chart with a `tests/` folder  |
 | `compose-config` | Validate the Docker Compose file                                       |
 

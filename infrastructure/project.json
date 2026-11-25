@@ -18,7 +18,7 @@
     "guard-code": {},
     "helm-lint": {
       "cache": true,
-      "description": "Lint the kubernetes-job Helm chart against its base values. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
+      "description": "Lint every Helm chart under helm/ against its base values. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/helm/**/*",
@@ -27,7 +27,7 @@
         }
       ],
       "options": {
-        "command": "helm lint {projectRoot}/helm/kubernetes-job --values {projectRoot}/helm/kubernetes-job/values/base.yaml",
+        "command": "for chart in {projectRoot}/helm/*/; do helm lint \"$chart\" --values \"$chart/values/base.yaml\" || exit 1; done",
         "cwd": "{workspaceRoot}"
       }
     },
