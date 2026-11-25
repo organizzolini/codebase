@@ -43,11 +43,12 @@ src/
   index.ts                               # Public exports
   modules/database/                      # The database module
     database.module.ts                   # CaelundasDatabaseModule
-    database.service.ts                  # isConnected, refreshReadModel
+    database.service.ts                  # isConnected, refreshReadModel, refreshMetrics
     database.constants.ts                # Project, coordinate scale, read model SQL
     database.utilities.ts                # Value transformers
     data-source.constants.ts             # Entities, migrations, databaseDataSource
     modules/                             # One *.entity.ts per table or view, by domain
+      metrics/                           # The materialized views the metrics read
 migrations/                              # The migrations, each with its .sql pair
 ```
 
@@ -60,8 +61,16 @@ migrations/                              # The migrations, each with its .sql pa
 - **Instants are `timestamptz`, coordinates `numeric(9,6)`, whole numbers `bigint`.** Each
   has a transformer in `database.utilities.ts`; `squawk` rejects `integer`.
 - **The derived-times view needs no refresh;** the two derived tag tables are rebuilt by
-  `refreshReadModel(manager)` in the caller's transaction. A view's name is not
-  pluralized into sense: `calendar_event_derived_times` is already plural.
+  `refreshReadModel(manager)` in the caller's transaction, which then refreshes the four
+  metrics materialized views concurrently. A view's name is not pluralized into sense:
+  `calendar_event_derived_times` is already plural.
+- **The metrics views are the pre-aggregation layer** Charts and Totals read:
+  `calendar_event_facts` (one row per counted event) and the rollups `calendar_event_day_tag_rollups`,
+  `calendar_event_day_tag_name_rollups` and `calendar_event_day_rollups`. Each is a
+  `@ViewEntity({ materialized: true })` with a unique index, so `refreshMetrics(manager)` can run
+  `refresh materialized view concurrently`. The grain, columns, indexes and the SQL for every
+  metric are in [documentation/metrics-rollups.md](documentation/metrics-rollups.md); keep it
+  current when a view changes. A view's `@Index` is created by the migration like a table's.
 - **The first migration is the baseline,** and the second replaces
   `constellation_lines` with the generated `constellation_edges`. Regenerate the first with `nx run caelundas-db:migration:generate` against
   an empty local Postgres (schema-unqualified), then apply the two hand edits the README

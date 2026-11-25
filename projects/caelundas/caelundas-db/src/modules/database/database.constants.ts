@@ -9,6 +9,19 @@ export const COORDINATE_PRECISION = 9;
 /** The digits after the point in a latitude or longitude. */
 export const COORDINATE_SCALE = 6;
 
+/** Materialized views the metrics read, in refresh order: facts feed the rollups. */
+export const METRICS_VIEWS = [
+  "calendar_event_facts",
+  "calendar_event_day_tag_rollups",
+  "calendar_event_day_tag_name_rollups",
+  "calendar_event_day_rollups",
+] as const;
+
+/** Statements refreshing the metrics views without blocking readers, in run order. */
+export const METRICS_REFRESH_STATEMENTS = METRICS_VIEWS.map(
+  (view) => `refresh materialized view concurrently ${view}`,
+);
+
 /** Statements rebuilding derived tag tables, in run order; names unqualified. */
 export const READ_MODEL_STATEMENTS = [
   "delete from calendar_event_tag_nodes",

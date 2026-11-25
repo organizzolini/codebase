@@ -12,6 +12,11 @@ import { createBigintTransformer } from "../../database.utilities";
   "tagDepth",
 ])
 @Index("calendar_event_tag_nodes_tag", ["tagId", "calendarEventId"])
+@Index("calendar_event_tag_nodes_path_event", ["tagPath", "calendarEventId"])
+@Index("calendar_event_tag_nodes_root_tag", ["tagRootId", "tagId"])
+@Index("calendar_event_tag_nodes_direct_tag", ["tagId", "calendarEventId"], {
+  where: `"is_direct"`,
+})
 export class CalendarEventTagNode {
   /** The event that carries the tag. */
   @PrimaryColumn("uuid")

@@ -14,19 +14,27 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **doy**: Postgres `extract` field for the day of the year, which the derived-time view uses to number weeks.
 - **epoch**: Postgres `extract` field giving an interval in seconds, from which the derived-time view computes `duration_minutes`.
 - **filetree**: The Mermaid diagram that draws the tag tree as nested, indented entries like a directory listing, chosen with `--diagram filetree` instead of the default flowchart.
+- **gist**:
 - **hip**: A star's Hipparcos catalog number, the key of the `stars` table and of each constellation line's two ends.
+- **instant**:
+- **lateral**:
 - **latitude**: The observer's north-south position in degrees, part of the natural key of `calendar_events`.
 - **longitude**: The observer's east-west position in degrees, part of the natural key of `calendar_events`.
+- **lpad**:
 - **magnitude**: A star's apparent visual brightness, where a lower number is brighter, stored on the `Star` entity.
 - **planet**: Sample root tag in the integration tests, with body tags such as Mars beneath it.
+- **progressive**:
 - **quarter**: The calendar quarter of the year an event starts in, the `start_quarter` column of the derived-time view.
 - **retrograde**: Sample tag and event in the integration tests, standing for a planet's apparent backward motion.
 - **sky**:
 - **smallint**:
 - **star**: A star of the HYG catalog, the `Star` entity, keyed by its Hipparcos number.
 - **temporality**: Derived column classing an event as `Instant` when its start equals its end, and `Duration` otherwise.
+- **tstzrange**:
+- **unnest**:
 - **updatable**: The `PostgresqlUpdatableEntity` base from `@codebase/persistence`, which gives `calendar_events` its audit columns.
 - **weekday**: The day of the week an event starts on, numbered from Sunday as 0, the `start_weekday` column of the derived-time view.
+- **window**:
 - **zodiac**: Boolean on a constellation saying whether the ecliptic crosses it as one of the twelve zodiac signs.
 
 <!-- coinagerie:end -->

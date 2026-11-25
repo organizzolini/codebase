@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, Index, PrimaryColumn } from "typeorm";
 
 import { createBigintTransformer } from "../../database.utilities";
 
@@ -6,6 +6,8 @@ import { createBigintTransformer } from "../../database.utilities";
  * One row of the `tag_nodes` table: a tag with its depth, root and path, derived by `refreshReadModel` from the tag closure.
  */
 @Entity()
+@Index("tag_nodes_root_depth", ["rootId", "depth"])
+@Index("tag_nodes_path", ["path"])
 export class TagNode {
   /** The number of ancestors the tag has, so a root is 0. */
   @Column({ transformer: createBigintTransformer(), type: "bigint" })

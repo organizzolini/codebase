@@ -4,7 +4,11 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { READ_MODEL_STATEMENTS } from "./database.constants";
+import {
+  METRICS_REFRESH_STATEMENTS,
+  METRICS_VIEWS,
+  READ_MODEL_STATEMENTS,
+} from "./database.constants";
 import { DatabaseService } from "./database.service";
 
 import type { EntityManager } from "typeorm";
@@ -46,7 +50,7 @@ describe(DatabaseService, () => {
     expect(service.isConnected()).toBe(false);
   });
 
-  it("runs every read model statement in order inside one transaction", async () => {
+  it("rebuilds the read model, then refreshes the metrics views, in order", async () => {
     const manager = createMock<EntityManager>();
 
     vi.mocked(manager.transaction).mockImplementation(
@@ -64,9 +68,39 @@ describe(DatabaseService, () => {
 
     await service.refreshReadModel(manager);
 
+    expect(manager.transaction).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(manager.query).mock.calls).toStrictEqual(
+      [...READ_MODEL_STATEMENTS, ...METRICS_REFRESH_STATEMENTS].map(
+        (statement) => [statement],
+      ),
+    );
+  });
+
+  it("refreshes every metrics view concurrently, facts first, inside one transaction", async () => {
+    const manager = createMock<EntityManager>();
+
+    vi.mocked(manager.transaction).mockImplementation(
+      async (
+        callbackOrLevel: unknown,
+        maybeCallback?: (transaction: EntityManager) => Promise<unknown>,
+      ) => {
+        const callback = isTransactionCallback(callbackOrLevel)
+          ? callbackOrLevel
+          : maybeCallback;
+
+        await callback?.(manager);
+      },
+    );
+
+    await service.refreshMetrics(manager);
+
     expect(manager.transaction).toHaveBeenCalledTimes(1);
     expect(vi.mocked(manager.query).mock.calls).toStrictEqual(
-      READ_MODEL_STATEMENTS.map((statement) => [statement]),
+      METRICS_VIEWS.map((view) => [
+        `refresh materialized view concurrently ${view}`,
+      ]),
     );
+    expect(METRICS_VIEWS[0]).toBe("calendar_event_facts");
+    expect(METRICS_REFRESH_STATEMENTS).toHaveLength(METRICS_VIEWS.length);
   });
 });

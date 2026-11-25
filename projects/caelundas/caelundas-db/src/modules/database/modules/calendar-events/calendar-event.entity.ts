@@ -18,6 +18,8 @@ import type { Moment } from "moment-timezone";
  */
 @Entity()
 @Index("calendar_events_start_end", ["start", "end"])
+@Index("calendar_events_end", ["end"])
+@Index("calendar_events_location_start", ["latitude", "longitude", "start"])
 @Unique("calendar_events_natural_key", [
   "summary",
   "start",
