@@ -59,14 +59,3 @@ export function getSharePercent(
 
   return Math.min(FULL_PERCENT, Math.max(0, (value / total) * FULL_PERCENT));
 }
-
-/**
- * The groups a list shows: the first few, or all of them when asked.
- */
-export function getShownGroups(
-  groups: readonly MetricGroup[],
-  showAll: boolean,
-  limit: number,
-): readonly MetricGroup[] {
-  return showAll ? groups : groups.slice(0, limit);
-}

@@ -35,10 +35,10 @@ export interface EventMetricsRow {
   id: string;
   key: null | string;
   label: null | string;
-  orderKey: null | string;
   parentId: string;
   path: null | string;
   period: number;
+  rank: null | string;
   values: (null | number)[];
 }
 

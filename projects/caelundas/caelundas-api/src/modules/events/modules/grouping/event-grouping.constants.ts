@@ -59,17 +59,17 @@ export const CALENDAR_GROUP_KEY_SQL: Readonly<
 /**
  * One derived group key for the event `e`, in place of `{key}`.
  */
-export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, null::text as "path", null::text as "orderKey"`;
+export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, null::text as "path", null::text as "rank"`;
 
 /** Puts every event in no group, for an unknown field. */
-export const NO_GROUP_SQL = `select null::text as "key", null::text as label, null::text as "path", null::text as "orderKey" where false`;
+export const NO_GROUP_SQL = `select null::text as "key", null::text as label, null::text as "path", null::text as "rank" where false`;
 
 /**
- * A tag's ordering key: each ancestor's padded `order`, then its name.
+ * A tag's rank: each ancestor's padded `order`, then its name.
  */
-export const TAG_ORDER_KEY_SQL = `(
+export const TAG_RANK_SQL = `(
       select string_agg(
-        lpad(a."order"::text, 5, '0') || ':' || a."name",
+        lpad(a.rank::text, 5, '0') || ':' || a."name",
         ' / '
         order by an.depth
       )
@@ -77,12 +77,12 @@ export const TAG_ORDER_KEY_SQL = `(
       join tags a on a.id = oc.ancestor_id
       join tag_nodes an on an.id = a.id
       where oc.descendant_id = t.tag_id
-    ) as "orderKey"`;
+    ) as "rank"`;
 
 /** Tags an event falls under at a depth; shallower leaves count. */
 export const TAG_GROUP_SQL = `
   select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path",
-    ${TAG_ORDER_KEY_SQL}
+    ${TAG_RANK_SQL}
   from calendar_event_tag_nodes t
   where
     t.calendar_event_id = e.id
@@ -108,7 +108,7 @@ export const TAG_GROUP_SQL = `
 /** The children of a tag an event carries. */
 export const PARENT_TAG_GROUP_SQL = `
   select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path",
-    ${TAG_ORDER_KEY_SQL}
+    ${TAG_RANK_SQL}
   from calendar_event_tag_nodes t
   join tags child on child.id = t.tag_id
   where
@@ -119,7 +119,7 @@ export const PARENT_TAG_GROUP_SQL = `
 /** Picked tags an event falls under, including every ancestor tag. */
 export const PICKED_TAG_GROUP_SQL = `
   select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path",
-    ${TAG_ORDER_KEY_SQL}
+    ${TAG_RANK_SQL}
   from calendar_event_tag_nodes t
   where t.calendar_event_id = e.id and t.tag_id = any({tags}::uuid[])
 `;
@@ -132,7 +132,7 @@ export const GROUP_COLUMN_SQL = `,
           json_build_object(
             'key', g."key",
             'label', g.label,
-            'orderKey', g."orderKey",
+            'rank', g."rank",
             'path', g."path"
           )
           order by g."path" collate "C", g."key" collate "C"

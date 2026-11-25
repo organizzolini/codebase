@@ -34,7 +34,7 @@ export class RenderTreesService {
   // 🔏 Private Methods
 
   /**
-   * The sorts given, else the order field then the name.
+   * The sorts given, else the rank field then the name.
    */
   private sortsOf(
     columns: readonly GraphColumn[],
@@ -43,12 +43,12 @@ export class RenderTreesService {
     if (options.sorts.length > 0 || options.fields === undefined) {
       return options.sorts;
     }
-    const order = options.fields.order;
-    if (!columns.some(({ name }) => name === order)) return options.sorts;
+    const rank = options.fields.rank;
+    if (!columns.some(({ name }) => name === rank)) return options.sorts;
 
     const keys = columns.some(({ name }) => name === "name")
-      ? [order, "name"]
-      : [order];
+      ? [rank, "name"]
+      : [rank];
     return keys.map((column) => ({
       column,
       direction: "asc",

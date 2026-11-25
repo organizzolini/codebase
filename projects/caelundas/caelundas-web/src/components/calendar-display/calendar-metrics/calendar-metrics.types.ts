@@ -82,8 +82,8 @@ export interface MetricGroup {
   key: null | string;
   label: string;
   level: number;
-  orderKey: null | string;
   path: null | string;
+  rank: null | string;
   values: readonly MetricValue[];
 }
 

@@ -3,7 +3,6 @@ import { Button } from "@codebase/presentation";
 import { useMetricLayout } from "../../../hooks/use-metric-layout/use-metric-layout";
 import { SkeletonCards } from "../calendar-skeleton/skeleton-cards";
 
-import { TOP_GROUP_COUNT } from "./calendar-totals.constants";
 import { TotalsCard } from "./components/totals-card/totals-card";
 
 import type { MetricLayoutProperties } from "../calendar-metrics/calendar-metrics-layout.types";
@@ -12,14 +11,10 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * What the cards read, the toolbar's hooks, and groups listed.
+ * What the cards read and the toolbar's hooks.
  */
 export interface CalendarTotalsProperties extends MetricLayoutProperties {
   className?: string;
-  /**
-   * How many groups a card lists before it offers all of them.
-   */
-  groupLimit?: number | undefined;
 }
 
 // 🧩 Component
@@ -30,13 +25,7 @@ export interface CalendarTotalsProperties extends MetricLayoutProperties {
 export function CalendarTotals(
   properties: Readonly<CalendarTotalsProperties>,
 ): ReactNode {
-  const {
-    className,
-    compare,
-    groupColors,
-    groupLimit = TOP_GROUP_COUNT,
-    timeZone,
-  } = properties;
+  const { className, compare, groupColors, timeZone } = properties;
 
   // 🪝 Hooks
   const layout = useMetricLayout({ ...properties, rootsUntilTouched: true });
@@ -98,7 +87,6 @@ export function CalendarTotals(
               compare={compare}
               expanded={expanded}
               groupColors={groupColors}
-              groupLimit={groupLimit}
               groups={data.groups}
               onToggle={toggle}
               timeZone={timeZone}

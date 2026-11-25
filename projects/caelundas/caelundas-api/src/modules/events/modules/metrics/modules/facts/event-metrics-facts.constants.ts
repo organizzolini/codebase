@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { TAG_ORDER_KEY_SQL } from "../../../grouping/event-grouping.constants";
+import { TAG_RANK_SQL } from "../../../grouping/event-grouping.constants";
 
 // ♟️ Constants
 
@@ -81,10 +81,10 @@ export const FACTS_TAG_ROOT_SQL = `
       where c.ancestor_id = {root}::uuid and c.descendant_id = d.id
     )`;
 
-/** The names of the tags picked, with their ordering keys. */
+/** The names of the tags picked, with their ranks. */
 export const FACTS_DIMENSION_SQL = `,
   dim as (
-    select t.tag_id::text as key, t.tag_name, t.tag_path, ${TAG_ORDER_KEY_SQL}
+    select t.tag_id::text as key, t.tag_name, t.tag_path, ${TAG_RANK_SQL}
     from (
       select n.id as tag_id, n.name as tag_name, n.path as tag_path
       from tag_nodes n
@@ -96,7 +96,7 @@ export const FACTS_DIMENSION_SQL = `,
 export const factsRowSchema = z.looseObject({
   label: z.string().nullish().default(null),
   level: z.coerce.number(),
-  orderKey: z.string().nullish().default(null),
   path: z.string().nullish().default(null),
   period: z.coerce.number(),
+  rank: z.string().nullish().default(null),
 });

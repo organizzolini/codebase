@@ -32,10 +32,10 @@ export const metricRowSchema = z.looseObject({
   id: z.string().default(""),
   key: z.string().nullish().default(null),
   label: z.string().nullish().default(null),
-  orderKey: z.string().nullish().default(null),
   parent_id: z.string().default(""),
   path: z.string().nullish().default(null),
   period: z.coerce.number(),
+  rank: z.string().nullish().default(null),
 });
 
 /** A metric's value in a row: a number, or null for none. */

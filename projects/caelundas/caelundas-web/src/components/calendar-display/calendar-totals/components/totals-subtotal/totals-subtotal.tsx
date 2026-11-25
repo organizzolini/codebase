@@ -96,7 +96,7 @@ export function TotalsSubtotal(
         {isExpandable ? (
           <button
             aria-expanded={open}
-            className="hover:bg-muted flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-sm text-left"
+            className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-sm text-left"
             onClick={() => {
               onToggle(group.id);
             }}

@@ -12,11 +12,11 @@ export const RENDER_DIAGRAM_OPTION = {
   flags: "--diagram <flowchart|filetree>",
 } as const;
 
-/** Where a tree's icons, notes and order are read from. */
+/** Where a tree's icons, notes and rank are read from. */
 export const RENDER_TREE_FIELDS = {
   icon: "icon",
   note: "note",
-  order: "order",
+  rank: "rank",
 } as const;
 
 /** Flag and help text of `--icon-field`, which only the tree command takes. */
@@ -33,11 +33,11 @@ export const RENDER_NOTE_FIELD_OPTION = {
   flags: "--note-field <name>",
 } as const;
 
-/** Flag and help text of `--order-field`, which only the tree command takes. */
-export const RENDER_ORDER_FIELD_OPTION = {
+/** Flag and help text of `--rank-field`, which only the tree command takes. */
+export const RENDER_RANK_FIELD_OPTION = {
   description:
-    "Entity property holding a row's place among its siblings, lowest first, ties by name; default order. Used when no --sort is given, and left out when the entity has no such property",
-  flags: "--order-field <name>",
+    "Entity property holding a row's place among its siblings, lowest first, ties by name; default rank. Used when no --sort is given, and left out when the entity has no such property",
+  flags: "--rank-field <name>",
 } as const;
 
 /** The diagrams `--diagram` names; the first is the default. */

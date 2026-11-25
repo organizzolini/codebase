@@ -98,13 +98,13 @@ export const EVENT_METRICS_SQL = `
 /** One level; none of its keys is the no-key group. */
 export const METRIC_LEVEL_SQL = `
   cross join lateral (
-    select r."key", r.label, r."path", r."orderKey",
+    select r."key", r.label, r."path", r."rank",
       false as skipped,
       r."key" as effective,
       {parentId} || '/{level}:' || coalesce(r."key", '') as id
     from (select 1) one
     left join lateral (
-      select s."key", s.label, s."path", s."orderKey"
+      select s."key", s.label, s."path", s."rank"
       from ({source}) s
       where s."key" is not null
     ) r on true
@@ -113,7 +113,7 @@ export const METRIC_LEVEL_SQL = `
 /** A level that splits only its parent tag's group. */
 export const METRIC_REFINING_LEVEL_SQL = `
   cross join lateral (
-    select r."key", r.label, r."path", r."orderKey",
+    select r."key", r.label, r."path", r."rank",
       one.skipped,
       case when one.skipped then {parentEffective} else r."key" end as effective,
       case
@@ -122,7 +122,7 @@ export const METRIC_REFINING_LEVEL_SQL = `
       end as id
     from (select {parentEffective} is distinct from {parent}::text as skipped) one
     left join lateral (
-      select s."key", s.label, s."path", s."orderKey"
+      select s."key", s.label, s."path", s."rank"
       from ({source}) s
       where s."key" is not null and not one.skipped
     ) r on true

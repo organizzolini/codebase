@@ -23,7 +23,7 @@ fragment EventMetricGroupFields on EventMetricGroup {
   key
   label
   level
-  orderKey
+  rank
   path
   values {
     ...EventMetricValueFields

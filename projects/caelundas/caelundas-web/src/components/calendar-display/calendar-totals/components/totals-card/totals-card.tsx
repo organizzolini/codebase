@@ -24,10 +24,6 @@ export interface TotalsCardProperties {
    */
   expanded: ReadonlySet<string>;
   groupColors?: ReadonlyMap<string, string> | undefined;
-  /**
-   * How many groups to list before offering the rest in a more card.
-   */
-  groupLimit: number;
   groups: readonly MetricGroup[];
   onToggle: (id: string) => void;
   timeZone?: string | undefined;
@@ -42,16 +38,8 @@ export interface TotalsCardProperties {
 export function TotalsCard(
   properties: Readonly<TotalsCardProperties>,
 ): ReactNode {
-  const {
-    compare,
-    expanded,
-    groupColors,
-    groupLimit,
-    groups,
-    onToggle,
-    timeZone,
-    total,
-  } = properties;
+  const { compare, expanded, groupColors, groups, onToggle, timeZone, total } =
+    properties;
   const { metric, previous, value } = total;
 
   // 🪝 Hooks
@@ -123,7 +111,6 @@ export function TotalsCard(
         compare={compare}
         expanded={expanded}
         groupColors={groupColors}
-        groupLimit={groupLimit}
         groups={groups}
         metric={metric}
         onToggle={onToggle}

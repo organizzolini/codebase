@@ -11,7 +11,7 @@ import {
   RENDER_DIAGRAM_OPTION,
   RENDER_ICON_FIELD_OPTION,
   RENDER_NOTE_FIELD_OPTION,
-  RENDER_ORDER_FIELD_OPTION,
+  RENDER_RANK_FIELD_OPTION,
 } from "../render-options/render-options.constants";
 import { RenderOptionsService } from "../render-options/render-options.service";
 import { RenderTreesService } from "../render-trees/render-trees.service";
@@ -102,9 +102,9 @@ export class RenderTreeDataCommand extends RenderCommand {
     return value;
   }
 
-  /** Parses `--order-field`, the property holding each row's place among its siblings. */
-  @Option(RENDER_ORDER_FIELD_OPTION)
-  parseOrderField(value: string): string {
+  /** Parses `--rank-field`, the property holding each row's place among its siblings. */
+  @Option(RENDER_RANK_FIELD_OPTION)
+  parseRankField(value: string): string {
     return value;
   }
 

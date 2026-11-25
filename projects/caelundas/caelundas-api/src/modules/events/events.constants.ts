@@ -90,8 +90,8 @@ export const groupKeysSchema = z.array(
   z.object({
     key: z.string(),
     label: z.string().nullable(),
-    orderKey: z.string().nullish().default(null),
     path: z.string().nullable(),
+    rank: z.string().nullish().default(null),
   }),
 );
 
@@ -135,7 +135,7 @@ export const FACETS_SQL = `
     coalesce(c.count, 0) as count,
     t.icon,
     t.note,
-    t."order",
+    t.rank,
     t.parent_id
   from tag_nodes n
   join tags t on t.id = n.id
@@ -152,9 +152,9 @@ export const facetRowSchema = z.object({
   id: z.string(),
   name: z.string(),
   note: z.string().nullish().default(null),
-  order: z.coerce.number().default(0),
   parent_id: z.string().nullish().default(null),
   path_below_root: z.string(),
+  rank: z.coerce.number().default(0),
   root_id: z.string(),
 });
 

@@ -13,7 +13,7 @@ function group(
   label: string,
   events: number,
   children?: readonly MetricGroup[],
-  orderKey: null | string = label,
+  rank: null | string = label,
 ): MetricGroup {
   return {
     ...(children === undefined ? {} : { children }),
@@ -21,8 +21,8 @@ function group(
     key: label,
     label,
     level: id.split("/").length - 2,
-    orderKey,
     path: null,
+    rank,
     values: [
       { metric: "EVENTS", previous: null, value: events },
       { metric: "SPANS", previous: null, value: events * 2 },

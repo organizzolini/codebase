@@ -188,10 +188,10 @@ export class EventMetricsService {
       id: row.id,
       key: row.key,
       label: row.label,
-      orderKey: row.orderKey,
       parentId: row.parent_id,
       path: row.path,
       period: row.period,
+      rank: row.rank,
       values: request.metrics.map((_, index) =>
         metricValueSchema.parse(row[`${METRIC_COLUMN_PREFIX}${String(index)}`]),
       ),

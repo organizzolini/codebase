@@ -5,14 +5,14 @@ export interface CalendarEventGroupKey {
   key: string;
   label: null | string;
   /**
-   * What sorts a tag's group among its siblings as the tags are meant to read; null for a derived value.
-   */
-  orderKey?: null | string;
-  /**
    * A tag's names from its root down, joined by " / "; null for a derived
    * value.
    */
   path: null | string;
+  /**
+   * What sorts a tag's group among its siblings as the tags are meant to read; null for a derived value.
+   */
+  rank?: null | string;
 }
 
 /**
@@ -75,7 +75,7 @@ export interface EventFacet {
 }
 
 /**
- * A tag a facet offers.
+ * A tag a query offers.
  */
 export interface EventFacetValue {
   /**

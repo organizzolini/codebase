@@ -1,14 +1,8 @@
-import { useState } from "react";
-
 import {
   findGroupColor,
   findGroupValue,
-  getShownGroups,
 } from "../../calendar-totals.utilities";
 import { TotalsSubtotal } from "../totals-subtotal/totals-subtotal";
-
-import { TotalsMoreCard } from "./totals-more-card";
-import { TotalsSumsTo } from "./totals-sums-to";
 
 import type { EventMetric } from "../../../../../graphql/generated/operations";
 import type { MetricGroup } from "../../../calendar-metrics/calendar-metrics.types";
@@ -30,10 +24,6 @@ export interface TotalsGroupListProperties {
    */
   expanded: ReadonlySet<string>;
   groupColors?: ReadonlyMap<string, string> | undefined;
-  /**
-   * How many cards to list before offering the rest in a more card.
-   */
-  groupLimit: number;
   groups: readonly MetricGroup[];
   metric: EventMetric;
   onToggle: (id: string) => void;
@@ -47,7 +37,7 @@ export interface TotalsGroupListProperties {
 // 🧩 Component
 
 /**
- * Renders groups as cards that open into their subgroups' cards, a more card, and what they sum to.
+ * Renders groups as cards that open into their subgroups' cards.
  */
 export function TotalsGroupList(
   properties: Readonly<TotalsGroupListProperties>,
@@ -57,7 +47,6 @@ export function TotalsGroupList(
     compare,
     expanded,
     groupColors,
-    groupLimit,
     groups,
     metric,
     onToggle,
@@ -66,13 +55,12 @@ export function TotalsGroupList(
   } = properties;
 
   // 🪝 Hooks
-  const [showAll, setShowAll] = useState(false);
 
   // 🏗 Setup
   const cards: ReactNode[] = [];
 
   // A loop rather than a map keeps the call stack shallow.
-  for (const group of getShownGroups(groups, showAll, groupLimit)) {
+  for (const group of groups) {
     const children = group.children ?? [];
     const open = children.length > 0 && expanded.has(group.id);
     const node = { ancestors, group, isExpandable: children.length > 0 };
@@ -93,7 +81,7 @@ export function TotalsGroupList(
           whole={whole}
         >
           {open ? (
-            <div className="border-border ml-1.5 border-l-2 pl-2">
+            <div className="pl-2">
               <TotalsGroupList
                 {...properties}
                 ancestors={[...ancestors, group]}
@@ -122,21 +110,7 @@ export function TotalsGroupList(
       className="@container flex flex-col gap-1.5"
       data-testid="totals-group-list"
     >
-      <TotalsSumsTo
-        metric={metric}
-        timeZone={timeZone}
-        whole={whole}
-      />
-      <ul className="grid grid-cols-1 gap-2 @sm:grid-cols-2">
-        {cards}
-        <TotalsMoreCard
-          count={groups.length - groupLimit}
-          isShowingAll={showAll}
-          onToggle={() => {
-            setShowAll((current) => !current);
-          }}
-        />
-      </ul>
+      <ul className="grid grid-cols-1 gap-2 @sm:grid-cols-2">{cards}</ul>
     </div>
   );
 }

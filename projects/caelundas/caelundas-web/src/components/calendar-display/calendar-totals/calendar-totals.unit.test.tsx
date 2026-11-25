@@ -1,10 +1,4 @@
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { serveCalendarApi } from "../../../../testing/calendar-api";
@@ -156,18 +150,7 @@ describe(CalendarTotals, () => {
     });
   });
 
-  it("lists only as many groups as the limit before offering a more card", async () => {
-    expect.hasAssertions();
-
-    serveCalendarApi();
-    render(<CalendarTotals {...createProperties({ groupLimit: 1 })} />);
-
-    await expect(
-      screen.findAllByRole("button", { name: "+1 more" }),
-    ).resolves.toHaveLength(2);
-  });
-
-  it("nests the subtotals in a card, and says what they sum to for a count that adds up", async () => {
+  it("nests the subtotals in a card, with no more card or sum", async () => {
     expect.hasAssertions();
 
     serveCalendarApi();
@@ -177,12 +160,8 @@ describe(CalendarTotals, () => {
       expect(screen.getAllByTestId("totals-subtotal")).toHaveLength(4);
     });
 
-    // Events add up; distinct names do not.
-    const events = screen.getByRole("article", { name: "Events" });
-    const names = screen.getByRole("article", { name: "Unique names" });
-
-    expect(within(events).getAllByTestId("totals-sums-to")).toHaveLength(1);
-    expect(within(names).queryByTestId("totals-sums-to")).toBeNull();
+    expect(screen.queryByTestId("totals-more")).toBeNull();
+    expect(screen.queryByTestId("totals-sums-to")).toBeNull();
   });
 
   it("says when there are no totals", async () => {

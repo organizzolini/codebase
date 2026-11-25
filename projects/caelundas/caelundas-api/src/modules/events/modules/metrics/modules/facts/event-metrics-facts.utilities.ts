@@ -80,10 +80,10 @@ function toRow(
     id,
     key: readKey(row, row.level),
     label: row.label,
-    orderKey: row.orderKey,
     parentId,
     path: row.path,
     period: row.period,
+    rank: row.rank,
     values: evaluateMetrics(request.metrics, measures),
   };
 }

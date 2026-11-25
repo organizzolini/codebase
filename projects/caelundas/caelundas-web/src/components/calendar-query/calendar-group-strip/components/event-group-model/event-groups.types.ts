@@ -91,14 +91,14 @@ export interface EventGroupNode {
   label: string;
   level: number;
   /**
-   * What sorts the group among its siblings: its tag's place in the tree, or its derived value.
-   */
-  order?: string;
-  /**
    * The names from beneath the tag root down to the group's tag, for a tag
    * group; just its label otherwise.
    */
   path: readonly string[];
+  /**
+   * What sorts the group among its siblings: its tag's place in the tree, or its derived value.
+   */
+  rank?: string;
 }
 
 /**

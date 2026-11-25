@@ -1,7 +1,7 @@
 // 🏷️ Types
 
 /** One level of a tag's path, with its place among its siblings. */
-export interface OrderedName {
+export interface RankedName {
   name: string;
-  order: number;
+  rank: number;
 }

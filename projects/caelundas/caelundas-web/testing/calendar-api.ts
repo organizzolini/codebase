@@ -386,16 +386,16 @@ function findGroupKeys(
 ): {
   key: string;
   label: null | string;
-  orderKey: null | string;
   path: null | string;
+  rank: null | string;
 }[] {
   if (!level.field.startsWith("tag:")) {
     return [
       {
         key: readDerivedKey(event, level.field),
         label: null,
-        orderKey: null,
         path: null,
+        rank: null,
       },
     ];
   }
@@ -418,8 +418,8 @@ function findGroupKeys(
       .map((id) => ({
         key: id,
         label: tree.byId.get(id)?.name ?? id,
-        orderKey: null,
         path: tree.path(id),
+        rank: null,
       }));
   }
 
@@ -434,8 +434,8 @@ function findGroupKeys(
   return keys.map((id) => ({
     key: id,
     label: tree.byId.get(id)?.name ?? id,
-    orderKey: null,
     path: tree.path(id),
+    rank: null,
   }));
 }
 

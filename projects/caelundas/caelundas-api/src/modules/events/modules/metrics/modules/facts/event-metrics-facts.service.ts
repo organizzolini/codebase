@@ -357,8 +357,8 @@ export class EventMetricsFactsService {
         )
         .replace("{names}", () =>
           named
-            ? `, d.tag_name as label, d.tag_path as path, d."orderKey" as "orderKey"`
-            : `, null::text as label, null::text as path, null::text as "orderKey"`,
+            ? `, d.tag_name as label, d.tag_path as path, d."rank" as "rank"`
+            : `, null::text as label, null::text as path, null::text as "rank"`,
         )
         .replace("{union}", () =>
           this.listUnions(

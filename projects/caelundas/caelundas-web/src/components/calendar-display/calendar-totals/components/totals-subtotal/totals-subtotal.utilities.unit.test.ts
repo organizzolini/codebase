@@ -9,8 +9,8 @@ const GROUP: MetricGroup = {
   key: "alpha",
   label: "Alpha",
   level: 0,
-  orderKey: "alpha",
   path: null,
+  rank: "alpha",
   values: [
     { metric: "EVENTS", previous: 4, value: 6 },
     { metric: "FIRST_START", previous: null, value: 1000 },

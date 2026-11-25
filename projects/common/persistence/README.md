@@ -430,11 +430,11 @@ Every option is shared by the three commands unless the table says otherwise;
 default) draws the tree as a flowchart; `filetree` draws Mermaid's beta
 `treeView-beta` file tree. See [Drawing trees](#drawing-trees).
 
-`--icon-field <name>`, `--note-field <name>` and `--order-field <name>` are
+`--icon-field <name>`, `--note-field <name>` and `--rank-field <name>` are
 `render-tree-data` only, and name the entity properties a tree reads from,
-`icon`, `note` and `order` unless given. A row's `note` and `icon` (a lucide
+`icon`, `note` and `rank` unless given. A row's `note` and `icon` (a lucide
 icon slug) are drawn beneath its name in a flowchart, and in a file tree as
-the icon in brackets and then the note after a dash, both following the name. With no `--sort`, siblings come in `order`
+the icon in brackets and then the note after a dash, both following the name. With no `--sort`, siblings come in `rank`
 ascending and then by `name`. A property the entity lacks is left out, so a tree
 with none of them draws as before.
 
@@ -626,7 +626,7 @@ name the edge's columns, as in the first form.
 - **`--filter`** keeps each matching row together with its ancestors and its
   whole subtree, so a match shows where it sits.
 - **`--sort`** orders siblings and roots. Without it, rows follow the entity's
-  `order` property then its `name` when it has them (`--order-field` names
+  `rank` property then its `name` when it has them (`--rank-field` names
   another), else the primary key, which is a `uuidv7` in the caelundas tables and
   so roughly creation order.
 - **`--limit` and `--page`** page the roots, each with its descendants. Each

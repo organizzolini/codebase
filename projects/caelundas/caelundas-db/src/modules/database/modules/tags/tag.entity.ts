@@ -42,10 +42,6 @@ export class Tag extends PostgresqlUpdatableEntity {
   @Column("text", { nullable: true })
   note?: null | string;
 
-  /** Its place among siblings, lowest first. */
-  @Column("smallint", { default: 0 })
-  order!: number;
-
   @JoinColumn({ name: "parent_id" })
   @TreeParent({ onDelete: "CASCADE" })
   parent?: null | Tag;
@@ -53,4 +49,8 @@ export class Tag extends PostgresqlUpdatableEntity {
   /** The tag this refines, or null for a dimension root. */
   @Column("uuid", { nullable: true })
   parentId?: null | string;
+
+  /** Its place among siblings, lowest first. */
+  @Column("smallint", { default: 0 })
+  rank!: number;
 }

@@ -7,8 +7,8 @@ import { aspects } from "../caelundas/caelundas.constants";
 import {
   classifyEvent,
   tagNodeKey,
-  tagOrder,
   tagPathKey,
+  tagRank,
 } from "./tags.utilities";
 
 import type { TagPath } from "./tags.types";
@@ -487,7 +487,7 @@ describe("tags utilities", () => {
     });
   });
 
-  describe(tagOrder, () => {
+  describe(tagRank, () => {
     it.each([
       [["Aspect"], 1],
       [["Temporality"], 9],
@@ -495,13 +495,13 @@ describe("tags utilities", () => {
       [["Zodiac", "Sign", "Pisces"], 12],
       [["Body", "Luminary", "Moon"], 2],
       [["Daily", "Solar Cycle", "Nadir"], 4],
-    ])("places %j at %i among its siblings", (path, order) => {
-      expect(tagOrder(path)).toBe(order);
+    ])("places %j at %i among its siblings", (path, rank) => {
+      expect(tagRank(path)).toBe(rank);
     });
 
     it("gives a node its parent's list does not name 0", () => {
-      expect(tagOrder(["Aspect", "Harmonic", "Harmonic 4"])).toBe(0);
-      expect(tagOrder(["Unknown"])).toBe(0);
+      expect(tagRank(["Aspect", "Harmonic", "Harmonic 4"])).toBe(0);
+      expect(tagRank(["Unknown"])).toBe(0);
     });
   });
 });

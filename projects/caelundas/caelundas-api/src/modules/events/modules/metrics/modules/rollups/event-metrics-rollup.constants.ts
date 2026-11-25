@@ -214,12 +214,12 @@ export const ROLLUP_CALENDAR_KEYS: ReadonlyMap<string, RollupCalendarKey> =
 
 /** The group columns of a calendar field, by its key. */
 export const ROLLUP_CALENDAR_COLUMNS_SQL = `,
-    '/0:' || {key} as id, ''::text as parent_id, {key} as "key", null::text as label, null::text as "path", null::text as "orderKey"`;
+    '/0:' || {key} as id, ''::text as parent_id, {key} as "key", null::text as label, null::text as "path", null::text as "rank"`;
 
 /** The group columns of a tag node. */
 export const ROLLUP_TAG_COLUMNS_SQL = `,
     '/0:' || coalesce(t.tag_id::text, '') as id, ''::text as parent_id, t.tag_id::text as "key", tn.name as label, tn.path as "path",
-    (select r.tag_order_key from calendar_event_day_tag_rollups r where r.tag_id = t.tag_id limit 1) as "orderKey"`;
+    (select r.tag_rank from calendar_event_day_tag_rollups r where r.tag_id = t.tag_id limit 1) as "rank"`;
 
 /** Joins a tag's node to its group. */
 export const ROLLUP_TAG_JOIN_SQL = ` left join tag_nodes tn on tn.id = t.tag_id`;

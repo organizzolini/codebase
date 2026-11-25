@@ -93,11 +93,11 @@ describe("graph options utilities", () => {
   });
 
   describe(parseGraphFields, () => {
-    it("names icon, note and order when no flag names others", () => {
+    it("names icon, note and rank when no flag names others", () => {
       expect(parseGraphFields({})).toStrictEqual({
         icon: "icon",
         note: "note",
-        order: "order",
+        rank: "rank",
       });
     });
 
@@ -106,12 +106,12 @@ describe("graph options utilities", () => {
         parseGraphFields({
           iconField: " glyph ",
           noteField: "description",
-          orderField: "position",
+          rankField: "position",
         }),
       ).toStrictEqual({
         icon: "glyph",
         note: "description",
-        order: "position",
+        rank: "position",
       });
     });
 

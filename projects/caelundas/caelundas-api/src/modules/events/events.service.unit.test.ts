@@ -294,7 +294,7 @@ describe(EventsService, () => {
     );
 
     expect(events.at(0)?.groups).toStrictEqual([
-      [{ key: "2026", label: null, orderKey: null, path: null }],
+      [{ key: "2026", label: null, path: null, rank: null }],
       [],
     ]);
     expect(query).toHaveBeenLastCalledWith(
@@ -458,13 +458,13 @@ describe(EventsService, () => {
     ]);
   });
 
-  it("orders siblings by their order before their names, under each parent", async () => {
+  it("orders siblings by their rank before their names, under each parent", async () => {
     expect.hasAssertions();
 
     const row = (
       id: string,
       name: string,
-      order: number,
+      rank: number,
       parent: string,
       path: string,
     ): Record<string, number | string> => ({
@@ -472,9 +472,9 @@ describe(EventsService, () => {
       depth: path.split(" / ").length,
       id,
       name,
-      order,
       parent_id: parent,
       path_below_root: path,
+      rank,
       root_id: "sign",
     });
 

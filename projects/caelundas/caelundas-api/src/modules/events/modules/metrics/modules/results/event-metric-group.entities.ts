@@ -40,17 +40,17 @@ export class EventMetricGroupEntity {
   level!: number;
 
   @Field(() => String, {
-    description:
-      "What sorts the group among its siblings; null for the group with no key.",
-    nullable: true,
-  })
-  orderKey!: null | string;
-
-  @Field(() => String, {
     description: "A tag's names from its root down, joined by ' / '.",
     nullable: true,
   })
   path!: null | string;
+
+  @Field(() => String, {
+    description:
+      "What sorts the group among its siblings; null for the group with no key.",
+    nullable: true,
+  })
+  rank!: null | string;
 
   @Field(() => [EventMetricValueEntity], {
     description: "The metrics asked for, in the order asked.",

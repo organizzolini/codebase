@@ -4,7 +4,6 @@ import {
   findGroupColor,
   findGroupValue,
   getSharePercent,
-  getShownGroups,
 } from "./calendar-totals.utilities";
 
 import type {
@@ -18,8 +17,8 @@ function createGroup(id: string, key: null | string = id): MetricGroup {
     key,
     label: id,
     level: 0,
-    orderKey: key,
     path: null,
+    rank: key,
     values: [],
   };
 }
@@ -83,20 +82,6 @@ describe("calendar totals utilities", () => {
 
       expect(findGroupValue(group, "EVENTS")).toBe(7);
       expect(findGroupValue(group, "SPANS")).toBeNull();
-    });
-  });
-
-  describe(getShownGroups, () => {
-    const groups = Array.from({ length: 8 }, (_, index) =>
-      createGroup(`group-${String(index)}`),
-    );
-
-    it("lists the top few", () => {
-      expect(getShownGroups(groups, false, 5)).toHaveLength(5);
-    });
-
-    it("lists all when asked", () => {
-      expect(getShownGroups(groups, true, 5)).toHaveLength(8);
     });
   });
 });

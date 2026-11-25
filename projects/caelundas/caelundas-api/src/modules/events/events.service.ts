@@ -14,7 +14,7 @@ import {
 } from "./events.constants";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
-import { compareOrderedPaths } from "./modules/natural-order/natural-order.utilities";
+import { compareRankedPaths } from "./modules/natural-order/natural-order.utilities";
 import { PresetsService } from "./modules/presets/presets.service";
 import { WindowsService } from "./modules/windows/windows.service";
 
@@ -23,7 +23,7 @@ import type { CalendarEventEntity } from "./modules/calendar-event/calendar-even
 import type { EventFacetEntity } from "./modules/facets/event-facet.entities";
 import type { EventFilterGroup } from "./modules/filtering/event-filter.types";
 import type { EventGroupLevel } from "./modules/grouping/event-grouping.types";
-import type { OrderedName } from "./modules/natural-order/natural-order.types";
+import type { RankedName } from "./modules/natural-order/natural-order.types";
 import type { ResolvedPreset } from "./modules/presets/presets.types";
 import type { PeriodInput } from "./modules/windows/period-input.entities";
 import type { WindowsArguments } from "./modules/windows/windows-arguments.entities";
@@ -62,7 +62,7 @@ export class EventsService {
     rows: readonly z.infer<typeof facetRowSchema>[],
   ): EventFacetEntity[] {
     const facets = new Map<string, EventFacetEntity>();
-    const levelsById = new Map<string, OrderedName[]>();
+    const levelsById = new Map<string, RankedName[]>();
     const byId = new Map(rows.map((row) => [row.id, row]));
 
     for (const row of rows) {
@@ -79,14 +79,14 @@ export class EventsService {
 
       // Each level beneath the root with its place among its siblings, from
       // the tag's ancestors, so siblings sort as intended.
-      const levels: OrderedName[] = [];
+      const levels: RankedName[] = [];
 
       for (
         let node: (typeof rows)[number] | undefined = row;
         node !== undefined && node.depth > 0;
         node = node.parent_id === null ? undefined : byId.get(node.parent_id)
       ) {
-        levels.unshift({ name: node.name, order: node.order });
+        levels.unshift({ name: node.name, rank: node.rank });
       }
 
       levelsById.set(row.id, levels);
@@ -103,7 +103,7 @@ export class EventsService {
 
     for (const facet of facets.values()) {
       facet.values.sort((left, right) =>
-        compareOrderedPaths(
+        compareRankedPaths(
           levelsById.get(left.id) ?? [],
           levelsById.get(right.id) ?? [],
         ),

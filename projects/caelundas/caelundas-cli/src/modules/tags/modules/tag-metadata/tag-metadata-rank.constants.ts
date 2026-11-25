@@ -1,9 +1,9 @@
 // ♟️ Constants
 
 /**
- * Each node's children in reading order, by parent path; roots under "".
+ * Each node's children in rank order, by parent path; roots under "".
  */
-export const TAG_CHILD_ORDER: Readonly<Record<string, readonly string[]>> = {
+export const TAG_CHILD_RANKS: Readonly<Record<string, readonly string[]>> = {
   "": [
     "Aspect",
     "Body",

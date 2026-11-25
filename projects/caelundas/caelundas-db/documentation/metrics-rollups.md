@@ -83,7 +83,7 @@ one day it keeps the additive figures and the exact raw material of the rest.
 | `tag_path`                   | `text`           | names from the root, joined with ` / `                           |
 | `tag_depth`                  | `bigint`         | 0 for a root                                                     |
 | `tag_root_id`                | `uuid`           | the node's dimension root                                        |
-| `tag_order_key`              | `text`           | `00000:Name / 00002:Child`, sorts siblings by `order`, then name |
+| `tag_rank`                   | `text`           | `00000:Name / 00002:Child`, sorts siblings by `rank`, then name  |
 | `local_week` .. `local_year` | `date`, `bigint` | the day's periods                                                |
 | `events`                     | `bigint`         | events carrying the node                                         |
 | `direct_events`              | `bigint`         | of those, tagged with the node itself                            |
@@ -269,7 +269,7 @@ database before any change (the API ran a statement per level, in parallel):
 | Which path                | Filter, picked levels and percents never used a rollup: all of it ran on the base tables.                                                                                                         |
 | Statements                | 5 (total + 4 levels) at once, each re-running the event filter and every earlier level. Wall time is the slowest: level 3, 1.3 to 2.7 s.                                                          |
 | JIT                       | Planner estimates (700,000 rows against 26,000) tripped JIT: level 0 took 789 ms with it and 76 ms without; level 3, 2.7 s against 1.3 s. Pure overhead.                                          |
-| Group order keys          | The ordering key of each group row was a correlated subquery over the tag closure, run per row: 26,151 times in level 3, about 500 ms.                                                            |
+| Group ranks               | The rank of each group row was a correlated subquery over the tag closure, run per row: 26,151 times in level 3, about 500 ms.                                                                    |
 | Rows scanned              | Level 3 expands 175 events to 26,151 rows, then a 13 MB disk sort. The filter's `exists` subqueries hashed 30,000 tag rows each, in every statement (45 to 96 ms).                                |
 | Per metric                | `UNIQUE_TAGS` is a correlated subquery per group (5,586 of them, 100 ms). The others are cheap beside the expansion.                                                                              |
 | Compare                   | One statement already; it doubles events and groups (about 1.9 times the time), not the statements.                                                                                               |
@@ -310,7 +310,7 @@ tags intersected with `tag_ids`, or a calendar key); a step per level expands
 each event by its keys (an event with none is the group of no key), and each
 level aggregates from its own step, so no level re-runs another. `UNIQUE_TAGS`
 counts distinct direct tags per group in a side CTE that hashes (it multiplies
-rows). The names, label, path and order keys come from a small dimension CTE for
+rows). The names, label, path and ranks come from a small dimension CTE for
 the picked tags only, joined after aggregating.
 
 **Routing.** Unfiltered requests the rollups wholly cover (whole set, a calendar

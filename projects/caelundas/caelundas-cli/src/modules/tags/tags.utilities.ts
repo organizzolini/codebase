@@ -1,6 +1,6 @@
 import { bodyFromDisplayName, isSign } from "../caelundas/caelundas.types";
 
-import { TAG_CHILD_ORDER } from "./modules/tag-metadata/tag-metadata-order.constants";
+import { TAG_CHILD_RANKS } from "./modules/tag-metadata/tag-metadata-rank.constants";
 import { SIGNS_BY_DIGNITY_BY_PLANET } from "./tag-dimensions.constants";
 import {
   CONTEXT_TAG_MAPS,
@@ -39,19 +39,19 @@ export function tagNodeKey(parentId: null | string, name: string): string {
   return `${parentId ?? ""}\u0000${name}`;
 }
 
-/**
- * Where a node sits among its siblings: its place, from 1, in its parent's list in `TAG_CHILD_ORDER`, or 0 when it is not listed.
- */
-export function tagOrder(path: readonly string[]): number {
-  const siblings = TAG_CHILD_ORDER[path.slice(0, -1).join(" / ")];
-  const index = siblings?.indexOf(path.at(-1) ?? "") ?? -1;
-
-  return index + 1;
-}
-
 /** The key a path is told apart by: its names, in order. */
 export function tagPathKey(path: TagPath): string {
   return path.join("\u0000");
+}
+
+/**
+ * Where a node sits among its siblings: its place, from 1, in its parent's list in `TAG_CHILD_RANKS`, or 0 when it is not listed.
+ */
+export function tagRank(path: readonly string[]): number {
+  const siblings = TAG_CHILD_RANKS[path.slice(0, -1).join(" / ")];
+  const index = siblings?.indexOf(path.at(-1) ?? "") ?? -1;
+
+  return index + 1;
 }
 
 /**

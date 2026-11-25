@@ -17,8 +17,8 @@ function createGroup(
     key: id,
     label: id.toUpperCase(),
     level: 0,
-    orderKey: id,
     path: null,
+    rank: id,
     values: [
       { metric: "EVENTS", previous: value - 1, value },
       { metric: "UNIQUE_NAMES", previous: null, value },
@@ -33,7 +33,6 @@ function createProperties(
     ancestors: [],
     compare: false,
     expanded: new Set<string>(),
-    groupLimit: 5,
     groups: [createGroup("a", 6), createGroup("b", 4)],
     metric: "EVENTS",
     onToggle: vi.fn<(id: string) => void>(),
@@ -47,7 +46,6 @@ describe(TotalsGroupList, () => {
     render(<TotalsGroupList {...createProperties()} />);
 
     expect(screen.getAllByTestId("totals-subtotal")).toHaveLength(2);
-    expect(screen.queryByTestId("totals-more")).toBeNull();
   });
 
   it("is nothing for no groups", () => {
@@ -56,27 +54,7 @@ describe(TotalsGroupList, () => {
     expect(screen.queryByTestId("totals-group-list")).toBeNull();
   });
 
-  it("says what the cards sum to for a metric that adds up", () => {
-    render(<TotalsGroupList {...createProperties()} />);
-
-    expect(screen.getByTestId("totals-sums-to").textContent).toContain(
-      "sums to 10",
-    );
-  });
-
-  it("says nothing of a sum for a metric that does not add up, or without a whole", () => {
-    const { rerender } = render(
-      <TotalsGroupList {...createProperties({ metric: "UNIQUE_NAMES" })} />,
-    );
-
-    expect(screen.queryByTestId("totals-sums-to")).toBeNull();
-
-    rerender(<TotalsGroupList {...createProperties({ whole: null })} />);
-
-    expect(screen.queryByTestId("totals-sums-to")).toBeNull();
-  });
-
-  it("nests an open group's subgroups in its card, under what they sum to", () => {
+  it("nests an open group's subgroups in its card", () => {
     const parent = createGroup("a", 6, [createGroup("a1", 4)]);
 
     render(
@@ -91,7 +69,6 @@ describe(TotalsGroupList, () => {
 
     expect(screen.getAllByTestId("totals-group-list")).toHaveLength(2);
     expect(screen.getAllByTestId("totals-subtotal")).toHaveLength(2);
-    expect(screen.getAllByTestId("totals-sums-to")).toHaveLength(2);
     expect(screen.getByText("A1")).toBeDefined();
   });
 
@@ -160,33 +137,23 @@ describe(TotalsGroupList, () => {
     );
   });
 
-  it("lists the groups up to the limit and a more card for the rest, which shows them all", () => {
-    render(
+  it("lists every group, with no more card, sum or rail beside a nested card", () => {
+    const groups = Array.from({ length: 9 }, (_, index) =>
+      createGroup(`g${String(index)}`, 1, [
+        createGroup(`c${String(index)}`, 1),
+      ]),
+    );
+
+    const { container } = render(
       <TotalsGroupList
-        {...createProperties({
-          groupLimit: 1,
-          groups: [
-            createGroup("a", 6),
-            createGroup("b", 4),
-            createGroup("c", 1),
-          ],
-        })}
+        {...createProperties({ expanded: new Set(["g0"]), groups })}
       />,
     );
 
-    expect(screen.getAllByTestId("totals-subtotal")).toHaveLength(1);
-
-    const more = screen.getByRole("button", { name: "+2 more" });
-
-    expect(more.getAttribute("aria-expanded")).toBe("false");
-
-    fireEvent.click(more);
-
-    expect(screen.getAllByTestId("totals-subtotal")).toHaveLength(3);
-
-    fireEvent.click(screen.getByRole("button", { name: "Show fewer" }));
-
-    expect(screen.getAllByTestId("totals-subtotal")).toHaveLength(1);
+    expect(screen.getAllByTestId("totals-subtotal")).toHaveLength(10);
+    expect(screen.queryByTestId("totals-more")).toBeNull();
+    expect(screen.queryByTestId("totals-sums-to")).toBeNull();
+    expect(container.innerHTML).not.toContain("border-l");
   });
 
   it("lays the cards in one column until their list is wide", () => {

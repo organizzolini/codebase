@@ -5,7 +5,7 @@ import {
   parseMetrics,
 } from "../../calendar-metrics.utilities";
 
-import { NO_ORDER_KEY } from "./calendar-metrics-tree.constants";
+import { NO_RANK } from "./calendar-metrics-tree.constants";
 
 import type { EventMetric } from "../../../../../graphql/generated/operations";
 import type { GroupSort } from "../../../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
@@ -117,7 +117,7 @@ export function sortMetricGroups(
 }
 
 /**
- * How two groups order under one sort: by tag order, name, or a metric's value, a missing value counting as zero.
+ * How two groups order under one sort: by tag rank, name, or a metric's value, a missing value counting as zero.
  */
 function compareMetricGroups(
   sort: GroupSort,
@@ -135,13 +135,7 @@ function compareMetricGroups(
     return sign * compareNatural(left.label, right.label);
   }
 
-  return (
-    sign *
-    compareNatural(
-      left.orderKey ?? NO_ORDER_KEY,
-      right.orderKey ?? NO_ORDER_KEY,
-    )
-  );
+  return sign * compareNatural(left.rank ?? NO_RANK, right.rank ?? NO_RANK);
 }
 
 /**

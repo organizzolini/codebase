@@ -107,10 +107,10 @@ directs as (
     cross join lateral unnest(f.direct_tag_ids) as d (id)
     group by f.local_day, n.tag_id
 ),
-orders as (
+ranks as (
     select
         node.id as tag_id,
-        string_agg(lpad(a."order"::text, 5, '0') || ':' || a."name", ' / ' order by ancestor_node."depth") as order_key
+        string_agg(lpad(a.rank::text, 5, '0') || ':' || a."name", ' / ' order by ancestor_node."depth") as rank
     from tag_nodes as node
     inner join tags_closure as c on node.id = c.descendant_id
     inner join tags as a on c.ancestor_id = a.id
@@ -124,7 +124,7 @@ select
     node."path" as tag_path,
     node."depth" as tag_depth,
     node.root_id as tag_root_id,
-    o.order_key as tag_order_key,
+    k.rank as tag_rank,
     s.local_week,
     s.local_month,
     s.local_quarter,
@@ -142,7 +142,7 @@ select
     coalesce(d.direct_tag_ids, '{}'::uuid[]) as direct_tag_ids
 from sums as s
 inner join tag_nodes as node on s.tag_id = node.id
-inner join orders as o on s.tag_id = o.tag_id
+inner join ranks as k on s.tag_id = k.tag_id
 left join directs as d on s.local_day = d.local_day and s.tag_id = d.tag_id`);
     await queryRunner.query(
       `INSERT INTO "caelundas"."typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES (DEFAULT, $1, DEFAULT, $2, $3, $4)`,
@@ -150,7 +150,7 @@ left join directs as d on s.local_day = d.local_day and s.tag_id = d.tag_id`);
         "caelundas",
         "MATERIALIZED_VIEW",
         "calendar_event_day_tag_rollups",
-        'with sums as (\n    select\n        f.local_day,\n        f.local_week,\n        f.local_month,\n        f.local_quarter,\n        f.local_year,\n        n.tag_id,\n        count(*) as events,\n        count(*) filter (where n.is_direct) as direct_events,\n        count(*) filter (where f.is_instant) as instants,\n        count(*) filter (where not f.is_instant) as spans,\n        coalesce(sum(f.duration_seconds), 0)::bigint as duration_seconds,\n        coalesce(sum(f.duration_seconds) filter (where f.is_progressive), 0)::bigint as progressive_seconds,\n        min(f."start") as first_start,\n        max(f."start") as last_start,\n        range_agg(f.span) as covered_range,\n        coalesce(array_agg(f.duration_seconds order by f.duration_seconds) filter (where not f.is_instant), \'{}\'::bigint[]) as span_duration_seconds\n    from calendar_event_facts as f\n    inner join calendar_event_tag_nodes as n on f.calendar_event_id = n.calendar_event_id\n    group by f.local_day, f.local_week, f.local_month, f.local_quarter, f.local_year, n.tag_id\n),\ndirects as (\n    select\n        f.local_day,\n        n.tag_id,\n        array_agg(distinct d.id order by d.id) as direct_tag_ids\n    from calendar_event_facts as f\n    inner join calendar_event_tag_nodes as n on f.calendar_event_id = n.calendar_event_id\n    cross join lateral unnest(f.direct_tag_ids) as d (id)\n    group by f.local_day, n.tag_id\n),\norders as (\n    select\n        node.id as tag_id,\n        string_agg(lpad(a."order"::text, 5, \'0\') || \':\' || a."name", \' / \' order by ancestor_node."depth") as order_key\n    from tag_nodes as node\n    inner join tags_closure as c on node.id = c.descendant_id\n    inner join tags as a on c.ancestor_id = a.id\n    inner join tag_nodes as ancestor_node on a.id = ancestor_node.id\n    group by node.id\n)\nselect\n    s.local_day,\n    s.tag_id,\n    node."name" as tag_name,\n    node."path" as tag_path,\n    node."depth" as tag_depth,\n    node.root_id as tag_root_id,\n    o.order_key as tag_order_key,\n    s.local_week,\n    s.local_month,\n    s.local_quarter,\n    s.local_year,\n    s.events,\n    s.direct_events,\n    s.instants,\n    s.spans,\n    s.duration_seconds,\n    s.progressive_seconds,\n    s.first_start,\n    s.last_start,\n    s.covered_range,\n    s.span_duration_seconds,\n    coalesce(d.direct_tag_ids, \'{}\'::uuid[]) as direct_tag_ids\nfrom sums as s\ninner join tag_nodes as node on s.tag_id = node.id\ninner join orders as o on s.tag_id = o.tag_id\nleft join directs as d on s.local_day = d.local_day and s.tag_id = d.tag_id',
+        'with sums as (\n    select\n        f.local_day,\n        f.local_week,\n        f.local_month,\n        f.local_quarter,\n        f.local_year,\n        n.tag_id,\n        count(*) as events,\n        count(*) filter (where n.is_direct) as direct_events,\n        count(*) filter (where f.is_instant) as instants,\n        count(*) filter (where not f.is_instant) as spans,\n        coalesce(sum(f.duration_seconds), 0)::bigint as duration_seconds,\n        coalesce(sum(f.duration_seconds) filter (where f.is_progressive), 0)::bigint as progressive_seconds,\n        min(f."start") as first_start,\n        max(f."start") as last_start,\n        range_agg(f.span) as covered_range,\n        coalesce(array_agg(f.duration_seconds order by f.duration_seconds) filter (where not f.is_instant), \'{}\'::bigint[]) as span_duration_seconds\n    from calendar_event_facts as f\n    inner join calendar_event_tag_nodes as n on f.calendar_event_id = n.calendar_event_id\n    group by f.local_day, f.local_week, f.local_month, f.local_quarter, f.local_year, n.tag_id\n),\ndirects as (\n    select\n        f.local_day,\n        n.tag_id,\n        array_agg(distinct d.id order by d.id) as direct_tag_ids\n    from calendar_event_facts as f\n    inner join calendar_event_tag_nodes as n on f.calendar_event_id = n.calendar_event_id\n    cross join lateral unnest(f.direct_tag_ids) as d (id)\n    group by f.local_day, n.tag_id\n),\nranks as (\n    select\n        node.id as tag_id,\n        string_agg(lpad(a.rank::text, 5, \'0\') || \':\' || a."name", \' / \' order by ancestor_node."depth") as rank\n    from tag_nodes as node\n    inner join tags_closure as c on node.id = c.descendant_id\n    inner join tags as a on c.ancestor_id = a.id\n    inner join tag_nodes as ancestor_node on a.id = ancestor_node.id\n    group by node.id\n)\nselect\n    s.local_day,\n    s.tag_id,\n    node."name" as tag_name,\n    node."path" as tag_path,\n    node."depth" as tag_depth,\n    node.root_id as tag_root_id,\n    k.rank as tag_rank,\n    s.local_week,\n    s.local_month,\n    s.local_quarter,\n    s.local_year,\n    s.events,\n    s.direct_events,\n    s.instants,\n    s.spans,\n    s.duration_seconds,\n    s.progressive_seconds,\n    s.first_start,\n    s.last_start,\n    s.covered_range,\n    s.span_duration_seconds,\n    coalesce(d.direct_tag_ids, \'{}\'::uuid[]) as direct_tag_ids\nfrom sums as s\ninner join tag_nodes as node on s.tag_id = node.id\ninner join ranks as k on s.tag_id = k.tag_id\nleft join directs as d on s.local_day = d.local_day and s.tag_id = d.tag_id',
       ],
     );
     await queryRunner.query(`CREATE MATERIALIZED VIEW "calendar_event_day_tag_name_rollups" AS select

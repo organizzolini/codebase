@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { TotalsCard } from "./totals-card";
@@ -12,8 +12,8 @@ function createGroups(count: number): MetricGroup[] {
     key: `group-${String(index)}`,
     label: `Group ${String(index)}`,
     level: 0,
-    orderKey: null,
     path: null,
+    rank: null,
     values: [{ metric: "EVENTS", previous: null, value: index + 1 }],
   }));
 }
@@ -24,7 +24,6 @@ function createProperties(
   return {
     compare: false,
     expanded: new Set<string>(),
-    groupLimit: 5,
     groups: createGroups(2),
     onToggle: vi.fn<(id: string) => void>(),
     total: { metric: "EVENTS", previous: null, value: 10 },
@@ -75,19 +74,10 @@ describe(TotalsCard, () => {
     expect(screen.queryByTestId("totals-group-list")).toBeNull();
   });
 
-  it("nests a card for each of the top five groups and offers the rest in a more card", () => {
+  it("nests a card for every group, however many", () => {
     render(<TotalsCard {...createProperties({ groups: createGroups(7) })} />);
 
-    expect(screen.getAllByTestId("totals-subtotal")).toHaveLength(5);
-
-    fireEvent.click(screen.getByRole("button", { name: "+2 more" }));
-
     expect(screen.getAllByTestId("totals-subtotal")).toHaveLength(7);
-  });
-
-  it("offers no more card for five groups or fewer", () => {
-    render(<TotalsCard {...createProperties({ groups: createGroups(5) })} />);
-
     expect(screen.queryByRole("button")).toBeNull();
   });
 

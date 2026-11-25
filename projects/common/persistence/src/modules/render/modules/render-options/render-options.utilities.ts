@@ -61,7 +61,7 @@ export function parseGraphDrawing({
   diagram,
   iconField,
   noteField,
-  orderField,
+  rankField,
   truncateBreadth,
   truncateDepth,
 }: Pick<
@@ -69,7 +69,7 @@ export function parseGraphDrawing({
   | "diagram"
   | "iconField"
   | "noteField"
-  | "orderField"
+  | "rankField"
   | "truncateBreadth"
   | "truncateDepth"
 >): Pick<
@@ -78,27 +78,27 @@ export function parseGraphDrawing({
 > {
   return {
     diagram: parseGraphDiagram(diagram),
-    fields: parseGraphFields({ iconField, noteField, orderField }),
+    fields: parseGraphFields({ iconField, noteField, rankField }),
     truncateBreadth: positiveIntegerFlag("--truncate-breadth", truncateBreadth),
     truncateDepth: positiveIntegerFlag("--truncate-depth", truncateDepth),
   };
 }
 
 /**
- * The entity properties a tree's icons, notes and sibling order are read from, each its default when its flag is absent or blank.
+ * The entity properties a tree's icons, notes and sibling rank are read from, each its default when its flag is absent or blank.
  */
 export function parseGraphFields({
   iconField,
   noteField,
-  orderField,
+  rankField,
 }: Pick<
   GraphOptions,
-  "iconField" | "noteField" | "orderField"
+  "iconField" | "noteField" | "rankField"
 >): GraphTreeFields {
   return {
     icon: namedField(iconField, RENDER_TREE_FIELDS.icon),
     note: namedField(noteField, RENDER_TREE_FIELDS.note),
-    order: namedField(orderField, RENDER_TREE_FIELDS.order),
+    rank: namedField(rankField, RENDER_TREE_FIELDS.rank),
   };
 }
 

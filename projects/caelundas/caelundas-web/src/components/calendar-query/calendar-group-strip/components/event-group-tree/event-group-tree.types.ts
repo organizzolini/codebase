@@ -17,8 +17,8 @@ export interface GroupBucket {
  */
 export interface GroupDescription {
   label: string;
-  order: string;
   path: readonly string[];
+  rank: string;
 }
 
 /**
@@ -88,11 +88,11 @@ export interface LevelContext {
 }
 
 /**
- * A group, with the text it is ordered among its siblings by.
+ * A group, with the rank it sorts among its siblings by.
  */
-export interface OrderedGroupNode {
+export interface RankedGroupNode {
   node: EventGroupNode;
-  order: string;
+  rank: string;
   /**
    * The tag's full path, null for a "No …" group.
    */

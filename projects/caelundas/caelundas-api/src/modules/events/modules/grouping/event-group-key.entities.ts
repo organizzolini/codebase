@@ -22,15 +22,15 @@ export class EventGroupKeyEntity {
 
   @Field(() => String, {
     description:
-      "What sorts the group among its siblings as its tag is meant to read: each ancestor tag's order, zero-padded, then its name, from the root down, joined by ' / '; null for a derived value.",
-    nullable: true,
-  })
-  orderKey!: null | string;
-
-  @Field(() => String, {
-    description:
       "A tag's names from its root down, joined by ' / '; null for a derived value.",
     nullable: true,
   })
   path!: null | string;
+
+  @Field(() => String, {
+    description:
+      "What sorts the group among its siblings as its tag is meant to read: each ancestor tag's rank, zero-padded, then its name, from the root down, joined by ' / '; null for a derived value.",
+    nullable: true,
+  })
+  rank!: null | string;
 }

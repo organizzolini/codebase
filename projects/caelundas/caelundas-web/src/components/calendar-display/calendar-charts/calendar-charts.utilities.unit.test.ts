@@ -47,8 +47,8 @@ function createGroup(
     key: id.split(":").at(-1) ?? null,
     label: id,
     level: 0,
-    orderKey: null,
     path: null,
+    rank: null,
     values: Object.entries(values).map(([metric, [value, previous]]) => ({
       metric: metric as MetricGroup["values"][number]["metric"],
       previous,

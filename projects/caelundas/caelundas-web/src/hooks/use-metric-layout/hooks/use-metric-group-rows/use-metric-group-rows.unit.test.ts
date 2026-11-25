@@ -15,8 +15,8 @@ function group(id: string, children?: readonly MetricGroup[]): MetricGroup {
     key: id,
     label: id,
     level: id.split("/").length - 2,
-    orderKey: id,
     path: null,
+    rank: id,
     values: [],
   };
 }

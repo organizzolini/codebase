@@ -71,9 +71,6 @@ export interface GraphOptions {
   /** The entity property holding a tree row's note; `note` when absent. */
   readonly noteField?: string | undefined;
 
-  /** The entity property holding a tree row's place among its siblings; `order` when absent. */
-  readonly orderField?: string | undefined;
-
   /** Path of the JSON graph file to write, as text. */
   readonly outputJson?: string | undefined;
 
@@ -85,6 +82,9 @@ export interface GraphOptions {
 
   /** Page of roots to draw, from 1, as text; needs `limit`. */
   readonly page?: string[] | undefined;
+
+  /** The entity property holding a tree row's place among its siblings; `rank` when absent. */
+  readonly rankField?: string | undefined;
 
   /** The schema the entity tables live in; required. */
   readonly schema?: string | undefined;
@@ -173,7 +173,7 @@ export interface GraphPlan {
   /** The entity glob patterns, in the order given. */
   readonly entities: readonly string[];
 
-  /** The entity properties a tree's icons, notes and sibling order are read from. */
+  /** The entity properties a tree's icons, notes and sibling rank are read from. */
   readonly fields: GraphTreeFields;
 
   /** The row filters, in the order given; every one must match. */
@@ -218,7 +218,7 @@ export interface GraphReadOptions extends GraphLimits {
   /** Rows read per query; a test seam, `undefined` for the default. */
   readonly batchSize?: number | undefined;
 
-  /** The properties a tree reads icons, notes and order from; the defaults when absent. */
+  /** The properties a tree reads icons, notes and rank from; the defaults when absent. */
   readonly fields?: GraphTreeFields | undefined;
 
   /** The row filters, each by a column name; a row must match all of them. */
@@ -255,7 +255,7 @@ export interface GraphTreeFields {
   readonly note: string;
 
   /** The property holding the row's place among its siblings, lowest first. */
-  readonly order: string;
+  readonly rank: string;
 }
 
 /** The row filters and sort keys a graph read applies, resolved. */

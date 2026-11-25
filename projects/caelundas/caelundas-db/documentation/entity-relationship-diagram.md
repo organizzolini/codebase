@@ -79,8 +79,8 @@ erDiagram
     float tagDepth "not nullable"
     string tagId "not nullable"
     string tagName "not nullable"
-    string tagOrderKey "not nullable"
     string tagPath "not nullable"
+    string tagRank "not nullable"
     string tagRootId "not nullable"
   }
   calendar_event_derived_times {
@@ -167,8 +167,8 @@ erDiagram
     string icon "nullable"
     string name "not nullable"
     string note "nullable"
-    int order "not nullable"
     string parentId "nullable"
+    int rank "not nullable"
     date updatedAt "not nullable"
     string updatedBy "nullable"
   }

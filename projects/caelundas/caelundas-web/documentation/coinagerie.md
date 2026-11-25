@@ -34,7 +34,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **civil**: Twilight stage of dawn or dusk labeled Civil Dawn or Civil Dusk, each with its own calendar glyph icon.
 - **conjunct**:
 - **conjunction**: Aspect at zero degrees between two bodies, with harmonic 1 and its own conjunction-0 icon in the glyph map.
-- **connector**:
 - **constellation**: Named star pattern the night sky draws with its own lines, from catalog records, listed as folders in the sky menu.
 - **contraparallel**: Aspect between bodies with equal declination on opposite sides of the equator; the project lists it only here.
 - **cradle**: Calendar glyph mapped from the bed emoji to cradle-icon.png, used for one event label in the glyph map.

@@ -95,8 +95,8 @@ function toGroup(
     key,
     label: part.label,
     level,
-    orderKey: key,
     path: null,
+    rank: key,
     values: toValues(input.metrics, { compare, share: part.share }),
   };
 }

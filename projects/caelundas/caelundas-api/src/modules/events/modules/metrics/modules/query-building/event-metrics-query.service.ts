@@ -166,12 +166,12 @@ export class EventMetricsQueryService {
   private describeLevel(level: number): { columns: string; groupBy: string } {
     const alias = `l${String(level)}`;
     const parentId = level === 0 ? "''::text" : `l${String(level - 1)}.id`;
-    const fields = ["key", "label", "path", "orderKey"]
+    const fields = ["key", "label", "path", "rank"]
       .map((field) => `${alias}."${field}"`)
       .join(", ");
 
     return {
-      columns: `,\n    ${alias}.id as id, ${parentId} as parent_id, ${alias}."key" as "key", ${alias}.label as label, ${alias}."path" as "path", ${alias}."orderKey" as "orderKey"`,
+      columns: `,\n    ${alias}.id as id, ${parentId} as parent_id, ${alias}."key" as "key", ${alias}.label as label, ${alias}."path" as "path", ${alias}."rank" as "rank"`,
       groupBy: `, ${alias}.id${level === 0 ? "" : `, ${parentId}`}, ${fields}`,
     };
   }

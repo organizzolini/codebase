@@ -1,6 +1,6 @@
 // ♟️ Constants
 
 /**
- * Sorts after every order key: the group of events with no key.
+ * Sorts after every rank: the group of events with no rank.
  */
-export const NO_ORDER_KEY = "￿";
+export const NO_RANK = "￿";

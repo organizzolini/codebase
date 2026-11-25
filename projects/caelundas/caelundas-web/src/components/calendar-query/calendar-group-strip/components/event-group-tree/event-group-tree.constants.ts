@@ -5,12 +5,12 @@ export const PATH_SEPARATOR = " / ";
 /**
  * Where events with no value at a level sort: last.
  */
-export const NO_GROUP_ORDER = "￿";
+export const NO_GROUP_RANK = "￿";
 
 /**
- * A duration bucket's group order, by its key.
+ * A duration bucket's group rank, by its key.
  */
-export const DURATION_ORDERS: ReadonlyMap<string, string> = new Map(
+export const DURATION_RANKS: ReadonlyMap<string, string> = new Map(
   DURATION_BUCKETS.map((bucket, index) => [
     bucket.value,
     String(index).padStart(2, "0"),

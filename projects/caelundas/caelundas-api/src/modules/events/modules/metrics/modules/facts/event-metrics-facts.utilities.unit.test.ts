@@ -11,7 +11,7 @@ const MOON = "0199b1a0-0000-7000-8000-000000000003";
 
 /** A row of the facts statement, its optional parts defaulted. */
 function row(rest: Partial<FactsRow> & Pick<FactsRow, "level">): FactsRow {
-  return { label: null, orderKey: null, path: null, period: 0, ...rest };
+  return { label: null, path: null, period: 0, rank: null, ...rest };
 }
 
 describe(toMeasuredRows, () => {
@@ -68,7 +68,7 @@ describe(toMeasuredRows, () => {
     });
   });
 
-  it("carries a group's label, path, ordering key and period", () => {
+  it("carries a group's label, path, rank and period", () => {
     expect.hasAssertions();
 
     const { levels } = toMeasuredRows(
@@ -77,9 +77,9 @@ describe(toMeasuredRows, () => {
           label: "Mars",
           level: 0,
           m_events: 4,
-          orderKey: "00000:Body / 00001:Mars",
           path: "Body / Mars",
           period: 1,
+          rank: "00000:Body / 00001:Mars",
           t0: MARS,
           tags: 2,
         }),
@@ -89,9 +89,9 @@ describe(toMeasuredRows, () => {
 
     expect(levels[0]?.[0]).toMatchObject({
       label: "Mars",
-      orderKey: "00000:Body / 00001:Mars",
       path: "Body / Mars",
       period: 1,
+      rank: "00000:Body / 00001:Mars",
     });
   });
 

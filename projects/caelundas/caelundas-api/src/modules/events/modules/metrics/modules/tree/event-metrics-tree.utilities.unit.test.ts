@@ -24,10 +24,10 @@ function row(
   return {
     key: null,
     label: null,
-    orderKey: null,
     parentId: "",
     path: null,
     period: 0,
+    rank: null,
     values: [1, 60],
     ...parts,
   };
@@ -108,8 +108,8 @@ describe("event metrics utilities", () => {
                 id: "/0:a",
                 key: "a",
                 label: "A",
-                orderKey: "00000:A",
                 path: "Planet / A",
+                rank: "00000:A",
               }),
             ],
             [row({ id: "/0:a/1:2026", key: "2026", parentId: "/0:a" })],
@@ -134,7 +134,7 @@ describe("event metrics utilities", () => {
         key: "2026",
         label: "2026",
         level: 1,
-        orderKey: "2026",
+        rank: "2026",
       });
     });
 
@@ -150,8 +150,8 @@ describe("event metrics utilities", () => {
                 id: "/0:a",
                 key: "a",
                 label: "A",
-                orderKey: "00000:A",
                 path: "Planet / A",
+                rank: "00000:A",
               }),
             ],
           ],
@@ -160,7 +160,7 @@ describe("event metrics utilities", () => {
       );
 
       expect(tree.map(({ label }) => label)).toStrictEqual(["A", "No Planet"]);
-      expect(tree[1]).toMatchObject({ key: null, orderKey: null });
+      expect(tree[1]).toMatchObject({ key: null, rank: null });
     });
 
     it("names the no-key group after the parent tag, a derived field or a generic group", () => {
@@ -186,7 +186,7 @@ describe("event metrics utilities", () => {
       expect(missing[0]?.label).toBe("No group");
     });
 
-    it("orders a tag by its ordering key, a duration by its bucket and a tag without a key by its path", () => {
+    it("orders a tag by its rank, a duration by its bucket and a tag without a rank by its path", () => {
       expect.hasAssertions();
 
       const tags = buildMetricTree(
@@ -196,15 +196,15 @@ describe("event metrics utilities", () => {
               id: "1",
               key: "x",
               label: "Harmonic 10",
-              orderKey: "00000:Harmonic 10",
               path: "P / Harmonic 10",
+              rank: "00000:Harmonic 10",
             }),
             row({
               id: "2",
               key: "y",
               label: "Harmonic 2",
-              orderKey: "00000:Harmonic 2",
               path: "P / Harmonic 2",
+              rank: "00000:Harmonic 2",
             }),
             row({ id: "3", key: "z", label: "Z", path: "P / A" }),
           ],
@@ -224,9 +224,7 @@ describe("event metrics utilities", () => {
       );
 
       expect(tags.map(({ id }) => id)).toStrictEqual(["2", "1", "3"]);
-      expect(
-        durations.map(({ key, orderKey }) => [key, orderKey]),
-      ).toStrictEqual([
+      expect(durations.map(({ key, rank }) => [key, rank])).toStrictEqual([
         ["strange", "-1"],
         ["instant", "00"],
         ["days", "03"],
@@ -243,29 +241,29 @@ describe("event metrics utilities", () => {
               id: "1",
               key: "b",
               label: "B",
-              orderKey: "00000:A / 00000:B",
               path: "P",
+              rank: "00000:A / 00000:B",
             }),
             row({
               id: "2",
               key: "d",
               label: "D",
-              orderKey: "00000:A",
               path: "P",
+              rank: "00000:A",
             }),
             row({
               id: "3",
               key: "c",
               label: "C",
-              orderKey: "00000:A",
               path: "P",
+              rank: "00000:A",
             }),
             row({
               id: "4",
               key: "e",
               label: "E",
-              orderKey: "00000:A / 00000:A",
               path: "P",
+              rank: "00000:A / 00000:A",
             }),
           ],
         ]),
@@ -285,25 +283,25 @@ describe("event metrics utilities", () => {
                 id: "/0:a",
                 key: "a",
                 label: "A",
-                orderKey: "a",
                 path: "P",
+                rank: "a",
               }),
               row({
                 id: "/0:a",
                 key: "a",
                 label: "A",
-                orderKey: "a",
                 path: "P",
                 period: 1,
+                rank: "a",
                 values: [4, 30],
               }),
               row({
                 id: "/0:b",
                 key: "b",
                 label: "B",
-                orderKey: "b",
                 path: "P",
                 period: 1,
+                rank: "b",
                 values: [2, 10],
               }),
             ],
@@ -332,8 +330,8 @@ describe("event metrics utilities", () => {
             id: `/0:${String(index)}`,
             key: String(index),
             label: String(index),
-            orderKey: String(index).padStart(4, "0"),
             path: "P",
+            rank: String(index).padStart(4, "0"),
           }),
       );
       const tree = buildMetricTree(source([rows]));
@@ -352,9 +350,9 @@ describe("event metrics utilities", () => {
               id: "/0:a/1:b",
               key: "b",
               label: "B",
-              orderKey: "b",
               parentId: "/0:a",
               path: "P",
+              rank: "b",
             }),
           ],
         ]),

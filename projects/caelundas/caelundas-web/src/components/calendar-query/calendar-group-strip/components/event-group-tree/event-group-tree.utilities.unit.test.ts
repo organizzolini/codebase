@@ -282,10 +282,10 @@ describe("event group tree", () => {
       expect(labels(sortEventGroups(nodes(), [sort]))).toStrictEqual(expected);
     });
 
-    it("orders by the tag order a group carries, or its name without one", () => {
+    it("orders by the tag rank a group carries, or its name without one", () => {
       const ordered = [
-        { ...node("Late", 1, "2026-01-01"), order: "b" },
-        { ...node("Early", 1, "2026-01-01"), order: "a" },
+        { ...node("Late", 1, "2026-01-01"), rank: "b" },
+        { ...node("Early", 1, "2026-01-01"), rank: "a" },
         node("Zed", 1, "2026-01-01"),
       ];
 

@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { Tag } from "@codebase/caelundas-db";
 
 import { tagMetadata } from "./modules/tag-metadata/tag-metadata.utilities";
-import { tagNodeKey, tagOrder, tagPathKey } from "./tags.utilities";
+import { tagNodeKey, tagPathKey, tagRank } from "./tags.utilities";
 
 import type { TagPath } from "./tags.types";
 import type { EntityManager } from "typeorm";
@@ -42,10 +42,10 @@ export class TagsService {
       if (stored === undefined) {
         const parent = parentId === null ? null : { id: parentId };
         const { icon, note } = tagMetadata(path.slice(0, index + 1));
-        const order = tagOrder(path.slice(0, index + 1));
+        const rank = tagRank(path.slice(0, index + 1));
         const saved = await manager
           .getTreeRepository(Tag)
-          .save(manager.create(Tag, { icon, name, note, order, parent }));
+          .save(manager.create(Tag, { icon, name, note, parent, rank }));
         id = saved.id;
         ids.set(key, id);
       } else {

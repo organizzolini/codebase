@@ -7,8 +7,8 @@ import { compareNatural } from "../event-group-model/event-group-order.utilities
 import { DERIVED_GROUP_IDS } from "../event-group-model/event-groups.constants";
 
 import {
-  DURATION_ORDERS,
-  NO_GROUP_ORDER,
+  DURATION_RANKS,
+  NO_GROUP_RANK,
   PATH_SEPARATOR,
   SORT_SIGNS,
 } from "./event-group-tree.constants";
@@ -30,7 +30,7 @@ import type {
   GroupParent,
   GroupSort,
   LevelContext,
-  OrderedGroupNode,
+  RankedGroupNode,
   TagRanks,
 } from "./event-group-tree.types";
 
@@ -56,7 +56,7 @@ export function buildEventGroups(
         // Ordered here rather than where the groups are made, which would
         // put the comparison one frame deeper.
         const split = splitParent(parent, level, context).toSorted(
-          (left, right) => compareNatural(left.order, right.order),
+          (left, right) => compareNatural(left.rank, right.rank),
         );
 
         promoteGroups(split, parent, next);
@@ -161,8 +161,7 @@ function compareBy(
 
   if (sort.key === "order") {
     return (
-      sign *
-      compareNatural(left.order ?? left.label, right.order ?? right.label)
+      sign * compareNatural(left.rank ?? left.label, right.rank ?? right.label)
     );
   }
 
@@ -193,23 +192,23 @@ function describeGroup(
   if (groupKey === null) {
     const label = `No ${context.fieldLabel}`;
 
-    return { label, order: NO_GROUP_ORDER, path: [label] };
+    return { label, path: [label], rank: NO_GROUP_RANK };
   }
 
   if (groupKey.path !== null) {
     return {
       label: groupKey.label ?? groupKey.key,
-      order: groupKey.orderKey ?? groupKey.path,
       path: groupKey.path.split(PATH_SEPARATOR).slice(1 + context.skip),
+      rank: groupKey.rank ?? groupKey.path,
     };
   }
 
-  const order =
+  const rank =
     context.field === DERIVED_GROUP_IDS.duration
-      ? (DURATION_ORDERS.get(groupKey.key) ?? "-1")
+      ? (DURATION_RANKS.get(groupKey.key) ?? "-1")
       : groupKey.key;
 
-  return { label: heading, order, path: [heading] };
+  return { label: heading, path: [heading], rank };
 }
 
 /**
@@ -288,7 +287,7 @@ function onlyLevel(
  * Adds the groups of a split to their parent and to the parents of the next level.
  */
 function promoteGroups(
-  split: readonly OrderedGroupNode[],
+  split: readonly RankedGroupNode[],
   parent: GroupParent,
   next: GroupParent[],
 ): void {
@@ -371,13 +370,13 @@ function skipLevel(
 }
 
 /**
- * Splits one parent's events into the groups of a level, each with the text it is ordered by, in no order yet.
+ * Splits one parent's events into the groups of a level, each with the rank it sorts by, in no order yet.
  */
 function splitParent(
   parent: GroupParent,
   level: number,
   context: LevelContext,
-): OrderedGroupNode[] {
+): RankedGroupNode[] {
   const scope = scopeLevel(parent, context);
 
   if (scope === null) {
@@ -419,8 +418,8 @@ function toGroupNodes(
     descriptions: readonly GroupDescription[];
   }>,
   level: number,
-): OrderedGroupNode[] {
-  const ordered: OrderedGroupNode[] = [];
+): RankedGroupNode[] {
+  const ordered: RankedGroupNode[] = [];
 
   // A loop rather than a mapping callback, which would count as one more
   // frame on every stack beneath it.
@@ -441,10 +440,10 @@ function toGroupNodes(
         key,
         label: description.label,
         level,
-        order: description.order,
         path: description.path,
+        rank: description.rank,
       },
-      order: description.order,
+      rank: description.rank,
       tagPath: bucket.groupKey?.path ?? null,
     });
   }

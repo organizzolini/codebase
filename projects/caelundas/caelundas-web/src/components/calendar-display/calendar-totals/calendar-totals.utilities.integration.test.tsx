@@ -74,7 +74,7 @@ describe("totals layout", () => {
     ).toBe("false");
   });
 
-  it("nests an open group's subtotals in its card, shares the open group with the other metrics, and says what they sum to", async () => {
+  it("nests an open group's subtotals in its card, shares the open group with the other metrics, with no sum line", async () => {
     await renderCalendarRoute("/?view=totals&date=2026-03-04");
 
     const events = await screen.findByRole("article", { name: "Events" });
@@ -91,12 +91,8 @@ describe("totals layout", () => {
       expect(within(events).getAllByText("One").length).toBeGreaterThan(0);
     }, BUILDER_WAIT);
 
-    // The metric's total is what the top-level cards sum to, and Alpha's value what its own cards do.
-    expect(
-      within(events)
-        .getAllByTestId("totals-sums-to")
-        .map((connector) => connector.textContent),
-    ).toStrictEqual(["sums to 10", "sums to 6"]);
+    // Nesting shows by the cards alone: no sum line beside them.
+    expect(within(events).queryByTestId("totals-sums-to")).toBeNull();
 
     // The open group is the table's too, so another metric's card opens it as well.
     const names = screen.getByRole("article", { name: "Unique names" });
@@ -106,7 +102,6 @@ describe("totals layout", () => {
         .getByRole("button", { name: /Alpha/ })
         .getAttribute("aria-expanded"),
     ).toBe("true");
-    expect(within(names).queryByTestId("totals-sums-to")).toBeNull();
   });
 
   it("breaks a metric down by the table's groups, and opens and closes them", async () => {

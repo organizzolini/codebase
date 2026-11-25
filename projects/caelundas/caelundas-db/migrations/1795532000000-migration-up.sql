@@ -6,4 +6,4 @@ alter table tags add icon text;
 
 alter table tags add note text;
 
-alter table tags add "order" smallint not null default '0';
+alter table tags add rank smallint not null default '0';

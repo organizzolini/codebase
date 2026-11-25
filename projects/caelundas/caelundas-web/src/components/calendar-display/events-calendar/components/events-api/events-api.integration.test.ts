@@ -89,8 +89,8 @@ describe("events api", () => {
           key: "2026",
           label: "2026",
           level: 0,
-          orderKey: "2026",
           path: null,
+          rank: "2026",
           values,
         },
       ],
@@ -228,9 +228,7 @@ describe("events api", () => {
                 description: "d",
                 durationMinutes: 0,
                 end: period.start,
-                groups: [
-                  [{ key: "k", label: "L", orderKey: null, path: null }],
-                ],
+                groups: [[{ key: "k", label: "L", path: null, rank: null }]],
                 id: "e1",
                 location: null,
                 start: period.start,
@@ -262,7 +260,7 @@ describe("events api", () => {
     });
     expect(event?.start).toStrictEqual(new Date(period.start));
     expect(event?.groups).toStrictEqual([
-      [{ key: "k", label: "L", orderKey: null, path: null }],
+      [{ key: "k", label: "L", path: null, rank: null }],
     ]);
   });
 

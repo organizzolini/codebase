@@ -27,8 +27,8 @@ interface GroupResponse {
   key: null | string;
   label: string;
   level: number;
-  orderKey: null | string;
   path: null | string;
+  rank: null | string;
   values: ValueResponse[];
 }
 
@@ -79,10 +79,10 @@ const QUERY = `
       timezone
       total { ...Values }
       groups {
-        id key label level orderKey path
+        id key label level rank path
         values { ...Values }
         children {
-          id key label level orderKey path
+          id key label level rank path
           values { ...Values }
           children { id key label level values { ...Values } }
         }
@@ -357,7 +357,7 @@ describe("events metrics end-to-end suite", () => {
       level: 0,
       path: "Planet / Mars",
     });
-    expect(none).toMatchObject({ key: null, orderKey: null });
+    expect(none).toMatchObject({ key: null, rank: null });
     expect(mars.values.map(({ value }) => value)).toStrictEqual([
       3, 210, 150, 3.5, 1, 105, 2,
     ]);

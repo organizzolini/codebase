@@ -242,7 +242,7 @@ twice.
 
 Each node also has an optional `note`, a sentence saying what it means, and
 an `icon`, the slug of a lucide icon, both from `tags/modules/tag-metadata/tag-metadata.constants.ts`,
-and an `order`, its place among its siblings from `tags/modules/tag-metadata/tag-metadata-order.constants.ts`
+and a `rank`, its place among its siblings from `tags/modules/tag-metadata/tag-metadata-rank.constants.ts`
 (0 when unlisted, sorted first by name). All three are written when a node is
 first created.
 

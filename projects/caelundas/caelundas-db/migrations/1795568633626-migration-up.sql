@@ -93,10 +93,10 @@ directs as (
     group by f.local_day, n.tag_id
 ),
 
-orders as (
+ranks as (
     select
         node.id as tag_id,
-        string_agg(lpad(a."order"::text, 5, '0') || ':' || a."name", ' / ' order by ancestor_node."depth") as order_key
+        string_agg(lpad(a.rank::text, 5, '0') || ':' || a."name", ' / ' order by ancestor_node."depth") as rank
     from tag_nodes as node
     inner join tags_closure as c on node.id = c.descendant_id
     inner join tags as a on c.ancestor_id = a.id
@@ -111,7 +111,7 @@ select
     node."path" as tag_path,
     node."depth" as tag_depth,
     node.root_id as tag_root_id,
-    o.order_key as tag_order_key,
+    k.rank as tag_rank,
     s.local_week,
     s.local_month,
     s.local_quarter,
@@ -129,7 +129,7 @@ select
     coalesce(d.direct_tag_ids, '{}'::uuid[]) as direct_tag_ids
 from sums as s
 inner join tag_nodes as node on s.tag_id = node.id
-inner join orders as o on s.tag_id = o.tag_id
+inner join ranks as k on s.tag_id = k.tag_id
 left join directs as d on s.local_day = d.local_day and s.tag_id = d.tag_id;
 
 insert into caelundas.typeorm_metadata ("database", "schema", "table", "type", "name", "value") values (

@@ -147,10 +147,10 @@ describe(EventMetricsService, () => {
           label: null,
           m0: 2,
           m1: null,
-          orderKey: null,
           parent_id: "",
           path: null,
           period: 0,
+          rank: null,
         },
       ])
       .mockResolvedValueOnce([{ id: ROOT, name: "Planet" }]);

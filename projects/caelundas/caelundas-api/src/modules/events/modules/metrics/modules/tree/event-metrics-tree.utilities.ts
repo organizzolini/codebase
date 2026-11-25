@@ -5,10 +5,7 @@ import {
   ZERO_METRICS,
 } from "../../event-metrics.constants";
 
-import {
-  DURATION_ORDERS,
-  ORDER_SEPARATOR,
-} from "./event-metrics-tree.constants";
+import { DURATION_RANKS, RANK_SEPARATOR } from "./event-metrics-tree.constants";
 
 import type {
   EventMetricsDraft,
@@ -103,29 +100,29 @@ function collectGroups(
 }
 
 /**
- * Orders two groups by their keys, the group with no key last.
+ * Orders two groups by their ranks, the group with no rank last.
  */
 function compareGroups(
   left: EventMetricGroupEntity,
   right: EventMetricGroupEntity,
 ): number {
-  if (left.orderKey === null || right.orderKey === null) {
-    return Number(left.orderKey === null) - Number(right.orderKey === null);
+  if (left.rank === null || right.rank === null) {
+    return Number(left.rank === null) - Number(right.rank === null);
   }
 
   return (
-    compareOrderKeys(left.orderKey, right.orderKey) ||
+    compareRanks(left.rank, right.rank) ||
     NATURAL_COLLATOR.compare(String(left.key), String(right.key))
   );
 }
 
 /**
- * Orders keys a name at a time with digits as numbers, parents before children.
+ * Orders ranks a name at a time with digits as numbers, parents before children.
  */
-function compareOrderKeys(left: string, right: string): number {
-  const rightNames = right.split(ORDER_SEPARATOR);
+function compareRanks(left: string, right: string): number {
+  const rightNames = right.split(RANK_SEPARATOR);
 
-  for (const [index, name] of left.split(ORDER_SEPARATOR).entries()) {
+  for (const [index, name] of left.split(RANK_SEPARATOR).entries()) {
     const other = rightNames[index];
 
     if (other === undefined) {
@@ -139,7 +136,7 @@ function compareOrderKeys(left: string, right: string): number {
     }
   }
 
-  return left.split(ORDER_SEPARATOR).length === rightNames.length ? 0 : -1;
+  return left.split(RANK_SEPARATOR).length === rightNames.length ? 0 : -1;
 }
 
 /**
@@ -174,9 +171,9 @@ function nameLevel(source: EventMetricsTreeSource, level: number): string {
 // 🌎 Public Functions
 
 /**
- * A group's ordering key: a tag's own, or a derived value's.
+ * A group's rank: a tag's own, or a derived value's.
  */
-function orderOf(
+function rankOf(
   row: EventMetricsRow,
   source: EventMetricsTreeSource,
   level: number,
@@ -186,11 +183,11 @@ function orderOf(
   }
 
   if (row.path !== null) {
-    return row.orderKey ?? row.path;
+    return row.rank ?? row.path;
   }
 
   return source.levels[level]?.field === "duration"
-    ? (DURATION_ORDERS.get(row.key) ?? "-1")
+    ? (DURATION_RANKS.get(row.key) ?? "-1")
     : row.key;
 }
 
@@ -215,8 +212,8 @@ function startGroup(
       key: row.key,
       label,
       level,
-      orderKey: orderOf(row, source, level),
       path: row.path,
+      rank: rankOf(row, source, level),
       values: [],
     },
     parentId: row.parentId,
