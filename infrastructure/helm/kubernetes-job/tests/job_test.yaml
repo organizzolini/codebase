@@ -10,6 +10,9 @@ tests:
       - template: templates/job.yaml
         notExists:
           path: spec.completionMode
+      - template: templates/job.yaml
+        exists:
+          path: spec.backoffLimit
       - template: templates/pvc.yaml
         hasDocuments:
           count: 1
@@ -26,6 +29,8 @@ tests:
       - equal:
           path: spec.backoffLimitPerIndex
           value: 2
+      - notExists:
+          path: spec.backoffLimit
 
   - it: mounts an emptyDir when persistence.type is emptyDir
     set:
