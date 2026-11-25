@@ -212,12 +212,12 @@ describe(SkillDescriptionsService, () => {
       writeWorkspaceFile(
         workspaceRoot,
         "fits/SKILL.md",
-        renderSkill("fits", "word ".repeat(64).trim()),
+        renderSkill("fits", "word ".repeat(128).trim()),
       );
       writeWorkspaceFile(
         workspaceRoot,
         "overlong/SKILL.md",
-        renderSkill("overlong", "word ".repeat(65).trim()),
+        renderSkill("overlong", "word ".repeat(129).trim()),
       );
 
       expect(
@@ -225,7 +225,7 @@ describe(SkillDescriptionsService, () => {
           "fits/SKILL.md",
           "overlong/SKILL.md",
         ]),
-      ).toStrictEqual([{ skillPath: "overlong/SKILL.md", words: 65 }]);
+      ).toStrictEqual([{ skillPath: "overlong/SKILL.md", words: 129 }]);
     });
   });
 

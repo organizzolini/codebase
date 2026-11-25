@@ -71,7 +71,7 @@ describe(SkillDescriptionsCommand, () => {
     await command.run();
 
     expect(reportLines).toStrictEqual([
-      "All 2 authored skill descriptions hold at most 64 words, 600 of 12288 characters together.",
+      "All 2 authored skill descriptions hold at most 128 words, 600 of 12288 characters together.",
     ]);
   });
 
@@ -81,7 +81,7 @@ describe(SkillDescriptionsCommand, () => {
     vi.mocked(
       skillDescriptionsService.findOverlongDescriptions,
     ).mockReturnValue([
-      { skillPath: ".agents/skills/commit-code/SKILL.md", words: 65 },
+      { skillPath: ".agents/skills/commit-code/SKILL.md", words: 129 },
       { skillPath: ".agents/skills/write-tests/SKILL.md", words: 200 },
     ]);
 
@@ -92,8 +92,8 @@ describe(SkillDescriptionsCommand, () => {
     processExitSpy.mockRestore();
 
     expect(reportLines).toStrictEqual([
-      "These skill descriptions hold more than 64 words:",
-      "- .agents/skills/commit-code/SKILL.md (65 words)",
+      "These skill descriptions hold more than 128 words:",
+      "- .agents/skills/commit-code/SKILL.md (129 words)",
       "- .agents/skills/write-tests/SKILL.md (200 words)",
     ]);
   });
@@ -122,7 +122,7 @@ describe(SkillDescriptionsCommand, () => {
   it("tells the user to shorten each description as the fix", () => {
     expect(command.synchronizationLabel).toBe("skill-descriptions");
     expect(command.fixCommand).toBe(
-      "shorten the descriptions to 64 words each and 12288 characters together, moving detail into the skill bodies",
+      "shorten the descriptions to 128 words each and 12288 characters together, moving detail into the skill bodies",
     );
   });
 
@@ -132,7 +132,7 @@ describe(SkillDescriptionsCommand, () => {
     vi.mocked(
       skillDescriptionsService.findOverlongDescriptions,
     ).mockReturnValue([
-      { skillPath: ".agents/skills/commit-code/SKILL.md", words: 65 },
+      { skillPath: ".agents/skills/commit-code/SKILL.md", words: 129 },
     ]);
 
     await expect(command.synchronize()).resolves.toBe(false);
