@@ -24,6 +24,22 @@ function level(
 }
 
 describe(EventGroupingService, () => {
+  describe("compileSources", () => {
+    it("compiles each level to its own source, binding after the offset", () => {
+      expect.hasAssertions();
+
+      const compiled = service.compileSources(
+        [level(`tag:${ROOT}`), level("year")],
+        2,
+      );
+
+      expect(compiled.parameters).toStrictEqual([ROOT, 1]);
+      expect(compiled.sources).toHaveLength(2);
+      expect(compiled.sources[0]).toContain("t.tag_root_id::text = $3");
+      expect(compiled.sources[1]).toContain("substr(e.start_local_day, 1, 4)");
+    });
+  });
+
   describe("compile", () => {
     it("compiles to nothing for no grouping", () => {
       expect.hasAssertions();

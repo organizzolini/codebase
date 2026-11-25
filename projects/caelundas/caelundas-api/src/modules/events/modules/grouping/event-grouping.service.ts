@@ -19,6 +19,7 @@ import {
 import type { EventFilterParameters } from "../filtering/event-filter.types";
 import type {
   CompiledEventGrouping,
+  EventGroupingSources,
   EventGroupLevel,
 } from "./event-grouping.types";
 
@@ -87,17 +88,36 @@ export class EventGroupingService {
     grouping: readonly EventGroupLevel[],
     offset: number,
   ): CompiledEventGrouping {
-    const parameters: EventFilterParameters = { offset, values: [] };
+    const { parameters, sources } = this.compileSources(grouping, offset);
     let sql = "";
 
-    // A loop rather than a mapping callback keeps the call stacks shallow.
-    for (const [index, level] of grouping.entries()) {
-      sql += GROUP_COLUMN_SQL.replace("{source}", () =>
-        this.compileGroupLevel(level, parameters),
-      ).replace("{column}", `group_${String(index)}`);
+    for (const [index, source] of sources.entries()) {
+      sql += GROUP_COLUMN_SQL.replace("{source}", () => source).replace(
+        "{column}",
+        `group_${String(index)}`,
+      );
     }
 
-    return { parameters: parameters.values, sql };
+    return { parameters, sql };
+  }
+
+  /**
+   * Compiles each level to its source of keys, numbering placeholders after
+   * offset.
+   */
+  public compileSources(
+    grouping: readonly EventGroupLevel[],
+    offset: number,
+  ): EventGroupingSources {
+    const parameters: EventFilterParameters = { offset, values: [] };
+    const sources: string[] = [];
+
+    // A loop rather than a mapping callback keeps the call stacks shallow.
+    for (const level of grouping) {
+      sources.push(this.compileGroupLevel(level, parameters));
+    }
+
+    return { parameters: parameters.values, sources };
   }
 
   /**

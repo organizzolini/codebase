@@ -10,6 +10,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **appearance**: The night-sky options that set how the sky looks, such as colors and line widths, filled with defaults together.
 - **ascension**: Right ascension, a sky point's east-west coordinate in hours.
 - **aspect**: An angular relationship between two bodies, the root tag most calendar events are filed under.
+- **average**:
 - **azimuth**: Compass bearing along the horizon, which a unit test reads to tell east from west.
 - **conjunct**: The zero-degree aspect, as events and tags name it, such as Moon Conjunct Mars.
 - **constellation**: A named star figure the night sky draws on request, chosen by name, `all`, `zodiac`, or `none`.
@@ -22,6 +23,8 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ecliptic**: The Sun's yearly path across the sky, which the night sky draws as a line on request.
 - **epoch**: The Unix epoch, whose Julian day converts a timestamp for the sidereal-time calculation.
 - **equinox**: The moment the Sun crosses the celestial equator, used as a sample event and tag in filter tests.
+- **family**:
+- **gamma**:
 - **greenwich**: The prime meridian; Greenwich sidereal time plus the observer's longitude gives the sky's rotation.
 - **harmonic**: A numbered aspect family, such as Harmonic 6, whose trailing number filters can compare.
 - **hip**: A star's Hipparcos catalog number, which keys each star and each end of a constellation line.
@@ -36,7 +39,9 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **luminary**:
 - **lyra**: A constellation used as a fixture when no database is present.
 - **magnitude**: A star's brightness, where a lower number is brighter; `faintestMagnitude` limits which stars are drawn.
+- **median**:
 - **moon**: The Moon, as a body named in sample events and tag paths.
+- **narrower**:
 - **north**: The direction of positive declination, as in the ecliptic's northernmost point.
 - **obliquity**: The tilt of Earth's axis, about 23.4 degrees, used to convert ecliptic longitude into right ascension and declination.
 - **observer**: The viewer on Earth, whose time zone and position decide which events and which sky are shown.
@@ -45,6 +50,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **planetary**:
 - **polar**: Measured from the celestial pole, as in the polar distance of the top and bottom of the view.
 - **pole**: The north celestial pole, the point the night sky rotates around.
+- **progressive**:
 - **quarter**: The calendar quarter of the year, one of the levels events can be grouped by.
 - **radius**: Distance in pixels from the pole, as in the inner and outer radius of the rings stars are drawn on.
 - **reddest**: Test name for the stars at the red end of the color ramp.
@@ -59,6 +65,8 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **sun**: The Sun as a body; the word also appears inside Sunday, weekday 0.
 - **temporality**: Filter field classing an event as `Instant` or `Duration`.
 - **tuesday**: Test name for a count of events that fall on a Tuesday.
+- **unnamed**:
+- **unrooted**:
 - **ursa**: First word of Ursa Major, written `ursa_major` when naming a constellation to draw.
 - **vega**: A bright star of Lyra, used as a fixture when no database is present.
 - **visible**: The period of days a calendar view shows, as opposed to the wider period read around it.
