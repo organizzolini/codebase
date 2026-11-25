@@ -200,7 +200,7 @@ Every lesson lands as a rule the next agent can apply cold. Before writing one:
 - When documenting a positive pattern, add a `> ✅ **Best practice:** ...` callout; for a gap or mistake, a `> ⚠️ **Warning:** ...` callout
 - Prefer inserting into an existing section over creating a new one
 - Keep `SKILL.md` to discovery and workflow, under 512 lines; deep, single-topic detail goes in `references/<aspect>.md`, linked from the matching section. When a skill is near the cap, move detail into `references/` first, then add the new guidance.
-- A description over 64 words, or one that pushes all authored descriptions past 12,500 characters, fails `nx run integration:skill-descriptions`: move trigger detail into the body.
+- A description over 64 words, or one that pushes all authored descriptions past 12,288 characters, fails `nx run integration:skill-descriptions`: move trigger detail into the body.
 
 ### For new skills
 
