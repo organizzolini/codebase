@@ -37,7 +37,7 @@ For each file in scope, cross-check every command, path, target, and claim again
 ### 2. Act
 
 - Fix each finding where the fact is **owned**, and link to it from elsewhere rather than copying it.
-- Keep each skill description within 128 words (`nx run integration:skill-descriptions`), and each skill's long reference material under its `references/`.
+- Keep each skill description to about 40 words and never over 64, within a shared 12,500-character budget (`nx run integration:skill-descriptions`), and each skill's long reference material under its `references/`.
 - Match a table's style to its file: some are column-aligned, others are not, and markdownlint holds each table to its own header.
 
 ### 3. Validate

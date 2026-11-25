@@ -66,7 +66,7 @@ pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-co
 - **Knip (unused code)**: Remove the unused export, file, or dependency, or add an exception in `configuration/typescript/knip.config.ts`.
 - **Fallow dead-code (unused code)**: The same finding from the other direction — `knip` runs once per workspace, `fallow` once over all of them. The two configurations are kept in step, so fix the code and both pass; if an exception is genuinely warranted, add it to `configuration/typescript/fallow.config.jsonc` _and_ its counterpart in `configuration/typescript/knip.config.ts`. Prefer `overrides` to `ignorePatterns` when suppressing a file: `ignorePatterns` also drops what that file imports out of the module graph, which makes reachable files read as dead.
 - **Glossary (`coinagerie-check`)**: Run `pnpm exec nx run <project>:coinagerie-check:write`, then define any bare bullet it added with the [coinagerie-define skill](../coinagerie-define/SKILL.md). See [coinagerie-triage](../coinagerie-triage/SKILL.md) for a failure that survives the write.
-- **Skill descriptions (`skill-descriptions`)**: Shorten each named description to 128 words, moving trigger detail into the skill body.
+- **Skill descriptions (`skill-descriptions`)**: Shorten each named description to 64 words, or the longest ones until all fit 12,500 characters together, moving trigger detail into the skill body.
 - **Sync checks**: Run the failing synchronization's own `write` configuration (e.g., `nx run integration:conventional-config:write`), or `nx run-many --targets=conventional-config,devcontainer-configuration,pull-request-template,skill-exclusions --configuration=write` for every derivation at once.
 
 See [triage-integration](../triage-integration/SKILL.md) for detailed per-tool fix instructions.
@@ -100,7 +100,7 @@ When coverage falls short, raise it with tests of real behavior, following [rais
 
 A skill is one directory, `.agents/skills/<skill-name>/SKILL.md`. `.claude/skills` and `.github/skills` are symlinks to `.agents/skills`, so that one copy already serves both harnesses — there is no second copy to create and no table of contents to regenerate. AGENTS.md deliberately does not list the skills; agents are handed the installed set directly.
 
-Keep its description within 128 words (`nx run integration:skill-descriptions`). The only extra command applies to a skill installed from another repository, which `skills update` records in `skills-lock.json`:
+Keep its description to about 40 words and never over 64 (`nx run integration:skill-descriptions`). The only extra command applies to a skill installed from another repository, which `skills update` records in `skills-lock.json`:
 
 ```bash
 # Regenerate the exclusion blocks that keep locked skills out of prettier,
