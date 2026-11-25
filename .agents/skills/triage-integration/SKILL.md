@@ -1,6 +1,6 @@
 ---
 name: triage-integration
-description: "Diagnose and fix integration failures, local (the pre-commit, commit-msg, and pre-push hooks) or remote (a red GitHub Actions check). Use when a commit is rejected, a push fails, or a CI check goes red. Fetches the logs, names the failing target and project, and fixes the root cause — formatting, lint, types, spelling, dead code, sync checks, the IC-suite gates, and conventions."
+description: "Diagnose and fix a failed local hook or red CI check: fetch the logs, name the failing target and project, and fix the root cause without suppressing it. Use when a commit is rejected, a push fails, or a CI check goes red."
 argument-hint: "Optional: paste failure logs, or name a workflow or run URL to fetch"
 ---
 

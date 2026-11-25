@@ -1,6 +1,6 @@
 ---
 name: create-pull-request
-description: Create or update a pull request to this codebase's conventions — the conventional-commit title, the four-section body Comply enforces, the labels, the assignee, and the issue it closes. Use when opening a pull request, rewriting or refreshing a title or description that no longer matches the branch, preparing changes for review, or asked about pull request rules.
+description: "Create or update a pull request to this codebase's conventions: the title and its allowed types and scopes, the four-section body, labels, assignee, and the issue it closes. Use when opening a pull request, when its description no longer matches the branch, or when asked about pull request rules."
 license: MIT
 ---
 

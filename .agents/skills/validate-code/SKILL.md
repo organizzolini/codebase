@@ -1,6 +1,6 @@
 ---
 name: validate-code
-description: Run the codebase's quality suite before committing — typecheck-code, format-code, lint-code, deprecate-code, and guard-code, first with write to auto-fix, then with check — and clear the quality gates (test coverage, type coverage, compiled size). Use after finishing any implementation task, when told to "validate", "check quality", or "run linting", or before submit-changes.
+description: "Run the quality suite before committing (typecheck-code, format-code, lint-code, deprecate-code, and guard-code, with write and then check) and the coverage, type-coverage, and size gates. Use after any implementation task, before submit-changes, or when told to validate."
 license: MIT
 ---
 

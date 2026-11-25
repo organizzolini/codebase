@@ -1,6 +1,6 @@
 ---
 name: write-tests
-description: Write tests the way this codebase does — test kinds and file names, the Nx commands that run them, the @codebase/testing helper for each job, buildTestingModule for Nest classes, renderRoute for routes, and the mocking standard. Use when adding or changing a test, choosing a test kind, mocking a dependency, the file system, a child process, or fetch, testing a React component or route, testing a packed package, or migrating an older suite.
+description: "Write tests the way this codebase does: test kinds and names, the Nx commands, the @codebase/testing helpers, and the mocking standard. Use when adding or changing a test, mocking a dependency, testing a component, route, or packed package, or migrating an older suite."
 license: MIT
 ---
 

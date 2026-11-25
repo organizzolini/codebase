@@ -1,7 +1,7 @@
 ---
 name: query-sql
 
-description: Toolkit for interactively querying and exploring the local PostgreSQL database schema and data using the local psql client. Use when asked to write a SQL query, explore database schemas, inspect table structures, or execute local database queries. Connects as each project's own role to its `<project>_development` database and `<project>` schema, such as lexico's `lexico_development`.`lexico`.
+description: "Query and explore the local Postgres databases with psql, connecting as each project's own role to its `<project>_development` database and `<project>` schema. Use when writing a SQL query, inspecting a schema or table, or checking local data."
 ---
 
 # PostgreSQL SQL Query & Exploration

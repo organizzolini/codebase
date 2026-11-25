@@ -1,6 +1,6 @@
 ---
 name: learn-lessons
-description: 'Retrospective that turns a session, a set of local changes, or a branch or pull request into lasting rules: the coding patterns, architectural decisions, and practices worth repeating, written into the skill or AGENTS.md that owns each one. Use when asked to "learn from this session", "capture patterns from this PR", "remember how we did this", or "make sure future agents do it this way", and at the end of non-trivial work.'
+description: "Turn a session or branch into lasting rules, written into the skill or AGENTS.md that owns each one after checking for duplicates. Use at the end of non-trivial work, or when asked to learn from a session or make future agents do something this way."
 argument-hint: "Provide the branch name, PR number, or describe the coding patterns to capture."
 license: MIT
 ---

@@ -1,6 +1,6 @@
 ---
 name: backup-code
-description: "Snapshot local work before a destructive action, and restore from that snapshot when it goes wrong. Use before reset, rebase, clean, a checkout that overwrites, a force push, a history rewrite, a mass edit, codemod, or generator rewrite; and when undoing one, recovering a deleted file, or rolling back a failed refactor or rebase."
+description: "Snapshot local work before anything hard to undo, and restore from the snapshot when it goes wrong. Use before reset, rebase, clean, a force push, a history rewrite, or a mass edit or codemod, and when recovering a deleted file or rolling back a failed refactor or rebase."
 argument-hint: "Describe the risky operation about to run, or what needs restoring."
 license: MIT
 ---

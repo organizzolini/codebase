@@ -1,6 +1,6 @@
 ---
 name: link-issue
-description: Make sure the work in hand has a GitHub issue that its pull request will close — find the planned ticket, file one before starting ad-hoc work, or backfill one for work already done. Use this skill before starting any change that has no ticket, before creating or updating a pull request, when a pull request has no linked issue, or when asked what belongs in an issue versus a pull request description.
+description: "Make sure the work has the GitHub issue its pull request will close: the planned ticket, a new one before ad-hoc work, or a backfilled one for finished work. Use before starting work with no ticket, before opening or updating a pull request, or when one has no linked issue."
 license: MIT
 ---
 

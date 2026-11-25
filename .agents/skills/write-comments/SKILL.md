@@ -1,6 +1,6 @@
 ---
 name: write-comments
-description: Apply codebase commenting conventions for TypeScript, Python, and any language. USE WHEN writing or reviewing comments, adding section comments, organizing code into logical groups, or asked about comment style. Covers when to comment, how to write good comments, section comment format (emoji + capitalized name), emoji reference table, and anti-patterns to avoid (obvious comments, redundant JSDoc, TODO lint bypasses, dash-line dividers).
+description: "Commenting conventions for TypeScript, Python, and any language: when a comment earns its place, emoji section comments, `shortcut:` for deferred work, and the anti-patterns to avoid. Use when writing or reviewing comments, or organizing code into sections."
 license: MIT
 ---
 

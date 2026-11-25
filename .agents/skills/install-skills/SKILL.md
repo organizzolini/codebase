@@ -1,6 +1,6 @@
 ---
 name: install-skills
-description: Explains where agent skills and instructions live, how skills are installed, updated, and restored, and how vendored ones are excluded from repository tooling. Use when adding a skill, running skills update, investigating a missing skill, wondering why a skill is ignored by formatters and linters, editing an agent instruction file, or setting up a new agent harness.
+description: "Where agent skills and instructions live, and how skills are installed, updated, and kept out of repository tooling. Use when adding a skill, running skills update, when a skill is missing or ignored by a linter, or when editing agent instructions."
 ---
 
 # Install Skills and Synchronization

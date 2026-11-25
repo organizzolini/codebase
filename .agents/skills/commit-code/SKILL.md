@@ -1,6 +1,6 @@
 ---
 name: commit-code
-description: Write commit messages following this codebase's Conventional Commits standard with Gitmoji support. Use this skill when creating commits or when asked about commit message formatting.
+description: "Write commit messages in this codebase's Conventional Commits format with Gitmoji: the allowed types and scopes, release significance, signing, and closing the commit's sub-issue. Use when committing, when the commit-msg hook rejects a message, or when choosing a type or scope."
 license: MIT
 ---
 

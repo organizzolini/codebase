@@ -1,6 +1,6 @@
 ---
 name: write-react
-description: React coding conventions for this codebase. Use when writing or reviewing React components, when asked about component structure, section ordering, Tailwind CSS usage, state management patterns, conditional rendering, list rendering, or React 19 conventions. Covers the conformetry generators for components, hooks, routes, and server functions, component section layout (🔖🧩🪝🏗💪♻️🏁🎨), Tailwind CSS with theme tokens, TanStack Start routes, loaders, and server functions, and components usage.
+description: "React conventions: the conformetry generators for components, hooks, routes, and server functions, component section layout, Tailwind theme tokens, and TanStack Start routes and loaders. Use when writing or reviewing React components, hooks, or routes."
 license: MIT
 ---
 

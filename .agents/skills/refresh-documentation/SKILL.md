@@ -1,6 +1,6 @@
 ---
 name: refresh-documentation
-description: Review and update the hand-written documentation — READMEs, AGENTS.md files, skills, and documentation/ — so it matches the code. Use when asked to refresh, update, or audit documentation, after a change that moved commands, paths, or conventions, or when a skill or README states something the code no longer does.
+description: "Audit the hand-written documentation (READMEs, AGENTS.md files, skills, and documentation/) against the code and fix what drifted. Use when asked to refresh or audit documentation, or after a change moved commands, paths, or conventions."
 license: MIT
 ---
 

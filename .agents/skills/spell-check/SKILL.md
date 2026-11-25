@@ -1,6 +1,6 @@
 ---
 name: spell-check
-description: Run and triage cspell in this codebase. Use when spell-check fails in lint-staged, nx affected, or nx run-many, when cspell reports Unknown word entries, or when a genuine domain term belongs in a dictionary under configuration/lint/.cspell. Covers full-workspace checks, project-targeted checks, and dictionary updates.
+description: "Run and triage cspell. Use when spell-check fails in CI or nx affected, when cspell reports an Unknown word, or when a genuine domain term belongs in a dictionary under configuration/lint/.cspell; fixing or rewording the word comes first."
 license: MIT
 ---
 

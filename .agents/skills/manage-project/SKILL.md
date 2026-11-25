@@ -1,6 +1,6 @@
 ---
 name: manage-project
-description: Keep the organizzolini/codebase GitHub Project board filled in — set an issue's Status, Priority, and Effort, move work to In Progress, and know when a milestone applies. Use when starting or finishing work on an issue, after filing or sorting issues, when estimating effort or prioritizing work, when asked what is on the board, or when a board view shows items with no Priority or Effort.
+description: "Keep the GitHub Project board filled in: each issue's Status, Priority, and Effort. Use when starting or finishing work on an issue, after filing issues, when estimating effort or choosing a priority, or when the board shows an item missing a field."
 license: MIT
 ---
 

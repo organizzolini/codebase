@@ -1,6 +1,6 @@
 ---
 name: sign-commits
-description: Re-sign unsigned commits on the current branch or pull request without changing code content, rewriting only from the first unsigned commit onward on a temporary branch with a backup first. Use when asked to sign commits, satisfy signed-commit requirements, or make a PR show verified commits. Stops on any conflict, tree drift, or signing failure.
+description: "Re-sign unsigned commits on the current branch without changing their content, rewriting from the first unsigned commit on a temporary branch after a backup. Use when asked to sign commits, or when a pull request's commits are not verified. Stops on any conflict, content drift, or signing failure."
 license: MIT
 ---
 

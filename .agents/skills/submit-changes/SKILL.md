@@ -1,6 +1,6 @@
 ---
 name: submit-changes
-description: Take local changes through the full branch → commit → push → pull request pipeline in one step, renaming a non-conforming branch on the way. Use when asked to submit or push changes, or to go from local changes to an open pull request without running each git step by hand. Merging afterwards is ship-changes.
+description: "Take local changes through branch, commit, push, and pull request in one step, renaming a non-conforming branch on the way. Use when asked to submit or push changes, or to go from local changes to an open pull request. Merging afterwards is ship-changes."
 license: MIT
 ---
 

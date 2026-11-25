@@ -1,6 +1,6 @@
 ---
 name: write-typescript
-description: TypeScript coding conventions for this codebase. Use when writing or modifying TypeScript or TSX files, when TypeScript type errors appear, or when asked about strict mode, type imports, naming conventions, return types, the no-any rule, error handling and Zod validation at boundaries, async functions, floating promises, exhaustive switches, readonly properties, non-null assertions, control-flow style, formatting with oxfmt, import group order, enforced alphabetical ordering, the three-parameter limit, or JSDoc on public APIs.
+description: "TypeScript conventions for this codebase: strict typing, naming and imports, formatting and ordering, control flow, error handling with Zod at boundaries, and size limits. Use when writing or changing TypeScript or TSX, or when a type or lint error appears."
 license: MIT
 ---
 

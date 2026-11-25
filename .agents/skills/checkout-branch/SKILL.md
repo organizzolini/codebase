@@ -1,6 +1,6 @@
 ---
 name: checkout-branch
-description: Name, create, validate, and rename Git branches to this codebase's `<type>/<scope>-<description>` convention. Use when creating a branch, when a session hook or pre-push rejects a branch name (rename it without asking, even one the platform assigned), when asked to rename a branch or derive a name from its changes, or when asked about branch naming rules.
+description: "Name, create, validate, and rename branches to the `<type>/<scope>-<description>` convention, with the allowed types and scopes. Use when creating a branch, when a session hook or pre-push rejects a branch name (rename it without asking), or when asked about branch naming."
 license: MIT
 ---
 

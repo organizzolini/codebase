@@ -1,6 +1,6 @@
 ---
 name: ship-changes
-description: "Carry reviewed open pull requests through CI, conflicts, the merge queue, release, and a check that the change works on main. Use when the user asks to ship, merge, land, or babysit a pull request, when a reviewed pull request needs green CI or a conflict resolved before it can merge, or after submit-changes when the task includes merging."
+description: "Carry a reviewed pull request through CI, conflicts, the merge queue, and release, then confirm it works on main. Use when the user asks to ship, merge, land, or babysit a pull request, or when one needs green CI or a conflict resolved to merge."
 argument-hint: "PR number(s) or URL(s); defaults to the current branch's pull request"
 ---
 

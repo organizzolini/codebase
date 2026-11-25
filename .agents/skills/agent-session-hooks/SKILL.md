@@ -1,6 +1,6 @@
 ---
 name: agent-session-hooks
-description: Explains how startup scripts run at the start of agent sessions and inject context. Use when an agent session reports a failing hook (e.g. validate-session-branch-name.sh, validate-session-worktree-name.sh, validate-session-commit-signing.sh, validate-session-gh-authentication.sh, validate-session-skills.sh), or when adding a new startup check.
+description: "Explains the checks that run at the start of every agent session and before each subagent, and how each reports a failure as context. Use when a session hook reports a failure, or when adding a new startup check."
 ---
 
 # Agent Session Hooks
