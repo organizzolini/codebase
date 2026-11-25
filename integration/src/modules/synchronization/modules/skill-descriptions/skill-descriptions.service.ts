@@ -39,6 +39,34 @@ export class SkillDescriptionsService {
 
   // 🔏 Private Methods
 
+  /** Skill files in folders the lockfile does not name: written here. */
+  private findLocalSkillPaths(
+    workspaceRoot: string,
+    skills: SkillsLock["skills"],
+  ): string[] {
+    return readdirSync(path.join(workspaceRoot, SKILLS_DIRECTORY), {
+      withFileTypes: true,
+    })
+      .filter((entry) => entry.isDirectory() && !(entry.name in skills))
+      .map((entry) => path.join(SKILLS_DIRECTORY, entry.name, SKILL_FILE_NAME))
+      .filter((skillPath) => existsSync(path.join(workspaceRoot, skillPath)));
+  }
+
+  /** Source files of locked skills this repository publishes. */
+  private findPublishedSkillPaths(
+    workspaceRoot: string,
+    skills: SkillsLock["skills"],
+  ): string[] {
+    return Object.values(skills)
+      .filter(({ source }) => source.toLowerCase() === AUTHORED_SOURCE)
+      .map(({ skillPath }) => skillPath)
+      .filter(
+        (skillPath): skillPath is string =>
+          skillPath !== undefined &&
+          existsSync(path.join(workspaceRoot, skillPath)),
+      );
+  }
+
   /** Reads and validates the skills lockfile. */
   private readSkillsLock(workspaceRoot: string): SkillsLock {
     return SKILLS_LOCK_SCHEMA.parse(
@@ -91,39 +119,10 @@ export class SkillDescriptionsService {
   /** Every authored skill file's path, relative to the workspace root, sorted. */
   public resolveAuthoredSkillPaths(workspaceRoot: string): string[] {
     const { skills } = this.readSkillsLock(workspaceRoot);
-    const skillPaths: string[] = [];
 
-    for (const entry of readdirSync(
-      path.join(workspaceRoot, SKILLS_DIRECTORY),
-      {
-        withFileTypes: true,
-      },
-    )) {
-      const skillPath = path.join(
-        SKILLS_DIRECTORY,
-        entry.name,
-        SKILL_FILE_NAME,
-      );
-
-      if (
-        entry.isDirectory() &&
-        !(entry.name in skills) &&
-        existsSync(path.join(workspaceRoot, skillPath))
-      ) {
-        skillPaths.push(skillPath);
-      }
-    }
-
-    for (const { skillPath, source } of Object.values(skills)) {
-      if (
-        skillPath !== undefined &&
-        source.toLowerCase() === AUTHORED_SOURCE &&
-        existsSync(path.join(workspaceRoot, skillPath))
-      ) {
-        skillPaths.push(skillPath);
-      }
-    }
-
-    return skillPaths.toSorted((left, right) => left.localeCompare(right));
+    return [
+      ...this.findLocalSkillPaths(workspaceRoot, skills),
+      ...this.findPublishedSkillPaths(workspaceRoot, skills),
+    ].toSorted((left, right) => left.localeCompare(right));
   }
 }

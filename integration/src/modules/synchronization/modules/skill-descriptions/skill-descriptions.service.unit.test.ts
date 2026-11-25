@@ -33,14 +33,14 @@ const createWorkspace = (): string => {
     "skills-lock.json",
     JSON.stringify({
       skills: {
-        "nx-workspace": {
-          skillPath: "skills/nx-workspace/SKILL.md",
-          source: "nrwl/nx",
-        },
         "callidescope-trace": {
           skillPath:
             "projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace/SKILL.md",
           source: "Organizzolini/codebase",
+        },
+        "nx-workspace": {
+          skillPath: "skills/nx-workspace/SKILL.md",
+          source: "nrwl/nx",
         },
         reui: { source: "./.agents/skills/reui" },
       },
