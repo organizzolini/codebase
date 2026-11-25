@@ -8,7 +8,7 @@ the steps that run around a Continuous Integration job.
   `skill-descriptions` holds every authored skill description to 64 words
   and all of them to a listing budget of 12,500 characters.
 - **Derivations**, which check by default and rewrite with `:write`:
-  `conventional-config`, `devcontainer-configuration`,
+  `agent-instructions`, `conventional-config`, `devcontainer-configuration`,
   `package-manifests`, `project-ports`, `skill-exclusions`, and
   `vscode-extensions`.
 - **Continuous Integration plumbing**: `setup-codebase` and `cleanup-codebase`

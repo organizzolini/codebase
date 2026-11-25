@@ -290,6 +290,7 @@ jobs:
           env.RELEASE_SUPERSEDED != 'true'
         run: |
           pnpm exec nx run-many \
+            --target=agent-instructions \
             --target=conventional-config \
             --target=devcontainer-configuration \
             --target=pull-request-template \

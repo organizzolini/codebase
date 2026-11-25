@@ -2,6 +2,8 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
+import { AgentInstructionsCommand } from "./modules/agent-instructions/agent-instructions.command";
+import { AgentInstructionsModule } from "./modules/agent-instructions/agent-instructions.module";
 import { CatalogManifestsCommand } from "./modules/catalog-manifests/catalog-manifests.command";
 import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
 import { ConventionalConfigCommand } from "./modules/conventional-config/conventional-config.command";
@@ -43,6 +45,7 @@ import type { SynchronizableCommand } from "./synchronization.types";
   ],
   imports: [
     LoggerModule,
+    AgentInstructionsModule,
     CatalogManifestsModule,
     LockfileModule,
     ReadmeProjectsModule,
@@ -60,6 +63,7 @@ import type { SynchronizableCommand } from "./synchronization.types";
     SynchronizationService,
     {
       inject: [
+        AgentInstructionsCommand,
         CatalogManifestsCommand,
         LockfileCommand,
         ReadmeProjectsCommand,

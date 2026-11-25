@@ -11,6 +11,30 @@
     "type:package"
   ],
   "targets": {
+    "agent-instructions": {
+      "cache": true,
+      "configurations": {
+        "check": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts agent-instructions check"
+        },
+        "write": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts agent-instructions write"
+        }
+      },
+      "defaultConfiguration": "check",
+      "description": "Keeps a `CLAUDE.md` symlink beside every project's `AGENTS.md`, so Claude Code loads the project's instructions. A `guard-code` dependency; `check` runs on a pull request and `write` on the default branch's release.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/**/*.ts",
+        "{workspaceRoot}/**/package.json",
+        "{workspaceRoot}/*/AGENTS.md",
+        "{workspaceRoot}/projects/**/AGENTS.md",
+        "shared-globals"
+      ],
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "build-projects": {},
     "catalog-manifests": {
       "cache": true,

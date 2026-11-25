@@ -498,6 +498,7 @@
       },
       "defaultConfiguration": "check",
       "dependsOn": [
+        "agent-instructions",
         "callidescope-restrict",
         "catalog-manifests",
         "codependix-bound",

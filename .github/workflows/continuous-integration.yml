@@ -65,7 +65,7 @@ jobs:
           # Keep `targets` equal to `guard-code`'s `dependsOn` in `nx.json`, less
           # the gates with legs below: a gate named in no leg is checked by nothing.
           - target: guard-code
-            targets: catalog-manifests,coinagerie-check,lockfile,project-ports,pull-request-template,readme-projects,skill-descriptions,typeorm-migration-sql,vscode-extensions
+            targets: agent-instructions,catalog-manifests,coinagerie-check,lockfile,project-ports,pull-request-template,readme-projects,skill-descriptions,typeorm-migration-sql,vscode-extensions
             name: Guard
             emoji: 💂
           - target: callidescope-restrict

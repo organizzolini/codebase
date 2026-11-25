@@ -6,6 +6,7 @@ import {
   expectModuleProvides,
 } from "@codebase/testing/nestjs";
 
+import { AgentInstructionsModule } from "./modules/agent-instructions/agent-instructions.module";
 import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
 import { ConventionalConfigModule } from "./modules/conventional-config/conventional-config.module";
 import { DevcontainerConfigurationModule } from "./modules/devcontainer-configuration/devcontainer-configuration.module";
@@ -28,6 +29,7 @@ describe(SynchronizationModule, () => {
     expectModuleImports(
       SynchronizationModule,
       LoggerModule,
+      AgentInstructionsModule,
       CatalogManifestsModule,
       LockfileModule,
       ReadmeProjectsModule,
