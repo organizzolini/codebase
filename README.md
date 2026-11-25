@@ -216,7 +216,7 @@
 ## 🚀 Start
 
 ```bash
-git clone https://github.com/Organizzolini/codebase.git && cd codebase
+git clone https://github.com/organizzolini/codebase.git && cd codebase
 bash scripts/installation.sh && nx show projects
 nx affected --base=main --target=callidescope-restrict,codependix-bound,codometer-limit,coinagerie-check,conformetry-validate
 nx run-many --target=start --projects=lexico-web,caelundas-web,meanderaw-web
