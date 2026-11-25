@@ -1,6 +1,6 @@
 Commands that run in CI: the release steps `version-packages`, `tag-codebase`, `tag-packages`,
 `publish-packages`, and `link-packages`. See
-[AGENTS.md](AGENTS.md).
+[AGENTS.md](AGENTS.md) and the [release process](documentation/release-process.md).
 
 ## Start
 

@@ -60,7 +60,7 @@ The release job of `.github/workflows/continuous-deployment.yml` runs the
 release commands in the table's order, with semantic-release (`tag-codebase`)
 between versioning and tagging: its release commit carries both the codebase's
 version and the packages' versions, so a release adds one commit to `main`.
-`documentation/development/release-process.md` describes each step.
+[`documentation/release-process.md`](documentation/release-process.md) describes each step.
 
 All are safe to re-run: Nx versions only what changed since each package's
 last tag, tagging skips a tag that exists, pnpm skips a version npm already has,
