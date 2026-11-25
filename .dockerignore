@@ -1,0 +1,10 @@
+# Build context of the workspace-root images, such as caelundas-api
+.git
+.fallow
+.nx
+**/node_modules
+**/.terraform
+**/.venv
+*.env*
+# Uninitialized submodule, never built
+projects/JimmyPaolini
