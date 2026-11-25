@@ -14,7 +14,7 @@ This skill is the single place that decides **which issue** a change belongs to.
 
 - Starting work that no ticket describes (**file first**)
 - Finishing work that was done without an issue (**backfill**)
-- Creating or updating a pull request ([create-pull-request](../create-pull-request/SKILL.md), [update-pull-request](../update-pull-request/SKILL.md), [submit-changes](../submit-changes/SKILL.md))
+- Creating or updating a pull request ([create-pull-request](../create-pull-request/SKILL.md), [submit-changes](../submit-changes/SKILL.md))
 - Deciding whether a detail belongs in the issue or the pull request
 
 ## Decide Which Case You Are In

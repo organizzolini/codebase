@@ -18,7 +18,7 @@ Startup checks run at the start of every agent session and inject their failure 
 Agents repair two startup failures on their own, without asking the human:
 
 - **Commit signing** (`validate-session-commit-signing.sh`, or a commit hook naming `gpg.ssh.allowedSignersFile`): run `bash scripts/installation.sh`, which is idempotent, then retry the commit.
-- **Branch name** (`validate-session-branch-name.sh`, or a rejected `pre-push`): rename the branch with the [rename-branch skill](../rename-branch/SKILL.md) and push the new name, even when the session or platform assigned the old one.
+- **Branch name** (`validate-session-branch-name.sh`, or a rejected `pre-push`): rename the branch with the [checkout-branch skill](../checkout-branch/SKILL.md#rename-a-branch) and push the new name, even when the session or platform assigned the old one.
 
 Branch names, commit messages, and pull request titles and descriptions must always be compliant, so neither repair needs approval. Tell the human what was renamed afterwards.
 

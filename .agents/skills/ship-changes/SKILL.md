@@ -1,13 +1,12 @@
 ---
 name: ship-changes
-description: "Carry reviewed open pull requests through CI, conflicts, the merge queue, release, and a check that the change works on main."
+description: "Carry reviewed open pull requests through CI, conflicts, the merge queue, release, and a check that the change works on main. Use when the user asks to ship, merge, land, or babysit a pull request, when a reviewed pull request needs green CI or a conflict resolved before it can merge, or after submit-changes when the task includes merging."
 argument-hint: "PR number(s) or URL(s); defaults to the current branch's pull request"
-disable-model-invocation: true
 ---
 
 # Ship Changes
 
-Begin where [submit-changes](../submit-changes/SKILL.md) ends. Take each open, implemented, reviewed pull request from "open" to "verified on `main`". A pull request is done when its change is **observed working on `main`**, not when it merges.
+Begin where [submit-changes](../submit-changes/SKILL.md) ends, and only when the user asked to ship or the task said to: merging is their call. Take each open, implemented, reviewed pull request from "open" to "verified on `main`". A pull request is done when its change is **observed working on `main`**, not when it merges.
 
 Work on one pull request at a time through steps 1–5. With several, order them by dependency: independent ones enter the queue in parallel. A pull request whose base is another branch belongs to a **stack**: read [stacked-pull-requests.md](references/stacked-pull-requests.md) before step 1, since stacks change steps 1–3. When a check, hook, or release run fails for a reason that is not obvious, read [known-failures.md](references/known-failures.md).
 
@@ -50,7 +49,7 @@ For each red check, diagnose with [triage-integration](../triage-integration/SKI
 - **Red that is not yours**: before choosing a tier, reproduce the failing check on `origin/main` (a scratch checkout, deleted after). If it fails there too, the pull request did not cause it: a project that was never gated, or a gate that just became required, is the usual source. When the fix is mechanical (shortening over-budget comments, splitting an over-full folder, regenerating a stale report) and stays inside one project, do not ask. Open a separate fix pull request from `main` with [submit-changes](../submit-changes/SKILL.md), ship it through this skill first, then merge `main` into the original and resume step 1. Raise it only when the fix needs a design choice, or touches limits, dependencies, or interfaces, and include the `origin/main` reproduction.
 - A failing metadata check (`Comply`) needs a fresh event, not a re-run, which replays the frozen payload.
 - Fix root causes only. Suppression comments, loosened compiler options, lint ignores, raised limits, and `--no-verify` are all off the table.
-- Every pushed fix gets a Conventional Commit and a signature. Mention each fix in the pull request thread so the reviewer sees what moved after approval; if a fix changes what the pull request does or its title's type, run [update-pull-request](../update-pull-request/SKILL.md).
+- Every pushed fix gets a Conventional Commit and a signature. Mention each fix in the pull request thread so the reviewer sees what moved after approval; if a fix changes what the pull request does or its title's type, update it with [create-pull-request](../create-pull-request/SKILL.md#update-an-existing-pull-request).
 
 ## 2. Conflicts
 

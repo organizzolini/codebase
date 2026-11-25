@@ -31,7 +31,7 @@ Keywords: sign commits, GPG sign branch, re-sign PR commits, verified commits, s
 - Rewrite on a temporary branch so the original branch stays untouched until verification passes
 - Fail fast on any errors or obstacles
 - Stop immediately on any rebase conflict or GPG failure
-- Skip commit hooks during `--amend` so hooks cannot block a metadata-only rewrite
+- Skip commit hooks during `--amend` so hooks cannot block a metadata-only rewrite. This is the repository's one sanctioned `--no-verify`, named in AGENTS.md: every commit's content already passed the hooks, and the final-tree check proves the rewrite changed none of it
 - Preserve commit messages and the exact final tree of the original branch tip
 
 ## Scripted Workflow

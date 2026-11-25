@@ -1,19 +1,12 @@
 ---
 name: checkout-branch
-description: Create and validate Git branch names following this codebase's Conventional Commits naming convention. Use this skill when creating branches, renaming branches, or when asked about branch naming rules and validation.
+description: Name, create, validate, and rename Git branches to this codebase's `<type>/<scope>-<description>` convention. Use when creating a branch, when a session hook or pre-push rejects a branch name (rename it without asking, even one the platform assigned), when asked to rename a branch or derive a name from its changes, or when asked about branch naming rules.
 license: MIT
 ---
 
-# Branch Naming Conventions
+# Checkout Branch
 
-This skill teaches how to name Git branches for this codebase. All branch names **must** follow these rules to pass pre-push hooks and CI validation.
-
-## When to Use This Skill
-
-- Creating a new feature, fix, or other branch
-- Renaming an existing branch to comply with conventions
-- Understanding why a branch name was rejected
-- Validating branch names before pushing
+Every branch except `main` must be named `<type>/<scope>-<description>` to pass the pre-push hook and 🧑‍⚖️ Comply. This skill names a new branch, validates one, and renames one that fails.
 
 ## Format
 
@@ -21,29 +14,11 @@ This skill teaches how to name Git branches for this codebase. All branch names 
 <type>/<scope>-<description>
 ```
 
-**All three parts are required.** The description must be kebab-case (lowercase with hyphens).
+**All three parts are required.**
 
-## Type
-
-**Required.** Must be one of the allowed types defined in [conventional.config.cjs](../../../configuration/repository/conventional.config.cjs).
-
-The allowed types, with what each one means, are the generated table in the [commit-code skill](../commit-code/SKILL.md#type).
-
-## Scope
-
-**Required.** Must be one of the allowed scopes defined in [conventional.config.cjs](../../../configuration/repository/conventional.config.cjs).
-
-The allowed scopes are the generated table in the [commit-code skill](../commit-code/SKILL.md#scope). A scope is not a project: each IC-suite toolchain commits under one scope (`callidescope`, `codependix`, `codometer`, `conformetry`).
-
-## Description
-
-**Required.** The description must be:
-
-- **Lowercase** — No capital letters
-- **Kebab-case** — Words separated by hyphens
-- **Descriptive** — Clearly indicate the purpose
-
-### Examples
+- **Type** — one of the allowed types in the generated table in the [commit-code skill](../commit-code/SKILL.md#type), from [conventional.config.cjs](../../../configuration/repository/conventional.config.cjs). Pick the type the pull request title will carry, at least as release-significant as its most significant commit.
+- **Scope** — one of the allowed scopes in the [commit-code skill](../commit-code/SKILL.md#scope). A scope is not a project: each IC-suite toolchain commits under one scope (`callidescope`, `codependix`, `codometer`, `conformetry`). A branch names one scope even when its pull request title will name several.
+- **Description** — lowercase kebab-case, two to four words saying what the branch does.
 
 ✅ **Good:**
 
@@ -52,99 +27,76 @@ git checkout -b feat/lexico-user-auth
 git checkout -b fix/caelundas-timezone-bug
 git checkout -b docs/documentation-architecture
 git checkout -b chore/dependencies-update-nx
-git checkout -b feat/infrastructure-devcontainer
+git checkout -b refactor/integration-cleanup
 ```
 
 ❌ **Bad:**
 
 ```bash
 git checkout -b feat/lexico                  # Missing description
-git checkout -b fix/caelundas                # Missing description
 git checkout -b feature/lexico-auth          # Invalid type (use 'feat')
 git checkout -b feat/lexicoAuth              # Wrong case (use kebab-case)
 git checkout -b feat/deps-update             # Invalid scope (use 'dependencies')
 ```
 
-## Special Branches
+**Exempt:** only `main`, plus the automated prefixes `copilot/*`, `dependabot/*`, `jimmypaolini/copilot/*`, and `renovate/*`.
 
-These branches are exempt from the naming convention:
+## Create a Branch
 
-- `main` — Default branch
-- `develop` — Development branch
-- `renovate/*` — Automated dependency updates
-- `dependabot/*` — Automated dependency updates
-
-## Creating Branches
+Settle the issue first with [link-issue](../link-issue/SKILL.md), then branch from an up-to-date `main` (or use [using-git-worktrees](../using-git-worktrees/SKILL.md) for an isolated worktree):
 
 ```bash
-# Feature branch for lexico project
-git checkout -b feat/lexico-dashboard
-
-# Bug fix for caelundas project
-git checkout -b fix/caelundas-timezone
-
-# Documentation update for codebase
-git checkout -b docs/documentation-architecture
-
-# Infrastructure change
-git checkout -b chore/infrastructure-helm-chart
+git fetch origin main
+git checkout -b <type>/<scope>-<description> origin/main
+pnpm exec validate-branch-name -t "$(git branch --show-current)"
 ```
 
-## Renaming Branches
+## Rename a Branch
 
-If a branch name is rejected, rename it:
+Rename whenever a session hook (`validate-session-branch-name.sh`) or the `pre-push` hook rejects the name, or the user asks. **Rename without asking**, even a branch the session or platform assigned: every branch must be compliant. Tell the user the new name afterwards.
 
-```bash
-# Rename local branch
-git branch -m <type>/<scope>-<description>
+1. **Read what the branch does.** `git branch --show-current`, `git diff --name-status origin/main...HEAD`, and `git status -s` for uncommitted work.
+2. **Choose the name.** The type from the nature of the change; the scope from the project the changed files belong to (the one carrying most of the work, when several do); a short description.
+3. **Back up first.** Run [backup-code](../backup-code/SKILL.md), which records the branch tip without switching branches.
+4. **Rename locally.**
 
-# If already pushed, update remote
-git push origin -u <new-branch-name>
-git push origin --delete <old-branch-name>
-```
+   ```bash
+   git branch -m <type>/<scope>-<description>
+   pnpm exec validate-branch-name -t "$(git branch --show-current)"
+   ```
+
+5. **Move the remote, if the old name was pushed.** Rename it on GitHub, which keeps any open pull request attached, then point the local branch at it:
+
+   ```bash
+   gh api -X POST repos/{owner}/{repo}/branches/<old-branch-name>/rename -f new_name=<new-branch-name>
+   git fetch origin && git branch -u origin/<new-branch-name>
+   ```
+
+   Without `gh` (a cloud session), push the new name with `git push -u origin <new-branch-name>`; delete the old remote branch only when no open pull request uses it, since deleting a pull request's head closes it.
+
+If a step goes wrong, recover with the restore half of [backup-code](../backup-code/SKILL.md#restore).
 
 ## Validation
 
-Branch names are validated at multiple stages:
+| Stage         | Mechanism                                                                      | Config File                       |
+| ------------- | ------------------------------------------------------------------------------ | --------------------------------- |
+| Session start | `validate-session-branch-name.sh`, over `installation`'s `session-branch-name` | `validate-branch-name.config.cjs` |
+| Local         | `configuration/repository/.husky/pre-push` hook                                | Same config                       |
+| CI            | `.github/workflows/continuous-compliance.yml`                                  | Same config                       |
 
-| Stage | Mechanism                                       | Config File                       |
-| ----- | ----------------------------------------------- | --------------------------------- |
-| Local | `configuration/repository/.husky/pre-push` hook | `validate-branch-name.config.cjs` |
-| CI    | `.github/workflows/continuous-compliance.yml`   | Same config                       |
-
-The validation config imports types and scopes from [conventional.config.cjs](../../../configuration/repository/conventional.config.cjs) to ensure consistency with commit message rules.
+The validation config imports types and scopes from [conventional.config.cjs](../../../configuration/repository/conventional.config.cjs), so branch and commit rules never drift apart.
 
 ## Troubleshooting
 
-| Issue                 | Cause                   | Solution                                              |
-| --------------------- | ----------------------- | ----------------------------------------------------- |
-| "Branch name invalid" | Missing description     | Add `-<description>` after scope                      |
-| "Unknown scope"       | Typo or invalid scope   | Check allowed scopes list above                       |
-| "Unknown type"        | Typo or invalid type    | Check allowed types list above                        |
-| "Invalid format"      | Wrong separator or case | Use `/` after type, `-` in description, all lowercase |
-
-## Quick Reference
-
-```bash
-# Format
-<type>/<scope>-<description>
-
-# Common patterns
-feat/lexico-feature-name        # New feature in lexico
-fix/caelundas-bug-name          # Bug fix in caelundas
-docs/documentation-topic        # Documentation update
-chore/dependencies-update       # Dependency update
-refactor/integration-cleanup    # Refactoring
-
-# Rules
-- Type: lowercase, from allowed list (feat, fix, docs, etc.)
-- Scope: lowercase, from allowed list (project or category)
-- Description: required, lowercase, kebab-case
-- Separator: / between type and scope, - between scope and description
-```
+| Issue                 | Cause                   | Solution                                                      |
+| --------------------- | ----------------------- | ------------------------------------------------------------- |
+| "Branch name invalid" | Missing description     | Add `-<description>` after the scope                          |
+| "Unknown scope"       | Typo, or a project name | Use a scope from [commit-code](../commit-code/SKILL.md#scope) |
+| "Unknown type"        | Typo or invalid type    | Use a type from [commit-code](../commit-code/SKILL.md#type)   |
+| "Invalid format"      | Wrong separator or case | Use `/` after type, `-` in description, all lowercase         |
 
 ## Resources
 
-- [Conventional Commits](https://www.conventionalcommits.org/)
 - [validate-branch-name.config.cjs](../../../validate-branch-name.config.cjs) — Validation config
 - [conventional.config.cjs](../../../configuration/repository/conventional.config.cjs) — Types and scopes
+- [commit-code skill](../commit-code/SKILL.md) — The generated types and scopes tables

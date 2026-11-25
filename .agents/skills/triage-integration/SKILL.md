@@ -494,7 +494,6 @@ Remaining Actions
 - [commit-code](../commit-code/SKILL.md)
 - [checkout-branch](../checkout-branch/SKILL.md)
 - [create-pull-request](../create-pull-request/SKILL.md)
-- [update-pull-request](../update-pull-request/SKILL.md)
 - [submit-changes](../submit-changes/SKILL.md)
 
 ## Root Cause & Prevention
