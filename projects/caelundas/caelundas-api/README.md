@@ -22,7 +22,7 @@ IMAGE_TAG=local nx run caelundas-api:docker-build
 
 The image is `ghcr.io/organizzolini/caelundas-api:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with `configuration/Dockerfile`. It runs as UID 10001, serves GraphQL on port 3000, and serves Lightship on port 9000, which answers only inside Kubernetes (`KUBERNETES_SERVICE_HOST` set). It runs no migrations, so migrate the database first. Set `CAELUNDAS_API_IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
 
-Size: 1.81 GB (1,811,054,805 bytes) on `node:26.13.1-trixie-slim`, mostly the development dependencies the runtime transpiler and workspace packages need.
+Size: 1.81 GB (1,811,054,805 bytes) on `node:26.13.1-trixie-slim`, mostly the development dependencies the runtime transpiler and workspace packages need. Follow-up: prune to production dependencies once the runtime no longer needs test tooling (see the `shortcut:` comment in the Dockerfile).
 
 ## 👔 Conformetry
 

@@ -30,7 +30,6 @@
     },
     "docker-push": {
       "cache": false,
-      "dependsOn": ["docker-build"],
       "description": "Push the caelundas-api image tagged with IMAGE_TAG (default local) to GHCR",
       "executor": "nx:run-commands",
       "options": {

@@ -1,5 +1,4 @@
 set lock_timeout = '10s';
-
 set statement_timeout = '5min';
 
 create table constellation_lines (

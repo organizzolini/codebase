@@ -19,6 +19,7 @@ WORKDIR /workspace
 # The API runs TypeScript source through @swc-node/register, a devDependency of this project, so the
 # image keeps the dev dependencies of the API's closure rather than pruning to production ones.
 # Workspace packages ship at their own paths (pnpm links them), outside node_modules, where swc transpiles them.
+# shortcut: ships dev dependencies, so the image is about 1.8 GB, because the API runs TypeScript through @swc-node/register; upgrade by moving that runtime dependency out of test tooling (template or persistence) and pruning with --prod
 COPY --from=install /workspace/node_modules ./node_modules
 COPY --from=install /workspace/configuration ./configuration
 COPY --from=install /workspace/projects/caelundas/caelundas-api ./projects/caelundas/caelundas-api
