@@ -11,7 +11,7 @@ const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../..");
 /** Where the configuration writes the build. */
 const BUNDLE_DIRECTORY = path.join(WORKSPACE_ROOT, "dist/caelundas-api");
 
-/** Shared workspace packages the build compiles in, whose dependencies the image must carry. */
+/** Shared packages compiled in, whose dependencies the image carries. */
 const SHARED_PACKAGES = [
   "projects/common/observability",
   "projects/common/persistence",
@@ -21,6 +21,7 @@ const SHARED_PACKAGES = [
 /** Store ids that must never reach the image: transpilers, tests, linters, bundlers. */
 const DEVELOPMENT_STORE_PREFIXES = [
   "@codebase+",
+  "@fig+complete-commander@",
   "@golevelup+ts-vitest@",
   "@nestjs+testing@",
   "@oxc-project+",
@@ -29,18 +30,26 @@ const DEVELOPMENT_STORE_PREFIXES = [
   "@testcontainers+",
   "@vitest+",
   "eslint@",
+  "prettier@",
   "rolldown@",
   "typescript@",
   "vite@",
   "vitest@",
 ] as const;
 
-/**
- * Dependencies of a shared package that the image leaves out on purpose,
- * because only its tests use them. Any other new dependency of a shared
- * package must ship, so it fails here until it is added to
- * `BY_NAME_DEPENDENCIES` or to this list.
- */
+/** Files only a package's authors read; licenses stay. */
+const NON_RUNTIME_FILE =
+  /^(?!licen[cs]e|notice|copying).*\.(?:d\.[cm]?ts|map|md|tsbuildinfo)$|\.(?:a|o)$/iu;
+
+/** Every file and directory name under `directory`, links not followed. */
+function listNames(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => [
+    entry.name,
+    ...(entry.isDirectory() ? listNames(path.join(directory, entry.name)) : []),
+  ]);
+}
+
+/** Test-only dependencies of shared packages the image omits; others must ship. */
 const NOT_SHIPPED = new Set([
   "@codebase/testing",
   "@golevelup/ts-vitest",
@@ -103,6 +112,14 @@ describe("caelundas-api build", () => {
     const shipped = storeEntries.filter((entry) =>
       DEVELOPMENT_STORE_PREFIXES.some((prefix) => entry.startsWith(prefix)),
     );
+
+    expect(shipped).toStrictEqual([]);
+  });
+
+  it("ships no source map, declaration, documentation or compiled leftover", () => {
+    const shipped = listNames(
+      path.join(BUNDLE_DIRECTORY, "node_modules"),
+    ).filter((name) => NON_RUNTIME_FILE.test(name));
 
     expect(shipped).toStrictEqual([]);
   });

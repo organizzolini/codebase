@@ -1,6 +1,7 @@
 import {
   cpSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   readdirSync,
   readFileSync,
@@ -38,6 +39,39 @@ const BUNDLED_PREFIXES = [
   "@swc/helpers",
   "tslib",
 ] as const;
+
+/**
+ * The only file kinds a shipped package keeps, besides its licenses: what Node
+ * loads (code, JSON, native addons, WebAssembly) and what a package reads by
+ * name (protobuf, GraphQL and SQL files). Source maps, declarations,
+ * documentation, TypeScript sources and native build leftovers stay behind.
+ */
+const RUNTIME_EXTENSIONS = new Set([
+  ".cjs",
+  ".gql",
+  ".graphql",
+  ".js",
+  ".json",
+  ".mjs",
+  ".node",
+  ".proto",
+  ".sql",
+  ".wasm",
+]);
+
+/** A license file of any spelling, which a redistributed package keeps. */
+const LICENSE_FILE = /^(?:copying|licen[cs]e|notice)(?:[-.].*)?$/iu;
+
+/** Directories no run reads: a native build's intermediates, caches, and links to binaries. */
+const SKIPPED_DIRECTORIES = new Set([".bin", ".tmp", ".deps", "obj.target"]);
+
+/**
+ * Packages left out although a dependency lists them, because no run reaches
+ * them: `nest-commander` loads `@fig/complete-commander`, and with it
+ * `prettier`, only to write a shell completion spec, which no application here
+ * enables.
+ */
+const OMITTED_PACKAGES = new Set(["@fig/complete-commander"]);
 
 /** Directory holding the pnpm virtual store, ahead of each `<id>` entry. */
 const STORE_SEGMENT = `${path.sep}node_modules${path.sep}.pnpm${path.sep}`;
@@ -140,6 +174,7 @@ export function copyProductionModules(
 
   for (const entry of entries) {
     cpSync(entry, path.join(storeDirectory, path.basename(entry)), {
+      filter: isRuntimeFile,
       recursive: true,
       verbatimSymlinks: true,
     });
@@ -194,13 +229,33 @@ export function collectPackages(roots: readonly string[]): Set<string> {
       path.join(storeEntry(directory), "node_modules"),
     );
     for (const link of links) {
-      if (needed.has(link.name)) {
+      if (needed.has(link.name) && isRuntimePackage(link.name)) {
         pending.push(realpathSync(link.path));
       }
     }
   }
 
   return packages;
+}
+
+/** Whether a package belongs in the image: not a type package, and not an omitted one. */
+export function isRuntimePackage(name: string): boolean {
+  return !name.startsWith("@types/") && !OMITTED_PACKAGES.has(name);
+}
+
+/** Whether a file or directory of a package is kept: links and directories, code, data and licenses. */
+export function isRuntimeFile(source: string): boolean {
+  const name = path.basename(source);
+  const stats = lstatSync(source);
+  if (stats.isDirectory()) {
+    return !SKIPPED_DIRECTORIES.has(name);
+  }
+
+  return (
+    stats.isSymbolicLink() ||
+    RUNTIME_EXTENSIONS.has(path.extname(name)) ||
+    LICENSE_FILE.test(name)
+  );
 }
 
 /** The first directory in `directories`, or above one, installing `name`. */
