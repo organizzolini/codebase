@@ -13,22 +13,26 @@ import { ReleaseArchivesService } from "../../../release-archives/release-archiv
 import {
   ARCHIVE_TOOL_NAMES,
   archiveToolOnMacMessage,
+  GO_TOOL_NAMES,
+  GO_TOOLS,
   NAMED_SOFTWARE,
   POSTGRES_CLIENT_NAME,
   POSTGRES_NOT_18_MESSAGE,
   POSTGRES_VERSION_MARKER,
+  SOFTWARE_GROUPS,
   unknownNamesMessage,
 } from "../../software.constants";
 
 import { SoftwareDatabaseService } from "./software-database.service";
+import { SoftwareGoToolsService } from "./software-go-tools.service";
 
 import type { SoftwareEnvironment } from "../../software.types";
 
 /**
- * Installs just the tools named: any release-archive tool `software` installs (Linux only), or `postgres-client` (Linux and Mac).
+ * Installs just the tools named: a release archive (Linux only), a Go linter, `postgres-client`, or a project group such as `infrastructure`.
  *
- * Installs match `software`, so every machine runs one version of each tool. Unlike `software`,
- * an uninstallable tool fails the run, since it was asked for.
+ * Installs match `software`, so every machine runs one version of each tool.
+ * An uninstallable tool fails the run, since it was asked for.
  */
 @Injectable()
 export class SoftwareNamedService {
@@ -38,6 +42,7 @@ export class SoftwareNamedService {
     private readonly configService: ConfigService<SoftwareEnvironment>,
     private readonly releaseArchivesService: ReleaseArchivesService,
     private readonly softwareDatabaseService: SoftwareDatabaseService,
+    private readonly softwareGoToolsService: SoftwareGoToolsService,
     private readonly processRunner: ProcessRunnerService,
     private readonly logger: LoggerService,
   ) {
@@ -50,6 +55,13 @@ export class SoftwareNamedService {
 
   // 🔏 Private Methods
 
+  /** Replaces each project group with its tools, keeping the order and dropping repeats. */
+  private expand(names: readonly string[]): string[] {
+    return [
+      ...new Set(names.flatMap((name) => SOFTWARE_GROUPS[name] ?? [name])),
+    ];
+  }
+
   /** Installs one release archive tool by name. */
   private installArchiveTool(name: string): void {
     const tool = RELEASE_ARCHIVE_TOOLS.find(
@@ -61,6 +73,17 @@ export class SoftwareNamedService {
     }
 
     this.releaseArchivesService.install(tool);
+  }
+
+  /** Builds one Go linter by name. */
+  private installGoTool(name: string): void {
+    const tool = GO_TOOLS.find(({ name: known }) => known === name);
+
+    if (tool === undefined) {
+      throw new Error(unknownNamesMessage([name]));
+    }
+
+    this.softwareGoToolsService.install(tool);
   }
 
   /** Installs PostgreSQL 18's client and checks that it is the one found first. */
@@ -85,7 +108,9 @@ export class SoftwareNamedService {
     }
 
     const mac = this.processRunner.platform() === "darwin";
-    const archive = names.find((name) => ARCHIVE_TOOL_NAMES.has(name));
+    const archive = this.expand(names).find((name) =>
+      ARCHIVE_TOOL_NAMES.has(name),
+    );
 
     if (mac && archive !== undefined) {
       throw new Error(archiveToolOnMacMessage(archive));
@@ -95,19 +120,23 @@ export class SoftwareNamedService {
   // 🌎 Public Methods
 
   /**
-   * Installs the named software in the order named, and puts it on `PATH` for later steps.
+   * Installs the named software, a project group standing for its tools, in the order named, and puts it on `PATH` for later steps.
    */
   public install(names: readonly string[]): void {
     this.validate(names);
+
+    const tools = this.expand(names);
 
     const binaryDirectory = path.join(os.homedir(), ".local", "bin");
 
     process.env["PATH"] =
       `${binaryDirectory}${path.delimiter}${process.env["PATH"] ?? ""}`;
 
-    for (const name of new Set(names)) {
+    for (const name of tools) {
       if (name === POSTGRES_CLIENT_NAME) {
         this.installPostgresClient();
+      } else if (GO_TOOL_NAMES.has(name)) {
+        this.installGoTool(name);
       } else {
         this.installArchiveTool(name);
       }

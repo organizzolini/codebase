@@ -22,6 +22,5 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **statistic**: A codometer custom measurement declared with its own label in codometer.config.ts and reported under the custom namespace.
 - **trace**: Callidescope step that follows calls from entry points to record each stack depth and each callable breadth.
 - **verb**: Grammatical form a log message must use after its subject, present progressive or past tense, checked by the logger convention rule.
-- **zizmor**:
 
 <!-- coinagerie:end -->

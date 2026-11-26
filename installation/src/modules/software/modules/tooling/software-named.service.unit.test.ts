@@ -12,6 +12,7 @@ import { ProcessRunnerService } from "../../../process-runner/process-runner.ser
 import { ReleaseArchivesService } from "../../../release-archives/release-archives.service";
 
 import { SoftwareDatabaseService } from "./software-database.service";
+import { SoftwareGoToolsService } from "./software-go-tools.service";
 import { SoftwareNamedService } from "./software-named.service";
 
 import type { FakeMachine } from "../../../../../testing/fake-process-runner";
@@ -23,6 +24,7 @@ describe(SoftwareNamedService, () => {
   const originalPath = process.env["PATH"];
   const install = vi.fn<ReleaseArchivesService["install"]>();
   const installPostgres = vi.fn<SoftwareDatabaseService["installPostgres"]>();
+  const installGoTool = vi.fn<SoftwareGoToolsService["install"]>();
   /** Builds the service over a fake machine, path variable only. */
   const build = async (
     environment: Record<string, string> = {},
@@ -43,6 +45,10 @@ describe(SoftwareNamedService, () => {
         { provide: ConfigService, useValue: new ConfigService() },
         { provide: ReleaseArchivesService, useValue: { install } },
         { provide: SoftwareDatabaseService, useValue: { installPostgres } },
+        {
+          provide: SoftwareGoToolsService,
+          useValue: { install: installGoTool },
+        },
         { provide: ProcessRunnerService, useValue: runner },
       ],
     });
@@ -57,6 +63,7 @@ describe(SoftwareNamedService, () => {
   beforeEach(() => {
     install.mockReset();
     installPostgres.mockReset();
+    installGoTool.mockReset();
   });
 
   afterEach(() => {
@@ -70,6 +77,7 @@ describe(SoftwareNamedService, () => {
         ConfigService,
         ReleaseArchivesService,
         SoftwareDatabaseService,
+        SoftwareGoToolsService,
         ProcessRunnerService,
       ],
     });
@@ -141,6 +149,53 @@ describe(SoftwareNamedService, () => {
 
     expect(installedNames()).toStrictEqual(["trivy", "gitleaks"]);
     expect(installPostgres).not.toHaveBeenCalled();
+  });
+
+  it("builds the Go linters it is asked for, and no archive tool", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    subject.install(["kubeconform", "actionlint", "kubeconform"]);
+
+    expect(installGoTool.mock.calls.map(([tool]) => tool.name)).toStrictEqual([
+      "kubeconform",
+      "actionlint",
+    ]);
+    expect(install).not.toHaveBeenCalled();
+  });
+
+  it("expands a project group into the tools that project's targets need", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    subject.install(["configuration", "infrastructure"]);
+
+    expect(installedNames()).toStrictEqual(["gitleaks", "trivy"]);
+    expect(installGoTool.mock.calls.map(([tool]) => tool.name)).toStrictEqual([
+      "actionlint",
+      "kubeconform",
+      "kube-linter",
+      "pluto",
+    ]);
+  });
+
+  it("installs the PostgreSQL client for the persistence group", async () => {
+    expect.hasAssertions();
+
+    const subject = await build(
+      {},
+      {
+        responses: {
+          "pg_dump --version": { stdout: "pg_dump (PostgreSQL) 18.6\n" },
+        },
+      },
+    );
+
+    subject.install(["persistence"]);
+
+    expect(installPostgres).toHaveBeenCalledTimes(1);
   });
 
   it("installs a tool named twice once", async () => {

@@ -6,6 +6,8 @@ export const environmentSchema = z.object({
   CI: z.string().optional(),
   /** Set by GitHub Actions; read the same way as `CI`. */
   GITHUB_ACTIONS: z.string().optional(),
+  /** Where `go install` puts what it builds, which `software` also reads; unset, `~/.local/bin`. */
+  GOBIN: z.string().optional(),
   /**
    * The file GitHub Actions reads extra `PATH` entries from. The `tools`
    * command adds the directory it installs into; unset, as it is on a
