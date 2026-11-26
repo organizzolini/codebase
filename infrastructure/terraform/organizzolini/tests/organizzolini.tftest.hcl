@@ -10,6 +10,8 @@ mock_provider "github" {}
 
 mock_provider "random" {}
 
+mock_provider "openrouter" {}
+
 # The Kubernetes and Helm providers are configured from the cluster's kubeconfig, so the
 # mocked cluster carries a valid one: base64 of a minimal YAML kubeconfig.
 override_resource {
@@ -49,25 +51,54 @@ override_resource {
   }
 }
 
-# The linode root has not applied in a test, so its remote state is overridden.
-override_data {
-  target = data.terraform_remote_state.linode
-  values = {
-    outputs = {
-      organizzolini_postgres_backups_access_key = "mock-access-key"
-      organizzolini_postgres_backups_secret_key = "mock-secret-key"
-    }
-  }
+# The root imports these resources, and a mock provider cannot import. Overriding them lets
+# the plan read them as if they already existed.
+override_resource {
+  target = linode_object_storage_bucket.state
+}
+
+override_resource {
+  target = linode_object_storage_key.state
+}
+
+override_resource {
+  target = linode_object_storage_key.nx_cache_local_read_only
+}
+
+override_resource {
+  target = github_repository.codebase
+}
+
+override_resource {
+  target = github_repository_dependabot_security_updates.codebase
+}
+
+override_resource {
+  target = github_repository_vulnerability_alerts.codebase
+}
+
+override_resource {
+  target = github_repository_ruleset.main
+}
+
+override_resource {
+  target = openrouter_workspace.codebase
+}
+
+override_resource {
+  target = openrouter_api_key.refresh_documentation
 }
 
 variables {
-  linode_token          = "mock-token"
-  cloudflare_api_token  = "mock-token"
-  cloudflare_account_id = "0123456789abcdef0123456789abcdef"
-  cloudflare_zone_id    = "fedcba9876543210fedcba9876543210"
-  github_token          = "mock-token"
-  k8s_version           = "1.34"
-  state_bucket          = "mock-state-bucket"
+  linode_token              = "mock-token"
+  cloudflare_api_token      = "mock-token"
+  cloudflare_account_id     = "0123456789abcdef0123456789abcdef"
+  cloudflare_zone_id        = "fedcba9876543210fedcba9876543210"
+  github_token              = "mock-token"
+  k8s_version               = "1.34"
+  openrouter_management_key = "mock-key"
+  # A mock provider cannot list the workspace's keys to find the one to import.
+  refresh_documentation_key_hash = "mock-hash"
 }
 
 run "the_cluster_is_the_small_autoscaling_organizzolini" {
@@ -214,5 +245,89 @@ run "publishes_the_cluster_kubeconfig_as_KUBECONFIG" {
   assert {
     condition     = yamldecode(github_actions_secret.kubeconfig.plaintext_value).clusters[0].cluster.server == "https://cluster.example.com"
     error_message = "The KUBECONFIG secret must hold the cluster's decoded kubeconfig."
+  }
+}
+
+run "the_backups_bucket_is_private_E3_in_the_state_buckets_region" {
+  command = plan
+
+  assert {
+    condition     = linode_object_storage_bucket.organizzolini_postgres_backups.label == "organizzolini-postgres-backups"
+    error_message = "The backups bucket must carry the postgres_backups_bucket_label default."
+  }
+
+  assert {
+    condition     = linode_object_storage_bucket.organizzolini_postgres_backups.acl == "private"
+    error_message = "The backups bucket must be private."
+  }
+
+  assert {
+    condition     = linode_object_storage_bucket.organizzolini_postgres_backups.endpoint_type == "E3"
+    error_message = "The backups bucket must use the E3 endpoint type."
+  }
+
+  assert {
+    condition     = linode_object_storage_bucket.organizzolini_postgres_backups.region == "us-iad-2"
+    error_message = "The backups bucket must sit in the state bucket's region, us-iad-2."
+  }
+}
+
+run "the_backups_key_can_reach_only_the_backups_bucket" {
+  command = plan
+
+  assert {
+    condition     = [for access in linode_object_storage_key.organizzolini_postgres_backups.bucket_access : access.bucket_name] == [linode_object_storage_bucket.organizzolini_postgres_backups.label]
+    error_message = "The backups key must have exactly one bucket_access block, naming the backups bucket."
+  }
+
+  assert {
+    condition     = [for access in linode_object_storage_key.organizzolini_postgres_backups.bucket_access : access.permissions] == ["read_write"]
+    error_message = "The backups key must be read_write on the backups bucket only."
+  }
+}
+
+run "the_state_bucket_is_organizzolini_terraform_state" {
+  command = plan
+
+  assert {
+    condition     = linode_object_storage_bucket.terraform_state.label == "organizzolini-terraform-state"
+    error_message = "The state bucket must be organizzolini-terraform-state."
+  }
+
+  assert {
+    condition     = linode_object_storage_bucket.terraform_state.region == "us-iad-2"
+    error_message = "The state bucket must sit in us-iad-2, whose S3 endpoint is us-iad-18."
+  }
+}
+
+run "the_nx_cache_variables_read_the_cache_bucket_directly" {
+  command = plan
+
+  assert {
+    condition     = github_actions_variable.nx_cache_bucket.value == linode_object_storage_bucket.nx_cache.label
+    error_message = "NX_CACHE_BUCKET must be the Nx cache bucket's label, not a remote-state read."
+  }
+
+  assert {
+    condition     = github_actions_variable.nx_cache_bucket.variable_name == "NX_CACHE_BUCKET"
+    error_message = "The cache bucket variable must be NX_CACHE_BUCKET."
+  }
+}
+
+run "the_documentation_workflow_calls_the_preset" {
+  command = plan
+
+  assert {
+    condition     = github_actions_variable.openwiki_model_id.value == "@preset/refresh-documentation"
+    error_message = "OPENWIKI_MODEL_ID must be the refresh-documentation preset."
+  }
+}
+
+run "the_postgres_backups_secret_holds_the_backups_key" {
+  command = plan
+
+  assert {
+    condition     = kubernetes_secret_v1.postgres_backups.metadata[0].name == "postgres-backups"
+    error_message = "The platform namespace must carry the postgres-backups secret."
   }
 }

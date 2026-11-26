@@ -6,8 +6,8 @@ resource "kubernetes_secret_v1" "postgres_backups" {
   }
 
   data = {
-    ACCESS_KEY_ID     = try(data.terraform_remote_state.linode.outputs.organizzolini_postgres_backups_access_key, "")
-    ACCESS_SECRET_KEY = try(data.terraform_remote_state.linode.outputs.organizzolini_postgres_backups_secret_key, "")
+    ACCESS_KEY_ID     = linode_object_storage_key.organizzolini_postgres_backups.access_key
+    ACCESS_SECRET_KEY = linode_object_storage_key.organizzolini_postgres_backups.secret_key
   }
 }
 

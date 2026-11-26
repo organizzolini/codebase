@@ -14,10 +14,9 @@ helm upgrade --install <release-name> infrastructure/helm/kubernetes-job/ \
 ### Terraform
 
 ```bash
-cd infrastructure/terraform
-terraform init
-terraform plan
-terraform apply
+nx run infrastructure:terraform-init
+nx run infrastructure:terraform-plan
+nx run infrastructure:terraform-apply
 ```
 
 ## Architecture Overview
@@ -31,11 +30,18 @@ infrastructure/
 │   ├── cloudflared/         # Cloudflare Tunnel connector, routing held in Cloudflare
 │   ├── kubernetes-job/      # Reusable chart for K8s Jobs
 │   └── postgres/            # Shared PostgreSQL as CloudNativePG resources
-└── terraform/               # Cluster provisioning
-    ├── github/              # Repository settings, ruleset, Actions variables
-    ├── linode/              # Object Storage buckets: the state, the shared Nx cache, and Postgres backups
-    ├── openrouter/          # OpenRouter workspace, key, guardrail, preset
-    └── organizzolini/       # LKE cluster, Cloudflare tunnel, namespaces, secrets, Argo CD, KUBECONFIG secret
+└── terraform/
+    └── organizzolini/       # The one root, one state (organizzolini.tfstate)
+        ├── main.tf          # Backend, providers, and the kubeconfig the cluster providers read
+        ├── cluster.tf       # LKE cluster and its readiness wait
+        ├── cloudflare.tf    # Zone import and tunnel
+        ├── argocd.tf        # Argo CD core and the root Application
+        ├── namespaces.tf    # The platform namespace
+        ├── secrets.tf       # Platform secrets
+        ├── caelundas.tf     # Caelundas namespace, database password, and secrets
+        ├── github.tf        # Repository settings, ruleset, Actions variables and secrets
+        ├── linode.tf        # Object Storage buckets: the state, the shared Nx cache, and Postgres backups
+        └── openrouter.tf    # OpenRouter workspace, key, guardrail, preset
 ```
 
 ### kubernetes-job Chart
@@ -51,9 +57,9 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
 
-**Organizzolini root**: `terraform/organizzolini` is the one root for everything the cluster needs, in one state (`organizzolini.tfstate`): the LKE cluster and its readiness wait (`cluster.tf`), the Cloudflare zone import and tunnel, which answers 404 until an application adds routing rules (`cloudflare.tf`), the `organizzolini` namespace (`namespaces.tf`), the platform secrets `postgres-backups` and `cloudflared-token` (`secrets.tf`), Argo CD core and a `root` Application on `main` (`argocd.tf`), the `KUBECONFIG` Actions secret (`github.tf`), and everything Terraform owns for Caelundas: its namespace and the `caelundas-postgres` secret in both namespaces (`caelundas.tf`). Adding another app means adding another file like `caelundas.tf`. The apps do not set `CreateNamespace`, so Terraform creates their namespaces. `k8s_version` is optional and pins the cluster's Kubernetes version; unset, it takes the newest from `linode_lke_versions`. `state_bucket` (`TF_VAR_state_bucket`) locates the `linode` state it reads for the backups key, through `try`, so a pull request plans before that output exists. `github_token` (`TF_VAR_github_token`) writes the Actions secret. The kubernetes and helm providers are configured from the cluster resource's own kubeconfig, so every Kubernetes and Helm resource depends on `terraform_data.cluster_ready`; the known caveats are in the README. The `argo-cd` chart has no ApplicationSet switch, so `argocd-values.yaml` sets `applicationSet.replicas: 0`. The namespaces and secrets use the `kubernetes_namespace_v1` and `kubernetes_secret_v1` resources, since the unsuffixed ones are deprecated in provider 3.x. New cloud-visible resources carry the `organizzolini_codebase_` address prefix and the `organizzolini-codebase-` label prefix.
+**Organizzolini root**: `terraform/organizzolini` is the one root for all of this repository's infrastructure, in one state (`organizzolini.tfstate`). It replaces the former `openrouter`, `github`, and `linode` roots, so no root reads another's state and there is no apply order to keep. `github.tf` holds the repository settings, the `main` ruleset, the `OPENWIKI_MODEL_ID` and Nx cache Actions variables and secrets, and the `KUBECONFIG` secret; `linode.tf` holds the Object Storage buckets and keys for the state, the shared Nx cache, and Postgres backups; `openrouter.tf` holds the OpenRouter workspace, key, guardrail, and preset. For the cluster it holds: the LKE cluster and its readiness wait (`cluster.tf`), the Cloudflare zone import and tunnel, which answers 404 until an application adds routing rules (`cloudflare.tf`), the `organizzolini` namespace (`namespaces.tf`), the platform secrets `postgres-backups` and `cloudflared-token` (`secrets.tf`), Argo CD core and a `root` Application on `main` (`argocd.tf`), and everything Terraform owns for Caelundas: its namespace and the `caelundas-postgres` secret in both namespaces (`caelundas.tf`). Adding another app means adding another file like `caelundas.tf`. The apps do not set `CreateNamespace`, so Terraform creates their namespaces. `k8s_version` is optional and pins the cluster's Kubernetes version; unset, it takes the newest from `linode_lke_versions`. `region` is the cluster's region and `object_storage_region` the buckets' (`us-iad-2`, whose S3 endpoint is `us-iad-18`). `refresh_documentation_key_hash` pins the OpenRouter key to import and skips the lookup by name, which a plan under a mock provider cannot make. `github_token` (`TF_VAR_github_token`) writes the Actions variables and secrets. The kubernetes and helm providers are configured from the cluster resource's own kubeconfig, so every Kubernetes and Helm resource depends on `terraform_data.cluster_ready`; the known caveats are in the README. The `argo-cd` chart has no ApplicationSet switch, so `argocd-values.yaml` sets `applicationSet.replicas: 0`. The namespaces and secrets use the `kubernetes_namespace_v1` and `kubernetes_secret_v1` resources, since the unsuffixed ones are deprecated in provider 3.x. New cloud-visible resources carry the `organizzolini_codebase_` address prefix and the `organizzolini-codebase-` label prefix.
 
-**Terraform tests**: `tests/` holds the `terraform test` suites written in HCL, which run against `mock_provider` blocks, so they need no credentials. `nx run infrastructure:terraform-test` initializes each root with `-backend=false` and runs its tests, for every root that has a `tests/` folder.
+**Terraform tests**: `tests/` holds the `terraform test` suites written in HCL, which run against `mock_provider` blocks, so they need no credentials. `nx run infrastructure:terraform-test` initializes the root with `-backend=false` and runs its tests. A mock provider cannot import, so the suite overrides each imported resource.
 
 ### cloudflared Chart
 
@@ -141,41 +147,33 @@ The `helm-releases` command of the `deployment` project discovers the Helm relea
 - **kube-linter**: `configuration/kube-linter.yaml` adds the hardening checks to the defaults, with no exclusions. Fix the chart, not the config.
 - **pluto**: a removed API fails, a deprecated one prints and passes.
 - **trivy-config**: also scans the rendered manifests at CRITICAL and HIGH. Fix the chart; never add a trivyignore entry.
-- **tflint**: `terraform/.tflint.hcl` enables the bundled terraform ruleset (`preset = "all"`). `terraform/github/.tflint.hcl` turns off `terraform_standard_module_structure` for that root alone.
+- **tflint**: `terraform/.tflint.hcl` enables the bundled terraform ruleset (`preset = "all"`).
 - **actionlint** and **zizmor** (configuration project): `.github/actionlint.yaml` and `.github/zizmor.yml` record every ignored message and changed rule with its reason.
 
 A failure prints the tool's own message with the file and line; the rendered file name is the release, so open `dist/infrastructure/helm-render/<release>.yaml` to see what was linted.
 
-## Moving the Terraform State Bucket
+## Merging the Terraform Roots
 
-The state moves from the original `organizzolini` bucket to
-`organizzolini-codebase-terraform-state`. Linode cannot rename a bucket, so the
-`linode` root creates the new bucket and its key beside the old ones, and a
-person moves the state across. Every step before step 5 leaves the old bucket
-serving all three roots, so the move can stop at any point.
+The `openrouter`, `github`, and `linode` roots became the one `organizzolini` root, and its state moves to the `organizzolini-terraform-state` bucket as `organizzolini.tfstate`. Linode cannot rename a bucket, so `linode.tf` creates that bucket and its key beside the original `organizzolini` ones. A person merges the three states and uploads the result **before** the pull request merges: Continuous Deployment applies on any change under `infrastructure/terraform`, and against a missing state it would try to create everything again, including a second set of keys whose secrets the cache secrets depend on.
 
-1. **Create**: merge the change that adds the bucket. The Continuous Deployment `Infrastructure` job applies the `linode` root.
-2. **Read the new credentials**: initialize the `linode` root against the old bucket, then read the outputs without printing them:
+Never re-import instead of moving: the `nx_cache_*` keys' secrets exist only in the old state, and a fresh import loses them. Work on local copies, never on the live remote state, and keep CI and Continuous Deployment quiet until step 6.
+
+1. **Read the credentials**: with `TF_STATE_BUCKET`, `AWS_ENDPOINT_URL_S3` (`https://us-iad-18.linodeobjects.com`), and the old key in `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`, initialize the original `linode` state, then read the new bucket's key without printing it:
 
    ```bash
-   cd infrastructure/terraform/linode
    terraform output -raw terraform_state_access_key
    terraform output -raw terraform_state_secret_key
    ```
 
-3. **Copy**: with the old key as one AWS CLI profile and the new key as another, sync every object, then compare object counts and ETags:
+   If the new bucket does not exist yet, apply it first with the old layout. `terraform_state_bucket_label` is `organizzolini-terraform-state`; if the `organizzolini-codebase-terraform-state` bucket was already created, `terraform state rm` its bucket and key and delete them in Linode by hand.
 
-   ```bash
-   aws s3 sync s3://organizzolini s3://organizzolini-codebase-terraform-state \
-     --endpoint-url https://us-iad-18.linodeobjects.com
-   ```
-
-   The `sync` needs one profile that can read the old bucket and write the new one, so copy through a local directory when the two keys differ.
-
-4. **Check the copy**: `aws s3 ls --recursive` on both buckets lists the same `*.tfstate` keys, and the new `linode.tfstate` matches the old one byte for byte.
-5. **Switch**: set `TERRAFORM_STATE_BUCKET`, `TERRAFORM_STATE_ENDPOINT`, `TERRAFORM_STATE_ACCESS_KEY_ID`, and `TERRAFORM_STATE_SECRET_ACCESS_KEY` to the new values with `gh secret set`, reading each from the `terraform output` of step 2.
-6. **Prove it**: run `nx run infrastructure:terraform-init:<root>` and `terraform plan` for each of `openrouter`, `github`, and `linode` with the new values. Each plan must show no changes, since the state is the same state. Roll back by restoring the four secrets to the old values.
-7. **Retire the old bucket** only after a week of clean runs: `terraform state rm` the `state` bucket and key in the `linode` root, delete their resources and `bucket_label`, then delete the old bucket and key in Linode by hand. Both resources set `prevent_destroy` so that Terraform cannot do this itself.
+2. **Back up**: copy every `*.tfstate` out of both buckets into a local directory, and keep that directory until step 8.
+3. **Merge**: `terraform state mv -state=<root>.tfstate -state-out=organizzolini.tfstate <address> <address>` for every managed resource in `openrouter.tfstate`, `github.tfstate`, and `linode.tfstate`, from `terraform state list`. Skip data sources: they refresh. Addresses do not change, since the root has no modules. If the cluster root was applied before this change, `organizzolini.tfstate` already exists in the original bucket: download it first and move into it, so the cluster's resources stay.
+4. **Prove it**: point `nx run infrastructure:terraform-init` at a bucket holding `organizzolini.tfstate`, then `terraform plan`. It must show no changes.
+5. **Upload**: put `organizzolini.tfstate` in `organizzolini-terraform-state` and compare the object with the local file.
+6. **Switch**: set `TERRAFORM_STATE_BUCKET`, `TERRAFORM_STATE_ENDPOINT`, `TERRAFORM_STATE_ACCESS_KEY_ID`, and `TERRAFORM_STATE_SECRET_ACCESS_KEY` to the new values with `gh secret set`, then merge the pull request. Its plan must show no changes. Roll back by restoring the four secrets; the old `*.tfstate` objects are untouched.
+7. **Retire the old roots' states** once a week of runs is clean: delete `openrouter.tfstate`, `github.tfstate`, and `linode.tfstate` from the original bucket.
+8. **Retire the original bucket**: `terraform state rm` the `state` bucket and key, delete their resources and `bucket_label` from `linode.tf` and `variables.tf`, then delete the bucket and key in Linode by hand. Both set `prevent_destroy` so that Terraform cannot do this itself.
 
 ## Troubleshooting
 
@@ -188,10 +186,10 @@ serving all three roots, so the move can stop at any point.
 - [helm/kubernetes-job/templates/job.yaml](helm/kubernetes-job/templates/job.yaml): Job template
 - [helm/kubernetes-job/templates/pvc.yaml](helm/kubernetes-job/templates/pvc.yaml): PVC template
 - [helm/kubernetes-job/templates/\_helpers.tpl](helm/kubernetes-job/templates/_helpers.tpl): Helpers
-- [terraform/organizzolini/main.tf](terraform/organizzolini/main.tf): Backend, remote state, and the provider wiring from the cluster's kubeconfig
+- [terraform/organizzolini/main.tf](terraform/organizzolini/main.tf): Backend, providers, and the provider wiring from the cluster's kubeconfig
 - [terraform/organizzolini/cluster.tf](terraform/organizzolini/cluster.tf): LKE cluster and its readiness wait
 - [terraform/organizzolini/cloudflare.tf](terraform/organizzolini/cloudflare.tf): Zone import and tunnel
 - [terraform/organizzolini/argocd.tf](terraform/organizzolini/argocd.tf): Argo CD core and the root Application
 - [terraform/organizzolini/secrets.tf](terraform/organizzolini/secrets.tf): Platform secrets
 - [terraform/organizzolini/caelundas.tf](terraform/organizzolini/caelundas.tf): Caelundas namespace, database password, and secrets
-- [terraform/openrouter/main.tf](terraform/openrouter/main.tf): OpenRouter resources and the S3-compatible state backend
+- [terraform/organizzolini/github.tf](terraform/organizzolini/github.tf), [linode.tf](terraform/organizzolini/linode.tf), [openrouter.tf](terraform/organizzolini/openrouter.tf): Repository settings and Actions secrets, Object Storage, and OpenRouter
