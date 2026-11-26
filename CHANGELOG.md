@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.15.2](https://github.com/organizzolini/codebase/compare/v6.15.1...v6.15.2) (2026-11-26)
+
+### 📝 Documentation
+
+* **documentation:** 📝 refresh ([#2608](https://github.com/organizzolini/codebase/issues/2608)) ([91541ca](https://github.com/organizzolini/codebase/commit/91541cad0d872ca1b2faa0306777890847f376c8))
+* **documentation:** 📝 reorder readme root projects ([#2613](https://github.com/organizzolini/codebase/issues/2613)) ([b8ae8cc](https://github.com/organizzolini/codebase/commit/b8ae8ccd3dacad42725ba47e742496e718774774)), closes [#2594](https://github.com/organizzolini/codebase/issues/2594) [#2595](https://github.com/organizzolini/codebase/issues/2595) [#2612](https://github.com/organizzolini/codebase/issues/2612)
+
+### ♻️ Code Refactoring
+
+* **identity,documentation:** ♻️ rename the profile project and describe common projects ([#2615](https://github.com/organizzolini/codebase/issues/2615)) ([f6aa952](https://github.com/organizzolini/codebase/commit/f6aa9523beaacd4a68afd977539f4b77af781d75)), closes [#2614](https://github.com/organizzolini/codebase/issues/2614)
+
 ## [6.15.1](https://github.com/organizzolini/codebase/compare/v6.15.0...v6.15.1) (2026-11-26)
 
 ## [6.15.0](https://github.com/organizzolini/codebase/compare/v6.14.1...v6.15.0) (2026-11-25)

@@ -1,3 +1,7 @@
+## 0.0.96 (2026-11-26)
+
+This was a version bump only for codependix-nestjs-modules to align it with other projects, there were no code changes.
+
 ## 0.0.95 (2026-11-25)
 
 ### 🚀 Features

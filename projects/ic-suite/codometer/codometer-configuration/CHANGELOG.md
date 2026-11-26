@@ -1,3 +1,9 @@
+## 0.0.97 (2026-11-26)
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-core to 0.0.97
+
 ## 0.0.96 (2026-11-25)
 
 ### 🚀 Features
