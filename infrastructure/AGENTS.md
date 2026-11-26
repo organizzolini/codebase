@@ -60,19 +60,17 @@ infrastructure/
 
 Use a Job for work that runs to completion and leaves output behind (caelundas ingests events into Postgres); use a Deployment for anything that serves requests continuously.
 
-**Values added for Indexed and ephemeral runs** (defaults keep today's rendering unchanged):
+**Values added for ephemeral runs** (defaults keep today's rendering unchanged):
 
-- `job.completionMode`: `NonIndexed` (default) or `Indexed`. Rendered only when `Indexed`.
-- `job.backoffLimitPerIndex`: integer retries per index. Rendered only when `Indexed`, and in that case `backoffLimit` is omitted because Kubernetes rejects both together.
 - `priorityClassName`: PriorityClass name for the pod; empty (default) omits the field.
 - `persistence.type`: `persistentVolumeClaim` (default) or `emptyDir`. With `emptyDir`, `pvc.yaml` renders nothing and the output path mounts an `emptyDir`.
-- `extraEnv`: list appended after `env`, for per-run values passed with `--set-json` (the ingestion workflow uses it).
+- `envFile` and `envFileMountPath`: the text of a dotenv file (`--set-file envFile=my.env`) and where it appears in the container. `configmap.yaml` renders it into the ConfigMap `<fullname>-env`, and the Job mounts that read-only at the path through `subPath`. A ConfigMap is not private, so it is never for secrets: a password stays a Secret reference in `env`. Nothing renders while `envFile` is empty, and `envFile` without a mount path fails the render.
 
-`values/caelundas-cli.yaml` layers over `values/base.yaml` for the caelundas-cli ingestion Job: an Indexed job with `persistence.enabled: false` (it writes only to Postgres, so no data volume or PVC; every Job mounts an `emptyDir` for scratch space beside its read-only root filesystem), `batch-low` priority, and the staging Postgres environment.
+`values/caelundas-cli.yaml` layers over `values/base.yaml` for the caelundas-cli ingestion Job: a plain Job with `persistence.enabled: false` (it writes only to Postgres, so no data volume or PVC; every Job mounts an `emptyDir` for scratch space beside its read-only root filesystem), `batch-low` priority, the staging Postgres environment, and `envFileMountPath: /app/configuration/.env`, the file the CLI's `ConfigModule` reads relative to its working directory.
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
 
-**Organizzolini root**: `terraform/organizzolini` is the one root for everything the cluster needs, in one state (`organizzolini.tfstate`): the LKE cluster and its readiness wait (`cluster.tf`), the Cloudflare zone import, tunnel, routing and DNS record (`cloudflare.tf`), the `organizzolini` namespace (`namespaces.tf`), the platform secrets `postgres-backups` and `cloudflared-token` (`secrets.tf`), Argo CD core and a `root` Application on `main` (`argocd.tf`), the `KUBECONFIG` Actions secret (`github.tf`), and everything Terraform owns for Caelundas: its namespace and the `caelundas-postgres` secret in both namespaces (`caelundas.tf`). Adding another app means adding another file like `caelundas.tf`. The apps do not set `CreateNamespace`, so Terraform creates their namespaces. `k8s_version` is optional and pins the cluster's Kubernetes version; unset, it takes the newest from `linode_lke_versions`. `state_bucket` (`TF_VAR_state_bucket`) locates the `linode` state it reads for the backups key, through `try`, so a pull request plans before that output exists. `github_token` (`TF_VAR_github_token`) writes the Actions secret. The kubernetes and helm providers are configured from the cluster resource's own kubeconfig, so every Kubernetes and Helm resource depends on `terraform_data.cluster_ready`; the known caveats are in the README. The `argo-cd` chart has no ApplicationSet switch, so `argocd-values.yaml` sets `applicationSet.replicas: 0`. The namespaces and secrets use the `kubernetes_namespace_v1` and `kubernetes_secret_v1` resources, since the unsuffixed ones are deprecated in provider 3.x. New cloud-visible resources carry the `organizzolini_codebase_` address prefix and the `organizzolini-codebase-` label prefix.
+**Organizzolini root**: `terraform/organizzolini` is the one root for everything the cluster needs, in one state (`organizzolini.tfstate`): the LKE cluster and its readiness wait (`cluster.tf`), the Cloudflare zone import, tunnel, routing and DNS record (`cloudflare.tf`), the `organizzolini` namespace (`namespaces.tf`), the platform secrets `postgres-backups` and `cloudflared-token` (`secrets.tf`), Argo CD core and a `root` Application on `main` (`argocd.tf`), the `KUBECONFIG` Actions secret (`github.tf`), and everything Terraform owns for Caelundas: its namespace and the `caelundas-postgres` secret in both namespaces (`caelundas.tf`). Adding another app means adding another file like `caelundas.tf`. The apps do not set `CreateNamespace`, so Terraform creates their namespaces. `k8s_version` is optional and pins the cluster's Kubernetes version; unset, it takes the newest from `linode_lke_versions`. `state_bucket` (`TF_VAR_state_bucket`) locates the `linode` state it reads for the backups key, through `try`, so a pull request plans before that output exists. `github_token` (`TF_VAR_github_token`) writes the Actions secret. The kubernetes and helm providers are configured from the cluster resource's own kubeconfig, so every Kubernetes and Helm resource depends on `terraform_data.cluster_ready`; the known caveats are in the README. The `argo-cd` chart has no ApplicationSet switch, so `argocd-values.yaml` sets `applicationSet.replicas: 0`. The namespaces and secrets use the `kubernetes_namespace_v1` and `kubernetes_secret_v1` resources, since the unsuffixed ones are deprecated in provider 3.x. New cloud-visible resources carry the `organizzolini_` address prefix and the `organizzolini-` label prefix.
 
 **Terraform tests**: `tests/` holds the `terraform test` suites written in HCL, which run against `mock_provider` blocks, so they need no credentials. `nx run infrastructure:terraform-test` initializes each root with `-backend=false` and runs its tests, for every root that has a `tests/` folder.
 
@@ -166,7 +164,7 @@ The `helm-releases` command of the `deployment` project discovers the Helm relea
 - **pluto**: a removed API fails, a deprecated one prints and passes.
 - **trivy-config**: also scans the rendered manifests at CRITICAL and HIGH. Fix the chart; never add a trivyignore entry.
 - **tflint**: `terraform/.tflint.hcl` enables the bundled terraform ruleset (`preset = "all"`). `terraform/github/.tflint.hcl` turns off `terraform_standard_module_structure` for that root alone.
-- **hadolint**: `configuration/hadolint.yaml` ignores DL3008 (apt pins) and DL3025 (a parser false positive), each with its reason.
+- **hadolint**: `configuration/lint/hadolint.yaml` (the `configuration` project) ignores no rule: the Dockerfile pins `tini`, builds on the full Node image so no `apt-get` runs in the install stage, and starts through `docker/application/start.sh`.
 - **actionlint** and **zizmor** (configuration project): `.github/actionlint.yaml` and `.github/zizmor.yml` record every ignored message and changed rule with its reason.
 
 A failure prints the tool's own message with the file and line; the rendered file name is the release, so open `dist/infrastructure/helm-render/<release>.yaml` to see what was linted.
@@ -204,19 +202,19 @@ serving all three roots, so the move can stop at any point.
 
 ## Caelundas Ingestion
 
-**Start a run**: Actions, then **caelundas-cli**, then **Run workflow**. Inputs are `start_year` and `end_year`, and `environment`, one `NAME=value` per line of extra container environment (`LATITUDE=39.9`, `LONGITUDE=-75.2`): the CLI validates every value itself, so a new option needs no workflow change. The workflow checks only that the years are integers with `start_year <= end_year` and that each line is `NAME=value`, then renders the Job with `helm template` (it fails with `no caelundas-cli release yet` while the image tag in `helm/kubernetes-job/values/caelundas-cli.yaml` is empty) and runs `helm install caelundas-ingestion-<start>-<end>-<run_id>` into the `caelundas` namespace: one Indexed Job index per calendar year, `START_YEAR` set, each index computing its own dates, writing to `caelundas_staging`. It authenticates with the `KUBECONFIG` repository secret through `azure/k8s-set-context`, does not wait for the Job, and appends the chart's `NOTES.txt` to the run summary. The Actions form takes one line, so send several lines from the CLI: `gh workflow run caelundas-ingestion.yml -f start_year=1900 -f end_year=1902 -f environment=$'LATITUDE=39.9\nLONGITUDE=-75.2'`. For parallel years, install by hand with `--set job.parallelism=<n>`.
+**Start a run**: Actions, then **caelundas-cli**, then **Run workflow**. The one input is `environment`, the CLI's dotenv text, pre-filled with the Environment section of `projects/caelundas/caelundas-cli/configuration/.env.default` (`LATITUDE`, `LONGITUDE`, `START_DATE`, `END_DATE`; a test keeps the two equal). The workflow parses nothing: it writes the input to a file through `env:` and runs `helm install caelundas-cli-<run_id>` into the `caelundas` namespace with `--set-file envFile=<file>`, so the chart mounts the text as `/app/configuration/.env` and the CLI's own Zod schema validates every line (a bad line fails the Job's pod with the schema's message in its logs, not the workflow). A new CLI option needs no workflow change. Before installing, the workflow renders the Job with `helm template` and fails with `no caelundas-cli release yet` while the image tag in `helm/kubernetes-job/values/caelundas-cli.yaml` is empty. It authenticates with the `KUBECONFIG` repository secret through `azure/k8s-set-context`, does not wait for the Job, and appends the chart's `NOTES.txt` to the run summary. The Actions form's string box is a single line, so send multi-line text from the CLI: `gh workflow run caelundas-cli.yml -f environment="$(cat my.env)"`. The Postgres settings and password come from the chart and the `caelundas-postgres` Secret, never from the input, and the ConfigMap holds no secret. One run is one Job, one range: split a long range into several runs (a year takes about 45 minutes).
 
 **Follow it**: the run summary prints these with the release name filled in.
 
 ```bash
 kubectl get jobs -n caelundas
 kubectl get pods -n caelundas -l job-name=<release-name>
-kubectl logs -n caelundas -l job-name=<release-name> --prefix --tail=50   # every index
+kubectl logs -n caelundas -l job-name=<release-name> --prefix --tail=50
 ```
 
 **Clean up**: Argo CD never tracks the release, so it neither prunes nor reports it. The Job's `ttlSecondsAfterFinished` (86400) removes it a day after it finishes; `helm uninstall <release-name> -n caelundas` tidies the release record.
 
-**Duration**: one year takes about 45 minutes on 1 CPU at about 800 MiB peak (limit 1.5 GiB). With the default `job.parallelism: 1` a century is about 75 hours, and a failed index retries up to twice more (`backoffLimitPerIndex: 2`). The Job requests 1 GiB, so a second concurrent year does not fit beside the platform on the one 4 GB node: a `job.parallelism` of 2 or more makes the autoscaler add the second node (about $24 a month while it lasts, at most 2 nodes).
+**Duration**: one year takes about 45 minutes on 1 CPU at about 800 MiB peak (limit 1.5 GiB), and a failed pod retries up to three more times (`backoffLimit: 3`); the CLI upserts, so a retry repeats no row. The Job requests 1 GiB, so running a second ingestion beside the first does not fit beside the platform on the one 4 GB node: the autoscaler adds the second node (about $24 a month while it lasts, at most 2 nodes).
 
 **Night sky, one-off**: the `stars`, `constellations` and `constellation_edges` tables come from `nx run caelundas-cli:start:night-sky` run locally against three hand-downloaded files (see the caelundas-cli README). Restore just those tables into `caelundas_staging` (or production) with the `pg_dump`/`pg_restore` pair from the postgres runbook, adding `--table stars --table constellations --table constellation_edges` to both. A Job route is not provided: the image carries no night-sky input files.
 
@@ -228,7 +226,7 @@ kubectl logs -n caelundas -l job-name=<release-name> --prefix --tail=50   # ever
 
 ## Key Files
 
-- [../.github/workflows/caelundas-ingestion.yml](../.github/workflows/caelundas-ingestion.yml): On-demand ingestion workflow
+- [../.github/workflows/caelundas-cli.yml](../.github/workflows/caelundas-cli.yml): On-demand ingestion workflow
 - [helm/kubernetes-job/templates/job.yaml](helm/kubernetes-job/templates/job.yaml): Job template
 - [helm/kubernetes-job/templates/pvc.yaml](helm/kubernetes-job/templates/pvc.yaml): PVC template
 - [helm/kubernetes-job/templates/\_helpers.tpl](helm/kubernetes-job/templates/_helpers.tpl): Helpers
