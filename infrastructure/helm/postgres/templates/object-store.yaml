@@ -14,3 +14,8 @@ spec:
       secretAccessKey:
         name: {{ .Values.backup.credentialsSecretName }}
         key: ACCESS_SECRET_KEY
+  instanceSidecarConfiguration:
+    env:
+      {{- toYaml .Values.backup.sidecar.env | nindent 6 }}
+    resources:
+      {{- toYaml .Values.backup.sidecar.resources | nindent 6 }}

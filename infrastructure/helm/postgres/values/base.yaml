@@ -18,8 +18,9 @@ cluster:
     size: 20Gi
     storageClass: linode-block-storage-retain
   resources:
+    # Equal, so Postgres is the last pod the kernel kills under memory pressure
     requests:
-      memory: 512Mi
+      memory: 1Gi
     limits:
       memory: 1Gi
   postgresql:
@@ -37,6 +38,19 @@ backup:
   credentialsSecretName: postgres-backups
   schedule: 0 0 3 * * *
   scheduledBackupName: postgres-daily
+  sidecar:
+    # Linode Object Storage rejects boto3's default checksums
+    env:
+      - name: AWS_REQUEST_CHECKSUM_CALCULATION
+        value: when_required
+      - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+        value: when_required
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
 
 pooler:
   name: postgres-pooler-rw
@@ -46,3 +60,10 @@ pooler:
     max_prepared_statements: "100"
     default_pool_size: "10"
     max_client_conn: "100"
+  resources:
+    requests:
+      cpu: 10m
+      memory: 16Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi

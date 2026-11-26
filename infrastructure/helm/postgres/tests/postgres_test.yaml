@@ -123,3 +123,50 @@ tests:
       - contains:
           path: spec.postgresql.shared_preload_libraries
           content: pg_stat_statements
+
+  - it: pgbouncer container has requests and limits
+    template: templates/pooler.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: pgbouncer
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 16Mi
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 64Mi
+
+  - it: barman sidecar has requests and limits
+    template: templates/object-store.yaml
+    asserts:
+      - equal:
+          path: spec.instanceSidecarConfiguration.resources.requests.memory
+          value: 64Mi
+      - equal:
+          path: spec.instanceSidecarConfiguration.resources.limits.memory
+          value: 256Mi
+
+  - it: barman sidecar skips checksums that Linode rejects
+    template: templates/object-store.yaml
+    asserts:
+      - contains:
+          path: spec.instanceSidecarConfiguration.env
+          content:
+            name: AWS_REQUEST_CHECKSUM_CALCULATION
+            value: when_required
+      - contains:
+          path: spec.instanceSidecarConfiguration.env
+          content:
+            name: AWS_RESPONSE_CHECKSUM_VALIDATION
+            value: when_required
+
+  - it: postgres requests the memory it is limited to
+    template: templates/cluster.yaml
+    asserts:
+      - equal:
+          path: spec.resources.requests.memory
+          value: 1Gi
+      - equal:
+          path: spec.resources.limits.memory
+          value: 1Gi

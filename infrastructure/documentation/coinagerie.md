@@ -35,6 +35,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **proxied**: DNS record that Cloudflare answers for itself, hiding the origin; the caelundas record is proxied.
 - **redi**: Headword of Redis, the cache Argo CD runs, whose memory limit the core profile sets.
 - **seccomp**: Linux kernel filter that limits which system calls a container may make.
+- **sidecar**: Helper container that runs beside the Postgres container in the same pod; the Barman plugin ships WAL and backups from one.
 - **startupapicheck**: cert-manager hook Job that waits for the webhook to answer before the install finishes.
 - **tftest**: Terraform test file, written in HCL and read by `terraform test` against mock providers, so it needs no credentials.
 - **tunnel**: Cloudflare Tunnel: an outbound connection from the cluster to Cloudflare that carries the public traffic in.
