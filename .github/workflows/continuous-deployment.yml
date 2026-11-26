@@ -65,9 +65,10 @@ jobs:
           - id: apply-terraform
             name: Infrastructure
             emoji: 🏗️
-            # shortcut: 30 covers the first apply, which creates the cluster in about 20
-            # minutes. Once it exists an apply takes 18 to 31 seconds plus about 5 of setup.
-            timeout: 30
+            # shortcut: 40 covers the first apply: about 5 minutes of setup, the cluster in
+            # about 20, and up to 10 for the Argo CD release. State has no lock, so a kill
+            # mid-create could orphan a cluster. Once it exists, drop this to about 10.
+            timeout: 40
 
     steps:
       # Decides from the GitHub API alone, before any checkout. The devcontainer is

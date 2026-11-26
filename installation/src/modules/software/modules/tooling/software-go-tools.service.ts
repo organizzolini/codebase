@@ -3,27 +3,25 @@ import os from "node:os";
 import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 
 import { LoggerService } from "@codebase/observability";
 
 import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
 import { ReporterService } from "../../../reporter/reporter.service";
 
-import type { GoTool, SoftwareEnvironment } from "../../software.types";
+import type { GoTool } from "../../software.types";
 
 /**
  * Builds a command-line tool with `go install` from a pinned tag.
  *
  * The Go checksum database verifies the module, and Go builds for this machine.
- * The binary lands in `GOBIN`, or `~/.local/bin` when that is unset.
+ * The binary lands in `~/.local/bin`, which the named software service puts on `PATH`.
  */
 @Injectable()
 export class SoftwareGoToolsService {
   // 🏗 Dependency Injection
 
   constructor(
-    private readonly configService: ConfigService<SoftwareEnvironment>,
     private readonly processRunner: ProcessRunnerService,
     private readonly reporter: ReporterService,
     private readonly logger: LoggerService,
@@ -43,9 +41,7 @@ export class SoftwareGoToolsService {
   public install(tool: GoTool): void {
     this.reporter.print(`🔍 Checking for ${tool.name} installation...`);
 
-    const directory =
-      this.configService.get("GOBIN", { infer: true }) ??
-      path.join(os.homedir(), ".local", "bin");
+    const directory = path.join(os.homedir(), ".local", "bin");
 
     if (
       this.processRunner.locate(tool.name) !== undefined ||

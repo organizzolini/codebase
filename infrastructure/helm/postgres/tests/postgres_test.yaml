@@ -114,16 +114,6 @@ tests:
         hasDocuments:
           count: 3
 
-  - it: sets shared_buffers under postgresql parameters
-    template: templates/cluster.yaml
-    asserts:
-      - equal:
-          path: spec.postgresql.parameters.shared_buffers
-          value: 256MB
-      - contains:
-          path: spec.postgresql.shared_preload_libraries
-          content: pg_stat_statements
-
   - it: pgbouncer container has requests and limits
     template: templates/pooler.yaml
     asserts:

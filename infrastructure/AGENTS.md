@@ -70,9 +70,16 @@ Use a Job for work that runs to completion and leaves output behind (caelundas i
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
 
-**Organizzolini root**: `terraform/organizzolini` is the one root for everything the cluster needs, in one state (`organizzolini.tfstate`): the LKE cluster and its readiness wait (`cluster.tf`), the Cloudflare zone import, tunnel, routing and DNS record (`cloudflare.tf`), the `organizzolini` namespace (`namespaces.tf`), the platform secrets `postgres-backups` and `cloudflared-token` (`secrets.tf`), Argo CD core and a `root` Application on `main` (`argocd.tf`), the `KUBECONFIG` Actions secret (`github.tf`), and everything Terraform owns for Caelundas: its namespace and the `caelundas-postgres` secret in both namespaces (`caelundas.tf`). Adding another app means adding another file like `caelundas.tf`. The apps do not set `CreateNamespace`, so Terraform creates their namespaces. `k8s_version` is optional and pins the cluster's Kubernetes version; unset, it takes the newest from `linode_lke_versions`. `state_bucket` (`TF_VAR_state_bucket`) locates the `linode` state it reads for the backups key, through `try`, so a pull request plans before that output exists. `github_token` (`TF_VAR_github_token`) writes the Actions secret. The kubernetes and helm providers are configured from the cluster resource's own kubeconfig, so every Kubernetes and Helm resource depends on `terraform_data.cluster_ready`; the known caveats are in the README. The `argo-cd` chart has no ApplicationSet switch, so `argocd-values.yaml` sets `applicationSet.replicas: 0`. The namespaces and secrets use the `kubernetes_namespace_v1` and `kubernetes_secret_v1` resources, since the unsuffixed ones are deprecated in provider 3.x. New cloud-visible resources carry the `organizzolini_` address prefix and the `organizzolini-` label prefix.
+**Organizzolini root**: what `terraform/organizzolini` holds and how to run it are in the [README](README.md#manage-the-organizzolini-root-with-terraform), and Key Files below maps each file. Its conventions:
 
-**Terraform tests**: `tests/` holds the `terraform test` suites written in HCL, which run against `mock_provider` blocks, so they need no credentials. `nx run infrastructure:terraform-test` initializes each root with `-backend=false` and runs its tests, for every root that has a `tests/` folder.
+- Each app's Terraform lives in one file like `caelundas.tf`, so another app is another file. The apps do not set `CreateNamespace`, so that file creates the app's namespace.
+- The kubernetes and helm providers are configured from the cluster resource's own kubeconfig, so every Kubernetes and Helm resource that calls the cluster depends on `terraform_data.cluster_ready`. The known caveats are in the README.
+- `state_bucket` locates the `linode` state read for the backups key, through `try`, so a pull request plans before that output exists.
+- The `argo-cd` chart has no ApplicationSet switch, so `argocd-values.yaml` sets `applicationSet.replicas: 0`.
+- Namespaces and secrets use `kubernetes_namespace_v1` and `kubernetes_secret_v1`, since the unsuffixed ones are deprecated in provider 3.x.
+- New cloud-visible resources carry the `organizzolini_codebase_` address prefix and the `organizzolini-codebase-` label prefix.
+
+**Terraform tests**: `tests/` holds the `terraform test` suites written in HCL, which run against `mock_provider` blocks, so they need no credentials. `nx run infrastructure:terraform-validate` initializes each root with `-backend=false`, validates it, and runs its tests when it has a `tests/` folder.
 
 ### cloudflared Chart
 
@@ -153,17 +160,17 @@ argocd app diff --core <name>                 # the live-versus-desired diff, re
 
 ## Kubernetes Deployment
 
-See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint`, `helm-test`, `kubeconform`, `kube-linter`, `pluto`, `tflint`, `hadolint`, `terraform-test`, and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
+See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint`, `helm-test`, `kubeconform`, `kube-linter`, `pluto`, `tflint`, `hadolint`, `terraform-validate` (validate and test), and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
 
 ## Linters
 
 The `helm-releases` command of the `deployment` project discovers the Helm releases, so none is listed anywhere: every folder under `helm/` holding a `Chart.yaml` installs as `<chart>` with `values/base.yaml`, and once more as `<chart>-<name>` for each other `values/<name>.yaml` layered over it. The namespace comes from the Argo CD Application in `helm/argocd-applications/values/base.yaml` whose `path` and `valueFiles` match the release, else `default`; an empty `image.tag` in the values is filled with a placeholder so the chart renders. A chart whose release the files cannot describe adds an optional `release.yaml` beside `Chart.yaml` with `namespace` and `strings` (extra `--set-string` pairs), as `argocd-applications` does for its namespace. `helm-lint` runs `helm lint --strict` over the releases, and `helm-render` templates them into `dist/infrastructure/helm-render/`, which `kubeconform`, `kube-linter`, `pluto`, and `trivy-config` read. Add a chart or values file and the next run picks it up; edit no code.
 
 - **kubeconform**: strict schemas for Kubernetes 1.35.0 plus the datreeio CRDs catalog for Argo CD, CloudNativePG, Barman Cloud, and cert-manager. A kind with no schema fails, so nothing is skipped. It reads schemas from raw.githubusercontent.com.
-- **kube-linter**: `configuration/kube-linter.yaml` adds the hardening checks to the defaults, with no exclusions. Fix the chart, not the config.
+- **kube-linter**: runs its default checks, which include the hardening ones, with no config and no exclusions. Fix the chart, not the check.
 - **pluto**: a removed API fails, a deprecated one prints and passes.
 - **trivy-config**: also scans the rendered manifests at CRITICAL and HIGH. Fix the chart; never add a trivyignore entry.
-- **tflint**: `terraform/.tflint.hcl` enables the bundled terraform ruleset (`preset = "all"`). `terraform/github/.tflint.hcl` turns off `terraform_standard_module_structure` for that root alone.
+- **tflint**: `terraform/.tflint.hcl` enables the bundled terraform ruleset (`preset = "all"`). The `github` root's `outputs.tf` holds only a comment, since `terraform_standard_module_structure` wants every root to declare where its outputs go.
 - **hadolint**: `configuration/lint/hadolint.yaml` (the `configuration` project) ignores no rule: the Dockerfile pins `tini`, builds on the full Node image so no `apt-get` runs in the install stage, and starts through `docker/application/start.sh`.
 - **actionlint** and **zizmor** (configuration project): `.github/actionlint.yaml` and `.github/zizmor.yml` record every ignored message and changed rule with its reason.
 

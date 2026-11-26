@@ -569,12 +569,11 @@
         "sqlfluff-lint",
         "stylelint",
         "terraform-format",
-        "terraform-test",
         "terraform-validate",
         "tflint",
         "zizmor"
       ],
-      "description": "Aggregator for lint-code. `helm-lint`, `helm-test`, `compose-config`, `hadolint`, `kubeconform`, `kube-linter`, `pluto`, `terraform-format`, `terraform-test`, `terraform-validate`, and `tflint` are defined only by the infrastructure project, and `actionlint` and `zizmor` only by the configuration project, so Nx skips them everywhere else. They shell out to helm, docker compose, and the tools the setup-codebase action installs (kubeconform, kube-linter, pluto, tflint, hadolint, actionlint), which the devcontainer ships too; compose-config creates the gitignored root .env from .env.default when it is missing. The Kubernetes tools read the one rendering `helm-render` writes, and kubeconform fetches its CRD schemas over the network.",
+      "description": "Aggregator for lint-code. `helm-lint`, `helm-test`, `compose-config`, `hadolint`, `kubeconform`, `kube-linter`, `pluto`, `terraform-format`, `terraform-validate`, and `tflint` are defined only by the infrastructure project, and `actionlint` and `zizmor` only by the configuration project, so Nx skips them everywhere else. They shell out to helm, docker compose, and the tools the setup-codebase action installs (kubeconform, kube-linter, pluto, tflint, hadolint, actionlint), which the devcontainer ships too; compose-config creates the gitignored root .env from .env.default when it is missing. The Kubernetes tools read the one rendering `helm-render` writes, and kubeconform fetches its CRD schemas over the network.",
       "executor": "nx:noop",
       "inputs": ["default"]
     },

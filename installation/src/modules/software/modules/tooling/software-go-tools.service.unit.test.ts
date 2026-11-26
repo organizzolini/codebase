@@ -2,7 +2,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import { ConfigService } from "@nestjs/config";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
@@ -16,56 +15,58 @@ import { SoftwareGoToolsService } from "./software-go-tools.service";
 import type { FakeMachine } from "../../../../../testing/fake-process-runner";
 import type { GoTool } from "../../software.types";
 
-const DEFAULT_DIRECTORY = path.join(os.homedir(), ".local", "bin");
-
 describe(SoftwareGoToolsService, () => {
+  const homes: string[] = [];
   const pluto: GoTool = {
     module: "example.com/pluto/cmd/pluto",
     name: "pluto",
     version: "1.2.3",
   };
   const build = async (
-    environment: Record<string, string> = {},
     machine: FakeMachine = {},
   ): Promise<
     ReturnType<typeof createFakeProcessRunner> & {
+      home: string;
       subject: SoftwareGoToolsService;
     }
   > => {
-    vi.unstubAllEnvs();
-    vi.stubEnv("GOBIN", undefined);
-    for (const [name, value] of Object.entries(environment)) {
-      vi.stubEnv(name, value);
-    }
+    const home = fs.mkdtempSync(path.join(os.tmpdir(), "go-tools-"));
+
+    homes.push(home);
+    vi.spyOn(os, "homedir").mockReturnValue(home);
 
     const fake = createFakeProcessRunner({ platform: "linux", ...machine });
     const { module } = await buildTestingModule(SoftwareGoToolsService, {
       mocks: [ReporterService],
-      providers: [
-        { provide: ConfigService, useValue: new ConfigService() },
-        { provide: ProcessRunnerService, useValue: fake.runner },
-      ],
+      providers: [{ provide: ProcessRunnerService, useValue: fake.runner }],
     });
 
-    return { ...fake, subject: await module.resolve(SoftwareGoToolsService) };
+    return {
+      ...fake,
+      home,
+      subject: await module.resolve(SoftwareGoToolsService),
+    };
   };
 
   afterEach(() => {
-    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+    for (const home of homes.splice(0)) {
+      fs.rmSync(home, { force: true, recursive: true });
+    }
   });
 
   it("resolves with its dependencies", async () => {
     const { instance } = await buildTestingModule(SoftwareGoToolsService, {
-      mocks: [ConfigService, ProcessRunnerService, ReporterService],
+      mocks: [ProcessRunnerService, ReporterService],
     });
 
     expect(instance).toBeInstanceOf(SoftwareGoToolsService);
   });
 
-  it("builds a tool from its pinned tag into ~/.local/bin by default", async () => {
+  it("builds a tool from its pinned tag into ~/.local/bin", async () => {
     expect.hasAssertions();
 
-    const { commands, options, subject } = await build();
+    const { commands, home, options, subject } = await build();
 
     subject.install(pluto);
 
@@ -73,30 +74,15 @@ describe(SoftwareGoToolsService, () => {
 
     expect(commands).toContain(line);
     expect(options.get(line)?.environment).toStrictEqual({
-      GOBIN: DEFAULT_DIRECTORY,
+      GOBIN: path.join(home, ".local", "bin"),
       GOTOOLCHAIN: "auto",
     });
-  });
-
-  it("builds into the directory GOBIN names", async () => {
-    expect.hasAssertions();
-
-    const { commands, options, subject } = await build({
-      GOBIN: "/usr/local/bin",
-    });
-
-    subject.install(pluto);
-
-    expect(commands).toContain("mkdir -p /usr/local/bin");
-    expect(
-      options.get(`go install ${pluto.module}@v${pluto.version}`)?.environment,
-    ).toMatchObject({ GOBIN: "/usr/local/bin" });
   });
 
   it("leaves a tool that is already a command alone", async () => {
     expect.hasAssertions();
 
-    const { commands, subject } = await build({}, { installed: ["pluto"] });
+    const { commands, subject } = await build({ installed: ["pluto"] });
 
     subject.install(pluto);
 
@@ -106,15 +92,11 @@ describe(SoftwareGoToolsService, () => {
   it("leaves a tool already built into the install directory alone", async () => {
     expect.hasAssertions();
 
-    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "go-tools-"));
+    const { commands, home, subject } = await build();
 
-    fs.writeFileSync(path.join(directory, "pluto"), "");
-
-    const { commands, subject } = await build({ GOBIN: directory });
-
+    fs.mkdirSync(path.join(home, ".local", "bin"), { recursive: true });
+    fs.writeFileSync(path.join(home, ".local", "bin", "pluto"), "");
     subject.install(pluto);
-
-    fs.rmSync(directory, { force: true, recursive: true });
 
     expect(commands.some((line) => line.startsWith("go install"))).toBe(false);
   });
@@ -122,14 +104,11 @@ describe(SoftwareGoToolsService, () => {
   it("fails when go cannot build the tool", async () => {
     expect.hasAssertions();
 
-    const { subject } = await build(
-      {},
-      {
-        responses: {
-          [`go install ${pluto.module}@v${pluto.version}`]: { status: 1 },
-        },
+    const { subject } = await build({
+      responses: {
+        [`go install ${pluto.module}@v${pluto.version}`]: { status: 1 },
       },
-    );
+    });
 
     expect(() => {
       subject.install(pluto);
