@@ -39,7 +39,7 @@ backup:
   schedule: 0 0 3 * * *
   scheduledBackupName: postgres-daily
   sidecar:
-    # Linode Object Storage rejects boto3's default checksums
+    # Linode Object Storage rejects the AWS SDK's default checksums
     env:
       - name: AWS_REQUEST_CHECKSUM_CALCULATION
         value: when_required

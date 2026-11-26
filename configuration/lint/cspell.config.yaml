@@ -365,6 +365,9 @@ words:
   - barmancloud
   # The git feature (`git rerere`) that replays a recorded conflict resolution.
   - rerere
+  # cert-manager components: the CA injector and its install-time API check Job.
+  - cainjector
+  - startupapicheck
   # Columns of the PostgreSQL pg_roles view: a role's name and its stored settings.
   - rolconfig
   - rolname
