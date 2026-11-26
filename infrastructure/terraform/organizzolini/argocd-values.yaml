@@ -1,0 +1,52 @@
+# Core profile: only the controller, repo server and Redis run, within about 560 MB.
+server:
+  enabled: false
+dex:
+  enabled: false
+notifications:
+  enabled: false
+# The chart has no switch for the ApplicationSet controller, so it runs zero replicas.
+applicationSet:
+  enabled: false
+  replicas: 0
+
+controller:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 256Mi
+
+repoServer:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      memory: 256Mi
+
+redis:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 48Mi
+    limits:
+      memory: 48Mi
+
+configs:
+  cm:
+    # Lets sync waves wait for a child Application to be healthy.
+    resource.customizations.health.argoproj.io_Application: |
+      hs = {}
+      hs.status = "Progressing"
+      hs.message = ""
+      if obj.status ~= nil then
+        if obj.status.health ~= nil then
+          hs.status = obj.status.health.status
+          if obj.status.health.message ~= nil then
+            hs.message = obj.status.health.message
+          end
+        end
+      end
+      return hs

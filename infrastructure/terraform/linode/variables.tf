@@ -27,3 +27,9 @@ variable "terraform_state_bucket_label" {
   type        = string
   default     = "organizzolini-codebase-terraform-state"
 }
+
+variable "postgres_backups_bucket_label" {
+  description = "Label of the Object Storage bucket CloudNativePG archives Postgres backups to."
+  type        = string
+  default     = "organizzolini-codebase-postgres-backups"
+}
