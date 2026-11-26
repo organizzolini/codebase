@@ -143,7 +143,7 @@ jobs:
           - target: end-to-end
             name: End to End IC Suite
             emoji: 🤵
-          # Plans the four Terraform roots for a pull request and comments the result.
+          # Plans the Terraform root for a pull request and comments the result.
           # Nothing applies here: Continuous Deployment applies it on `main`. The leg
           # always reports, so it can be a required check; its steps run only for a
           # same-repository pull request, since forks get no secrets.
@@ -277,43 +277,16 @@ jobs:
           AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
           TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_openrouter_management_key: ${{ secrets.OPENROUTER_MANAGEMENT_KEY }}
-          TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
           TF_VAR_linode_token: ${{ secrets.LINODE_TOKEN }}
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
-        run: |
-          pnpm exec nx run infrastructure:terraform-plan:openrouter
-          pnpm exec nx run infrastructure:terraform-plan:linode
-          pnpm exec nx run infrastructure:terraform-plan:organizzolini
-          pnpm exec nx run infrastructure:terraform-plan:github
+        run: pnpm exec nx run infrastructure:terraform-plan
 
-      # Posts each root's plan as one comment that every push updates. A
-      # failed plan fails the leg above and shows in its log instead.
-      - name: 📊 Report OpenRouter Plan
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@f585438eda2fa77c6f275994b92aeccd86ef3542 # v3.2.0
-        with:
-          token: ${{ github.token }}
-          working-directory: infrastructure/terraform/openrouter
-          planfile: plan.tfplan
-          header: 🏗️ Terraform Plan (OpenRouter)
-
-      - name: 📊 Report Linode Plan
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@f585438eda2fa77c6f275994b92aeccd86ef3542 # v3.2.0
-        with:
-          token: ${{ github.token }}
-          working-directory: infrastructure/terraform/linode
-          planfile: plan.tfplan
-          header: 🏗️ Terraform Plan (Linode)
-
-      - name: 📊 Report Organizzolini Plan
+      # Posts the plan as one comment that every push updates. A failed plan
+      # fails the leg above and shows in its log instead.
+      - name: 📊 Report Terraform Plan
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'plan-terraform'
@@ -322,18 +295,7 @@ jobs:
           token: ${{ github.token }}
           working-directory: infrastructure/terraform/organizzolini
           planfile: plan.tfplan
-          header: 🏗️ Terraform Plan (Organizzolini)
-
-      - name: 📊 Report GitHub Plan
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@f585438eda2fa77c6f275994b92aeccd86ef3542 # v3.2.0
-        with:
-          token: ${{ github.token }}
-          working-directory: infrastructure/terraform/github
-          planfile: plan.tfplan
-          header: 🏗️ Terraform Plan (GitHub)
+          header: 🏗️ Terraform Plan
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
