@@ -42,10 +42,10 @@ section comment does.
 
 ## Install
 
-| Package                                               | Install when                                   |
-| ----------------------------------------------------- | ---------------------------------------------- |
-| `@conformetry/cli`                                    | You want the `conformetry` command             |
-| `@conformetry/nx`                                     | Your workspace is an Nx monorepo               |
+| Package | Install when |
+| ------- | ------------ |
+| `@conformetry/cli` | You want the `conformetry` command |
+| `@conformetry/nx` | Your workspace is an Nx monorepo |
 | `@conformetry/generation` + `@conformetry/validation` | You are embedding conformetry in your own tool |
 
 ```bash
@@ -64,11 +64,11 @@ own `ast` module rather than reimplementing a parser.
 
 Renders one template folder into a target directory.
 
-| Flag                 | Purpose                                                                                              |
-| -------------------- | ---------------------------------------------------------------------------------------------------- |
-| `--template [name]`  | Which template from the registry to render. Asked for when omitted                                   |
-| `--config <path>`    | Configuration file to read. Required: the run is refused without it, and no filename is searched for |
-| `--directory [path]` | Where to write the rendered files. Required: the run is refused without it                           |
+| Flag | Purpose |
+| ---- | ------- |
+| `--template [name]` | Which template from the registry to render. Asked for when omitted |
+| `--config <path>` | Configuration file to read. Required: the run is refused without it, and no filename is searched for |
+| `--directory [path]` | Where to write the rendered files. Required: the run is refused without it |
 
 A blank `--config` is refused by `@conformetry/configuration` with a
 `ConfigurationPathRequiredError` naming the `--config` flag; commander refuses a
@@ -129,11 +129,11 @@ and folder. `generate` and `validate` both offer that list as a picker now, so
 this command is for reading it rather than for looking a name up before typing
 one.
 
-| Flag                  | Purpose                                                                     |
-| --------------------- | --------------------------------------------------------------------------- |
-| `--config <path>`     | Configuration file to read. Required                                        |
+| Flag | Purpose |
+| ---- | ------- |
+| `--config <path>` | Configuration file to read. Required |
 | `--instances [globs]` | Comma-separated paths or globs; report only the templates that explain them |
-| `--json`              | Write the listing as JSON                                                   |
+| `--json` | Write the listing as JSON |
 
 With `--instances` it answers the other direction — which templates explain a
 given path:
@@ -179,10 +179,10 @@ conformetry instances --config configuration/ic-suite/conformetry.config.ts --te
       nestjs-service-module 5/5 files 100%
 ```
 
-| Flag                  | Purpose                                                                |
-| --------------------- | ---------------------------------------------------------------------- |
-| `--config <path>`     | Configuration file to read. Required                                   |
-| `--json`              | Write the listing as JSON                                              |
+| Flag | Purpose |
+| ---- | ------- |
+| `--config <path>` | Configuration file to read. Required |
+| `--json` | Write the listing as JSON |
 | `--templates [names]` | Comma-separated template names; report only the instances they explain |
 
 Each path printed is usable as the `--instances` argument above, so the two
@@ -198,12 +198,12 @@ instances by glob alone.
 Expands the configured instance globs and compares everything it finds against
 the template it was generated from.
 
-| Flag                  | Purpose                                                                                          |
-| --------------------- | ------------------------------------------------------------------------------------------------ |
-| `--config <path>`     | Configuration file to read. Required                                                             |
-| `--instances [globs]` | Comma-separated globs to validate, overriding the configuration                                  |
+| Flag | Purpose |
+| ---- | ------- |
+| `--config <path>` | Configuration file to read. Required |
+| `--instances [globs]` | Comma-separated globs to validate, overriding the configuration |
 | `--languages [names]` | Comma-separated languages to run — `typescript`, `markdown`, `python`, `json`, `jupyter`, `text` |
-| `--templates [names]` | Comma-separated template names to narrow the run to, or `all` for every one                      |
+| `--templates [names]` | Comma-separated template names to narrow the run to, or `all` for every one |
 | `--threshold [ratio]` | Lowest conformance score an instance may have, 0 to 1. The weakest of the three threshold levels |
 
 Every flag but `--config` is optional; an absent filter means "everything". The command exits
@@ -214,12 +214,12 @@ usable as a pre-merge gate.
 is their intersection — each removes candidates from one side before templates
 and instances are paired:
 
-| `--instances` | `--templates`                     | What is validated                                            |
-| ------------- | --------------------------------- | ------------------------------------------------------------ |
-| absent        | `all`, or absent with no terminal | Every template against every configured instance             |
-| present       | `all`, or absent with no terminal | The globbed instances against every applicable template      |
-| absent        | named                             | Every instance belonging to those templates, against them    |
-| present       | named                             | The globbed instances narrowed to those templates' instances |
+| `--instances` | `--templates` | What is validated |
+| ------------- | ------------- | ----------------- |
+| absent | `all`, or absent with no terminal | Every template against every configured instance |
+| present | `all`, or absent with no terminal | The globbed instances against every applicable template |
+| absent | named | Every instance belonging to those templates, against them |
+| present | named | The globbed instances narrowed to those templates' instances |
 
 Omitting `--templates` at a terminal offers the same picker `generate` does,
 ticking more than one, with `all` offered alongside the names. With no terminal
@@ -270,11 +270,11 @@ Conformance scores:
         Fix     : Add the comment // 🏷️ Types to the instance file.
 ```
 
-| Level    | Answers                                                                               |
-| -------- | ------------------------------------------------------------------------------------- |
-| File     | How much of _this file_ drifted — a small file can lose half of itself to one finding |
-| Instance | Whether this instance clears its threshold; this is the level thresholds apply to     |
-| Total    | How the whole run did, across every instance/template pair                            |
+| Level | Answers |
+| ----- | ------- |
+| File | How much of _this file_ drifted — a small file can lose half of itself to one finding |
+| Instance | Whether this instance clears its threshold; this is the level thresholds apply to |
+| Total | How the whole run did, across every instance/template pair |
 
 The fraction is printed alongside the percentage because a percentage hides its
 own scale: 99.3% reads the same whether one requirement of 151 went missing or
@@ -294,11 +294,11 @@ adding scoring changes nothing until a threshold is lowered deliberately.
 
 Three levels set it, narrowest first:
 
-| Level          | Where                        | Applies to                               |
-| -------------- | ---------------------------- | ---------------------------------------- |
-| Instance group | `instances[].threshold`      | Only the paths that group's globs locate |
-| Generator      | `threshold` on the generator | Every instance of that template          |
-| Run            | `--threshold`                | Every instance the run touches           |
+| Level | Where | Applies to |
+| ----- | ----- | ---------- |
+| Instance group | `instances[].threshold` | Only the paths that group's globs locate |
+| Generator | `threshold` on the generator | Every instance of that template |
+| Run | `--threshold` | Every instance the run touches |
 
 That is what makes introducing a template bearable. A new template can be
 adopted with the directory still being migrated held to `0.75` while every
@@ -376,12 +376,12 @@ templates/nestjs-service-module/
 Every generator's `name` input is expanded into four case variants
 automatically, so a template never has to case-convert by hand:
 
-| Placeholder          | `search bar` becomes |
-| -------------------- | -------------------- |
-| `{{nameCamelCase}}`  | `searchBar`          |
-| `{{nameKebabCase}}`  | `search-bar`         |
-| `{{namePascalCase}}` | `SearchBar`          |
-| `{{nameSnakeCase}}`  | `search_bar`         |
+| Placeholder | `search bar` becomes |
+| ----------- | -------------------- |
+| `{{nameCamelCase}}` | `searchBar` |
+| `{{nameKebabCase}}` | `search-bar` |
+| `{{namePascalCase}}` | `SearchBar` |
+| `{{nameSnakeCase}}` | `search_bar` |
 
 An explicit input of the same name always wins over the derived variant. Full
 mustache is available — sections, inverted sections, partials — with HTML
@@ -404,14 +404,14 @@ escaping disabled so substituted values cannot corrupt source code.
 Which validator handles a file is decided by its extension, and only the
 packages a run actually needs are loaded.
 
-| Validator    | Extensions        | Compares                                                                     |
-| ------------ | ----------------- | ---------------------------------------------------------------------------- |
-| `typescript` | `.ts`, `.tsx`     | Syntax tree structure and required section comments                          |
-| `markdown`   | `.md`             | mdast structure — headings, lists, tables — rather than prose                |
-| `python`     | `.py`             | Structure via Python's own `ast` module                                      |
-| `json`       | `.json`, `.jsonc` | Key structure and values                                                     |
-| `jupyter`    | `.ipynb`          | Notebook envelope, delegating cells to the markdown and Python validators    |
-| `text`       | everything else   | Duplicate-aware line conformance — the floor, so no extension goes unchecked |
+| Validator | Extensions | Compares |
+| --------- | ---------- | -------- |
+| `typescript` | `.ts`, `.tsx` | Syntax tree structure and required section comments |
+| `markdown` | `.md` | mdast structure — headings, lists, tables — rather than prose |
+| `python` | `.py` | Structure via Python's own `ast` module |
+| `json` | `.json`, `.jsonc` | Key structure and values |
+| `jupyter` | `.ipynb` | Notebook envelope, delegating cells to the markdown and Python validators |
+| `text` | everything else | Duplicate-aware line conformance — the floor, so no extension goes unchecked |
 
 Before any of them runs, every file the template declares is checked to
 **exist**. That pass covers extensions no validator claims — `.gitignore`,
@@ -455,35 +455,35 @@ graph — and every other package declares exactly which siblings it may import.
 
 ### Hosts
 
-| Package                                          | Role                                                                             |
-| ------------------------------------------------ | -------------------------------------------------------------------------------- |
-| [`@conformetry/cli`](README.md)                  | The `conformetry` command: expands globs, prompts for inputs, prints reports     |
+| Package | Role |
+| ------- | ---- |
+| [`@conformetry/cli`](README.md) | The `conformetry` command: expands globs, prompts for inputs, prints reports |
 | [`@conformetry/nx`](../conformetry-nx/README.md) | Nx plugin: inferred validation targets, tag-scoped instances, emitted generators |
 
 ### Runtime
 
-| Package                                                                | Role                                                                                                                                                                  |
-| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`@conformetry/core`](../conformetry-core/README.md)                   | Contracts leaf: the structured difference shape, the score, the inventory, and the language validator contract                                                        |
-| [`@conformetry/configuration`](../conformetry-configuration/README.md) | Config loading, template discovery, instance matching, input resolution, placeholder rendering                                                                        |
-| [`@conformetry/generation`](../conformetry-generation/README.md)       | The generator lifecycle, rendering each template through the configuration layer                                                                                      |
-| [`@conformetry/validation`](../conformetry-validation/README.md)       | Validation orchestration, language routing, finding deduplication                                                                                                     |
-| [`@conformetry/languages`](../conformetry-languages/README.md)         | Every Language module, the facade that resolves extensions to them, the existence check for every declared file, and the difference and scoring primitives they share |
-| [`@conformetry/output`](../conformetry-output/README.md)               | Every render target: the validation report and the template and instance inventory                                                                                    |
+| Package | Role |
+| ------- | ---- |
+| [`@conformetry/core`](../conformetry-core/README.md) | Contracts leaf: the structured difference shape, the score, the inventory, and the language validator contract |
+| [`@conformetry/configuration`](../conformetry-configuration/README.md) | Config loading, template discovery, instance matching, input resolution, placeholder rendering |
+| [`@conformetry/generation`](../conformetry-generation/README.md) | The generator lifecycle, rendering each template through the configuration layer |
+| [`@conformetry/validation`](../conformetry-validation/README.md) | Validation orchestration, language routing, finding deduplication |
+| [`@conformetry/languages`](../conformetry-languages/README.md) | Every Language module, the facade that resolves extensions to them, the existence check for every declared file, and the difference and scoring primitives they share |
+| [`@conformetry/output`](../conformetry-output/README.md) | Every render target: the validation report and the template and instance inventory |
 
 ### Languages
 
 `@conformetry/languages` holds one module per Language, all reached through its
 single `LanguagesModule` facade rather than as separate packages.
 
-| Module       | Extensions                       |
-| ------------ | -------------------------------- |
-| `typescript` | `.ts`, `.tsx`                    |
-| `markdown`   | `.md`                            |
-| `python`     | `.py`                            |
-| `json`       | `.json`, `.jsonc`                |
-| `jupyter`    | `.ipynb`                         |
-| `text`       | the fallback for everything else |
+| Module | Extensions |
+| ------ | ---------- |
+| `typescript` | `.ts`, `.tsx` |
+| `markdown` | `.md` |
+| `python` | `.py` |
+| `json` | `.json`, `.jsonc` |
+| `jupyter` | `.ipynb` |
+| `text` | the fallback for everything else |
 
 Nothing depends on `@conformetry/cli`. Embedding conformetry means depending on
 the runtime packages directly — the CLI is one host among others, and holds no
@@ -519,11 +519,11 @@ produced.
 Agent skills for coding agents working with conformetry are published in
 [`@conformetry/agents`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-agents):
 
-| Skill                                                                                                                                                 | Description                                                                      |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| [`conformetry-generate`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-agents/conformetry-generate)   | Scaffold code from templates using conformetry generators                        |
-| [`conformetry-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-agents/conformetry-configure) | Configure generators, templates, and validation rules in `conformetry.config.ts` |
-| [`conformetry-validate`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-agents/conformetry-validate)   | Run structural conformance checks against templates                              |
+| Skill | Description |
+| ----- | ----------- |
+| [`conformetry-generate`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-agents/skills/conformetry-generate) | Scaffold code from templates using conformetry generators |
+| [`conformetry-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-agents/skills/conformetry-configure) | Configure generators, templates, and validation rules in `conformetry.config.ts` |
+| [`conformetry-validate`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-agents/skills/conformetry-validate) | Run structural conformance checks against templates |
 
 ## Examples
 

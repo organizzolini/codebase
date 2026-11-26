@@ -5,7 +5,7 @@ installable by any workspace that uses codependix.
 
 ## What lives here
 
-- `<skill-name>/SKILL.md` — one directory per skill, each self-contained, directly under the package so `skills update` finds it.
+- `skills/<skill-name>/SKILL.md` — one directory per skill, each self-contained.
 - `testing/skills.unit.test.ts` — checks every shipped skill is structurally
   valid and that its links resolve.
 

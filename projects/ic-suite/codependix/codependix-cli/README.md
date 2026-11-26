@@ -30,37 +30,37 @@ because nothing searches for it and there is no default; see
 [`configuration/ic-suite/codependix.config.ts`](../../../configuration/codependix.config.ts)
 for this repository's own.
 
-| Flag                                 | Meaning                                                                                                                                                                                                                                                                                                                                       |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--check [check]`                    | Fail on a comma-separated set drawn from `boundaries` and `reports`                                                                                                                                                                                                                                                                           |
-| `--config <config>`                  | **Required.** Path to the codependix configuration file. Omitting it fails the run, naming the flag; nothing is searched for                                                                                                                                                                                                                  |
-| `--dependencies`                     | Build `--check boundaries` over the dependencies of the projects `--projects` or `--tags` named, reporting their findings as notes (default). No effect without `--projects` or `--tags`                                                                                                                                                      |
-| `--no-dependencies`                  | Build `--check boundaries` over only the projects `--projects` or `--tags` named, not their dependencies. No effect without `--projects` or `--tags`                                                                                                                                                                                          |
-| `-d, --directory [directory]`        | Workspace root whose Nx project graph this run reads. Defaults to the working directory                                                                                                                                                                                                                                                       |
-| `--exclude [exclude]`                | Comma-separated globs overriding the configured `exclude`. Refused when `exclude` was never configured                                                                                                                                                                                                                                        |
-| `--file-imports`                     | Build, check, and write the `fileImports` graph type for this run                                                                                                                                                                                                                                                                             |
-| `--no-file-imports`                  | Skip the `fileImports` graph type for this run                                                                                                                                                                                                                                                                                                |
-| `-f, --format [format]`              | What to print to standard output, one of `json` and `markdown` (default: `markdown`). A graph type prints only when the run also configured a workspace destination for it, even if its own toggle flag enabled it. A `--check boundaries` run adds its findings, under a `boundaries` key in `json` and a `Boundaries` section in `markdown` |
-| `--include [include]`                | Comma-separated globs overriding the configured `include`. Refused when `include` was never configured                                                                                                                                                                                                                                        |
-| `--json-output [jsonOutput]`         | Write every active graph type's data, combined into one JSON file at this path, keyed by graph type name. A type appears only when the run also configured a workspace destination for it. A `--check boundaries` run adds its findings under a `boundaries` key                                                                              |
-| `--markdown-output [markdownOutput]` | Write every active graph type's rendered diagram, combined into one Markdown file at this path. A type appears only when the run also configured a workspace destination for it. A `--check boundaries` run adds its findings as a `Boundaries` section                                                                                       |
-| `--nestjs-modules`                   | Build, check, and write the `nestjsModules` graph type for this run                                                                                                                                                                                                                                                                           |
-| `--no-nestjs-modules`                | Skip the `nestjsModules` graph type for this run                                                                                                                                                                                                                                                                                              |
-| `--nx-projects`                      | Build, check, and write the `nxProjects` graph type for this run                                                                                                                                                                                                                                                                              |
-| `--no-nx-projects`                   | Skip the `nxProjects` graph type for this run                                                                                                                                                                                                                                                                                                 |
-| `--projects [projects]`              | Comma-separated project names or roots to export for, as globs, beyond those `include` already selects. Also narrows the Workspace Graph to the named set, and `--check boundaries` to failing only on findings charged to it                                                                                                                 |
-| `--tags [tags]`                      | Comma-separated Nx tags to export for, beyond what `include` already selects. Narrows the Workspace Graph and `--check boundaries` to the tagged projects, as `--projects` does                                                                                                                                                               |
-| `--write`                            | Writes every configured export                                                                                                                                                                                                                                                                                                                |
+| Flag | Meaning |
+| ---- | ------- |
+| `--check [check]` | Fail on a comma-separated set drawn from `boundaries` and `reports` |
+| `--config <config>` | **Required.** Path to the codependix configuration file. Omitting it fails the run, naming the flag; nothing is searched for |
+| `--dependencies` | Build `--check boundaries` over the dependencies of the projects `--projects` or `--tags` named, reporting their findings as notes (default). No effect without `--projects` or `--tags` |
+| `--no-dependencies` | Build `--check boundaries` over only the projects `--projects` or `--tags` named, not their dependencies. No effect without `--projects` or `--tags` |
+| `-d, --directory [directory]` | Workspace root whose Nx project graph this run reads. Defaults to the working directory |
+| `--exclude [exclude]` | Comma-separated globs overriding the configured `exclude`. Refused when `exclude` was never configured |
+| `--file-imports` | Build, check, and write the `fileImports` graph type for this run |
+| `--no-file-imports` | Skip the `fileImports` graph type for this run |
+| `-f, --format [format]` | What to print to standard output, one of `json` and `markdown` (default: `markdown`). A graph type prints only when the run also configured a workspace destination for it, even if its own toggle flag enabled it. A `--check boundaries` run adds its findings, under a `boundaries` key in `json` and a `Boundaries` section in `markdown` |
+| `--include [include]` | Comma-separated globs overriding the configured `include`. Refused when `include` was never configured |
+| `--json-output [jsonOutput]` | Write every active graph type's data, combined into one JSON file at this path, keyed by graph type name. A type appears only when the run also configured a workspace destination for it. A `--check boundaries` run adds its findings under a `boundaries` key |
+| `--markdown-output [markdownOutput]` | Write every active graph type's rendered diagram, combined into one Markdown file at this path. A type appears only when the run also configured a workspace destination for it. A `--check boundaries` run adds its findings as a `Boundaries` section |
+| `--nestjs-modules` | Build, check, and write the `nestjsModules` graph type for this run |
+| `--no-nestjs-modules` | Skip the `nestjsModules` graph type for this run |
+| `--nx-projects` | Build, check, and write the `nxProjects` graph type for this run |
+| `--no-nx-projects` | Skip the `nxProjects` graph type for this run |
+| `--projects [projects]` | Comma-separated project names or roots to export for, as globs, beyond those `include` already selects. Also narrows the Workspace Graph to the named set, and `--check boundaries` to failing only on findings charged to it |
+| `--tags [tags]` | Comma-separated Nx tags to export for, beyond what `include` already selects. Narrows the Workspace Graph and `--check boundaries` to the tagged projects, as `--projects` does |
+| `--write` | Writes every configured export |
 
 ### The two `--check` names
 
 `--check` names which finding fails the run, because the two findings belong
 on opposite sides of a pull request.
 
-| `--check` value | What fails the run                                                      |
-| --------------- | ----------------------------------------------------------------------- |
-| `boundaries`    | An edge, or a cycle, breaking a declared rule                           |
-| `reports`       | A configured destination no longer holding what a fresh run would write |
+| `--check` value | What fails the run |
+| --------------- | ------------------ |
+| `boundaries` | An edge, or a cycle, breaking a declared rule |
+| `reports` | A configured destination no longer holding what a fresh run would write |
 
 A boundary violation is caused by the branch and fixed by the branch, so it
 gates every pull request, one project at a time — see
@@ -189,28 +189,28 @@ and [a container that cannot boot](../codependix-examples/examples/boundary-boot
 
 ## Packages
 
-| Package                                                                | Role                                                                                                                                                                 |
-| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`@codependix/cli`](.)                                                 | Orchestrates the four graph builders and delivers their exports                                                                                                      |
-| [`@codependix/boundaries`](../codependix-boundaries/README.md)         | Builds each level's graph for a workspace, judges it against the declared rules, and reports what breaks them. `--check boundaries` delegates to it wholesale        |
-| [`@codependix/configuration`](../codependix-configuration/README.md)   | Reads `codependix.config.ts` and resolves per-project export destinations and boundary rules                                                                         |
-| [`@codependix/examples`](../codependix-examples/README.md)             | Twenty-one subjects built to be graphed, each with the guide codependix renders from it                                                                              |
-| [`@codependix/nx`](../codependix-nx/README.md)                         | Nx plugin: infers a per-project `codependix-bound` target that runs `--check boundaries` over the project and its Nx dependencies                                    |
-| [`@codependix/nx-projects`](../codependix-nx-projects/README.md)       | Builds a project's Nx Neighborhood and the whole-workspace Workspace Graph                                                                                           |
-| [`@codependix/nestjs-modules`](../codependix-nestjs-modules/README.md) | Explores a NestJS project's container and builds its module graph                                                                                                    |
-| [`@codependix/file-imports`](../codependix-file-imports/README.md)     | Builds a project's file-level import graph — a `typescript` module walking its own `ts.Program`, and a `python` module parsing `import`/`from ... import` statements |
+| Package | Role |
+| ------- | ---- |
+| [`@codependix/cli`](.) | Orchestrates the four graph builders and delivers their exports |
+| [`@codependix/boundaries`](../codependix-boundaries/README.md) | Builds each level's graph for a workspace, judges it against the declared rules, and reports what breaks them. `--check boundaries` delegates to it wholesale |
+| [`@codependix/configuration`](../codependix-configuration/README.md) | Reads `codependix.config.ts` and resolves per-project export destinations and boundary rules |
+| [`@codependix/examples`](../codependix-examples/README.md) | Twenty-one subjects built to be graphed, each with the guide codependix renders from it |
+| [`@codependix/nx`](../codependix-nx/README.md) | Nx plugin: infers a per-project `codependix-bound` target that runs `--check boundaries` over the project and its Nx dependencies |
+| [`@codependix/nx-projects`](../codependix-nx-projects/README.md) | Builds a project's Nx Neighborhood and the whole-workspace Workspace Graph |
+| [`@codependix/nestjs-modules`](../codependix-nestjs-modules/README.md) | Explores a NestJS project's container and builds its module graph |
+| [`@codependix/file-imports`](../codependix-file-imports/README.md) | Builds a project's file-level import graph — a `typescript` module walking its own `ts.Program`, and a `python` module parsing `import`/`from ... import` statements |
 
 ## Agent skills
 
 Agent skills for coding agents working with codependix are published in
 [`@codependix/agents`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-agents):
 
-| Skill                                                                                                                                             | Description                                                                              |
-| ------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| [`codependix-export`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-agents/codependix-export)       | Export dependency graphs and run boundary checks                                         |
-| [`codependix-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-agents/codependix-configure) | Configure graph types, export destinations, and boundary rules in `codependix.config.ts` |
-| [`codependix-navigate`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-agents/codependix-navigate)   | Query dependency paths and navigate package relationships                                |
-| [`codependix-triage`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-agents/codependix-triage)       | Triage boundary violations and report drift                                              |
+| Skill | Description |
+| ----- | ----------- |
+| [`codependix-export`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-agents/skills/codependix-export) | Export dependency graphs and run boundary checks |
+| [`codependix-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-agents/skills/codependix-configure) | Configure graph types, export destinations, and boundary rules in `codependix.config.ts` |
+| [`codependix-navigate`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-agents/skills/codependix-navigate) | Query dependency paths and navigate package relationships |
+| [`codependix-triage`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codependix/codependix-agents/skills/codependix-triage) | Triage boundary violations and report drift |
 
 ## Examples
 

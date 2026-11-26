@@ -17,6 +17,9 @@ export const SKILLS_LOCK_PATH = "skills-lock.json";
 /** The lockfile source of a skill this repository authors and publishes. */
 export const AUTHORED_SOURCE = "organizzolini/codebase";
 
+/** Where a locked local source starts when it names an authored skill. */
+export const AUTHORED_LOCAL_PREFIX = "./projects/";
+
 /** The file each skill folder holds its front matter in. */
 export const SKILL_FILE_NAME = "SKILL.md";
 

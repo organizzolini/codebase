@@ -15,7 +15,7 @@ in any repository that uses codometer. Install them with the
 directory explicitly:
 
 ```bash
-npx skills add Organizzolini/codebase/projects/ic-suite/codometer/codometer-agents --skill '*'
+npx skills add Organizzolini/codebase/projects/ic-suite/codometer/codometer-agents/skills --skill '*'
 ```
 
 Naming the directory matters. A bare repository reference searches this
@@ -24,11 +24,11 @@ holds, most of which are specific to this workspace.
 
 ## The skills
 
-| Skill                                               | Reach for it when                                                                                                |
-| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| [codometer-measure](codometer-measure/SKILL.md)     | Running a measurement, choosing where the report goes, or reading a badge block or JSON report                   |
-| [codometer-configure](codometer-configure/SKILL.md) | Writing a `codometer.config.ts` — targets, limits, declared convention counters, exclusions, output destinations |
-| [codometer-triage](codometer-triage/SKILL.md)       | A limit was breached, or a committed report reads stale                                                          |
+| Skill | Reach for it when |
+| ----- | ----------------- |
+| [codometer-measure](skills/codometer-measure/SKILL.md) | Running a measurement, choosing where the report goes, or reading a badge block or JSON report |
+| [codometer-configure](skills/codometer-configure/SKILL.md) | Writing a `codometer.config.ts` — targets, limits, declared convention counters, exclusions, output destinations |
+| [codometer-triage](skills/codometer-triage/SKILL.md) | A limit was breached, or a committed report reads stale |
 
 The split mirrors three distinct moments: running the tool, telling it what to
 enforce, and acting on what it said.

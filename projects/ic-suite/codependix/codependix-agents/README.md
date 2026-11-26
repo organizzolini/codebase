@@ -16,7 +16,7 @@ any repository that uses codependix. Install them with the
 explicitly:
 
 ```bash
-npx skills add Organizzolini/codebase/projects/ic-suite/codependix/codependix-agents --skill '*'
+npx skills add Organizzolini/codebase/projects/ic-suite/codependix/codependix-agents/skills --skill '*'
 ```
 
 Naming the directory matters. A bare repository reference searches this
@@ -25,12 +25,12 @@ holds, most of which are specific to this workspace.
 
 ## The skills
 
-| Skill                                                 | Reach for it when                                                                                                                                                       |
-| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [codependix-export](codependix-export/SKILL.md)       | Running an export, choosing `--check` against `--write`, pointing a run at a workspace root or a configuration file, or reading an exported Mermaid block or JSON graph |
-| [codependix-configure](codependix-configure/SKILL.md) | Writing a `codependix.config.ts` — which graph types run, per-project overrides, include/exclude globs, the workspace graph, and where each export lands                |
-| [codependix-triage](codependix-triage/SKILL.md)       | A `--check` reported stale, a project failed its export, an anchor is missing, a NestJS container failed to boot, or a `--write` produced nothing                       |
-| [codependix-navigate](codependix-navigate/SKILL.md)   | Reading a committed graph to answer a question — what depends on this, what a rename would touch, whether an import cycle is real                                       |
+| Skill | Reach for it when |
+| ----- | ----------------- |
+| [codependix-export](skills/codependix-export/SKILL.md) | Running an export, choosing `--check` against `--write`, pointing a run at a workspace root or a configuration file, or reading an exported Mermaid block or JSON graph |
+| [codependix-configure](skills/codependix-configure/SKILL.md) | Writing a `codependix.config.ts` — which graph types run, per-project overrides, include/exclude globs, the workspace graph, and where each export lands |
+| [codependix-triage](skills/codependix-triage/SKILL.md) | A `--check` reported stale, a project failed its export, an anchor is missing, a NestJS container failed to boot, or a `--write` produced nothing |
+| [codependix-navigate](skills/codependix-navigate/SKILL.md) | Reading a committed graph to answer a question — what depends on this, what a rename would touch, whether an import cycle is real |
 
 The first three mirror conformetry's generate / configure / validate and
 codometer's measure / configure / triage: run the tool, tell it what to

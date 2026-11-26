@@ -36,9 +36,10 @@ const REPOSITORY_SPECIFICS: { label: string; pattern: RegExp }[] = [
   },
 ];
 
-const packageDirectory = path.resolve(
+const skillsDirectory = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
+  "skills",
 );
 
 /** Every file under a directory, as paths relative to it. */
@@ -57,12 +58,8 @@ const filesUnder = (directory: string): string[] =>
 describe("shipped coinagerie skills", () => {
   it("ships exactly the coinagerie skills", () => {
     const shipped = fs
-      .readdirSync(packageDirectory, { withFileTypes: true })
-      .filter(
-        (entry) =>
-          entry.isDirectory() &&
-          fs.existsSync(path.join(packageDirectory, entry.name, "SKILL.md")),
-      )
+      .readdirSync(skillsDirectory, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
       .map((entry) => entry.name)
       .toSorted();
 
@@ -70,7 +67,7 @@ describe("shipped coinagerie skills", () => {
   });
 
   describe.each(EXPECTED_SKILLS)("%s", (skill: string) => {
-    const root = path.join(packageDirectory, skill);
+    const root = path.join(skillsDirectory, skill);
 
     it("holds only markdown, so it imports nothing", () => {
       const files = filesUnder(root);

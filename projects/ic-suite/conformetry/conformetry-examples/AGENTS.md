@@ -7,9 +7,9 @@ report against real code mixes the tool's behavior with that project's
 conventions; these examples do not.
 
 The three conformetry skills own the workflow —
-[conformetry-generate](../conformetry-agents/conformetry-generate/SKILL.md),
-[conformetry-configure](../conformetry-agents/conformetry-configure/SKILL.md),
-[conformetry-validate](../conformetry-agents/conformetry-validate/SKILL.md).
+[conformetry-generate](../conformetry-agents/skills/conformetry-generate/SKILL.md),
+[conformetry-configure](../conformetry-agents/skills/conformetry-configure/SKILL.md),
+[conformetry-validate](../conformetry-agents/skills/conformetry-validate/SKILL.md).
 This file is where those skills point when a behavior needs to be _seen_ rather
 than described.
 

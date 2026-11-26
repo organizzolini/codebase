@@ -17,7 +17,7 @@ in any repository that uses callidescope. Install them with the
 directory explicitly:
 
 ```bash
-npx skills add Organizzolini/codebase/projects/ic-suite/callidescope/callidescope-agents --skill '*'
+npx skills add Organizzolini/codebase/projects/ic-suite/callidescope/callidescope-agents/skills --skill '*'
 ```
 
 Naming the directory matters. A bare repository reference searches this
@@ -26,11 +26,11 @@ holds, most of which are specific to this workspace.
 
 ## The skills
 
-| Skill                                                     | Reach for it when                                                                                                           |
-| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| [callidescope-trace](callidescope-trace/SKILL.md)         | Running `callidescope`, `depth`, or `breadth`, and reading what any of them printed — a stack, a breadth row, a caller list |
-| [callidescope-configure](callidescope-configure/SKILL.md) | Telling a run what to do — the flags, and the `callidescope.config.ts` they read alongside                                  |
-| [callidescope-triage](callidescope-triage/SKILL.md)       | A depth or breadth gate failed, a committed report went stale, or a run was refused                                         |
+| Skill                                                            | Reach for it when                                                                                                           |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| [callidescope-trace](skills/callidescope-trace/SKILL.md)         | Running `callidescope`, `depth`, or `breadth`, and reading what any of them printed — a stack, a breadth row, a caller list |
+| [callidescope-configure](skills/callidescope-configure/SKILL.md) | Telling a run what to do — the flags, and the `callidescope.config.ts` they read alongside                                  |
+| [callidescope-triage](skills/callidescope-triage/SKILL.md)       | A depth or breadth gate failed, a committed report went stale, or a run was refused                                         |
 
 That is conformetry's generate / configure / validate, codometer's measure /
 configure / triage, and codependix's export / configure / triage, one more

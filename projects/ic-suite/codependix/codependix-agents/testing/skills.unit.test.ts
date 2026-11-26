@@ -20,9 +20,10 @@ const FRONT_MATTER_PATTERN = /^---\r?\n([\s\S]*?)\r?\n---/u;
 /** Matches every inline and reference-style markdown link target. */
 const LINK_PATTERN = /\]\(([^)\s]+)\)/gu;
 
-const packageDirectory = path.resolve(
+const skillsDirectory = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
+  "skills",
 );
 
 /** Narrows parsed front matter without asserting its shape. */
@@ -40,16 +41,12 @@ interface ShippedSkill {
 /** Reads every shipped skill from disk, so none can go untested. */
 const readShippedSkills = (): ShippedSkill[] => {
   const entries = fs
-    .readdirSync(packageDirectory, { withFileTypes: true })
-    .filter(
-      (entry) =>
-        entry.isDirectory() &&
-        fs.existsSync(path.join(packageDirectory, entry.name, "SKILL.md")),
-    );
+    .readdirSync(skillsDirectory, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory());
 
   return entries.map((entry) => {
     const contents = fs.readFileSync(
-      path.join(packageDirectory, entry.name, "SKILL.md"),
+      path.join(skillsDirectory, entry.name, "SKILL.md"),
       "utf8",
     );
     const matched = FRONT_MATTER_PATTERN.exec(contents);
@@ -113,7 +110,7 @@ describe("shipped skills", () => {
     // beside it, so a link that leaves the skill cannot resolve for a consumer
     // even though it resolves here.
     it("links only to files inside its own directory", () => {
-      const root = path.join(packageDirectory, skill.directory);
+      const root = path.join(skillsDirectory, skill.directory);
       const targets = [...skill.body.matchAll(LINK_PATTERN)]
         .map(([, target]) => target ?? "")
         .filter(
