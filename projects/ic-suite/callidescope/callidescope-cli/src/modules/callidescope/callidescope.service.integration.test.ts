@@ -379,7 +379,7 @@ describe(`${CallidescopeService.name} (integration)`, () => {
     });
 
     expect(logger.info).toHaveBeenCalledWith(
-      "🔭 Tracing a workspace",
+      "🔬 Tracing a workspace",
       undefined,
       {
         workspaceRoot: tracedWorkspaceRoot,

@@ -50,12 +50,12 @@ describe(FlagResolutionService, () => {
         markdown: {
           description: "What the run found.",
           endMarker: "<!-- END -->",
-          heading: "## 🔭 Configured",
+          heading: "## 🔬 Configured",
           path: "docs/report.md",
           startMarker: "<!-- START -->",
         },
         mermaid: {
-          heading: "## 🔭 Diagram",
+          heading: "## 🔬 Diagram",
           path: "docs/diagram.md",
         },
       },
@@ -314,7 +314,7 @@ describe(FlagResolutionService, () => {
 
     expect(markdown?.description).toBe("What the run found.");
     expect(markdown?.endMarker).toBe("<!-- END -->");
-    expect(markdown?.heading).toBe("## 🔭 Configured");
+    expect(markdown?.heading).toBe("## 🔬 Configured");
     expect(markdown?.startMarker).toBe("<!-- START -->");
   });
 

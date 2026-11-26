@@ -260,7 +260,7 @@ export class EdgesService {
       }
     }
 
-    this.logger.info("🔭 Built call graph edges", undefined, {
+    this.logger.info("🔬 Built call graph edges", undefined, {
       edgeCount: edges.length,
     });
 

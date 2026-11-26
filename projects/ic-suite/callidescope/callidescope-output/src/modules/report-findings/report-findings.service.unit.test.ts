@@ -76,7 +76,7 @@ describe(ReportFindingsService, () => {
 
     expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Found call stacks too deep",
+      "🔬 Found call stacks too deep",
       undefined,
       { count: 1, deepest: 4, entryPoints: ["Example.run"] },
     );
@@ -101,7 +101,7 @@ describe(ReportFindingsService, () => {
 
     expect(exitCode()).toBeUndefined();
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Found call stacks too deep",
+      "🔬 Found call stacks too deep",
       undefined,
       { count: 1, deepest: 4, entryPoints: ["Example.run"] },
     );
@@ -132,7 +132,7 @@ describe(ReportFindingsService, () => {
 
     expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Found callables calling too much directly",
+      "🔬 Found callables calling too much directly",
       undefined,
       { callables: ["Example.run"], count: 1, widest: 5 },
     );
@@ -166,7 +166,7 @@ describe(ReportFindingsService, () => {
     // exit code cannot show.
     expect(exitCode()).toBeUndefined();
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Found callables calling too much directly",
+      "🔬 Found callables calling too much directly",
       undefined,
       { callables: ["Example.run"], count: 1, widest: 5 },
     );
@@ -181,7 +181,7 @@ describe(ReportFindingsService, () => {
 
     expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Found stale reports",
+      "🔬 Found stale reports",
       undefined,
       {
         paths: ["report.json"],
@@ -208,7 +208,7 @@ describe(ReportFindingsService, () => {
     });
 
     expect(exitCode()).toBe(1);
-    expect(logger.error).toHaveBeenCalledWith("🔭 Traced nothing", undefined, {
+    expect(logger.error).toHaveBeenCalledWith("🔬 Traced nothing", undefined, {
       projectCount: 2,
     });
   });

@@ -13865,27 +13865,27 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.describeAcceptedCheckNames",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#886"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#901"
             },
             {
               "displayName": "ConfigurationFlagsService.filter(…)",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1676"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1767"
             },
             {
               "displayName": "ConfigurationFlagsService.map(…)",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1639"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1730"
             },
             {
               "displayName": "ConfigurationFlagsService.validateCheckNames",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2130"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2221"
             }
           ],
           "displayName": "ConfigurationFlagsService.readCheckNames",
-          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1275",
+          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1366",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-            "line": 44
+            "line": 48
           },
           "signature": {
             "parameters": [
@@ -14059,19 +14059,19 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.find(…)",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4079"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4170"
             },
             {
               "displayName": "ConfigurationFlagsService.map(…)",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4240"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4331"
             }
           ],
           "displayName": "ConfigurationFlagsService.resolveFormat",
-          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3825",
+          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3916",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-            "line": 130
+            "line": 134
           },
           "signature": {
             "parameters": [
@@ -14482,15 +14482,15 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.map(…)",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1032"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#998"
             }
           ],
           "displayName": "ConfigurationFlagsService.describeAcceptedCheckNames",
-          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#886",
+          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#901",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-            "line": 37
+            "line": 38
           },
           "signature": {
             "parameters": [
@@ -14510,15 +14510,15 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.describeAcceptedCheckNames",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#886"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#901"
             }
           ],
           "displayName": "ConfigurationFlagsService.validateCheckNames",
-          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2130",
+          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2221",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-            "line": 73
+            "line": 77
           },
           "signature": {
             "parameters": [
@@ -14544,15 +14544,15 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.parseOptionalOption",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3178"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3269"
             }
           ],
           "displayName": "ConfigurationFlagsService.parseDefaultedOption",
-          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2656",
+          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2747",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-            "line": 95
+            "line": 99
           },
           "signature": {
             "parameters": [
@@ -14578,15 +14578,15 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.parseDefaultedOption",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2656"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2747"
             }
           ],
           "displayName": "ConfigurationFlagsService.parseDirectoryOption",
-          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2906",
+          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2997",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-            "line": 102
+            "line": 106
           },
           "signature": {
             "parameters": [
@@ -14610,11 +14610,11 @@
             }
           ],
           "displayName": "ConfigurationFlagsService.requireConfigurationPath",
-          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3455",
+          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3546",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-            "line": 116
+            "line": 120
           },
           "signature": {
             "parameters": [
@@ -14640,15 +14640,15 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.readCheckNames",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1275"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1366"
             }
           ],
           "displayName": "ConfigurationFlagsService.selectMode",
-          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4513",
+          "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4639",
           "location": {
             "column": 3,
             "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-            "line": 153
+            "line": 157
           },
           "signature": {
             "parameters": [
@@ -15084,7 +15084,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.parseDefaultedOption",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2656"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2747"
             }
           ],
           "displayName": "ConfigurationService.parseDefaultedOption",
@@ -15118,7 +15118,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.parseDirectoryOption",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2906"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2997"
             }
           ],
           "displayName": "ConfigurationService.parseDirectoryOption",
@@ -15146,7 +15146,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.parseOptionalOption",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3178"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3269"
             }
           ],
           "displayName": "ConfigurationService.parseOptionalOption",
@@ -15174,7 +15174,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.requireConfigurationPath",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3455"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3546"
             }
           ],
           "displayName": "ConfigurationService.requireConfigurationPath",
@@ -15236,7 +15236,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.resolveFormat",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3825"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3916"
             }
           ],
           "displayName": "ConfigurationService.resolveFormat",
@@ -15276,7 +15276,7 @@
           "callees": [
             {
               "displayName": "ConfigurationFlagsService.selectMode",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4513"
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4639"
             }
           ],
           "displayName": "ConfigurationService.selectMode",
@@ -15589,15 +15589,15 @@
               "displayName": "ConfigurationFlagsService.selectMode",
               "documentation": {
                 "isDeprecated": false,
-                "summary": "Reads the flags into what the run writes and gates. `--check reports` is refused with `--output-*`, as a fresh report cannot be stale.",
+                "summary": "Reads the flags into what the run writes and gates. `--check reports` is refused with `--output-*`, as a fresh report cannot be stale, and `--inputs` with a limit check.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4513",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4639",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 153
+                "line": 157
               },
               "signature": {
                 "parameters": [
@@ -15619,12 +15619,12 @@
                 "summary": "Reads `--check` into the set of checks to fail on. A valueless or empty `--check` is refused, never read as gating nothing.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1275",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1366",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 44
+                "line": 48
               },
               "signature": {
                 "parameters": [
@@ -15652,12 +15652,12 @@
                 "summary": "Keeps the names `--check` knows and complains about the rest.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2130",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2221",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 73
+                "line": 77
               },
               "signature": {
                 "parameters": [
@@ -15685,12 +15685,12 @@
                 "summary": "States what `--check` accepts, in front of whatever went wrong.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#886",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#901",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 37
+                "line": 38
               },
               "signature": {
                 "parameters": [
@@ -15707,12 +15707,12 @@
             },
             {
               "displayName": "ConfigurationFlagsService.map(…)",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#1032",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#998",
               "isCycle": false,
               "location": {
-                "column": 85,
+                "column": 36,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 38
+                "line": 39
               },
               "signature": {
                 "parameters": [
@@ -15768,12 +15768,12 @@
                 "summary": "Reads a directory option, falling back to the process's working directory as it stands when read.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2906",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2997",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 102
+                "line": 106
               },
               "signature": {
                 "parameters": [
@@ -15795,12 +15795,12 @@
                 "summary": "Reads an option, returning `fallback` when it was left off. Each command chooses its own fallback.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2656",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2747",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 95
+                "line": 99
               },
               "signature": {
                 "parameters": [
@@ -15828,12 +15828,12 @@
                 "summary": "Reads an option that carries text. Empty or valueless input counts as absent; the value is not trimmed, since a path's spaces matter.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3178",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3269",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 109
+                "line": 113
               },
               "signature": {
                 "parameters": [
@@ -15980,12 +15980,12 @@
                 "summary": "Reads an option, returning `fallback` when it was left off. Each command chooses its own fallback.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2656",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#2747",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 95
+                "line": 99
               },
               "signature": {
                 "parameters": [
@@ -16013,12 +16013,12 @@
                 "summary": "Reads an option that carries text. Empty or valueless input counts as absent; the value is not trimmed, since a path's spaces matter.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3178",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3269",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 109
+                "line": 113
               },
               "signature": {
                 "parameters": [
@@ -16080,12 +16080,12 @@
                 "summary": "Returns the configuration path a run was given, or throws naming `surface`, the flag that should have carried it.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3455",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3546",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 116
+                "line": 120
               },
               "signature": {
                 "parameters": [
@@ -16181,12 +16181,12 @@
                 "summary": "Reads `--format`, falling back to the configuration's `format` when left off. Never inferred from other flags.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3825",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3916",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 130
+                "line": 134
               },
               "signature": {
                 "parameters": [
@@ -16215,12 +16215,12 @@
             },
             {
               "displayName": "ConfigurationFlagsService.find(…)",
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4079",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#4170",
               "isCycle": false,
               "location": {
                 "column": 39,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 139
+                "line": 143
               },
               "signature": {
                 "parameters": [
@@ -16541,12 +16541,12 @@
                 "summary": "Reads an option that carries text. Empty or valueless input counts as absent; the value is not trimmed, since a path's spaces matter.",
                 "tags": []
               },
-              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3178",
+              "id": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts#3269",
               "isCycle": false,
               "location": {
                 "column": 3,
                 "filePath": "projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/modules/flags/configuration-flags.service.ts",
-                "line": 109
+                "line": 113
               },
               "signature": {
                 "parameters": [

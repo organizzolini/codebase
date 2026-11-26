@@ -211,7 +211,7 @@ export class OutputMarkdownService {
     });
 
     writeFileSync(resolvedPath, updated, "utf8");
-    this.logger.info("🔭 Wrote a report", undefined, { path: resolvedPath });
+    this.logger.info("🔬 Wrote a report", undefined, { path: resolvedPath });
 
     return true;
   }

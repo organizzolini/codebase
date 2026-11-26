@@ -12,7 +12,7 @@ export const LIMIT_TABLE_COLUMNS = [
 ] as const;
 
 /** Heading the listing is written under. */
-export const LIMITS_HEADING = "# 🔭 Callidescope Limits";
+export const LIMITS_HEADING = "# 🔬 Callidescope Limits";
 
 /** Says what the table holds, so it needs no second reading. */
 export const LIMITS_SUMMARY =

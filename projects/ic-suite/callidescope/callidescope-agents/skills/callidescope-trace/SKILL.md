@@ -116,7 +116,7 @@ Four things to hold on to when reading one:
   scoped run's counts describe the whole trace, dependency closure included, so
   the deepest stack it reports is routinely deeper than anything the judged
   project owns. Take the number a verdict gives you, never the one a summary
-  line prints. The same caution applies to a `🔭 Finished an analysis` log
+  line prints. The same caution applies to a `🔬 Finished an analysis` log
   line — see the `callidescope-triage` skill.
 - **`## Read nothing of its own (0 files)` is a failure about the run, not the
   code.** The gate judged a project whose own sources it never opened, so a
@@ -130,7 +130,7 @@ read a `gate` to understand why a pipeline is red.
 
 ## Reading a committed project block
 
-Every traced project's own readme carries a `## 🔭 Callidescope` section, and
+Every traced project's own readme carries a `## 🔬 Callidescope` section, and
 its `### Limits` table is what says which numbers that project is held to:
 
 ```text

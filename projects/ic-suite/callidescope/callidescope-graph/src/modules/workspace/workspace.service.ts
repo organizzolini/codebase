@@ -176,7 +176,7 @@ export class WorkspaceService {
           workspaceRoot: args.workspaceRoot,
         })
       ) {
-        this.logger.debug("🔭 Skipped an excluded project", undefined, {
+        this.logger.debug("🔬 Skipped an excluded project", undefined, {
           root,
         });
         continue;

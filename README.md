@@ -132,7 +132,7 @@
 `││├` **[lexico-api](projects/lexico/lexico-api)** - Serves dictionary entries and literature\
 `││├` **[lexico-cli](projects/lexico/lexico-cli)** - Collects and loads dictionary and literature data\
 `││└` **[lexico-db](projects/lexico/lexico-db)** - Stores dictionary and literature data\
-`│├` 🛰️ **caelundas** — Finds astronomical events and creates calendars\
+`│├` 🔭 **caelundas** — Finds astronomical events and creates calendars\
 `││├` **[caelundas-web](projects/caelundas/caelundas-web)** - Browses astronomical events\
 `││├` **[caelundas-api](projects/caelundas/caelundas-api)** - Serves astronomical events\
 `││├` **[caelundas-cli](projects/caelundas/caelundas-cli)** - Finds astronomical events and produces calendars\
@@ -155,7 +155,7 @@
 `│││├` **[conformetry-core](projects/ic-suite/conformetry/conformetry-core)** - Shared generation and conformance contracts [![npm](https://img.shields.io/npm/v/@conformetry/core?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/core)\
 `│││├` **[conformetry-agents](projects/ic-suite/conformetry/conformetry-agents)** - Guidance for using generation and conformance tools\
 `│││└` **[conformetry-examples](projects/ic-suite/conformetry/conformetry-examples)** - Examples of generation and conformance features\
-`││├` 🔭 **callidescope** — Traces call stacks and measures their depth and breadth\
+`││├` 🔬 **callidescope** — Traces call stacks and measures their depth and breadth\
 `│││├` **[callidescope-nx](projects/ic-suite/callidescope/callidescope-nx)** - Adds call stack checks to workspace projects [![npm](https://img.shields.io/npm/v/@callidescope/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/nx)\
 `│││├` **[callidescope-cli](projects/ic-suite/callidescope/callidescope-cli)** - Traces call stacks and reports their depth [![npm](https://img.shields.io/npm/v/@callidescope/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/cli)\
 `│││├` **[callidescope-configuration](projects/ic-suite/callidescope/callidescope-configuration)** - Resolves tracing limits and output [![npm](https://img.shields.io/npm/v/@callidescope/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/configuration)\

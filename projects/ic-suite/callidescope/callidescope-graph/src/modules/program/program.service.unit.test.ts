@@ -117,7 +117,7 @@ describe(ProgramService, () => {
     });
 
     expect(subjectLogger.debug).toHaveBeenCalledWith(
-      "🔭 Reading a project",
+      "🔬 Reading a project",
       undefined,
       { projectName: "example" },
     );
@@ -252,7 +252,7 @@ describe(ProgramService, () => {
 
     expect(programSet.ownerByFilePath.size).toBe(0);
     expect(subjectLogger.warn).toHaveBeenCalledWith(
-      "🔭 Skipped a file no traced project contains",
+      "🔬 Skipped a file no traced project contains",
       undefined,
       { workspaceRelativePath: "packages/shared/helper.ts" },
     );

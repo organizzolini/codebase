@@ -39,7 +39,7 @@ describe(RenderLimitsService, () => {
     const document = service.render([WORKSPACE_DEPTH_ROW]);
 
     expect(document.split("\n").slice(0, 2)).toStrictEqual([
-      "# 🔭 Callidescope Limits",
+      "# 🔬 Callidescope Limits",
       "",
     ]);
     expect(document).toContain("| Project | Limit | Value | Declared in |");

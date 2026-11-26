@@ -271,7 +271,7 @@ const codependixConfiguration: CodependixConfiguration = {
           ],
         },
       },
-      // 🔭 Callidescope
+      // 🔬 Callidescope
       {
         from: { tags: ["name:callidescope-core"] },
         kind: "forbid",

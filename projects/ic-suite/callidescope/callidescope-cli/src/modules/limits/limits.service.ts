@@ -153,7 +153,7 @@ export class LimitsService {
       workspaceConfigurationPath: configurationPath,
     });
 
-    this.logger.info("🔭 Listed every project's limits", undefined, {
+    this.logger.info("🔬 Listed every project's limits", undefined, {
       declaringProjectCount: projectConfigurations.length,
       projectCount: projects.length,
     });

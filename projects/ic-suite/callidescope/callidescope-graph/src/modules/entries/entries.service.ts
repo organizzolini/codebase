@@ -298,7 +298,7 @@ export class EntriesService {
 
     this.promoteOrphans(classification);
 
-    this.logger.info("🔭 Resolved entry points", undefined, {
+    this.logger.info("🔬 Resolved entry points", undefined, {
       total: entryPoints.length,
     });
 

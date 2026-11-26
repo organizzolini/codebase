@@ -1,4 +1,4 @@
-# 🔭 Callidescope Configuration
+# 🔬 Callidescope Configuration
 
 [![npm](https://img.shields.io/npm/v/@callidescope/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/configuration)
 
@@ -168,7 +168,7 @@ only by the CLI's own `--format` flag. Writing to a file and printing to a
 terminal are independent, so both can be on at once.
 
 `write.markdown` and `write.mermaid` each take a `description`, placed under
-the heading, and a `heading`, which defaults to `# 🔭 Callidescope`. Set it
+the heading, and a `heading`, which defaults to `# 🔬 Callidescope`. Set it
 whenever the block is spliced into a file that already has a title: a second
 first-level heading is something most markdown linters reject. The block's
 subsections follow the level down on their own, so an `##` heading writes
@@ -429,7 +429,7 @@ project root; the workspace configuration's own declared addresses are labelled
 Seven of them. Each is shown under the headline it is logged with — six of the
 seven share one — and quoted as the tool writes it.
 
-**`🔭 Rejected a project configuration` — there is no file at the path.**
+**`🔬 Rejected a project configuration` — there is no file at the path.**
 
 ```text
 <project> is traced but has no callidescope configuration at <path>. Every traced project declares its own there, spreading the workspace's projectDefaults and overriding what it means to.
@@ -438,7 +438,7 @@ seven share one — and quoted as the tool writes it.
 `<path>` is the one `projectConfigurationPath` produced for that project. Nothing
 else is looked for, so write the file there or correct the setting.
 
-**`🔭 Rejected a project configuration` — the workspace names no path.**
+**`🔬 Rejected a project configuration` — the workspace names no path.**
 
 ```text
 <workspace configuration> sets no projectConfigurationPath: callidescope never searches for or assumes a project's configuration file. Set it to the path of each project's own file, relative to the project root, such as callidescope.config.ts.
@@ -446,7 +446,7 @@ else is looked for, so write the file there or correct the setting.
 
 Set `projectConfigurationPath` in the workspace configuration.
 
-**`🔭 Rejected a project configuration` — the file could not be read.**
+**`🔬 Rejected a project configuration` — the file could not be read.**
 
 ```text
 Failed to read the callidescope configuration for <project> at <path>: <reason>
@@ -456,7 +456,7 @@ The read failed or the shape did not pass the schema. `<reason>` is the
 underlying failure, which is also kept as the error's `cause`. Fix the named
 file; nothing else was traced.
 
-**`🔭 Rejected a project configuration` — a workspace-only field.**
+**`🔬 Rejected a project configuration` — a workspace-only field.**
 
 ```text
 <project> sets <field>, which only the workspace configuration may set. A project configuration may set entryPoints, exclude, limits, write.markdown, and write.mermaid.
@@ -466,7 +466,7 @@ Move that field to the workspace file. A retired limit is a different refusal:
 the schema names it, because `limits` accepts `maximumDepth` and
 `maximumBreadth` and nothing else.
 
-**`🔭 Rejected a project configuration` — a declared address resolved to
+**`🔬 Rejected a project configuration` — a declared address resolved to
 nothing.**
 
 ```text
@@ -479,7 +479,7 @@ inconvenience: a rename that silently dropped a declared root would lower the
 project's measured depth with nothing in the output to say so, and loosen a gate
 in the one commit nobody would think to check it in.
 
-**`🔭 Rejected a project configuration` — a declared address was ambiguous.**
+**`🔬 Rejected a project configuration` — a declared address was ambiguous.**
 
 ```text
 <project> declares an entryPoints.addresses entry that matches more than one declaration: "<address>". Candidates: <address>:<line>, <address>:<line>. Add ":<line>" to the address to pick one.
@@ -491,7 +491,7 @@ line are the case no address can separate; those name their column instead and
 the advice changes to `Two declarations on one line cannot be told apart by
 ":<line>" — rename one, or name a different callable.`
 
-**`🔭 Rejected a project configuration` — a declared address was malformed.**
+**`🔬 Rejected a project configuration` — a declared address was malformed.**
 
 ```text
 <project> declares an invalid entryPoints.addresses entry. "<address>" is not a callable address. It needs a file path and a qualified name joined by "#", as in "src/foo.service.ts#FooService.bar", optionally followed by ":<line>" to disambiguate.
@@ -504,7 +504,7 @@ than one arrives numbered, behind
 
 The headlines belong to the command rather than to the message. The first two
 reach the `limits` command as well, where they are printed under
-`🔭 Rejected a configuration`; a listing that quietly skipped the one project
+`🔬 Rejected a configuration`; a listing that quietly skipped the one project
 whose configuration is wrong would be at its least trustworthy exactly when it
 is most wanted. The three address refusals need a resolved call graph, so only
 a trace raises those.

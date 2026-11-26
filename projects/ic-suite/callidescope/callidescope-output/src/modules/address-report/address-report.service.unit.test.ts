@@ -28,7 +28,7 @@ describe(AddressReportService, () => {
     expect(instance).toBeInstanceOf(AddressReportService);
   });
 
-  // 🔭 Depth
+  // 🔬 Depth
 
   it("renders no paths above or below as 'None.'", () => {
     const empty: CallAddressTreeResult = { stacks: [], truncated: false };
@@ -74,7 +74,7 @@ describe(AddressReportService, () => {
       upward,
     });
 
-    expect(rendered).toContain("# 🔭 Callidescope depth — `a.ts#Foo.bar`");
+    expect(rendered).toContain("# 🔬 Callidescope depth — `a.ts#Foo.bar`");
     expect(rendered).toContain("### Above (1)");
     expect(rendered).toContain("### Below (1)");
     expect(rendered).toContain("```text");
@@ -311,8 +311,8 @@ describe(AddressReportService, () => {
       ],
     });
 
-    expect(rendered).toContain("# 🔭 Callidescope depth — `a.ts#Foo.bar`");
-    expect(rendered).toContain("# 🔭 Callidescope depth — `b.ts#Bar.baz`");
+    expect(rendered).toContain("# 🔬 Callidescope depth — `a.ts#Foo.bar`");
+    expect(rendered).toContain("# 🔬 Callidescope depth — `b.ts#Bar.baz`");
   });
 
   // A single address must render byte-for-byte what the singular method does,
@@ -380,7 +380,7 @@ describe(AddressReportService, () => {
       ],
     });
 
-    expect(rendered).toContain("# 🔭 Callidescope breadth — `a.ts#Foo.bar`");
-    expect(rendered).toContain("# 🔭 Callidescope breadth — `b.ts#Bar.baz`");
+    expect(rendered).toContain("# 🔬 Callidescope breadth — `a.ts#Foo.bar`");
+    expect(rendered).toContain("# 🔬 Callidescope breadth — `b.ts#Bar.baz`");
   });
 });
