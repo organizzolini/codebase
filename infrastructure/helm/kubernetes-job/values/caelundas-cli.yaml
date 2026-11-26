@@ -13,8 +13,9 @@ job:
 
 priorityClassName: batch-low
 
+# The Job writes only to Postgres, so it mounts no volume.
 persistence:
-  type: emptyDir
+  enabled: false
 
 # The ingestion workflow sets START_YEAR; Kubernetes sets JOB_COMPLETION_INDEX in every Indexed Job container.
 # Each index covers one calendar year, from January 1 through December 31 (END_DATE is inclusive), so

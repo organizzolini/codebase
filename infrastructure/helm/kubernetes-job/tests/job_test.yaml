@@ -99,6 +99,21 @@ tests:
                 name: caelundas-postgres
                 key: password
 
+  - it: caelundas-cli mounts no volume and creates no PVC
+    values:
+      - ../values/base.yaml
+      - ../values/caelundas-cli.yaml
+    asserts:
+      - template: templates/job.yaml
+        notExists:
+          path: spec.template.spec.volumes
+      - template: templates/job.yaml
+        notExists:
+          path: spec.template.spec.containers[0].volumeMounts
+      - template: templates/pvc.yaml
+        hasDocuments:
+          count: 0
+
   - it: caelundas-cli derives the year's dates from START_YEAR and the completion index
     values:
       - ../values/base.yaml

@@ -59,7 +59,7 @@ infrastructure/
 - Data migrations
 - Report generation
 
-Use a Job for work that runs to completion and leaves output behind (caelundas writes iCalendar files to a PVC); use a Deployment for anything that serves requests continuously.
+Use a Job for work that runs to completion and leaves output behind (caelundas ingests events into Postgres); use a Deployment for anything that serves requests continuously.
 
 **Values added for Indexed and ephemeral runs** (defaults keep today's rendering unchanged):
 
@@ -69,7 +69,7 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 - `persistence.type`: `persistentVolumeClaim` (default) or `emptyDir`. With `emptyDir`, `pvc.yaml` renders nothing and the output path mounts an `emptyDir`.
 - `extraEnv`: list appended after `env`, for per-run values passed with `--set-json` (the ingestion workflow uses it).
 
-`values/caelundas-cli.yaml` layers over `values/base.yaml` for the caelundas-cli ingestion Job: an Indexed job on `emptyDir` scratch space, `batch-low` priority, and the staging Postgres environment.
+`values/caelundas-cli.yaml` layers over `values/base.yaml` for the caelundas-cli ingestion Job: an Indexed job with `persistence.enabled: false` (it writes only to Postgres, so no volume or PVC), `batch-low` priority, and the staging Postgres environment.
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
 

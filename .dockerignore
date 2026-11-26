@@ -8,7 +8,6 @@
 **/.venv
 # Fetched fresh by the image build, never copied from a checkout
 projects/caelundas/caelundas-cli/data/ephemeris
-projects/caelundas/caelundas-cli/output
 *.env*
 # Uninitialized submodule, never built
 projects/JimmyPaolini
