@@ -1,8 +1,11 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 
 import { build } from "rolldown";
 import { beforeAll, describe, expect, it } from "vitest";
+
+import { createTemporaryDirectory, writeFileTree } from "@codebase/testing";
 
 import rolldownConfiguration from "../configuration/rolldown.config";
 
@@ -40,6 +43,18 @@ const DEVELOPMENT_STORE_PREFIXES = [
 /** Files only a package's authors read; licenses stay. */
 const NON_RUNTIME_FILE =
   /^(?!licen[cs]e|notice|copying).*\.(?:d\.[cm]?ts|map|md|tsbuildinfo)$|\.(?:a|o)$/iu;
+
+/** Heaviest shipped file allowed, in bytes: 934,080 today, plus a margin. */
+const MAXIMUM_FILE_BYTES = 1_100_000;
+
+/** Every file path under `directory`, links not followed. */
+function listFiles(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) =>
+    entry.isDirectory()
+      ? listFiles(path.join(directory, entry.name))
+      : [path.join(directory, entry.name)],
+  );
+}
 
 /** Every file and directory name under `directory`, links not followed. */
 function listNames(directory: string): string[] {
@@ -152,4 +167,37 @@ describe("caelundas-cli build", () => {
       expect(missing).toStrictEqual([]);
     },
   );
+
+  it("ships no file heavier than the weight limit", () => {
+    const oversized = listFiles(BUNDLE_DIRECTORY).filter(
+      (file) => statSync(file).size > MAXIMUM_FILE_BYTES,
+    );
+
+    expect(oversized).toStrictEqual([]);
+  });
+
+  it("loads its entry and stops on an invalid environment with the schema's error", () => {
+    const directory = createTemporaryDirectory("bundle-entry");
+    writeFileTree(directory, {
+      "configuration/.env": 'START_DATE="not-a-date"\n',
+    });
+
+    const result = spawnSync(
+      process.execPath,
+      [path.join(BUNDLE_DIRECTORY, "caelundas-cli.main.js"), "caelundas"],
+      {
+        cwd: directory,
+        encoding: "utf8",
+        env: {
+          CAELUNDAS_POSTGRES_HOST: "localhost",
+          PATH: process.env["PATH"] ?? "",
+        },
+      },
+    );
+
+    expect(result.status).not.toBe(0);
+    expect(`${result.stdout}${result.stderr}`).toContain(
+      "START_DATE must be in YYYY-MM-DD format",
+    );
+  });
 });
