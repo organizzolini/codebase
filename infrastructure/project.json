@@ -184,124 +184,64 @@
     },
     "secure-code": {},
     "spell-check": {},
-    "terraform": {
-      "cache": false,
-      "configurations": {
-        "import": {
-          "command": "terraform import -input=false linode_lke_cluster.my_cluster $TF_VAR_linode_kubernetes_engine_cluster_id"
-        },
-        "plan": {
-          "command": "terraform plan"
-        }
-      },
-      "defaultConfiguration": "plan",
-      "description": "Run Terraform commands (plan, import)",
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "terraform plan",
-        "cwd": "{projectRoot}/terraform"
-      }
-    },
     "terraform-apply": {
       "cache": false,
-      "configurations": {
-        "github": {
-          "cwd": "{projectRoot}/terraform/github"
-        },
-        "linode": {
-          "cwd": "{projectRoot}/terraform/linode"
-        },
-        "openrouter": {
-          "cwd": "{projectRoot}/terraform/openrouter"
-        },
-        "organizzolini": {
-          "cwd": "{projectRoot}/terraform/organizzolini"
-        }
-      },
-      "defaultConfiguration": "openrouter",
       "dependsOn": [
         {
           "params": "forward",
           "target": "terraform-init"
         }
       ],
-      "description": "Apply a Terraform root (--configuration=openrouter, github, linode, or organizzolini), creating, updating, and deleting what a fresh plan finds. Needs the terraform-plan variables. Run by the Continuous Deployment workflow on main; run it locally only on purpose.",
+      "description": "Apply the organizzolini Terraform root, creating, updating, and deleting what a fresh plan finds. Needs the terraform-plan variables. Run by the Continuous Deployment workflow on main; run it locally only on purpose.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "terraform apply -input=false -auto-approve"
+        "command": "terraform apply -input=false -auto-approve",
+        "cwd": "{projectRoot}/terraform/organizzolini"
       }
     },
     "terraform-format": {
       "cache": true,
-      "description": "Check that the OpenRouter, GitHub, Linode, and Organizzolini Terraform is formatted. Part of lint-code. Requires terraform on PATH (the devcontainer installs it; CI uses hashicorp/setup-terraform).",
+      "description": "Check that the organizzolini Terraform is formatted. Part of lint-code. Requires terraform on PATH (the devcontainer installs it; CI uses hashicorp/setup-terraform).",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
+        "{projectRoot}/terraform/organizzolini/**/*.tf",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "terraform fmt -check -diff -recursive openrouter github linode organizzolini",
+        "command": "terraform fmt -check -diff -recursive organizzolini",
         "cwd": "{projectRoot}/terraform"
       }
     },
     "terraform-init": {
       "cache": false,
-      "configurations": {
-        "github": {
-          "cwd": "{projectRoot}/terraform/github"
-        },
-        "linode": {
-          "cwd": "{projectRoot}/terraform/linode"
-        },
-        "openrouter": {
-          "cwd": "{projectRoot}/terraform/openrouter"
-        },
-        "organizzolini": {
-          "cwd": "{projectRoot}/terraform/organizzolini"
-        }
-      },
-      "defaultConfiguration": "openrouter",
-      "description": "Initialize a Terraform root (--configuration=openrouter, github, linode, or organizzolini) against its Linode Object Storage backend. Needs TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY.",
+      "description": "Initialize the organizzolini Terraform root against its Linode Object Storage backend. Needs TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "terraform init -input=false -reconfigure -backend-config=\"bucket=$TF_STATE_BUCKET\""
+        "command": "terraform init -input=false -reconfigure -backend-config=\"bucket=$TF_STATE_BUCKET\"",
+        "cwd": "{projectRoot}/terraform/organizzolini"
       }
     },
     "terraform-plan": {
       "cache": false,
-      "configurations": {
-        "github": {
-          "cwd": "{projectRoot}/terraform/github"
-        },
-        "linode": {
-          "cwd": "{projectRoot}/terraform/linode"
-        },
-        "openrouter": {
-          "cwd": "{projectRoot}/terraform/openrouter"
-        },
-        "organizzolini": {
-          "cwd": "{projectRoot}/terraform/organizzolini"
-        }
-      },
-      "defaultConfiguration": "openrouter",
       "dependsOn": [
         {
           "params": "forward",
           "target": "terraform-init"
         }
       ],
-      "description": "Plan a Terraform root (--configuration=openrouter, github, linode, or organizzolini) and write plan.tfplan beside it, without changing anything. Needs the terraform-init variables plus TF_VAR_openrouter_management_key.",
+      "description": "Plan the organizzolini Terraform root and write plan.tfplan beside it, without changing anything. Needs the terraform-init variables plus TF_VAR_openrouter_management_key, TF_VAR_github_token, TF_VAR_linode_token, TF_VAR_cloudflare_api_token, TF_VAR_cloudflare_account_id, and TF_VAR_cloudflare_zone_id.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "terraform plan -input=false -lock=false -out=plan.tfplan"
+        "command": "terraform plan -input=false -lock=false -out=plan.tfplan",
+        "cwd": "{projectRoot}/terraform/organizzolini"
       }
     },
     "terraform-test": {
       "cache": true,
       "dependsOn": ["terraform-validate"],
-      "description": "Run the Terraform unit tests of every root under terraform/ that has a tests folder, against mock providers. Runs after terraform-validate because both run terraform init in the same root directories, and concurrent inits corrupt .terraform and the lock file. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Needs no credentials: each root is initialized with -backend=false, so only the provider download needs network access. Requires terraform on PATH.",
+      "description": "Run the Terraform unit tests of the organizzolini root, against mock providers. Runs after terraform-validate because both run terraform init in the same root directory, and concurrent inits would corrupt .terraform and the lock file. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Needs no credentials: each root is initialized with -backend=false, so only the provider download needs network access. Requires terraform on PATH.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/terraform/**/*.tf",
@@ -311,39 +251,39 @@
         }
       ],
       "options": {
-        "command": "for root in */; do if [ -d \"$root/tests\" ]; then (cd \"$root\" && terraform init -input=false -backend=false && terraform test) || exit 1; fi; done",
+        "command": "cd organizzolini && terraform init -input=false -backend=false && terraform test",
         "cwd": "{projectRoot}/terraform"
       }
     },
     "terraform-validate": {
       "cache": true,
-      "description": "Validate the OpenRouter, GitHub, Linode, and Organizzolini Terraform without a backend or credentials. Part of lint-code. Requires terraform on PATH and downloads the provider, so it needs network access.",
+      "description": "Validate the organizzolini Terraform without a backend or credentials. Part of lint-code. Requires terraform on PATH and downloads the providers, so it needs network access.",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
+        "{projectRoot}/terraform/organizzolini/**/*.tf",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "for module in openrouter github linode organizzolini; do (cd $module && terraform init -input=false -backend=false && terraform validate) || exit 1; done",
+        "command": "cd organizzolini && terraform init -input=false -backend=false && terraform validate",
         "cwd": "{projectRoot}/terraform"
       }
     },
     "tflint": {
       "cache": true,
-      "description": "Lint the OpenRouter, GitHub, Linode, and Organizzolini Terraform roots with tflint and its bundled terraform ruleset (preset all). Each root uses its own .tflint.hcl when it has one, otherwise terraform/.tflint.hcl. The ruleset ships inside the pinned tflint binary, so there is no plugin download and no `tflint --init`, and nothing touches .terraform, so it may run beside the terraform targets. The stale root main.tf is not listed and is never scanned. Part of lint-code. Requires tflint on PATH.",
+      "description": "Lint the organizzolini Terraform root with tflint and its bundled terraform ruleset (preset all). The root uses its own .tflint.hcl when it has one, otherwise terraform/.tflint.hcl. The ruleset ships inside the pinned tflint binary, so there is no plugin download and no `tflint --init`, and nothing touches .terraform, so it may run beside the terraform targets. Part of lint-code. Requires tflint on PATH.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/terraform/*/.tflint.hcl",
         "{projectRoot}/terraform/.tflint.hcl",
-        "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
+        "{projectRoot}/terraform/organizzolini/**/*.tf",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "for root in openrouter github linode organizzolini; do (cd $root && c=../.tflint.hcl; [ -f .tflint.hcl ] && c=.tflint.hcl; tflint --config $c) || exit 1; done",
+        "command": "cd organizzolini && c=../.tflint.hcl; [ -f .tflint.hcl ] && c=.tflint.hcl; tflint --config $c",
         "cwd": "{projectRoot}/terraform"
       }
     },

@@ -1,35 +1,3 @@
-terraform {
-  required_version = ">= 1.6"
-
-  # State lives in a Linode Object Storage bucket, which speaks the S3 API. The bucket,
-  # endpoint, and credentials come from `-backend-config` and AWS_* environment variables.
-  # Linode lacks the AWS account, region, and checksum calls.
-  # No state lock: CI serializes applies with a workflow concurrency group.
-  backend "s3" {
-    key    = "openrouter.tfstate"
-    region = "us-east-1"
-
-    skip_credentials_validation = true
-    skip_metadata_api_check     = true
-    skip_region_validation      = true
-    skip_requesting_account_id  = true
-    skip_s3_checksum            = true
-  }
-
-  required_providers {
-    openrouter = {
-      source  = "OpenRouterTeam/openrouter"
-      version = "~> 0.3"
-    }
-  }
-}
-
-# The Management key administers OpenRouter and cannot spend credits. It is
-# created by hand; everything below is managed from it.
-provider "openrouter" {
-  api_key = var.openrouter_management_key
-}
-
 # The existing workspace, read for its current name and slug so that importing
 # it plans no change, then imported on the first apply rather than created.
 data "openrouter_workspace" "codebase" {
@@ -64,19 +32,20 @@ data "openrouter_api_keys" "workspace" {
 }
 
 locals {
-  refresh_documentation_key = one([
+  # A pinned hash skips the lookup, which a plan under a mock provider cannot make.
+  refresh_documentation_key_hash = var.refresh_documentation_key_hash != null ? var.refresh_documentation_key_hash : one([
     for key in data.openrouter_api_keys.workspace.data : key
     if key.name == var.refresh_documentation_key_name
-  ])
+  ]).hash
 }
 
 import {
   to = openrouter_api_key.refresh_documentation
-  id = local.refresh_documentation_key.hash
+  id = local.refresh_documentation_key_hash
 }
 
 resource "openrouter_api_key" "refresh_documentation" {
-  name         = local.refresh_documentation_key.name
+  name         = var.refresh_documentation_key_name
   workspace_id = openrouter_workspace.codebase.id
 }
 

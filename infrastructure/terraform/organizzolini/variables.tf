@@ -1,7 +1,111 @@
 variable "linode_token" {
-  description = "A Linode API token that can create LKE clusters."
+  description = "A Linode API token with Object Storage read and write, and the right to create LKE clusters."
   type        = string
   sensitive   = true
+}
+
+variable "bucket_label" {
+  description = "Label of the original Object Storage bucket that holds Terraform state until the move to terraform_state_bucket_label is retired."
+  type        = string
+  default     = "organizzolini"
+}
+
+variable "object_storage_region" {
+  description = "Region of every Object Storage bucket, as the Linode API names it: us-iad-2, whose S3 endpoint is us-iad-18."
+  type        = string
+  default     = "us-iad-2"
+}
+
+variable "nx_cache_bucket_label" {
+  description = "Label of the Object Storage bucket the shared Nx cache stores task outputs in."
+  type        = string
+  default     = "organizzolini-codebase-nx-cache"
+}
+
+variable "terraform_state_bucket_label" {
+  description = "Label of the Object Storage bucket that holds the Terraform state: one `organizzolini.tfstate` object."
+  type        = string
+  default     = "organizzolini-terraform-state"
+}
+
+variable "github_token" {
+  description = "A token that can write Actions variables and secrets on the repository."
+  type        = string
+  sensitive   = true
+}
+
+variable "owner" {
+  description = "Account or organization that owns the repository."
+  type        = string
+  default     = "Organizzolini"
+}
+
+variable "repository" {
+  description = "Repository whose settings, Actions variables, and Actions secrets this root manages."
+  type        = string
+  default     = "codebase"
+}
+
+variable "openrouter_management_key" {
+  description = "An OpenRouter Management API key (sk-or-mgmt-...)."
+  type        = string
+  sensitive   = true
+}
+
+variable "refresh_documentation_key_name" {
+  description = "Name of the existing OpenRouter key to import for the refresh-documentation job."
+  type        = string
+  default     = "Default key"
+}
+
+variable "refresh_documentation_key_hash" {
+  description = "Hash of that key. Null looks it up by name; a value skips the lookup."
+  type        = string
+  default     = null
+}
+
+variable "workspace_id" {
+  description = "ID of the existing OpenRouter workspace to import."
+  type        = string
+  default     = "a55a93d8-c818-5cf7-9119-f46e67835043"
+}
+
+variable "models" {
+  description = "Models OpenRouter may route to, ranked: the first is tried first and each later one is a fallback when it is rate-limited, down or rejects the request. Only :free models are allowed, to keep requests free. Each needs tool calling and 16,384 output tokens, which the documentation refresh asks for, and the fallbacks come from other providers than the first."
+  type        = list(string)
+  default = [
+    "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "google/gemma-4-31b-it:free",
+    "inclusionai/ling-3.2-flash:free",
+  ]
+
+  validation {
+    condition     = length(var.models) > 0
+    error_message = "List at least one model."
+  }
+
+  validation {
+    condition     = alltrue([for model in var.models : endswith(model, ":free")])
+    error_message = "List only :free models, so requests stay free."
+  }
+}
+
+variable "refresh_documentation_limit_usd" {
+  description = "Monthly spend cap in USD for the refresh-documentation guardrail."
+  type        = number
+  default     = 5
+}
+
+variable "preset_slug" {
+  description = "Slug of the preset the workflow calls as @preset/<slug>."
+  type        = string
+  default     = "refresh-documentation"
+}
+
+variable "postgres_backups_bucket_label" {
+  description = "Label of the Object Storage bucket CloudNativePG archives Postgres backups to."
+  type        = string
+  default     = "organizzolini-postgres-backups"
 }
 
 variable "cloudflare_api_token" {
@@ -21,7 +125,7 @@ variable "cloudflare_zone_id" {
 }
 
 variable "region" {
-  description = "Linode region of the cluster."
+  description = "Linode region of the LKE cluster."
   type        = string
   default     = "us-iad"
 }
@@ -36,27 +140,4 @@ variable "k8s_version" {
   description = "Pins the LKE Kubernetes version. Null means the newest available."
   type        = string
   default     = null
-}
-
-variable "github_token" {
-  description = "A token that can write Actions secrets on the repository."
-  type        = string
-  sensitive   = true
-}
-
-variable "owner" {
-  description = "Account or organization that owns the repository."
-  type        = string
-  default     = "Organizzolini"
-}
-
-variable "repository" {
-  description = "Repository that receives the KUBECONFIG Actions secret."
-  type        = string
-  default     = "codebase"
-}
-
-variable "state_bucket" {
-  description = "Bucket that holds the linode root's state, read for its outputs."
-  type        = string
 }

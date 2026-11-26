@@ -1,7 +1,12 @@
 terraform {
   required_version = ">= 1.7"
 
-  # Same Linode Object Storage backend settings as the linode root; see its main.tf.
+  # State lives in a Linode Object Storage bucket, which speaks the S3 API. The bucket,
+  # endpoint, and credentials come from `-backend-config` and AWS_* environment variables.
+  # Linode lacks the AWS account, region, and checksum calls.
+  # No state lock: CI serializes applies with a workflow concurrency group.
+  # This root manages the bucket it stores its state in, which is safe because
+  # the bucket is only imported or created and never destroyed.
   backend "s3" {
     key    = "organizzolini.tfstate"
     region = "us-east-1"
@@ -39,9 +44,15 @@ terraform {
       source  = "hashicorp/random"
       version = "~> 3.6"
     }
+    openrouter = {
+      source  = "OpenRouterTeam/openrouter"
+      version = "~> 0.3"
+    }
   }
 }
 
+# The token needs Object Storage and Kubernetes read and write: with no access key given,
+# the provider mints a temporary one to read and manage the buckets.
 provider "linode" {
   token = var.linode_token
 }
@@ -50,8 +61,9 @@ provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
 
-# GITHUB_TOKEN cannot write Actions secrets, so this needs a fine-grained token or
-# GitHub App token with Secrets write on the repository.
+# GITHUB_TOKEN cannot write Actions variables or secrets, so this needs a fine-grained
+# token or GitHub App token with Administration, Variables and Secrets write on the
+# repository.
 provider "github" {
   owner = var.owner
   token = var.github_token
@@ -82,20 +94,8 @@ provider "helm" {
   }
 }
 
-# The linode root's outputs: the Postgres backups bucket key. Every read is wrapped in
-# `try`, since a pull request can plan before the linode root has applied its new outputs.
-data "terraform_remote_state" "linode" {
-  backend = "s3"
-
-  config = {
-    bucket = var.state_bucket
-    key    = "linode.tfstate"
-    region = "us-east-1"
-
-    skip_credentials_validation = true
-    skip_metadata_api_check     = true
-    skip_region_validation      = true
-    skip_requesting_account_id  = true
-    skip_s3_checksum            = true
-  }
+# The Management key administers OpenRouter and cannot spend credits. It is
+# created by hand; everything in openrouter.tf is managed from it.
+provider "openrouter" {
+  api_key = var.openrouter_management_key
 }
