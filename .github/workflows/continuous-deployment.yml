@@ -52,13 +52,13 @@ jobs:
             name: Devcontainer
             emoji: 🧑‍🏭
             timeout: 15
-          # Sized for a release of many packages: a 28-package release once outran a
-          # 24-minute limit. A release takes 15 to 21 minutes, plus up to three Caelundas
-          # image builds and pushes, and a timeout before the push leaves nothing behind.
+          # The last 30 successful runs took 3.8 minutes at the median and 23.5 at
+          # most. Three cold image builds with pushes add about 12 (one took
+          # 2.2 here, 4.5 on a runner), so 40 holds; a timeout before the push leaves nothing.
           - id: push-releases
             name: Releases
             emoji: 🦸
-            timeout: 50
+            timeout: 40
           # Applies the four Terraform roots in order on a push to main that
           # changes them: OpenRouter, Linode, Organizzolini, GitHub. State has no
           # lock, so the never-cancelling concurrency group prevents overlap.
