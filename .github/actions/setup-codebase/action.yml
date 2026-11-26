@@ -64,8 +64,8 @@ inputs:
   linters:
     description: |
       Install the infrastructure and workflow linters lint-code runs: tflint,
-      kubeconform, kube-linter, pluto, actionlint, and hadolint. Needs docker for
-      hadolint and the runner's Go for the rest.
+      kubeconform, kube-linter, pluto, actionlint, and hadolint. Needs the runner's Go
+      and curl.
     default: "false"
   docker-buildx:
     description: Set up Docker Buildx (image builds)
