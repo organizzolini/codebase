@@ -57,11 +57,9 @@ provider "github" {
   token = var.github_token
 }
 
-# The kubernetes and helm providers are configured from the cluster this root creates.
-# That is accepted for one cluster and one maintainer, with two known caveats: the
-# configuration is unknown at plan time until the cluster exists, so the first plan can
-# only show the cluster and its dependents, and replacing or destroying the cluster needs
-# the Kubernetes and Helm resources removed from state or destroyed first.
+# The kubernetes and helm providers are configured from the cluster this root
+# creates, so the first plan shows only the cluster, and replacing it needs the
+# Kubernetes and Helm resources gone from state first (see the README).
 locals {
   kubeconfig = base64decode(linode_lke_cluster.organizzolini_codebase.kubeconfig)
   cluster    = yamldecode(local.kubeconfig)
