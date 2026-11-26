@@ -24,6 +24,15 @@ to apply. `CAELUNDAS_DATABASE_MIGRATIONS` is the glob it reads
 (`.ts` beside the source, `.js` in an image), so every migration stays a file
 at run time.
 
+Two consequences. Migrating at startup means the old pods keep running while a
+rollout's first new pod migrates, so every migration must stay expand-only
+(add, never drop or rename what the previous release reads). And the three
+earlier migrations were squashed into one with a new timestamp, so a local
+database that applied them holds three rows in `caelundas.migrations` and
+would try to create its tables again: reset it with
+`nx run infrastructure:postgres:recreate`, then start an application or run
+`nx run caelundas-db:migration:run`.
+
 ### Entity relationship diagram
 
 The entity relationship diagram is generated from every TypeORM entity file

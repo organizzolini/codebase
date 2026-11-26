@@ -10,6 +10,9 @@
 - **Exception:** `DatabaseModule` applies the pending migrations at start, under
   an advisory lock, reading the `CAELUNDAS_DATABASE_MIGRATIONS` glob, so every
   migration must stay a file an image can build.
+  Migrations must stay expand-only, since old pods run while the first new
+  pod migrates. The squash re-timestamped the schema, so reset a local database
+  that applied the earlier three with `nx run infrastructure:postgres:recreate`.
 - Preserve project-specific entities and migrations when updating shared
   configuration.
 

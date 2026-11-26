@@ -9,8 +9,8 @@ export class Migration1795660000000 implements MigrationInterface {
   name = "Migration1795660000000";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`SET lock_timeout = '10s'`);
-    await queryRunner.query(`SET statement_timeout = '5min'`);
+    await queryRunner.query(`SET LOCAL lock_timeout = '10s'`);
+    await queryRunner.query(`SET LOCAL statement_timeout = '5min'`);
     await queryRunner.query(
       `CREATE TABLE "calendar_event_tag_nodes" ("calendar_event_id" uuid NOT NULL, "is_direct" boolean NOT NULL, "tag_depth" bigint NOT NULL, "tag_id" uuid NOT NULL, "tag_name" text NOT NULL, "tag_path" text NOT NULL, "tag_root_id" uuid NOT NULL, CONSTRAINT "PK_641ddfc9822887330f05ea3f224" PRIMARY KEY ("calendar_event_id", "tag_id"))`,
     );
@@ -139,8 +139,8 @@ from calendar_events as e`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`SET lock_timeout = '10s'`);
-    await queryRunner.query(`SET statement_timeout = '5min'`);
+    await queryRunner.query(`SET LOCAL lock_timeout = '10s'`);
+    await queryRunner.query(`SET LOCAL statement_timeout = '5min'`);
     await queryRunner.query(`ALTER ROLE caelundas_username RESET search_path`);
     await queryRunner.query(
       `DELETE FROM "caelundas"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,

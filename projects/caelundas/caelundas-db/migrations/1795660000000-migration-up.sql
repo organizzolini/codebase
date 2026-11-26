@@ -1,6 +1,6 @@
-set lock_timeout = '10s';
+set local lock_timeout = '10s';
 
-set statement_timeout = '5min';
+set local statement_timeout = '5min';
 
 create table calendar_event_tag_nodes (
     calendar_event_id uuid not null,
