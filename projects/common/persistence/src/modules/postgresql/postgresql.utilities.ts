@@ -1,10 +1,11 @@
-import { DataSource } from "typeorm";
+import { DataSource, MigrationExecutor } from "typeorm";
 import { z } from "zod";
 
 import {
   DEFAULT_POSTGRES_HOST,
   DEFAULT_POSTGRES_PORT,
   MIGRATION_LOCK_KEY,
+  MigrationFailedError,
   PluralSnakeNamingStrategy,
   POSTGRES_CONNECTION_FIELDS,
   POSTGRES_ENVIRONMENT_SUFFIXES,
@@ -69,7 +70,8 @@ export function createDataSource(
 
 /**
  * Opens a data source for `PostgresqlModule`, then applies its pending
- * migrations, if it has any, before the application starts serving.
+ * migrations, if it has any, before the application starts serving. A failed
+ * migration closes the connection and throws {@link MigrationFailedError}.
  */
 export async function openDataSource(
   options: DataSourceOptions,
@@ -77,7 +79,15 @@ export async function openDataSource(
   const dataSource = new DataSource(options);
   await dataSource.initialize();
   if (Array.isArray(options.migrations) && options.migrations.length > 0) {
-    await runMigrationsLocked(dataSource);
+    try {
+      await runMigrationsLocked(dataSource);
+    } catch (error) {
+      await dataSource.destroy().catch(() => {});
+      throw new MigrationFailedError(
+        `The migrations failed: ${error instanceof Error ? error.message : String(error)}`,
+        { cause: error },
+      );
+    }
   }
 
   return dataSource;
@@ -227,9 +237,10 @@ export function postgresSettingsSchema(
 }
 
 /**
- * Applies the pending migrations of `dataSource` under a Postgres advisory
- * lock, so instances starting together migrate one at a time and the later
- * ones find nothing to apply.
+ * Applies the pending migrations of `dataSource` in one transaction that first
+ * takes a transaction-scoped advisory lock. Instances starting together migrate
+ * one at a time and the later ones find nothing to apply. The lock lives and
+ * dies with the transaction, so it holds through a transaction-mode pooler.
  */
 export async function runMigrationsLocked(
   dataSource: DataSource,
@@ -237,17 +248,21 @@ export async function runMigrationsLocked(
   const runner = dataSource.createQueryRunner();
   await runner.connect();
   try {
+    await runner.startTransaction();
     await runner.query(
-      `select pg_advisory_lock(${String(MIGRATION_LOCK_KEY)})`,
+      `select pg_advisory_xact_lock(${String(MIGRATION_LOCK_KEY)})`,
     );
-    await dataSource.runMigrations();
-  } finally {
+    // Given the runner, the executor joins its open transaction and leaves the commit to this function.
+    await new MigrationExecutor(dataSource, runner).executePendingMigrations();
+    await runner.commitTransaction();
+  } catch (error) {
     try {
-      await runner.query(
-        `select pg_advisory_unlock(${String(MIGRATION_LOCK_KEY)})`,
-      );
-    } finally {
-      await runner.release();
+      await runner.rollbackTransaction();
+    } catch {
+      // The rollback failing must not hide the error that caused it.
     }
+    throw error;
+  } finally {
+    await runner.release();
   }
 }

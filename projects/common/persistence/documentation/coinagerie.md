@@ -23,6 +23,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
   `postgresql-erd.utilities.ts`.
 - **predicate**: A `--filter` once its column is resolved, the comparison of one column with one value that becomes one WHERE term.
 - **qualifier**: The schema a `schema.table` name carries before its dot, which `--table` checks against `--schema`.
+- **race**: The throwaway project the migration concurrency test names, whose two instances start together on a fresh database.
 - **redeclared**: A subclass property that repeats a base class's endpoint name, which counts once rather than as a second endpoint.
 - **redeclaring**: A subclass property that gives a base class's endpoint a new name, which leaves two endpoints for one role.
 - **relabelled**:
