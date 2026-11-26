@@ -18,10 +18,7 @@ import type { BuildOptions, Plugin } from "rolldown";
 export interface RolldownApplicationOptions {
   /** Entry points: output name to source path, from the package directory. */
   readonly entry: Readonly<Record<string, string>>;
-  /**
-   * Directories, from the workspace root, whose `.ts` files the application
-   * loads by glob at run time, so each is built as an entry point of its own.
-   */
+  /** Workspace-relative directories whose `.ts` files load by glob, built as entries. */
   readonly globbedDirectories?: readonly string[];
   /** The directory of the application being bundled. */
   readonly packageDirectory: string;
@@ -29,7 +26,8 @@ export interface RolldownApplicationOptions {
   readonly runtimeDependencies?: readonly string[];
 }
 
-/** Packages a shared workspace package loads by name, which no import shows: TypeORM's driver and pino's pretty transport. */
+// TypeORM's driver and pino's pretty transport, which a shared package loads by name.
+/** Packages loaded by name at run time, which no import shows. */
 export const BY_NAME_DEPENDENCIES = ["pg", "pino-pretty"] as const;
 
 /** Specifier prefixes bundled into the output instead of installed beside it. */
@@ -40,12 +38,11 @@ const BUNDLED_PREFIXES = [
   "tslib",
 ] as const;
 
-/**
- * The only file kinds a shipped package keeps, besides its licenses: what Node
- * loads (code, JSON, native addons, WebAssembly) and what a package reads by
- * name (protobuf, GraphQL and SQL files). Source maps, declarations,
- * documentation, TypeScript sources and native build leftovers stay behind.
- */
+// Besides licenses, a shipped package keeps what Node loads (code, JSON, native
+// addons, WebAssembly) and what it reads by name (protobuf, GraphQL, SQL).
+// Source maps, declarations, documentation, TypeScript sources and native build
+// leftovers stay behind.
+/** Extensions a shipped package keeps: what Node loads or reads. */
 const RUNTIME_EXTENSIONS = new Set([
   ".cjs",
   ".gql",
@@ -62,28 +59,23 @@ const RUNTIME_EXTENSIONS = new Set([
 /** A license file of any spelling, which a redistributed package keeps. */
 const LICENSE_FILE = /^(?:copying|licen[cs]e|notice)(?:[-.].*)?$/iu;
 
-/** Directories no run reads: a native build's intermediates, caches, and links to binaries. */
+/** Directories no run reads: native build intermediates, caches, and binary links. */
 const SKIPPED_DIRECTORIES = new Set([".bin", ".tmp", ".deps"]);
 
 /** A native build's per-target intermediates folder, named with a `.target` suffix. */
 const NATIVE_TARGET_DIRECTORY = /\.target$/u;
 
-/**
- * Packages left out although a dependency lists them, because no run reaches
- * them: `nest-commander` loads `@fig/complete-commander`, and with it
- * `prettier`, only to write a shell completion spec, which no application here
- * enables.
- */
+// `nest-commander` loads `@fig/complete-commander`, and with it `prettier`, only
+// to write a shell completion spec, which no application here enables.
+/** Packages left out though depended on, because no run reaches them. */
 const OMITTED_PACKAGES = new Set(["@fig/complete-commander"]);
 
 /** Directory holding the pnpm virtual store, ahead of each `<id>` entry. */
 const STORE_SEGMENT = `${path.sep}node_modules${path.sep}.pnpm${path.sep}`;
 
 /**
- * Compiles an application's TypeScript, workspace packages included, to one ESM
- * file per module with decorator metadata, at its source path. Writes beside
- * them a `node_modules` holding only the production packages they import,
- * copied from the pnpm install.
+ * Compiles an application's TypeScript and workspace packages to one ESM file
+ * per module, beside a `node_modules` of production packages they import.
  */
 export function createRolldownApplicationConfig({
   entry,

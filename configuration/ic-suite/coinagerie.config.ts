@@ -3248,10 +3248,10 @@ const HOME_WORDS = {
 };
 
 /**
- * Settings a project spreads, excluding other projects' home words.
+ * Settings a project spreads, minus other projects' home words.
  *
- * @param home - The project whose home words stay listed
- * @param extraWords - Words only this project excludes
+ * @param home - Project whose home words stay
+ * @param extraWords - Words only it excludes
  */
 export function configureCoinagerie(
   home?: keyof typeof HOME_WORDS,
