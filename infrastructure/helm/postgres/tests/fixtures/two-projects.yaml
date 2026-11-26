@@ -1,0 +1,8 @@
+projects:
+  - name: caelundas
+    databases:
+      - production
+      - staging
+  - name: lexico
+    databases:
+      - production

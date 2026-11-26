@@ -1,0 +1,180 @@
+suite: argocd-applications
+templates:
+  - templates/applications.yaml
+  - templates/priority-class.yaml
+values:
+  - ../values/base.yaml
+tests:
+  - it: orders the applications in sync waves
+    template: templates/applications.yaml
+    asserts:
+      - hasDocuments:
+          count: 5
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+          value: "0"
+        documentIndex: 0
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+          value: "1"
+        documentIndex: 1
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+          value: "2"
+        documentIndex: 2
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+          value: "3"
+        documentIndex: 3
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+          value: "4"
+        documentIndex: 4
+
+  - it: pins every upstream chart to an exact version
+    template: templates/applications.yaml
+    asserts:
+      - matchRegex:
+          path: spec.source.targetRevision
+          pattern: ^\d+\.\d+\.\d+$
+        documentIndex: 0
+      - matchRegex:
+          path: spec.source.targetRevision
+          pattern: ^\d+\.\d+\.\d+$
+        documentIndex: 1
+      - matchRegex:
+          path: spec.source.targetRevision
+          pattern: ^\d+\.\d+\.\d+$
+        documentIndex: 2
+
+  - it: syncs automatically with prune and self-heal
+    template: templates/applications.yaml
+    asserts:
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: true
+        documentIndex: 0
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: true
+        documentIndex: 0
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: true
+        documentIndex: 1
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: true
+        documentIndex: 1
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: true
+        documentIndex: 2
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: true
+        documentIndex: 2
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: true
+        documentIndex: 3
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: true
+        documentIndex: 3
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: true
+        documentIndex: 4
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: true
+        documentIndex: 4
+
+  - it: skips dry run for resources whose CRDs are still installing
+    template: templates/applications.yaml
+    asserts:
+      - contains:
+          path: spec.syncPolicy.syncOptions
+          content: SkipDryRunOnMissingResource=true
+        documentIndex: 0
+      - contains:
+          path: spec.syncPolicy.syncOptions
+          content: SkipDryRunOnMissingResource=true
+        documentIndex: 1
+      - contains:
+          path: spec.syncPolicy.syncOptions
+          content: SkipDryRunOnMissingResource=true
+        documentIndex: 2
+      - contains:
+          path: spec.syncPolicy.syncOptions
+          content: SkipDryRunOnMissingResource=true
+        documentIndex: 3
+      - contains:
+          path: spec.syncPolicy.syncOptions
+          content: SkipDryRunOnMissingResource=true
+        documentIndex: 4
+
+  - it: defines the low batch priority
+    template: templates/priority-class.yaml
+    asserts:
+      - equal:
+          path: metadata.name
+          value: batch-low
+      - equal:
+          path: value
+          value: -10
+      - equal:
+          path: preemptionPolicy
+          value: Never
+      - equal:
+          path: globalDefault
+          value: false
+
+  - it: applies the cloudnative-pg CRDs server-side
+    template: templates/applications.yaml
+    asserts:
+      - contains:
+          path: spec.syncPolicy.syncOptions
+          content: ServerSideApply=true
+        documentIndex: 1
+
+  - it: sets requests and limits on every upstream chart workload
+    template: templates/applications.yaml
+    asserts:
+      - equal:
+          path: spec.source.helm.valuesObject.resources.limits.memory
+          value: 128Mi
+        documentIndex: 0
+      - equal:
+          path: spec.source.helm.valuesObject.webhook.resources.limits.memory
+          value: 64Mi
+        documentIndex: 0
+      - equal:
+          path: spec.source.helm.valuesObject.cainjector.resources.requests.memory
+          value: 32Mi
+        documentIndex: 0
+      - equal:
+          path: spec.source.helm.valuesObject.resources.requests.memory
+          value: 64Mi
+        documentIndex: 1
+      - equal:
+          path: spec.source.helm.valuesObject.resources.limits.memory
+          value: 256Mi
+        documentIndex: 1
+      - equal:
+          path: spec.source.helm.valuesObject.resources.limits.memory
+          value: 128Mi
+        documentIndex: 2
+
+  - it: deploys the shared platform apps into the organizzolini namespace
+    template: templates/applications.yaml
+    asserts:
+      - equal:
+          path: spec.destination.namespace
+          value: organizzolini
+        documentIndex: 3
+      - equal:
+          path: spec.destination.namespace
+          value: organizzolini
+        documentIndex: 4

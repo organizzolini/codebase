@@ -1,0 +1,21 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ .Values.backup.objectStoreName }}
+spec:
+  retentionPolicy: {{ .Values.backup.retentionPolicy }}
+  configuration:
+    destinationPath: {{ .Values.backup.destinationPath }}
+    endpointURL: {{ .Values.backup.endpointURL }}
+    s3Credentials:
+      accessKeyId:
+        name: {{ .Values.backup.credentialsSecretName }}
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: {{ .Values.backup.credentialsSecretName }}
+        key: ACCESS_SECRET_KEY
+  instanceSidecarConfiguration:
+    env:
+      {{- toYaml .Values.backup.sidecar.env | nindent 6 }}
+    resources:
+      {{- toYaml .Values.backup.sidecar.resources | nindent 6 }}

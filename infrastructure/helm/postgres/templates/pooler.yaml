@@ -1,0 +1,20 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: {{ .Values.pooler.name }}
+spec:
+  cluster:
+    name: {{ .Values.cluster.name }}
+  instances: {{ .Values.pooler.instances }}
+  type: rw
+  pgbouncer:
+    poolMode: {{ .Values.pooler.poolMode }}
+    parameters:
+      {{- toYaml .Values.pooler.parameters | nindent 6 }}
+  template:
+    spec:
+      containers:
+        # The operator requires this name
+        - name: pgbouncer
+          resources:
+            {{- toYaml .Values.pooler.resources | nindent 12 }}

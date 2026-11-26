@@ -1,0 +1,5 @@
+apiVersion: v2
+name: argocd-applications
+description: The Argo CD app-of-apps tree for the cluster, plus the batch-low PriorityClass
+version: 0.1.0
+appVersion: "1.0"
