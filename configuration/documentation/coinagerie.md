@@ -4,7 +4,6 @@
 
 The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
-- **actionlint**:
 - **anchor**: A named block marker in a README that codependix fills with its generated dependency graph, so the rendered diagram stays current.
 - **band**: Appears only inside the word bandit, the Python security scanner named in the Python project templates.
 - **boundary**: The layer rule that codependix checks on every built graph, forbidding imports the workspace declares out of bounds.
