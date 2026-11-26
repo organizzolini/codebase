@@ -55,8 +55,7 @@ describe(ReleaseImagesCommand, () => {
     workspace = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
     vi.spyOn(process, "cwd").mockReturnValue(workspace);
     writeFileTree(workspace, {
-      [API_VALUES]:
-        "image:\n  repository: api\nhook:\n  image:\n    tag: old\n",
+      [API_VALUES]: "image:\n  repository: api\n",
       [CLI_VALUES]: "image:\n  repository: cli\n",
       [WEB_VALUES]: "image:\n  repository: web\n",
     });
@@ -91,7 +90,7 @@ describe(ReleaseImagesCommand, () => {
     const runner = new FakeProcessRunner({});
     await runCommand(runner, ["1.2.3", ""]);
 
-    expect(runner.streamed).toHaveLength(6);
+    expect(runner.streamed).toHaveLength(3);
     expect(fs.readFileSync(path.join(workspace, CLI_VALUES), "utf8")).toBe(
       "image:\n  repository: cli\n  tag: 1.2.3\n",
     );

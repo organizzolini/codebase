@@ -4,9 +4,6 @@ import type { ImageTarget } from "./release-images.types";
 
 // ♟️ Constants
 
-const API_VALUES =
-  "infrastructure/helm/kubernetes-deployment/values/caelundas-api.yaml";
-
 /** What a release version looks like. */
 export const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[\w.\-]+)?$/v;
 
@@ -16,7 +13,12 @@ export const projectNamesSchema = z.array(z.string());
 /** The images a release builds, and where their tags go. */
 export const IMAGE_TARGETS: readonly ImageTarget[] = [
   {
-    fields: [{ file: API_VALUES, path: ["image", "tag"] }],
+    fields: [
+      {
+        file: "infrastructure/helm/kubernetes-deployment/values/caelundas-api.yaml",
+        path: ["image", "tag"],
+      },
+    ],
     project: "caelundas-api",
   },
   {
@@ -34,8 +36,6 @@ export const IMAGE_TARGETS: readonly ImageTarget[] = [
         file: "infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml",
         path: ["image", "tag"],
       },
-      // The API's migration hook runs the CLI image.
-      { file: API_VALUES, path: ["hook", "image", "tag"] },
     ],
     project: "caelundas-cli",
   },

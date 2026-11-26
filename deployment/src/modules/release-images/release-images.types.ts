@@ -3,7 +3,7 @@
 /** A Caelundas image, and every field that names its tag. */
 export interface ImageTarget {
   fields: readonly TagField[];
-  /** The Nx project whose `docker-build` and `docker-push` make the image. */
+  /** The Nx project whose `docker:push` builds and pushes the image. */
   project: string;
 }
 

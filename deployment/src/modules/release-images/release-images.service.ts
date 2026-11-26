@@ -60,15 +60,15 @@ export class ReleaseImagesService {
     return projectNamesSchema.parse(JSON.parse(listing));
   }
 
-  /** Runs a `docker-build` or `docker-push` target for a version. */
-  private runTarget(target: string, project: string, version: string): void {
+  /** Builds and pushes a project's image for a version, in one `docker:push` run. */
+  private pushImage(project: string, version: string): void {
     this.stream("env", [
       `IMAGE_TAG=${version}`,
       "pnpm",
       "exec",
       "nx",
       "run",
-      `${project}:${target}`,
+      `${project}:docker:push`,
     ]);
   }
 
@@ -128,8 +128,7 @@ export class ReleaseImagesService {
         return;
       }
 
-      this.runTarget("docker-build", image.project, version);
-      this.runTarget("docker-push", image.project, version);
+      this.pushImage(image.project, version);
 
       image.fields.forEach(({ file, path: keys }) => {
         this.writeTag(file, keys, version);

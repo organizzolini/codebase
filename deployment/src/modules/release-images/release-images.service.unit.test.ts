@@ -33,16 +33,13 @@ const CLI_VALUES =
 /** Values files as found, with comments and blank lines. */
 const VALUES = {
   [API_VALUES]:
-    '# api\nimage:\n  repository: api\n\nhook:\n  image:\n    # migrations\n    tag: ""\n',
+    '# api\nimage:\n  repository: api\n  # filled by the release\n  tag: ""\n',
   [CLI_VALUES]: 'image:\n  # filled by the release\n  tag: ""\n\njob: {}\n',
   [WEB_VALUES]: "image:\n  repository: web\n",
 };
 
-const build = (project: string): string =>
-  `env IMAGE_TAG=2.0.0 pnpm exec nx run ${project}:docker-build`;
-
 const push = (project: string): string =>
-  `env IMAGE_TAG=2.0.0 pnpm exec nx run ${project}:docker-push`;
+  `env IMAGE_TAG=2.0.0 pnpm exec nx run ${project}:docker:push`;
 
 describe(ReleaseImagesService, () => {
   /** Builds the service over a scripted runner, with `DRY_RUN` as given. */
@@ -101,17 +98,14 @@ describe(ReleaseImagesService, () => {
 
     expect(runner.lines).toStrictEqual([
       SHOW,
-      build("caelundas-web"),
       push("caelundas-web"),
-      build("caelundas-cli"),
       push("caelundas-cli"),
     ]);
     expect(read(WEB_VALUES)).toBe("image:\n  repository: web\n  tag: 2.0.0\n");
     expect(read(CLI_VALUES)).toBe(
       'image:\n  # filled by the release\n  tag: "2.0.0"\n\njob: {}\n',
     );
-    expect(read(API_VALUES)).toContain('    tag: "2.0.0"');
-    expect(read(API_VALUES)).not.toContain("  tag: 2.0.0");
+    expect(read(API_VALUES)).toBe(VALUES[API_VALUES]);
   });
 
   it("releases every image when there is no last tag", async () => {
@@ -122,10 +116,10 @@ describe(ReleaseImagesService, () => {
 
     await service.run("2.0.0", "");
 
-    expect(runner.streamed).toHaveLength(6);
+    expect(runner.streamed).toHaveLength(3);
     expect(runner.lines).not.toContain(SHOW);
     expect(read(API_VALUES)).toBe(
-      '# api\nimage:\n  repository: api\n  tag: 2.0.0\n\nhook:\n  image:\n    # migrations\n    tag: "2.0.0"\n',
+      '# api\nimage:\n  repository: api\n  # filled by the release\n  tag: "2.0.0"\n',
     );
   });
 
@@ -141,7 +135,7 @@ describe(ReleaseImagesService, () => {
     expect(read(API_VALUES)).toBe(VALUES[API_VALUES]);
   });
 
-  it("prints builds and pushes on a dry run, still writing the tags", async () => {
+  it("prints the pushes on a dry run, still writing the tags", async () => {
     expect.hasAssertions();
 
     const runner = new FakeProcessRunner({});
@@ -156,16 +150,16 @@ describe(ReleaseImagesService, () => {
     expect(read(CLI_VALUES)).toContain('tag: "2.0.0"');
   });
 
-  it("writes no tag when its build fails", async () => {
+  it("writes no tag when its push fails", async () => {
     expect.hasAssertions();
 
     const runner = new FakeProcessRunner({}, 0, {
-      [build("caelundas-api")]: 1,
+      [push("caelundas-api")]: 1,
     });
     const service = await buildService(runner);
 
     await expect(service.run("2.0.0", "")).rejects.toThrow(
-      `${build("caelundas-api")} exited 1`,
+      `${push("caelundas-api")} exited 1`,
     );
     expect(read(API_VALUES)).toBe(VALUES[API_VALUES]);
   });
