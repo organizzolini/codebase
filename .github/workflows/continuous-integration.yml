@@ -348,21 +348,22 @@ jobs:
           cp .env.default .env
           echo "LOCAL_WORKSPACE_FOLDER=$GITHUB_WORKSPACE" >> .env
 
-      - name: 🔧 Set up Docker Buildx
+      # Only Buildx and the registry login: the devcontainer build installs
+      # the workspace itself, so nothing else is set up here.
+      - name: 🕋 Setup Codebase for Devcontainer
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'build-devcontainer'
-        uses: docker/setup-buildx-action@v4
-
-      - name: 🔐 Login to GitHub Container Registry
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'build-devcontainer'
-        uses: docker/login-action@v4
+        uses: ./.github/actions/setup-codebase
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          docker-buildx: "true"
+          ghcr-login: "true"
+          install: "false"
+          nx-cache: "false"
+          nx-graph-cache: "false"
+          nx-shas: "false"
+          python-dependencies: "false"
+          uv: "false"
 
       - name: 🐳 Build Devcontainer Image
         if: >-
