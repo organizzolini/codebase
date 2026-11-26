@@ -110,13 +110,10 @@ updates:
         patterns:
           - "*"
 
-  # Every Terraform root under infrastructure/terraform pins its providers: the
-  # linode/linode cluster at the top, and one folder per module below it, such
-  # as openrouter. One ecosystem covers them all, so a new module needs no entry.
+  # The organizzolini Terraform root pins its providers. One entry per root, so a
+  # new root under infrastructure/terraform needs one added.
   - package-ecosystem: terraform
-    directories:
-      - /infrastructure/terraform
-      - /infrastructure/terraform/*
+    directory: /infrastructure/terraform/organizzolini
     schedule:
       interval: weekly
       day: friday
