@@ -192,6 +192,23 @@ serving all three roots, so the move can stop at any point.
 6. **Prove it**: run `nx run infrastructure:terraform-init:<root>` and `terraform plan` for each of `openrouter`, `github`, and `linode` with the new values. Each plan must show no changes, since the state is the same state. Roll back by restoring the four secrets to the old values.
 7. **Retire the old bucket** only after a week of clean runs: `terraform state rm` the `state` bucket and key in the `linode` root, delete their resources and `bucket_label`, then delete the old bucket and key in Linode by hand. Both resources set `prevent_destroy` so that Terraform cannot do this itself.
 
+## Caelundas Ingestion
+
+**Start a run**: Actions, then **Caelundas Ingestion**, then **Run workflow**. Inputs are `start_year` and `end_year` (1900 to 2100), `latitude` and `longitude` (default Philadelphia), and `parallelism` (default `1`, 1 to 4). The workflow validates them, reads the CLI image tag from `helm/kubernetes-job/values/caelundas-cli.yaml` (it fails with `no caelundas-cli release yet` while the tag is empty), and runs `helm install caelundas-ingestion-<start>-<end>-<run_id>` into the `caelundas` namespace, one Indexed Job index per calendar year, writing to `caelundas_staging`. It authenticates with the `KUBECONFIG` repository secret and does not wait for the Job.
+
+**Follow it**:
+
+```bash
+kubectl get jobs -n caelundas
+kubectl logs -n caelundas job/<release-name>
+```
+
+**Clean up**: Argo CD never tracks the release, so it neither prunes nor reports it. The Job's `ttlSecondsAfterFinished` (86400) removes it a day after it finishes; `helm uninstall <release-name> -n caelundas` tidies the release record.
+
+**Duration**: one year takes about 45 minutes on 1 CPU at about 800 MiB peak (limit 1.5 GiB). With `parallelism: 1` a century is about 75 hours, and a failed index retries up to twice more (`backoffLimitPerIndex: 2`). Raise the `parallelism` input to 2 at most on the single node, which has about 1 GB of headroom; more needs a second node from the autoscaler.
+
+**Night sky, one-off**: `nx run caelundas-cli:start:night-sky` fills `stars`, `constellations` and `constellation_edges` from three downloaded files (see the caelundas-cli README). Either `pg_restore` those three tables from a local database into `caelundas_staging`, or install a plain `kubernetes-job` release with `--set job.completionMode=NonIndexed` and `--set-json args='["night-sky","--stars","<file>","--constellations","<file>","--lines","<file>"]'`, where the image must have the files available.
+
 ## Troubleshooting
 
 - **Job stuck in `Pending`** — inspect with `kubectl describe job <name>`, then the pod and PVC. Usual causes are an image pull failure against GHCR, insufficient cluster CPU/memory, or an unbound PVC.
@@ -200,6 +217,7 @@ serving all three roots, so the move can stop at any point.
 
 ## Key Files
 
+- [../.github/workflows/caelundas-ingestion.yml](../.github/workflows/caelundas-ingestion.yml): On-demand ingestion workflow
 - [helm/kubernetes-job/templates/job.yaml](helm/kubernetes-job/templates/job.yaml): Job template
 - [helm/kubernetes-job/templates/pvc.yaml](helm/kubernetes-job/templates/pvc.yaml): PVC template
 - [helm/kubernetes-job/templates/\_helpers.tpl](helm/kubernetes-job/templates/_helpers.tpl): Helpers

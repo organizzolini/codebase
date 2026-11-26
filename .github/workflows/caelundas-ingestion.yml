@@ -1,0 +1,111 @@
+name: 🌙 Caelundas Ingestion
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_year:
+        description: First calendar year to ingest (1900 to 2100)
+        required: true
+        type: number
+      end_year:
+        description: Last calendar year to ingest (start_year to 2100)
+        required: true
+        type: number
+      latitude:
+        description: Latitude of the observer
+        required: true
+        default: "39.949309"
+        type: string
+      longitude:
+        description: Longitude of the observer
+        required: true
+        default: "-75.17169"
+        type: string
+      parallelism:
+        description: Years ingested at once (1 to 4); the node fits 2
+        required: true
+        default: "1"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    name: 🌙 Start Ingestion
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      START_YEAR: ${{ inputs.start_year }}
+      END_YEAR: ${{ inputs.end_year }}
+      LATITUDE: ${{ inputs.latitude }}
+      LONGITUDE: ${{ inputs.longitude }}
+      PARALLELISM: ${{ inputs.parallelism }}
+      RUN_ID: ${{ github.run_id }}
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: ✅ Validate Inputs
+        id: validate
+        run: |
+          set -euo pipefail
+          is_integer() { [[ "$1" =~ ^[1-9][0-9]{0,3}$ ]]; }
+          is_number() { [[ "$1" =~ ^-?[0-9]+(\.[0-9]+)?$ ]]; }
+          is_integer "$START_YEAR" && is_integer "$END_YEAR" || { echo "::error::start_year and end_year must be integers"; exit 1; }
+          is_integer "$PARALLELISM" || { echo "::error::parallelism must be an integer"; exit 1; }
+          is_number "$LATITUDE" && is_number "$LONGITUDE" || { echo "::error::latitude and longitude must be numbers"; exit 1; }
+          if (( START_YEAR < 1900 || END_YEAR > 2100 || START_YEAR > END_YEAR )); then
+            echo "::error::Years must satisfy 1900 <= start_year <= end_year <= 2100"
+            exit 1
+          fi
+          if (( PARALLELISM < 1 || PARALLELISM > 4 )); then
+            echo "::error::parallelism must be 1 to 4"
+            exit 1
+          fi
+          tag="$(yq '.image.tag // ""' infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml)"
+          if [[ -z "$tag" ]]; then
+            echo "::error::no caelundas-cli release yet"
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: 🔑 Write Kubeconfig
+        env:
+          KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG }}
+        run: |
+          set -euo pipefail
+          umask 077
+          kubeconfig="$RUNNER_TEMP/kubeconfig"
+          printf '%s' "$KUBECONFIG_CONTENT" > "$kubeconfig"
+          echo "KUBECONFIG=$kubeconfig" >> "$GITHUB_ENV"
+
+      - name: 🚀 Install Ingestion Release
+        env:
+          IMAGE_TAG: ${{ steps.validate.outputs.tag }}
+        run: |
+          set -euo pipefail
+          release="caelundas-ingestion-${START_YEAR}-${END_YEAR}-${RUN_ID}"
+          extra_env="$(printf '[{"name":"START_YEAR","value":"%s"},{"name":"LATITUDE","value":"%s"},{"name":"LONGITUDE","value":"%s"}]' "$START_YEAR" "$LATITUDE" "$LONGITUDE")"
+          helm install "$release" infrastructure/helm/kubernetes-job -n caelundas \
+            -f infrastructure/helm/kubernetes-job/values/base.yaml \
+            -f infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml \
+            --set fullnameOverride="$release" \
+            --set image.tag="$IMAGE_TAG" \
+            --set job.completions="$((END_YEAR - START_YEAR + 1))" \
+            --set job.parallelism="$PARALLELISM" \
+            --set-json extraEnv="$extra_env"
+          {
+            echo "### 🌙 Started \`$release\`"
+            echo "Not waiting for completion. Follow it with:"
+            echo '```bash'
+            echo "kubectl get jobs -n caelundas"
+            echo "kubectl logs -n caelundas job/$release"
+            echo '```'
+            echo "Tidy the release record afterwards with \`helm uninstall $release -n caelundas\`."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 🧹 Remove Kubeconfig
+        if: always()
+        run: rm -f "$RUNNER_TEMP/kubeconfig"
