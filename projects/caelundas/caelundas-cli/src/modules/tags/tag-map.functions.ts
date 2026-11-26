@@ -1,6 +1,9 @@
 import _ from "lodash";
 
+import { bodyDisplayName } from "../caelundas/caelundas.types";
+
 import {
+  BODY_CLASS_BY_BODY,
   ELEMENT_BY_SIGN,
   MODALITY_BY_SIGN,
   POLARITY_BY_ELEMENT,
@@ -8,8 +11,13 @@ import {
 } from "./tag-dimensions.constants";
 import { TAG_ROOT } from "./tags.constants";
 
-import type { Sign } from "../caelundas/caelundas.types";
+import type { Body, Sign } from "../caelundas/caelundas.types";
 import type { TagMap, TagPath } from "./tags.types";
+
+/** The one node a body's raw tag stands for, under its class. */
+export function bodyPaths(body: Body): readonly TagPath[] {
+  return [[TAG_ROOT.body, ...BODY_CLASS_BY_BODY[body], bodyDisplayName(body)]];
+}
 
 /**
  * Maps each class under `parent`, and each name in it, to its node, title-cased.
@@ -131,6 +139,6 @@ export function signPaths(sign: Sign): readonly TagPath[] {
     [TAG_ROOT.zodiac, "Sign", _.startCase(sign)],
     [TAG_ROOT.zodiac, "Element", element],
     [TAG_ROOT.zodiac, "Modality", MODALITY_BY_SIGN[sign]],
-    [TAG_ROOT.zodiac, "Polarity", POLARITY_BY_ELEMENT[element] ?? element],
+    [TAG_ROOT.zodiac, "Polarity", POLARITY_BY_ELEMENT[element]],
   ];
 }

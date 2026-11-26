@@ -14,7 +14,7 @@ export interface ClassifiedCalendarEvent {
   paths: readonly TagPath[];
 }
 
-/** Stored tags: menu flags by id, ids by parent and name, names by parent and slug, and the edges between them. */
+/** Stored tags by id, parent and slug, and their edges. */
 export interface KnownTags {
   edges: Set<string>;
   flags: Map<string, TagMenuFlags>;
@@ -22,11 +22,14 @@ export interface KnownTags {
   slugs: Map<string, string>;
 }
 
-/** One row of `tag_edges`: a parent tag and a child it refines into. */
+/** One row of `tag_edges`: a parent and its child. */
 export interface TagEdgeRow {
   sourceNode: string;
   targetNode: string;
 }
+
+/** An element of the zodiac. */
+export type TagElement = "Air" | "Earth" | "Fire" | "Water";
 
 /**
  * Raw tag strings and the paths each stands for.

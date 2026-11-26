@@ -173,13 +173,16 @@ function isInstant(event: ClassifiableEvent): boolean {
  * Paths a raw tag stands for in the maps that apply, or a root named for itself when none knows it.
  */
 function mapRawTag(rawTag: string, maps: readonly TagMap[]): TagPath[] {
-  const known = maps.filter((map) => Object.hasOwn(map, rawTag));
+  const known = maps
+    .filter((map) => Object.hasOwn(map, rawTag))
+    .map((map) => map[rawTag])
+    .filter((paths) => paths !== undefined);
 
   if (known.length === 0) {
     return [[rawTag]];
   }
 
-  return known.flatMap((map) => map[rawTag] ?? []);
+  return known.flat();
 }
 
 /**

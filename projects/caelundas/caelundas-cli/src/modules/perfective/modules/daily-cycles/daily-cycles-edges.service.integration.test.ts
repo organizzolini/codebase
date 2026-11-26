@@ -15,7 +15,7 @@ const SEARCH_TIMEOUT_MILLISECONDS = 60_000;
 
 const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };
 
-/** Places around the equator, so the Moon is up at one of them at any minute. */
+/** Places around the equator: the Moon is up at one always. */
 const LONGITUDES = [-135, -90, -45, 0, 45, 90, 135, 180];
 
 describe(

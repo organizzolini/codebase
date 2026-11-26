@@ -18,7 +18,7 @@ export const METRIC_EXPRESSIONS_OPERATOR_SYMBOLS: Readonly<
   subtract: "−",
 };
 
-/** The Mermaid classes that color each kind of node, readable on light and dark. */
+/** Mermaid classes coloring each node kind, readable on light and dark. */
 export const METRIC_EXPRESSIONS_CLASS_DEFINITIONS = [
   "classDef operator fill:#9ec1fa,stroke:#1a73e8,color:#111",
   "classDef measure fill:#9fd7ae,stroke:#188038,color:#111",
@@ -62,7 +62,7 @@ export class MetricExpressionsOptionError extends Error {
   }
 }
 
-/** The metric whose expression root points at a node that is not there. */
+/** The metric whose expression root is not in the table. */
 export const metricExpressionsMissingMessage = (
   slug: string,
   id: string,

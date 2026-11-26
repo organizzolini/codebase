@@ -1,8 +1,9 @@
 // ♟️ Constants
 import type { Aspect, Body, Sign } from "../caelundas/caelundas.types";
+import type { TagElement } from "./tags.types";
 
 /** Element of each sign, also carried by events in it. */
-export const ELEMENT_BY_SIGN: Record<Sign, string> = {
+export const ELEMENT_BY_SIGN: Record<Sign, TagElement> = {
   aquarius: "Air",
   aries: "Fire",
   cancer: "Water",
@@ -34,7 +35,7 @@ export const MODALITY_BY_SIGN: Record<Sign, string> = {
 };
 
 /** Element polarity: fire and air positive; earth and water negative. */
-export const POLARITY_BY_ELEMENT: Readonly<Record<string, string>> = {
+export const POLARITY_BY_ELEMENT: Readonly<Record<TagElement, string>> = {
   Air: "Positive",
   Earth: "Negative",
   Fire: "Positive",

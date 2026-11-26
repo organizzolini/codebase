@@ -90,10 +90,7 @@ export const WIDENING = "Widening";
 /** Name of the span the planet closes on the Sun. */
 export const CLOSING = "Closing";
 
-/**
- * Mars widens from the Sun in the morning sky, from its rise to opposition,
- * then closes on it in the evening sky, from opposition to its set.
- */
+/** Mars's spans: widening from rise to opposition, then closing to its set. */
 export const MARS_SPAN_KINDS = [
   {
     from: MORNING_RISE_TAG,
@@ -125,7 +122,7 @@ export const RISE_SET_TAGS: readonly string[] = ELONGATION_SIDES.flatMap(
   (side) => [side.riseTag, side.setTag],
 );
 
-/** Mars also changes side of the Sun, at opposition, out of its glare. */
+/** Mars also changes side of the Sun at opposition. */
 export const MARS_BOUNDARY_TAGS: readonly string[] = [
   ...RISE_SET_TAGS,
   OPPOSITION_TAG,

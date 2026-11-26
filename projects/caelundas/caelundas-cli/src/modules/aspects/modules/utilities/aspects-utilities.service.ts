@@ -226,8 +226,8 @@ export class AspectsUtilitiesService {
   }
 
   /**
-   * Detects perfection when the signed offset from the aspect angle changes sign,
-   * rejecting the jump across the ±180° wrap, which is the opposite alignment.
+   * Detects perfection when the signed offset from the aspect angle changes sign;
+   * the orb gate keeps the ±180° wrap out.
    */
   private isSignedOffsetSignChange(args: {
     aspectAngle: number;
@@ -244,10 +244,6 @@ export class AspectsUtilitiesService {
       longitudeBody1: longitudes.currentLongitudeBody1,
       longitudeBody2: longitudes.currentLongitudeBody2,
     });
-    // Defensive: unreachable while the orb gate holds, since the wrap lies 180° from the target.
-    if (Math.abs(currentOffset - previousOffset) >= 180) {
-      return false;
-    }
     return (
       (previousOffset < 0 && currentOffset >= 0) ||
       (previousOffset > 0 && currentOffset <= 0)

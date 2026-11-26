@@ -1,8 +1,6 @@
 // ♟️ Constants
 
-/**
- * The other parents of a tag, by its own path: the tag is one node, listed under each parent, so an event carrying it is under every one. Each parent is a path to a node of its own.
- */
+/** Other parents of a tag, by its path, each as a path. */
 export const TAG_EXTRA_PARENTS: Readonly<
   Record<string, readonly (readonly [string, ...string[]])[]>
 > = {

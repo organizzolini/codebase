@@ -77,9 +77,8 @@ export class RetrogradesService {
   }
 
   /**
-   * The station ending the stay a planet is in at `from`: probed a day at a
-   * time, then scanned with the sweep's detection. Where the range ends
-   * first, the station is at the range's limit.
+   * The station ending the stay a planet is in at `from`: probed daily, then
+   * scanned; the range's limit where it ends first.
    */
   private findStation(args: {
     body: RetrogradeBody;

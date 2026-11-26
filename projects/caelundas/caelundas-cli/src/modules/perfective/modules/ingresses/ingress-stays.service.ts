@@ -137,18 +137,18 @@ export class IngressStaysService {
     const { body, changes, size, window } = args;
     const entry = this.signTransitsService.getZoneEntry({ body, size, window });
     const exit = this.signTransitsService.getZoneExit({ body, size, window });
-    const starts = [entry.start, ...changes];
-    const indexes = [
-      entry.index,
-      ...changes.map((change) =>
-        this.signTransitsService.getZoneAt(body, change, size),
-      ),
+    const starts = [
+      { index: entry.index, start: entry.start },
+      ...changes.map((change) => ({
+        index: this.signTransitsService.getZoneAt(body, change, size),
+        start: change,
+      })),
     ];
 
     return starts
-      .map((start, position) => ({
-        end: starts[position + 1] ?? exit,
-        index: indexes[position] ?? entry.index,
+      .map(({ index, start }, position) => ({
+        end: starts[position + 1]?.start ?? exit,
+        index,
         start,
       }))
       .filter((stay) => stay.end.isAfter(stay.start));

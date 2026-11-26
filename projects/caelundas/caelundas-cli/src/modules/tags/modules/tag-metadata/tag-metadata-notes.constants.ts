@@ -1,13 +1,16 @@
 // ♟️ Constants
 
+import { signs } from "../../../caelundas/caelundas.constants";
 import { SOLAR_INTERVAL_NAMES } from "../../../perfective/modules/annual-solar-cycle/annual-solar-cycle.constants";
 import {
   ELEMENT_BY_SIGN,
   MODALITY_BY_SIGN,
 } from "../../tag-dimensions.constants";
 
+import type { Sign } from "../../../caelundas/caelundas.types";
+
 /** The animal or figure each sign is drawn as, by sign. */
-const SIGN_FIGURES: Readonly<Record<string, string>> = {
+const SIGN_FIGURES: Readonly<Record<Sign, string>> = {
   aquarius: "the Water Bearer",
   aries: "the Ram",
   cancer: "the Crab",
@@ -23,7 +26,7 @@ const SIGN_FIGURES: Readonly<Record<string, string>> = {
 };
 
 /** The modality of each sign, by sign. */
-const MODALITIES: Readonly<Record<string, string>> = MODALITY_BY_SIGN;
+const MODALITIES: Readonly<Record<Sign, string>> = MODALITY_BY_SIGN;
 
 /** What each aspect is, named by its angle. */
 const ASPECT_NOTES: Readonly<Record<string, string>> = {
@@ -63,36 +66,20 @@ const PATTERN_NOTES: Readonly<Record<string, string>> = {
   Yod: "Two bodies in sextile, both quincunx a third.",
 };
 
-/** The ordinals of the harmonics. */
-const ORDINALS: readonly string[] = [
-  "1st",
-  "2nd",
-  "3rd",
-  "4th",
-  "5th",
-  "6th",
-  "7th",
-  "8th",
-  "9th",
-  "10th",
-  "11th",
-  "12th",
-];
-
-/** What each harmonic divides the circle into. */
-const HARMONIC_NOTES: readonly string[] = [
-  "the conjunction, a circle undivided",
-  "the opposition, a circle in halves",
-  "the trine, a circle in thirds",
-  "the square, a circle in quarters",
-  "the quintile family, a circle in fifths",
-  "the sextile, a circle in sixths",
-  "the septile family, a circle in sevenths",
-  "the semisquare and sesquiquadrate, a circle in eighths",
-  "the novile, a circle in ninths",
-  "the decile and tredecile, a circle in tenths",
-  "the undecile, a circle in elevenths",
-  "the semisextile and quincunx, a circle in twelfths",
+/** What each harmonic divides the circle into, by ordinal. */
+const HARMONIC_NOTES: readonly (readonly [string, string])[] = [
+  ["1st", "the conjunction, a circle undivided"],
+  ["2nd", "the opposition, a circle in halves"],
+  ["3rd", "the trine, a circle in thirds"],
+  ["4th", "the square, a circle in quarters"],
+  ["5th", "the quintile family, a circle in fifths"],
+  ["6th", "the sextile, a circle in sixths"],
+  ["7th", "the septile family, a circle in sevenths"],
+  ["8th", "the semisquare and sesquiquadrate, a circle in eighths"],
+  ["9th", "the novile, a circle in ninths"],
+  ["10th", "the decile and tredecile, a circle in tenths"],
+  ["11th", "the undecile, a circle in elevenths"],
+  ["12th", "the semisextile and quincunx, a circle in twelfths"],
 ];
 
 /** What each body is. */
@@ -325,10 +312,10 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
   ),
   ...Object.fromEntries(
     HARMONIC_NOTES.map(
-      (note, index) =>
+      ([ordinal, note], index) =>
         [
           `Aspect / Harmonic / Harmonic ${String(index + 1)}`,
-          `The aspects of the ${ORDINALS[index] ?? ""} harmonic: ${note}.`,
+          `The aspects of the ${ordinal} harmonic: ${note}.`,
         ] as const,
     ),
   ),
@@ -367,11 +354,11 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
     ),
   ),
   ...Object.fromEntries(
-    Object.entries(ELEMENT_BY_SIGN).map(([sign, element]) => {
+    signs.map((sign) => {
       const name = `${sign.charAt(0).toUpperCase()}${sign.slice(1)}`;
       return [
         `Zodiac / Sign / ${name}`,
-        `The sign of ${SIGN_FIGURES[sign] ?? ""}, a ${(MODALITIES[sign] ?? "").toLowerCase()} ${element.toLowerCase()} sign.`,
+        `The sign of ${SIGN_FIGURES[sign]}, a ${MODALITIES[sign].toLowerCase()} ${ELEMENT_BY_SIGN[sign].toLowerCase()} sign.`,
       ] as const;
     }),
   ),

@@ -555,6 +555,10 @@ describe("tags utilities", () => {
       expect(tagRank(["Aspect", "Harmonic", "Harmonic 4"])).toBe(0);
       expect(tagRank(["Unknown"])).toBe(0);
     });
+
+    it("gives an empty path 0", () => {
+      expect(tagRank([])).toBe(0);
+    });
   });
 
   describe(tagSlug, () => {

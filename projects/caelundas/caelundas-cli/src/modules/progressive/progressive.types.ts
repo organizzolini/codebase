@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** One family whose instants mark the start or end of a stored span. */
+/** One family whose instants start or end a stored span. */
 export interface SpanBoundaryRule {
   /** The edge of the span the instant sits on. */
   edge: SpanEdge;

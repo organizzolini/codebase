@@ -1,7 +1,7 @@
 // 🏷️ Types
 import type { Moment } from "moment-timezone";
 
-/** A stored event as a test reads it: its title and its direct tag names. */
+/** A stored event as a test reads it: title and direct tags. */
 export interface StoredEvent {
   summary: string;
   tags: string[];

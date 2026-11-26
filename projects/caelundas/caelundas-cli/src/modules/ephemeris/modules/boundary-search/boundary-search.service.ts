@@ -87,7 +87,7 @@ export class BoundarySearchService {
 
   /**
    * An event with its start and end pulled back to the range's limits, so a
-   * span whose true boundary lies past one is clipped there.
+   * span whose boundary lies past one is clipped.
    */
   clip(
     event: DetectedCalendarEvent,
@@ -132,9 +132,8 @@ export class BoundarySearchService {
   }
 
   /**
-   * Like find, but where the range ends first it walks on past the limit, so a
-   * boundary the limit cuts off is still found; undefined when none lies
-   * within the extension.
+   * Like find, but walks past the limit to find a boundary it cuts off;
+   * undefined when none lies in the extension.
    */
   findBeyondLimit(
     args: Omit<BoundarySearchArguments, "limit">,
@@ -151,8 +150,7 @@ export class BoundarySearchService {
 
   /**
    * The boundary events just outside a sweep: where its first minute's state
-   * began and where its last minute's ends. At the range's limit the search
-   * walks on past it to name the boundary, which then clips to the limit.
+   * began and its last minute's ends, clipped to the limit.
    */
   findEdgeEvents(args: EdgeEventsArguments): DetectedCalendarEvent[] {
     const { stateAt, stepMinutes, window } = args;
@@ -178,8 +176,7 @@ export class BoundarySearchService {
 
   /**
    * The range's first or last minute, where a span is clipped; a window
-   * reaching past it keeps its own edge, so a span never ends short of what
-   * was swept.
+   * reaching past it keeps its own edge.
    */
   getLimit(direction: -1 | 1, edge: Moment): Moment {
     return direction === 1

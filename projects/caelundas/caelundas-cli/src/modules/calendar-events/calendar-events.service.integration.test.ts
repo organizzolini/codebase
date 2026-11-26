@@ -23,7 +23,8 @@ import {
 } from "../../../testing/support/database";
 import { findStoredEvents } from "../../../testing/support/stored-events.utilities";
 import { tagRepository } from "../../../testing/support/tag-repository";
-import { tagSlug } from "../tags/tags.utilities";
+import { TagsService } from "../tags/tags.service";
+import { classifyEvent, tagSlug } from "../tags/tags.utilities";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";
@@ -793,6 +794,54 @@ describe("calendar events service integration", () => {
         ),
       ).rejects.toThrow('share the slug "clash-tag"');
       await expect(tags.countBy({ slug: "clash-tag" })).resolves.toBe(0);
+    });
+
+    it("refuses two children of one parent whose names slug alike", async () => {
+      expect.hasAssertions();
+
+      const resolver = database.module.get(TagsService, { strict: false });
+
+      await expect(
+        database.dataSource.transaction(async (manager) =>
+          resolver.resolve(manager, [
+            ["Slug Group", "Group Clash"],
+            ["Slug Group", "group-clash"],
+          ]),
+        ),
+      ).rejects.toThrow('share the slug "group-clash" under');
+    });
+
+    it("refuses to give a node a parent that already has a different child of its name", async () => {
+      expect.hasAssertions();
+
+      const resolver = database.module.get(TagsService, { strict: false });
+      const now = moment.utc("2026-10-10T00:00:00Z");
+      const venusPaths = classifyEvent({
+        end: now,
+        start: now,
+        tags: ["Astronomy", "Astrology", "Venus"],
+      }).filter((path) => path.at(-1) === "Venus");
+      const resolve = async (): Promise<Map<string, string>> =>
+        database.dataSource.transaction(async (manager) =>
+          resolver.resolve(manager, venusPaths),
+        );
+
+      await resolve();
+      const edges = database.dataSource.getRepository<{
+        sourceNode: string;
+        targetNode: string;
+      }>("TagEdge");
+      const venus = await tags.findOneByOrFail({ name: "Venus" });
+      const benefic = await tags.findOneByOrFail({ name: "Benefic" });
+      await edges.delete({ sourceNode: benefic.id, targetNode: venus.id });
+      const saved = await tags.save(
+        tags.create({ name: "Venus", slug: "venus" }),
+      );
+      await edges.insert({ sourceNode: benefic.id, targetNode: saved.id });
+
+      await expect(resolve()).rejects.toThrow(
+        'The tag "Venus" is already a different child of',
+      );
     });
   });
 });

@@ -137,8 +137,8 @@ export class ProgressiveService {
 
   /**
    * Runs every domain's progressive detection; given the sweep's input,
-   * completes the spans its window cuts off. A span both of whose boundaries
-   * lie beyond one limit of the range clips to nothing and is left out.
+   * completes the spans its window cuts off, leaving out any clipped to
+   * nothing.
    */
   detect(
     perfectiveEvents: DetectedCalendarEvent[],
@@ -165,10 +165,8 @@ export class ProgressiveService {
   }
 
   /**
-   * The perfective events without the instants that start or end a span in
-   * `spans`: the sweep finds them to build the spans, but a stored span already
-   * says when it starts and ends. An instant stays when no span of its family
-   * has it on its edge.
+   * The perfective events without instants a span in `spans` starts or ends
+   * on; others stay.
    */
   withoutSpanBoundaries(
     perfectiveEvents: readonly DetectedCalendarEvent[],

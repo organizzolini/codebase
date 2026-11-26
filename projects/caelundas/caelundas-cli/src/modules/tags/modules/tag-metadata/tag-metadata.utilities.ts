@@ -50,7 +50,7 @@ function tagIcon(path: readonly string[]): null | string {
   const own =
     TAG_METADATA[path.join(" / ")]?.[0] ??
     TAG_ICON_BY_NAME[name] ??
-    TAG_ICON_BY_NAME[name.split(" ").at(-1) ?? ""];
+    TAG_ICON_BY_NAME[name.slice(name.lastIndexOf(" ") + 1)];
 
   if (own !== undefined) {
     return own;

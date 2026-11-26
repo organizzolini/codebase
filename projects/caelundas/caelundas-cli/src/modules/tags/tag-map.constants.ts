@@ -30,13 +30,13 @@ import {
 } from "../perfective/modules/ingresses/ingresses.constants";
 
 import {
-  BODY_CLASS_BY_BODY,
   KIND_AND_SEASON_BY_SOLAR_CYCLE_POINT,
   MARTIAN_SYNODIC_STAGE_BY_PHASE,
   NATURE_AND_HARMONIC_BY_ASPECT,
   NATURE_AND_HARMONIC_BY_PATTERN,
 } from "./tag-dimensions.constants";
 import {
+  bodyPaths,
   mapClasses,
   mapEach,
   mapNone,
@@ -140,7 +140,7 @@ export const SHARED_TAG_MAP: TagMap = {
   ...Object.fromEntries(
     bodies.map((body): [string, readonly TagPath[]] => [
       bodyDisplayName(body),
-      [[TAG_ROOT.body, ...BODY_CLASS_BY_BODY[body], bodyDisplayName(body)]],
+      bodyPaths(body),
     ]),
   ),
   ...Object.fromEntries(
@@ -224,7 +224,7 @@ const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   Martian: mapPlanetaryPhases({
     marker: "Martian",
     phases: [...Object.keys(symbolByMartianPhase), ...MARTIAN_SPAN_PHASES],
-    planetPaths: SHARED_TAG_MAP["Mars"] ?? [],
+    planetPaths: bodyPaths("mars"),
     stageByPhase: MARTIAN_SYNODIC_STAGE_BY_PHASE,
   }),
   Mercurian: mapPlanetaryPhases({
@@ -234,7 +234,7 @@ const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
       ...VISIBILITY_PHASES,
       ...ELONGATION_PHASES,
     ],
-    planetPaths: SHARED_TAG_MAP["Mercury"] ?? [],
+    planetPaths: bodyPaths("mercury"),
   }),
   Venusian: mapPlanetaryPhases({
     marker: "Venusian",
@@ -243,7 +243,7 @@ const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
       ...VISIBILITY_PHASES,
       ...ELONGATION_PHASES,
     ],
-    planetPaths: SHARED_TAG_MAP["Venus"] ?? [],
+    planetPaths: bodyPaths("venus"),
   }),
 };
 

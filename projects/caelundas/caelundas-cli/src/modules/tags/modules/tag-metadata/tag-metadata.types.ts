@@ -1,6 +1,6 @@
 // 🏷️ Types
 
-/** One menu a tag may be left out of: Filter, Group, Select or Sort. */
+/** A menu that may leave a tag out: Filter, Group, Select, Sort. */
 export type TagMenuFlag =
   | "isFilterable"
   | "isGroupable"

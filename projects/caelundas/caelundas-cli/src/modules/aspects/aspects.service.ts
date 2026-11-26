@@ -106,8 +106,7 @@ export class AspectsService {
 
   /**
    * Replays the simple aspects' boundaries in order, detecting the compound
-   * events each registry change makes outside the window, or at its edge when
-   * the change is an edge event clipped to the range's limit.
+   * events each registry change makes outside the window or at a clipped edge.
    */
   private detectCompoundEdges(
     boundaries: DetectedCalendarEvent[],
@@ -125,10 +124,9 @@ export class AspectsService {
     );
     let registry: AspectBodies[] = [];
 
-    return Object.keys(byMinute)
-      .toSorted((first, second) => Number(first) - Number(second))
-      .flatMap((key) => {
-        const changes = byMinute[key] ?? [];
+    return Object.entries(byMinute)
+      .toSorted(([first], [second]) => Number(first) - Number(second))
+      .flatMap(([, changes]) => {
         const minute = changes[0]?.start;
         const previous = registry;
         registry = this.computeAspectBodies(previous, changes);
@@ -160,17 +158,9 @@ export class AspectsService {
     normalizedTags: string[],
     lowercaseBodies: string[],
   ): Body[] {
-    const eventBodies: Body[] = [];
-    for (const tag of normalizedTags) {
-      const bodyIndex = lowercaseBodies.indexOf(tag);
-      if (bodyIndex !== -1) {
-        const body = bodies[bodyIndex];
-        if (body) {
-          eventBodies.push(body);
-        }
-      }
-    }
-    return eventBodies;
+    return normalizedTags.flatMap((tag) =>
+      bodies.filter((_body, index) => lowercaseBodies[index] === tag),
+    );
   }
 
   /** Creates an order-insensitive compound key for a body pair and aspect type. */

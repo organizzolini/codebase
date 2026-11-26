@@ -148,6 +148,10 @@ describe("tag metadata", () => {
       ).toBe("sunrise");
     });
 
+    it("gives an empty path no icon and no note", () => {
+      expect(tagMetadata([])).toStrictEqual({ icon: null, note: null });
+    });
+
     it("gives the Planet node its classes' planets beneath it", () => {
       expect(tagMetadata(["Body", "Planet"]).icon).toBe("earth");
       expect(

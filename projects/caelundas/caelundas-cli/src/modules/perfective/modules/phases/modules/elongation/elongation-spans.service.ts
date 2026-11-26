@@ -16,10 +16,10 @@ import type { DetectedCalendarEvent } from "../../../../../calendar-events/calen
 import type { ElongationSpanKind } from "../../phases.types";
 
 /**
- * Builds the two halves of an apparition of Mercury or Venus: from its rise to
- * its greatest elongation, while the planet widens from the Sun, and from the
- * greatest elongation to its set, while it closes on the Sun again. Mars
- * widens from its morning rise to opposition and closes to its evening set.
+ * Builds the two halves of an apparition of Mercury or Venus: its rise to
+ * greatest elongation, while the planet widens from the Sun, then that to its
+ * set, while it closes. Mars widens from its morning rise to opposition and
+ * closes to its evening set.
  */
 @Injectable()
 export class ElongationSpansService {

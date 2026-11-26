@@ -81,16 +81,14 @@ export class TagsService {
    */
   private async ensureExtraParents(
     manager: EntityManager,
-    node: { id: string; path: TagPath },
+    node: { id: string; name: string; path: TagPath },
     known: KnownTags,
   ): Promise<void> {
-    const name = node.path.at(-1) ?? "";
-
     for (const parentPath of tagExtraParents(node.path)) {
       const parentId = await this.ensurePath(manager, parentPath, known);
 
       if (!known.edges.has(tagEdgeKey(parentId, node.id))) {
-        this.claimSibling(known, parentId, { id: node.id, name });
+        this.claimSibling(known, parentId, node);
         await manager
           .getRepository<TagEdgeRow>("TagEdge")
           .insert({ sourceNode: parentId, targetNode: node.id });
@@ -109,20 +107,26 @@ export class TagsService {
   ): Promise<string> {
     let parentId: null | string = null;
     let id = "";
+    let leaf = "";
 
     for (const [index, name] of path.entries()) {
       const nodePath = path.slice(0, index + 1);
       const stored = known.ids.get(tagNodeKey(parentId, name));
 
       if (stored === undefined) {
-        id = await this.saveNode(manager, { parentId, path: nodePath }, known);
+        id = await this.saveNode(
+          manager,
+          { name, parentId, path: nodePath },
+          known,
+        );
       } else {
         id = stored;
         await this.syncFlags(manager, { id, path: nodePath }, known);
       }
       parentId = id;
+      leaf = name;
     }
-    await this.ensureExtraParents(manager, { id, path }, known);
+    await this.ensureExtraParents(manager, { id, name: leaf, path }, known);
 
     return id;
   }
@@ -132,11 +136,10 @@ export class TagsService {
    */
   private async saveNode(
     manager: EntityManager,
-    node: { parentId: null | string; path: readonly string[] },
+    node: { name: string; parentId: null | string; path: readonly string[] },
     known: KnownTags,
   ): Promise<string> {
-    const { parentId, path } = node;
-    const name = path.at(-1) ?? "";
+    const { name, parentId, path } = node;
     const slug = this.claimSlug(known.slugs, parentId, name);
     const { icon, note } = tagMetadata(path);
     const saved = await manager.getRepository(Tag).save(

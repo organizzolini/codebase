@@ -22,6 +22,7 @@ import {
 import { eclipseTypeLabelByType } from "../perfective/modules/eclipses/eclipses.constants";
 import { DECAN_TAG_BY_DECAN } from "../perfective/modules/ingresses/ingresses.constants";
 
+import { mapPlanetaryPhases } from "./tag-map.functions";
 import { TAG_ROOT } from "./tags.constants";
 import { classifyEvent } from "./tags.utilities";
 
@@ -255,5 +256,18 @@ describe("tag map vocabulary", () => {
         ([, branch]) => branch === "Synodic Stage",
       ),
     ).toStrictEqual([[TAG_ROOT.planetary, "Synodic Stage", "Conjunction"]]);
+  });
+
+  it("takes a phase's own name for its stage when none is mapped for it", () => {
+    const map = mapPlanetaryPhases({
+      marker: "Venusian",
+      phases: ["odd phase"],
+      planetPaths: [],
+    });
+
+    expect(map["Odd Phase"]).toStrictEqual([
+      [TAG_ROOT.planetary, "Phase", "Venusian", "Venusian Odd Phase"],
+      [TAG_ROOT.planetary, "Synodic Stage", "Odd Phase"],
+    ]);
   });
 });

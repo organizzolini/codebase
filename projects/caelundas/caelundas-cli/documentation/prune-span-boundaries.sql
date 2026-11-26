@@ -1,21 +1,20 @@
--- The instants a stored span starts or ends on, which caelundas no longer stores.
---
--- An upsert never deletes a row it stops generating, so the instants of earlier
--- runs stay. This lists them in the temporary table `excess_events`, with their
--- family, and prints how many each family would remove. It changes no stored row.
---
+-- Instants a stored span starts or ends on, no longer stored.
+-- An upsert never deletes rows it stops generating, so earlier runs' instants
+-- stay. This lists them in the temporary table `excess_events`, prints how many
+-- each family would remove, and changes no stored row.
+
 -- Run it after the run that stores the spans: an instant stays unless a span of
 -- its family, for the same observer, starts or ends on its minute.
 --
 --   psql ... -f prune-span-boundaries.sql
---
+
 -- To delete them, in one transaction (the tag links go with them):
 --
 --   psql ... -1 -f prune-span-boundaries.sql \
 --     -c "delete from calendar_events where id in (select id from excess_events)"
---
+
 -- Then refresh the facts: nx run caelundas-cli:start:refresh-metrics
---
+
 -- The families are `SPAN_BOUNDARY_RULES` in `progressive.constants.ts`, by the
 -- tag paths the raw tags classify under. The edge is the end of the span the
 -- instant sits on: `start`, `end` or `either`.

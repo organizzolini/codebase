@@ -52,8 +52,8 @@ export class MetricExpressionsService {
   }
 
   /**
-   * Writes the marker block of the Markdown file from the database, or with
-   * `check` leaves the file alone and fails when it differs.
+   * Writes the marker block from the database; with `check`, only fails when
+   * it differs.
    * @throws MetricExpressionsCheckError when `check` finds the file stale.
    */
   async sync({ check, outputMarkdown }: MetricExpressionsSync): Promise<void> {

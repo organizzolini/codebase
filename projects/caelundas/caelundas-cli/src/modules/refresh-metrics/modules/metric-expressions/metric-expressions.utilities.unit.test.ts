@@ -10,6 +10,8 @@ import {
   spliceMetricExpressionsMarkdown,
 } from "./metric-expressions.utilities";
 
+import type { MetricExpressionTree } from "./metric-expressions.types";
+
 /** An expression row, with the fields a tree reads. */
 function expression(fields: Partial<MetricExpression>): MetricExpression {
   return Object.assign(new MetricExpression(), {
@@ -106,6 +108,18 @@ describe("metric expression utilities", () => {
         kind: "operator",
         operator: "subtract",
       });
+    });
+
+    it("leaves out a metric that has no expression, whether null or unset", () => {
+      const trees = buildMetricExpressionTrees(
+        [...METRICS, metric({ name: "Unset", slug: "unset" })],
+        ROWS,
+      );
+
+      expect(trees.map(({ slug }) => slug)).toStrictEqual([
+        "events",
+        "total-time-percent",
+      ]);
     });
 
     it("names the metric whose root is not among the expressions", () => {
@@ -307,6 +321,89 @@ describe("metric expression utilities", () => {
           trees,
         ),
       ).toThrow(MetricExpressionsAnchorError);
+    });
+  });
+
+  describe("rows with missing parts", () => {
+    const treeOf = (
+      rows: readonly MetricExpression[],
+      name = "Odd",
+    ): MetricExpressionTree[] =>
+      buildMetricExpressionTrees(
+        [metric({ expressionId: "root", name, slug: "odd" })],
+        rows,
+      );
+
+    it("reads a measure row with no measure as an empty measure", () => {
+      const [tree] = treeOf([expression({ id: "root", kind: "measure" })]);
+
+      expect(tree?.expression).toStrictEqual({
+        kind: "measure",
+        name: "",
+        slug: "",
+      });
+    });
+
+    it("reads a metric row with no metric as an empty metric", () => {
+      const [tree] = treeOf([expression({ id: "root", kind: "metric" })]);
+
+      expect(tree?.expression).toStrictEqual({
+        kind: "metric",
+        name: "",
+        slug: "",
+      });
+    });
+
+    it("names a metric row's node by its slug when it has no name", () => {
+      const [tree] = treeOf([
+        expression({
+          id: "root",
+          kind: "metric",
+          metric: metric({ slug: "only-slug" }),
+        }),
+      ]);
+
+      expect(tree?.expression).toStrictEqual({
+        kind: "metric",
+        name: "only-slug",
+        slug: "only-slug",
+      });
+    });
+
+    it("reads an operator row with no name and no operands as an empty operator", () => {
+      const [tree] = treeOf([expression({ id: "root" })]);
+
+      expect(tree?.expression).toStrictEqual({
+        children: [],
+        kind: "operator",
+        operator: "",
+      });
+    });
+
+    it("draws an operator with no symbol by its name, and leaves operands of an unordered operator unnumbered", () => {
+      const block = renderMetricExpressionsBlock(
+        treeOf([
+          expression({ id: "root", operator: "power" }),
+          expression({
+            id: "a",
+            kind: "measure",
+            measure: Object.assign(new Measure(), { name: "A", slug: "a" }),
+            parentId: "root",
+          }),
+          expression({ id: "sum", operator: "add", parentId: "root" }),
+          expression({
+            id: "b",
+            kind: "measure",
+            measure: Object.assign(new Measure(), { name: "B", slug: "b" }),
+            parentId: "sum",
+          }),
+        ]),
+      );
+
+      expect(block).toContain('    n1{{"power"}}');
+      expect(block).toContain('    n3{{"+ add"}}');
+      expect(block).toContain("    n3 --> n4");
+      expect(block).not.toContain("n3 -->|");
     });
   });
 });

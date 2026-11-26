@@ -339,8 +339,8 @@ export class PhaseCalculationService {
   }
 
   /**
-   * Determines whether a superior planet crosses 180° from the Sun, in the
-   * direction it recedes: its longitude gap west of the Sun falling to 180°.
+   * Whether a superior planet crosses 180° from the Sun as it recedes: its
+   * westward longitude gap falling to 180°.
    */
   isOpposition(args: RiseSetLongitudeArguments): boolean {
     const gap = (planet: number, sun: number): number =>

@@ -66,7 +66,7 @@ export interface MetricExpressionsCommandOptions {
   readonly outputMarkdown?: string;
 }
 
-/** What a sync of the Markdown file needs: its path, and whether to only check. */
+/** What syncing the Markdown file needs: its path, and check-only. */
 export interface MetricExpressionsSync {
   /** Fail when the Markdown differs from the database instead of writing it. */
   readonly check: boolean;

@@ -20,8 +20,8 @@ import type {
 import type { Metric, MetricExpression } from "@codebase/caelundas-db";
 
 /**
- * Builds each metric's expression tree from the rows of both tables, ordered
- * by slug, with every node's operands in position order.
+ * Builds each metric's expression tree, by slug, with operands in position
+ * order.
  * @throws Error when a metric's root is not among the expressions.
  */
 export function buildMetricExpressionTrees(
@@ -43,16 +43,16 @@ export function buildMetricExpressionTrees(
   }
 
   return metrics
-    .filter(({ expressionId }) => expressionId !== null)
     .toSorted((left, right) => left.slug.localeCompare(right.slug))
-    .map(({ expressionId, name, slug, unit }) => {
-      const root = byId.get(expressionId ?? "");
-      if (root === undefined) {
-        throw new Error(
-          metricExpressionsMissingMessage(slug, expressionId ?? ""),
-        );
+    .flatMap(({ expressionId, name, slug, unit }) => {
+      if (expressionId === null || expressionId === undefined) {
+        return [];
       }
-      return { expression: nodeOf(root, operands), name, slug, unit };
+      const root = byId.get(expressionId);
+      if (root === undefined) {
+        throw new Error(metricExpressionsMissingMessage(slug, expressionId));
+      }
+      return [{ expression: nodeOf(root, operands), name, slug, unit }];
     });
 }
 
@@ -107,8 +107,7 @@ export function renderMetricExpressionsBlock(
 }
 
 /**
- * Splices the generated block into `content`, between its anchors, or after
- * its prose when it has none.
+ * Splices the block into `content` between its anchors, or after its prose.
  * @throws MetricExpressionsAnchorError when the anchors are not one ordered pair.
  */
 export function spliceMetricExpressionsMarkdown(
@@ -236,8 +235,8 @@ function plainText(text: string): string {
 }
 
 /**
- * The metric as a flowchart: the metric over its expression, or only the
- * measure when that is all it reads, named without repeating the metric.
+ * The metric as a flowchart: over its expression, or only its measure when
+ * that is all it reads.
  */
 function renderFlowchart({
   expression,

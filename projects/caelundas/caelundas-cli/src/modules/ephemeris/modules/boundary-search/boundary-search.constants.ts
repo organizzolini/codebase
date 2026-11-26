@@ -7,7 +7,6 @@ export const MILLISECONDS_PER_MINUTE = 60_000;
 export const BOUNDARY_PROBE_OFFSETS_MINUTES = [0, 1, -1, 2, -2] as const;
 
 /**
- * Days a search may walk past a range limit to name a boundary the limit
- * cuts off: longer than Mars's synodic period of 780 days.
+ * Days a search walks past a limit: over Mars's 780-day synodic period.
  */
 export const LIMIT_EXTENSION_DAYS = 800;

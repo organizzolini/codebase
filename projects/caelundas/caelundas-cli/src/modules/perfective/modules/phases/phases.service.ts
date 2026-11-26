@@ -82,9 +82,8 @@ export class PhasesService {
   }
 
   /**
-   * Pairs planetary rise and set events into visibility spans: morning-star and
-   * evening-star periods of Venus and Mercury, and the widening and closing
-   * halves of every apparition, Mars's at opposition.
+   * Pairs planetary rise and set events into visibility spans, and the
+   * widening and closing halves of each apparition, Mars's at opposition.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const planetaryPhaseEvents = events.filter((event) =>

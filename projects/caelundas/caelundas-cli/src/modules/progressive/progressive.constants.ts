@@ -5,16 +5,7 @@ import type { SpanBoundaryRule } from "./progressive.types";
 /** Token for the finders of boundaries a window cuts off. */
 export const EDGE_EVENTS_FINDERS_TOKEN = "EDGE_EVENTS_FINDERS_TOKEN";
 
-/**
- * The families whose instants start or end a stored span, so storing them too
- * says nothing the span does not: aspect forming and dissolving, moon phases,
- * lunar apsides, planetary rises, sets, elongations and opposition, eclipse
- * beginning and ending, stations, ingresses, the points of the solar year,
- * moonrise and moonset, and the twilight boundaries. An instant is dropped only
- * when a span of its family has it on the named edge, so an instant whose span
- * was not stored stays. Eclipse maxima, brightest, exact aspects, zeniths,
- * nadirs, sunrise and sunset sit inside spans or bound none, and stay.
- */
+/** Instants of these families are dropped when a stored span bounds them. */
 export const SPAN_BOUNDARY_RULES: readonly SpanBoundaryRule[] = [
   {
     edge: "start",

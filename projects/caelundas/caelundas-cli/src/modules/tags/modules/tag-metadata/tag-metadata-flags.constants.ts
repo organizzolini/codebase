@@ -2,14 +2,12 @@
 
 import type { TagMenuFlag } from "./tag-metadata.types";
 
-/**
- * The paths of the tags a menu leaves out, by flag; every other tag has all four flags on. The menus only offer a tag, so a saved link to one still works.
- *
- * Filter leaves out the roots and the headers over a dimension no preset or view filters by,
- * so one picks Conjunct or Aries, never "Element". Group leaves out a header over
- * a single tag, which splits nothing. Sort and Select leave out Benefic and
- * Malefic, which Planet already orders and shows.
- */
+// The menus only offer a tag, so a saved link to one still works. Filter
+// leaves out roots and headers over a dimension no preset or view filters by.
+// Group leaves out a header over a single tag. Sort and Select leave out
+// Benefic and Malefic.
+
+/** Paths each menu leaves out, by flag; others keep all four. */
 export const TAG_MENU_EXCLUSIONS: Readonly<
   Record<TagMenuFlag, readonly string[]>
 > = {
