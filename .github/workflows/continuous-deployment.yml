@@ -245,8 +245,9 @@ jobs:
           matrix.target.id == 'push-releases'
         run: bash scripts/git/check-commit-signing-configuration.sh
 
-      # The release step builds and pushes the Caelundas images with `docker build`
-      # and `docker push`, so Buildx and a ghcr.io login come before it.
+      # The release step builds and pushes the Caelundas images with one
+      # `docker buildx build --push` each (`nx run <project>:docker:push`), so
+      # Buildx and a ghcr.io login come before it.
       - name: 🔧 Set up Docker Buildx for Releases
         if: >-
           steps.check-skip.outputs.skip != 'true' &&

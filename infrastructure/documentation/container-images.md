@@ -61,7 +61,7 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
 
 ## Decisions
 
-- **One shared Dockerfile.** `infrastructure/docker/application.Dockerfile` has
+- **One shared Dockerfile.** `infrastructure/docker/application/Dockerfile` has
   an `install` and a `build` stage every image shares, then a `node` target for
   the applications and a `static` target for the web app. Each project's
   `infrastructure/image.env` supplies the arguments, and
@@ -76,7 +76,7 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
   points of their own, so a glob built from `import.meta.dirname` finds the
   same files in source and in an image. Third-party packages stay external:
   the bundle plugin copies exactly the packages the output imports, and their
-  dependencies, out of the pnpm install into `dist/bundle/node_modules`.
+  dependencies, out of the pnpm install into `dist/<project>/node_modules`.
   Rejected: one bundle per entry, which leaves no migration files to glob.
 - **Rejected: `pnpm deploy --prod`.** `@codebase/observability` lists `vitest`
   and `@codebase/testing`, and `@codebase/persistence` lists `typescript`,
@@ -95,14 +95,22 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
   production dependency of a runtime library: `prettier` through `nest-commander`,
   which `@codebase/persistence` imports.
 - **Migrations run at start.** `PostgresqlModule` applies the pending migrations
-  it is given before the application serves, under a Postgres advisory lock
-  (`pg_advisory_lock`), so replicas starting together migrate one at a time.
+  it is given before the application serves, in one transaction that first takes
+  `pg_advisory_xact_lock`, so replicas starting together migrate one at a time.
+  The lock is transaction-scoped on purpose: the API reaches Postgres through a
+  transaction-mode PgBouncer, where a session-level lock could land on a
+  different backend than the migration and never release. TypeORM's
+  `MigrationExecutor` given that runner joins its open transaction, so the lock
+  and the migrations share a backend. A failed migration closes the connection
+  and is not retried (`toRetry`), so the pod exits instead of leaking pools.
   The migration hook and its chart, image tag and variable are gone.
 - **Ports.** Each image listens on the port `project-ports` derived from its
   name, read from `configuration/.env.default` or `vite.config.mts` when the
   image is built, so the Dockerfile and `image.env` hold no number. The chart
   values and the tunnel rule hold the same number, since YAML and HCL cannot
-  read it; their tests assert it.
+  read it; their tests assert it. The API's own default stays 3000, because
+  the generator template pins that literal and `conformetry-validate` rejects
+  another; the image sets `CAELUNDAS_API_PORT` unless the environment does.
 - **Tini.** The `node` target runs under `tini` as `ENTRYPOINT`, for signals and
   zombie reaping, per docker-node. A Kubernetes `command` replaces the entry
   point, so the ingestion Job names `tini` itself.

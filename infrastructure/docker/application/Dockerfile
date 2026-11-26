@@ -1,14 +1,13 @@
 # syntax=docker/dockerfile:1
 
 # One Dockerfile for every Node application image (`--target node`) and every static site image
-# (`--target static`). `docker-image.sh` builds it from the workspace root, passing the build
+# (`--target static`). The base image tags are literal so Dependabot reads them. `docker-image.sh` builds it from the workspace root, passing the build
 # arguments below from the project's own `infrastructure/image.env`.
-ARG NODE_IMAGE=node:26.13.1-trixie-slim
-ARG NGINX_IMAGE=nginxinc/nginx-unprivileged:1.30.6-alpine3.24
-
 # The workspace install, shared by every image: the pnpm closure of one project, with its dev dependencies.
-FROM ${NODE_IMAGE} AS install
+FROM node:26.13.1-trixie-slim AS install
 ARG PROJECT
+# The pnpm release the root package.json `packageManager` names; docker-image.sh fills it.
+ARG PNPM_VERSION
 # Packages the install compiles with, such as a native addon's toolchain; they stay in this stage.
 ARG BUILD_PACKAGES=""
 # Native dependencies to rebuild after the install, which skips scripts.
@@ -25,7 +24,7 @@ COPY . .
 RUN --mount=type=secret,id=ca-bundle,required=false \
     --mount=type=cache,id=pnpm-store,target=/pnpm/store \
     if [ -f /run/secrets/ca-bundle ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/ca-bundle; fi; \
-    npm install --global pnpm@12.21.0 && \
+    npm install --global "pnpm@${PNPM_VERSION}" && \
     pnpm install --frozen-lockfile --ignore-scripts --filter "${PROJECT}..." && \
     if [ -n "$REBUILT_PACKAGES" ]; then pnpm rebuild $REBUILT_PACKAGES; fi
 
@@ -51,7 +50,7 @@ RUN mkdir /out && \
     for path in ${RUNTIME_PATHS}; do cp -a "$path" /out/; done
 
 # A Node application: the build output and its production node_modules, no dev dependencies.
-FROM ${NODE_IMAGE} AS node
+FROM node:26.13.1-trixie-slim AS node
 LABEL org.opencontainers.image.source="https://github.com/organizzolini/codebase"
 # The entry file, run with node from /app.
 ARG ENTRY
@@ -89,7 +88,7 @@ ARG PORT
 RUN sed "s/__PORT__/${PORT}/g" infrastructure/docker/nginx/default.conf.template > /default.conf
 
 # A static site: unprivileged nginx serves the build output as UID 101, the image's own user.
-FROM ${NGINX_IMAGE} AS static
+FROM nginxinc/nginx-unprivileged:1.30.6-alpine3.24 AS static
 LABEL org.opencontainers.image.source="https://github.com/organizzolini/codebase"
 ARG PORT
 ENV APPLICATION_PORT=${PORT}
