@@ -18,7 +18,7 @@ vi.mock(import("../../../router"), async (importOriginal) => {
 
   return {
     ...original,
-    getRouter: vi.fn(() => {
+    getRouter: vi.fn<typeof original.getRouter>(() => {
       const router = original.getRouter();
 
       router.update({
@@ -43,7 +43,12 @@ vi.mock(
   async (importOriginal) => {
     const original = await importOriginal();
 
-    return { ...original, EventsCalendar: vi.fn(original.EventsCalendar) };
+    return {
+      ...original,
+      EventsCalendar: vi.fn<typeof original.EventsCalendar>(
+        original.EventsCalendar,
+      ),
+    };
   },
 );
 
@@ -276,7 +281,9 @@ describe("night sky backdrop", () => {
 
     expect(sky.dataset["latitude"]).toBe("90");
 
-    const router = vi.mocked(getRouter).mock.results.at(-1)?.value;
+    const router = vi.mocked(getRouter).mock.results.at(-1)?.value as
+      | ReturnType<typeof getRouter>
+      | undefined;
 
     await act(async () => {
       await router?.navigate({
@@ -305,7 +312,9 @@ describe("night sky backdrop", () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await findSky();
 
-    const router = vi.mocked(getRouter).mock.results.at(-1)?.value;
+    const router = vi.mocked(getRouter).mock.results.at(-1)?.value as
+      | ReturnType<typeof getRouter>
+      | undefined;
     const rendered = vi.mocked(EventsCalendar).mock.calls.length;
 
     await act(async () => {
