@@ -151,10 +151,8 @@ jobs:
             name: Infrastructure
             emoji: 🧑‍🚀
           # Builds and tests the devcontainer image for a pull request that changes it,
-          # without publishing: Continuous Deployment pushes it on `main`. Like the
-          # infrastructure leg, it always reports. A cold build, with no cached feature
-          # layers, takes about 10 minutes, and the test then compiles the infrastructure
-          # linters and installs the workspace for another 5, so 25 leaves room.
+          # without publishing; Continuous Deployment pushes it on `main`. A cold build
+          # takes about 15 minutes with the linter install, so 25 leaves room.
           - target: build-devcontainer
             name: Devcontainer
             emoji: 🧑‍🏭
