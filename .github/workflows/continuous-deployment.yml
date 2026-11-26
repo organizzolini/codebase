@@ -58,13 +58,14 @@ jobs:
             name: Releases
             emoji: 🦸
             timeout: 32
-          # Applies the OpenRouter Terraform when a push to main changes it. State is in
-          # a Linode bucket with no lock, so this workflow's per-ref concurrency group,
-          # which never cancels, keeps two applies from overlapping.
+          # Applies the four Terraform roots in order on a push to main that
+          # changes them: OpenRouter, Linode, Organizzolini, GitHub. State has no
+          # lock, so the never-cancelling concurrency group prevents overlap. The
+          # first run takes about 20 minutes, so 30 leaves room.
           - id: apply-terraform
             name: Infrastructure
             emoji: 🏗️
-            timeout: 20
+            timeout: 30
 
     steps:
       # Decides from the GitHub API alone, before any checkout. The devcontainer is
@@ -408,10 +409,17 @@ jobs:
           TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
           TF_VAR_linode_token: ${{ secrets.LINODE_TOKEN }}
-        # OpenRouter first: the GitHub root reads its outputs.
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_cloudflare_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
+        # Each root reads the outputs of the roots before it, so this order is the
+        # dependency order: OpenRouter, Linode, Organizzolini, then GitHub. The
+        # organizzolini root's readiness wait runs kubectl, which the GitHub-hosted
+        # ubuntu image ships.
         run: |
           pnpm exec nx run infrastructure:terraform-apply:openrouter
           pnpm exec nx run infrastructure:terraform-apply:linode
+          pnpm exec nx run infrastructure:terraform-apply:organizzolini
           pnpm exec nx run infrastructure:terraform-apply:github
 
       # The only save of this workflow's Nx cache, which the next release

@@ -143,7 +143,7 @@ jobs:
           - target: end-to-end
             name: End to End IC Suite
             emoji: 🤵
-          # Plans the OpenRouter Terraform for a pull request and comments the result.
+          # Plans the four Terraform roots for a pull request and comments the result.
           # Nothing applies here: Continuous Deployment applies it on `main`. The leg
           # always reports, so it can be a required check; its steps run only for a
           # same-repository pull request, since forks get no secrets.
@@ -231,6 +231,7 @@ jobs:
         if: steps.check-skip.outputs.skip != 'true'
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: 🕋 Setup Codebase
@@ -249,12 +250,15 @@ jobs:
           postgres-client: >-
             ${{ matrix.check['postgres-client'] && 'true' || 'false' }}
           uv: ${{ matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
-          # The infrastructure project's `terraform-format` and
-          # `terraform-validate` run as part of lint-code, and the runner image
-          # no longer ships terraform.
+          # The infrastructure project's `terraform-format`, `terraform-test`,
+          # and `terraform-validate` run as part of lint-code, and the runner
+          # image no longer ships terraform.
           terraform: >-
             ${{ (matrix.check.target == 'static-code' ||
             matrix.check.target == 'plan-terraform') && 'true' || 'false' }}
+          # The infrastructure and configuration projects' tflint, kubeconform,
+          # kube-linter, pluto, and actionlint run as part of lint-code.
+          linters: ${{ matrix.check.target == 'static-code' && 'true' || 'false' }}
           nx-cache: "true"
           nx-cache-scope: >-
             ${{ github.job }}-${{ matrix.check.target }}${{ matrix.check.shard
@@ -277,10 +281,14 @@ jobs:
           TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
           TF_VAR_linode_token: ${{ secrets.LINODE_TOKEN }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_cloudflare_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
         run: |
           pnpm exec nx run infrastructure:terraform-plan:openrouter
-          pnpm exec nx run infrastructure:terraform-plan:github
           pnpm exec nx run infrastructure:terraform-plan:linode
+          pnpm exec nx run infrastructure:terraform-plan:organizzolini
+          pnpm exec nx run infrastructure:terraform-plan:github
 
       # Posts each root's plan as one comment that every push updates. A
       # failed plan fails the leg above and shows in its log instead.
@@ -295,17 +303,6 @@ jobs:
           planfile: plan.tfplan
           header: 🏗️ Terraform Plan (OpenRouter)
 
-      - name: 📊 Report GitHub Plan
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@v3
-        with:
-          token: ${{ github.token }}
-          working-directory: infrastructure/terraform/github
-          planfile: plan.tfplan
-          header: 🏗️ Terraform Plan (GitHub)
-
       - name: 📊 Report Linode Plan
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
@@ -316,6 +313,28 @@ jobs:
           working-directory: infrastructure/terraform/linode
           planfile: plan.tfplan
           header: 🏗️ Terraform Plan (Linode)
+
+      - name: 📊 Report Organizzolini Plan
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
+        uses: borchero/terraform-plan-comment@v3
+        with:
+          token: ${{ github.token }}
+          working-directory: infrastructure/terraform/organizzolini
+          planfile: plan.tfplan
+          header: 🏗️ Terraform Plan (Organizzolini)
+
+      - name: 📊 Report GitHub Plan
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
+        uses: borchero/terraform-plan-comment@v3
+        with:
+          token: ${{ github.token }}
+          working-directory: infrastructure/terraform/github
+          planfile: plan.tfplan
+          header: 🏗️ Terraform Plan (GitHub)
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
