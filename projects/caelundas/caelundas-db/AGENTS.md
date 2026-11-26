@@ -63,7 +63,8 @@ migrations/                              # The migrations, each with its .sql pa
   `refreshReadModel(manager)` in the caller's transaction. A view's name is not
   pluralized into sense: `calendar_event_derived_times` is already plural.
 - **The first migration is the baseline,** and the second replaces
-  `constellation_lines` with the generated `constellation_edges`. Regenerate the first with `nx run caelundas-db:migration:generate` against
+  `constellation_lines` with the generated `constellation_edges`, and the third sets the
+  role's default `search_path`, which PgBouncer drops from the startup parameters. Regenerate the first with `nx run caelundas-db:migration:generate` against
   an empty local Postgres (schema-unqualified), then apply the two hand edits the README
   lists. Never edit the generated SQL otherwise.
 

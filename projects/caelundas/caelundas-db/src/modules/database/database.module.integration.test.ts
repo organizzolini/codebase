@@ -116,6 +116,16 @@ describe(DatabaseModule, () => {
     ]);
   });
 
+  it("gives the role the caelundas search_path without any startup parameter, as behind PgBouncer", async () => {
+    expect.hasAssertions();
+
+    const roles = await database.dataSource.query<{ config: string[] }[]>(
+      `select rolconfig as config from pg_roles where rolname = 'caelundas_username'`,
+    );
+
+    expect(roles[0]?.config).toContain("search_path=caelundas");
+  });
+
   it("matches the entities exactly, so a later migration:generate has nothing to add", async () => {
     expect.hasAssertions();
 

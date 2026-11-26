@@ -365,6 +365,9 @@ words:
   - barmancloud
   # The git feature (`git rerere`) that replays a recorded conflict resolution.
   - rerere
+  # Columns of the PostgreSQL pg_roles view: a role's name and its stored settings.
+  - rolconfig
+  - rolname
   # Observer sites in caelundas reference fixtures, checked against USNO.
   - Reykjavík
   # The SQLite function that trims characters from a string's end, which reads
