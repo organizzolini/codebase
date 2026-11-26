@@ -81,14 +81,14 @@ applications:
 
   - name: postgres
     syncWave: 3
-    namespace: codebase
+    namespace: organizzolini
     path: infrastructure/helm/postgres
     valueFiles:
       - values/base.yaml
 
   - name: cloudflared
     syncWave: 4
-    namespace: codebase
+    namespace: organizzolini
     path: infrastructure/helm/cloudflared
     valueFiles:
       - values/base.yaml

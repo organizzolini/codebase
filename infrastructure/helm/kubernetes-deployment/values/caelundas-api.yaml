@@ -28,7 +28,7 @@ resources:
 
 env:
   - name: CAELUNDAS_POSTGRES_HOST
-    value: postgres-pooler-rw.codebase.svc.cluster.local
+    value: postgres-pooler-rw.organizzolini.svc.cluster.local
   - name: CAELUNDAS_POSTGRES_DATABASE
     value: caelundas_production
   - name: CAELUNDAS_POSTGRES_SCHEMA

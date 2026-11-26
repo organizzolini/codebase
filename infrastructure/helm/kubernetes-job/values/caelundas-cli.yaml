@@ -41,7 +41,7 @@ resources:
 
 env:
   - name: CAELUNDAS_POSTGRES_HOST
-    value: postgres-rw.codebase.svc.cluster.local
+    value: postgres-rw.organizzolini.svc.cluster.local
   - name: CAELUNDAS_POSTGRES_PORT
     value: "5432"
   - name: CAELUNDAS_POSTGRES_DATABASE
