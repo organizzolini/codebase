@@ -1,8 +1,9 @@
-# Build context of the workspace-root images, such as caelundas-api
+# Build context of the workspace-root images, built from infrastructure/docker/application.Dockerfile
 .git
 .fallow
 .nx
 **/node_modules
+**/dist
 **/.terraform
 **/.venv
 # Fetched fresh by the image build, never copied from a checkout

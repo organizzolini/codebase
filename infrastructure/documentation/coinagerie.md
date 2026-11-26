@@ -20,12 +20,14 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **cloudflared**: Cloudflare Tunnel connector that dials out from the cluster, so it needs no Service.
 - **cm**: Short for ConfigMap, as in the Argo CD `configs.cm` values that hold the Application health check.
 - **cname**: DNS record that aliases one name to another; the caelundas record points at the tunnel's `cfargotunnel.com` name.
+- **conf**: The suffix of an nginx configuration file; the shared server block that static-site images serve from is one.
 - **conn**: Short for connection, as in the PgBouncer `max_client_conn` limit on client connections.
 - **dex**: Argo CD's single sign-on component, disabled in the core profile.
 - **escalation**: Privilege gain after a process starts; `allowPrivilegeEscalation: false` blocks it.
 - **heal**: Argo CD's self-healing, which reverts a live object that drifts from the repository; the `selfHeal` sync policy enables it.
 - **ingress**: Tunnel rule list that maps a hostname and path to a service; the last rule answers 404.
 - **liveness**: Probe that restarts a container when its health endpoint stops answering.
+- **nginx**: The unprivileged web server that serves a built web app from its image; its server block is shared under `docker/nginx`.
 - **organizzolini**: GitHub organization and the `organizzolini.net` domain that this project's resources live under.
 - **pgbouncer**: Connection pooler that sits in front of PostgreSQL and multiplexes client connections.
 - **plane**: Control plane of the Kubernetes cluster: the API server and controllers that Linode runs.
