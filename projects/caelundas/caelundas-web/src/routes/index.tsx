@@ -32,7 +32,9 @@ import {
 } from "../components/calendar-events/event-glyphs/calendar-symbols.constants";
 import { TagIconsProvider } from "../components/calendar-events/tag-icons-provider/tag-icons-provider";
 import { EMPTY_EVENT_FILTER } from "../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.constants";
+import { createEventGroupFields } from "../components/calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { CalendarQueryControls } from "../components/calendar-query/calendar-query-controls/calendar-query-controls";
+import { dropUnofferedTags } from "../hooks/use-calendar-search/calendar-search-flags.utilities";
 import {
   getCalendarReloadKey,
   readCalendarSearch,
@@ -66,7 +68,17 @@ export const Route = createFileRoute("/")({
       loadedKeys.current = getCalendarReloadKey(location.search);
     }
 
-    return loadCalendar(validateCalendarSearch(location.search));
+    const search = validateCalendarSearch(location.search);
+    const loaded = await loadCalendar(search);
+
+    // What the link names that the menus leave out; the page drops it from the link.
+    return {
+      ...loaded,
+      unoffered: dropUnofferedTags(
+        search,
+        createEventGroupFields(loaded.facets),
+      ),
+    };
   },
 });
 
@@ -133,7 +145,7 @@ function IndexPage(): ReactNode {
     handleRangeChange,
     handleSortChange,
     handleViewPresetChange,
-  } = useCalendarSearch(timeZone, facets);
+  } = useCalendarSearch(timeZone, facets, Route.useLoaderData().unoffered);
   const agendaDays = search.days ?? AGENDA_DAY_COUNT;
 
   // ♻️ Lifecycle

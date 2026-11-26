@@ -1,8 +1,8 @@
 # caelundas-cli
 
-Generate astronomical event calendars using NASA's JPL Horizons API (Outputs: iCalendar `.ics` and JSON files)
+Generate astronomical event calendars using NASA's JPL Horizons API (Output: rows in Postgres)
 
-- **Database**: Postgres via TypeORM and `caelundas-db`'s `CaelundasDatabaseModule`, which wraps `@codebase/persistence`'s `DatabaseModule` (the `calendar_events`, `tags`, `tag_closures`, and `calendar_event_tags` tables, and the night sky's)
+- **Database**: Postgres via TypeORM and `caelundas-db`'s `CaelundasDatabaseModule`, which wraps `@codebase/persistence`'s `DatabaseModule` (the `calendar_events`, `tags`, `tag_trees`, and `calendar_event_tags` tables, and the night sky's)
 
 ```text
 src/caelundas-cli.main.ts
@@ -12,9 +12,7 @@ src/caelundas-cli.main.ts
             ├─ Swiss Ephemeris             ← EphemerisService (via Perfective/Progressive)
             ├─ Perfective Event Detection  ← PerfectiveService.detect()
             ├─ Progressive Event Synthesis ← ProgressiveService.detect()
-            ├─ Store Events                ← CalendarEventsService.upsert()
-            ├─ Read Back Range + Location  ← CalendarEventsService.findInRange()
-            └─ iCal and JSON Output        ← CalendarService.write() / writeJson()
+            └─ Store Events                ← CalendarEventsService.upsert()
 ```
 
 **Project Domain Modules**:
@@ -22,11 +20,11 @@ src/caelundas-cli.main.ts
 ```text
 src/modules/
   input/                               # Zod environmentSchema and config parsing
-  calendar/                            # ICS and JSON file output formatting
+  calendar/                            # Building the instant events detectors report
   night-sky/                           # The night-sky command: HYG stars and d3-celestial figures
   refresh-metrics/                     # The refresh-metrics command: refreshes the metrics materialized view
     modules/metric-expressions/        # The metric-expressions command: draws each metric's expression tree as Mermaid in a Markdown file
-  calendar-events/                     # Upsert and range queries over the calendar_events table
+  calendar-events/                     # Upsert over the calendar_events table
   tags/                                # Resolving raw tag strings to nodes of the tag tree
   ephemeris/                           # Swiss Ephemeris access; child modules: datetime/, math/, ephemeris-download/, boundary-search/ (walks to the minute a state starts or stops holding)
   perfective/                          # Exact moment event detection; child modules: one per event family (eclipses/, phases/, ...)
@@ -38,10 +36,10 @@ src/modules/
 
 - **Input Validation** ([input.constants.ts](src/modules/input/input.constants.ts)): Zod schema for environment variables
 - **Ephemeris Retrieval** ([ephemeris/](src/modules/ephemeris/)): Swiss Ephemeris, computed locally
-- **Event Storage** ([calendar-events/](src/modules/calendar-events/)): Upserts detected events into Postgres and reads them back by range and location
+- **Event Storage** ([calendar-events/](src/modules/calendar-events/)): Upserts detected events into Postgres
 - **Event Detection** ([perfective/](src/modules/perfective/) and domain modules): Aspects, phases, eclipses, retrogrades
 - **Progressive Synthesis** ([progressive/](src/modules/progressive/)): Pairs start/end moments into calendar events, and with the sweep's window completes the spans it cuts off (see [boundary-search/](src/modules/ephemeris/modules/boundary-search/))
-- **Output** ([calendar/](src/modules/calendar/)): iCal and JSON files, rendered from the stored rows
+- **Instant events** ([calendar/](src/modules/calendar/)): `CalendarService.buildInstantEvent`, which the daily-cycle and lunar detectors use
 
 ## Event Types
 
@@ -60,7 +58,6 @@ Astronomical concepts, event detection, and storage:
 - Swiss Ephemeris computes positions locally from JPL DE431 data files; there are no network calls or rate limits
 - Aspects, retrogrades, and phases are detected in two passes: perfective (the exact moment) and progressive (the span around it)
 - Detected events are stored in the `calendar_events` table, keyed by name, start, latitude, and longitude, so a re-run updates rows in place and a second location adds its own
-- A range's files are rendered from the rows `findInRange` returns, using overlap semantics so an event spanning a range edge is included
 
 1. **Implement the root command** — add logic to `caelundas.command.ts` `run()`, or delegate to injected services.
 2. **Add domain command modules** — create `src/modules/<domain>/` with a NestJS module, command, service, types, and constants.
@@ -78,8 +75,6 @@ Required:
 Optional:
 
 - `EVENT_TYPES`: Comma-separated list (defaults to all)
-- `OUTPUT_FORMAT`: `ical` or `json` (defaults to `ical`)
-- `OUTPUT_DIRECTORY`: Directory path (defaults to `./output`)
 
 Full schema: [src/modules/input/input.constants.ts](src/modules/input/input.constants.ts)
 
@@ -90,18 +85,18 @@ Postgres: the `caelundas` schema of `caelundas_development`, as `caelundas_usern
 - `calendar_events` (entity `CalendarEvent`): Detected calendar events, extending `PostgresqlUpdatableEntity`. Columns: `name`, `note`, `start`/`end` (`timestamptz`), `latitude` / `longitude` (`numeric(9, 6)`, strings from the driver), and `timezone`, the observer's IANA zone, which `InputService` derives from the coordinates. Unique on `(name, start, end, latitude, longitude)`. Ids are `uuidv7()` values the database assigns; never derive one in the CLI
 - `tags` (entity `Tag`): A directed acyclic graph with many roots: a `name`, a `slug` (the name lowercased, runs of non-alphanumerics as one `-`, from `tagSlug` in `tags/tags.utilities.ts`; `TagsService` throws when two siblings would slug alike), an optional `note` and `icon` (a lucide slug) and a `rank` among its siblings, which a tag under several parents keeps once. A tag has no parent column: its parents are rows of `tag_edges`, and the database refuses a cycle and two siblings, or two roots, of one name or slug. A full path is derived by walking the edges; a tag with several parents has a path for each, and its depth is never a column
 - `tag_edges` (the generated `TagEdge`, from `@Graph` on `Tag`): `source_node` the parent and `target_node` the child, cascading. Save a `Tag` with its repository, then insert its edges through `manager.getRepository("TagEdge")`, as `TagsService` does
-- `tag_closures`: a materialized view of every `(ancestor_id, descendant_id)` pair over all paths, each tag with itself included. Nothing writes it: `refreshMetrics` refreshes it first, so read it only after a refresh in the same transaction
+- `tag_trees`: a materialized view of every `(ancestor_id, descendant_id)` pair over all paths, each tag with itself included. Nothing writes it: `refreshMetrics` refreshes it first, so read it only after a refresh in the same transaction
 - `calendar_event_tags` (entity `CalendarEventTag`): The event-tag links, keyed on `(calendar_event_id, tag_id)`, both uuids, cascading from both sides, with the index `calendar_event_tags_tag_id_calendar_event_id` leading with the tag
 - `stars`, `constellations`, `constellation_edges`: the night sky, keyed by Hipparcos number, IAU designation, and the constellation with its two stars
 
-Detectors build `DetectedCalendarEvent` in iCalendar terms (`summary`, `description`, `start`, `end`, `tags`), the writers render it, and `CalendarEventsService` maps it to the table's `name` and `note` on the way in and back on the way out. The entity's shape differences from the table are settled in the entity, not at the call sites:
+Detectors build `DetectedCalendarEvent` (`summary`, `description`, `start`, `end`, `tags`), and `CalendarEventsService` maps it to the table's `name` and `note` on the way in. The entity's shape differences from the table are settled in the entity, not at the call sites:
 
-- **Times**: `start` and `end` are `Moment`s, through the column transformer `createMomentTransformer` builds in `caelundas-db`, which writes the instant and reads it back in UTC. A transformer, not a `Date` property, because every detector and writer does moment arithmetic, and retyping would move a conversion into each of them.
-- **Coordinates**: `latitude`/`longitude` stay strings, which only `CalendarEventsService` reads or writes. The in-memory `geography`, `url`, `priority`, `color` and `location` fields are gone: no detector set them, and no column stores them.
+- **Times**: `start` and `end` are `Moment`s, through the column transformer `createMomentTransformer` builds in `caelundas-db`, which writes the instant and reads it back in UTC. A transformer, not a `Date` property, because every detector does moment arithmetic, and retyping would move a conversion into each of them.
+- **Coordinates**: `latitude`/`longitude` stay strings, which only `CalendarEventsService` writes. The in-memory `geography`, `url`, `priority`, `color` and `location` fields are gone: no detector set them, and no column stores them.
 
-A detected event, which has no id, audit columns, coordinates, or timezone yet, is `DetectedCalendarEvent` in `calendar-events.types.ts`, with its raw `tags: string[]`. `findInRange` returns `StoredCalendarEvent`, a detected event plus the row's `id`, coordinates and timezone, whose `tags` are the names of its linked tags, ordered by name; it is assignable to `DetectedCalendarEvent`, so the writers take it too.
+A detected event, which has no id, audit columns, coordinates, or timezone yet, is `DetectedCalendarEvent` in `calendar-events.types.ts`, with its raw `tags: string[]`.
 
-Tags go from raw strings to tree nodes in one place: `classifyEvent` in `tags/tags.utilities.ts` turns an event's raw tags into the root-to-node paths it is classified under, and `TagsService.resolve` inserts any missing node and edge. The static maps live in `tags/tag-map.constants.ts`: `SHARED_TAG_MAP` for raw tags that mean the same everywhere (bodies, signs, decans), and `CONTEXT_TAG_MAPS` keyed by the raw tag that marks a kind of event (`Simple Aspect`, `Ingress`, `Venusian`), so `Full` is a lunar phase under `Monthly Lunar Cycle` and a synodic stage under `Venusian`. The lookup tables behind the implied tags (element, body class, aspect nature, dignity, synodic stage) live in `tags/tag-dimensions.constants.ts`. Ingress kind, eclipse kind, dignity and temporality need several raw tags or the event's times, so `classifyEvent` derives them. An ingress that spans time is a Sign, Decan or Peak Transit, whose raw tags add `Decan` or `Peak` and a name (`Second Decan`, `Before Peak`), and a span of a retrograde or direct period carries `Retrogrades` or `Directs`, which map under `Planetary / Direction`. A raw tag no map knows falls back to a root of its own, and `Astronomy` and `Astrology` classify nothing. The roots in `TAG_ROOT` follow this project's module families and stay near ten, since the web's filter, group and sort menus open on them; a tag may have several parents, declared in `TAG_EXTRA_PARENTS` (`tags/modules/tag-metadata/tag-metadata.constants.ts`, keyed by the tag's own path and listing the other parents' paths), and `TagsService.resolve` then gives the one node an edge from each, creating a missing parent from its own path, so Venus, Mars, Jupiter and Saturn sit under Planet and under Benefic or Malefic. An event carries the node once and is under every parent through the closure, so an existing event picks up a new parent without being ingested again. A node's `rank` is its place among its own path's siblings. A node's `note` and `icon` come from `TAG_METADATA` in `tags/tag-metadata.constants.ts`, keyed by its path, and are written when `TagsService` first creates the node, with its `rank` from `TAG_CHILD_RANKS` in `tags/modules/tag-metadata/tag-metadata-rank.constants.ts`. An event links only to the deepest node of each branch and carries the nodes above it through the closure table. A new detector tag should get a map entry, not a new root.
+Tags go from raw strings to tree nodes in one place: `classifyEvent` in `tags/tags.utilities.ts` turns an event's raw tags into the root-to-node paths it is classified under, and `TagsService.resolve` inserts any missing node and edge. The static maps live in `tags/tag-map.constants.ts`: `SHARED_TAG_MAP` for raw tags that mean the same everywhere (bodies, signs, decans), and `CONTEXT_TAG_MAPS` keyed by the raw tag that marks a kind of event (`Simple Aspect`, `Ingress`, `Venusian`), so `Full` is a lunar phase under `Monthly Lunar Cycle` and a synodic stage under `Venusian`. The lookup tables behind the implied tags (element, body class, aspect nature, dignity, synodic stage) live in `tags/tag-dimensions.constants.ts`. Ingress kind, eclipse kind, dignity and temporality need several raw tags or the event's times, so `classifyEvent` derives them. An ingress that spans time is a Sign, Decan or Peak Transit, whose raw tags add `Decan` or `Peak` and a name (`Second Decan`, `Before Peak`), and a span of a retrograde or direct period carries `Retrogrades` or `Directs`, which map under `Planetary / Direction`. A raw tag no map knows falls back to a root of its own, and `Astronomy` and `Astrology` classify nothing. The roots in `TAG_ROOT` follow this project's module families and stay near ten, since the web's filter, group and sort menus open on them; a tag may have several parents, declared in `TAG_EXTRA_PARENTS` (`tags/modules/tag-metadata/tag-metadata.constants.ts`, keyed by the tag's own path and listing the other parents' paths), and `TagsService.resolve` then gives the one node an edge from each, creating a missing parent from its own path, so Venus, Mars, Jupiter and Saturn sit under Planet and under Benefic or Malefic. An event carries the node once and is under every parent through the closure, so an existing event picks up a new parent without being ingested again. A node's `rank` is its place among its own path's siblings. A node's four menu flags (`is_filterable`, `is_groupable`, `is_sortable`, `is_selectable`, all on unless the path is named) come from `TAG_MENU_EXCLUSIONS` in `tags/modules/tag-metadata/tag-metadata-flags.constants.ts`, keyed by its path like `TAG_METADATA`; `TagsService.resolve` writes them when it creates the node and updates a stored node whose flags differ, so a rerun brings them current (a tag under several parents takes those of its own path, never of an extra parent's). Filter leaves out the roots and the headers over a dimension no preset or View filters by (Element, Modality, Dignity, Harmonic and so on; their values stay, and a header a preset names, such as Ingress or Direction, stays filterable), Group a header over a single tag, and Sort and Select Benefic and Malefic. A node's `note` and `icon` come from `TAG_METADATA` in `tags/tag-metadata.constants.ts`, keyed by its path, and are written when `TagsService` first creates the node, with its `rank` from `TAG_CHILD_RANKS` in `tags/modules/tag-metadata/tag-metadata-rank.constants.ts`. An event links only to the deepest node of each branch and carries the nodes above it through the closure table. A new detector tag should get a map entry, not a new root.
 
 Run the migration with `nx run caelundas-db:migration:run` (`migration:generate` makes the next one). `CalendarEventsService.upsert` runs in one transaction and takes the observer's coordinates and timezone. It writes rows in batches sized by their columns under Postgres's 65,535-parameter limit (`POSTGRES_MAXIMUM_PARAMETERS`, in `caelundas-cli.constants.ts`), uses `INSERT … ON CONFLICT (name, start, end, latitude, longitude) DO UPDATE … RETURNING`, so a re-run updates a row instead of duplicating it and the returned ids need no second read, and replaces each written event's `calendar_event_tags` rows with links to the nodes `classifyEvent` classifies it under. The database assigns `id`, `created_at` and `updated_at`. `TagsService.resolve` takes no lock: two runs inserting the same missing tag at once make the second fail on the unique name, and running it again succeeds.
 
@@ -111,7 +106,7 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 
 **Night sky tables**: the migration creates `stars` (keyed by `hipparcos_number`), `constellations` (keyed by IAU designation, with an `is_zodiac` flag) and `constellation_edges` (a figure's segment between two stars, `source_node` and `target_node` by Hipparcos number, generated by `@Graph` on `Constellation`, cascading on delete). The `night-sky` command (`nx run caelundas-cli:start:night-sky --stars <hyg.csv> --constellations <constellations.json> --lines <constellations.lines.json>`) rewrites all three in one transaction: the stars are bulk inserted, batched by columns under the parameter limit, and each constellation is saved with its `edges`, so the command never names the edge entity. Keep the attribution with the data: HYG v4.1 is CC BY-SA 4.0 (David Nash and the HYG contributors), so the stored catalog is a derived work under it; d3-celestial is BSD-3-Clause (Olaf Frohn) and its figures follow the IAU's charts rather than any GPL-licensed sky culture. `CAELUNDAS_DATABASE_MIGRATIONS`, from `caelundas-db`, lists the migration the tests' Testcontainers Postgres runs.
 
-**Read model**: a tag's depth, root and path are read from `tags` and `tag_closures` (there are no derived tag tables). `CalendarEventsService.upsert` ends each transaction with `CaelundasDatabaseService.refreshMetrics` from `caelundas-db`, inside the transaction that wrote the events and any new tags, so a run leaves the facts current and a failed refresh stores nothing.
+**Read model**: a tag's depth, root and path are read from `tags` and `tag_trees` (there are no derived tag tables). `CalendarEventsService.upsert` ends each transaction with `CaelundasDatabaseService.refreshMetrics` from `caelundas-db`, inside the transaction that wrote the events and any new tags, so a run leaves the facts current and a failed refresh stores nothing.
 
 **Tests**: integration and end-to-end suites start a Testcontainers Postgres through `startCaelundasDatabase` in `testing/support/database.ts`, which runs the real migration and connects through `CaelundasDatabaseModule` from `CAELUNDAS_POSTGRES_*`. Docker must be running.
 
@@ -122,7 +117,7 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 Caelundas runs as a **Kubernetes Job** (not Deployment):
 
 - Single execution, terminates on completion
-- Output stored in PersistentVolumeClaim
+- Writes to Postgres only, no volume
 - No network exposure needed
 
 ### Workflow
@@ -141,7 +136,6 @@ kubectl wait --for=condition=complete job/<job-name> --timeout=600s
 
 # 4. Clean up
 helm uninstall <release-name>
-kubectl delete pvc caelundas-output
 ```
 
 ### Helm Chart
@@ -181,7 +175,7 @@ Single-stage build:
 
 **Execution times** (1-year range, all event types):
 
-- 1-2 minutes of local computation, plus a quick upsert and read back
+- 1-2 minutes of local computation, plus a quick upsert
 
 **Optimization strategies**:
 
@@ -191,13 +185,12 @@ Single-stage build:
 **Project-Specific Gotchas**:
 
 - Docker platform mismatch (exec format error)
-- K8s Job not starting (image pull, PVC issues)
-- PVC cleanup after job completion
+- K8s Job not starting (image pull)
 
 **Project Files**:
 
 - `caelundas.command.ts` includes pipeline orchestration
 - `input.constants.ts` includes Zod validation
 - `ephemeris.service.ts` includes NASA API client
-- `calendar.service.ts` includes ICS/JSON generation
+- `calendar.service.ts` includes the instant event builder
 - `Dockerfile` includes container build config

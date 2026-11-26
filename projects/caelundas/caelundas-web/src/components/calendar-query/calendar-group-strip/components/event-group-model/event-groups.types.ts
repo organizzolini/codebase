@@ -1,4 +1,8 @@
-import type { CalendarEventRecord } from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
+import type {
+  CalendarEventRecord,
+  EventFacetValue,
+  TagMenuFlag,
+} from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { FilterOption } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
@@ -38,6 +42,10 @@ export interface EventGroupField {
    */
   levels: readonly (readonly string[])[];
   /**
+   * Whether each menu offers the field: a tag root's flags, all on for a derived field.
+   */
+  menus: Readonly<Record<TagMenuFlag, boolean>>;
+  /**
    * For a tag root, its tags that have tags beneath them, depth first; empty for a derived field.
    */
   nodes: readonly GroupNodeOption[];
@@ -45,6 +53,10 @@ export interface EventGroupField {
    * For a tag root, its tags in filter tree order; empty for a derived field.
    */
   options: readonly FilterOption[];
+  /**
+   * For a tag root, every tag beneath it, depth first, as the API lists them; empty for a derived field.
+   */
+  values: readonly EventFacetValue[];
 }
 
 /**

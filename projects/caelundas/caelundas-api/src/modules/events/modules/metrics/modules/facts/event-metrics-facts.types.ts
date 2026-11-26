@@ -6,6 +6,8 @@ import type { z } from "zod";
 
 /** The statement that measures every level at once, and what it selects. */
 export interface CompiledFactsQuery {
+  /** Whether it also measures the child tags of the last level's tags. */
+  children: boolean;
   /** How many grouping levels it measures; the total is not one. */
   levels: number;
   parameters: unknown[];
@@ -25,6 +27,8 @@ export type FactsRow = z.infer<typeof factsRowSchema>;
 
 /** The rows of each level, and of the whole set. */
 export interface MeasuredRows {
+  /** The child groups of the groups that have none at a next level. */
+  children: EventMetricsRow[];
   levels: EventMetricsRow[][];
   total: EventMetricsRow[];
 }

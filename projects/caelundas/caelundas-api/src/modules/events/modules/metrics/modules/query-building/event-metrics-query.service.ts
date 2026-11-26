@@ -5,6 +5,7 @@ import { EventFilterParametersService } from "../../../filtering/modules/query-b
 import { compileEventScope } from "../../../filtering/modules/query-building/event-scope.utilities";
 import { UUID_PATTERN } from "../../../filtering/modules/values/event-filter-values.constants";
 import { EventGroupingService } from "../../../grouping/event-grouping.service";
+import { METRIC_COLUMN_PREFIX } from "../../event-metrics.constants";
 import { collectMeasures } from "../catalog/event-metrics-catalog.utilities";
 import {
   compileEventAggregate,
@@ -13,7 +14,9 @@ import {
 } from "../measures/event-metrics-measures.utilities";
 
 import {
+  EVENT_METRICS_CHILDREN_SQL,
   EVENT_METRICS_SQL,
+  EVENT_TAG_SETS_JOIN_SQL,
   METRIC_LEVEL_SQL,
   METRIC_REFINING_LEVEL_SQL,
   RAW_CARRIED_COLUMNS,
@@ -57,13 +60,18 @@ export class EventMetricsQueryService {
     const measures = collectMeasures(request.metrics, request.catalog);
     const columns = listEventColumns(measures, RAW_CARRIED_COLUMNS);
 
-    return columns
+    const computed = columns
       .flatMap((column) => {
         const sql = RAW_EVENT_COLUMN_SQL[column];
 
         return sql === undefined ? [] : [`, ${sql} as "${column}"`];
       })
       .join("");
+
+    // The children read each event's tag sets from the sets view, not the tags again.
+    return request.children === true
+      ? `${computed}, ts.tag_ids as "tag_ids", ts.ancestor_tag_ids as "ancestor_tag_ids"`
+      : computed;
   }
 
   /**
@@ -202,6 +210,51 @@ export class EventMetricsQueryService {
   // 🌎 Public Methods
 
   /**
+   * What a statement measures: its level count, whether it reads children, and the level's columns.
+   */
+  private describeStatement(request: EventMetricsQueryRequest): {
+    children: boolean;
+    columns: string;
+    count: number;
+    groupBy: string;
+    where: string;
+  } {
+    const { level } = request;
+
+    if (request.children === true && request.grouping.length > 0) {
+      return {
+        children: true,
+        columns: "",
+        count: request.grouping.length,
+        groupBy: "",
+        where: "",
+      };
+    }
+
+    return level === undefined
+      ? { children: false, columns: "", count: 0, groupBy: "", where: "" }
+      : {
+          children: false,
+          ...this.describeLevel(level),
+          count: level + 1,
+          where: ` where not l${String(level)}.skipped`,
+        };
+  }
+
+  /**
+   * The metric columns of the statement the children are measured in, read again outside it.
+   */
+  private listMetricColumns(count: number): string {
+    let sql = "";
+
+    for (let index = 0; index < count; index++) {
+      sql += `, k.${METRIC_COLUMN_PREFIX}${String(index)}`;
+    }
+
+    return sql;
+  }
+
+  /**
    * Compiles the statement for one level, or for the whole set when the
    * request names none.
    */
@@ -215,31 +268,35 @@ export class EventMetricsQueryService {
 
     parameters.values.push(...(filter?.parameters ?? []));
 
-    const { level } = request;
-    const levels =
-      level === undefined
-        ? ""
-        : this.compileLevels(request.grouping.slice(0, level + 1), parameters);
-    const { columns, groupBy } =
-      level === undefined
-        ? { columns: "", groupBy: "" }
-        : this.describeLevel(level);
+    const { children, columns, count, groupBy, where } =
+      this.describeStatement(request);
+    const levels = this.compileLevels(
+      request.grouping.slice(0, count),
+      parameters,
+    );
     const metrics = this.compileMetrics(request, parameters);
-    const where =
-      level === undefined ? "" : ` where not l${String(level)}.skipped`;
+    const template = children ? EVENT_METRICS_CHILDREN_SQL : EVENT_METRICS_SQL;
+    const host = `l${String(count - 1)}`;
 
     return {
       parameters: parameters.values,
-      sql: EVENT_METRICS_SQL.replace("{scope}", () =>
-        compileEventScope(request.scope, "e.id"),
-      )
+      sql: template
+        .replace("{scope}", () => compileEventScope(request.scope, "e.id"))
+        .replace("{tagSets}", () => (children ? EVENT_TAG_SETS_JOIN_SQL : ""))
         .replace("{extra}", () => this.compileColumns(request))
         .replace("{periods}", () => periods)
         .replace("{filter}", () => (filter === null ? "" : `and ${filter.sql}`))
         .replace("{columns}", () => columns + metrics)
+        .replace("{metrics}", () => metrics)
+        .replace("{outer}", () =>
+          this.listMetricColumns(request.metrics.length),
+        )
+        .replaceAll("{hostId}", () => `${host}.id`)
+        .replaceAll("{hostKey}", () => `${host}.effective`)
         .replace("{levels}", () => levels)
         .replace("{where}", () => where)
-        .replace("{groupBy}", () => groupBy),
+        .replace("{groupBy}", () => groupBy)
+        .replace("{uuid}", () => UUID_PATTERN.source),
     };
   }
 }

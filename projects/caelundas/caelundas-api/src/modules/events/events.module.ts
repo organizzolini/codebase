@@ -14,6 +14,7 @@ import { EventMetricsCatalogService } from "./modules/metrics/modules/catalog/ev
 import { EventMetricsFactsService } from "./modules/metrics/modules/facts/event-metrics-facts.service";
 import { EventMetricsQueryService } from "./modules/metrics/modules/query-building/event-metrics-query.service";
 import { PresetsService } from "./modules/presets/presets.service";
+import { TagFlagsService } from "./modules/tag-flags/tag-flags.service";
 import { WindowsService } from "./modules/windows/windows.service";
 
 /**
@@ -40,6 +41,7 @@ import { WindowsService } from "./modules/windows/windows.service";
     EventsResolver,
     EventsService,
     PresetsService,
+    TagFlagsService,
     WindowsService,
   ],
 })

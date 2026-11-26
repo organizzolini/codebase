@@ -158,6 +158,64 @@ describe("calendar-select-strip utilities", () => {
       expect(isColumnChoice({ label: "Name", value: "name" })).toBe(true);
     });
 
+    it("offers only the selectable tags, keeping a left-out tag as a folder that cannot be ticked", () => {
+      const fields = createEventGroupFields([
+        {
+          id: "body",
+          name: "Body",
+          values: [
+            {
+              count: 2,
+              depth: 1,
+              id: "planet",
+              isSelectable: false,
+              name: "Planet",
+              path: "Planet",
+            },
+            {
+              count: 1,
+              depth: 2,
+              id: "inner",
+              name: "Inner",
+              path: "Planet / Inner",
+            },
+            {
+              count: 1,
+              depth: 3,
+              id: "venus",
+              name: "Venus",
+              path: "Planet / Inner / Venus",
+            },
+            {
+              count: 1,
+              depth: 1,
+              id: "benefic",
+              isSelectable: false,
+              name: "Benefic",
+              path: "Benefic",
+            },
+            {
+              count: 1,
+              depth: 2,
+              id: "sun",
+              name: "Sun",
+              path: "Benefic / Sun",
+            },
+          ],
+        },
+      ]);
+      const tag = createColumnItems(fields)[4];
+      const [body] = tag?.children ?? [];
+      const [planet, benefic] = body?.children ?? [];
+
+      expect(planet?.label).toBe("Planet");
+      expect(isColumnChoice(planet ?? { label: "", value: "" })).toBe(false);
+      expect(planet?.children?.map((item) => item.value)).toStrictEqual([
+        "inner",
+      ]);
+      expect(benefic).toBeUndefined();
+    });
+
     it("leaves a derived field out, since it has no tags to show", () => {
       const items = createColumnItems(FIELDS);
 

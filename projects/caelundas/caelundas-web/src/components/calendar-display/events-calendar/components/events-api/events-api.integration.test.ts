@@ -86,6 +86,7 @@ describe("events api", () => {
         {
           children: [],
           id: "/0:2026",
+          isPreview: false,
           key: "2026",
           label: "2026",
           level: 0,

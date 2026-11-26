@@ -1,6 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
-
 import { createMock } from "@golevelup/ts-vitest";
 import _ from "lodash";
 import moment from "moment-timezone";
@@ -20,27 +17,17 @@ import {
 } from "../testing/support/database";
 
 import { environmentSchema } from "./caelundas-cli.constants";
-import { CalendarService } from "./modules/calendar/calendar.service";
 import { MathService } from "./modules/ephemeris/modules/math/math.service";
 import { inputSchema } from "./modules/input/input.constants";
 import { IngressesService } from "./modules/perfective/modules/ingresses/ingresses.service";
 import { ProgressiveUtilitiesService } from "./modules/progressive/progressive-utilities.service";
 
-import type { CalendarCommandOutput } from "../testing/support/calendar-command.types";
 import type { EphemerisService } from "./modules/ephemeris/ephemeris.service";
-import type { Environment } from "./modules/input/input.types";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
-import type { ConfigService } from "@nestjs/config";
 import type { Repository } from "typeorm";
 
-const TEST_OUTPUT_DIR = "./output/e2e-test";
-
-const calendarService = new CalendarService(new LoggerService(), {
-  get: () => TEST_OUTPUT_DIR,
-} as unknown as ConfigService<Environment>);
-
 describe("main end-to-end suite", () => {
-  it("defaults the connection to the local caelundas database and the output directory", () => {
+  it("defaults the connection to the local caelundas database", () => {
     expect.hasAssertions();
     expect(environmentSchema.parse({})).toStrictEqual({
       CAELUNDAS_POSTGRES_DATABASE: "caelundas_development",
@@ -49,7 +36,6 @@ describe("main end-to-end suite", () => {
       CAELUNDAS_POSTGRES_PORT: 5432,
       CAELUNDAS_POSTGRES_SCHEMA: "caelundas",
       CAELUNDAS_POSTGRES_USERNAME: "caelundas_username",
-      OUTPUT_DIRECTORY: "./output",
     });
   });
 
@@ -68,86 +54,7 @@ describe("main end-to-end suite", () => {
     });
   });
 
-  describe("calendar generation e2e", { timeout: 10_000 }, () => {
-    beforeAll(() => {
-      fs.mkdirSync(TEST_OUTPUT_DIR, { recursive: true });
-    });
-
-    afterAll(() => {
-      fs.rmSync(TEST_OUTPUT_DIR, { force: true, recursive: true });
-    });
-
-    describe("iCS file generation", () => {
-      it("generates valid ICS file structure", () => {
-        const events = [
-          detectable("☀️→♈ Sun ingress Aries", "2025-03-20T09:06:00Z"),
-          detectable("🌕 Full Moon", "2025-03-29T10:58:00Z"),
-        ];
-
-        const calendar = calendarService.buildFileContent({
-          description: "E2E test calendar",
-          events,
-          name: "Test Caelundas Calendar",
-          timezone: "America/New_York",
-        });
-
-        // Write to test file
-        const outputPath = path.join(TEST_OUTPUT_DIR, "test-calendar.ics");
-        fs.writeFileSync(outputPath, calendar);
-
-        // Verify file was created
-        expect(fs.existsSync(outputPath)).toBe(true);
-
-        // Read and validate content
-        const content = fs.readFileSync(outputPath, "utf8");
-
-        // Check required ICS components
-        expect(content).toContain("BEGIN:VCALENDAR");
-        expect(content).toContain("END:VCALENDAR");
-        expect(content).toContain("VERSION:2.0");
-        expect(content).toContain(
-          "PRODID:-//Caelundas//Astronomical Calendar//EN",
-        );
-        expect(content).toContain("CALSCALE:GREGORIAN");
-        expect(content).toContain("METHOD:PUBLISH");
-
-        // Check calendar metadata
-        expect(content).toContain("X-WR-CALNAME:Test Caelundas Calendar");
-        expect(content).toContain("X-WR-CALDESC:E2E test calendar");
-        expect(content).toContain("X-WR-TIMEZONE:America/New_York");
-
-        // Check events
-        expect(content).toContain("BEGIN:VEVENT");
-        expect(content).toContain("END:VEVENT");
-        expect(content).toContain("Sun ingress Aries");
-        expect(content).toContain("Full Moon");
-
-        // Verify event count
-        const veventCount = (content.match(/BEGIN:VEVENT/g) ?? []).length;
-
-        expect(veventCount).toBe(2);
-      });
-
-      it("includes timezone definitions", () => {
-        const events = [detectable("Summer Solstice", "2025-06-21T12:00:00Z")];
-
-        const calendar = calendarService.buildFileContent({
-          description: "E2E timezone test calendar",
-          events,
-          name: "Timezone Test",
-          timezone: "America/New_York",
-        });
-
-        expect(calendar).toContain("BEGIN:VTIMEZONE");
-        expect(calendar).toContain("TZID:America/New_York");
-        expect(calendar).toContain("END:VTIMEZONE");
-        expect(calendar).toContain("BEGIN:DAYLIGHT");
-        expect(calendar).toContain("END:DAYLIGHT");
-        expect(calendar).toContain("BEGIN:STANDARD");
-        expect(calendar).toContain("END:STANDARD");
-      });
-    });
-
+  describe("detection logic e2e", { timeout: 10_000 }, () => {
     describe("input validation e2e", () => {
       it("validates and transform coordinates correctly", () => {
         const result = inputSchema.parse({
@@ -322,7 +229,6 @@ describe("main end-to-end suite", () => {
   });
 
   describe("stored calendar events", { timeout: 120_000 }, () => {
-    const output = "./output/e2e-postgres";
     const philadelphia = { latitude: 39.949_309, longitude: -75.171_69 };
     const sydney = { latitude: -33.8688, longitude: 151.2093 };
     const marchFirstHalf = { endDate: "2026-03-16", startDate: "2026-03-01" };
@@ -334,21 +240,12 @@ describe("main end-to-end suite", () => {
     ];
     let database: DatabaseTestingModule;
     let calendarEvents: Repository<CalendarEvent>;
-    let runs = 0;
 
     const run = async (
       place: { latitude: number; longitude: number },
       range: { endDate: string; startDate: string },
       detected = sky,
-    ): Promise<CalendarCommandOutput> =>
-      runCalendarCommand(
-        {
-          ...place,
-          ...range,
-          outputDirectory: path.join(output, String(runs++)),
-        },
-        detected,
-      );
+    ): Promise<void> => runCalendarCommand({ ...place, ...range }, detected);
     const summaries = (rows: CalendarEvent[]): string[] =>
       rows.map((row) => row.name).toSorted();
 
@@ -359,36 +256,17 @@ describe("main end-to-end suite", () => {
 
     afterAll(async () => {
       await database.close();
-      fs.rmSync(output, { force: true, recursive: true });
     });
 
-    it("writes event rows and renders the files from them", async () => {
+    it("writes a row for each event of the range", async () => {
       expect.hasAssertions();
 
-      // A row no detector reports can only reach the files through the table.
-      await calendarEvents.insert({
-        end: moment.utc("2026-03-05T00:00:00Z"),
-        latitude: "39.949309",
-        longitude: "-75.171690",
-        name: "Planted",
-        note: "stored directly",
-        start: moment.utc("2026-03-05T00:00:00Z"),
-        timezone: "America/New_York",
-      });
-      const { ics, json } = await run(philadelphia, marchFirstHalf);
+      await run(philadelphia, marchFirstHalf);
 
       expect(summaries(await calendarEvents.find())).toStrictEqual([
         "Early",
         "Overlap",
-        "Planted",
       ]);
-      expect(json.map((event) => event.summary)).toStrictEqual([
-        "Early",
-        "Planted",
-        "Overlap",
-      ]);
-      expect(ics).toContain("SUMMARY:Planted");
-      expect(ics).toContain("SUMMARY:Overlap");
     });
 
     it("is idempotent when a range repeats", async () => {
@@ -444,7 +322,7 @@ describe("main end-to-end suite", () => {
       expect.hasAssertions();
 
       const [before] = await calendarEvents.findBy({ name: "Overlap" });
-      const { json } = await run(philadelphia, marchSecondHalf);
+      await run(philadelphia, marchSecondHalf);
       const overlap = await calendarEvents.findBy({ name: "Overlap" });
 
       expect(overlap).toHaveLength(1);
@@ -454,26 +332,18 @@ describe("main end-to-end suite", () => {
         before?.updatedAt.getTime() ?? Number.POSITIVE_INFINITY,
       );
       await expect(calendarEvents.countBy({ name: "Late" })).resolves.toBe(1);
-      expect(json.map((event) => event.summary)).toStrictEqual([
-        "Overlap",
-        "Late",
-      ]);
     });
 
     it("adds separate rows for a second location", async () => {
       expect.hasAssertions();
 
       const total = await calendarEvents.count();
-      const { json } = await run(sydney, marchFirstHalf);
+      await run(sydney, marchFirstHalf);
 
       await expect(calendarEvents.count()).resolves.toBe(total + 2);
-      expect(json.map((event) => event.summary)).toStrictEqual([
-        "Early",
-        "Overlap",
-      ]);
     });
 
-    it("includes an event spanning the edge of the range", async () => {
+    it("keeps an event spanning two ranges as one row", async () => {
       expect.hasAssertions();
 
       const retrograde = detectable(
@@ -487,14 +357,15 @@ describe("main end-to-end suite", () => {
         [retrograde],
       );
       // May's detector reports nothing, because the event started in April.
-      const { ics, json } = await run(
+      await run(
         philadelphia,
         { endDate: "2026-06-01", startDate: "2026-05-01" },
         [],
       );
 
-      expect(json.map((event) => event.summary)).toStrictEqual(["Retrograde"]);
-      expect(ics).toContain("SUMMARY:Retrograde");
+      await expect(
+        calendarEvents.countBy({ name: "Retrograde" }),
+      ).resolves.toBe(1);
     });
 
     it("leaves the read model current after a run", async () => {
@@ -535,17 +406,18 @@ describe("main end-to-end suite", () => {
       );
     });
 
-    it("includes events on the last requested day in both files", async () => {
+    it("stores events on the last requested day", async () => {
       expect.hasAssertions();
 
-      const { ics, json } = await run(
+      await run(
         philadelphia,
         { endDate: "2026-06-10", startDate: "2026-06-01" },
         [detectable("Last day", "2026-06-10T12:00:00Z")],
       );
 
-      expect(json.map((event) => event.summary)).toStrictEqual(["Last day"]);
-      expect(ics).toContain("SUMMARY:Last day");
+      await expect(calendarEvents.countBy({ name: "Last day" })).resolves.toBe(
+        1,
+      );
     });
   });
 });

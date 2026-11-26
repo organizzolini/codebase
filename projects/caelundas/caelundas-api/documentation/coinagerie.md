@@ -27,9 +27,11 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ecliptic**: The Sun's yearly path across the sky, which the night sky draws as a line on request.
 - **epoch**: The Unix epoch, whose Julian day converts a timestamp for the sidereal-time calculation.
 - **equinox**: The moment the Sun crosses the celestial equator, used as a sample event and tag in filter tests.
+- **filterable**:
 - **gamma**:
 - **grain**:
 - **greenwich**: The prime meridian; Greenwich sidereal time plus the observer's longitude gives the sky's rotation.
+- **groupable**:
 - **harmonic**: A numbered aspect family, such as Harmonic 6, whose trailing number filters can compare.
 - **hipparco**:
 - **horizon**: The line where the sky meets the ground; also the `astronomy-engine` function a unit test checks positions with.

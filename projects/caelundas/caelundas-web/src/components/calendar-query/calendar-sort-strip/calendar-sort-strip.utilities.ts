@@ -5,6 +5,7 @@ import {
   resolveMetrics,
 } from "../../calendar-display/calendar-metrics/calendar-metrics.utilities";
 import { isMetricView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
+import { isOfferedRow } from "../calendar-group-strip/calendar-group-strip-items.utilities";
 import { createGroupItems } from "../calendar-group-strip/calendar-group-strip.utilities";
 import { moveListItem } from "../calendar-group-strip/components/chip-menu/chip-menu.utilities";
 import {
@@ -17,6 +18,7 @@ import { TagIcon } from "../tag-icon/tag-icon";
 import {
   DEFAULT_SORT_LABEL,
   METRIC_SORT_PREFIX,
+  SORT_MENU,
   SORT_OPTIONS,
   TAG_SORT_PARENT,
   TAG_SORT_PREFIX,
@@ -139,6 +141,7 @@ export function createSortItems(
   const items = createKeyItems(keysOffered);
   const [parent] = createGroupItems(
     fields.filter((field) => field.levels.length > 0),
+    SORT_MENU,
   );
 
   if (parent === undefined) {
@@ -261,10 +264,10 @@ export function getSortIcon(
 }
 
 /**
- * Whether a row can be ticked as a sort: any but the Tag row that only holds the roots.
+ * Whether a row can be ticked as a sort: not the Tag row, nor a folder.
  */
 export function isSortChoice(node: Readonly<CascaderNode>): boolean {
-  return node.value !== TAG_SORT_PARENT;
+  return node.value !== TAG_SORT_PARENT && isOfferedRow(node);
 }
 
 /**

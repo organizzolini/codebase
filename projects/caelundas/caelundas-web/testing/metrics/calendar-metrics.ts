@@ -115,17 +115,33 @@ function toGroup(
   const key = part.id.split(":").at(-1) ?? "";
 
   return {
+    // A group the levels asked do not split carries its subgroups one level, as previews.
     children:
       level + 1 < levels
         ? part.parts.map((child) => toGroup(child, input, levels))
-        : [],
+        : part.parts.map((child) => toPreview(child, input)),
     id: part.id,
+    isPreview: false,
     key,
     label: part.label,
     level,
     path: null,
     rank: key,
     values: toValues(input.metrics, { compare, share: part.share }),
+  };
+}
+
+/**
+ * A group's subgroup as the preview the API adds beneath it: no subgroups of its own.
+ */
+function toPreview(
+  part: Share,
+  input: EventMetricsInput,
+): Answer["groups"][number] {
+  return {
+    ...toGroup({ ...part, parts: [] }, input, 0),
+    children: [],
+    isPreview: true,
   };
 }
 

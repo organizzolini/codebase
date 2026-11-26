@@ -5,6 +5,9 @@ import { z } from "zod";
 /** The note a tag option carries. */
 export const TAG_NOTE = z.object({ note: z.string() });
 
+/** Whether a tag option is a folder, which only opens. */
+export const TAG_FOLDER = z.object({ folder: z.boolean() });
+
 /** The other parents a tag listed under several carries. */
 export const TAG_ALSO_UNDER = z.object({ alsoUnder: z.array(z.string()) });
 

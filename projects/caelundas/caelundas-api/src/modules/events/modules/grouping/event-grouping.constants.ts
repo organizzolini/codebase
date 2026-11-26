@@ -68,7 +68,7 @@ export const NO_GROUP_SQL = `select null::text as "key", null::text as label, nu
 const EVENT_NODE_IDS_SQL = `(
       select c.ancestor_id
       from calendar_event_tags et
-      join tag_closures c on c.descendant_id = et.tag_id
+      join tag_trees c on c.descendant_id = et.tag_id
       where et.calendar_event_id = e.id
     )`;
 
@@ -89,7 +89,7 @@ export const TAG_GROUP_SQL = `
         and not exists (
           select 1
           from calendar_event_tags x
-          join tag_closures c on c.descendant_id = x.tag_id
+          join tag_trees c on c.descendant_id = x.tag_id
           where
             x.calendar_event_id = e.id
             and c.ancestor_id = t.tag_id

@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest";
 
 import { CONTEXT_TAG_MAPS, SHARED_TAG_MAP } from "../../tag-map.constants";
 
-import { tagMetadata } from "./tag-metadata.utilities";
+import { TAG_MENU_EXCLUSIONS } from "./tag-metadata-flags.constants";
+import { TAG_EXTRA_PARENTS } from "./tag-metadata.constants";
+import { tagMenuFlags, tagMetadata } from "./tag-metadata.utilities";
 
 /** Every path the tag maps can produce, each with its ancestors. */
 function generatedPaths(): string[][] {
@@ -55,51 +57,121 @@ function generatedPaths(): string[][] {
   return [...paths.values()];
 }
 
-describe(tagMetadata, () => {
-  it("gives every node the tag maps can produce a note", () => {
-    const without = generatedPaths()
-      .filter((path) => tagMetadata(path).note === null)
-      .map((path) => path.join(" / "));
+describe("tag metadata", () => {
+  describe(tagMenuFlags, () => {
+    it("offers a tag in every menu unless it is excluded", () => {
+      expect(tagMenuFlags(["Zodiac", "Sign", "Aries"])).toStrictEqual({
+        isFilterable: true,
+        isGroupable: true,
+        isSelectable: true,
+        isSortable: true,
+      });
+    });
 
-    expect(without).toStrictEqual([]);
-  });
+    it("keeps a header over one dimension's values out of the Filter menu only", () => {
+      expect(tagMenuFlags(["Zodiac", "Element"])).toStrictEqual({
+        isFilterable: false,
+        isGroupable: true,
+        isSelectable: true,
+        isSortable: true,
+      });
+    });
 
-  it("gives every node the tag maps can produce an icon lucide has", () => {
-    const names: readonly string[] = iconNames;
-    const without = generatedPaths()
-      .filter((path) => !names.includes(tagMetadata(path).icon ?? ""))
-      .map((path) => path.join(" / "));
+    it("keeps Benefic out of the Sort and Select menus but in the Filter and Group menus", () => {
+      expect(tagMenuFlags(["Body", "Benefic"])).toStrictEqual({
+        isFilterable: true,
+        isGroupable: true,
+        isSelectable: false,
+        isSortable: false,
+      });
+    });
 
-    expect(without).toStrictEqual([]);
-  });
+    it("keeps every tag a preset or view filters by in the Filter menu", () => {
+      const named = [
+        ["Aspect", "Simple"],
+        ["Aspect", "Simple", "Major"],
+        ["Daily", "Lunar Cycle"],
+        ["Daily", "Solar Cycle"],
+        ["Daily", "Twilight"],
+        ["Eclipse", "Lunar"],
+        ["Eclipse", "Solar"],
+        ["Lunar", "Apsides"],
+        ["Lunar", "Monthly Cycle"],
+        ["Planetary", "Direction"],
+        ["Planetary", "Phase"],
+        ["Planetary", "Synodic Stage"],
+        ["Solar", "Annual Cycle"],
+        ["Zodiac", "Ingress"],
+        ["Zodiac", "Sign"],
+      ].filter((path) => !tagMenuFlags(path).isFilterable);
 
-  it("gives a leaf the icon its name calls for over its family's", () => {
-    expect(tagMetadata(["Body", "Luminary", "Sun"]).icon).toBe("sun");
-    expect(tagMetadata(["Zodiac", "Dignity", "Domicile"]).icon).toBe("house");
-    expect(
-      tagMetadata(["Planetary", "Phase", "Venusian", "Morning Rise"]).icon,
-    ).toBe("sunrise");
-  });
+      expect(named).toStrictEqual([]);
+    });
 
-  it("gives the Planet node its classes' planets beneath it", () => {
-    expect(tagMetadata(["Body", "Planet"]).icon).toBe("earth");
-    expect(tagMetadata(["Body", "Planet", "Personal", "Venus"])).toStrictEqual({
-      icon: "user",
-      note: expect.any(String) as string,
+    it("excludes only paths the tag maps can produce", () => {
+      const known = new Set(
+        [...generatedPaths(), ...Object.values(TAG_EXTRA_PARENTS).flat()].map(
+          (path) => path.join(" / "),
+        ),
+      );
+      const unknown = Object.values(TAG_MENU_EXCLUSIONS)
+        .flat()
+        .filter((path) => !known.has(path));
+
+      expect(unknown).toStrictEqual([]);
     });
   });
 
-  it("gives the icon and note of a node with an entry", () => {
-    expect(tagMetadata(["Body", "Luminary"])).toStrictEqual({
-      icon: "sun-moon",
-      note: "The Sun and the Moon.",
-    });
-  });
+  describe(tagMetadata, () => {
+    it("gives every node the tag maps can produce a note", () => {
+      const without = generatedPaths()
+        .filter((path) => tagMetadata(path).note === null)
+        .map((path) => path.join(" / "));
 
-  it("gives a leaf the note of its family and the icon of its family", () => {
-    expect(tagMetadata(["Aspect", "Simple", "Major", "Square"])).toStrictEqual({
-      icon: "star",
-      note: "Bodies 90° apart: friction that pushes toward action.",
+      expect(without).toStrictEqual([]);
+    });
+
+    it("gives every node the tag maps can produce an icon lucide has", () => {
+      const names: readonly string[] = iconNames;
+      const without = generatedPaths()
+        .filter((path) => !names.includes(tagMetadata(path).icon ?? ""))
+        .map((path) => path.join(" / "));
+
+      expect(without).toStrictEqual([]);
+    });
+
+    it("gives a leaf the icon its name calls for over its family's", () => {
+      expect(tagMetadata(["Body", "Luminary", "Sun"]).icon).toBe("sun");
+      expect(tagMetadata(["Zodiac", "Dignity", "Domicile"]).icon).toBe("house");
+      expect(
+        tagMetadata(["Planetary", "Phase", "Venusian", "Morning Rise"]).icon,
+      ).toBe("sunrise");
+    });
+
+    it("gives the Planet node its classes' planets beneath it", () => {
+      expect(tagMetadata(["Body", "Planet"]).icon).toBe("earth");
+      expect(
+        tagMetadata(["Body", "Planet", "Personal", "Venus"]),
+      ).toStrictEqual({
+        icon: "user",
+        note: expect.any(String) as string,
+      });
+    });
+
+    it("gives the icon and note of a node with an entry", () => {
+      expect(tagMetadata(["Body", "Luminary"])).toStrictEqual({
+        icon: "sun-moon",
+        note: "The Sun and the Moon.",
+      });
+    });
+
+    it("gives a leaf the note of its family and the icon of its family", () => {
+      expect(
+        tagMetadata(["Aspect", "Simple", "Major", "Square"]),
+      ).toStrictEqual({
+        icon: "star",
+        note: "Bodies 90° apart: friction that pushes toward action.",
+      });
     });
   });
 });

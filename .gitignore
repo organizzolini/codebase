@@ -72,7 +72,6 @@ codometer-report.json
 tmp
 dist
 last-lint-staged-output.log
-projects/caelundas/caelundas-cli/output
 vite.config.*.timestamp*
 data/**
 .fallow

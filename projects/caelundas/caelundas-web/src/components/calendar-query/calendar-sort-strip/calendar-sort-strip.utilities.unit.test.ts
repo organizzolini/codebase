@@ -93,6 +93,49 @@ describe("calendar-sort-strip utilities", () => {
       expect(isSortChoice({ label: "Name", value: "name" })).toBe(true);
     });
 
+    it("leaves out a tag that is not sortable, and cannot tick a folder", () => {
+      const fields = createEventGroupFields([
+        {
+          id: "aspect",
+          name: "Aspect",
+          values: [
+            {
+              count: 2,
+              depth: 1,
+              id: "simple",
+              isSortable: false,
+              name: "Simple",
+              path: "Simple",
+            },
+            {
+              count: 1,
+              depth: 2,
+              id: "major",
+              name: "Major",
+              path: "Simple / Major",
+            },
+            {
+              count: 1,
+              depth: 3,
+              id: "square",
+              name: "Square",
+              path: "Simple / Major / Square",
+            },
+          ],
+        },
+      ]);
+      const aspect = createSortItems(fields)[0]?.children?.find(
+        (item) => item.value === "by:tag:aspect",
+      );
+      const [simple] = aspect?.children ?? [];
+
+      expect(simple?.value).toBe("by:simple");
+      expect(isSortChoice(simple ?? { label: "", value: "" })).toBe(false);
+      expect(simple?.children?.map((item) => item.value)).toStrictEqual([
+        "by:major",
+      ]);
+    });
+
     it("prefixes each tag and the tags beneath it, so none is taken for a key", () => {
       const aspect = createSortItems(FIELDS)[0]?.children?.find(
         (item) => item.value === "by:tag:aspect",

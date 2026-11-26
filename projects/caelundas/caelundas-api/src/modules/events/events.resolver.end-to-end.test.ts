@@ -259,7 +259,7 @@ describe("events resolver end-to-end suite", () => {
         .getRepository("TagEdge")
         .insert({ sourceNode: benefic.id, targetNode: mars.id });
       await application.database.dataSource.query(
-        "refresh materialized view tag_closures",
+        "refresh materialized view tag_trees",
       );
 
       const { facets } = (await query(`
@@ -286,6 +286,46 @@ describe("events resolver end-to-end suite", () => {
       expect(under?.values).toMatchObject([
         { alsoUnder: ["Planet"], count: 1, id: mars.id, path: "Mars" },
         { alsoUnder: [], path: "Mars / Retrograde" },
+      ]);
+    });
+
+    it("exposes the menu flags of each tag, true unless the tag says otherwise", async () => {
+      expect.hasAssertions();
+
+      const repository = tagRepository(application.database.dataSource);
+      const mars = await repository.findOneByOrFail({ name: "Mars" });
+
+      await application.database.dataSource
+        .getRepository("Tag")
+        .update(mars.id, { isFilterable: false, isSortable: false });
+
+      const { facets } = (await query(`
+        { facets { name isFilterable values { path isFilterable isGroupable isSelectable isSortable } } }
+      `)) as {
+        facets: {
+          isFilterable: boolean;
+          name: string;
+          values: Record<string, boolean | string>[];
+        }[];
+      };
+      const planet = facets.find(({ name }) => name === "Planet");
+
+      expect(planet?.isFilterable).toBe(true);
+      expect(planet?.values).toStrictEqual([
+        {
+          isFilterable: false,
+          isGroupable: true,
+          isSelectable: true,
+          isSortable: false,
+          path: "Mars",
+        },
+        {
+          isFilterable: true,
+          isGroupable: true,
+          isSelectable: true,
+          isSortable: true,
+          path: "Mars / Retrograde",
+        },
       ]);
     });
   });

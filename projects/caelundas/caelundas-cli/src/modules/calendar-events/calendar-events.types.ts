@@ -30,23 +30,10 @@ export interface DetectedCalendarEvent {
   tags: string[];
 }
 
-/** The range and location whose events {@link CalendarEventsService.findInRange} returns. */
-export interface FindInRangeParameters extends Coordinates {
-  /** Exclusive end of the range. */
-  end: Moment;
-
-  /** Inclusive start of the range. */
-  start: Moment;
-}
-
 /** An observer location and the IANA timezone derived from it. */
 export interface Observer extends Coordinates {
   timezone: string;
 }
-
-/** Stored event from `findInRange`, with its directly linked tag names. */
-export type StoredCalendarEvent = DetectedCalendarEvent &
-  Pick<CalendarEvent, "id" | "latitude" | "longitude" | "timezone">;
 
 /**
  * `RETURNING` row: database id, and name, start and end.

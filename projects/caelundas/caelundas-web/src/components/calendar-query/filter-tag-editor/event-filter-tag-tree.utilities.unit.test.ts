@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   findAncestors,
   getTagStates,
+  readFolder,
   toggleTag,
   toTagTreeRows,
 } from "./event-filter-tag-tree.utilities";
@@ -311,6 +312,37 @@ describe("tag tree", () => {
       expect(toggleTag(ITEMS, ["square", 3], "missing")).toStrictEqual([
         "square",
       ]);
+    });
+  });
+
+  describe(readFolder, () => {
+    it("reads a folder mark, and takes any other option for a tag to pick", () => {
+      expect(
+        readFolder({
+          data: { depth: 0, folder: true, name: "Sign" },
+          label: "Sign",
+          value: "sign",
+        }),
+      ).toBe(true);
+      expect(readFolder(option("sign", 0))).toBe(false);
+      expect(readFolder({ label: "x", value: "x" })).toBe(false);
+    });
+
+    it("marks a folder's row", () => {
+      const items = [
+        {
+          ...option("sign", 0),
+          data: { depth: 0, folder: true, name: "sign" },
+        },
+        option("aries", 1),
+      ];
+      const opened = toTagTreeRows(items, {
+        expanded: new Set(["sign"]),
+        selected: [],
+        showAll: false,
+      });
+
+      expect(opened.map((row) => row.isFolder)).toStrictEqual([true, false]);
     });
   });
 });

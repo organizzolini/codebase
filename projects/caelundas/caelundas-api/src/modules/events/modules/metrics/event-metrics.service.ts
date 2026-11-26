@@ -127,21 +127,27 @@ export class EventMetricsService {
       );
 
       return toMeasuredRows(rows, {
+        children: facts.children,
         levels: facts.levels,
         metrics: request.metrics.length,
       });
     }
 
-    const [total, levels] = await Promise.all([
+    // The children are the tags beneath a tag group, so none in a grouping of calendar fields.
+    const hosts = request.grouping.some((level) =>
+      level.field.startsWith(TAG_FIELD_PREFIX),
+    );
+    const [total, levels, children] = await Promise.all([
       this.readRows(request, zone),
       Promise.all(
         request.grouping.map(async (_, level) =>
           this.readRows({ ...request, level }, zone),
         ),
       ),
+      hosts ? this.readRows({ ...request, children: true }, zone) : [],
     ]);
 
-    return { levels, total };
+    return { children, levels, total };
   }
 
   /**
@@ -253,14 +259,16 @@ export class EventMetricsService {
       tagRoot: input.tagRoot ?? null,
     };
     const zone = await this.findZone(base);
-    const [{ levels: rows, total }, names, dataset] = await Promise.all([
-      this.measure(base, zone),
-      this.readNames(grouping),
-      this.eventsService.describeDataset(),
-    ]);
+    const [{ children, levels: rows, total }, names, dataset] =
+      await Promise.all([
+        this.measure(base, zone),
+        this.readNames(grouping),
+        this.eventsService.describeDataset(),
+      ]);
 
     return {
       groups: buildMetricTree({
+        children,
         compare,
         levels: grouping,
         metrics,

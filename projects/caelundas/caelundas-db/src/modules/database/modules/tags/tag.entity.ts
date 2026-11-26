@@ -14,7 +14,7 @@ import type { Relation } from "typeorm";
 /**
  * One node of the `tags` graph: a label an event can carry, under any number of parents.
  *
- * `tag_edges` holds parent to child and `tag_closures` every ancestor; a tag with no parent is a root. Its `slug` is `name` kebab-cased.
+ * `tag_edges` holds parent to child and `tag_trees` every ancestor; a tag with no parent is a root. The `is_*` flags only shape what menus offer, never what is valid.
  */
 @Entity()
 @Graph({ directed: true, edge: "TagEdge", nodes: () => Tag })
@@ -27,6 +27,22 @@ export class Tag extends PostgresqlUpdatableEntity {
   /** The tag's lucide icon slug, such as `moon`. */
   @Column("text", { nullable: true })
   icon?: null | string;
+
+  /** Whether the Filter menu offers the tag as a value. */
+  @Column("boolean", { default: true })
+  isFilterable!: boolean;
+
+  /** Whether the Group menu offers the tag as a level. */
+  @Column("boolean", { default: true })
+  isGroupable!: boolean;
+
+  /** Whether the Select menu offers the tag as a column. */
+  @Column("boolean", { default: true })
+  isSelectable!: boolean;
+
+  /** Whether the Sort menu offers the tag. */
+  @Column("boolean", { default: true })
+  isSortable!: boolean;
 
   /** The tag's own label, unique among its siblings. */
   @Column("text")

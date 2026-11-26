@@ -62,7 +62,7 @@ migrations/                              # The migrations, each with its .sql pa
   so `tag_edges` (`source_node` the parent, `target_node` the child, primary key the pair, cascading) is
   generated, never hand-written. A tag with no incoming edge is a root; a tag may have several parents
   (Venus is under Planet / Personal and under Benefic). `tags.parent_id` and TypeORM's `@Tree` closure
-  table are gone. `tag_closures` is a materialized view, `(ancestor_id, descendant_id)` over a recursive
+  table are gone. `tag_trees` is a materialized view, `(ancestor_id, descendant_id)` over a recursive
   walk of every path with the tag itself included and each pair once, refreshed first (concurrently) by
   `refreshMetrics`; read ancestors and descendants from it, never from a path. A `tag_edges_guard`
   trigger refuses an edge that closes a cycle, joins a tag to itself or gives a parent two children of
@@ -77,6 +77,11 @@ longitude)`; never insert an event without it. Its columns are `name`, `note`, `
   outside a-z and 0-9 replaced by one `-`, leading and trailing `-` trimmed (`Forming` is
   `forming`, `Cross-Quarter Day` is `cross-quarter-day`), unique among siblings like the
   name, by the two guard triggers (the same name may repeat elsewhere in the tree).
+- **`tags.is_filterable`, `is_groupable`, `is_sortable` and `is_selectable` say what the web's menus offer,**
+  `boolean not null default true` each, one set per tag whatever number of parents it has. They never say what
+  is valid: a saved link or preset that filters, groups, sorts or selects a tag whose flag is false still works.
+  `caelundas-cli` declares them (`TAG_MENU_EXCLUSIONS`) and `TagsService` writes them on create and updates them
+  on a rerun.
 - **Renames to know:** `stars.hip` is `hipparcos_number`; `constellations.zodiac` is
   `is_zodiac`; `constellation_edges` has `constellation_id` (its owner), and `source_node` and
   `target_node`, the `@Graph` decorator's defaults; it is a hand-written edge entity because the
@@ -92,7 +97,7 @@ timezone` (Postgres 18 treats `timezone(text, timestamptz)` as immutable), decla
   [documentation/metrics-facts.md](documentation/metrics-facts.md)). TypeORM keeps each generated column's
   expression in `typeorm_metadata`, which the migration fills with `current_database()` so the rows match
   whatever database it runs in. There are no `tag_nodes` or `calendar_event_tag_nodes` tables: read a tag's
-  depth, root, path and rank from `tags`, `tag_edges` and `tag_closures`; a tag with several parents has
+  depth, root, path and rank from `tags`, `tag_edges` and `tag_trees`; a tag with several parents has
   a path for each, and a depth means the shortest.
 - **`calendar_event_facts` is one measure at one filter a row,** `(filter_id, measure_id, measurement)`, in the
   unit of the measure, a plain table `refreshMetrics(manager)` brings up to date (upsert the new or changed,
@@ -127,7 +132,7 @@ timezone` (Postgres 18 treats `timezone(text, timestamptz)` as immutable), decla
   roots its closure-table expression tree (no owner column, a `metric` node reads another metric
   through `metric_id`), and which facts column or aggregate a measure uses lives in the API's
   registry keyed by `slug`.
-- **One migration, `1795718941000`, creates the whole schema,** the functions, the triggers, the closure and tag sets views and the seed included. Nothing is
+- **One migration, `1795725171000`, creates the whole schema,** the functions, the triggers, the tag trees and tag sets views and the seed included. Nothing is
   deployed yet, so a schema change regenerates it: empty the migrations, run
   `nx run caelundas-db:migration:generate` against an empty local Postgres
   (schema-unqualified), then apply the hand edits the README lists. Never edit the

@@ -3,16 +3,16 @@ import type { MigrationInterface, QueryRunner } from "typeorm";
 /**
  * Creates and drops the whole caelundas schema: the tables with their generated local-day and
  * local-hour columns, the seeded catalogs and expression trees, the dimensions, groups and
- * filters the facts hang from, the tag edges and their closure view, and the tag sets view, generated from the entities.
+ * filters the facts hang from, the tag edges and their trees view, and the tag sets view, generated from the entities.
  */
-export class Migration1795718941000 implements MigrationInterface {
-  name = "Migration1795718941000";
+export class Migration1795725171000 implements MigrationInterface {
+  name = "Migration1795725171000";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`SET lock_timeout = '10s'`);
     await queryRunner.query(`SET statement_timeout = '5min'`);
     await queryRunner.query(
-      `CREATE TABLE "tags" ("id" uuid NOT NULL DEFAULT uuidv7(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "created_by" uuid, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_by" uuid, "icon" text, "name" text NOT NULL, "note" text, "rank" smallint NOT NULL DEFAULT '0', "slug" text NOT NULL, CONSTRAINT "PK_e7dc17249a1148a1970748eda99" PRIMARY KEY ("id")); COMMENT ON COLUMN "tags"."id" IS 'Primary key, a uuidv7 the database assigns on insert'; COMMENT ON COLUMN "tags"."created_at" IS 'Timestamp when the record was created'; COMMENT ON COLUMN "tags"."created_by" IS 'Identifier of the user or process that created the record'; COMMENT ON COLUMN "tags"."updated_at" IS 'Timestamp when the record was last updated'; COMMENT ON COLUMN "tags"."updated_by" IS 'Identifier of the user or process that last updated the record'`,
+      `CREATE TABLE "tags" ("id" uuid NOT NULL DEFAULT uuidv7(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "created_by" uuid, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_by" uuid, "icon" text, "is_filterable" boolean NOT NULL DEFAULT true, "is_groupable" boolean NOT NULL DEFAULT true, "is_selectable" boolean NOT NULL DEFAULT true, "is_sortable" boolean NOT NULL DEFAULT true, "name" text NOT NULL, "note" text, "rank" smallint NOT NULL DEFAULT '0', "slug" text NOT NULL, CONSTRAINT "PK_e7dc17249a1148a1970748eda99" PRIMARY KEY ("id")); COMMENT ON COLUMN "tags"."id" IS 'Primary key, a uuidv7 the database assigns on insert'; COMMENT ON COLUMN "tags"."created_at" IS 'Timestamp when the record was created'; COMMENT ON COLUMN "tags"."created_by" IS 'Identifier of the user or process that created the record'; COMMENT ON COLUMN "tags"."updated_at" IS 'Timestamp when the record was last updated'; COMMENT ON COLUMN "tags"."updated_by" IS 'Identifier of the user or process that last updated the record'`,
     );
     await queryRunner.query(`CREATE INDEX "tags_slug" ON "tags"  ("slug") `);
     // TypeORM records generated columns and a view in `typeorm_metadata` but never creates the table in
@@ -413,7 +413,7 @@ export class Migration1795718941000 implements MigrationInterface {
     await queryRunner.query(
       `CREATE CONSTRAINT TRIGGER "tags_root_guard" AFTER INSERT OR UPDATE ON "tags" DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION "tags_root_guard"()`,
     );
-    await queryRunner.query(`CREATE MATERIALIZED VIEW "tag_closures" AS with recursive walk as (
+    await queryRunner.query(`CREATE MATERIALIZED VIEW "tag_trees" AS with recursive walk as (
     select id as ancestor_id, id as descendant_id from tags
     union
     select w.ancestor_id, e.target_node
@@ -426,15 +426,15 @@ select ancestor_id, descendant_id from walk`);
       [
         "caelundas",
         "MATERIALIZED_VIEW",
-        "tag_closures",
+        "tag_trees",
         "with recursive walk as (\n    select id as ancestor_id, id as descendant_id from tags\n    union\n    select w.ancestor_id, e.target_node\n    from walk as w\n    inner join tag_edges as e on e.source_node = w.descendant_id\n)\nselect ancestor_id, descendant_id from walk",
       ],
     );
     await queryRunner.query(
-      `CREATE UNIQUE INDEX "tag_closures_ancestor_id_descendant_id" ON "tag_closures"  ("ancestor_id", "descendant_id") `,
+      `CREATE UNIQUE INDEX "tag_trees_ancestor_id_descendant_id" ON "tag_trees"  ("ancestor_id", "descendant_id") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "tag_closures_descendant_id" ON "tag_closures"  ("descendant_id") `,
+      `CREATE INDEX "tag_trees_descendant_id" ON "tag_trees"  ("descendant_id") `,
     );
     await queryRunner.query(`CREATE MATERIALIZED VIEW "calendar_event_tag_sets" AS select
     e.id as calendar_event_id,
@@ -453,7 +453,7 @@ left join (
         et.calendar_event_id,
         array_agg(distinct c.ancestor_id order by c.ancestor_id) as ancestor_tag_ids
     from calendar_event_tags as et
-    inner join tag_closures as c on et.tag_id = c.descendant_id and c.ancestor_id <> c.descendant_id
+    inner join tag_trees as c on et.tag_id = c.descendant_id and c.ancestor_id <> c.descendant_id
     group by et.calendar_event_id
 ) as a on e.id = a.calendar_event_id`);
     await queryRunner.query(
@@ -462,7 +462,7 @@ left join (
         "caelundas",
         "MATERIALIZED_VIEW",
         "calendar_event_tag_sets",
-        "select\n    e.id as calendar_event_id,\n    coalesce(g.tag_ids, '{}'::uuid[]) as tag_ids,\n    coalesce(a.ancestor_tag_ids, '{}'::uuid[]) as ancestor_tag_ids\nfrom calendar_events as e\nleft join (\n    select\n        calendar_event_id,\n        array_agg(tag_id order by tag_id) as tag_ids\n    from calendar_event_tags\n    group by calendar_event_id\n) as g on e.id = g.calendar_event_id\nleft join (\n    select\n        et.calendar_event_id,\n        array_agg(distinct c.ancestor_id order by c.ancestor_id) as ancestor_tag_ids\n    from calendar_event_tags as et\n    inner join tag_closures as c on et.tag_id = c.descendant_id and c.ancestor_id <> c.descendant_id\n    group by et.calendar_event_id\n) as a on e.id = a.calendar_event_id",
+        "select\n    e.id as calendar_event_id,\n    coalesce(g.tag_ids, '{}'::uuid[]) as tag_ids,\n    coalesce(a.ancestor_tag_ids, '{}'::uuid[]) as ancestor_tag_ids\nfrom calendar_events as e\nleft join (\n    select\n        calendar_event_id,\n        array_agg(tag_id order by tag_id) as tag_ids\n    from calendar_event_tags\n    group by calendar_event_id\n) as g on e.id = g.calendar_event_id\nleft join (\n    select\n        et.calendar_event_id,\n        array_agg(distinct c.ancestor_id order by c.ancestor_id) as ancestor_tag_ids\n    from calendar_event_tags as et\n    inner join tag_trees as c on et.tag_id = c.descendant_id and c.ancestor_id <> c.descendant_id\n    group by et.calendar_event_id\n) as a on e.id = a.calendar_event_id",
       ],
     );
     await queryRunner.query(
@@ -502,17 +502,15 @@ left join (
       ["MATERIALIZED_VIEW", "calendar_event_tag_sets", "caelundas"],
     );
     await queryRunner.query(`DROP MATERIALIZED VIEW "calendar_event_tag_sets"`);
+    await queryRunner.query(`DROP INDEX "caelundas"."tag_trees_descendant_id"`);
     await queryRunner.query(
-      `DROP INDEX "caelundas"."tag_closures_descendant_id"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."tag_closures_ancestor_id_descendant_id"`,
+      `DROP INDEX "caelundas"."tag_trees_ancestor_id_descendant_id"`,
     );
     await queryRunner.query(
       `DELETE FROM "caelundas"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
-      ["MATERIALIZED_VIEW", "tag_closures", "caelundas"],
+      ["MATERIALIZED_VIEW", "tag_trees", "caelundas"],
     );
-    await queryRunner.query(`DROP MATERIALIZED VIEW "tag_closures"`);
+    await queryRunner.query(`DROP MATERIALIZED VIEW "tag_trees"`);
     await queryRunner.query(`DROP TRIGGER "tags_root_guard" ON "tags"`);
     await queryRunner.query(`DROP FUNCTION "tags_root_guard"()`);
     await queryRunner.query(`DROP TRIGGER "tag_edges_guard" ON "tag_edges"`);

@@ -277,6 +277,28 @@ describe("calendar charts utilities", () => {
       expect(bar?.previous).toBeNull();
     });
 
+    it("stacks a bar the grouping does not split by its preview children, the group's own value kept", () => {
+      const preview = (id: string, events: number): MetricGroup => ({
+        ...createGroup(id, { events: [events, null] }),
+        isPreview: true,
+      });
+      const host = createGroup("/0:c", { events: [10, null] }, [
+        preview("/0:c/1:p", 6),
+        preview("/0:c/1:q", 3),
+      ]);
+      const [bar] = buildChartBars([toNode(host)], EVENTS, OPTIONS);
+
+      expect(bar?.segments.map((segment) => segment.id)).toStrictEqual([
+        "/0:c/1:p",
+        "/0:c/1:q",
+      ]);
+      expect(bar?.segments.map((segment) => segment.value)).toStrictEqual([
+        6, 3,
+      ]);
+      expect(bar?.ariaLabel).toBe("/0:c: 10");
+      expect(bar?.isExpandable).toBe(true);
+    });
+
     it("takes a segment's share of every bar shown", () => {
       const bars = buildChartBars(
         [toNode(CHILD_ONE, [PARENT]), toNode(CHILD_TWO, [PARENT])],

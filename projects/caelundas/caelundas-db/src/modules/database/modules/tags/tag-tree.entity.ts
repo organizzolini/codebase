@@ -1,16 +1,14 @@
 import { Index, ViewColumn, ViewEntity } from "typeorm";
 
 /**
- * One row of the materialized view `tag_closures`: a tag and one of its descendants, itself included.
+ * One row of the materialized view `tag_trees`: a tag and one of its descendants, itself included.
  *
  * Every path of `tag_edges` is walked, so a pair appears once however many paths join it. The metrics refresh refreshes it first.
  */
-@Index(
-  "tag_closures_ancestor_id_descendant_id",
-  ["ancestorId", "descendantId"],
-  { unique: true },
-)
-@Index("tag_closures_descendant_id", ["descendantId"])
+@Index("tag_trees_ancestor_id_descendant_id", ["ancestorId", "descendantId"], {
+  unique: true,
+})
+@Index("tag_trees_descendant_id", ["descendantId"])
 @ViewEntity({
   expression: `with recursive walk as (
     select id as ancestor_id, id as descendant_id from tags
@@ -21,9 +19,9 @@ import { Index, ViewColumn, ViewEntity } from "typeorm";
 )
 select ancestor_id, descendant_id from walk`,
   materialized: true,
-  name: "tag_closures",
+  name: "tag_trees",
 })
-export class TagClosure {
+export class TagTree {
   /** The tag that holds the descendant. */
   @ViewColumn()
   ancestorId!: string;

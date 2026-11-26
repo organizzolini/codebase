@@ -148,7 +148,7 @@ describe(EventMetricsService, () => {
   it("runs a statement a level, one for the tag names, and builds the tree", async () => {
     expect.hasAssertions();
 
-    // The statements start in order: the whole set, the level, the names.
+    // The statements start in order: the whole set, the level, the children, the names.
     select
       .mockResolvedValueOnce([{ m0: 2, m1: null, period: 0 }])
       .mockResolvedValueOnce([
@@ -164,6 +164,19 @@ describe(EventMetricsService, () => {
           rank: null,
         },
       ])
+      .mockResolvedValueOnce([
+        {
+          id: "/0:/1:kid",
+          key: "kid",
+          label: "Kid",
+          m0: 1,
+          m1: null,
+          parent_id: "/0:",
+          path: "Planet / Kid",
+          period: 0,
+          rank: "k",
+        },
+      ])
       .mockResolvedValueOnce([{ id: ROOT, name: "Planet" }]);
 
     const result = await service.findMetrics(
@@ -174,7 +187,7 @@ describe(EventMetricsService, () => {
       }),
     );
 
-    expect(select).toHaveBeenCalledTimes(3);
+    expect(select).toHaveBeenCalledTimes(4);
     expect(select).toHaveBeenCalledWith(
       expect.stringContaining("from tags t"),
       [[ROOT]],
@@ -182,6 +195,20 @@ describe(EventMetricsService, () => {
     );
     expect(result.groups).toHaveLength(1);
     expect(result.groups[0]).toMatchObject({ key: null, label: "No Planet" });
+    expect(result.groups[0]?.children).toMatchObject([
+      { id: "/0:/1:kid", isPreview: true, label: "Kid", level: 1 },
+    ]);
+  });
+
+  it("asks for no children for a grouping of calendar fields", async () => {
+    expect.hasAssertions();
+
+    select.mockResolvedValue([]);
+
+    await service.findMetrics(input({ grouping: [{ field: "year" }] }));
+
+    // The whole set and the one level.
+    expect(select).toHaveBeenCalledTimes(2);
   });
 
   it("asks for no tag names for a grouping of derived fields or tags that are no ids", async () => {
@@ -195,8 +222,8 @@ describe(EventMetricsService, () => {
       }),
     );
 
-    // The whole set and the two levels, with no statement for names.
-    expect(select).toHaveBeenCalledTimes(3);
+    // The whole set, the two levels and the children, with no statement for names.
+    expect(select).toHaveBeenCalledTimes(4);
   });
 
   it("names a tag a level refines by its parent, once", async () => {
@@ -306,6 +333,7 @@ describe(EventMetricsService, () => {
       expect.hasAssertions();
 
       compileFacts.mockReturnValue({
+        children: false,
         levels: 1,
         parameters: [7],
         sql: "select facts",

@@ -669,4 +669,30 @@ describe("events filtering end-to-end suite", () => {
       ).resolves.toStrictEqual([MARS_RETROGRADE, SUN_ENTERS_ARIES]);
     });
   });
+
+  it("silently drops a rule whose only tag a menu leaves out, and keeps the tags it still offers", async () => {
+    expect.hasAssertions();
+
+    const { aspect, major, moon } = tags;
+    const repository = application.database.dataSource.getRepository("Tag");
+
+    await expect(
+      keepWhere(tagRule(aspect, "is_any_of", [moon.id])),
+    ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
+
+    await repository.update(moon.id, { isFilterable: false });
+
+    try {
+      await expect(
+        keepWhere(tagRule(aspect, "is_any_of", [moon.id])),
+      ).resolves.toStrictEqual(EVERYTHING);
+      await expect(
+        keepWhere(tagRule(aspect, "is_any_of", [moon.id, major.id])),
+      ).resolves.toStrictEqual(
+        await keepWhere(tagRule(aspect, "is_any_of", [major.id])),
+      );
+    } finally {
+      await repository.update(moon.id, { isFilterable: true });
+    }
+  });
 });

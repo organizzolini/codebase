@@ -46,6 +46,7 @@ const FIELDS = createEventGroupFields([
     ],
   },
 ]);
+const BRANCHES = { flag: "isGroupable", leaves: false } as const;
 const TYPE: EventGroupLevel = { field: "tag:type" };
 const DAY: EventGroupLevel = { field: "day" };
 const IN_ASPECT: EventGroupLevel = { field: "tag:type", parent: "aspect" };
@@ -54,7 +55,7 @@ const IN_MAJOR: EventGroupLevel = { field: "tag:type", parent: "major" };
 describe("calendar-group-strip utilities", () => {
   describe(createGroupItems, () => {
     it("nests only the tags with tags beneath them, and leaves a derived field a leaf", () => {
-      const items = createGroupItems(FIELDS);
+      const items = createGroupItems(FIELDS, BRANCHES);
       const type = items[0]?.children?.find(
         (item) => item.value === "tag:type",
       );
@@ -98,7 +99,7 @@ describe("calendar-group-strip utilities", () => {
           ],
         },
       ]);
-      const [body] = createGroupItems(shared)[0]?.children ?? [];
+      const [body] = createGroupItems(shared, BRANCHES)[0]?.children ?? [];
 
       expect(body?.children?.map((child) => child.value)).toStrictEqual([
         "planet",
@@ -157,7 +158,7 @@ describe("calendar-group-strip utilities", () => {
           values: [{ count: 1, depth: 1, id: "sun", name: "Sun", path: "Sun" }],
         },
       ]);
-      const [item] = createGroupItems(fields)[0]?.children ?? [];
+      const [item] = createGroupItems(fields, BRANCHES)[0]?.children ?? [];
 
       expect(item?.children).toBeUndefined();
     });
@@ -233,6 +234,12 @@ describe("calendar-group-strip utilities", () => {
     it("ticks nothing for no grouping", () => {
       expect(toGroupValue([])).toStrictEqual([]);
     });
+
+    it("ticks the tags a level makes a group of each", () => {
+      expect(
+        toGroupValue([{ field: "tag:type", tags: ["ingress", "conjunct"] }]),
+      ).toStrictEqual(["ingress", "conjunct"]);
+    });
   });
 
   describe(toGrouping, () => {
@@ -275,6 +282,30 @@ describe("calendar-group-strip utilities", () => {
       ).toStrictEqual([DAY, IN_ASPECT]);
     });
 
+    it("applies a tag ticked beside a root that comes before other fields' levels", () => {
+      const levels = toGrouping(
+        ["tag:type", "aspect", "day"],
+        [TYPE, DAY],
+        FIELDS,
+      );
+
+      expect(levels).toStrictEqual([TYPE, IN_ASPECT, DAY]);
+    });
+
+    it("reads ticked tags with none beneath them as one level of groups, in place of the root's own", () => {
+      expect(
+        toGrouping(["tag:type", "ingress", "conjunct"], [TYPE], FIELDS),
+      ).toStrictEqual([{ field: "tag:type", tags: ["conjunct", "ingress"] }]);
+    });
+
+    it("gives a level of ticked tags the picks as they are now", () => {
+      const before: EventGroupLevel = { field: "tag:type", tags: ["ingress"] };
+
+      expect(toGrouping(["conjunct"], [before], FIELDS)).toStrictEqual([
+        { field: "tag:type", tags: ["conjunct"] },
+      ]);
+    });
+
     it("drops what is no longer ticked, and puts no cap on the levels", () => {
       expect(toGrouping([], [DAY], FIELDS)).toStrictEqual([]);
       expect(
@@ -288,6 +319,18 @@ describe("calendar-group-strip utilities", () => {
       expect(labelGroupLevel(TYPE, FIELDS)).toBe("Type");
       expect(labelGroupLevel(IN_ASPECT, FIELDS)).toBe("Type › Aspect");
       expect(labelGroupLevel(IN_MAJOR, FIELDS)).toBe("Type › Major Aspect");
+    });
+
+    it("names a level of picked tags by the tags", () => {
+      expect(
+        labelGroupLevel(
+          { field: "tag:type", tags: ["ingress", "conjunct"] },
+          FIELDS,
+        ),
+      ).toBe("Type › Conjunct, Ingress");
+      expect(
+        labelGroupLevel({ field: "tag:type", tags: ["gone"] }, FIELDS),
+      ).toBe("Type");
     });
 
     it("names a level by its id when the field is gone", () => {

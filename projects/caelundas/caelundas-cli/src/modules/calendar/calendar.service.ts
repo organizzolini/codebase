@@ -1,35 +1,18 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
-
 import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import moment from "moment-timezone";
 
 import { LoggerService } from "@codebase/observability";
 
-import { CONTENT_LINE_OCTETS } from "./calendar.constants";
-
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
-import type { Environment, Input } from "../input/input.types";
-import type {
-  BuildCalendarFileContentParameters,
-  BuildInstantEventArguments,
-} from "./calendar.types";
+import type { BuildInstantEventArguments } from "./calendar.types";
 
 /**
- * NestJS service responsible for building and writing astronomical event calendars.
- *
- * Converts an array of {@link DetectedCalendarEvent} objects into RFC 5545-compliant iCalendar (ICS) files
- * and persists them to the configured output directory.
+ * NestJS service that builds the instant events the detectors report.
  */
 @Injectable()
 export class CalendarService {
   // 🏗 Dependency Injection
 
-  constructor(
-    private readonly logger: LoggerService,
-    private readonly configService: ConfigService<Environment>,
-  ) {
+  constructor(private readonly logger: LoggerService) {
     this.logger.setContext(CalendarService.name);
   }
 
@@ -39,211 +22,7 @@ export class CalendarService {
 
   // 🔏 Private Methods
 
-  /** Builds VEVENT property lines. */
-  private buildEventProperties(event: DetectedCalendarEvent): string {
-    return `SUMMARY:${event.summary}\nDESCRIPTION:${event.description}\nSTATUS:CONFIRMED\nCLASS:PUBLIC\nTRANSP:TRANSPARENT\nCATEGORIES:${event.tags.join(
-      ",",
-    )}`;
-  }
-
-  /** Builds one STANDARD or DAYLIGHT observance of a VTIMEZONE. */
-  private buildObservance(parameters: {
-    abbreviation: string;
-    from: number;
-    kind: "DAYLIGHT" | "STANDARD";
-    localStart: moment.Moment;
-    to: number;
-  }): string {
-    const { abbreviation, from, kind, localStart, to } = parameters;
-    return `BEGIN:${kind}
-TZOFFSETFROM:${this.formatOffset(from)}
-TZOFFSETTO:${this.formatOffset(to)}
-TZNAME:${abbreviation}
-DTSTART:${localStart.format("YYYYMMDDTHHmmss")}
-END:${kind}`;
-  }
-
-  /**
-   * Generates a VTIMEZONE from moment-timezone rules, with an initial observance
-   * then one per transition in the covered years.
-   */
-  private buildTimezoneContent(
-    timezone: string,
-    events: DetectedCalendarEvent[],
-  ): string {
-    const zone = moment.tz.zone(timezone);
-    if (!zone) {
-      throw new Error(`Unknown IANA timezone: ${timezone}`);
-    }
-    const instants = events.flatMap((event) => [event.start, event.end]);
-    const bounds = instants.length > 0 ? instants : [moment.utc()];
-    const window = {
-      end: moment.max(bounds).clone().utc().add(1, "year").valueOf(),
-      start: moment.min(bounds).clone().utc().subtract(1, "year").valueOf(),
-    };
-    const initialOffset = -zone.utcOffset(window.start);
-    const observances = [
-      this.buildObservance({
-        abbreviation: zone.abbr(window.start),
-        from: initialOffset,
-        kind: moment.tz(window.start, timezone).isDST()
-          ? "DAYLIGHT"
-          : "STANDARD",
-        localStart: moment.utc("1970-01-01T00:00:00"),
-        to: initialOffset,
-      }),
-      ...this.findTransitions(zone, window).map((transition) => {
-        const from = -zone.utcOffset(transition - 1);
-        return this.buildObservance({
-          abbreviation: zone.abbr(transition),
-          from,
-          kind: moment.tz(transition, timezone).isDST()
-            ? "DAYLIGHT"
-            : "STANDARD",
-          localStart: moment.utc(transition).add(from, "minutes"),
-          to: -zone.utcOffset(transition),
-        });
-      }),
-    ];
-
-    return `BEGIN:VTIMEZONE
-TZID:${timezone}
-X-LIC-LOCATION:${timezone}
-${observances.join("\n")}
-END:VTIMEZONE`;
-  }
-
-  /** Returns the transition instants of a zone within a window, in ascending order. */
-  private findTransitions(
-    zone: moment.MomentZone,
-    window: { end: number; start: number },
-  ): number[] {
-    return zone.untils.filter(
-      (until) =>
-        Number.isFinite(until) && until > window.start && until <= window.end,
-    );
-  }
-
-  /**
-   * Folds a content line into chunks of at most 75 octets (RFC 5545 §3.1),
-   * breaking between code points, never inside a UTF-8 sequence.
-   */
-  private foldContentLine(line: string): string[] {
-    const chunks: string[] = [];
-    let chunk = "";
-    let chunkOctets = 0;
-    for (const character of line) {
-      const octets = Buffer.byteLength(character, "utf8");
-      if (chunkOctets + octets > CONTENT_LINE_OCTETS) {
-        chunks.push(chunk);
-        chunk = " ";
-        chunkOctets = 1;
-      }
-      chunk += character;
-      chunkOctets += octets;
-    }
-    chunks.push(chunk);
-    return chunks;
-  }
-
-  /**
-   * Formats DTSTART or DTEND: a zoned local time, or UTC inside the repeated
-   * fall-back hour, where a local time names two instants.
-   */
-  private formatEventTime(
-    name: "DTEND" | "DTSTART",
-    instant: moment.Moment,
-    timezone: string,
-  ): string {
-    const pattern = "YYYYMMDDTHHmmss";
-    const local = moment.tz(instant, timezone).format(pattern);
-    const repeated = [-120, -60, -30, 30, 60, 120].some(
-      (minutes) =>
-        moment
-          .tz(instant.clone().add(minutes, "minutes"), timezone)
-          .format(pattern) === local,
-    );
-    if (!repeated) {
-      return `${name};TZID=${timezone}:${local}`;
-    }
-    return `${name}:${instant.clone().utc().format(pattern)}Z`;
-  }
-
-  /** Formats a UTC offset given in minutes east of UTC as `+HHMM` or `-HHMM`. */
-  private formatOffset(minutesEast: number): string {
-    const sign = minutesEast < 0 ? "-" : "+";
-    const absolute = Math.abs(minutesEast);
-    const hours = String(Math.trunc(absolute / 60)).padStart(2, "0");
-    const minutes = String(absolute % 60).padStart(2, "0");
-    return `${sign}${hours}${minutes}`;
-  }
-
   // 🌎 Public Methods
-
-  /** Generates a deterministic event identity string used as the VEVENT UID source. */
-  private generateUid(event: DetectedCalendarEvent): string {
-    let id = `${event.summary}::${event.description}::${event.start.toISOString()}`;
-    if (!event.end.isSame(event.start)) {
-      id += `::${event.end.toISOString()}`;
-    }
-    return id;
-  }
-
-  /** Serializes LF-built content as folded content lines, each ended by CRLF. */
-  private toContentLines(content: string): string {
-    const lines = content.replace(/\n$/, "").split("\n");
-    return `${lines.flatMap((line) => this.foldContentLine(line)).join("\r\n")}\r\n`;
-  }
-
-  /**
-   * Converts an event to a VEVENT for inclusion; UIDs are deterministic so
-   * re-imports are idempotent.
-   */
-  buildEventContent(
-    event: DetectedCalendarEvent,
-    timezone = "America/New_York",
-  ): string {
-    const createdAt = moment().format("YYYYMMDDTHHmmss");
-
-    return `BEGIN:VEVENT
-UID:${this.generateUid(event)}
-DTSTAMP:${createdAt}Z
-${this.formatEventTime("DTSTART", event.start, timezone)}
-${this.formatEventTime("DTEND", event.end, timezone)}
-${this.buildEventProperties(event)}
-SEQUENCE:0
-LAST-MODIFIED:${createdAt}Z
-CREATED:${createdAt}Z
-END:VEVENT`;
-  }
-
-  /**
-   * Generates an RFC 5545 VCALENDAR with its VTIMEZONE and VEVENT components.
-   */
-  buildFileContent(parameters: BuildCalendarFileContentParameters): string {
-    const { description, events, name, timezone } = parameters;
-
-    let vcalendar = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Caelundas//Astronomical Calendar//EN
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-X-WR-CALNAME:${name}`;
-
-    if (description) {
-      vcalendar += `\nX-WR-CALDESC:${description}`;
-    }
-
-    if (timezone) {
-      vcalendar += `\nX-WR-TIMEZONE:${timezone}\n${this.buildTimezoneContent(timezone, events)}`;
-    }
-
-    vcalendar += `\n${events.map((event) => this.buildEventContent(event, timezone)).join("\n")}
-END:VCALENDAR
-`;
-
-    return this.toContentLines(vcalendar);
-  }
 
   /**
    * Builds a one-minute-point event where start and end are the same timestamp.
@@ -251,6 +30,7 @@ END:VCALENDAR
   buildInstantEvent(args: BuildInstantEventArguments): DetectedCalendarEvent {
     const { date, description, logger, summary, tags, timezone } = args;
     const dateString = date.clone().tz(timezone).toISOString(true);
+
     logger.info("🗓️ Built a calendar event", undefined, {
       at: dateString,
       summary,
@@ -263,77 +43,5 @@ END:VCALENDAR
       summary,
       tags,
     };
-  }
-
-  /**
-   * Writes events to a `.ics` file named by the input's `YYYY-MM-DD` dates, in
-   * `OUTPUT_DIRECTORY` (default `./output`).
-   */
-  async write(events: DetectedCalendarEvent[], input: Input): Promise<void> {
-    const calendarFilename = `caelundas_${input.start.format("YYYY-MM-DD")}_${input.end.format("YYYY-MM-DD")}.ics`;
-    const calendarFileContent = this.buildFileContent({
-      description: "Astronomical events and celestial phenomena",
-      events,
-      name: "Caelundas 🔭",
-      timezone: input.timezone,
-    });
-    const outputDirectory =
-      this.configService.get<string>("OUTPUT_DIRECTORY") ?? "./output";
-    const outputPath = path.join(outputDirectory, calendarFilename);
-    try {
-      await mkdir(outputDirectory, { recursive: true });
-      await writeFile(
-        outputPath,
-        new TextEncoder().encode(calendarFileContent),
-      );
-    } catch (error) {
-      this.logger.error("📝 Failed writing the calendar file", undefined, {
-        path: outputPath,
-        reason: error instanceof Error ? error.message : String(error),
-      });
-      throw error;
-    }
-    this.logger.info("✏️ Wrote events to file", undefined, {
-      calendarFilename,
-      count: events.length,
-    });
-  }
-
-  /**
-   * Writes events to a JSON file beside the ICS file, with times in ISO 8601.
-   */
-  async writeJson(
-    events: DetectedCalendarEvent[],
-    input: Input,
-  ): Promise<void> {
-    const timespan = `${input.start.toISOString(true)} to ${input.end.toISOString(true)}`;
-    const jsonFilename = `caelundas_${timespan}.json`;
-    const outputDirectory =
-      this.configService.get<string>("OUTPUT_DIRECTORY") ?? "./output";
-    const outputPath = path.join(outputDirectory, jsonFilename);
-    const content = JSON.stringify(
-      events.map((event) => ({
-        description: event.description,
-        end: event.end.toISOString(),
-        start: event.start.toISOString(),
-        summary: event.summary,
-        tags: event.tags,
-      })),
-      undefined,
-      2,
-    );
-    try {
-      await writeFile(outputPath, new TextEncoder().encode(content));
-    } catch (error) {
-      this.logger.error("📝 Failed writing the JSON file", undefined, {
-        path: outputPath,
-        reason: error instanceof Error ? error.message : String(error),
-      });
-      throw error;
-    }
-    this.logger.info("✏️ Wrote events to JSON file", undefined, {
-      count: events.length,
-      jsonFilename,
-    });
   }
 }

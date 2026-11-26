@@ -13,8 +13,12 @@ import { useStripLines } from "../../../hooks/use-strip-lines/use-strip-lines";
 import { BUTTON_STRIP_CLASS_NAME } from "../../../hooks/use-strip-lines/use-strip-lines.constants";
 import { TableGroupsContext } from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.constants";
 import { QueryCascader } from "../query-cascader/query-cascader";
-import { PICK_EVERY_ROW } from "../query-cascader/query-cascader.constants";
 
+import {
+  isOfferedRow,
+  toRowValues,
+  toTaggedIds,
+} from "./calendar-group-strip-items.utilities";
 import {
   listGroupChipNames,
   toGroupRuns,
@@ -91,6 +95,10 @@ export function CalendarGroupStrip(
 
   // 🏗 Setup
   const items = useMemo(() => createGroupItems(fields), [fields]);
+  const rowValues = useMemo(
+    () => toRowValues(toGroupValue(grouping, isDefaultGrouping), fields),
+    [fields, grouping, isDefaultGrouping],
+  );
   const { runLevels, runs } = useMemo(() => {
     const grouped = toGroupRuns(grouping);
 
@@ -148,7 +156,7 @@ export function CalendarGroupStrip(
               mode="tree"
               onValueChange={(next) => {
                 onGroupingChange(
-                  toGroupingChange(next, {
+                  toGroupingChange(toTaggedIds(next, rowValues), {
                     fields,
                     grouping,
                     isDefaultGrouping,
@@ -156,8 +164,8 @@ export function CalendarGroupStrip(
                 );
               }}
               placeholder="Group by"
-              selectable={PICK_EVERY_ROW}
-              value={toGroupValue(grouping, isDefaultGrouping)}
+              selectable={isOfferedRow}
+              value={rowValues}
               multiple
             />
           </PopoverContent>

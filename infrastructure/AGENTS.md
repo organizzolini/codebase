@@ -43,7 +43,7 @@ infrastructure/
 - Data migrations
 - Report generation
 
-Use a Job for work that runs to completion and leaves output behind (caelundas writes iCalendar files to a PVC); use a Deployment for anything that serves requests continuously.
+Use a Job for work that runs to completion and leaves output behind; use a Deployment for anything that serves requests continuously.
 
 ## Helm Chart References
 

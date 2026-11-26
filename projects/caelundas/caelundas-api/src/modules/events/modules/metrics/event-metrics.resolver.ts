@@ -1,6 +1,8 @@
 import { Inject } from "@nestjs/common";
 import { Args as Arguments, Query, Resolver } from "@nestjs/graphql";
 
+import { TagFlagsService } from "../tag-flags/tag-flags.service";
+
 import { EventMetricsService } from "./event-metrics.service";
 import { EventMetricCatalogEntity } from "./modules/catalog/event-metrics-catalog.entities";
 import { EventMetricsCatalogService } from "./modules/catalog/event-metrics-catalog.service";
@@ -20,6 +22,8 @@ export class EventMetricsResolver {
     private readonly catalogService: EventMetricsCatalogService,
     @Inject(EventMetricsService)
     private readonly metricsService: EventMetricsService,
+    @Inject(TagFlagsService)
+    private readonly tagFlagsService: TagFlagsService,
   ) {}
 
   // 🔎 Queries
@@ -48,6 +52,14 @@ export class EventMetricsResolver {
     @Arguments("input", { type: () => EventMetricsInputEntity })
     input: EventMetricsInputEntity,
   ): Promise<EventMetricsResultEntity> {
+    const clean = await this.tagFlagsService.sanitize({
+      filter: input.filter,
+      levels: input.grouping,
+    });
+
+    input.filter = clean.filter ?? null;
+    input.grouping = clean.levels ?? null;
+
     return this.metricsService.findMetrics(input);
   }
   // 🖋️ Mutations

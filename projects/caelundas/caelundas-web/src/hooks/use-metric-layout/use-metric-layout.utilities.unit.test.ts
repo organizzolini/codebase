@@ -124,6 +124,17 @@ describe("use-metric-layout utilities", () => {
       expect(kept[0]?.children?.map((one) => one.id)).toStrictEqual(["full"]);
     });
 
+    it("leaves out an empty preview child, and keeps the group that holds the others", () => {
+      const kept = hideEmptyMetricGroups([
+        group("host", 4, [
+          { ...group("seen", 3), isPreview: true },
+          { ...group("unseen", 0), isPreview: true },
+        ]),
+      ]);
+
+      expect(kept[0]?.children?.map((one) => one.id)).toStrictEqual(["seen"]);
+    });
+
     it("treats a group with no event count as empty", () => {
       expect(
         hideEmptyMetricGroups([

@@ -2,7 +2,10 @@ import { Injectable } from "@nestjs/common";
 
 import { Tag } from "@codebase/caelundas-db";
 
-import { tagMetadata } from "./modules/tag-metadata/tag-metadata.utilities";
+import {
+  tagMenuFlags,
+  tagMetadata,
+} from "./modules/tag-metadata/tag-metadata.utilities";
 import {
   tagEdgeKey,
   tagExtraParents,
@@ -108,13 +111,15 @@ export class TagsService {
     let id = "";
 
     for (const [index, name] of path.entries()) {
-      id =
-        known.ids.get(tagNodeKey(parentId, name)) ??
-        (await this.saveNode(
-          manager,
-          { parentId, path: path.slice(0, index + 1) },
-          known,
-        ));
+      const nodePath = path.slice(0, index + 1);
+      const stored = known.ids.get(tagNodeKey(parentId, name));
+
+      if (stored === undefined) {
+        id = await this.saveNode(manager, { parentId, path: nodePath }, known);
+      } else {
+        id = stored;
+        await this.syncFlags(manager, { id, path: nodePath }, known);
+      }
       parentId = id;
     }
     await this.ensureExtraParents(manager, { id, path }, known);
@@ -136,6 +141,7 @@ export class TagsService {
     const { icon, note } = tagMetadata(path);
     const saved = await manager.getRepository(Tag).save(
       manager.create(Tag, {
+        ...tagMenuFlags(path),
         icon,
         name,
         note,
@@ -151,8 +157,31 @@ export class TagsService {
       known.edges.add(tagEdgeKey(parentId, saved.id));
     }
     known.ids.set(tagNodeKey(parentId, name), saved.id);
+    known.flags.set(saved.id, tagMenuFlags(path));
 
     return saved.id;
+  }
+
+  /**
+   * Brings a stored node's menu flags to what its path declares, so a rerun updates them.
+   */
+  private async syncFlags(
+    manager: EntityManager,
+    node: { id: string; path: readonly string[] },
+    known: KnownTags,
+  ): Promise<void> {
+    const wanted = tagMenuFlags(node.path);
+    const stored = known.flags.get(node.id);
+
+    if (
+      stored?.isFilterable !== wanted.isFilterable ||
+      stored.isGroupable !== wanted.isGroupable ||
+      stored.isSelectable !== wanted.isSelectable ||
+      stored.isSortable !== wanted.isSortable
+    ) {
+      await manager.getRepository(Tag).update(node.id, wanted);
+      known.flags.set(node.id, wanted);
+    }
   }
 
   // 🌎 Public Methods
@@ -165,7 +194,15 @@ export class TagsService {
     paths: readonly TagPath[],
   ): Promise<Map<string, string>> {
     const stored = await manager.getRepository(Tag).find({
-      select: { id: true, name: true, slug: true },
+      select: {
+        id: true,
+        isFilterable: true,
+        isGroupable: true,
+        isSelectable: true,
+        isSortable: true,
+        name: true,
+        slug: true,
+      },
     });
     const edges = await manager.getRepository<TagEdgeRow>("TagEdge").find();
     const parentsOf = new Map<string, string[]>();
@@ -181,6 +218,14 @@ export class TagsService {
       edges: new Set(
         edges.map(({ sourceNode, targetNode }) =>
           tagEdgeKey(sourceNode, targetNode),
+        ),
+      ),
+      flags: new Map(
+        stored.map(
+          ({ id, isFilterable, isGroupable, isSelectable, isSortable }) => [
+            id,
+            { isFilterable, isGroupable, isSelectable, isSortable },
+          ],
         ),
       ),
       ids: new Map(),

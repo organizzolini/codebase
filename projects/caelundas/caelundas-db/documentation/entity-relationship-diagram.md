@@ -169,6 +169,10 @@ erDiagram
     date createdAt "not nullable"
     string createdBy "nullable"
     string icon "nullable"
+    boolean isFilterable "not nullable"
+    boolean isGroupable "not nullable"
+    boolean isSelectable "not nullable"
+    boolean isSortable "not nullable"
     string name "not nullable"
     string note "nullable"
     int rank "not nullable"
@@ -176,13 +180,13 @@ erDiagram
     date updatedAt "not nullable"
     string updatedBy "nullable"
   }
-  tag_closures["tag_closures (materialized view)"] {
-    string ancestorId "not nullable"
-    string descendantId "not nullable"
-  }
   TagEdge {
     string source_node PK "not nullable"
     string target_node PK "not nullable"
+  }
+  tag_trees["tag_trees (materialized view)"] {
+    string ancestorId "not nullable"
+    string descendantId "not nullable"
   }
   metric_expressions_closure {
     string ancestor_id PK "not nullable"

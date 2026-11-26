@@ -54,6 +54,31 @@ describe("calendar-metrics tree utilities", () => {
       });
     });
 
+    it("leaves the preview children out, which are no group of the table", () => {
+      const preview = (id: string, label: string): MetricGroup => ({
+        ...group(id, label, 1),
+        isPreview: true,
+      });
+      const tree = [
+        group("/0:a", "A", 3, [group("/0:a/1:x", "X", 1)]),
+        group("/0:c", "C", 2, [
+          preview("/0:c/1:p", "P"),
+          preview("/0:c/1:q", "Q"),
+        ]),
+      ];
+
+      expect(describeMetricGroups(tree)).toStrictEqual({
+        firstPath: ["/0:a", "/0:a/1:x"],
+        groupIds: ["/0:a", "/0:a/1:x", "/0:c"],
+        groupLevels: [0, 1, 0],
+      });
+      expect(
+        describeMetricGroups([
+          group("/0:c", "C", 2, [preview("/0:c/1:p", "P")]),
+        ]).firstPath,
+      ).toStrictEqual(["/0:c"]);
+    });
+
     it("describes no groups as nothing", () => {
       expect(describeMetricGroups([])).toStrictEqual({
         firstPath: [],

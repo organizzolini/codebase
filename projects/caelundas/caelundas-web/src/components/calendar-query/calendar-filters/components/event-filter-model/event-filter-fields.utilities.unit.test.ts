@@ -12,6 +12,7 @@ import {
   createTagOptions,
   describeRoot,
   describeTagOption,
+  listOfferedValues,
 } from "./event-filter-fields.utilities";
 
 const DERIVED_FIELDS = [
@@ -159,10 +160,19 @@ describe(createEventFilterFields, () => {
     expect(
       type?.options?.map((option) => [option.value, option.data]),
     ).toStrictEqual([
-      ["tag-simple", { alsoUnder: [], depth: 0, name: "Simple" }],
-      ["tag-major", { alsoUnder: [], depth: 1, name: "Major" }],
-      ["tag-conjunct", { alsoUnder: [], depth: 2, name: "Conjunct" }],
-      ["tag-square", { alsoUnder: [], depth: 2, name: "Square" }],
+      [
+        "tag-simple",
+        { alsoUnder: [], depth: 0, folder: false, name: "Simple" },
+      ],
+      ["tag-major", { alsoUnder: [], depth: 1, folder: false, name: "Major" }],
+      [
+        "tag-conjunct",
+        { alsoUnder: [], depth: 2, folder: false, name: "Conjunct" },
+      ],
+      [
+        "tag-square",
+        { alsoUnder: [], depth: 2, folder: false, name: "Square" },
+      ],
     ]);
   });
 
@@ -282,12 +292,16 @@ describe(createEventFilterFields, () => {
     });
 
     it("gives a tag option its icon and carries its note", () => {
-      const [moon, sun] = createTagOptions(facet);
+      const [moon, sun] = createTagOptions(
+        facet,
+        listOfferedValues(facet.values),
+      );
 
       expect(moon?.icon).toBeDefined();
       expect(moon?.data).toStrictEqual({
         alsoUnder: undefined,
         depth: 0,
+        folder: false,
         name: "Moon",
         note: "The Moon.",
       });
@@ -295,14 +309,16 @@ describe(createEventFilterFields, () => {
       expect(sun?.data).toStrictEqual({
         alsoUnder: undefined,
         depth: 0,
+        folder: false,
         name: "Sun",
       });
     });
 
     it("says a tag's note before its count of events", () => {
-      const [moon, sun] = createTagOptions(facet).map((option) =>
-        describeTagOption(option),
-      );
+      const [moon, sun] = createTagOptions(
+        facet,
+        listOfferedValues(facet.values),
+      ).map((option) => describeTagOption(option));
 
       expect(moon).toBe("The Moon. · 2 events");
       expect(sun).toBe("1 event");
@@ -360,7 +376,7 @@ describe(createEventFilterFields, () => {
     };
 
     it("is one option a place, with one value, and says where else it sits", () => {
-      const options = createTagOptions(facet);
+      const options = createTagOptions(facet, listOfferedValues(facet.values));
 
       expect(options.map((option) => option.value)).toStrictEqual([
         "benefic",
@@ -377,10 +393,8 @@ describe(createEventFilterFields, () => {
       const field = createEventFilterFields([facet]).find(
         ({ id }) => id === "tag:body",
       );
-      const options = createTagOptions({
-        ...facet,
-        values: facet.values.slice(0, 4),
-      });
+      const fewer = { ...facet, values: facet.values.slice(0, 4) };
+      const options = createTagOptions(fewer, listOfferedValues(fewer.values));
       const labels = {
         selectPlaceholder: "Select...",
         valueCount: (count: number) => `${String(count)} selected`,
@@ -428,15 +442,81 @@ describe(createEventFilterFields, () => {
     });
 
     it("keeps its plain name, and uses a path only against a different tag of that name", () => {
-      const labels = createTagOptions({
-        ...facet,
-        values: facet.values.slice(0, 4),
-      }).map((option) => option.label);
+      const fewer = { ...facet, values: facet.values.slice(0, 4) };
+      const labels = createTagOptions(
+        fewer,
+        listOfferedValues(fewer.values),
+      ).map((option) => option.label);
 
       expect(labels).toStrictEqual(["Benefic", "Venus", "Planet", "Venus"]);
-      expect(createTagOptions(facet).map((option) => option.label)).toContain(
-        "Benefic / Venus",
+      expect(
+        createTagOptions(facet, listOfferedValues(facet.values)).map(
+          (option) => option.label,
+        ),
+      ).toContain("Benefic / Venus");
+    });
+  });
+
+  describe("tags a menu leaves out", () => {
+    const facet = {
+      icon: null,
+      id: "zodiac",
+      name: "Zodiac",
+      note: null,
+      values: [
+        {
+          count: 3,
+          depth: 1,
+          id: "sign",
+          isFilterable: false,
+          name: "Sign",
+          path: "Sign",
+        },
+        {
+          count: 2,
+          depth: 2,
+          id: "aries",
+          name: "Aries",
+          path: "Sign / Aries",
+        },
+        {
+          count: 1,
+          depth: 1,
+          id: "empty",
+          isFilterable: false,
+          name: "Empty",
+          path: "Empty",
+        },
+        {
+          count: 1,
+          depth: 1,
+          id: "ingress",
+          name: "Ingress",
+          path: "Ingress",
+        },
+      ],
+    };
+
+    it("lists them as folders when a tag beneath is offered, and drops them with none, for the Filter menu", () => {
+      const options = createTagOptions(
+        facet,
+        listOfferedValues(facet.values, "isFilterable"),
       );
+
+      expect(options.map((option) => option.value)).toStrictEqual([
+        "sign",
+        "aries",
+        "ingress",
+      ]);
+      expect(options[0]?.data).toMatchObject({ folder: true });
+      expect(options[1]?.data).toMatchObject({ folder: false });
+    });
+
+    it("lists every tag when no menu is named", () => {
+      expect(
+        createTagOptions(facet, listOfferedValues(facet.values)),
+      ).toHaveLength(4);
+      expect(listOfferedValues(facet.values)).toHaveLength(4);
     });
   });
 });

@@ -294,6 +294,41 @@ describe(EventMetricsQueryService, () => {
       expect(compiled.sql).toContain("not one.skipped");
     });
 
+    it("measures the children of the last chain row's tag, skipped levels included, and names them once grouped", () => {
+      expect.hasAssertions();
+
+      const field = `tag:${ROOT}`;
+      const compiled = service.compile(
+        request({
+          children: true,
+          grouping: [level(field), level(field, { parent: MARS })],
+        }),
+      );
+
+      expect(compiled.sql).toContain("join calendar_event_tag_sets ts on");
+      expect(compiled.sql).toContain("kids as (");
+      expect(compiled.sql).toContain("from tag_edges ed");
+      expect(compiled.sql).toContain(
+        "ed.target_node = any(e.tag_ids || e.ancestor_tag_ids)",
+      );
+      expect(compiled.sql).toContain("(case when l1.effective ~");
+      expect(compiled.sql).toContain("l1.id as parent_id");
+      expect(compiled.sql).toContain(
+        'group by e.period, l1.id, l1.effective, lc."key"',
+      );
+      expect(compiled.sql).toContain("p.tag_parent_id::text = k.host");
+      expect(compiled.sql).toContain("k.m0");
+      expect(compiled.sql).not.toContain("where not l1.skipped");
+    });
+
+    it("measures no children for no grouping", () => {
+      expect.hasAssertions();
+
+      const compiled = service.compile(request({ children: true }));
+
+      expect(compiled.sql).not.toContain("lc.");
+    });
+
     it("does not refine a level of another field that names a parent", () => {
       expect.hasAssertions();
 

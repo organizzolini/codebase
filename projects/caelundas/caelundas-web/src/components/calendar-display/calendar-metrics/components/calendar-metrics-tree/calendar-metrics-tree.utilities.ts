@@ -25,11 +25,18 @@ export function describeMetricGroups(
   const pending = [...groups];
 
   for (let node = pending.pop(); node !== undefined; node = pending.pop()) {
-    entries.push({ id: node.id, level: node.level });
-    pending.push(...(node.children ?? []));
+    // A preview child is data of its parent, never a group of the table.
+    if (node.isPreview !== true) {
+      entries.push({ id: node.id, level: node.level });
+      pending.push(...(node.children ?? []));
+    }
   }
 
-  for (let node = groups[0]; node !== undefined; node = node.children?.[0]) {
+  for (
+    let node = groups[0];
+    node !== undefined && node.isPreview !== true;
+    node = node.children?.[0]
+  ) {
     firstPath.push(node.id);
   }
 

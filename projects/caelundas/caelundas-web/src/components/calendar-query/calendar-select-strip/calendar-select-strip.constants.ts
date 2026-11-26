@@ -9,6 +9,9 @@ export const TITLE = "Select";
 /** The cursor icon leading the Select button on every layout. */
 export const SelectIcon: LucideIcon = MousePointer2;
 
+/** The Select menu lists selectable tags that have tags beneath. */
+export const SELECT_MENU = { flag: "isSelectable", leaves: false } as const;
+
 /**
  * The columns every event has, with what each shows.
  */

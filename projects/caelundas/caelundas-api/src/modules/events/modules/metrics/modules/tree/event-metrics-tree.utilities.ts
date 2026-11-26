@@ -25,6 +25,8 @@ export function buildMetricTree(
   const drafts = collectGroups(source);
   const roots: EventMetricGroupEntity[] = [];
 
+  collectChildren(source, drafts);
+
   for (const draft of drafts.values()) {
     draft.entity.values = toMetricValues(source.metrics, {
       compare: source.compare,
@@ -71,6 +73,34 @@ export function toMetricValues(
 }
 
 /**
+ * Hangs each child group beneath its host as a preview; one with no host is left out.
+ */
+function collectChildren(
+  source: EventMetricsTreeSource,
+  drafts: Map<string, EventMetricsDraft>,
+): void {
+  for (const row of source.children) {
+    const host = drafts.get(row.parentId);
+
+    if (host !== undefined) {
+      const level = host.entity.level + 1;
+      const id = `${row.parentId}/${String(level)}:${row.key ?? ""}`;
+      const draft =
+        drafts.get(id) ??
+        startGroup({ ...row, id }, source, { isPreview: true, level });
+
+      if (row.period === 0) {
+        draft.current = row.values;
+      } else {
+        draft.previous = row.values;
+      }
+
+      drafts.set(id, draft);
+    }
+  }
+}
+
+/**
  * Gathers the rows of every level into one group each, with the values of
  * the periods the rows are of.
  */
@@ -81,7 +111,9 @@ function collectGroups(
 
   for (const [level, rows] of source.rows.entries()) {
     for (const row of rows) {
-      const draft = drafts.get(row.id) ?? startGroup(row, source, level);
+      const draft =
+        drafts.get(row.id) ??
+        startGroup(row, source, { isPreview: false, level });
 
       if (row.period === 0) {
         draft.current = row.values;
@@ -194,8 +226,10 @@ function rankOf(
 function startGroup(
   row: EventMetricsRow,
   source: EventMetricsTreeSource,
-  level: number,
+  position: Readonly<{ isPreview: boolean; level: number }>,
 ): EventMetricsDraft {
+  const { isPreview, level } = position;
+
   const label =
     row.key === null
       ? `No ${nameLevel(source, level)}`
@@ -206,6 +240,7 @@ function startGroup(
     entity: {
       children: [],
       id: row.id,
+      isPreview,
       key: row.key,
       label,
       level,

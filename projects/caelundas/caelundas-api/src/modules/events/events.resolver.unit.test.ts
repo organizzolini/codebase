@@ -12,6 +12,7 @@ import { EventFilterNumbersService } from "./modules/filtering/modules/values/ev
 import { EventFilterValuesService } from "./modules/filtering/modules/values/event-filter-values.service";
 import { MAXIMUM_GROUP_LEVELS } from "./modules/grouping/event-grouping.constants";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
+import { TagFlagsService } from "./modules/tag-flags/tag-flags.service";
 import { CalendarWindow } from "./modules/windows/calendar-window.entities";
 
 import type { EventsDatasetEntity } from "./events.entities";
@@ -19,6 +20,13 @@ import type { CalendarEventEntity } from "./modules/calendar-event/calendar-even
 import type { EventFacetEntity } from "./modules/facets/event-facet.entities";
 import type { ResolvedPreset } from "./modules/presets/presets.types";
 
+const sanitize = vi.fn<(inputs: unknown) => Promise<unknown>>(
+  async (inputs) => {
+    await Promise.resolve();
+
+    return inputs;
+  },
+);
 const describeDataset = vi.fn<() => Promise<EventsDatasetEntity | null>>();
 const findPresets = vi.fn<() => Promise<ResolvedPreset[]>>();
 const findFacets =
@@ -39,6 +47,7 @@ describe(EventsResolver, () => {
         EventFilterService,
         EventFilterValuesService,
         EventGroupingService,
+        { provide: TagFlagsService, useValue: { sanitize } },
         {
           provide: EventsService,
           useValue: {
@@ -62,6 +71,7 @@ describe(EventsResolver, () => {
         EventFilterService,
         EventFilterValuesService,
         EventGroupingService,
+        { provide: TagFlagsService, useValue: { sanitize } },
         { provide: EventsService, useValue: {} },
       ],
     });

@@ -1,10 +1,11 @@
 import { createElement } from "react";
 
+import { isOfferedRow } from "../calendar-group-strip/calendar-group-strip-items.utilities";
 import { createGroupItems } from "../calendar-group-strip/calendar-group-strip.utilities";
 import { ALL_TAGS_FIELD } from "../calendar-group-strip/components/event-group-model/event-group-fields.constants";
 import { TagIcon } from "../tag-icon/tag-icon";
 
-import { COLUMN_OPTIONS } from "./calendar-select-strip.constants";
+import { COLUMN_OPTIONS, SELECT_MENU } from "./calendar-select-strip.constants";
 
 import type { EventGroupField } from "../calendar-group-strip/components/event-group-model/event-groups.types";
 import type { CascaderNode } from "@codebase/presentation";
@@ -29,15 +30,18 @@ export function createColumnItems(
 
   return [
     ...base,
-    ...createGroupItems(fields.filter((field) => field.levels.length > 0)),
+    ...createGroupItems(
+      fields.filter((field) => field.levels.length > 0),
+      SELECT_MENU,
+    ),
   ];
 }
 
 /**
- * Whether a row can be ticked as a column: any but the Tag row, which only holds the roots.
+ * Whether a row can be ticked as a column: not the Tag row, nor a folder.
  */
 export function isColumnChoice(node: Readonly<CascaderNode>): boolean {
-  return node.value !== ALL_TAGS_FIELD;
+  return node.value !== ALL_TAGS_FIELD && isOfferedRow(node);
 }
 
 /**

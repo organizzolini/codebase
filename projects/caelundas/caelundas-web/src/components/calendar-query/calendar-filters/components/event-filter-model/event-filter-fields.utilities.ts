@@ -22,7 +22,12 @@ import {
   TAG_ROOT_DESCRIPTIONS,
 } from "./event-filters.constants";
 
-import type { EventFacet } from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
+import type {
+  EventFacet,
+  EventFacetValue,
+  OfferedValue,
+  TagMenuFlag,
+} from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { EventFilterField, EventFilterValue } from "./event-filters.types";
 import type {
   FilterOption,
@@ -62,9 +67,12 @@ export function createRootIcon(facet: EventFacet): ReactNode {
 }
 
 /**
- * Lists a tag root's tags as options in tree order, labeled by name, or by path where two tags share a name.
+ * Lists a root's offered tags as options in tree order, labeled by name, or by path where two tags share a name.
  */
-export function createTagOptions(facet: EventFacet): FilterOption[] {
+export function createTagOptions(
+  facet: EventFacet,
+  offered: readonly OfferedValue[],
+): FilterOption[] {
   const options: FilterOption[] = [];
   // The tag first seen under each name: another tag with that name, not the same tag listed under a second parent, makes the name ambiguous.
   const seen = new Map<string, string>();
@@ -80,13 +88,14 @@ export function createTagOptions(facet: EventFacet): FilterOption[] {
     seen.set(value.name, first);
   }
 
-  for (const value of facet.values) {
+  for (const { folder, value } of offered) {
     // Written here rather than through a function, which would be one more
     // call on every stack beneath.
     options.push({
       data: {
         alsoUnder: value.alsoUnder,
         depth: value.depth - 1,
+        folder,
         name: value.name,
         ...(typeof value.note === "string" ? { note: value.note } : {}),
       },
@@ -129,6 +138,37 @@ export function describeTagOption(option: FilterOption): string | undefined {
   return option.description === undefined
     ? note
     : `${note} · ${option.description}`;
+}
+
+/**
+ * The tags a menu lists: those its flag offers, and a folder for each other with one offered beneath.
+ */
+export function listOfferedValues(
+  values: readonly EventFacetValue[],
+  flag?: TagMenuFlag,
+): OfferedValue[] {
+  const listed: OfferedValue[] = [];
+
+  // Loops rather than callbacks keep the call stacks shallow.
+  for (const [index, value] of values.entries()) {
+    if (flag === undefined || value[flag] !== false) {
+      listed.push({ folder: false, value });
+      continue;
+    }
+
+    for (const below of values.slice(index + 1)) {
+      if (below.depth <= value.depth) {
+        break;
+      }
+
+      if (below[flag] !== false) {
+        listed.push({ folder: true, value });
+        break;
+      }
+    }
+  }
+
+  return listed;
 }
 
 /**
@@ -196,7 +236,10 @@ function toTagField(facet: EventFacet): EventFilterField {
     };
   }
 
-  const options = createTagOptions(facet);
+  const options = createTagOptions(
+    facet,
+    listOfferedValues(facet.values, "isFilterable"),
+  );
 
   return {
     defaultOperator: TAG_OPERATORS.isAnyOf,

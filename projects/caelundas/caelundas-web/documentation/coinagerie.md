@@ -20,6 +20,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **away**:
 - **beltane**: Cross-quarter festival date, which the calendar marks with a flower glyph and its own icon image.
 - **beneath**:
+- **benefic**:
 - **binovile**: Harmonic aspect at two novile steps that appears in the glossary list but has no code or icon in this project.
 - **biquintile**: Aspect of 144 degrees, two quintile steps, drawn with a dedicated 144-degree icon in calendar glyphs.
 - **biseptile**: Aspect of about 103 degrees, two septile steps, that the project lists only in its glossary.
@@ -61,6 +62,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **eris**: Dwarf planet Eris, a body whose aspects the CLI's triple-aspect tests tag; the web app never names it.
 - **expandable**:
 - **few**:
+- **filterable**:
 - **fire**: A value of the Element filter that marks a sign as belonging to the fire element.
 - **flow**:
 - **forget**:
@@ -71,6 +73,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **gibbous**: The Moon's phase between quarter and full, as the phase filter and its waxing and waning icons name it.
 - **gonggong**: A trans-Neptunian dwarf planet whose name no source or test file uses; only the glossary mentions it.
 - **grand**: Part of a three-or-more-body aspect pattern name, like grand trine or grand cross, in the collections and icon table.
+- **groupable**:
 - **guess**:
 - **hammer**: The event glyph for the hammer emoji, mapped to its PNG icon file in the calendar icon table.
 - **harmonic**: A numbered aspect family, such as Harmonic 4, whose tags the calendar filters and agenda group under Type.
@@ -127,9 +130,11 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **pallas**: One of the four asteroids, named in event labels such as Mars biquintile Pallas, with its own glyph.
 - **pentagram**: The star glyph for a five-pointed pattern, mapped to its own PNG icon in the glyph set.
 - **perigee**:
+- **personal**:
 - **pholus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
 - **piece**:
 - **pisces**: Zodiac sign whose glyph maps to its own SVG icon, and a constellation listed in the sky menu.
+- **planet**:
 - **planetary**:
 - **plot**:
 - **pluto**: Dwarf-planet body whose glyph maps to its own SVG icon and appears in event names.
@@ -185,6 +190,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **undecuple**: Stellium label for eleven bodies clustered together, mapped to a symbol in the stellium constants.
 - **under**:
 - **unmeasured**: Stand-in size used before a virtual list is measured, a 720 by 640 default height and width.
+- **unoffered**:
 - **uranus**: Ice giant body whose glyph maps to its own SVG icon in the glyph set.
 - **vesta**: Asteroid body whose glyph maps to its own SVG icon in the event glyph set.
 - **vigintile**: A 18-degree aspect, a twentieth-harmonic division, which no code in this project uses.

@@ -65,6 +65,13 @@ export interface EventFacet {
    */
   icon?: null | string;
   id: string;
+  /**
+   * Whether each menu offers the root; every menu does when absent.
+   */
+  isFilterable?: boolean;
+  isGroupable?: boolean;
+  isSelectable?: boolean;
+  isSortable?: boolean;
   name: string;
   /**
    * What the root means, if it says.
@@ -97,6 +104,13 @@ export interface EventFacetValue {
    */
   icon?: null | string;
   id: string;
+  /**
+   * Whether each menu offers the tag; a saved link to it works either way, and every menu offers it when absent.
+   */
+  isFilterable?: boolean;
+  isGroupable?: boolean;
+  isSelectable?: boolean;
+  isSortable?: boolean;
   name: string;
   /**
    * What the tag means, if it says.
@@ -119,9 +133,26 @@ export interface EventsDataset {
 }
 
 /**
+ * A tag a menu lists, and whether it is only a folder.
+ */
+export interface OfferedValue {
+  folder: boolean;
+  value: EventFacetValue;
+}
+
+/**
  * A half-open span of time: `start` is included and `end` is not.
  */
 export interface Period {
   end: Date;
   start: Date;
 }
+
+/**
+ * A menu flag: Filter, Group, Select or Sort.
+ */
+export type TagMenuFlag =
+  | "isFilterable"
+  | "isGroupable"
+  | "isSelectable"
+  | "isSortable";

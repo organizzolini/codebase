@@ -84,7 +84,7 @@ application's `ConfigModule` must be global, and spreads
 | Entity                | Table                                              | Holds                                                                                          |
 | --------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `CalendarEvent`       | `calendar_events`                                  | One detected event for one observer location                                                   |
-| `Tag`                 | `tags`, `tag_edges`, `tag_closures`                | The tag graph: a tag may have several parents; the generated `@Graph` edges and a closure view |
+| `Tag`                 | `tags`, `tag_edges`, `tag_trees`                   | The tag graph: a tag may have several parents; the generated `@Graph` edges and a tree view    |
 | `CalendarEventTag`    | `calendar_event_tags`                              | An event carrying a tag                                                                        |
 | `Star`                | `stars`                                            | A star of the HYG catalog, keyed by its Hipparcos number (`hipparcos_number`)                  |
 | `Constellation`       | `constellations`                                   | One of the 88 IAU constellations                                                               |
@@ -138,7 +138,7 @@ latitude, longitude)`, so a re-run updates the row it wrote and a second
 ## The read model
 
 There are no derived tag tables: a tag's parents are the rows of `tag_edges`, its
-ancestors and descendants the materialized view `tag_closures` (every path of the
+ancestors and descendants the materialized view `tag_trees` (every path of the
 graph walked once, refreshed first by `refreshMetrics`), and an event's tags are
 `calendar_event_tags`. A tag with several parents has a depth, a path and a place
 among its siblings for each: the API walks every path from the roots, takes the
@@ -176,7 +176,7 @@ nx run caelundas-db:migration:show               # List applied and pending
 The `migration` target is the shared one from the root `nx.json` target
 defaults, declared here as
 `"migration": { "options": { "module": "src/modules/database" } }`.
-The one migration, `1795718941000`, creates the whole schema and has its `-up.sql` and
+The one migration, `1795725171000`, creates the whole schema and has its `-up.sql` and
 `-down.sql` beside it, linted by `sqlfluff` and checked by `squawk`. Nothing is deployed
 yet, so a schema change regenerates it rather than adding another. It carries hand edits
 after `generate`: it creates `typeorm_metadata` for the generated columns' and the view's rows (the

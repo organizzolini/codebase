@@ -128,7 +128,7 @@ export const FACETS_SQL = `
       select distinct c.ancestor_id as tag_id, et.calendar_event_id
       from calendar_event_tags et
       join in_period w on w.id = et.calendar_event_id
-      join tag_closures c on c.descendant_id = et.tag_id
+      join tag_trees c on c.descendant_id = et.tag_id
     ) z
     group by z.tag_id
   )
@@ -145,6 +145,10 @@ export const FACETS_SQL = `
     n.tag_parent_id as parent_id,
     coalesce(c.count, 0) as count,
     t.icon,
+    t.is_filterable,
+    t.is_groupable,
+    t.is_selectable,
+    t.is_sortable,
     t.note,
     t.rank,
     t.slug
@@ -161,6 +165,10 @@ export const facetRowSchema = z.object({
   depth: z.coerce.number(),
   icon: z.string().nullish().default(null),
   id: z.string(),
+  is_filterable: z.boolean().default(true),
+  is_groupable: z.boolean().default(true),
+  is_selectable: z.boolean().default(true),
+  is_sortable: z.boolean().default(true),
   name: z.string(),
   note: z.string().nullish().default(null),
   parent_id: z.string().nullish().default(null),

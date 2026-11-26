@@ -431,6 +431,7 @@ function findFacets(
     .map((root) => ({
       icon: null,
       id: root.id,
+      ...toFlags(root),
       name: root.name,
       note: null,
       values: [...tree.byId.values()]
@@ -459,6 +460,7 @@ function findFacets(
           depth: appearance.depth,
           icon: null,
           id: tag.id,
+          ...toFlags(tag),
           name: tag.name,
           note: null,
           path: appearance.path.slice(root.name.length + " / ".length),
@@ -771,5 +773,24 @@ function summarize(
         .at(-1) ?? first.end,
     start: events.map(({ start }) => start).toSorted()[0] ?? first.start,
     timezone: first.timezone,
+  };
+}
+
+/**
+ * What each menu offers of a fixture tag: every menu unless the tag hides from it.
+ */
+function toFlags(tag: FixtureTag): {
+  isFilterable: boolean;
+  isGroupable: boolean;
+  isSelectable: boolean;
+  isSortable: boolean;
+} {
+  const hidden = tag.hiddenFrom ?? [];
+
+  return {
+    isFilterable: !hidden.includes("filter"),
+    isGroupable: !hidden.includes("group"),
+    isSelectable: !hidden.includes("select"),
+    isSortable: !hidden.includes("sort"),
   };
 }

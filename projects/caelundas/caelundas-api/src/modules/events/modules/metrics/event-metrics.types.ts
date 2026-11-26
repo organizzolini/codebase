@@ -28,6 +28,8 @@ export interface EventMetricsDraft {
 /** What one metrics statement measures; no level means the whole set. */
 export interface EventMetricsQueryRequest {
   catalog: MetricCatalog;
+  /** Measures the children of the groups the last level ends in instead. */
+  children?: boolean;
   filter: EventFilterGroup | null;
   grouping: readonly EventGroupLevel[];
   level?: number;
@@ -52,6 +54,8 @@ export interface EventMetricsRow {
 
 /** What the tree is built from. */
 export interface EventMetricsTreeSource {
+  /** The child groups, each in its host group by `parentId`. */
+  children: readonly EventMetricsRow[];
   compare: boolean;
   levels: readonly EventGroupLevel[];
   metrics: readonly CatalogMetric[];

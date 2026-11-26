@@ -22,6 +22,10 @@ export interface FixtureTag {
    * The other parents of a tag under several, as Venus is under Benefic too.
    */
   alsoParentIds?: readonly string[];
+  /**
+   * The menus that leave the tag out, as the tag's flags say; every menu offers it when absent.
+   */
+  hiddenFrom?: readonly ("filter" | "group" | "select" | "sort")[];
   id: string;
   name: string;
   parentId: null | string;

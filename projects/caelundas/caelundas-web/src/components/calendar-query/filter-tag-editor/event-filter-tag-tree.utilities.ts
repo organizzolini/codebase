@@ -1,4 +1,4 @@
-import { TAG_ALSO_UNDER } from "./filter-tag-editor.constants";
+import { TAG_ALSO_UNDER, TAG_FOLDER } from "./filter-tag-editor.constants";
 
 import type {
   TagCheckState,
@@ -90,6 +90,13 @@ export function readAlsoUnder(item: FilterOption): readonly string[] {
  */
 export function readDepth(item: FilterOption): number {
   return readData(item)?.depth ?? 0;
+}
+
+/**
+ * Whether a tag option is a folder: listed to open its tags, but not offered to pick.
+ */
+export function readFolder(item: FilterOption): boolean {
+  return TAG_FOLDER.safeParse(item.data).data?.folder === true;
 }
 
 /**
@@ -419,6 +426,7 @@ function toTagTreeRow(
     depth,
     hasChildren,
     isExpanded,
+    isFolder: readFolder(item),
     item,
     name: readName(item),
     selectedBelow: 0,

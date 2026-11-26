@@ -17,6 +17,9 @@ import {
 import {
   FACTS_AGGREGATE_SQL,
   FACTS_CALENDAR_KEYS_SQL,
+  FACTS_CHILD_DIMENSION_SQL,
+  FACTS_CHILD_LEVEL_SQL,
+  FACTS_CHILD_NAME_SQL,
   FACTS_DIMENSION_SQL,
   FACTS_DISTINCT_SQL,
   FACTS_EVENTS_SQL,
@@ -61,7 +64,7 @@ export class EventMetricsFactsService {
    * distinct values of the measures that need it.
    */
   private compileAggregates(
-    levels: readonly FactsLevel[],
+    count: number,
     measures: readonly CatalogMeasure[],
     tagsWhere: string,
   ): string {
@@ -69,10 +72,10 @@ export class EventMetricsFactsService {
     const sides = measures.filter((measure) => isSideMeasure(measure));
     let sql = "";
 
-    for (let level = -1; level < levels.length; level++) {
+    for (let level = -1; level < count; level++) {
       const source = level < 0 ? "ev" : `x${String(level)}`;
       const suffix = level < 0 ? "_total" : String(level);
-      const keys = this.listKeys(levels.length, level);
+      const keys = this.listKeys(count, level);
 
       sql += FACTS_AGGREGATE_SQL.replace("{suffix}", suffix)
         .replace("{level}", String(level))
@@ -103,6 +106,31 @@ export class EventMetricsFactsService {
     }
 
     return sql;
+  }
+
+  /**
+   * The CTEs that name the picked tags, and the child tags of the last
+   * level's.
+   */
+  private compileDimension(
+    levels: readonly FactsLevel[],
+    children: boolean,
+    parameters: EventFilterParameters,
+  ): string {
+    const picked = levels.flatMap((level) => level.picked);
+    const names =
+      picked.length > 0
+        ? FACTS_DIMENSION_SQL.replace("{picked}", () =>
+            this.parametersService.bind(parameters, picked),
+          )
+        : "";
+
+    return children
+      ? names +
+          FACTS_CHILD_DIMENSION_SQL.replace("{picked}", () =>
+            this.parametersService.bind(parameters, levels.at(-1)?.picked),
+          )
+      : names;
   }
 
   /**
@@ -205,6 +233,23 @@ export class EventMetricsFactsService {
   }
 
   /**
+   * The columns that name a group's tag: the picked tags' names, and at the
+   * level of child tags those read beneath the group above.
+   */
+  private compileNames(named: boolean, childLevel: number): string {
+    const own = named
+      ? ["d.tag_name", "d.tag_path", 'd."rank"']
+      : ["null::text", "null::text", "null::text"];
+    const read = (column: string, index: number): string =>
+      childLevel < 0
+        ? column
+        : `case when r.level = ${String(childLevel)} then ${["cd.tag_name", "cd.tag_path", "cd.tag_rank"][index] ?? ""} else ${column} end`;
+    const [label, path, rank] = own.map((column, index) => read(column, index));
+
+    return `, ${label ?? ""} as label, ${path ?? ""} as path, ${rank ?? ""} as "rank"`;
+  }
+
+  /**
    * The rows of the `periods` list, numbered current then previous.
    */
   private compilePeriods(
@@ -231,9 +276,9 @@ export class EventMetricsFactsService {
   }
 
   /**
-   * The steps that expand the events by each level's keys, one level a step.
+   * The steps that expand the events by each level's keys, then by the last one's child tags.
    */
-  private compileSteps(count: number): string {
+  private compileSteps(count: number, children: boolean): string {
     let sql = "";
 
     for (let level = 0; level < count; level++) {
@@ -243,7 +288,12 @@ export class EventMetricsFactsService {
       );
     }
 
-    return sql;
+    return children
+      ? sql +
+          FACTS_CHILD_LEVEL_SQL.replaceAll("{level}", () =>
+            String(count),
+          ).replaceAll("{previous}", () => String(count - 1))
+      : sql;
   }
 
   /**
@@ -334,6 +384,10 @@ export class EventMetricsFactsService {
       return null;
     }
 
+    // Only a level of picked tags has tags beneath it to read.
+    const children = (levels.at(-1)?.picked.length ?? 0) > 0;
+    const count = levels.length + (children ? 1 : 0);
+
     const periods = this.compilePeriods(request, parameters);
     const filter = this.filterService.compile(
       request.filter,
@@ -345,21 +399,18 @@ export class EventMetricsFactsService {
 
     const measures = collectMeasures(request.metrics, request.catalog);
     const tagsWhere = this.compileTagsWhere(request, measures, parameters);
-    const picked = levels.flatMap((level) => level.picked);
-    const named = picked.length > 0;
-    const dimension = named
-      ? FACTS_DIMENSION_SQL.replace("{picked}", () =>
-          this.parametersService.bind(parameters, picked),
-        )
-      : "";
+    const dimension = this.compileDimension(levels, children, parameters);
+    const named = levels.some((level) => level.picked.length > 0);
 
     return {
+      children,
       levels: levels.length,
       parameters: parameters.values,
       sql: FACTS_EVENTS_SQL.replace(
         "{eventRows}",
         () => `true${compileFactsScope(request.scope, "f")}`,
       )
+        .replace("{ancestors}", () => (children ? ", e.ancestor_tag_ids" : ""))
         .replace("{extra}", () =>
           listEventColumns(measures)
             .map((column) => `, ${readEventColumn(column)} as "${column}"`)
@@ -375,18 +426,19 @@ export class EventMetricsFactsService {
         .replace("{where}", () =>
           filter === null ? "" : `where ${filter.sql}`,
         )
-        .replace("{levels}", () => this.compileSteps(levels.length))
+        .replace("{levels}", () => this.compileSteps(levels.length, children))
         .replace(
           "{aggregates}",
-          () => this.compileAggregates(levels, measures, tagsWhere) + dimension,
+          () => this.compileAggregates(count, measures, tagsWhere) + dimension,
         )
         .replace("{names}", () =>
-          named
-            ? `, d.tag_name as label, d.tag_path as path, d."rank" as "rank"`
-            : `, null::text as label, null::text as path, null::text as "rank"`,
+          this.compileNames(named, children ? count - 1 : -1),
         )
         .replace("{keyColumns}", () =>
-          levels.map((_, index) => `, r.t${String(index)}`).join(""),
+          Array.from(
+            { length: count },
+            (_, index) => `, r.t${String(index)}`,
+          ).join(""),
         )
         .replace("{metrics}", () =>
           compileMetricColumns(request.metrics, {
@@ -396,12 +448,19 @@ export class EventMetricsFactsService {
         )
         .replace("{union}", () =>
           this.listUnions(
-            levels.length,
+            count,
             measures.filter((measure) => isSideMeasure(measure)),
           ),
         )
-        .replace("{dimension}", () =>
-          named ? " left join dim d on d.key = r.leaf" : "",
+        .replace(
+          "{dimension}",
+          () =>
+            (named ? " left join dim d on d.key = r.leaf" : "") +
+            (children
+              ? FACTS_CHILD_NAME_SQL.replaceAll("{level}", () =>
+                  String(count - 1),
+                ).replaceAll("{parent}", () => String(count - 2))
+              : ""),
         ),
     };
   }

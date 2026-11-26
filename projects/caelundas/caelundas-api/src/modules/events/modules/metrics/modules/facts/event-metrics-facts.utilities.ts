@@ -23,8 +23,9 @@ export function readEventColumn(column: string): string {
  */
 export function toMeasuredRows(
   rows: readonly FactsRow[],
-  request: Readonly<{ levels: number; metrics: number }>,
+  request: Readonly<{ children?: boolean; levels: number; metrics: number }>,
 ): MeasuredRows {
+  const children: EventMetricsRow[] = [];
   const levels: EventMetricsRow[][] = [];
   const total: EventMetricsRow[] = [];
 
@@ -35,10 +36,16 @@ export function toMeasuredRows(
   for (const row of rows) {
     const measured = toRow(row, request.metrics);
 
-    (levels[row.level] ?? total).push(measured);
+    // The level past the last is the child groups, which sit in no level.
+    const bucket =
+      request.children === true && row.level === request.levels
+        ? children
+        : levels[row.level];
+
+    (bucket ?? total).push(measured);
   }
 
-  return { levels, total };
+  return { children, levels, total };
 }
 
 // 🔏 Private Functions

@@ -58,7 +58,11 @@ export function TagRow(properties: Readonly<TagRowProperties>): ReactNode {
         aria-selected={checked}
         className="hover:bg-accent focus-visible:bg-accent flex w-full cursor-default items-center gap-1 rounded-md py-1 pr-2 text-sm outline-hidden"
         onClick={() => {
-          onToggle(item.value);
+          if (row.isFolder) {
+            onOpenChange(item.value, !row.isExpanded);
+          } else {
+            onToggle(item.value);
+          }
         }}
         onKeyDown={(event) => {
           onKeyDown(event, row);
@@ -97,13 +101,20 @@ export function TagRow(properties: Readonly<TagRowProperties>): ReactNode {
             className="size-5 shrink-0"
           />
         )}
-        <Checkbox
-          aria-hidden="true"
-          checked={checked}
-          className={INDETERMINATE_CLASS_NAME}
-          indeterminate={row.state === "partial"}
-          tabIndex={-1}
-        />
+        {row.isFolder ? (
+          <span
+            aria-hidden="true"
+            className="size-4 shrink-0"
+          />
+        ) : (
+          <Checkbox
+            aria-hidden="true"
+            checked={checked}
+            className={INDETERMINATE_CLASS_NAME}
+            indeterminate={row.state === "partial"}
+            tabIndex={-1}
+          />
+        )}
         {item.icon === undefined ? null : (
           <span className="text-muted-foreground flex shrink-0 items-center">
             {item.icon}

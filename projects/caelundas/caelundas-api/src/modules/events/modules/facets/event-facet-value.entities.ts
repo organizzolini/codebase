@@ -34,6 +34,30 @@ export class EventFacetValueEntity {
   @Field(() => ID)
   id!: string;
 
+  @Field(() => Boolean, {
+    description:
+      "Whether the Filter menu offers the tag as a value; a filter on it still works when false.",
+  })
+  isFilterable!: boolean;
+
+  @Field(() => Boolean, {
+    description:
+      "Whether the Group menu offers the tag as a level; a grouping by it still works when false.",
+  })
+  isGroupable!: boolean;
+
+  @Field(() => Boolean, {
+    description:
+      "Whether the Select menu offers the tag as a column; a selection of it still works when false.",
+  })
+  isSelectable!: boolean;
+
+  @Field(() => Boolean, {
+    description:
+      "Whether the Sort menu offers the tag; a sort by it still works when false.",
+  })
+  isSortable!: boolean;
+
   @Field(() => String, { description: "The tag's own label." })
   name!: string;
 

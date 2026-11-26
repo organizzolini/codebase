@@ -3,8 +3,8 @@ import { Module } from "@nestjs/common";
 import { CalendarService } from "./calendar.service";
 
 /**
- * NestJS module providing calendar generation utilities.
- * Exports {@link CalendarService} for building iCal calendar data from detected events.
+ * NestJS module providing the instant event builder.
+ * Exports {@link CalendarService} for detectors that report one-minute events.
  */
 @Module({
   controllers: [],

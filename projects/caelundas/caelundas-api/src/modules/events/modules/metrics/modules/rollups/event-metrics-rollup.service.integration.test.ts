@@ -85,6 +85,7 @@ const TAGS: [string, string | undefined][] = [
   ["Aspect", undefined],
   ["Conjunct", "Aspect"],
   ["Trine", "Aspect"],
+  ["Tight", "Conjunct"],
   ["Phase", "Aspect"],
   ["Forming", "Phase"],
   ["Temporality", undefined],
@@ -536,5 +537,43 @@ describe("event metrics rollups", () => {
 
     expect(total[0]?.value).toBe(7);
     expect(groups.at(-1)).toMatchObject({ key: null, label: "No Body" });
+  });
+
+  it("adds the tags beneath each child of the root as previews, from the rollup", async () => {
+    expect.hasAssertions();
+
+    const tight: Seed = {
+      end: "2026-01-16T09:00:00.000Z",
+      name: "Tight Conjunction",
+      start: "2026-01-16T08:00:00.000Z",
+      tags: ["Tight", "Sun"],
+    };
+
+    await addEvent(tight);
+    await refresh();
+
+    const grouping = [{ field: `tag:${tags.get("Aspect")?.id ?? ""}` }];
+    const sql = await expectEqual({
+      compareToPrevious: true,
+      grouping,
+      metrics: ROLLUP_METRICS,
+      period: WINDOW,
+    });
+    const { groups } = await findMetrics({
+      grouping,
+      metrics: ["events"],
+      period: WINDOW,
+    });
+    const conjunct = groups.find(({ label }) => label === "Conjunct");
+
+    expect(sql).toContain("ge.source_node as host_id");
+    expect(conjunct?.children).toMatchObject([
+      { isPreview: true, label: "Tight", level: 1 },
+    ]);
+    expect(
+      groups
+        .filter(({ label }) => label !== "Conjunct")
+        .flatMap((group) => group.children),
+    ).toStrictEqual([]);
   });
 });

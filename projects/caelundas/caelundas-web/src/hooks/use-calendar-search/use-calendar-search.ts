@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import { toWindowSearch } from "../../components/calendar-controls/calendar-date-picker/calendar-date-picker.utilities";
 import { formatCalendarDate } from "../../components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
@@ -21,6 +21,7 @@ import type { UseCalendarSearchResult } from "./use-calendar-search.types";
 export function useCalendarSearch(
   timeZone: string,
   facets: readonly EventFacet[] = [],
+  unoffered?: Partial<CalendarSearch>,
 ): UseCalendarSearchResult {
   // 🪝 Hooks
   const navigate = useNavigate({ from: "/" });
@@ -40,6 +41,15 @@ export function useCalendarSearch(
   };
 
   // ♻️ Lifecycle
+  // A link naming a tag a menu leaves out is rewritten without it, in place.
+  useEffect(() => {
+    if (unoffered !== undefined) {
+      void navigate({
+        replace: true,
+        search: (previous) => ({ ...previous, ...unoffered }),
+      });
+    }
+  }, [navigate, unoffered]);
 
   // 🎁 Result
   return {

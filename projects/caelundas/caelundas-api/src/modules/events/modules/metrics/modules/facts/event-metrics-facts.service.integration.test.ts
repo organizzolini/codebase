@@ -22,6 +22,7 @@ import type { EventsApplication } from "../../../../../../../testing/events-appl
 import type { EventFilterRuleEntity } from "../../../filtering/modules/rules/event-filter-rule.entities";
 import type { EventFilterGroupEntity } from "../../../filtering/modules/rules/event-filter.entities";
 import type { EventMetricsInputEntity } from "../inputs/event-metrics-input.entities";
+import type { EventMetricGroupEntity } from "../results/event-metric-group.entities";
 
 /** Ten New York days, from and to a local midnight. */
 const WINDOW = {
@@ -153,6 +154,26 @@ const SEEDS: Seed[] = [
     tags: ["Sun"],
   },
 ];
+
+/** What a group's children say of themselves: label, preview, level and their own children. */
+function describeChildren(
+  group: EventMetricGroupEntity | undefined,
+): (boolean | number | string)[][] {
+  return (group?.children ?? []).map((child) => [
+    child.label,
+    child.isPreview,
+    child.level,
+    child.children.length,
+  ]);
+}
+
+/** One group of a tree by its label. */
+function findGroup(
+  groups: readonly EventMetricGroupEntity[],
+  label: string,
+): EventMetricGroupEntity | undefined {
+  return groups.find((group) => group.label === label);
+}
 
 /** Rounds every number to the microsecond, so floats compare equal. */
 function normalize(value: unknown): unknown {
@@ -339,52 +360,151 @@ describe("event metrics over the facts", () => {
     await application.stop();
   }, DATABASE_TIMEOUT_MILLISECONDS);
 
-  it("measures the web's default grouping, with and without a filter and a comparison", async () => {
+  it(
+    "measures the web's default grouping, with and without a filter and a comparison",
+    async () => {
+      expect.hasAssertions();
+
+      const filter = anyOf(
+        [
+          {
+            operator: "is_any_of",
+            path: [`tag:${id("Body")}`],
+            values: [id("Mars")],
+          },
+        ],
+        [
+          {
+            operator: "is_any_of",
+            path: [`tag:${id("Aspect")}`],
+            values: [id("Trine")],
+          },
+        ],
+      );
+
+      for (const compareToPrevious of [false, true]) {
+        for (const filtered of [false, true]) {
+          const sql = await expectEqual({
+            compareToPrevious,
+            grouping: defaultGrouping(),
+            metrics,
+            period: WINDOW,
+            ...(filtered ? { filter } : {}),
+          });
+
+          expect(sql).toContain("on true and not (f.tag_ids && (");
+          expect(sql).not.toContain("events_in_periods");
+        }
+      }
+
+      const { groups } = await metricsService.findMetrics({
+        grouping: defaultGrouping(),
+        metrics: ["events"],
+        period: WINDOW,
+      });
+
+      // Groups nest as deep as the grouping does, beneath the group of each root.
+      expect(groups.length).toBeGreaterThan(0);
+      expect(groups.flatMap(({ children }) => children).length).toBeGreaterThan(
+        0,
+      );
+    },
+    DATABASE_TIMEOUT_MILLISECONDS,
+  );
+
+  it("adds the child tags beneath each group the grouping does not split, as previews, over the facts and the events alike", async () => {
     expect.hasAssertions();
 
-    const filter = anyOf(
-      [
-        {
-          operator: "is_any_of",
-          path: [`tag:${id("Body")}`],
-          values: [id("Mars")],
-        },
-      ],
-      [
-        {
-          operator: "is_any_of",
-          path: [`tag:${id("Aspect")}`],
-          values: [id("Trine")],
-        },
-      ],
-    );
+    const grouping = [pick(["Body", "Aspect", "Mars"])];
 
     for (const compareToPrevious of [false, true]) {
-      for (const filtered of [false, true]) {
-        const sql = await expectEqual({
-          compareToPrevious,
-          grouping: defaultGrouping(),
-          metrics,
-          period: WINDOW,
-          ...(filtered ? { filter } : {}),
-        });
+      const sql = await expectEqual({
+        compareToPrevious,
+        grouping,
+        metrics,
+        period: WINDOW,
+      });
 
-        expect(sql).toContain("on true and not (f.tag_ids && (");
-        expect(sql).not.toContain("events_in_periods");
-      }
+      expect(sql).toContain("from tag_edges c");
+      expect(sql).toContain("children_dim");
     }
 
     const { groups } = await metricsService.findMetrics({
-      grouping: defaultGrouping(),
+      grouping,
       metrics: ["events"],
       period: WINDOW,
     });
 
-    // Groups nest as deep as the grouping does, beneath the group of each root.
-    expect(groups.length).toBeGreaterThan(0);
-    expect(groups.flatMap(({ children }) => children).length).toBeGreaterThan(
-      0,
+    expect(groups.every((group) => !group.isPreview)).toBe(true);
+    // The children are the tags beneath that the events carry, one level down and no deeper.
+    expect(
+      describeChildren(findGroup(groups, "Body")).toSorted(),
+    ).toStrictEqual([
+      ["Luminary", true, 1, 0],
+      ["Planet", true, 1, 0],
+    ]);
+    expect(
+      describeChildren(findGroup(groups, "Aspect")).toSorted(),
+    ).toStrictEqual([
+      ["Conjunct", true, 1, 0],
+      ["Trine", true, 1, 0],
+    ]);
+    // A tag with no child tags has none.
+    expect(describeChildren(findGroup(groups, "Mars"))).toStrictEqual([]);
+    expect(findGroup(groups, "Body")?.children[0]?.id).toMatch(
+      /^\/0:[^/]+\/1:[^/]+$/u,
     );
+  });
+
+  it("adds the child tags beneath a group a refining level skips, which the events measure", async () => {
+    expect.hasAssertions();
+
+    const body = `tag:${id("Body")}`;
+    const grouping = [{ field: body }, { field: body, parent: id("Planet") }];
+    const { groups } = await metricsService.findMetrics({
+      grouping,
+      metrics: ["events"],
+      period: WINDOW,
+    });
+
+    // Planet is refined into Mars and Venus, the grouping's own subgroups; Luminary is not split, so its tags are previews.
+    expect(
+      describeChildren(findGroup(groups, "Planet"))
+        .map((row) => row.slice(0, 3))
+        .toSorted(),
+    ).toStrictEqual([
+      ["Mars", false, 1],
+      ["Venus", false, 1],
+    ]);
+    expect(
+      describeChildren(findGroup(groups, "Luminary"))
+        .map((row) => row.slice(0, 3))
+        .toSorted(),
+    ).toStrictEqual([
+      ["Moon", true, 1],
+      ["Sun", true, 1],
+    ]);
+    expect(findGroup(groups, "Luminary")?.children[0]?.id).toMatch(
+      /^\/0:[^/]+\/1:[^/]+$/u,
+    );
+  });
+
+  it("adds no child to a grouping of calendar fields", async () => {
+    expect.hasAssertions();
+
+    await expectEqual({
+      grouping: [{ field: "month" }],
+      metrics: ["events"],
+      period: WINDOW,
+    });
+
+    const { groups } = await metricsService.findMetrics({
+      grouping: [{ field: "month" }],
+      metrics: ["events"],
+      period: WINDOW,
+    });
+
+    expect(groups.flatMap(({ children }) => children)).toStrictEqual([]);
   });
 
   it("measures each percent alone, over a period that starts mid-day", async () => {

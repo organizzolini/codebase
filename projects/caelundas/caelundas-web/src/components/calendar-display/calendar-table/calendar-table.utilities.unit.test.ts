@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { ALL_MENUS } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.constants";
+
 import {
   createTableNavigation,
   getCellText,
@@ -81,6 +83,7 @@ const FIELDS: EventGroupField[] = [
     id: "tag:aspect",
     label: "Aspect",
     levels: [],
+    menus: ALL_MENUS,
     nodes: [
       {
         count: 1,
@@ -92,6 +95,7 @@ const FIELDS: EventGroupField[] = [
       },
     ],
     options: [],
+    values: [],
   },
 ];
 const TAG_COLUMN: TableColumn = {

@@ -1,7 +1,28 @@
+import { TAG_MENU_EXCLUSIONS } from "./tag-metadata-flags.constants";
 import { TAG_NOTES } from "./tag-metadata-notes.constants";
 import { TAG_ICON_BY_NAME, TAG_METADATA } from "./tag-metadata.constants";
 
-import type { TagMetadata } from "./tag-metadata.types";
+import type {
+  TagMenuFlag,
+  TagMenuFlags,
+  TagMetadata,
+} from "./tag-metadata.types";
+
+/**
+ * Whether each menu offers the node at `path`: all do unless the path is among the exclusions.
+ */
+export function tagMenuFlags(path: readonly string[]): TagMenuFlags {
+  const key = path.join(" / ");
+  const offers = (flag: TagMenuFlag): boolean =>
+    !TAG_MENU_EXCLUSIONS[flag].includes(key);
+
+  return {
+    isFilterable: offers("isFilterable"),
+    isGroupable: offers("isGroupable"),
+    isSelectable: offers("isSelectable"),
+    isSortable: offers("isSortable"),
+  };
+}
 
 /**
  * The icon and note of the node at `path`, from its metadata entry or the notes.

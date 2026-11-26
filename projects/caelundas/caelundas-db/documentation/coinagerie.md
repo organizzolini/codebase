@@ -17,6 +17,8 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ecb**:
 - **estimate**:
 - **filetree**: The Mermaid diagram that draws the tag tree as nested, indented entries like a directory listing, chosen with `--diagram filetree` instead of the default flowchart.
+- **filterable**:
+- **groupable**:
 - **hipparco**: Stem of Hipparcos, the star catalog whose numbers are `Star.hipparcosNumber`, the key constellation edges refer to.
 - **immutable**:
 - **initially**:

@@ -19,7 +19,7 @@
     "target": "esnext",
     "types": ["node", "vitest/globals"]
   },
-  "exclude": ["../dist", "../node_modules", "../output"],
+  "exclude": ["../dist", "../node_modules"],
   "extends": "../../../../configuration/tsconfig.json",
   "include": ["*.ts", "../src/**/*.ts", "../src/**/*.tsx", "../testing/**/*.ts"]
 }

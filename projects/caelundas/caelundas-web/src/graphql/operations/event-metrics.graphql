@@ -20,6 +20,7 @@ fragment EventMetricValueFields on EventMetricValue {
 
 fragment EventMetricGroupFields on EventMetricGroup {
   id
+  isPreview
   key
   label
   level

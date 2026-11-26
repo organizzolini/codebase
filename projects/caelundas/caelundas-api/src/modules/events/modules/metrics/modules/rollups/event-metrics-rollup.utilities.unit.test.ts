@@ -105,6 +105,37 @@ describe("event metrics rollup utilities", () => {
       expect(target?.cells).toContain("join filters tf on tf.group_id =");
     });
 
+    it("reads the tags beneath a root's children for the one plain tag level's children", () => {
+      const target = findRollupTarget(
+        request({
+          children: true,
+          grouping: [{ field: `tag:${ROOT}`, tags: [] }],
+        }),
+      );
+
+      expect(target).toMatchObject({ group: "host_id, w.tag_id", root: ROOT });
+      expect(target?.cells).toContain("join tag_edges pe on");
+    });
+
+    it("has no children rollup for a calendar field, several levels or a level it cannot read", () => {
+      const children = (
+        grouping: EventMetricsQueryRequest["grouping"],
+      ): ReturnType<typeof findRollupTarget> =>
+        findRollupTarget(request({ children: true, grouping }));
+
+      expect(children([{ field: "year", tags: [] }])).toBeNull();
+      expect(
+        children([
+          { field: `tag:${ROOT}`, tags: [] },
+          { field: "year", tags: [] },
+        ]),
+      ).toBeNull();
+      expect(
+        children([{ field: `tag:${ROOT}`, parent: MARS, tags: [] }]),
+      ).toBeNull();
+      expect(children([])).toBeNull();
+    });
+
     it("refuses every level it cannot answer", () => {
       const levels = [
         tagLevel({ parent: MARS }),
@@ -195,6 +226,21 @@ describe("event metrics rollup utilities", () => {
       expect(compiled?.sql).toContain(
         "join calendar_event_facts r on r.filter_id = tf.id",
       );
+    });
+
+    it("reads the children of a tag level from the grandchildren's filters, named under their host", () => {
+      const compiled = compileRollupRead(
+        request({
+          children: true,
+          grouping: [{ field: `tag:${ROOT}`, tags: [] }],
+        }),
+        "UTC",
+      );
+
+      expect(compiled?.parameters.at(-1)).toBe(ROOT);
+      expect(compiled?.sql).toContain("ge.source_node as host_id");
+      expect(compiled?.sql).toContain("p.tag_parent_id = t.host_id");
+      expect(compiled?.sql).toContain("re.source_node = $4::uuid");
     });
 
     it("computes each measure that merges once, over the pivoted rows", () => {

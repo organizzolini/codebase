@@ -617,7 +617,6 @@ Each project ships a `.env.default` template with safe placeholder values. The i
 | `LONGITUDE`        | `-75.17169`  | Observer longitude for ephemeris calculations |
 | `START_DATE`       | `2026-07-01` | Calculation start date (YYYY-MM-DD)           |
 | `END_DATE`         | `2026-07-31` | Calculation end date (YYYY-MM-DD)             |
-| `OUTPUT_DIRECTORY` | `./output`   | Directory for generated calendar files        |
 
 Other projects ship their own templates; read the `.env.default` beside the project you are working on.
 

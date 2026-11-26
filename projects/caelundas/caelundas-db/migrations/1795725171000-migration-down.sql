@@ -15,14 +15,14 @@ where "type" = $1 and "name" = $2 and "schema" = $3;
 
 drop materialized view calendar_event_tag_sets;
 
-drop index caelundas.tag_closures_descendant_id;
+drop index caelundas.tag_trees_descendant_id;
 
-drop index caelundas.tag_closures_ancestor_id_descendant_id;
+drop index caelundas.tag_trees_ancestor_id_descendant_id;
 
 delete from caelundas.typeorm_metadata
 where "type" = $1 and "name" = $2 and "schema" = $3;
 
-drop materialized view tag_closures;
+drop materialized view tag_trees;
 
 drop trigger tags_root_guard on tags;
 

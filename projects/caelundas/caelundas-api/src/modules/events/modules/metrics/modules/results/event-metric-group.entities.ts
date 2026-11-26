@@ -11,7 +11,7 @@ import { EventMetricValueEntity } from "./event-metric-value.entities";
 export class EventMetricGroupEntity {
   @Field(() => [EventMetricGroupEntity], {
     description:
-      "The subgroups at the next level, in the order of their keys, up to 500.",
+      "The subgroups at the next level, in the order of their keys, up to 500; for a tag group the grouping does not split, its child tags the events carry, as previews.",
   })
   children!: EventMetricGroupEntity[];
 
@@ -20,6 +20,12 @@ export class EventMetricGroupEntity {
       "Identifies the group in the whole tree, as the table's group id does: its parent's id, then the level and key.",
   })
   id!: string;
+
+  @Field(() => Boolean, {
+    description:
+      "Whether the group is one of the child tags the API adds beneath a group the grouping does not split: it has no level of the grouping, and its own children are not loaded.",
+  })
+  isPreview!: boolean;
 
   @Field(() => String, {
     description:
@@ -35,7 +41,8 @@ export class EventMetricGroupEntity {
   label!: string;
 
   @Field(() => Int, {
-    description: "The index of the grouping level the group is at.",
+    description:
+      "The index of the grouping level the group is at; a preview child's is its parent's plus one.",
   })
   level!: number;
 

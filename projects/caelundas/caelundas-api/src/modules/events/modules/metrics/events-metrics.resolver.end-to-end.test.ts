@@ -24,6 +24,7 @@ import type {
 interface GroupResponse {
   children: GroupResponse[];
   id: string;
+  isPreview: boolean;
   key: null | string;
   label: string;
   level: number;
@@ -79,12 +80,12 @@ const QUERY = `
       timezone
       total { ...Values }
       groups {
-        id key label level rank path
+        id isPreview key label level rank path
         values { ...Values }
         children {
-          id key label level rank path
+          id isPreview key label level rank path
           values { ...Values }
-          children { id key label level values { ...Values } }
+          children { id isPreview key label level values { ...Values } }
         }
       }
     }
@@ -470,6 +471,31 @@ describe("events metrics end-to-end suite", () => {
       "2026-03-10",
     ]);
     expect(mars.children[0]?.id).toBe(`${mars.id}/1:2026-03-04`);
+  });
+
+  it("adds the child tags beneath a group the grouping does not split, as previews one level deep", async () => {
+    expect.hasAssertions();
+
+    const field = `tag:${filterTags.planet.id}`;
+    const { groups } = await measure({
+      grouping: [{ field }],
+      metrics: ["events"],
+    });
+    const mars = find(groups, "Mars");
+
+    expect(groups.map(({ isPreview }) => isPreview)).toStrictEqual([
+      false,
+      false,
+      false,
+    ]);
+    expect(mars.children).toMatchObject([
+      { isPreview: true, label: "Retrograde", level: 1 },
+    ]);
+    expect(mars.children[0]?.id).toBe(`${mars.id}/1:${mars.children[0]?.key}`);
+    expect(mars.children[0]?.children).toStrictEqual([]);
+    // A tag with no tags beneath it, and the group of no tag, have none.
+    expect(find(groups, "Moon").children).toStrictEqual([]);
+    expect(find(groups, "No Planet").children).toStrictEqual([]);
   });
 
   it("splits only the group of the parent tag when a level refines the one before", async () => {

@@ -28,7 +28,7 @@ A **dimension** is a way events are sliced: `name`, `day`, `week`, `month`,
 `dimension_edges` (a `@Graph` edge, source the finer, target the coarser), because a
 day has two parents: day to week, day to month, month to quarter, quarter to year.
 `tag` is one flat dimension whose **values are the rows of `tags`** and their
-closure, never copied (the tags are a graph, in `tag_edges`, but a filter pins one
+trees, never copied (the tags are a graph, in `tag_edges`, but a filter pins one
 tag), and `name` is one flat
 dimension whose values are the distinct event names, so recurrences aggregate by
 name, name and day, or name and month; no filter pins a name yet. An event is base
@@ -56,7 +56,7 @@ A fact sits at a day filter, the measures of the whole set on that day, or at a 
 filter, the measures of the events carrying that tag or a descendant, so a parent's
 figures include its children's. Tag filters are not nested in one another: a tag may
 have several parents (Venus is under Planet and under Benefic), so one parent filter
-could not say where it sits, and `tag_closures` gives the ancestry instead. Every tag
+could not say where it sits, and `tag_trees` gives the ancestry instead. Every tag
 filter is beneath its day's filter, and carries the day's `period` as well, so a window
 of days is a range of one index and not a walk up the parents. A shared tag's filter
 and facts are one, counting an event once however many paths lead to it.
@@ -151,7 +151,7 @@ generated columns and the whole minutes computed inline:
 
 Filtering by a tag, with its subtree, matches `tag_ids || ancestor_tag_ids`. Both
 arrays are kept: dropping the ancestors saves 9.4 MB but sends the planner into
-joins of `tag_closures` for every event, JIT and disk sorts.
+joins of `tag_trees` for every event, JIT and disk sorts.
 
 ## The local-time fields
 

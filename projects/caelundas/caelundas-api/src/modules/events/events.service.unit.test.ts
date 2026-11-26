@@ -381,7 +381,11 @@ describe(EventsService, () => {
 
     query.mockResolvedValueOnce([
       row("planet", "Planet", "0", "planet", "", "0"),
-      row("mars", "Mars", "1", "planet", "Mars", "2"),
+      {
+        ...row("mars", "Mars", "1", "planet", "Mars", "2"),
+        is_filterable: false,
+        is_sortable: false,
+      },
       {
         ...row(
           "retrograde",
@@ -406,6 +410,10 @@ describe(EventsService, () => {
       {
         icon: null,
         id: "planet",
+        isFilterable: true,
+        isGroupable: true,
+        isSelectable: true,
+        isSortable: true,
         name: "Planet",
         note: null,
         slug: "planet",
@@ -416,6 +424,10 @@ describe(EventsService, () => {
             depth: 1,
             icon: null,
             id: "mars",
+            isFilterable: false,
+            isGroupable: true,
+            isSelectable: true,
+            isSortable: false,
             name: "Mars",
             note: null,
             path: "Mars",
@@ -427,6 +439,10 @@ describe(EventsService, () => {
             depth: 2,
             icon: "rotate-ccw",
             id: "retrograde",
+            isFilterable: true,
+            isGroupable: true,
+            isSelectable: true,
+            isSortable: true,
             name: "Retrograde",
             note: "Moving backward.",
             path: "Mars / Retrograde",

@@ -173,6 +173,40 @@ describe(EventMetricsFactsService, () => {
       expect(compiled.sql).toContain("from tag_info t");
     });
 
+    it("adds a step for the child tags of the last level's picked tags, and names them beneath it", () => {
+      expect.hasAssertions();
+
+      const compiled = compile({
+        grouping: [level(`tag:${ROOT}`, { tags: [MARS] })],
+      });
+
+      expect(compiled.children).toBe(true);
+      expect(compiled.levels).toBe(1);
+      expect(compiled.sql).toContain("e.tag_ids, e.ancestor_tag_ids");
+      expect(compiled.sql).toContain("x1 as (");
+      expect(compiled.sql).toContain("from x0 e");
+      expect(compiled.sql).toContain("from tag_edges c");
+      expect(compiled.sql).toContain("a1 as (");
+      expect(compiled.sql).toContain("null::text as t1");
+      expect(compiled.sql).toContain("children_dim as (");
+      expect(compiled.sql).toContain("case when r.level = 1 then r.t0");
+      expect(
+        compiled.parameters.filter((value) => Array.isArray(value)),
+      ).toStrictEqual([[MARS], [MARS], [MARS]]);
+    });
+
+    it("adds no child step after a level of calendar fields", () => {
+      expect.hasAssertions();
+
+      const compiled = compile({
+        grouping: [level(`tag:${ROOT}`, { tags: [MARS] }), level("year")],
+      });
+
+      expect(compiled.children).toBe(false);
+      expect(compiled.sql).not.toContain("from tag_edges c");
+      expect(compiled.sql).not.toContain("children_dim");
+    });
+
     it("names no tags for a grouping of calendar fields", () => {
       expect.hasAssertions();
 
@@ -292,7 +326,7 @@ describe(EventMetricsFactsService, () => {
         tagRoot: ROOT,
       });
 
-      expect(compiled.sql).toContain("from tag_closures c");
+      expect(compiled.sql).toContain("from tag_trees c");
       expect(compiled.parameters).toContain(ROOT);
     });
 

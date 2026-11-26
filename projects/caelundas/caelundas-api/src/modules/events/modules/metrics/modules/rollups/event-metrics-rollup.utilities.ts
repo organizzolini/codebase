@@ -11,6 +11,7 @@ import {
 import {
   ROLLUP_CALENDAR_COLUMNS_SQL,
   ROLLUP_CALENDAR_KEYS,
+  ROLLUP_CHILD_TARGET,
   ROLLUP_FACTS_SQL,
   ROLLUP_GUARD_SQL,
   ROLLUP_TAG_TARGET,
@@ -101,6 +102,10 @@ export function compileRollupRead(
 export function findRollupTarget(
   request: EventMetricsQueryRequest,
 ): null | RollupTarget {
+  if (request.children === true) {
+    return describeChildren(request.grouping);
+  }
+
   if (request.level === undefined) {
     return ROLLUP_TOTAL_TARGET;
   }
@@ -203,6 +208,19 @@ function describeCalendar({
     group: column,
     rollupExtra: `${ROLLUP_TOTAL_TARGET.rollupExtra}${own ? "" : read("r")}`,
   };
+}
+
+/**
+ * The target of the tags beneath the children of a root, when that one level
+ * is the grouping; none for any other.
+ */
+function describeChildren(
+  grouping: readonly EventGroupLevel[],
+): null | RollupTarget {
+  const level = grouping.length === 1 ? grouping[0] : undefined;
+  const tag = level === undefined ? null : describeTag(level);
+
+  return tag === null ? null : { ...ROLLUP_CHILD_TARGET, root: tag.root };
 }
 
 /**

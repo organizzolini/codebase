@@ -79,6 +79,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **exaltation**:
 - **fall**:
 - **family**: Group of related events, such as Aspects, Eclipses, or Twilights, that a README table and service folder share.
+- **filterable**:
 - **finder**: A service that finds the boundary events a sweep window cut off, which the progressive pass pairs with the ones it detected.
 - **fire**: Element tag for the fire signs Aries, Leo, and Sagittarius, a root tag node that ingress tags link to.
 - **focal**: Body at the apex or focus of a compound aspect pattern, such as the Venus focal body in a kite, named in event summaries.
@@ -90,6 +91,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **gibbous**: Moon phase between half and full, spanning 135 and 225 degrees of elongation, with waxing and waning forms.
 - **grand**: Prefix naming large compound patterns like trine, cross, or sextile, built from several aspects in balanced figures.
 - **greenwich**:
+- **groupable**:
 - **hammer**: Compound aspect pattern built on sesquiquadrate aspects, one of the triple patterns counted in calendar tags.
 - **hard**:
 - **harmonic**: Aspect defined by a multiple of the 360-degree circle, such as the 5th or 12th harmonic, beyond the classic major aspects.

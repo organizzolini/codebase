@@ -9,7 +9,6 @@ import {
 } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
-import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 import { TagsService } from "../tags/tags.service";
 import { classifyEvent, tagPathKey } from "../tags/tags.utilities";
 
@@ -26,16 +25,14 @@ import type {
   CalendarEventRow,
   CalendarEventTagLink,
   DetectedCalendarEvent,
-  FindInRangeParameters,
   Observer,
-  StoredCalendarEvent,
   WrittenCalendarEvent,
 } from "./calendar-events.types";
 import type { Moment } from "moment-timezone";
 import type { EntityManager } from "typeorm";
 
 /**
- * Persists detected events and reads them back for rendering. An event is
+ * Persists detected events. An event is
  * keyed by name, start, and location, and links to the tag tree nodes its
  * tags classify under.
  */
@@ -58,48 +55,6 @@ export class CalendarEventsService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
-
-  /**
-   * Names of each event's direct tags, ordered by code point, not locale or
-   * collation; ids go in batches under the bind-parameter limit.
-   */
-  private async findTagNames(
-    eventIds: readonly string[],
-  ): Promise<Map<string, string[]>> {
-    const names = new Map<string, string[]>();
-
-    for (
-      let offset = 0;
-      offset < eventIds.length;
-      offset += POSTGRES_MAXIMUM_PARAMETERS
-    ) {
-      const links = await this.calendarEventRepository.manager
-        .createQueryBuilder(CalendarEventTag, "eventTag")
-        .innerJoin("eventTag.tag", "tag")
-        .select("eventTag.calendarEventId", "calendarEventId")
-        .addSelect("tag.name", "name")
-        .where("eventTag.calendarEventId IN (:...eventIds)", {
-          eventIds: eventIds.slice(
-            offset,
-            offset + POSTGRES_MAXIMUM_PARAMETERS,
-          ),
-        })
-        .getRawMany<{ calendarEventId: string; name: string }>();
-
-      for (const { calendarEventId, name } of links) {
-        names.set(calendarEventId, [
-          ...(names.get(calendarEventId) ?? []),
-          name,
-        ]);
-      }
-    }
-
-    for (const [calendarEventId, eventNames] of names) {
-      names.set(calendarEventId, [...new Set(eventNames)].toSorted());
-    }
-
-    return names;
-  }
 
   /**
    * Replaces the written events' tag links: old links are deleted first, so a
@@ -193,51 +148,6 @@ export class CalendarEventsService {
     end: Date | Moment,
   ): string {
     return `${summary}\u0000${start.toISOString()}\u0000${end.toISOString()}`;
-  }
-
-  /**
-   * Stored events at one location overlapping a range, by start, with tag
-   * names; events spanning an edge count, and an instant counts inside.
-   */
-  async findInRange(
-    parameters: FindInRangeParameters,
-  ): Promise<StoredCalendarEvent[]> {
-    const events = await this.calendarEventRepository
-      .createQueryBuilder("calendarEvent")
-      .where("calendarEvent.latitude = :latitude", {
-        latitude: this.formatCoordinate(parameters.latitude),
-      })
-      .andWhere("calendarEvent.longitude = :longitude", {
-        longitude: this.formatCoordinate(parameters.longitude),
-      })
-      .andWhere("calendarEvent.start < :end", {
-        end: parameters.end.toISOString(),
-      })
-      .andWhere(
-        "(calendarEvent.end > :start OR (calendarEvent.end = calendarEvent.start AND calendarEvent.start >= :start))",
-        { start: parameters.start.toISOString() },
-      )
-      .orderBy("calendarEvent.start", "ASC")
-      .addOrderBy("calendarEvent.name", "ASC")
-      .getMany();
-
-    if (events.length === 0) {
-      return [];
-    }
-
-    const tagNames = await this.findTagNames(events.map(({ id }) => id));
-
-    return events.map((event) => ({
-      description: event.note,
-      end: event.end,
-      id: event.id,
-      latitude: event.latitude,
-      longitude: event.longitude,
-      start: event.start,
-      summary: event.name,
-      tags: tagNames.get(event.id) ?? [],
-      timezone: event.timezone,
-    }));
   }
 
   /**

@@ -5,12 +5,13 @@ import {
   createRootIcon,
   createTagOptions,
   describeRoot,
+  listOfferedValues,
 } from "../../../calendar-filters/components/event-filter-model/event-filter-fields.utilities";
 import { TAG_FIELD_PREFIX } from "../../../calendar-filters/components/event-filter-model/event-filters.constants";
 import { readDepth } from "../../../filter-tag-editor/event-filter-tag-tree.utilities";
 import { TagIcon } from "../../../tag-icon/tag-icon";
 
-import { ALL_TAGS_FIELD } from "./event-group-fields.constants";
+import { ALL_MENUS, ALL_TAGS_FIELD } from "./event-group-fields.constants";
 import {
   DERIVED_GROUP_DESCRIPTIONS,
   DERIVED_GROUP_ICONS,
@@ -55,8 +56,15 @@ export function createEventGroupFields(
       id: `${TAG_FIELD_PREFIX}${facet.id}`,
       label: facet.name,
       levels: levels.map((names) => [...new Set(names)]),
+      menus: {
+        isFilterable: facet.isFilterable !== false,
+        isGroupable: facet.isGroupable !== false,
+        isSelectable: facet.isSelectable !== false,
+        isSortable: facet.isSortable !== false,
+      },
       nodes: listGroupNodes(facet.values),
-      options: createTagOptions(facet),
+      options: createTagOptions(facet, listOfferedValues(facet.values)),
+      values: facet.values,
     });
   }
 
@@ -66,8 +74,10 @@ export function createEventGroupFields(
     id,
     label: DERIVED_GROUP_LABELS[id],
     levels: [],
+    menus: ALL_MENUS,
     nodes: [],
     options: [],
+    values: [],
   }));
 
   return [...tagFields, ...derivedFields];
@@ -229,7 +239,15 @@ function resolveLevel(
   field: EventGroupField,
 ): ResolvedGroupLevel | undefined {
   if (field.levels.length === 0 || level.parent === undefined) {
-    return { above: undefined, level: { field: field.id } };
+    return {
+      above: undefined,
+      level: {
+        field: field.id,
+        ...(level.tags === undefined || field.levels.length === 0
+          ? {}
+          : { tags: level.tags }),
+      },
+    };
   }
 
   // A loop rather than a callback, which would count as one more frame.

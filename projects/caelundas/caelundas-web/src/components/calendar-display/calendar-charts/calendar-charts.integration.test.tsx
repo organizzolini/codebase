@@ -212,12 +212,13 @@ describe("charts layout", () => {
           1,
         );
       }, BUILDER_WAIT);
+      // The bar still stacks and opens, now into the child tags the API adds beneath the last level.
       await waitFor(() => {
         expect(
           screen
             .getAllByRole("button", { name: "Alpha: 6" })[0]
             ?.getAttribute("aria-expanded"),
-        ).toBeNull();
+        ).toBe("false");
       }, BUILDER_WAIT);
     },
     BUILDER_TEST.timeout,

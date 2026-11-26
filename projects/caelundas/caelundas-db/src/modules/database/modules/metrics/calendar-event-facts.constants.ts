@@ -16,7 +16,7 @@ const CELLS_SQL = `
     inner join tags as pa on pe.source_node = pa.id
     inner join tag_edges as ae on pa.id = ae.target_node
     inner join tags as ra on ae.source_node = ra.id
-    inner join tag_closures as pc on p.id = pc.ancestor_id
+    inner join tag_trees as pc on p.id = pc.ancestor_id
     where ra."name" = 'Aspect' and pa."name" = 'Phase' and p."name" in ('Forming', 'Dissolving')
       and not exists (select 1 from tag_edges as above where above.target_node = ra.id)
   ),
@@ -141,7 +141,7 @@ const DELETE_FACTS_SQL = `
 
 /** The refresh statements, in the order they must run. */
 export const METRICS_REFRESH_STATEMENTS: readonly string[] = [
-  "refresh materialized view concurrently tag_closures",
+  "refresh materialized view concurrently tag_trees",
   "refresh materialized view concurrently calendar_event_tag_sets",
   INSERT_DAY_FILTERS_SQL,
   INSERT_TAG_FILTERS_SQL,

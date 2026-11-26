@@ -4,6 +4,9 @@ import type { GroupSort } from "../calendar-group-strip/components/event-group-t
 
 export const TITLE = "Sort";
 
+/** The Sort menu lists sortable tags that have tags beneath. */
+export const SORT_MENU = { flag: "isSortable", leaves: false } as const;
+
 /**
  * What groups can be ordered by, with what each orders.
  */

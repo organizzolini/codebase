@@ -48,7 +48,7 @@ with events as (
         and not exists (
             select 1
             from calendar_event_tags as et
-            inner join tag_closures as c on et.tag_id = c.descendant_id
+            inner join tag_trees as c on et.tag_id = c.descendant_id
             inner join tags as t on c.ancestor_id = t.id
             where et.calendar_event_id = e.id and t."name" in ('Forming', 'Dissolving')
         )
@@ -56,7 +56,7 @@ with events as (
 carried as (
     select et.calendar_event_id, c.ancestor_id as tag_id
     from calendar_event_tags as et
-    inner join tag_closures as c on et.tag_id = c.descendant_id
+    inner join tag_trees as c on et.tag_id = c.descendant_id
     group by et.calendar_event_id, c.ancestor_id
 ),
 pairs as (
@@ -556,7 +556,7 @@ describe("metrics facts", () => {
 
       const rows = await database.dataSource.query<{ ancestor: string }[]>(
         `select a."name" as ancestor
-        from tag_closures c
+        from tag_trees c
         join tags a on a.id = c.ancestor_id
         where c.descendant_id = $1
         order by a."name"`,

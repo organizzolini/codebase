@@ -1,5 +1,6 @@
 // 🏷️ Types
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
+import type { TagMenuFlags } from "./modules/tag-metadata/tag-metadata.types";
 
 /** What classifying an event reads: raw tags, start and end. */
 export type ClassifiableEvent = Pick<
@@ -13,9 +14,10 @@ export interface ClassifiedCalendarEvent {
   paths: readonly TagPath[];
 }
 
-/** Stored tags: ids by parent and name, names by parent and slug, and the edges between them. */
+/** Stored tags: menu flags by id, ids by parent and name, names by parent and slug, and the edges between them. */
 export interface KnownTags {
   edges: Set<string>;
+  flags: Map<string, TagMenuFlags>;
   ids: Map<string, string>;
   slugs: Map<string, string>;
 }

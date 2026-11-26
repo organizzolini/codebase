@@ -186,7 +186,12 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   metric's lowercased name, singular for one), `NONE` a percent on a 0 to 100 scale (a change in points) and
   `INSTANT` epoch milliseconds as a date and time in the dataset's zone. The picker
   groups metrics by unit (Counts, Durations, Share of time, Times); the Charts hide
-  the `INSTANT` ones; `additive` says a stack adds up to its bar. Their Select strip
+  the `INSTANT` ones; `additive` says a stack adds up to its bar. Every group
+  the API returns also carries its child tags (`isPreview: true`, one level
+  only), so every bar with subgroups stacks by them and a row opens at once; a
+  preview is data of its parent, never a group of the table, so
+  `describeMetricGroups` lists none of them (nor lets the first path open into
+  one) and the shared open groups gain no id. Their Select strip
   lists metrics, there is no Page strip, and Sort may order by a metric (`key:
   "metric"`).
 - The Select, Group, Sort and Filter strips fold: the Fold item in any chip's
@@ -308,9 +313,19 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
 count, and `alsoUnder` naming its other parents) is a row under each, with a small link
 mark and "also Benefic" under its name; ticking it anywhere ticks it everywhere, a
 parent's partial and full states count it once, and the rule's chip carries the same
-link mark. Event pills show it once. The group menu lists branches only, so a shared leaf
-is not in it, but the branch it sits under is (Body, Planet and Benefic side by side).
-A search lists every match flat. Each tag's count is of the events in the days the view
+link mark. Event pills show it once. The Group menu lists the groupable tags, leaves too,
+and a shared tag is a row under each parent with "also Benefic" in its description and one id
+(the cascader holds one row to a value, so a shared row's value is `id@@path` and
+`toTaggedIds` and `toRowValues` make a click on any row tick or clear the tag everywhere).
+Ticking a tag with tags beneath it groups by its children, as before; ticking tags with none
+makes one level of groups of those tags (`tags` on the level), in place of the root's own
+level; a new level follows the last of its field's, so it refines that run. Each tag has four
+flags the API passes on (`isFilterable`, `isGroupable`, `isSelectable`, `isSortable`; absent
+means on) and each menu offers only its own: Filter's value picker, Group's levels, Sort's
+tag order and Select's columns. A tag a menu leaves out stays as a folder, a row that only
+opens, when a tag beneath it is offered, and goes with none, so no folder is empty; the flags
+shape the menus, and a link naming such a tag has it dropped, silently: the API ignores it in a filter or grouping, and `useUnofferedTagCleanup` rewrites the link without it (filter picks, group levels, sorts and columns) once the facets load.
+A search lists every match flat, folders left out. Each tag's count is of the events in the days the view
   shows (the facets are read for that window and cached per window), not of
   the whole dataset.
 - The fields come from the data: one per tag root, offering every tag beneath

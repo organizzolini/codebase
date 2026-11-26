@@ -4,14 +4,13 @@ import { Command, CommandRunner } from "nest-commander";
 import { LoggerService } from "@codebase/observability";
 
 import { CalendarEventsService } from "../calendar-events/calendar-events.service";
-import { CalendarService } from "../calendar/calendar.service";
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { InputService } from "../input/input.service";
 import { PerfectiveService } from "../perfective/perfective.service";
 import { ProgressiveService } from "../progressive/progressive.service";
 
 /**
- * CLI entry point for caelundas. Reads observer coordinates and date range from environment variables, detects and upserts events into Postgres, then writes the requested range to `.ics` and JSON files via {@link CalendarService}.
+ * CLI entry point for caelundas. Reads observer coordinates and date range from environment variables, detects and upserts events into Postgres, and refreshes the read model.
  */
 @Command({
   description: "Run the caelundas command",
@@ -29,8 +28,6 @@ export class CaelundasCommand extends CommandRunner {
     private readonly perfectiveEventsService: PerfectiveService,
     @Inject(ProgressiveService)
     private readonly progressiveEventsService: ProgressiveService,
-    @Inject(CalendarService)
-    private readonly calendarService: CalendarService,
     @Inject(CalendarEventsService)
     private readonly calendarEventsService: CalendarEventsService,
     @Inject(EphemerisService)
@@ -49,8 +46,7 @@ export class CaelundasCommand extends CommandRunner {
   // 🌎 Public Methods
 
   /**
-   * Runs the calendar pipeline: detect, store, then render the stored range to
-   * ICS and JSON files.
+   * Runs the calendar pipeline: detect, then store.
    */
   async run(): Promise<void> {
     this.logger.debug("🚀 Starting a caelundas run", undefined, {
@@ -84,20 +80,8 @@ export class CaelundasCommand extends CommandRunner {
       timezone: input.timezone,
     });
 
-    const storedEvents = await this.calendarEventsService.findInRange({
-      latitude: input.latitude,
-      longitude: input.longitude,
-      // Detection covers the whole end date, so read back through its end.
-      end: input.end.clone().add(1, "day"),
-      start: input.start,
-    });
-
-    await this.calendarService.write(storedEvents, input);
-    await this.calendarService.writeJson(storedEvents, input);
-
     this.logger.info("🏁 Completed a caelundas run", undefined, {
       detectedEvents: allEvents.length,
-      totalEvents: storedEvents.length,
     });
   }
 }

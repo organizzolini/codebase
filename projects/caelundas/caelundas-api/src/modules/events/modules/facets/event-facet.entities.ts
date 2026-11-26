@@ -19,6 +19,26 @@ export class EventFacetEntity {
   @Field(() => ID)
   id!: string;
 
+  @Field(() => Boolean, {
+    description: "Whether the Filter menu offers the root as a value.",
+  })
+  isFilterable!: boolean;
+
+  @Field(() => Boolean, {
+    description: "Whether the Group menu offers the root as a level.",
+  })
+  isGroupable!: boolean;
+
+  @Field(() => Boolean, {
+    description: "Whether the Select menu offers the root as a column.",
+  })
+  isSelectable!: boolean;
+
+  @Field(() => Boolean, {
+    description: "Whether the Sort menu offers the root.",
+  })
+  isSortable!: boolean;
+
   @Field(() => String, { description: "The root tag's label." })
   name!: string;
 

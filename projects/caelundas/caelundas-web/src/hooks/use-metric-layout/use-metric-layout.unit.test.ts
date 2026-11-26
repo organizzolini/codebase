@@ -114,9 +114,10 @@ describe(useMetricLayout, () => {
       "/0:alpha",
       "/0:alpha/1:one",
     ]);
-    // The first group is open, so its subgroups stand in its place.
+    // The first path is open, so its subgroups stand in its place, the last group's previews too.
     expect(result.current.rows.map((row) => row.group.id)).toStrictEqual([
-      "/0:alpha/1:one",
+      "/0:alpha/1:one/2:deep",
+      "/0:alpha/1:one/2:more",
       "/0:alpha/1:two",
       "/0:beta",
     ]);
@@ -131,7 +132,7 @@ describe(useMetricLayout, () => {
     const { result } = renderHook(() => useMetricLayout(options), { wrapper });
 
     await waitFor(() => {
-      expect(result.current.rows).toHaveLength(3);
+      expect(result.current.rows).toHaveLength(4);
     });
 
     act(() => {
@@ -139,7 +140,8 @@ describe(useMetricLayout, () => {
     });
 
     expect(result.current.rows.map((row) => row.group.id)).toStrictEqual([
-      "/0:alpha/1:one",
+      "/0:alpha/1:one/2:deep",
+      "/0:alpha/1:one/2:more",
       "/0:alpha/1:two",
       "/0:beta/1:one",
       "/0:beta/1:two",
@@ -314,7 +316,8 @@ describe(useMetricLayout, () => {
     });
 
     expect(result.current.rows.map((row) => row.group.id)).toStrictEqual([
-      "/0:alpha/1:one",
+      "/0:alpha/1:one/2:deep",
+      "/0:alpha/1:one/2:more",
       "/0:alpha/1:two",
       "/0:beta",
     ]);
@@ -323,7 +326,7 @@ describe(useMetricLayout, () => {
       result.current.toggle("/0:beta");
     });
 
-    expect(result.current.rows).toHaveLength(4);
+    expect(result.current.rows).toHaveLength(5);
   });
 
   it("reports the toolbar's navigation by days", () => {

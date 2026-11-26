@@ -18,7 +18,7 @@ export interface TagRepository {
 }
 
 /**
- * Saves tags as a test reads them, `parent` or `parents` becoming `tag_edges`; refresh `tag_closures` before reading it.
+ * Saves tags as a test reads them, `parent` or `parents` becoming `tag_edges`; refresh `tag_trees` before reading it.
  */
 export function tagRepository(dataSource: DataSource): TagRepository {
   const tags = dataSource.getRepository(Tag);

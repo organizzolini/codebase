@@ -68,7 +68,7 @@ export const FACTS_EVENTS_SQL = `
   ),
   ev as materialized (
     select e.period, e.period_start, e.period_end, e.id, e."name", e."start", e."end",
-      e.start_local_day, e.duration_minutes, e.tag_ids{eventColumns}{keys}
+      e.start_local_day, e.duration_minutes, e.tag_ids{ancestors}{eventColumns}{keys}
     from (${FACTS_EVENT_ROWS_SQL}
     ) e
     {where}
@@ -76,6 +76,21 @@ export const FACTS_EVENTS_SQL = `
   select r.level, r.period{keyColumns}{names}{metrics}
   from ({union}) r{dimension}
 `;
+
+// The extra level beyond the last: each event once for every child tag of the
+// last level's tag that it carries, and none for a tag with no children.
+/** The child tags of the last level's tags that an event carries. */
+export const FACTS_CHILD_LEVEL_SQL = `,
+  x{level} as (
+    select e.*, t.key as t{level}
+    from x{previous} e
+    cross join lateral (
+      select c.target_node::text as key
+      from tag_edges c
+      where c.source_node = e.t{previous}::uuid
+        and c.target_node = any(e.tag_ids || e.ancestor_tag_ids)
+    ) as t (key)
+  )`;
 
 /** One level's rows: each event once for every key it falls under. */
 export const FACTS_LEVEL_SQL = `,
@@ -117,7 +132,7 @@ export const FACTS_SIDE_SQL = {
 export const FACTS_TAG_ROOT_SQL = `
     where d.id <> {root}::uuid and exists (
       select 1
-      from tag_closures c
+      from tag_trees c
       where c.ancestor_id = {root}::uuid and c.descendant_id = d.id
     )`;
 
@@ -128,6 +143,19 @@ export const FACTS_DIMENSION_SQL = `,
     from tag_info t
     where t.tag_id = any({picked}::uuid[])
   )`;
+
+/** Names the last level's child tags by their paths. */
+export const FACTS_CHILD_DIMENSION_SQL = `,
+  children_dim as (
+    select distinct on (p.tag_parent_id, p.tag_id)
+      p.tag_parent_id::text || '>' || p.tag_id::text as key, p.tag_name, p.tag_path, p.tag_rank
+    from tag_paths p
+    where p.tag_parent_id = any({picked}::uuid[])
+    order by p.tag_parent_id, p.tag_id, p.tag_rank collate "C"
+  )`;
+
+/** Joins the row `r` of the child level to its tag's name. */
+export const FACTS_CHILD_NAME_SQL = ` left join children_dim cd on cd.key = case when r.level = {level} then r.t{parent} || '>' || r.leaf end`;
 
 /** One row of the facts statement; keys and measures read apart. */
 export const factsRowSchema = z.looseObject({

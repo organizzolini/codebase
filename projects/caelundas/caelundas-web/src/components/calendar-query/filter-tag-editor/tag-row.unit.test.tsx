@@ -9,6 +9,7 @@ const ROW: TagTreeRow = {
   depth: 0,
   hasChildren: true,
   isExpanded: false,
+  isFolder: false,
   item: { description: "400 events", label: "Aspect", value: "aspect" },
   name: "Aspect",
   selectedBelow: 2,
@@ -57,6 +58,24 @@ describe(TagRow, () => {
 
     expect(onToggle).toHaveBeenCalledExactlyOnceWith("aspect");
     expect(onOpenChange).toHaveBeenCalledWith("aspect", true);
+  });
+
+  it("opens a folder on a click and draws no checkbox", () => {
+    const onOpenChange = vi.fn<(id: string, open: boolean) => void>();
+    const onToggle = vi.fn<(id: string) => void>();
+
+    render(
+      <TagRow
+        onKeyDown={vi.fn<() => void>()}
+        onOpenChange={onOpenChange}
+        onToggle={onToggle}
+        row={{ ...ROW, isFolder: true }}
+      />,
+    );
+    fireEvent.click(screen.getByRole("option"));
+
+    expect(onOpenChange).toHaveBeenCalledExactlyOnceWith("aspect", true);
+    expect(onToggle).not.toHaveBeenCalled();
   });
 
   it("counts the picks inside a closed tag", () => {

@@ -16,7 +16,7 @@ An interval with no overlap, and an instant, clips to nothing.
 | `progressive-covered-percent` | progressive | union of the progressive events' clipped intervals | `100 * M / T` |
 | `progressive-total-percent`   | progressive | sum of the progressive events' clipped lengths     | `100 * M / T` |
 
-Progressive means the event carries the `Temporality / Progressive` tag, found through `calendar_event_tags` and `tag_closures` (the facts' `is_progressive`).
+Progressive means the event carries the `Temporality / Progressive` tag, found through `calendar_event_tags` and `tag_trees` (the facts' `is_progressive`).
 
 ## Query
 

@@ -42,6 +42,7 @@ function source(
   rest: Partial<EventMetricsTreeSource> = {},
 ): EventMetricsTreeSource {
   return {
+    children: [],
     compare: false,
     levels: [{ field: `tag:${ROOT}`, tags: [] }],
     metrics: METRICS,
@@ -100,6 +101,60 @@ describe("event metrics utilities", () => {
   });
 
   describe(buildMetricTree, () => {
+    it("hangs each child group beneath its host as a preview a level below it", () => {
+      expect.hasAssertions();
+
+      const [host] = buildMetricTree(
+        source([[row({ id: "/0:a", key: "a", label: "A" })]], {
+          children: [
+            row({
+              id: "ignored",
+              key: "b",
+              label: "B",
+              parentId: "/0:a",
+              path: "Planet / A / B",
+              rank: "00000:A / 00001:B",
+              values: [4, 9],
+            }),
+          ],
+        }),
+      );
+
+      expect(host?.isPreview).toBe(false);
+      expect(host?.children).toStrictEqual([
+        expect.objectContaining({
+          children: [],
+          id: "/0:a/1:b",
+          isPreview: true,
+          key: "b",
+          label: "B",
+          level: 1,
+          rank: "00000:A / 00001:B",
+        }),
+      ]);
+    });
+
+    it("sets a child's previous values from the previous period's row, and leaves out a child with no host", () => {
+      expect.hasAssertions();
+
+      const [host] = buildMetricTree(
+        source([[row({ id: "/0:a", key: "a", label: "A", period: 1 })]], {
+          children: [
+            row({ id: "x", key: "b", label: "B", parentId: "/0:a", period: 1 }),
+            row({ id: "y", key: "c", label: "C", parentId: "/0:missing" }),
+          ],
+          compare: true,
+        }),
+      );
+
+      expect(host?.children).toHaveLength(1);
+      expect(host?.children[0]?.values[0]).toStrictEqual({
+        metric: "events",
+        previous: 1,
+        value: 0,
+      });
+    });
+
     it("nests each level's groups beneath their parent", () => {
       expect.hasAssertions();
 

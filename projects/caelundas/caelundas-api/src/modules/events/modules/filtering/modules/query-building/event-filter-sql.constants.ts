@@ -14,7 +14,7 @@ export const CALENDAR_FIELD_SQL = {
 export const EVENT_TAGS_MATCHING_SQL = `
   select c.ancestor_id as tag_id
   from calendar_event_tags et
-  join tag_closures c on c.descendant_id = et.tag_id
+  join tag_trees c on c.descendant_id = et.tag_id
   where et.calendar_event_id = e.id and c.ancestor_id = any({tags}::uuid[])
 `;
 
@@ -22,7 +22,7 @@ export const EVENT_TAGS_MATCHING_SQL = `
 export const EVENT_TAG_NUMBERS_SQL = `
   select 1
   from calendar_event_tags et
-  join tag_closures c on c.descendant_id = et.tag_id
+  join tag_trees c on c.descendant_id = et.tag_id
   join tag_info t on t.tag_id = c.ancestor_id
   where et.calendar_event_id = e.id
     and t.tag_root_id::text = {root}::text
@@ -81,7 +81,7 @@ export const PHASE_BOUNDARY_TAG_PATHS = [
 export const PHASE_BOUNDARY_TAG_IDS_SQL = `(
     select coalesce(array_agg(distinct pc.descendant_id), '{}'::uuid[])
     from tag_paths p
-    join tag_closures pc on pc.ancestor_id = p.tag_id
+    join tag_trees pc on pc.ancestor_id = p.tag_id
     where p.tag_path in (${PHASE_BOUNDARY_TAG_PATHS.map((path) => `'${path}'`).join(", ")})
   )`;
 
@@ -93,7 +93,7 @@ export const PROGRESSIVE_TAG_PATH = "Temporality / Progressive";
 export const PROGRESSIVE_TAG_IDS_SQL = `(
     select coalesce(array_agg(distinct pc.descendant_id), '{}'::uuid[])
     from tag_paths p
-    join tag_closures pc on pc.ancestor_id = p.tag_id
+    join tag_trees pc on pc.ancestor_id = p.tag_id
     where p.tag_path = '${PROGRESSIVE_TAG_PATH}'
   )`;
 

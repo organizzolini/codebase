@@ -67,6 +67,10 @@ export interface MetricGroup {
    * The table's group id: its parent's, then the level and key.
    */
   id: string;
+  /**
+   * A child tag the API added, no group of the table.
+   */
+  isPreview?: boolean;
   key: null | string;
   label: string;
   level: number;
