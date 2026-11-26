@@ -198,12 +198,12 @@
 `││ └` **[coinagerie-examples](projects/ic-suite/coinagerie/coinagerie-examples)** - Examples of vocabulary collection features\
 `│├` 🔮 **[affirmancy](projects/affirmancy)** - Generates affirmations with an interactive agent\
 `│├` 🤝 **common** — Shared utilities across projects\
-`││├` **🐘 [persistence](projects/common/persistence)** - Shared database setup, migrations, migration SQL extraction, and testing utilities\
-`││├` **✉️ [interface](projects/common/interface)** - Shared application interface and pagination utilities\
-`││├` **🎨 [presentation](projects/common/presentation)** - Shared user interface components\
-`││├` **👀 [observability](projects/common/observability)** - Shared application logging\
-`││└` **🧪 [testing](projects/common/testing)** - Shared application testing utilities\
-`│└` **🧔‍♂️ [JimmyPaolini](projects/JimmyPaolini)** - Personal GitHub profile site\
+`││├` **🐘 [persistence](projects/common/persistence)** - Shared Postgres connections and migrations, plus table copy and graph commands\
+`││├` **✉️ [interface](projects/common/interface)** - Shared GraphQL package for APIs and their clients, in server and client modules\
+`││├` **🎨 [presentation](projects/common/presentation)** - Shared React component library built on shadcn/ui, Base UI, and Tailwind CSS\
+`││├` **👀 [observability](projects/common/observability)** - Shared NestJS logging on pino: JSON in production, readable output in development\
+`││└` **🧪 [testing](projects/common/testing)** - Shared test setup, temporary directories, mocks, and packed-package runners\
+`│└` **🧔‍♂️ [identity](projects/identity)** - Personal GitHub profile README\
 `├` **💾 [installation](installation)** - Sets up developer machines, devcontainers, and sessions, and checks each new session\
 `├` **🛠️ [configuration](configuration)** - Workspace tool configuration for linting, formatting, and types, run through Nx\
 `├` **📚 [documentation](documentation)** - Refreshes the generated OpenWiki from code and holds agent settings and reports\

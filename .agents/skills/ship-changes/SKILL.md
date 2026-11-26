@@ -59,7 +59,7 @@ Check `mergeable` after every push and whenever `main` moves. On `CONFLICTING`:
 
 1. Merge `origin/main` into the branch (in a worktree session, the `mcp__ccd_host__sync_with_base_branch` tool), then run `pnpm exec nx sync`. Merge rather than rebase: a rebase flattens merge commits and breaks signatures. A stack is the exception: it needs linear history, so follow [stacked-pull-requests.md](references/stacked-pull-requests.md).
 2. Resolve by intent. Generated blocks (README codometer badges, callidescope and codependix reports) take either side, then regenerate with the matching `nx run <project>:<tool>:write`. For hand-written text both sides changed, read both sides' commit messages and keep both intents; this covers prose, skills, docs, and configuration, and code whose two edits are independent lines or whose intents are both stated. Verify with [validate-code](../validate-code/SKILL.md) and the affected tests. It is a **raise to the user** only when the intents contradict, are not recoverable from the history, or the checks fail after resolving.
-3. `pnpm-lock.yaml`: never initialize the `projects/JimmyPaolini` submodule; revert its lockfile entry, then `pnpm install --frozen-lockfile`.
+3. `pnpm-lock.yaml`: never initialize the `projects/identity` submodule; revert its lockfile entry, then `pnpm install --frozen-lockfile`.
 4. Merges that apply cleanly can still contradict: search `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, and the skills for statements about the rule the pull request changes, and align them in the same pull request.
 5. Run [validate-code](../validate-code/SKILL.md), commit, push, return to step 1.
 
