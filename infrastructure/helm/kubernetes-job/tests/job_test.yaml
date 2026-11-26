@@ -1,37 +1,20 @@
 suite: kubernetes-job
 templates:
+  - templates/configmap.yaml
   - templates/job.yaml
   - templates/pvc.yaml
   - templates/NOTES.txt
 values:
   - ../values/base.yaml
 tests:
-  - it: omits completionMode by default
+  - it: renders a plain Job with a backoff limit by default
     asserts:
-      - template: templates/job.yaml
-        notExists:
-          path: spec.completionMode
       - template: templates/job.yaml
         exists:
           path: spec.backoffLimit
       - template: templates/pvc.yaml
         hasDocuments:
           count: 1
-
-  - it: renders Indexed completion with per-index backoff
-    set:
-      job.completionMode: Indexed
-      job.backoffLimitPerIndex: 2
-    template: templates/job.yaml
-    asserts:
-      - equal:
-          path: spec.completionMode
-          value: Indexed
-      - equal:
-          path: spec.backoffLimitPerIndex
-          value: 2
-      - notExists:
-          path: spec.backoffLimit
 
   - it: mounts an emptyDir when persistence.type is emptyDir
     set:
@@ -54,24 +37,6 @@ tests:
           path: spec.template.spec.priorityClassName
           value: batch-low
 
-  - it: appends extraEnv after env
-    set:
-      env:
-        - name: FIRST
-          value: "1"
-      extraEnv:
-        - name: SECOND
-          value: "2"
-    template: templates/job.yaml
-    asserts:
-      - equal:
-          path: spec.template.spec.containers[0].env
-          value:
-            - name: FIRST
-              value: "1"
-            - name: SECOND
-              value: "2"
-
   - it: renders an empty tag as `repository:` rather than the chart appVersion
     values:
       - ../values/base.yaml
@@ -82,7 +47,7 @@ tests:
           path: spec.template.spec.containers[0].image
           value: "ghcr.io/organizzolini/caelundas-cli:"
 
-  - it: caelundas-cli values render an Indexed staging job
+  - it: caelundas-cli values render a staging job
     values:
       - ../values/base.yaml
       - ../values/caelundas-cli.yaml
@@ -93,9 +58,8 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].image
           value: ghcr.io/organizzolini/caelundas-cli:1.0.0
-      - equal:
+      - notExists:
           path: spec.completionMode
-          value: Indexed
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -135,31 +99,64 @@ tests:
         hasDocuments:
           count: 0
 
-  - it: caelundas-cli derives the year's dates from START_YEAR and the completion index
+  - it: caelundas-cli runs the image's own start command, which names the caelundas subcommand
     values:
       - ../values/base.yaml
       - ../values/caelundas-cli.yaml
     template: templates/job.yaml
     asserts:
-      - equal:
-          path: spec.template.spec.containers[0].command[0]
-          value: tini
-      - matchRegex:
-          path: spec.template.spec.containers[0].command[4]
-          pattern: year=\$\(\(\$\{START_YEAR:\?START_YEAR is required\} \+ \$\{JOB_COMPLETION_INDEX:\?JOB_COMPLETION_INDEX is required\}\)\);\s+export START_DATE=.\$year-01-01. END_DATE=.\$year-12-31.;\s+exec node caelundas-cli\.main\.js caelundas
+      - notExists:
+          path: spec.template.spec.containers[0].command
 
-  - it: caelundas-cli stops before running when START_YEAR or the completion index is unset
-    values:
-      - ../values/base.yaml
-      - ../values/caelundas-cli.yaml
+  - it: renders no ConfigMap, volume or mount without envFile
+    asserts:
+      - template: templates/configmap.yaml
+        hasDocuments:
+          count: 0
+      - template: templates/job.yaml
+        notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: env-file
+
+  - it: renders a ConfigMap, volume and read-only file mount when envFile is set
+    release:
+      name: ingest
+    set:
+      envFile: "START_DATE=\"2026-07-01\"\nEND_DATE=\"2026-07-31\"\n"
+      envFileMountPath: /app/configuration/.env
+    asserts:
+      - template: templates/configmap.yaml
+        equal:
+          path: metadata.name
+          value: ingest-kubernetes-job-env
+      - template: templates/configmap.yaml
+        equal:
+          path: data[".env"]
+          value: "START_DATE=\"2026-07-01\"\nEND_DATE=\"2026-07-31\"\n"
+      - template: templates/job.yaml
+        contains:
+          path: spec.template.spec.volumes
+          content:
+            name: env-file
+            configMap:
+              name: ingest-kubernetes-job-env
+      - template: templates/job.yaml
+        contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: env-file
+            mountPath: /app/configuration/.env
+            subPath: .env
+            readOnly: true
+
+  - it: requires envFileMountPath when envFile is set
+    set:
+      envFile: A=1
     template: templates/job.yaml
     asserts:
-      - matchRegex:
-          path: spec.template.spec.containers[0].command[4]
-          pattern: ^set -eu;
-      - matchRegex:
-          path: spec.template.spec.containers[0].command[4]
-          pattern: \$\{START_YEAR:\?START_YEAR is required\}
+      - failedTemplate:
+          errorMessage: envFileMountPath is required with envFile
 
   - it: caelundas-cli requests 1Gi against a 1536Mi limit
     values:

@@ -10,19 +10,9 @@ metadata:
     {{- if .Values.metadata.timestamp }}
     caelundas.job/timestamp: {{ .Values.metadata.timestamp | quote }}
     {{- end }}
-{{- $indexed := eq .Values.job.completionMode "Indexed" }}
-{{- $perIndex := and $indexed (not (kindIs "invalid" .Values.job.backoffLimitPerIndex)) }}
 spec:
-  {{- if not $perIndex }}
   backoffLimit: {{ .Values.job.backoffLimit }}
-  {{- end }}
   completions: {{ .Values.job.completions }}
-  {{- if $indexed }}
-  completionMode: Indexed
-  {{- end }}
-  {{- if $perIndex }}
-  backoffLimitPerIndex: {{ .Values.job.backoffLimitPerIndex }}
-  {{- end }}
   {{- if gt (int .Values.job.parallelism) 1 }}
   parallelism: {{ .Values.job.parallelism }}
   {{- end }}
@@ -73,8 +63,7 @@ spec:
           args:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- $env := concat (default list .Values.env) (default list .Values.extraEnv) }}
-          {{- with $env }}
+          {{- with .Values.env }}
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -85,6 +74,12 @@ spec:
           volumeMounts:
             - name: tmp
               mountPath: /tmp
+            {{- if .Values.envFile }}
+            - name: env-file
+              mountPath: {{ required "envFileMountPath is required with envFile" .Values.envFileMountPath }}
+              subPath: .env
+              readOnly: true
+            {{- end }}
             {{- if .Values.persistence.enabled }}
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
@@ -92,6 +87,11 @@ spec:
       volumes:
         - name: tmp
           emptyDir: {}
+        {{- if .Values.envFile }}
+        - name: env-file
+          configMap:
+            name: {{ include "kubernetes-job.fullname" . }}-env
+        {{- end }}
         {{- if .Values.persistence.enabled }}
         - name: data
           {{- if eq .Values.persistence.type "emptyDir" }}
