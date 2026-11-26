@@ -34,11 +34,9 @@ jobs:
         with:
           persist-credentials: false
 
-      # Checks only what this workflow itself needs: the years, to count the
-      # Job's completions and name the release, and the shape of each
-      # environment line, so the JSON handed to Helm is safe. The CLI validates
-      # every value itself, so a new option needs no change here. `jq` builds
-      # the JSON; no input is ever spliced into a command.
+      # Checks only the years (they size and name the Job) and the shape of each
+      # environment line. The CLI validates every value itself. `jq` builds the
+      # JSON, so no input is ever spliced into a command.
       - name: ✅ Validate Inputs
         id: validate
         env:

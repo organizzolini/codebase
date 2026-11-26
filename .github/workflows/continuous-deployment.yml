@@ -58,14 +58,10 @@ jobs:
             name: Releases
             emoji: 🦸
             timeout: 50
-          # Applies the four Terraform roots in order when a push to main changes
-          # them: OpenRouter, Linode, Organizzolini, then GitHub. State has no
-          # lock, so the never-cancelling per-ref concurrency group prevents overlap.
-          # The first run is the slow one: setup and two small roots (about 4
-          # minutes), cluster creation (3 to 8), the API wait (usually 1, at most
-          # 10), then Argo CD and the root application (about 3 together). That is
-          # roughly 20 minutes, so 30 leaves room; a hang past it is a failure, and
-          # a retry resumes from the state already written. Later runs take a few.
+          # Applies the four Terraform roots in order on a push to main that
+          # changes them: OpenRouter, Linode, Organizzolini, GitHub. State has no
+          # lock, so the never-cancelling concurrency group prevents overlap. The
+          # first run takes about 20 minutes, so 30 leaves room.
           - id: apply-terraform
             name: Infrastructure
             emoji: 🏗️
@@ -147,11 +143,9 @@ jobs:
             terraform:
               - infrastructure/terraform/**
 
-      # The one setup of every leg. The release needs Python and uv, plus
-      # Buildx and a ghcr.io login for the Caelundas images its release step
-      # builds and pushes (`nx run <project>:docker:push`); the infrastructure
-      # leg needs terraform and neither; the devcontainer leg needs only
-      # Buildx and the login, so it installs nothing else.
+      # The one setup of every leg. The release needs Python, uv, Buildx and a
+      # ghcr.io login to push the Caelundas images; the infrastructure leg needs
+      # terraform; the devcontainer leg needs only Buildx and the login.
       - name: 🕋 Setup Codebase
         id: setup
         if: >-
