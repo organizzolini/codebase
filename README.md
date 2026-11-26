@@ -204,14 +204,13 @@
 `││├` **👀 [observability](projects/common/observability)** - Shared application logging\
 `││└` **🧪 [testing](projects/common/testing)** - Shared application testing utilities\
 `│└` **🧔‍♂️ [JimmyPaolini](projects/JimmyPaolini)** - Personal GitHub profile site\
-`├` **🛠️ [configuration](configuration)** - Workspace configuration and quality checks\
+`├` **💾 [installation](installation)** - Sets up developer machines, devcontainers, and sessions, and checks each new session\
+`├` **🛠️ [configuration](configuration)** - Workspace tool configuration for linting, formatting, and types, run through Nx\
+`├` **📚 [documentation](documentation)** - Refreshes the generated OpenWiki from code and holds agent settings and reports\
+`├` **🏗️ [infrastructure](infrastructure)** - Terraform, Helm, and Docker for deployment infrastructure and local services\
+`├` **🧩 [integration](integration)** - Guards changes with commit, push, and pull request checks, and CI job steps\
 `├` **🏛️ [compliance](compliance)** - Checks repository governance, contribution requirements, and the pull request template\
-`├` **📚 [documentation](documentation)** - Refreshes repository documentation\
-`├` **🏗️ [infrastructure](infrastructure)** - Deployment infrastructure and local services\
-`│└` **⚙️ [workflows](.github/workflows)** - GitHub Actions workflows and the shared `setup-codebase` action\
-`├` **💾 [installation](installation)** - Sets up developer machines and project dependencies, and checks each new session\
-`├` **🧩 [integration](integration)** - Guards changes with commit, push, and pull request checks\
-`└` **🚢 [deployment](deployment)** - Coordinates releases and package publishing
+`└` **🚢 [deployment](deployment)** - Coordinates releases: versioning, tagging, and publishing packages from CI
 
 ## 🚀 Start
 
