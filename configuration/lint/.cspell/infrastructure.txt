@@ -95,6 +95,7 @@ tflint
 tfstate
 tfvars
 timestamptz
+tini
 tolerations
 trgm
 trivy

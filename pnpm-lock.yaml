@@ -290,6 +290,9 @@ catalogs:
     '@nx/web':
       specifier: ^24.0.0
       version: 24.0.0
+    '@oxc-project/runtime':
+      specifier: 0.156.0
+      version: 0.156.0
     '@photostructure/tz-lookup':
       specifier: ^11.6.0
       version: 11.7.0
@@ -629,6 +632,9 @@ catalogs:
     remark-gfm:
       specifier: ^4.0.1
       version: 4.0.1
+    rolldown:
+      specifier: 1.2.18
+      version: 1.2.18
     semantic-release:
       specifier: ^26.0.1
       version: 26.0.1
@@ -831,6 +837,9 @@ importers:
       '@nx/web':
         specifier: 'catalog:'
         version: 24.0.0(90c5464e369154dd76dc0092885f028e)
+      '@oxc-project/runtime':
+        specifier: 'catalog:'
+        version: 0.156.0
       '@semantic-release/changelog':
         specifier: 'catalog:'
         version: 7.0.0(semantic-release@26.0.1(supports-color@8.1.1))
@@ -936,6 +945,9 @@ importers:
       prettier:
         specifier: 'catalog:'
         version: 3.9.9
+      rolldown:
+        specifier: 'catalog:'
+        version: 1.2.18
       skills:
         specifier: 'catalog:'
         version: 1.7.0
@@ -8076,6 +8088,10 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [win32]
+
+  '@oxc-project/runtime@0.156.0':
+    resolution: {integrity: sha512-6C8Bl8OZJJKYJFbo2l9Qjn8WGi0OW1mmiErR0b+n8684ZLXegZZ2Ul4LW5aoapIX0a2ri2nIDz4RpCgRleb04w==}
+    engines: {node: ^20.19.0 || >=22.12.0}
 
   '@oxc-project/types@0.150.0':
     resolution: {integrity: sha512-rDS5/31E9HfPl/CIzGrn0DOlvBbXFseQ5URJ9sYMfstbKLD/c6Gm9vmRzRGDdAXyOIL4zmO37lc9RIwYqVruZw==}
@@ -20579,6 +20595,8 @@ snapshots:
 
   '@oxc-parser/binding-win32-x64-msvc@0.150.0':
     optional: true
+
+  '@oxc-project/runtime@0.156.0': {}
 
   '@oxc-project/types@0.150.0': {}
 

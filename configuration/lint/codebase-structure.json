@@ -49,6 +49,14 @@
         {
           "children": [
             {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "infrastructure"
+        },
+        {
+          "children": [
+            {
               "children": [
                 {
                   "ruleId": "module-folder"
@@ -724,6 +732,14 @@
             }
           ],
           "name": "documentation"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "infrastructure"
         },
         {
           "children": [
