@@ -40,6 +40,8 @@ ARG OUTPUT_PATH=/workspace/dist/${PROJECT}
 ARG PREPARE_COMMAND=""
 # Project paths copied beside the build output.
 ARG RUNTIME_PATHS=""
+# Directories under /app the application writes to, owned by the runtime user; the rest stays root-owned.
+ARG WRITABLE_PATHS=""
 WORKDIR /workspace/${PROJECT_DIRECTORY}
 RUN env ${BUILD_ENVIRONMENT} sh -c "${BUILD_COMMAND}"
 RUN --mount=type=secret,id=ca-bundle,required=false \
@@ -47,10 +49,24 @@ RUN --mount=type=secret,id=ca-bundle,required=false \
     if [ -n "$PREPARE_COMMAND" ]; then sh -c "$PREPARE_COMMAND"; fi
 RUN mkdir /out && \
     cp -a "${OUTPUT_PATH}/." /out/ && \
-    for path in ${RUNTIME_PATHS}; do cp -a "$path" /out/; done
+    for path in ${RUNTIME_PATHS}; do cp -a "$path" /out/; done && \
+    for path in ${WRITABLE_PATHS}; do chown 10001:10001 "/out/$path"; done
 
-# A Node application: the build output and its production node_modules, no dev dependencies.
-FROM node:26.13.1-trixie-slim AS node
+# What the Node runtime keeps from Debian: `tini`, and `dash` as `sh` for the start command (`/bin` links to `/usr/bin`). The `app` directory is
+# owned by the runtime user, and `node` is reachable on PATH, as a Kubernetes `command` names it.
+FROM node:26.13.1-trixie-slim AS runtime-tools
+RUN apt-get update && \
+    apt-get install --yes --no-install-recommends tini && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /tools/app /tools/usr/bin /tools/usr/local/bin && \
+    chown 10001:10001 /tools/app && \
+    cp /usr/bin/tini /tools/usr/bin/tini && \
+    cp /bin/dash /tools/usr/bin/sh && \
+    ln -s /nodejs/bin/node /tools/usr/local/bin/node
+
+# A Node application: the build output and its production node_modules, no dev dependencies, on a distroless base
+# (glibc and Node only: no package manager, no coreutils, so the start command uses only shell builtins).
+FROM gcr.io/distroless/nodejs26-debian13 AS node
 LABEL org.opencontainers.image.source="https://github.com/organizzolini/codebase"
 # The entry file, run with node from /app.
 ARG ENTRY
@@ -59,28 +75,21 @@ ARG PORT=""
 ARG PORT_VARIABLE=""
 ARG EXPOSED_PORTS=""
 ARG RUNTIME_NODE_OPTIONS=""
-# Directories under /app the application writes to, owned by the runtime user; the rest stays root-owned.
-ARG WRITABLE_PATHS=""
 ENV NODE_ENV=production \
     NODE_OPTIONS=${RUNTIME_NODE_OPTIONS} \
     APPLICATION_ENTRY=${ENTRY} \
     APPLICATION_PORT=${PORT} \
     APPLICATION_PORT_VARIABLE=${PORT_VARIABLE}
 # tini is PID 1, so signals reach Node and orphaned children are reaped.
-RUN apt-get update && \
-    apt-get install --yes --no-install-recommends tini && \
-    rm -rf /var/lib/apt/lists/* && \
-    mkdir /app && \
-    chown 10001:10001 /app
+COPY --from=runtime-tools /tools/ /
 WORKDIR /app
 COPY --from=build /out ./
-RUN for path in ${WRITABLE_PATHS}; do chown 10001:10001 "$path"; done
 USER 10001:10001
 EXPOSE ${EXPOSED_PORTS}
 # Kubernetes ignores HEALTHCHECK and probes the application itself, so the image declares none.
 HEALTHCHECK NONE
 ENTRYPOINT ["tini", "--"]
-CMD ["sh", "-c", "if [ -n \"$APPLICATION_PORT_VARIABLE\" ] && [ -z \"$(printenv \"$APPLICATION_PORT_VARIABLE\")\" ]; then export \"$APPLICATION_PORT_VARIABLE=$APPLICATION_PORT\"; fi; exec node $APPLICATION_ENTRY"]
+CMD ["sh", "-c", "if [ -n \"$APPLICATION_PORT_VARIABLE\" ] && eval \"[ -z \\\"\\${$APPLICATION_PORT_VARIABLE-}\\\" ]\"; then export \"$APPLICATION_PORT_VARIABLE=$APPLICATION_PORT\"; fi; exec node $APPLICATION_ENTRY"]
 
 # The nginx server block for a static site, with its port filled in.
 FROM install AS static-configuration

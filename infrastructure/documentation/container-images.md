@@ -91,9 +91,17 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
 - **Dependencies by need.** A package is followed through its dependencies,
   optional dependencies and non-optional peers only. Optional peers that pnpm
   linked because the workspace installs them (`typescript` for cosmiconfig,
-  `better-sqlite3` for TypeORM) are left out. What remains of tooling is a
-  production dependency of a runtime library: `prettier` through `nest-commander`,
-  which `@codebase/persistence` imports.
+  `better-sqlite3` for TypeORM) are left out, as are `@types/*` packages and
+  `@fig/complete-commander`: `nest-commander` requires it (and with it
+  `prettier`, 9 MB) only to write a shell completion spec, which no application
+  here enables. `@golevelup/nestjs-discovery` stays: `nest-commander` builds its
+  command registry on it at start.
+- **Only runtime files ship.** The copy keeps a file only if it is code or data
+  a run loads (`.js .mjs .cjs .json .node .wasm .proto .graphql .gql .sql`) or a
+  license, so source maps, `.d.ts`, Markdown, TypeScript sources, `tsbuildinfo`
+  and a native build's intermediate objects and sources never reach the image.
+  An extension allow-list needs no upkeep when a package adds a new tooling
+  file; the bundle tests assert none ships.
 - **Migrations run at start.** `PostgresqlModule` applies the pending migrations
   it is given before the application serves, in one transaction that first takes
   `pg_advisory_xact_lock`, so replicas starting together migrate one at a time.
@@ -117,10 +125,15 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
 - **`HEALTHCHECK NONE` on Node images.** Kubernetes ignores `HEALTHCHECK` and
   probes Lightship on 9000, which answers only inside Kubernetes, so there is
   nothing cleaner to check outside it.
-- **Kept: `node:...-trixie-slim`, not distroless or alpine.** `sweph` is a native
-  addon built against glibc, and slim keeps debugging simple. The tag stays
-  unpinned by digest: Dependabot has no `docker` entry for these Dockerfiles, so
-  a digest would freeze security fixes. Adding the ecosystem is a separate change.
+- **Base: `gcr.io/distroless/nodejs26-debian13`.** Node 26.13.1 on glibc, 243 MB
+  against 353 MB for `node:26.13.1-trixie-slim`, with no package manager or
+  coreutils. It has no `tini` and no shell, so a stage copies in `tini` and
+  `dash` as `sh` (the chart's Job command runs `tini -- sh -c ... node`), and a
+  `node` link on `PATH`. The start command uses shell builtins only, since
+  `printenv` is gone. The build still runs on `node:26.13.1-trixie-slim`, the
+  same Debian release and glibc, so `sweph`'s binding runs unchanged. The tag
+  tracks Node 26 by minor; Dependabot has no `docker` entry for these
+  Dockerfiles, so a digest would freeze security fixes.
 - **Not added: SBOM or provenance flags.** They fail on the classic image
   store; BuildKit adds minimal provenance by default.
 - **Web image.** Moved onto the shared Dockerfile with a shared nginx server
@@ -130,3 +143,53 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
 - **Open item.** A read-only root filesystem needs the API schema written
   elsewhere (`autoSchemaFile` writes beside its module, so that one directory is
   writable) and the CLI logs under `output/`. The charts leave it off.
+
+## Image size
+
+Measured 2026-11-26 with `docker image inspect` (`Size`, disk use of the
+unpacked layers; the compressed push is 68 MB for each Node image).
+
+| Part                         | api before | api after | cli before | cli after |
+| ---------------------------- | ---------: | --------: | ---------: | --------: |
+| Base                         |     353 MB |    243 MB |     353 MB |    243 MB |
+| `tini`, `dash`               |       1 MB |    0.2 MB |       1 MB |    0.2 MB |
+| Application and node_modules |     189 MB |     88 MB |     133 MB |     59 MB |
+| Files in node_modules        |     24,000 |    11,650 |     17,000 |     7,950 |
+| Image                        |     563 MB |    339 MB |     506 MB |    310 MB |
+
+Before, the 189 MB of the API was 24 MB source maps, 14 MB declarations, 5 MB
+TypeScript sources, 4 MB Markdown and 10 MB `prettier`. The CLI's `sweph` was
+8 MB for a 0.9 MB binding: two copies of it, a static archive, objects, C
+sources and a Node compile cache. The Node binary is 150 MB of the base.
+
+| Option (measured, api / cli)                              | Size             | Risk   | Verdict                   |
+| --------------------------------------------------------- | ---------------- | ------ | ------------------------- |
+| Prune to runtime files and drop type and tooling packages | 450 / 421 MB     | low    | done                      |
+| Distroless base alone                                     | 452 / 395 MB     | low    | done                      |
+| Both                                                      | 339 / 310 MB     | low    | done                      |
+| `node:26-alpine` with the pruned tree                     | 347 / 318 MB     | medium | no: musl, larger          |
+| `cgr.dev` Node image                                      | base 256 MB      | medium | no: only `latest` is free |
+| Bundle third-party code (no `preserveModules`)            | about 270 MB api | high   | not done                  |
+
+- **Alpine** is 8 MB larger than distroless here and changes the C library: `sweph`
+  would have to be compiled and checked on musl, and Node publishes musl builds
+  as experimental. The sandbox could not reach the Alpine package mirror, so
+  the musl `sweph` build was not tried; the size alone rules it out.
+- **The `cgr.dev` Node image** serves only the `latest` tag without a subscription, so the
+  Node version cannot be pinned.
+- **Bundling third-party code** shrinks the application directory to 26 MB with
+  `pg` and `pino-pretty` kept installed (the whole app, vendor chunks included),
+  so about 270 MB for the API. It boots and serves, but breaks two layout
+  assumptions: with `preserveModules` the CommonJS packages' lazy initializers
+  form cycles across files and fail at start (`init_logger_service is not a
+function` in `@nestjs/common`), and without it `import.meta.dirname` becomes
+  the bundle's directory, so the migrations glob finds nothing and the schema
+  file moves. It also pulls `typescript`, `prettier` and `babel` into the
+  bundle through optional `require` calls unless each is listed as external.
+  It needs a change to the database module's glob and a list of optional peers
+  to keep external, which this repository's templates pin, so it is a
+  recommendation: moving the glob to a configured path would unlock about 70 MB.
+- **Left as is:** a single custom Node build without full ICU, a single
+  executable application (it needs one bundled file, so the same blocker), and
+  UPX-style packers, which the task excluded. `typeorm` (9 MB) and
+  `es-toolkit` (9 MB) load files by name or ship dual builds, so they stay whole.
