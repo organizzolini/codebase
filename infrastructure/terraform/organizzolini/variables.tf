@@ -1,3 +1,51 @@
+variable "linode_token" {
+  description = "A Linode API token with Object Storage read and write."
+  type        = string
+  sensitive   = true
+}
+
+variable "bucket_label" {
+  description = "Label of the original Object Storage bucket that holds Terraform state until the move to terraform_state_bucket_label is retired."
+  type        = string
+  default     = "organizzolini"
+}
+
+variable "region" {
+  description = "Region of that bucket, as the Linode API names it: us-iad-2, whose S3 endpoint is us-iad-18."
+  type        = string
+  default     = "us-iad-2"
+}
+
+variable "nx_cache_bucket_label" {
+  description = "Label of the Object Storage bucket the shared Nx cache stores task outputs in."
+  type        = string
+  default     = "organizzolini-codebase-nx-cache"
+}
+
+variable "terraform_state_bucket_label" {
+  description = "Label of the Object Storage bucket that holds the Terraform state: one `organizzolini.tfstate` object."
+  type        = string
+  default     = "organizzolini-terraform-state"
+}
+
+variable "github_token" {
+  description = "A token that can write Actions variables and secrets on the repository."
+  type        = string
+  sensitive   = true
+}
+
+variable "owner" {
+  description = "Account or organization that owns the repository."
+  type        = string
+  default     = "Organizzolini"
+}
+
+variable "repository" {
+  description = "Repository whose settings and Actions variables this root manages."
+  type        = string
+  default     = "codebase"
+}
+
 variable "openrouter_management_key" {
   description = "An OpenRouter Management API key (sk-or-mgmt-...)."
   type        = string

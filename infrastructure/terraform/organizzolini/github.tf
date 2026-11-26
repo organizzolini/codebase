@@ -1,95 +1,25 @@
-terraform {
-  required_version = ">= 1.6"
-
-  # Same Linode Object Storage bucket and backend settings as the openrouter
-  # root; see its main.tf. Only the state key differs.
-  backend "s3" {
-    key    = "github.tfstate"
-    region = "us-east-1"
-
-    skip_credentials_validation = true
-    skip_metadata_api_check     = true
-    skip_region_validation      = true
-    skip_requesting_account_id  = true
-    skip_s3_checksum            = true
-  }
-
-  required_providers {
-    github = {
-      source  = "integrations/github"
-      version = "~> 6.0"
-    }
-  }
-}
-
-# GITHUB_TOKEN cannot write Actions variables or secrets, so this needs a
-# fine-grained token or GitHub App token with Variables and Secrets write on
-# the repository.
-provider "github" {
-  owner = var.owner
-  token = var.github_token
-}
-
-# The openrouter root's outputs. It must be applied first, which the apply
-# order in the Continuous Deployment workflow guarantees. The bucket comes
-# from TF_VAR_state_bucket, the endpoint and credentials from the same
-# environment variables as the backend above.
-data "terraform_remote_state" "openrouter" {
-  backend = "s3"
-
-  config = {
-    bucket = var.state_bucket
-    key    = "openrouter.tfstate"
-    region = "us-east-1"
-
-    skip_credentials_validation = true
-    skip_metadata_api_check     = true
-    skip_region_validation      = true
-    skip_requesting_account_id  = true
-    skip_s3_checksum            = true
-  }
-}
-
 # The model the Refresh Documentation workflow calls: the OpenRouter preset,
 # so its ranked fallback list is changed in Terraform and not in the workflow.
 resource "github_actions_variable" "openwiki_model_id" {
   repository    = var.repository
   variable_name = "OPENWIKI_MODEL_ID"
-  value         = data.terraform_remote_state.openrouter.outputs.refresh_documentation_model
+  value         = "@preset/${var.preset_slug}"
+
+  # The preset must exist before the workflow is pointed at it.
+  depends_on = [terraform_data.refresh_documentation_preset]
 }
 
-# The linode root's outputs: the Nx cache bucket and its two keys. It must be
-# applied first, which the apply order in the Continuous Deployment workflow
-# guarantees.
-data "terraform_remote_state" "linode" {
-  backend = "s3"
-
-  config = {
-    bucket = var.state_bucket
-    key    = "linode.tfstate"
-    region = "us-east-1"
-
-    skip_credentials_validation = true
-    skip_metadata_api_check     = true
-    skip_region_validation      = true
-    skip_requesting_account_id  = true
-    skip_s3_checksum            = true
-  }
-}
-
-# Where the shared Nx cache lives, read by CI as NX_SHARED_CACHE_REMOTE_*. Every read
-# of the linode outputs is wrapped in `try`, since a pull request can plan before the
-# linode root has applied its new outputs.
+# Where the shared Nx cache lives, read by CI as NX_SHARED_CACHE_REMOTE_*.
 resource "github_actions_variable" "nx_cache_bucket" {
   repository    = var.repository
   variable_name = "NX_CACHE_BUCKET"
-  value         = try(data.terraform_remote_state.linode.outputs.nx_cache_bucket, "")
+  value         = linode_object_storage_bucket.nx_cache.label
 }
 
 resource "github_actions_variable" "nx_cache_endpoint" {
   repository    = var.repository
   variable_name = "NX_CACHE_ENDPOINT"
-  value         = try(data.terraform_remote_state.linode.outputs.nx_cache_endpoint, "")
+  value         = "https://${linode_object_storage_bucket.nx_cache.s3_endpoint}"
 }
 
 resource "github_actions_variable" "nx_cache_region" {
@@ -99,30 +29,30 @@ resource "github_actions_variable" "nx_cache_region" {
 }
 
 # The keys CI signs bucket requests with: read-only for pull request runs,
-# read-write for trusted ones. Their permissions are set on the keys in the
-# linode root, so a run cannot widen them.
+# read-write for trusted ones. Their permissions are set on the keys in
+# linode.tf, so a run cannot widen them.
 resource "github_actions_secret" "nx_cache_read_only_access_key_id" {
   repository      = var.repository
   secret_name     = "NX_CACHE_READ_ONLY_ACCESS_KEY_ID"
-  plaintext_value = try(data.terraform_remote_state.linode.outputs.nx_cache_read_only_access_key, "")
+  plaintext_value = linode_object_storage_key.nx_cache_read_only.access_key
 }
 
 resource "github_actions_secret" "nx_cache_read_only_secret_access_key" {
   repository      = var.repository
   secret_name     = "NX_CACHE_READ_ONLY_SECRET_ACCESS_KEY"
-  plaintext_value = try(data.terraform_remote_state.linode.outputs.nx_cache_read_only_secret_key, "")
+  plaintext_value = linode_object_storage_key.nx_cache_read_only.secret_key
 }
 
 resource "github_actions_secret" "nx_cache_read_write_access_key_id" {
   repository      = var.repository
   secret_name     = "NX_CACHE_READ_WRITE_ACCESS_KEY_ID"
-  plaintext_value = try(data.terraform_remote_state.linode.outputs.nx_cache_read_write_access_key, "")
+  plaintext_value = linode_object_storage_key.nx_cache_read_write.access_key
 }
 
 resource "github_actions_secret" "nx_cache_read_write_secret_access_key" {
   repository      = var.repository
   secret_name     = "NX_CACHE_READ_WRITE_SECRET_ACCESS_KEY"
-  plaintext_value = try(data.terraform_remote_state.linode.outputs.nx_cache_read_write_secret_key, "")
+  plaintext_value = linode_object_storage_key.nx_cache_read_write.secret_key
 }
 
 # The repository itself, imported as it is configured. Destroying it would

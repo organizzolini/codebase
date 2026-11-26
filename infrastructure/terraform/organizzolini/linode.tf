@@ -1,35 +1,4 @@
-terraform {
-  required_version = ">= 1.6"
-
-  # Same Linode Object Storage bucket and backend settings as the openrouter
-  # root; see its main.tf. This root manages that bucket, which is safe because
-  # the bucket is only imported and never destroyed.
-  backend "s3" {
-    key    = "linode.tfstate"
-    region = "us-east-1"
-
-    skip_credentials_validation = true
-    skip_metadata_api_check     = true
-    skip_region_validation      = true
-    skip_requesting_account_id  = true
-    skip_s3_checksum            = true
-  }
-
-  required_providers {
-    linode = {
-      source  = "linode/linode"
-      version = "~> 4.8"
-    }
-  }
-}
-
-# The token needs Object Storage read and write: with no access key given, the
-# provider mints a temporary one to read and manage the bucket.
-provider "linode" {
-  token = var.linode_token
-}
-
-# The bucket that holds every root's state, imported as it is configured.
+# The original bucket that held the state, imported as it is configured.
 # Destroying it would delete that state, so Terraform refuses to.
 import {
   to = linode_object_storage_bucket.state
@@ -47,10 +16,10 @@ resource "linode_object_storage_bucket" "state" {
   }
 }
 
-# The access key the other roots' backends authenticate with, imported by its
+# The access key the backend authenticated with before the move, imported by its
 # numeric ID from `linode-cli object-storage keys-list`. Terraform cannot read
 # its secret key, so the key stays in the TERRAFORM_STATE_* secrets as it is.
-# Destroying it would lock every root out of its state.
+# Destroying it would lock the backend out of its state until it is retired by hand.
 import {
   to = linode_object_storage_key.state
   id = "7042178"
@@ -70,8 +39,8 @@ resource "linode_object_storage_key" "state" {
   }
 }
 
-# The bucket state is moving to. Linode cannot rename a bucket, so the original `state`
-# bucket stays in place until the cutover is done by hand. Destroying this one deletes the state.
+# The bucket the state lives in. Linode cannot rename a bucket, so the original `state`
+# bucket stays in place until it is retired by hand. Destroying this one deletes the state.
 resource "linode_object_storage_bucket" "terraform_state" {
   label         = var.terraform_state_bucket_label
   region        = var.region
@@ -83,7 +52,7 @@ resource "linode_object_storage_bucket" "terraform_state" {
   }
 }
 
-# The access key the other roots' backends authenticate with once they move.
+# The access key the backend authenticates with, and CI's TERRAFORM_STATE_* secrets hold.
 # Its secret is readable through `terraform output` in this root only, and goes
 # into the TERRAFORM_STATE_* secrets by hand at the cutover.
 resource "linode_object_storage_key" "terraform_state" {
