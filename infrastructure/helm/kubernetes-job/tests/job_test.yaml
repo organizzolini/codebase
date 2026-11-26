@@ -110,7 +110,20 @@ tests:
           value: tini
       - matchRegex:
           path: spec.template.spec.containers[0].command[4]
-          pattern: year=\$\(\(START_YEAR \+ JOB_COMPLETION_INDEX\)\);\s+export START_DATE=.\$year-01-01. END_DATE=.\$year-12-31.;\s+exec node caelundas-cli\.main\.js caelundas
+          pattern: year=\$\(\(\$\{START_YEAR:\?START_YEAR is required\} \+ \$\{JOB_COMPLETION_INDEX:\?JOB_COMPLETION_INDEX is required\}\)\);\s+export START_DATE=.\$year-01-01. END_DATE=.\$year-12-31.;\s+exec node caelundas-cli\.main\.js caelundas
+
+  - it: caelundas-cli stops before running when START_YEAR or the completion index is unset
+    values:
+      - ../values/base.yaml
+      - ../values/caelundas-cli.yaml
+    template: templates/job.yaml
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[4]
+          pattern: ^set -eu;
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[4]
+          pattern: \$\{START_YEAR:\?START_YEAR is required\}
 
   - it: caelundas-cli requests 1Gi against a 1536Mi limit
     values:
