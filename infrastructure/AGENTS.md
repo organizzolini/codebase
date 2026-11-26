@@ -190,20 +190,19 @@ serving all three roots, so the move can stop at any point.
 
 ## Caelundas Ingestion
 
-**Start a run**: Actions, then **Caelundas Ingestion**, then **Run workflow**. Inputs are `start_year` and `end_year` (1900 to 2100), `latitude` and `longitude` (default Philadelphia), and `parallelism` (default `1`, 1 to 4). The workflow validates them, reads the CLI image tag from `helm/kubernetes-job/values/caelundas-cli.yaml` (it fails with `no caelundas-cli release yet` while the tag is empty), and runs `helm install caelundas-ingestion-<start>-<end>-<run_id>` into the `caelundas` namespace, one Indexed Job index per calendar year, writing to `caelundas_staging`. It authenticates with the `KUBECONFIG` repository secret and does not wait for the Job.
+**Start a run**: Actions, then **caelundas-cli**, then **Run workflow**. Inputs are `start_year` and `end_year`, and `environment`, one `NAME=value` per line of extra container environment (`LATITUDE=39.9`, `LONGITUDE=-75.2`): the CLI validates every value itself, so a new option needs no workflow change. The workflow checks only that the years are integers with `start_year <= end_year` and that each line is `NAME=value`, then renders the Job with `helm template` (it fails with `no caelundas-cli release yet` while the image tag in `helm/kubernetes-job/values/caelundas-cli.yaml` is empty) and runs `helm install caelundas-ingestion-<start>-<end>-<run_id>` into the `caelundas` namespace: one Indexed Job index per calendar year, `START_YEAR` set, each index computing its own dates, writing to `caelundas_staging`. It authenticates with the `KUBECONFIG` repository secret through `azure/k8s-set-context`, does not wait for the Job, and appends the chart's `NOTES.txt` to the run summary. The Actions form takes one line, so send several lines from the CLI: `gh workflow run caelundas-ingestion.yml -f start_year=1900 -f end_year=1902 -f environment=$'LATITUDE=39.9\nLONGITUDE=-75.2'`. For parallel years, install by hand with `--set job.parallelism=<n>`.
 
-**Follow it**:
+**Follow it**: the run summary prints these with the release name filled in.
 
 ```bash
 kubectl get jobs -n caelundas
-kubectl logs -n caelundas job/<release-name>   # one pod only
 kubectl get pods -n caelundas -l job-name=<release-name>
 kubectl logs -n caelundas -l job-name=<release-name> --prefix --tail=50   # every index
 ```
 
 **Clean up**: Argo CD never tracks the release, so it neither prunes nor reports it. The Job's `ttlSecondsAfterFinished` (86400) removes it a day after it finishes; `helm uninstall <release-name> -n caelundas` tidies the release record.
 
-**Duration**: one year takes about 45 minutes on 1 CPU at about 800 MiB peak (limit 1.5 GiB). With `parallelism: 1` a century is about 75 hours, and a failed index retries up to twice more (`backoffLimitPerIndex: 2`). The Job requests 1 GiB, so a second concurrent year does not fit beside the platform on the one 4 GB node: `parallelism` of 2 or more makes the autoscaler add the second node (about $24 a month while it lasts, at most 2 nodes).
+**Duration**: one year takes about 45 minutes on 1 CPU at about 800 MiB peak (limit 1.5 GiB). With the default `job.parallelism: 1` a century is about 75 hours, and a failed index retries up to twice more (`backoffLimitPerIndex: 2`). The Job requests 1 GiB, so a second concurrent year does not fit beside the platform on the one 4 GB node: a `job.parallelism` of 2 or more makes the autoscaler add the second node (about $24 a month while it lasts, at most 2 nodes).
 
 **Night sky, one-off**: the `stars`, `constellations` and `constellation_edges` tables come from `nx run caelundas-cli:start:night-sky` run locally against three hand-downloaded files (see the caelundas-cli README). Restore just those tables into `caelundas_staging` (or production) with the `pg_dump`/`pg_restore` pair from the postgres runbook, adding `--table stars --table constellations --table constellation_edges` to both. A Job route is not provided: the image carries no night-sky input files.
 
