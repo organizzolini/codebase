@@ -63,7 +63,10 @@ const RUNTIME_EXTENSIONS = new Set([
 const LICENSE_FILE = /^(?:copying|licen[cs]e|notice)(?:[-.].*)?$/iu;
 
 /** Directories no run reads: a native build's intermediates, caches, and links to binaries. */
-const SKIPPED_DIRECTORIES = new Set([".bin", ".tmp", ".deps", "obj.target"]);
+const SKIPPED_DIRECTORIES = new Set([".bin", ".tmp", ".deps"]);
+
+/** A native build's per-target intermediates folder, named with a `.target` suffix. */
+const NATIVE_TARGET_DIRECTORY = /\.target$/u;
 
 /**
  * Packages left out although a dependency lists them, because no run reaches
@@ -248,7 +251,9 @@ export function isRuntimeFile(source: string): boolean {
   const name = path.basename(source);
   const stats = lstatSync(source);
   if (stats.isDirectory()) {
-    return !SKIPPED_DIRECTORIES.has(name);
+    return (
+      !SKIPPED_DIRECTORIES.has(name) && !NATIVE_TARGET_DIRECTORY.test(name)
+    );
   }
 
   return (
