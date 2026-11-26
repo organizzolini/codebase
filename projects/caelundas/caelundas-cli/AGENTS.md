@@ -126,7 +126,7 @@ IMAGE_TAG=local nx run caelundas-cli:docker:build   # linux/amd64, from the work
 IMAGE_TAG=1.2.3 nx run caelundas-cli:docker:push    # one buildx build --push
 ```
 
-[infrastructure/docker/application.Dockerfile](../../../infrastructure/docker/application.Dockerfile)
+[infrastructure/docker/application/Dockerfile](../../../infrastructure/docker/application/Dockerfile)
 builds `ghcr.io/organizzolini/caelundas-cli`, shared with the other applications and
 configured by [infrastructure/image.env](infrastructure/image.env). The image is
 the ingestion Job (same command as `nx run caelundas-cli:start`). It runs as UID
@@ -160,4 +160,4 @@ file's `runtimeDependencies`. Keep `--platform linux/amd64`.
 - `input.constants.ts` includes Zod validation
 - `ephemeris.service.ts` includes NASA API client
 - `calendar.service.ts` includes ICS/JSON generation
-- `Dockerfile` includes container build config
+- `infrastructure/image.env` configures the shared Dockerfile's container build

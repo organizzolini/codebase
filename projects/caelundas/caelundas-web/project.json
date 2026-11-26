@@ -80,7 +80,7 @@
         }
       },
       "defaultConfiguration": "build",
-      "description": "Build (`docker:build`, loaded into the local daemon) or build and push (`docker:push`, one `docker buildx build --push`) the caelundas-web image for linux/amd64 from the shared application.Dockerfile, tagged ghcr.io/organizzolini/caelundas-web:$IMAGE_TAG (default local). It bakes VITE_CAELUNDAS_API_URL into the app. Set CAELUNDAS_API_IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build. Never cached: a Docker build has no file outputs Nx could restore, so a remote cache hit would skip building, and a push is a side effect; layer caching is BuildKit's job.",
+      "description": "Build (`docker:build`, loaded into the local daemon) or build and push (`docker:push`, one `docker buildx build --push`) the caelundas-web image for linux/amd64 from the shared application Dockerfile, tagged ghcr.io/organizzolini/caelundas-web:$IMAGE_TAG (default local). It bakes VITE_CAELUNDAS_API_URL into the app. Set IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build. Never cached: a Docker build has no file outputs Nx could restore, so a remote cache hit would skip building, and a push is a side effect; layer caching is BuildKit's job.",
       "executor": "nx:run-commands",
       "options": {
         "command": "sh infrastructure/docker/docker-image.sh {projectRoot}",

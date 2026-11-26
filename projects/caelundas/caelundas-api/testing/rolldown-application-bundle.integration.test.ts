@@ -6,25 +6,51 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import rolldownConfiguration from "../configuration/rolldown.config";
 
-/** Where the configuration writes the bundle. */
-const BUNDLE_DIRECTORY = path.resolve(
-  import.meta.dirname,
-  "../../../../dist/caelundas-api",
-);
+const WORKSPACE_ROOT = path.resolve(import.meta.dirname, "../../../..");
 
-/** Packages that must never reach the image: transpilers, tests, linters. */
-const DEVELOPMENT_PACKAGES = [
-  "@codebase",
-  "@swc",
-  "@swc-node",
-  "@testcontainers",
-  "eslint",
-  "rolldown",
-  "typescript",
-  "vitest",
+/** Where the configuration writes the build. */
+const BUNDLE_DIRECTORY = path.join(WORKSPACE_ROOT, "dist/caelundas-api");
+
+/** Shared workspace packages the build compiles in, whose dependencies the image must carry. */
+const SHARED_PACKAGES = [
+  "projects/common/observability",
+  "projects/common/persistence",
+  "projects/caelundas/caelundas-db",
 ] as const;
 
-describe("caelundas-api bundle", () => {
+/** Store ids that must never reach the image: transpilers, tests, linters, bundlers. */
+const DEVELOPMENT_STORE_PREFIXES = [
+  "@codebase+",
+  "@golevelup+ts-vitest@",
+  "@nestjs+testing@",
+  "@oxc-project+",
+  "@swc+",
+  "@swc-node+",
+  "@testcontainers+",
+  "@vitest+",
+  "eslint@",
+  "rolldown@",
+  "typescript@",
+  "vite@",
+  "vitest@",
+] as const;
+
+/**
+ * Dependencies of a shared package that the image leaves out on purpose,
+ * because only its tests use them. Any other new dependency of a shared
+ * package must ship, so it fails here until it is added to
+ * `BY_NAME_DEPENDENCIES` or to this list.
+ */
+const NOT_SHIPPED = new Set([
+  "@codebase/testing",
+  "@golevelup/ts-vitest",
+  "@nestjs/testing",
+  "@testcontainers/postgresql",
+  "typescript",
+  "vitest",
+]);
+
+describe("caelundas-api build", () => {
   let storeEntries: string[];
 
   beforeAll(async () => {
@@ -51,17 +77,19 @@ describe("caelundas-api bundle", () => {
     expect(logger).toContain('"design:paramtypes"');
   });
 
-  it("builds each migration as a file the database module's glob finds", () => {
+  it("builds the migrations as files the database module's glob finds", () => {
     const migrations = readdirSync(
       path.join(BUNDLE_DIRECTORY, "projects/caelundas/caelundas-db/migrations"),
     );
 
-    expect(migrations).toHaveLength(1);
-    expect(migrations[0]).toMatch(/^\d+-migration\.js$/u);
+    expect(migrations.length).toBeGreaterThan(0);
+    expect(migrations.every((file) => /^\d+-migration\.js$/u.test(file))).toBe(
+      true,
+    );
   });
 
   it.each(["@nestjs/core", "pg", "pino-pretty", "typeorm"])(
-    "installs %s beside the bundle",
+    "installs %s beside the build",
     (name) => {
       expect(
         existsSync(
@@ -73,11 +101,38 @@ describe("caelundas-api bundle", () => {
 
   it("ships no development or test package", () => {
     const shipped = storeEntries.filter((entry) =>
-      DEVELOPMENT_PACKAGES.some((name) =>
-        entry.startsWith(`${name.replace("/", "+")}@`),
-      ),
+      DEVELOPMENT_STORE_PREFIXES.some((prefix) => entry.startsWith(prefix)),
     );
 
     expect(shipped).toStrictEqual([]);
   });
+
+  it.each(SHARED_PACKAGES)(
+    "ships every dependency of %s that its tests do not own",
+    (directory) => {
+      const manifest = JSON.parse(
+        readFileSync(
+          path.join(WORKSPACE_ROOT, directory, "package.json"),
+          "utf8",
+        ),
+      ) as { dependencies?: Record<string, string> };
+      const missing = Object.entries(manifest.dependencies ?? {})
+        .filter(
+          ([name, version]) =>
+            !version.startsWith("workspace:") && !NOT_SHIPPED.has(name),
+        )
+        .map(([name]) => name)
+        .filter(
+          (name) =>
+            !existsSync(
+              path.join(BUNDLE_DIRECTORY, "node_modules", name, "package.json"),
+            ) &&
+            !storeEntries.some((entry) =>
+              entry.startsWith(`${name.replace("/", "+")}@`),
+            ),
+        );
+
+      expect(missing).toStrictEqual([]);
+    },
+  );
 });
