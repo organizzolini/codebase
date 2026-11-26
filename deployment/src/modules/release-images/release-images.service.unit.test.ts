@@ -30,7 +30,7 @@ const WEB_VALUES =
 const CLI_VALUES =
   "infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml";
 
-/** Values files as the release finds them: comments and blank lines to keep. */
+/** Values files as found, with comments and blank lines. */
 const VALUES = {
   [API_VALUES]:
     '# api\nimage:\n  repository: api\n\nhook:\n  image:\n    # migrations\n    tag: ""\n',

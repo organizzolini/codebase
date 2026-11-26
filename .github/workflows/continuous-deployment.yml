@@ -58,11 +58,10 @@ jobs:
             name: Releases
             emoji: 🦸
             timeout: 50
-          # Applies the five Terraform roots, in order, when a push to main changes them:
-          # OpenRouter, Linode, Kubernetes, Bootstrap, then GitHub. State is in a Linode
-          # bucket with no lock, so this workflow's per-ref concurrency group, which never
-          # cancels, keeps two applies from overlapping. The 40 minutes cover the first
-          # cluster: its creation, the 10-minute readiness wait, and the Argo CD installs.
+          # Applies the five Terraform roots in order when a push to main changes
+          # them: OpenRouter, Linode, Kubernetes, Bootstrap, then GitHub. State has no
+          # lock, so the never-cancelling per-ref concurrency group prevents overlap.
+          # 40 minutes cover the first cluster: creation, readiness wait, Argo CD.
           - id: apply-terraform
             name: Infrastructure
             emoji: 🏗️

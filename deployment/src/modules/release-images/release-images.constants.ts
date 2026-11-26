@@ -7,13 +7,13 @@ import type { ImageTarget } from "./release-images.types";
 const API_VALUES =
   "infrastructure/helm/kubernetes-deployment/values/caelundas-api.yaml";
 
-/** What a release version looks like; it is written into Helm values. */
+/** What a release version looks like. */
 export const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[\w.\-]+)?$/v;
 
 /** What `nx show projects --json` prints: the project names. */
 export const projectNamesSchema = z.array(z.string());
 
-/** The images a release builds when changed, and where their tags are written. */
+/** The images a release builds, and where their tags go. */
 export const IMAGE_TARGETS: readonly ImageTarget[] = [
   {
     fields: [{ file: API_VALUES, path: ["image", "tag"] }],
@@ -45,7 +45,7 @@ export const IMAGE_TARGETS: readonly ImageTarget[] = [
 export const invalidVersionMessage = (version: string): string =>
   `❌ "${version}" is not a release version`;
 
-/** Reports an image about to be built, or one a release leaves be. */
+/** Reports an image being built, or one left alone. */
 export const imageMessage = (project: string, affected: boolean): string =>
   affected
     ? `📦 ${project} changed since the last release; building it`

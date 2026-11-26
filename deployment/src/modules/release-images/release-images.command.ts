@@ -8,12 +8,11 @@ import { describeError } from "../process-runner/process-runner.utilities";
 import { ReleaseImagesService } from "./release-images.service";
 
 /**
- * CLI command that builds and pushes the changed Caelundas images and writes
- * their tags into the Helm values files, as semantic-release's `prepareCmd`.
+ * Builds and pushes the changed Caelundas images and writes their tags into
+ * the Helm values, as semantic-release's `prepareCmd`.
  *
- * Takes the release version and the last release's git tag, empty before the
- * first. Reads `DRY_RUN`: with `1` it prints each build and push, runs none,
- * and still writes the files. Exits 1 on any failure.
+ * Takes the release version and the last release's git tag. `DRY_RUN=1` runs
+ * no build or push. Exits 1 on any failure.
  */
 @Command({
   arguments: "<version> [last-tag]",

@@ -20,11 +20,11 @@ import type { Environment } from "../../deployment.types";
 import type { ImageTarget } from "./release-images.types";
 
 /**
- * Builds and pushes each Caelundas image that changed since the last release,
- * then writes its tag into the Helm values files the release commit carries.
+ * Builds and pushes each Caelundas image changed since the last release, then
+ * writes its tag into the Helm values files.
  *
- * Only the tag fields change: the YAML is edited in place. An image is pushed before its tag is written, and a failed build or push
- * throws, so no release commit names an image that does not exist.
+ * Only tag fields change. An image is pushed before its tag is written, so no
+ * release commit names a missing image.
  */
 @Injectable()
 export class ReleaseImagesService {
@@ -105,11 +105,10 @@ export class ReleaseImagesService {
   // 🌎 Public Methods
 
   /**
-   * Releases every image that changed since `lastTag`, or all of them when
-   * there is none, and writes their tags into the values files.
+   * Releases the images changed since `lastTag`, or all without one.
    *
-   * @param version - The release version every rebuilt image is tagged with.
-   * @param lastTag - The last release's git tag, or empty before the first.
+   * @param version - Release version.
+   * @param lastTag - Last tag, or empty.
    */
   public async run(version: string, lastTag: string): Promise<void> {
     if (!VERSION_PATTERN.test(version)) {
