@@ -306,6 +306,10 @@ overrides:
       - "**/*.ipynb"
     ignoreRegExpList:
       - /\bbool\b|\bcol_offset\b|\bnum_results\b/g
+  # `obj` is Argo CD's fixed Lua global for resource health scripts.
+  - filename: "**/infrastructure/terraform/organizzolini/argocd-values.yaml"
+    ignoreRegExpList:
+      - /\bobj\b/g
   # VS Code and devcontainer configuration is written in VS Code's own vocabulary — the
   # extension recommendation lists are nothing but third-party publisher handles.
   - filename:
@@ -327,6 +331,8 @@ words:
   # A headword the coinagerie singularizer or lemmatizer makes of a word the
   # code wrote, which the shared coinagerie configuration folds back.
   - caelunda
+  # The CloudNativePG operator's image and API group, which the postgres chart names.
+  - cloudnative
   # The rc-style conformetry config filenames the Nx plugin looks for.
   - conformetryrc
   # Dependabot's dependabot.yml field name for delaying a version update.
@@ -351,9 +357,19 @@ words:
   # A headword the coinagerie singularizer or lemmatizer makes of a word the
   # code wrote, which the shared coinagerie configuration folds back.
   - postgre
+  # PgBouncer, the connection pooler the postgres chart's Pooler runs.
+  - pgbouncer
   - protobufj
+  # The Barman Cloud plugin's API group, which the postgres chart's ObjectStore names.
+  - barmancloud
   # The git feature (`git rerere`) that replays a recorded conflict resolution.
   - rerere
+  # cert-manager components: the CA injector and its install-time API check Job.
+  - cainjector
+  - startupapicheck
+  # Columns of the PostgreSQL pg_roles view: a role's name and its stored settings.
+  - rolconfig
+  - rolname
   # Observer sites in caelundas reference fixtures, checked against USNO.
   - Reykjavík
   # The SQLite function that trims characters from a string's end, which reads
@@ -369,3 +385,5 @@ words:
   # code wrote, which the shared coinagerie configuration folds back.
   - vitej
   - xarg
+  # The Debian release name of the CloudNativePG PostgreSQL image tag.
+  - trixie
