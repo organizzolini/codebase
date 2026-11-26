@@ -2,6 +2,7 @@ suite: kubernetes-job
 templates:
   - templates/job.yaml
   - templates/pvc.yaml
+  - templates/NOTES.txt
 values:
   - ../values/base.yaml
 tests:
@@ -70,6 +71,16 @@ tests:
               value: "1"
             - name: SECOND
               value: "2"
+
+  - it: renders an empty tag as `repository:` rather than the chart appVersion
+    values:
+      - ../values/base.yaml
+      - ../values/caelundas-cli.yaml
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "ghcr.io/organizzolini/caelundas-cli:"
 
   - it: caelundas-cli values render an Indexed staging job
     values:
@@ -152,3 +163,19 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].resources.limits.memory
           value: 1536Mi
+
+  - it: prints the follow and cleanup commands for the release
+    release:
+      name: ingest-1900-1902
+      namespace: organizzolini
+    template: templates/NOTES.txt
+    asserts:
+      - matchRegex:
+          path: raw
+          pattern: kubectl get jobs -n organizzolini
+      - matchRegex:
+          path: raw
+          pattern: kubectl logs -n organizzolini -l job-name=ingest-1900-1902-kubernetes-job --prefix --tail=50
+      - matchRegex:
+          path: raw
+          pattern: helm uninstall ingest-1900-1902 -n organizzolini

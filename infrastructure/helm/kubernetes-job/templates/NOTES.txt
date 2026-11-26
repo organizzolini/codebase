@@ -1,0 +1,11 @@
+### Started `{{ include "kubernetes-job.fullname" . }}`
+
+Not waiting for completion. Follow it with:
+
+```bash
+kubectl get jobs -n {{ .Release.Namespace }}
+kubectl get pods -n {{ .Release.Namespace }} -l job-name={{ include "kubernetes-job.fullname" . }}
+kubectl logs -n {{ .Release.Namespace }} -l job-name={{ include "kubernetes-job.fullname" . }} --prefix --tail=50
+```
+
+Tidy the release record afterwards with `helm uninstall {{ .Release.Name }} -n {{ .Release.Namespace }}`.

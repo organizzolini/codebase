@@ -7,7 +7,8 @@ replicaCount: 1
 image:
   repository: my-application
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # The image tag. Empty renders `repository:`, which no cluster can pull, so a
+  # caller checks for it before installing.
   tag: ""
 
 imagePullSecrets: []
