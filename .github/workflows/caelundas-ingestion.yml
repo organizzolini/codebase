@@ -22,7 +22,7 @@ on:
         default: "-75.17169"
         type: string
       parallelism:
-        description: Years ingested at once (1 to 4); the node fits 2
+        description: Years ingested at once (1 to 4); 2 or more adds a second node
         required: true
         default: "1"
         type: string

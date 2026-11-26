@@ -98,3 +98,16 @@ tests:
               secretKeyRef:
                 name: caelundas-postgres
                 key: password
+
+  - it: caelundas-cli requests 1Gi against a 1536Mi limit
+    values:
+      - ../values/base.yaml
+      - ../values/caelundas-cli.yaml
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 1Gi
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 1536Mi
