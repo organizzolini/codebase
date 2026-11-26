@@ -18,6 +18,7 @@ fullnameOverride: ""
 podAnnotations: {}
 
 podSecurityContext:
+  fsGroup: 1000
   runAsNonRoot: true
   seccompProfile:
     type: RuntimeDefault
@@ -25,10 +26,12 @@ podSecurityContext:
 # The root filesystem is read-only; the Job mounts an emptyDir at the temporary directory for scratch space
 securityContext:
   allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: true
   capabilities:
     drop:
       - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
 
 # Labels the templates stamp on the Job and PVC when set. Declared here so the
 # templates can read them when a deploy passes neither.
@@ -83,15 +86,13 @@ persistence:
   size: 1Gi
   mountPath: /app/output
 
-resources: {}
-# Empty by default so the user chooses resources. Uncomment and adjust to set them,
-# then remove the braces after `resources:`.
-# limits:
-#   cpu: 100m
-#   memory: 128Mi
-# requests:
-#   cpu: 100m
-#   memory: 128Mi
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 nodeSelector: {}
 

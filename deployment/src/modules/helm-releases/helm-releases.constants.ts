@@ -1,55 +1,46 @@
 // ♟️ Constants
 
-import type { HelmRelease } from "./helm-releases.types";
+import { z } from "zod";
 
 /** Where the charts live, relative to the workspace root. */
 export const HELM_ROOT = "infrastructure/helm";
 
-/** Stands in for the image tag, so the chart renders. */
-const PLACEHOLDER_IMAGE_TAG = ["image.tag=0.0.0"];
+/** The values file every release layers first. */
+export const BASE_VALUES = "base.yaml";
 
-/** The charts Argo CD or the ingestion workflow installs. */
-export const HELM_RELEASES: readonly HelmRelease[] = [
-  {
-    chart: "argocd-applications",
-    namespace: "argocd",
-    release: "argocd-applications",
-    values: ["values/base.yaml"],
-  },
-  {
-    chart: "postgres",
-    namespace: "organizzolini",
-    release: "postgres",
-    values: ["values/base.yaml"],
-  },
-  {
-    chart: "cloudflared",
-    namespace: "organizzolini",
-    release: "cloudflared",
-    values: ["values/base.yaml"],
-  },
-  {
-    chart: "kubernetes-deployment",
-    namespace: "caelundas",
-    release: "caelundas-api",
-    strings: PLACEHOLDER_IMAGE_TAG,
-    values: ["values/base.yaml", "values/caelundas-api.yaml"],
-  },
-  {
-    chart: "kubernetes-deployment",
-    namespace: "caelundas",
-    release: "caelundas-web",
-    strings: PLACEHOLDER_IMAGE_TAG,
-    values: ["values/base.yaml", "values/caelundas-web.yaml"],
-  },
-  {
-    chart: "kubernetes-job",
-    namespace: "caelundas",
-    release: "caelundas-cli",
-    strings: PLACEHOLDER_IMAGE_TAG,
-    values: ["values/base.yaml", "values/caelundas-cli.yaml"],
-  },
-];
+/** The chart whose values list the Argo CD Applications. */
+export const APPLICATIONS_CHART = "argocd-applications";
+
+/** The namespace of a release no Application or override names. */
+export const DEFAULT_NAMESPACE = "default";
+
+/** Fills an empty `image.tag`, so charts that render nothing without one render. */
+export const PLACEHOLDER_IMAGE_TAG = "0.0.0";
+
+/** The optional per-chart file for what the chart's files cannot say. */
+export const OVERRIDE_FILE = "release.yaml";
+
+/** What a chart's `release.yaml` may set. */
+export const overrideSchema = z.strictObject({
+  namespace: z.string().min(1).optional(),
+  strings: z.record(z.string(), z.string()).optional(),
+});
+
+/** The parts of an Argo CD Application discovery reads. */
+export const applicationsSchema = z.object({
+  applications: z.array(
+    z.object({
+      namespace: z.string(),
+      path: z.string().optional(),
+      valueFiles: z.array(z.string()).optional(),
+    }),
+  ),
+});
+
+/** What a values file says of the image tag. */
+export const valuesSchema = z.looseObject({
+  image: z.looseObject({ tag: z.string().optional() }).optional(),
+});
 
 /** Tells how to call the command. */
 export const USAGE = "usage: helm-releases lint | render <directory>";
