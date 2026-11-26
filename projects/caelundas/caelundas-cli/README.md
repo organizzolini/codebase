@@ -18,8 +18,8 @@ nx run caelundas-cli:download-ephemeris
 # 2. Configure your observer location, date range and database
 cp projects/caelundas/caelundas-cli/.env.default projects/caelundas/caelundas-cli/.env
 
-# 3. Start the local Postgres (docker compose) and create the schema
-nx run caelundas-db:migration:run
+# 3. Start the local Postgres (docker compose); the CLI migrates it when it starts
+nx run caelundas-db:migration:run   # optional: the same, by hand
 
 # 4. Generate the calendar and store its events
 nx run caelundas-cli:start
@@ -43,18 +43,10 @@ LONGITUDE="-75.17169"         # Observer longitude, -180 to 180
 START_DATE="2026-07-01"       # YYYY-MM-DD
 END_DATE="2026-07-31"         # YYYY-MM-DD
 OUTPUT_DIRECTORY="./output"
-START_YEAR="1900"             # 1900-2100; set together with JOB_COMPLETION_INDEX
-JOB_COMPLETION_INDEX="3"      # Non-negative integer; Kubernetes Indexed Jobs set it
 ```
 
 Every field is optional. Location defaults to Philadelphia, and the date range
 to a two-month window centered on today.
-
-`START_YEAR` and `JOB_COMPLETION_INDEX` select one calendar year: the run covers
-`START_YEAR + JOB_COMPLETION_INDEX`, from January 1 through December 31, and
-`START_DATE` and `END_DATE` are ignored. Set both or neither. The derived year
-must fall within 1900-2100, like any hand-set date. Consecutive indexes cover
-adjacent years with no overlap, so one Indexed Job pod per year splits a century.
 
 The database is the `caelundas` schema of `caelundas_development`, read through
 `CAELUNDAS_POSTGRES_*` only (database, host, password, port, schema and
@@ -260,8 +252,8 @@ DO UPDATE`, so re-running an ingest never duplicates it. Rows go in batches
 sized by their columns to stay under Postgres's 65,535 bind parameters per
 statement. The entities, the one migration, and the read model come from the
 `caelundas-db` library: apply the migration with
-`nx run caelundas-db:migration:run` before the first run (`migration:generate`
-creates the next one). Every run ends by rebuilding the read model
+`nx run caelundas-db:migration:run` or let the first run apply it when it starts
+(`migration:generate` creates the next one). Every run ends by rebuilding the read model
 (`tag_nodes`, `calendar_event_tag_nodes`, and the `calendar_event_derived_times`
 view the API queries) with `CaelundasDatabaseService.refreshReadModel`, in the
 same transaction that wrote the events, so a failed refresh stores nothing and
@@ -303,14 +295,15 @@ Frohn, after the IAU's constellation charts.
 ## Image
 
 ```bash
-IMAGE_TAG=local nx run caelundas-cli:docker-build
+IMAGE_TAG=local nx run caelundas-cli:docker:build   # loads the image into the local Docker
+IMAGE_TAG=1.2.3 nx run caelundas-cli:docker:push    # one buildx build --push
 ```
 
-The image is `ghcr.io/organizzolini/caelundas-cli:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with `configuration/Dockerfile`. It runs as UID 10001 and serves two purposes. By default it runs the ingest the way `nx run caelundas-cli:start` does, reading the environment, including `START_YEAR` and `JOB_COMPLETION_INDEX`, and writing calendar files to `OUTPUT_DIRECTORY`, which is `/app/output`. The Swiss Ephemeris files are baked in at build time, so a run never downloads them. The command `caelundas-migrate` runs every `caelundas-db` migration against each database in the comma-separated `CAELUNDAS_MIGRATION_DATABASES`, in order, using `CAELUNDAS_POSTGRES_*` for the host and credentials, and stops at the first failure; running it again applies nothing. Set `CAELUNDAS_API_IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
+The image is `ghcr.io/organizzolini/caelundas-cli:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with the shared [application.Dockerfile](../../../infrastructure/docker/application.Dockerfile), which [infrastructure/image.env](infrastructure/image.env) configures. It runs as UID 10001 under `tini` and runs the ingest the way `nx run caelundas-cli:start` does, reading the environment and writing calendar files to `OUTPUT_DIRECTORY`, which defaults to `./output`, that is `/app/output`. The CLI applies the pending `caelundas-db` migrations when it starts, under a Postgres advisory lock, so a fresh database needs nothing first and a restart applies nothing. The Swiss Ephemeris files are baked in at build time, so a run never downloads them. The image declares no `HEALTHCHECK`: an ingestion Job runs to completion and serves nothing. Set `CAELUNDAS_API_IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
 
-Size: 2.12 GB (2,121,829,783 bytes) on `node:26.13.1-trixie-slim`, mostly the development dependencies the runtime transpiler and workspace packages need (see the `shortcut:` comment in the Dockerfile).
+Size: 506 MB (506,166,149 bytes) on `node:26.13.1-trixie-slim`, down from 2.12 GB (2,121,829,783 bytes). The build stage bundles the ingest and the ephemeris download with rolldown (`nx run caelundas-cli:bundle`, to `dist/<project>` at the workspace root), one file per module at its source path so the migrations stay files, and the image ships only that output, `tini`, the ephemeris files, and a `node_modules` of the production packages it imports, `sweph` included: no transpiler, TypeScript, or test tooling.
 
-Measured against a local Postgres 18 with the Job's limits (`--memory 1536m --cpus 1`), one year (`START_YEAR=2026`, `JOB_COMPLETION_INDEX=0`) stored 50,492 events in 45 minutes and peaked at about 802 MiB, sampled once a second with `docker stats`, well under the Job's 1.5 GiB limit. Node's default heap under that limit is about 760 MB, which the run overran after storing the events, so the image sets `NODE_OPTIONS=--max-old-space-size=1024`.
+Measured against a local Postgres 18 with the Job's limits (`--memory 1536m --cpus 1`), one year (`START_DATE=2026-01-01`, `END_DATE=2026-12-31`) stored 50,492 events in 45 minutes and peaked at about 802 MiB, sampled once a second with `docker stats`, well under the Job's 1.5 GiB limit. Node's default heap under that limit is about 760 MB, which the run overran after storing the events, so the image sets `NODE_OPTIONS=--max-old-space-size=1024`.
 
 ## Structure
 

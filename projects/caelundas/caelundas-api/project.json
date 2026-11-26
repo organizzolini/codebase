@@ -17,23 +17,42 @@
         "url": "http://localhost:${CAELUNDAS_API_PORT:-6173}/graphql"
       }
     },
+    "bundle": {
+      "description": "Bundle the API and its workspace packages to dist/caelundas-api with a production-only node_modules, ready to run with node",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/configuration/typescript/rolldown.application.config.ts",
+        "dependency-versions",
+        "production"
+      ],
+      "options": {
+        "command": "rolldown --config configuration/rolldown.config.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{workspaceRoot}/dist/caelundas-api"]
+    },
     "dependency-cruiser": {},
     "deprecate-code": {},
-    "docker-build": {
+    "docker": {
       "cache": false,
-      "description": "Build the caelundas-api production image for linux/amd64 from the workspace root, tagged with IMAGE_TAG (default local); set CAELUNDAS_API_IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build",
+      "configurations": {
+        "build": {
+          "env": {
+            "DOCKER_OUTPUT": "--load"
+          }
+        },
+        "push": {
+          "env": {
+            "DOCKER_OUTPUT": "--push"
+          }
+        }
+      },
+      "defaultConfiguration": "build",
+      "description": "Build (`docker:build`, loaded into the local daemon) or build and push (`docker:push`, one `docker buildx build --push`) the caelundas-api image for linux/amd64 from the shared application.Dockerfile, tagged ghcr.io/organizzolini/caelundas-api:$IMAGE_TAG (default local). Set CAELUNDAS_API_IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build. Never cached: a Docker build has no file outputs Nx could restore, so a remote cache hit would skip building, and a push is a side effect; layer caching is BuildKit's job.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "docker build --platform linux/amd64 -f projects/caelundas/caelundas-api/configuration/Dockerfile${CAELUNDAS_API_IMAGE_CA_BUNDLE:+ --secret id=ca-bundle,src=$CAELUNDAS_API_IMAGE_CA_BUNDLE} -t ghcr.io/organizzolini/caelundas-api:${IMAGE_TAG:-local} .",
-        "cwd": "{workspaceRoot}"
-      }
-    },
-    "docker-push": {
-      "cache": false,
-      "description": "Push the caelundas-api image tagged with IMAGE_TAG (default local) to GHCR",
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "docker push ghcr.io/organizzolini/caelundas-api:${IMAGE_TAG:-local}",
+        "command": "sh infrastructure/docker/docker-image.sh {projectRoot}",
         "cwd": "{workspaceRoot}"
       }
     },

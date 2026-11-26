@@ -75,7 +75,6 @@ Required:
 Optional:
 
 - `EVENT_TYPES`: Comma-separated list (defaults to all)
-- `START_YEAR`, `JOB_COMPLETION_INDEX`: Integers, set together. The run covers the calendar year `START_YEAR + JOB_COMPLETION_INDEX` and ignores `START_DATE`/`END_DATE`; the derived year must be within 1900-2100
 - `OUTPUT_FORMAT`: `ical` or `json` (defaults to `ical`)
 - `OUTPUT_DIRECTORY`: Directory path (defaults to `./output`)
 
@@ -114,7 +113,7 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 ## Kubernetes Deployment
 
 Ingestion runs as an Indexed **Kubernetes Job**, one calendar year per pod
-(`START_YEAR` and `JOB_COMPLETION_INDEX`), writing events to Postgres and
+(Kubernetes sets `JOB_COMPLETION_INDEX`; the Job's command turns it and `START_YEAR` into `START_DATE` and `END_DATE`), writing events to Postgres and
 calendar files to an `emptyDir` at `/app/output`. The Job's values are
 [values/caelundas-cli.yaml](../../../infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml);
 the `.github/workflows/caelundas-ingestion.yml` workflow launches it. See
@@ -123,15 +122,20 @@ the `.github/workflows/caelundas-ingestion.yml` workflow launches it. See
 ## Docker Workflow
 
 ```bash
-IMAGE_TAG=local nx run caelundas-cli:docker-build   # linux/amd64, from the workspace root
+IMAGE_TAG=local nx run caelundas-cli:docker:build   # linux/amd64, from the workspace root
+IMAGE_TAG=1.2.3 nx run caelundas-cli:docker:push    # one buildx build --push
 ```
 
-[configuration/Dockerfile](configuration/Dockerfile) builds `ghcr.io/organizzolini/caelundas-cli`
-for both the ingestion Jobs (default command, same as `nx run caelundas-cli:start`)
-and the API's Argo CD PreSync hook (`caelundas-migrate`, from
-[configuration/caelundas-migrate.sh](configuration/caelundas-migrate.sh)). It runs as
-UID 10001, bakes the Swiss Ephemeris files in at build time, and compiles `sweph`
-natively. Keep `--platform linux/amd64`.
+[infrastructure/docker/application.Dockerfile](../../../infrastructure/docker/application.Dockerfile)
+builds `ghcr.io/organizzolini/caelundas-cli`, shared with the other applications and
+configured by [infrastructure/image.env](infrastructure/image.env). The image is
+the ingestion Job (same command as `nx run caelundas-cli:start`). It runs as UID
+10001, bakes the Swiss Ephemeris files in at build time, and compiles `sweph`
+natively. It runs plain JavaScript that `nx run caelundas-cli:bundle`
+([configuration/rolldown.config.ts](configuration/rolldown.config.ts)) writes: one
+file per module at its source path, so the migrations stay files the database
+module's glob finds. A package loaded by name rather than by import goes in that
+file's `runtimeDependencies`. Keep `--platform linux/amd64`.
 
 ## Performance
 

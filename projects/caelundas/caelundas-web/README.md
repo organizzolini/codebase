@@ -59,12 +59,13 @@ nx run caelundas-web:vitest
 ## Image
 
 ```bash
-IMAGE_TAG=local nx run caelundas-web:docker-build
+IMAGE_TAG=local nx run caelundas-web:docker:build   # loads the image into the local Docker
+IMAGE_TAG=1.2.3 nx run caelundas-web:docker:push    # one buildx build --push
 ```
 
-The image is `ghcr.io/organizzolini/caelundas-web:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with `configuration/Dockerfile`. It serves the single-page app, built with its shell rendered ahead of time, from `dist/client` with `nginxinc/nginx-unprivileged` on port 8080, as UID 101. Client-side routes fall back to `index.html`, which is never cached, and hashed files under `/assets/` are cached as immutable. The API address is baked in at build time from `VITE_CAELUNDAS_API_URL`, default `https://caelundas.organizzolini.net/graphql`; set it in the environment to build against another API. Set `CAELUNDAS_API_IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
+The image is `ghcr.io/organizzolini/caelundas-web:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with the shared [application.Dockerfile](../../../infrastructure/docker/application.Dockerfile), which [infrastructure/image.env](infrastructure/image.env) configures. It serves the single-page app, built with its shell rendered ahead of time, from `dist/client` with `nginxinc/nginx-unprivileged` on port 8967, the web app's development port from `configuration/vite.config.mts`, as UID 101, using the nginx server block shared under `infrastructure/docker/nginx/`. Client-side routes fall back to `index.html`, which is never cached, and hashed files under `/assets/` are cached as immutable. The API address is baked in at build time from `VITE_CAELUNDAS_API_URL`, default `https://caelundas.organizzolini.net/graphql`; set it in the environment to build against another API. Set `CAELUNDAS_API_IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
 
-Size: 92.3 MB (92,268,967 bytes), on `nginxinc/nginx-unprivileged:1.30.6-alpine3.24`.
+Size: 92.3 MB (92,269,231 bytes), on `nginxinc/nginx-unprivileged:1.30.6-alpine3.24`.
 
 ## Night sky link parameters
 
