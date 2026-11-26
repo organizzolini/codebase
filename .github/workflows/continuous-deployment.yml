@@ -61,11 +61,15 @@ jobs:
           # Applies the four Terraform roots in order when a push to main changes
           # them: OpenRouter, Linode, Organizzolini, then GitHub. State has no
           # lock, so the never-cancelling per-ref concurrency group prevents overlap.
-          # 40 minutes cover the first cluster: creation, readiness wait, Argo CD.
+          # The first run is the slow one: setup and two small roots (about 4
+          # minutes), cluster creation (3 to 8), the API wait (usually 1, at most
+          # 10), then Argo CD and the root application (about 3 together). That is
+          # roughly 20 minutes, so 30 leaves room; a hang past it is a failure, and
+          # a retry resumes from the state already written. Later runs take a few.
           - id: apply-terraform
             name: Infrastructure
             emoji: 🏗️
-            timeout: 40
+            timeout: 30
 
     steps:
       # Decides from the GitHub API alone, before any checkout. The devcontainer is
