@@ -8,6 +8,8 @@ export interface HelmRelease {
   namespace: string;
   /** The release name `helm template` is given. */
   release: string;
+  /** Extra `--set-string` arguments, by key. */
+  strings: Readonly<Record<string, string>>;
   /** Values files, relative to the chart, layered in order. */
   values: readonly string[];
 }

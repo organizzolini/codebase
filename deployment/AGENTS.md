@@ -9,14 +9,14 @@ actions set them, print what they decide, and set the exit code. Anything that
 runs a child process goes through `ProcessRunnerService`, so a test replaces
 one class.
 
-| Command            | Module                         | Called from                                                            |
-| ------------------ | ------------------------------ | ---------------------------------------------------------------------- |
-| `version-packages` | `src/modules/version-packages` | 🏷️ Version Packages in Continuous Deployment                           |
-| `tag-codebase`     | `src/modules/tag-codebase`     | 🔖 Tag Codebase in Continuous Deployment                               |
-| `tag-packages`     | `src/modules/tag-packages`     | 🔖 Tag Packages in Continuous Deployment, and `version-packages` first |
-| `publish-packages` | `src/modules/publish-packages` | 📦 Publish Packages in Continuous Deployment                           |
-| `link-packages`    | `src/modules/link-packages`    | 🔗 Link Packages in Continuous Deployment                              |
-| `helm-releases`    | `src/modules/helm-releases`    | The infrastructure project's `helm-lint` and `helm-render` targets     |
+| Command            | Module                         | Called from                                                                    |
+| ------------------ | ------------------------------ | ------------------------------------------------------------------------------ |
+| `version-packages` | `src/modules/version-packages` | 🏷️ Version Packages in Continuous Deployment                                   |
+| `tag-codebase`     | `src/modules/tag-codebase`     | 🔖 Tag Codebase in Continuous Deployment                                       |
+| `tag-packages`     | `src/modules/tag-packages`     | 🔖 Tag Packages in Continuous Deployment, and `version-packages` first         |
+| `publish-packages` | `src/modules/publish-packages` | 📦 Publish Packages in Continuous Deployment                                   |
+| `link-packages`    | `src/modules/link-packages`    | 🔗 Link Packages in Continuous Deployment                                      |
+| `helm-releases`    | `src/modules/helm-releases`    | Discovers the Helm releases for `helm-lint` and `helm-render` (infrastructure) |
 
 `src/modules/process-runner` holds the shared wrapper over `node:child_process`
 (`capture` returns the output, `captureAsync` does so without blocking, and

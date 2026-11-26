@@ -7,6 +7,7 @@
     "nest-commander": "catalog:",
     "reflect-metadata": "catalog:",
     "semantic-release": "catalog:",
+    "yaml": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
