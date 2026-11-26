@@ -1,6 +1,6 @@
 ---
 name: callidescope-trace
-description: Run callidescope and read what it printed — a whole-workspace trace, one project's gate verdict, or the depth and breadth commands against one or more callables, each addressed as file#qualified-name. Use when running callidescope or npx callidescope, when reading a call stack or a breadth row, when reading what a per-project gate or trace target printed, when reading a project readme's Limits table, when a depth printed as "≥ n" needs interpreting, when reading a committed markdown report, mermaid diagram, or JSON report, when a run narrowed with --directories reports a frame, a stack, or a project the run was never pointed at, when a depth moved without an edit that explains it, or when asking who calls this, what does it call, what would this rename touch, and where should this callable be split before a refactor starts.
+description: "Run callidescope and read what it prints: a workspace trace, a project's gate verdict, or the depth and breadth of a callable (`file#qualified-name`). Use when reading a call stack or committed report, or when asking who calls something, what it calls, or what a rename would touch."
 license: MIT
 ---
 
@@ -15,16 +15,17 @@ flow actually lives.
 Three commands, answering three different questions:
 
 ```bash
-npx callidescope --config configuration/callidescope.config.ts                                        # the whole workspace
-npx callidescope depth --config configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar    # one callable, vertically
-npx callidescope breadth --config configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar  # one callable, horizontally
+npx callidescope --config configuration/ic-suite/callidescope.config.ts                                        # the whole workspace
+npx callidescope depth --config configuration/ic-suite/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar    # one callable, vertically
+npx callidescope breadth --config configuration/ic-suite/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar  # one callable, horizontally
 ```
 
 **`--config` is required on all three**, and names the workspace configuration
 file: nothing is searched for and nothing is defaulted, so a run that omits it
-is refused naming the flag. **A traced project's own `callidescope.config.ts` is a different matter**: it
-must exist and must be complete, or the run is refused before anything is
-traced — see the `callidescope-configure` skill. What a run _gates_ on and what
+is refused naming the flag. **A traced project's own configuration is a different matter**: it
+must exist at the workspace's `projectConfigurationPath` and must be complete, or the run is refused before anything is
+traced — see the `callidescope-configure` skill. Likewise each project's TypeScript configuration is read only at the workspace's
+required `projectTsconfigPath`, relative to the project root. What a run _gates_ on and what
 it _writes_ are both opt-in and both live in that skill; this one is about
 reading the result.
 
@@ -162,7 +163,7 @@ overloads, two callbacks bound to the same property — is disambiguated with a
 trailing `:<line>`:
 
 ```bash
-npx callidescope depth --config configuration/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar:118
+npx callidescope depth --config configuration/ic-suite/callidescope.config.ts --addresses src/foo.service.ts#FooService.bar:118
 ```
 
 When it cannot tell which one was meant, the run says so and prints every

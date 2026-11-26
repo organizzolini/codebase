@@ -1,6 +1,6 @@
 ---
 name: codependix-navigate
-description: Answer dependency navigation and architecture questions using codependix CLI commands or committed graphs. Use when finding dependency paths between projects, files, or NestJS modules, tracing blast radius, determining what touches or imports a file or package, choosing narrowing flags to minimize run costs, or reading committed README diagrams across packages without running commands.
+description: "Answer dependency and architecture questions from codependix: paths between projects, files, or NestJS modules, blast radius, and what imports a file or package. Use when tracing what a change touches, or reading README diagrams without running anything."
 license: MIT
 ---
 
@@ -17,18 +17,18 @@ committed graphs already on disk.
 Reach for `codependix path` to trace directed dependency paths between two
 nodes without parsing diagrams or grepping source files by hand. Every
 invocation names the configuration with `--config <path>` — in this repository
-`configuration/codependix.config.ts` — because nothing is searched for
+`configuration/ic-suite/codependix.config.ts` — because nothing is searched for
 and there is no default.
 
 ```bash
 # How does project-a reach project-c?
-codependix path project-a project-c --config configuration/codependix.config.ts
+codependix path project-a project-c --config configuration/ic-suite/codependix.config.ts
 
 # How does one file import another?
-codependix path src/modules/auth/auth.service.ts src/modules/users/user.entity.ts --config configuration/codependix.config.ts
+codependix path src/modules/auth/auth.service.ts src/modules/users/user.entity.ts --config configuration/ic-suite/codependix.config.ts
 
 # What NestJS modules connect two modules in a container?
-codependix path AuthModule DatabaseModule --config configuration/codependix.config.ts
+codependix path AuthModule DatabaseModule --config configuration/ic-suite/codependix.config.ts
 ```
 
 ### Path query flags and narrowing
@@ -37,17 +37,17 @@ Running across a full workspace can be expensive because it parses Nx projects,
 TypeScript ASTs, and container registrations across the entire monorepo. Use
 narrowing flags to scope the run and minimize execution time:
 
-| Flag | Purpose |
-| ---- | ------- |
-| `-f, --format <format>` | Output format: `markdown` (default), `json`, or `mermaid` |
-| `--nx-projects` / `--no-nx-projects` | Toggle Nx workspace project dependency graph search |
-| `--file-imports` / `--no-file-imports` | Toggle internal file-level import graph search |
-| `--nestjs-modules` / `--no-nestjs-modules` | Toggle NestJS container module graph search |
-| `--projects <names>` | Comma-separated project names or globs to search across |
-| `-d, --directory <dir>` | Directory whose Nx workspace to read |
-| `--include <globs>` / `--exclude <globs>` | Override configured project inclusion or exclusion globs |
-| `--tags <tags>` | Comma-separated Nx project tags to filter by |
-| `--config <path>` | **Required.** Path to the codependix configuration file; every example here passes it |
+| Flag                                       | Purpose                                                                               |
+| ------------------------------------------ | ------------------------------------------------------------------------------------- |
+| `-f, --format <format>`                    | Output format: `markdown` (default), `json`, or `mermaid`                             |
+| `--nx-projects` / `--no-nx-projects`       | Toggle Nx workspace project dependency graph search                                   |
+| `--file-imports` / `--no-file-imports`     | Toggle internal file-level import graph search                                        |
+| `--nestjs-modules` / `--no-nestjs-modules` | Toggle NestJS container module graph search                                           |
+| `--projects <names>`                       | Comma-separated project names or globs to search across                               |
+| `-d, --directory <dir>`                    | Directory whose Nx workspace to read                                                  |
+| `--include <globs>` / `--exclude <globs>`  | Override configured project inclusion or exclusion globs                              |
+| `--tags <tags>`                            | Comma-separated Nx project tags to filter by                                          |
+| `--config <path>`                          | **Required.** Path to the codependix configuration file; every example here passes it |
 
 ### Path results
 
@@ -84,12 +84,12 @@ disk:
 
 ## The four graph types and their questions
 
-| Graph | Scope | Answers |
-| ----- | ----- | ------- |
-| **Nx Neighborhood** | Project | What one project reaches (dependencies) and who breaks if it changes (dependents) |
-| **Workspace graph** | Workspace | High-level architectural layering and cross-package relationships |
-| **NestJS module graph** | Container | What modules the DI container wires together at runtime |
-| **File import graph** | Project files | File-to-file import relationships, cycles, and local refactoring fan-out |
+| Graph                   | Scope         | Answers                                                                           |
+| ----------------------- | ------------- | --------------------------------------------------------------------------------- |
+| **Nx Neighborhood**     | Project       | What one project reaches (dependencies) and who breaks if it changes (dependents) |
+| **Workspace graph**     | Workspace     | High-level architectural layering and cross-package relationships                 |
+| **NestJS module graph** | Container     | What modules the DI container wires together at runtime                           |
+| **File import graph**   | Project files | File-to-file import relationships, cycles, and local refactoring fan-out          |
 
 ## Interpreting graph artifacts
 
@@ -142,10 +142,10 @@ A committed graph reflects the repository state at the last
 
 ```bash
 # Check if any committed reports are stale without modifying files
-codependix map --check reports --config configuration/codependix.config.ts
+codependix map --check reports --config configuration/ic-suite/codependix.config.ts
 
 # Update all committed graphs across the workspace
-codependix map --write --config configuration/codependix.config.ts
+codependix map --write --config configuration/ic-suite/codependix.config.ts
 ```
 
 If committed graphs are stale with respect to recent local edits, either

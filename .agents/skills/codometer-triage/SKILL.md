@@ -1,6 +1,6 @@
 ---
 name: codometer-triage
-description: Act on a codometer limit breach, a comment budget breach, a stale committed report, or a run that failed outright. Use when a codometer --check exits non-zero, when a size or count limit was breached, when a comment block ran past its word, line, or character budget, when a committed report reads stale against a fresh measurement even though nothing changed, when a limit fails to bind or an input matches no files, or before reaching for a repository's limit value to make a failing check pass.
+description: "Act on a codometer failure: a limit or comment-budget breach, a stale committed report, or a failed run. Use when codometer --check exits non-zero, when a report reads stale though nothing changed, or before raising a limit to make a check pass."
 license: MIT
 ---
 
@@ -46,6 +46,14 @@ Reduce what is actually being measured instead:
   a comment marker inside a string literal as a comment, and Python's comments
   go unmeasured entirely when the interpreter cannot be run. The
   `codometer-configure` skill has both caveats in full.
+- A **tree ceiling** breach — a `tree` selector's `maximumBreadth` or
+  `maximumDepth` — names a directory rather than a file and line. A breadth
+  breach is a directory holding too many entries: group related files into
+  child folders, or extract a package, rather than exempting the directory.
+  A depth breach names the shallowest folder past the ceiling and how deep the
+  subtree beneath it goes: flatten it, or lift a nested part out as its own
+  module or package. Reach for `exclude` only for a directory nobody arranges
+  by hand — vendored code, generated migrations — and say why beside it.
 - **A comment budget a language is not covered by is not a breach at all** —
   it is simply not measured. If a repository added a language codometer can
   parse comments in but nobody added a `comment` selector for it, that
@@ -116,6 +124,9 @@ current.
 
 `--inputs [globs...]` is independent of `--check` too — narrowing a `measure`
 run to exactly the given globs does not change whether it gates or writes.
+An "input matched no files" failure from a project that was never built is how
+to tell the two limit groups apart: a run before the build names a configuration
+without the compiled input.
 There is no `--directory` on `measure`: a run always measures the process's
 own working directory. The `configuration` subcommand is the one place
 `-d, --directory` still exists, for listing what a directory's configuration
