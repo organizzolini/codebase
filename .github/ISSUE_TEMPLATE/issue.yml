@@ -53,10 +53,10 @@ body:
         - deployment
         - deployments
         - documentation
+        - identity
         - infrastructure
         - installation
         - integration
-        - JimmyPaolini
         - lexico
         - presentation
         - lexico-db

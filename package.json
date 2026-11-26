@@ -101,7 +101,7 @@
   "sherif": {
     "ignoreDependency": [],
     "ignorePackage": [
-      "./projects/JimmyPaolini"
+      "./projects/identity"
     ],
     "ignoreRule": [
       "packages-without-package-json",

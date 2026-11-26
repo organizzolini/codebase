@@ -663,10 +663,10 @@
       "cache": true,
       "configurations": {
         "check": {
-          "command": "pnpm dlx sherif@1.10.0 -p projects/JimmyPaolini"
+          "command": "pnpm dlx sherif@1.10.0 -p projects/identity"
         },
         "write": {
-          "command": "pnpm dlx sherif@1.10.0 -p projects/JimmyPaolini --fix --no-install && nx run configuration:oxfmt:write"
+          "command": "pnpm dlx sherif@1.10.0 -p projects/identity --fix --no-install && nx run configuration:oxfmt:write"
         }
       },
       "defaultConfiguration": "check",

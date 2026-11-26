@@ -203,7 +203,7 @@
 `││├` **🎨 [presentation](projects/common/presentation)** - Shared React component library built on shadcn/ui, Base UI, and Tailwind CSS\
 `││├` **👀 [observability](projects/common/observability)** - Shared NestJS logging on pino: JSON in production, readable output in development\
 `││└` **🧪 [testing](projects/common/testing)** - Shared test setup, temporary directories, mocks, and packed-package runners\
-`│└` **🧔‍♂️ [JimmyPaolini](projects/JimmyPaolini)** - Personal GitHub profile site\
+`│└` **🧔‍♂️ [identity](projects/identity)** - Personal GitHub profile README\
 `├` **💾 [installation](installation)** - Sets up developer machines, devcontainers, and sessions, and checks each new session\
 `├` **🛠️ [configuration](configuration)** - Workspace tool configuration for linting, formatting, and types, run through Nx\
 `├` **📚 [documentation](documentation)** - Refreshes the generated OpenWiki from code and holds agent settings and reports\

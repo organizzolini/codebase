@@ -86,10 +86,10 @@ Keeping a branch scoped to one project or module (see the root [AGENTS.md](../..
 | `deployment`     | Deployment CLI: the CI release steps                                                                            |
 | `deployments`    | GitHub Actions workflows and CI/CD pipeline configuration                                                       |
 | `documentation`  | Markdown docs, skills, planning files, and AGENTS.md files                                                      |
+| `identity`       | Static GitHub profile README project (markdown and assets)                                                      |
 | `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources                                                        |
 | `installation`   | Developer-machine setup: environment files, dependencies, shell config, software                                |
 | `integration`    | CI plumbing: steps around a CI job (affected run, Nx task-cache database)                                       |
-| `JimmyPaolini`   | Static GitHub profile README project (markdown and assets)                                                      |
 | `lexico`         | TanStack Start SSR Latin dictionary web app                                                                     |
 | `presentation`   | Shared React/shadcn component library                                                                           |
 | `lexico-db`      | Shared TypeORM entities and GraphQL types                                                                       |
