@@ -67,6 +67,9 @@ updates:
       interval: weekly
       day: friday
     open-pull-requests-limit: 10
+    # One day, the same as the npm ecosystem, so a release is not proposed the minute it is published.
+    cooldown:
+      default-days: 1
     commit-message:
       prefix: "chore(dependencies): 🔧 "
     labels:
@@ -95,6 +98,9 @@ updates:
       interval: weekly
       day: friday
     open-pull-requests-limit: 10
+    # One day, the same as the npm ecosystem, so a release is not proposed the minute it is published.
+    cooldown:
+      default-days: 1
     commit-message:
       prefix: "chore(deployments): 🔧 "
     labels:
@@ -120,6 +126,9 @@ updates:
     schedule:
       interval: weekly
       day: friday
+    # One day, the same as the npm ecosystem, so a release is not proposed the minute it is published.
+    cooldown:
+      default-days: 1
     commit-message:
       prefix: "chore(infrastructure): 🔧 "
     labels:
@@ -138,6 +147,9 @@ updates:
     schedule:
       interval: weekly
       day: friday
+    # One day, the same as the npm ecosystem, so a release is not proposed the minute it is published.
+    cooldown:
+      default-days: 1
     commit-message:
       prefix: "chore(configuration): 🔧 "
     labels:
@@ -158,6 +170,9 @@ updates:
     schedule:
       interval: weekly
       day: friday
+    # One day, the same as the npm ecosystem, so a release is not proposed the minute it is published.
+    cooldown:
+      default-days: 1
     commit-message:
       prefix: "chore(configuration): 🔧 "
     labels:
@@ -166,3 +181,4 @@ updates:
       - source:agent
     assignees:
       - JimmyPaolini
+

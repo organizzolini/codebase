@@ -31,12 +31,10 @@ on:
     - cron: 18 12 * * 5 # Weekly Friday 8:18am NYC (EDT: 12:18 UTC / EST: 13:18 UTC)
   workflow_dispatch:
 
+# Each job below asks for the writes it needs; label creation and updates are
+# issues-scoped and pull-requests-scoped endpoints.
 permissions:
   contents: read
-  # Label creation and updates are issues-scoped and pull-requests-scoped
-  # endpoints, which is what the compliance commands below write through.
-  issues: write
-  pull-requests: write
 
 concurrency:
   group: >-
@@ -48,6 +46,9 @@ jobs:
   issue:
     name: 🧑‍💼 Issue
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     timeout-minutes: 10
     if: >-
       github.actor != 'dependabot[bot]' &&
@@ -58,6 +59,8 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: 📦 Setup pnpm
         uses: ./.github/actions/setup-pnpm
@@ -108,6 +111,8 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: 📦 Setup pnpm
         uses: ./.github/actions/setup-pnpm
@@ -133,6 +138,10 @@ jobs:
   comply:
     name: 🧑‍⚖️ Comply
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     timeout-minutes: 10
     # Runs on Dependabot's pull requests too, so a label or release significance failure
     # shows before the merge queue. The title and body checks exempt them, since Dependabot writes both.
@@ -145,6 +154,8 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: 📦 Setup pnpm
         uses: ./.github/actions/setup-pnpm

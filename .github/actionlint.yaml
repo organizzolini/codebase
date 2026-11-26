@@ -1,0 +1,6 @@
+paths:
+  # Copilot's setup workflow asks for the `code-quality` scope, which actionlint
+  # has not learned yet.
+  .github/workflows/copilot-setup-steps.yml:
+    ignore:
+      - unknown permission scope "code-quality"

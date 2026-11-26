@@ -39,6 +39,8 @@ jobs:
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
       - name: 🕋 Setup Codebase
         uses: ./.github/actions/setup-codebase

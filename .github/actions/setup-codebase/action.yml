@@ -61,6 +61,12 @@ inputs:
   terraform:
     description: Install terraform (infrastructure lint, plan, and apply)
     default: "false"
+  linters:
+    description: |
+      Install the infrastructure and workflow linters lint-code runs: tflint,
+      kubeconform, kube-linter, pluto, and actionlint. Needs the runner's Go
+      and curl.
+    default: "false"
   eslint-cache:
     description: Restore and save the ESLint cache
     default: "false"
@@ -178,6 +184,34 @@ runs:
       with:
         terraform_version: 1.14.5
         terraform_wrapper: false
+
+    # The terraform ruleset ships inside tflint, so no plugin download follows.
+    - name: 🧹 Setup tflint
+      if: inputs.linters == 'true'
+      uses: terraform-linters/setup-tflint@v6
+      with:
+        tflint_version: v0.66.0
+        tflint_wrapper: false
+
+    # The script builds each tool from its pinned tag, which the Go checksum database
+    # verifies, so the key is the script itself: a changed pin rebuilds them.
+    - name: ♻️ Sync Linters Cache
+      if: inputs.linters == 'true'
+      id: linters-cache
+      uses: actions/cache@v6
+      with:
+        path: |
+          ~/.local/bin/actionlint
+          ~/.local/bin/kube-linter
+          ~/.local/bin/kubeconform
+          ~/.local/bin/pluto
+        key: linters-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('infrastructure/scripts/install-linters.sh') }}
+
+    # ~/.local/bin is already on the hosted runners' PATH.
+    - name: 🧰 Install Linters
+      if: inputs.linters == 'true' && steps.linters-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: infrastructure/scripts/install-linters.sh
 
     # Guarded on `uv` as well as its own input: `python-dependencies` defaults
     # on, so a job that opts out of installing uv would otherwise inherit a sync
