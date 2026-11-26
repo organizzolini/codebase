@@ -28,12 +28,14 @@ export const DATABASE_ENTITIES = [
   TagNode,
 ] as const;
 
-/** The migrations folder's files, TypeScript in the source tree and JavaScript where a build writes them. */
+// TypeScript in the source tree, JavaScript where a build writes them.
+/** The migrations folder's files. */
 export const CAELUNDAS_DATABASE_MIGRATIONS = [
   path.join(import.meta.dirname, "../../../migrations/*-migration.{js,ts}"),
 ] as const;
 
-/** TypeORM CLI data source, run from this folder; reads only `CAELUNDAS_POSTGRES_*`, never syncs. */
+// Run from this folder; reads only `CAELUNDAS_POSTGRES_*` and never syncs.
+/** TypeORM CLI data source. */
 export const databaseDataSource = createDataSource({
   entities: [...DATABASE_ENTITIES],
   migrations: ["migrations/*.ts"],

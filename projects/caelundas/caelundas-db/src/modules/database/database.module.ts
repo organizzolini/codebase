@@ -11,9 +11,11 @@ import { DATABASE_PROJECT } from "./database.constants";
 import { DatabaseService } from "./database.service";
 
 /**
- * Connects an application to `caelundas_development`.`caelundas` as `caelundas_username`, through the shared `DatabaseModule.forRoot` and its naming strategy, with every caelundas entity registered. Never synchronizes. Applies the pending migrations at start, under an advisory lock, so a database is migrated before the application serves; `nx run caelundas-db:migration:run` does the same by hand.
- *
- * Reads `CAELUNDAS_POSTGRES_*` via `ConfigService`, so the importing app's `ConfigModule` must be global.
+ * Connects an application to the `caelundas` schema as `caelundas_username`
+ * through the shared `DatabaseModule.forRoot`, with every entity registered.
+ * Never synchronizes; applies pending migrations at start under an advisory
+ * lock (`nx run caelundas-db:migration:run` does so by hand). Reads
+ * `CAELUNDAS_POSTGRES_*`, so `ConfigModule` must be global.
  */
 @Module({
   controllers: [],
