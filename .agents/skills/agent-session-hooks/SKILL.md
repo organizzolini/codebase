@@ -1,6 +1,6 @@
 ---
 name: agent-session-hooks
-description: Explains how startup scripts run at the start of agent sessions and inject context. Use when an agent session reports a failing hook (e.g. validate-session-branch-name.sh, validate-session-worktree-name.sh, validate-session-commit-signing.sh, validate-session-gh-authentication.sh, validate-session-skills.sh), or when adding a new startup check.
+description: "Explains the checks that run at the start of every agent session and before each subagent, and how each reports a failure as context. Use when a session hook reports a failure, or when adding a new startup check."
 ---
 
 # Agent Session Hooks
@@ -18,7 +18,7 @@ Startup checks run at the start of every agent session and inject their failure 
 Agents repair two startup failures on their own, without asking the human:
 
 - **Commit signing** (`validate-session-commit-signing.sh`, or a commit hook naming `gpg.ssh.allowedSignersFile`): run `bash scripts/installation.sh`, which is idempotent, then retry the commit.
-- **Branch name** (`validate-session-branch-name.sh`, or a rejected `pre-push`): rename the branch with the [rename-branch skill](../rename-branch/SKILL.md) and push the new name, even when the session or platform assigned the old one.
+- **Branch name** (`validate-session-branch-name.sh`, or a rejected `pre-push`): rename the branch with the [checkout-branch skill](../checkout-branch/SKILL.md#rename-a-branch) and push the new name, even when the session or platform assigned the old one.
 
 Branch names, commit messages, and pull request titles and descriptions must always be compliant, so neither repair needs approval. Tell the human what was renamed afterwards.
 
@@ -55,7 +55,7 @@ printf '%s' "${CONTEXT}" | bash scripts/git/emit-session-hook-context.sh "<rerun
 
 An empty context is how the emitter learns the command could not run at all. With no finished install (`node_modules/.modules.yaml` absent) it directs the agent to run `pnpm install`; otherwise it directs the agent to the rerun command, whose error the shim discarded. Without `node` it stays silent, since nothing can be emitted.
 
-The command must therefore print nothing to standard output except the context, which is why the `integration` command-line application sends its logs to standard error; a new hook command must do the same. Every such check lives in `integration`, whether or not it has a `write` configuration: a check with a `write` sits beside the derivation it verifies, and a check without one is just a check.
+The command must therefore print nothing to standard output except the context, which is why the `installation` command-line application sends its logs to standard error; a new hook command must do the same. Every such check is an `installation` command (`session-branch-name`, `session-worktree-name`, `installed-skills`), beside the setup it verifies.
 
 The signing and authentication hooks stay pure shell on purpose, since they must still work when `node_modules` is broken; see `installation/AGENTS.md`.
 

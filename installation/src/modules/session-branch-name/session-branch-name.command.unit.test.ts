@@ -31,7 +31,7 @@ interface ConventionalConfiguration {
 }
 
 const RENAME_DIRECTIVE =
-  "🚨 Invoke the rename-branch skill to rename this branch before doing anything else.";
+  "🚨 Invoke the checkout-branch skill to rename this branch before doing anything else.";
 
 /** A branch-name configuration small enough to read in a failure message. */
 const FIXTURE_CONFIGURATION = `module.exports = {

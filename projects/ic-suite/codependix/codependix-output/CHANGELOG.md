@@ -1,3 +1,18 @@
+## 0.0.97 (2026-11-25)
+
+### 🚀 Features
+
+- **integration,documentation,callidescope:** ✨ reorganize agent skills and cap description length ([#2595](https://github.com/organizzolini/codebase/pull/2595), [#2562](https://github.com/organizzolini/codebase/issues/2562))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.95
+- Updated codependix-configuration to 0.0.97
+- Updated codependix-file-imports to 0.0.95
+- Updated codependix-nx-projects to 0.0.96
+- Updated codependix-boundaries to 0.0.97
+- Updated codependix-core to 0.0.95
+
 ## 0.0.96 (2026-11-25)
 
 ### 🧱 Updated Dependencies

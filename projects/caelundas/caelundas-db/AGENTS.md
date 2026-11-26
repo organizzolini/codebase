@@ -77,5 +77,5 @@ nx run caelundas-db:vitest:integration   # Docker: a Testcontainers Postgres run
 nx run caelundas-db:migration:generate   # Needs the shared Postgres or any with the caelundas role
 ```
 
-See the [testing-strategy skill](../../../.agents/skills/testing-strategy/SKILL.md) and the
+See the [write-tests skill](../../../.agents/skills/write-tests/SKILL.md) and the
 [write-typescript skill](../../../.agents/skills/write-typescript/SKILL.md).

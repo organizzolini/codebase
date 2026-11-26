@@ -401,7 +401,7 @@ Validate before pushing:
 pnpm exec validate-branch-name -t "<branch-name>"
 ```
 
-Only `main` is exempt. Automated prefixes are also accepted: `copilot/*`, `dependabot/*`, `jimmypaolini/copilot/*`, `renovate/*`. Both the pre-push hook and 🧑‍⚖️ Comply reject anything else, so an unvalidated branch wastes the push. See [checkout-branch](.agents/skills/checkout-branch/SKILL.md) for deriving a name, and [rename-branch](.agents/skills/rename-branch/SKILL.md) for fixing one.
+Only `main` is exempt. Automated prefixes are also accepted: `copilot/*`, `dependabot/*`, `jimmypaolini/copilot/*`, `renovate/*`. Both the pre-push hook and 🧑‍⚖️ Comply reject anything else, so an unvalidated branch wastes the push. See [checkout-branch](.agents/skills/checkout-branch/SKILL.md) for deriving a name and for renaming a branch that fails.
 
 ## Commit Guidelines
 
@@ -546,7 +546,7 @@ To avoid release-significance failures in a pull request that spans scopes, keep
 
 A pull request with merge conflicts runs almost none of these workflows — a short list of green checks means nothing was validated. Resolve conflicts before reading the checks as a pass.
 
-See [create-pull-request](.agents/skills/create-pull-request/SKILL.md) and [update-pull-request](.agents/skills/update-pull-request/SKILL.md) for the full workflow.
+See [create-pull-request](.agents/skills/create-pull-request/SKILL.md) for the full workflow, creating and updating alike, and [ship-changes](.agents/skills/ship-changes/SKILL.md) for taking a reviewed pull request to `main`.
 
 ## Release Process
 

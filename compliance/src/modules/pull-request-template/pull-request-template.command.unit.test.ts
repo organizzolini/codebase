@@ -109,13 +109,12 @@ describe(PullRequestTemplateCommand, () => {
     await expectLoggerContext(PullRequestTemplateCommand);
   });
 
-  it("writes only out-of-sync target files in write mode", async () => {
+  it("writes an out-of-sync target file in write mode", async () => {
     const templateContent = "## Summary\n\n- expected";
     const wrappedTemplate = `\`\`\`markdown\n${templateContent}\n\`\`\``;
     const firstTarget = targetFiles[0];
-    const secondTarget = targetFiles[1];
-    if (!firstTarget || !secondTarget) {
-      throw new Error("Expected pull request template sync target files");
+    if (!firstTarget) {
+      throw new Error("Expected a pull request template sync target file");
     }
 
     fileContents.set(templateFile, templateContent);
@@ -125,16 +124,6 @@ describe(PullRequestTemplateCommand, () => {
         "# First",
         `<!-- ${SYNC_PULL_REQUEST_TEMPLATE_MARKER}-start -->`,
         "```markdown\n## Summary\n\n- stale\n```",
-        `<!-- ${SYNC_PULL_REQUEST_TEMPLATE_MARKER}-end -->`,
-        "",
-      ].join("\n"),
-    );
-    fileContents.set(
-      secondTarget,
-      [
-        "# Second",
-        `<!-- ${SYNC_PULL_REQUEST_TEMPLATE_MARKER}-start -->`,
-        wrappedTemplate,
         `<!-- ${SYNC_PULL_REQUEST_TEMPLATE_MARKER}-end -->`,
         "",
       ].join("\n"),

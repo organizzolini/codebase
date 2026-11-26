@@ -105,8 +105,21 @@ inherit a larger session model.
    [commit-code](.agents/skills/commit-code/SKILL.md), and
    [create-pull-request](.agents/skills/create-pull-request/SKILL.md). Read its test step as
    `nx affected --target=vitest --base=main`.
+9. **Ship**: When the user asks to ship, merge, or land a reviewed pull request,
+   or the task already said to, run
+   [ship-changes](.agents/skills/ship-changes/SKILL.md): it carries the pull
+   request through CI, conflicts, the merge queue, and release, and is done only
+   once the change is observed working on `main`. Without that request, an open
+   pull request ends the run; merging is the user's call.
+10. **Learn**: At the end of every non-trivial run, run
+    [learn-lessons](.agents/skills/learn-lessons/SKILL.md) over the session and
+    the branch: corrections from the user, review feedback, CI failures, and
+    patterns worth repeating. It writes each lesson as a lasting rule into the
+    skill or `AGENTS.md` that owns it, checked for duplicates first, so the next
+    agent starts where this one finished. Commit the lessons on the open branch,
+    or on a follow-up `docs` branch once it has merged.
 
-Steps 5 through 8 run once per pull request. For the usual one-pull-request
+Steps 5 through 9 run once per pull request. For the usual one-pull-request
 spec this session runs them for the whole spec; for a split spec each dispatched
 parent subagent runs them for its own pull request, and a pull request opened
 sends you back to step 5 for the next one. See
@@ -234,8 +247,8 @@ pnpm exec nx affected --target=typecheck-code,lint-code,format-code,deprecate-co
 For new/untracked files not yet picked up by `nx affected`:
 
 ```bash
-pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=write
-pnpm exec nx run <project>:typecheck-code,lint-code,format-code,deprecate-code,guard-code --configuration=check
+pnpm exec nx run-many --targets=typecheck-code,lint-code,format-code,deprecate-code,guard-code --projects=<project> --configuration=write
+pnpm exec nx run-many --targets=typecheck-code,lint-code,format-code,deprecate-code,guard-code --projects=<project> --configuration=check
 ```
 
 **Do not commit until both commands pass cleanly.** If they fail, use the [triage-integration skill](.agents/skills/triage-integration/SKILL.md) to diagnose and fix the errors.
@@ -273,7 +286,7 @@ requires.
 
 ### Testing & Coverage
 
-Tests must accompany code. Run tests via `nx run <project>:vitest:<unit|integration>`. Coverage and size gates are strictly enforced; do not lower thresholds to pass CI. Consult the [testing-strategy skill](.agents/skills/testing-strategy/SKILL.md) for testing requirements and patterns.
+Tests must accompany code. Run tests via `nx run <project>:vitest:<unit|integration>`. Coverage and size gates are strictly enforced; do not lower thresholds to pass CI. Consult the [write-tests skill](.agents/skills/write-tests/SKILL.md) for testing patterns, and [validate-code's quality gates](.agents/skills/validate-code/SKILL.md#quality-gates) for the thresholds.
 
 ### Language Conventions & Size Limits
 
@@ -285,14 +298,15 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
 
 - **Worktrees & Branches**: Use [using-git-worktrees](.agents/skills/using-git-worktrees/SKILL.md) and [checkout-branch](.agents/skills/checkout-branch/SKILL.md).
 - **Commits**: Use [commit-code](.agents/skills/commit-code/SKILL.md) to generate Conventional Commits with Gitmoji.
-- **Pull Requests**: Use [create-pull-request](.agents/skills/create-pull-request/SKILL.md) and [submit-changes](.agents/skills/submit-changes/SKILL.md).
+- **Pull Requests**: Use [create-pull-request](.agents/skills/create-pull-request/SKILL.md) to create or update one, [submit-changes](.agents/skills/submit-changes/SKILL.md) for the whole pipeline, and [ship-changes](.agents/skills/ship-changes/SKILL.md) to take a reviewed one to `main`.
+- **Safety**: Use [backup-code](.agents/skills/backup-code/SKILL.md) before anything hard to undo, and to restore from it.
 - **Stacking/Splitting Work**: Use [gh-stack](.agents/skills/gh-stack/SKILL.md).
 
 **Agent-Specific Rules:**
 
 - **Follow the [Code of Conduct](.github/CODE_OF_CONDUCT.md)** in every commit, pull request, issue, and comment. It covers agents.
-- **Never bypass git hooks** with `--no-verify` — fix the underlying issue instead.
-- **Fix signing and branch-name failures yourself, without asking.** If a session hook or commit hook reports that commit signing is not set up (`gpg.ssh.allowedSignersFile`, `commit.gpgsign`, `user.signingkey`), run `bash scripts/installation.sh` (idempotent) before committing. If a hook or the `pre-push` check reports a branch name that is not `<type>/<scope>-<description>`, rename it to a compliant one with the [rename-branch](.agents/skills/rename-branch/SKILL.md) skill, then push the renamed branch. You have standing permission for both, even when the session or platform assigned the original branch name, because every branch, commit, and pull request title and description must be compliant. Report the new name afterwards.
+- **Never bypass git hooks** with `--no-verify` — fix the underlying issue instead. The one exception is [sign-commits](.agents/skills/sign-commits/SKILL.md), whose re-signing rewrite changes only signatures and proves it with a final-tree check.
+- **Fix signing and branch-name failures yourself, without asking.** If a session hook or commit hook reports that commit signing is not set up (`gpg.ssh.allowedSignersFile`, `commit.gpgsign`, `user.signingkey`), run `bash scripts/installation.sh` (idempotent) before committing. If a hook or the `pre-push` check reports a branch name that is not `<type>/<scope>-<description>`, rename it to a compliant one with the [checkout-branch](.agents/skills/checkout-branch/SKILL.md#rename-a-branch) skill, then push the renamed branch. You have standing permission for both, even when the session or platform assigned the original branch name, because every branch, commit, and pull request title and description must be compliant. Report the new name afterwards.
 - **Use repo-scoped REST, not GraphQL-backed `gh` commands.** Read and write GitHub with `gh api repos/{owner}/{repo}/…`, not `gh pr view`, `gh issue view`, `gh pr create`, `gh label list` or `gh project`, which call GraphQL and fail in a Claude Code session. The REST equivalents are in [`documentation/agents/issue-tracker.md`](documentation/agents/issue-tracker.md#repo-scoped-rest-instead-of-graphql).
 - **Do not run signing-check scripts manually**; Husky already runs these.
 - **Never run `git submodule update --init` for `projects/JimmyPaolini`.** That submodule is deliberately uninitialized everywhere. If `pnpm install` rewrites its `pnpm-lock.yaml` entry, **revert the lockfile** rather than reconciling it.
@@ -309,7 +323,7 @@ For naming conventions, abbreviations, formatting, and language-specific rules, 
 ## Agent Context
 
 `.agents/skills/` and this file are the single sources of truth.
-Use the [symlink-files](.agents/skills/symlink-files/SKILL.md) skill to understand how other entry points mirror them.
+Use the [install-skills](.agents/skills/install-skills/SKILL.md#where-agent-instructions-live) skill to understand how other entry points mirror them.
 
 ### Documentation Lives in `documentation/`
 

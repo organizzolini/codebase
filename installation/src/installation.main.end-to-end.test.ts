@@ -281,7 +281,7 @@ describe("main end-to-end suite", () => {
           "",
           "🏷️ Valid types: feat, fix",
           "",
-          "🚨 Invoke the rename-branch skill to rename this branch before doing anything else.",
+          "🚨 Invoke the checkout-branch skill to rename this branch before doing anything else.",
         ].join("\n"),
       );
     }, 150_000);

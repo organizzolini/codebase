@@ -1,6 +1,6 @@
 ---
 name: conformetry-generate
-description: Scaffold code with a conformetry generator instead of writing it by hand. Use when adding a module, component, service, application, or package to a workspace that has a conformetry configuration; when deciding whether a generator exists for the shape you are about to create; when a generator run overwrote or misplaced files; or when a conformance run reports a file that a generator should have produced. Covers both the Nx plugin and the conformetry command-line host, whose input contracts differ.
+description: "Scaffold code with a conformetry generator instead of writing it by hand, through the Nx plugin or the command line. Use when adding a module, component, service, application, or package, when checking whether a generator exists for a shape, or when a generator run overwrote or misplaced files."
 license: MIT
 ---
 

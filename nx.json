@@ -498,6 +498,7 @@
       },
       "defaultConfiguration": "check",
       "dependsOn": [
+        "agent-instructions",
         "callidescope-restrict",
         "catalog-manifests",
         "codependix-bound",
@@ -507,6 +508,7 @@
         "project-ports",
         "pull-request-template",
         "readme-projects",
+        "skill-descriptions",
         "typeorm-migration-sql",
         "vscode-extensions"
       ],
@@ -1194,8 +1196,8 @@
           }
         ],
         "options": {
-          "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit -p configuration/tsconfig.json",
-          "cwd": "{projectRoot}"
+          "command": "node \"$NX_WORKSPACE_ROOT/node_modules/typescript-7/bin/tsc\" --noEmit -p {projectRoot}/configuration/tsconfig.json",
+          "cwd": "{workspaceRoot}"
         },
         "outputs": []
       }

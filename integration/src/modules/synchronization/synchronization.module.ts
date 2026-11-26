@@ -2,6 +2,8 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
+import { AgentInstructionsCommand } from "./modules/agent-instructions/agent-instructions.command";
+import { AgentInstructionsModule } from "./modules/agent-instructions/agent-instructions.module";
 import { CatalogManifestsCommand } from "./modules/catalog-manifests/catalog-manifests.command";
 import { CatalogManifestsModule } from "./modules/catalog-manifests/catalog-manifests.module";
 import { ConventionalConfigCommand } from "./modules/conventional-config/conventional-config.command";
@@ -15,6 +17,8 @@ import { PackageManifestsModule } from "./modules/package-manifests/package-mani
 import { ProjectPortsModule } from "./modules/project-ports/project-ports.module";
 import { ReadmeProjectsCommand } from "./modules/readme-projects/readme-projects.command";
 import { ReadmeProjectsModule } from "./modules/readme-projects/readme-projects.module";
+import { SkillDescriptionsCommand } from "./modules/skill-descriptions/skill-descriptions.command";
+import { SkillDescriptionsModule } from "./modules/skill-descriptions/skill-descriptions.module";
 import { SkillExclusionsCommand } from "./modules/skill-exclusions/skill-exclusions.command";
 import { SkillExclusionsModule } from "./modules/skill-exclusions/skill-exclusions.module";
 import { VscodeExtensionsCommand } from "./modules/vscode-extensions/vscode-extensions.command";
@@ -41,9 +45,11 @@ import type { SynchronizableCommand } from "./synchronization.types";
   ],
   imports: [
     LoggerModule,
+    AgentInstructionsModule,
     CatalogManifestsModule,
     LockfileModule,
     ReadmeProjectsModule,
+    SkillDescriptionsModule,
     ConventionalConfigModule,
     DevcontainerConfigurationModule,
     PackageManifestsModule,
@@ -57,9 +63,11 @@ import type { SynchronizableCommand } from "./synchronization.types";
     SynchronizationService,
     {
       inject: [
+        AgentInstructionsCommand,
         CatalogManifestsCommand,
         LockfileCommand,
         ReadmeProjectsCommand,
+        SkillDescriptionsCommand,
         ConventionalConfigCommand,
         DevcontainerConfigurationCommand,
         PackageManifestsCommand,

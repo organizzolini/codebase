@@ -1,3 +1,9 @@
+## 0.0.95 (2026-11-25)
+
+### 🚀 Features
+
+- **integration,documentation,callidescope:** ✨ reorganize agent skills and cap description length ([#2595](https://github.com/organizzolini/codebase/pull/2595), [#2562](https://github.com/organizzolini/codebase/issues/2562))
+
 ## 0.0.94 (2026-11-25)
 
 This was a version bump only for codependix-file-imports to align it with other projects, there were no code changes.
