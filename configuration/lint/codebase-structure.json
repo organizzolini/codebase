@@ -908,6 +908,65 @@
         }
       ],
       "name": "^(?!(dir|err|req|res|utils|ctx|app)$)[a-z0-9-]+$"
+    },
+    "agents-project": {
+      "children": [
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": ".vscode"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "configuration"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "documentation"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "testing"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "coverage"
+        },
+        {
+          "children": [
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "output"
+        },
+        {
+          "ruleId": "kebab-case-folder"
+        },
+        {
+          "ruleId": "any-file"
+        }
+      ],
+      "name": "^[a-z0-9-]+-agents$"
     }
   },
   "structure": {
@@ -933,14 +992,6 @@
           }
         ],
         "name": ".claude"
-      },
-      {
-        "children": [
-          {
-            "ruleId": "any-file"
-          }
-        ],
-        "name": ".claude-plugin"
       },
       {
         "children": [
@@ -1153,6 +1204,9 @@
               {
                 "children": [
                   {
+                    "ruleId": "agents-project"
+                  },
+                  {
                     "ruleId": "codebase-project"
                   }
                 ],
@@ -1160,6 +1214,9 @@
               },
               {
                 "children": [
+                  {
+                    "ruleId": "agents-project"
+                  },
                   {
                     "ruleId": "codebase-project"
                   }
@@ -1169,6 +1226,9 @@
               {
                 "children": [
                   {
+                    "ruleId": "agents-project"
+                  },
+                  {
                     "ruleId": "codebase-project"
                   }
                 ],
@@ -1177,6 +1237,9 @@
               {
                 "children": [
                   {
+                    "ruleId": "agents-project"
+                  },
+                  {
                     "ruleId": "codebase-project"
                   }
                 ],
@@ -1184,6 +1247,9 @@
               },
               {
                 "children": [
+                  {
+                    "ruleId": "agents-project"
+                  },
                   {
                     "ruleId": "codebase-project"
                   }

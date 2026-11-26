@@ -35,7 +35,7 @@ const createWorkspace = (): string => {
       skills: {
         "callidescope-trace": {
           skillPath:
-            "projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace/SKILL.md",
+            "projects/ic-suite/callidescope/callidescope-agents/callidescope-trace/SKILL.md",
           source: "Organizzolini/codebase",
         },
         "nx-workspace": {
@@ -64,7 +64,7 @@ const createWorkspace = (): string => {
   );
   writeWorkspaceFile(
     workspaceRoot,
-    "projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace/SKILL.md",
+    "projects/ic-suite/callidescope/callidescope-agents/callidescope-trace/SKILL.md",
     renderSkill("callidescope-trace", "Trace call stacks."),
   );
   mkdirSync(path.join(workspaceRoot, ".agents/skills/empty-folder"));
@@ -108,7 +108,7 @@ describe(SkillDescriptionsService, () => {
 
       expect(service.resolveAuthoredSkillPaths(workspaceRoot)).toStrictEqual([
         ".agents/skills/commit-code/SKILL.md",
-        "projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace/SKILL.md",
+        "projects/ic-suite/callidescope/callidescope-agents/callidescope-trace/SKILL.md",
       ]);
     });
 

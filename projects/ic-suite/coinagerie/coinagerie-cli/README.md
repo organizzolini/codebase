@@ -33,7 +33,11 @@ export default {
   exclude: { paths: ["**/*.test.ts"] },
   include: ["src/**"],
   outputs: [
-    { description: "Words this project uses.", path: "README.md", type: "markdown" },
+    {
+      description: "Words this project uses.",
+      path: "README.md",
+      type: "markdown",
+    },
   ],
 };
 ```

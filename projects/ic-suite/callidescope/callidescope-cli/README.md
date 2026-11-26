@@ -559,11 +559,11 @@ every measurement instead of showing up.
 Agent skills for coding agents working with callidescope are published in
 [`@callidescope/agents`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents):
 
-| Skill                                                                                                                                                            | Description                                                          |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| [`callidescope-trace`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace)         | Trace the workspace or inspect depth and breadth for named callables |
-| [`callidescope-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-configure) | Configure callidescope flags, rules, and `callidescope.config.ts`    |
-| [`callidescope-triage`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-triage)       | Triage and resolve depth limit breaches and gate failures            |
+| Skill                                                                                                                                                     | Description                                                          |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| [`callidescope-trace`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/callidescope-trace)         | Trace the workspace or inspect depth and breadth for named callables |
+| [`callidescope-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/callidescope-configure) | Configure callidescope flags, rules, and `callidescope.config.ts`    |
+| [`callidescope-triage`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/callidescope/callidescope-agents/callidescope-triage)       | Triage and resolve depth limit breaches and gate failures            |
 
 ## Examples
 

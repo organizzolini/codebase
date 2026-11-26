@@ -16,7 +16,7 @@ any repository that uses conformetry. Install them with the
 explicitly:
 
 ```bash
-npx skills add Organizzolini/codebase/projects/ic-suite/conformetry/conformetry-agents/skills --skill '*'
+npx skills add Organizzolini/codebase/projects/ic-suite/conformetry/conformetry-agents --skill '*'
 ```
 
 Naming the directory matters. A bare repository reference searches this
@@ -25,11 +25,11 @@ holds, most of which are specific to this workspace.
 
 ## The skills
 
-| Skill | Reach for it when |
-| ----- | ----------------- |
-| [conformetry-generate](skills/conformetry-generate/SKILL.md) | Adding a module, component, service, application, or package |
-| [conformetry-configure](skills/conformetry-configure/SKILL.md) | Adding a generator, or writing the template it renders |
-| [conformetry-validate](skills/conformetry-validate/SKILL.md) | A conformance run failed, or generated code needs checking |
+| Skill                                                   | Reach for it when                                            |
+| ------------------------------------------------------- | ------------------------------------------------------------ |
+| [conformetry-generate](conformetry-generate/SKILL.md)   | Adding a module, component, service, application, or package |
+| [conformetry-configure](conformetry-configure/SKILL.md) | Adding a generator, or writing the template it renders       |
+| [conformetry-validate](conformetry-validate/SKILL.md)   | A conformance run failed, or generated code needs checking   |
 
 Each skill covers both entrypoints — the Nx plugin and the command-line host —
 because the same generator behaves differently through each, and an agent needs

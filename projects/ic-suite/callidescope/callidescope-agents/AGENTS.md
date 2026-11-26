@@ -5,7 +5,7 @@ installable by any workspace that uses callidescope.
 
 ## What lives here
 
-- `skills/<skill-name>/SKILL.md` — one directory per skill, each self-contained.
+- `<skill-name>/SKILL.md` — one directory per skill, each self-contained, directly under the package so `skills update` finds it.
 - `testing/skills.unit.test.ts` — checks every shipped skill is structurally
   valid and that its links resolve.
 

@@ -15,7 +15,7 @@ in any repository that uses coinagerie. Install them with the
 directory explicitly:
 
 ```bash
-npx skills add Organizzolini/codebase/projects/ic-suite/coinagerie/coinagerie-agents/skills --skill '*'
+npx skills add Organizzolini/codebase/projects/ic-suite/coinagerie/coinagerie-agents --skill '*'
 ```
 
 Naming the directory matters. A bare repository reference searches this
@@ -24,12 +24,12 @@ holds, most of which are specific to this workspace.
 
 ## The skills
 
-| Skill                                                        | Reach for it when                                                                                                   |
-| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| [coinagerie-configure](skills/coinagerie-configure/SKILL.md) | Writing a `coinagerie.config.ts`: scanned files, excluded paths and words, `fold`, glossary destinations            |
-| [coinagerie-collect](skills/coinagerie-collect/SKILL.md)     | Running `coinagerie`, choosing `--check` or `--write`, reading the glossary it printed                              |
-| [coinagerie-triage](skills/coinagerie-triage/SKILL.md)       | A check failed, a glossary is refused, or a word looks wrong                                                        |
-| [coinagerie-define](skills/coinagerie-define/SKILL.md)       | Writing a definition: its meaning in this codebase, how it differs from everyday English, where the code defines it |
+| Skill                                                 | Reach for it when                                                                                                   |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| [coinagerie-configure](coinagerie-configure/SKILL.md) | Writing a `coinagerie.config.ts`: scanned files, excluded paths and words, `fold`, glossary destinations            |
+| [coinagerie-collect](coinagerie-collect/SKILL.md)     | Running `coinagerie`, choosing `--check` or `--write`, reading the glossary it printed                              |
+| [coinagerie-triage](coinagerie-triage/SKILL.md)       | A check failed, a glossary is refused, or a word looks wrong                                                        |
+| [coinagerie-define](coinagerie-define/SKILL.md)       | Writing a definition: its meaning in this codebase, how it differs from everyday English, where the code defines it |
 
 The split mirrors four distinct moments: telling the tool what to count,
 running it, acting on what it said, and writing the part only a reader can.

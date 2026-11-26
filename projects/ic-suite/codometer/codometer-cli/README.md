@@ -643,11 +643,11 @@ one repository's script.
 Agent skills for coding agents working with codometer are published in
 [`@codometer/agents`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents):
 
-| Skill                                                                                                                                                | Description                                                                       |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [`codometer-measure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/skills/codometer-measure)     | Run code measurements and produce markdown or JSON reports                        |
-| [`codometer-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/skills/codometer-configure) | Configure measurement inputs, custom metrics, and limits in `codometer.config.ts` |
-| [`codometer-triage`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/skills/codometer-triage)       | Triage limit breaches and measurement failures                                    |
+| Skill                                                                                                                                         | Description                                                                       |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| [`codometer-measure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/codometer-measure)     | Run code measurements and produce markdown or JSON reports                        |
+| [`codometer-configure`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/codometer-configure) | Configure measurement inputs, custom metrics, and limits in `codometer.config.ts` |
+| [`codometer-triage`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/codometer/codometer-agents/codometer-triage)       | Triage limit breaches and measurement failures                                    |
 
 ## Examples
 

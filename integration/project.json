@@ -238,7 +238,7 @@
       "inputs": [
         "^production",
         "{workspaceRoot}/.agents/skills/*/SKILL.md",
-        "{workspaceRoot}/projects/ic-suite/*/*-agents/skills/*/SKILL.md",
+        "{workspaceRoot}/projects/ic-suite/*/*-agents/*/SKILL.md",
         "{workspaceRoot}/skills-lock.json",
         "production",
         {
