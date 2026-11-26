@@ -107,10 +107,13 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 
 ## Kubernetes Deployment
 
-Ingestion runs as an Indexed **Kubernetes Job**, one calendar year per pod
-(Kubernetes sets `JOB_COMPLETION_INDEX`; the Job's command turns it and `START_YEAR` into `START_DATE` and `END_DATE`), writing events to Postgres and nothing else (no volume is mounted). The Job's values are
-[values/caelundas-cli.yaml](../../../infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml);
-the `.github/workflows/caelundas-ingestion.yml` workflow launches it. See
+Ingestion runs as a **Kubernetes Job**, one range per run, writing events to Postgres and nothing else (no volume is mounted). The
+`.github/workflows/caelundas-cli.yml` workflow takes the dotenv text as its one input and mounts it as `configuration/.env`, the file this CLI's
+`ConfigModule` reads; the schema validates it. The Job's values are
+[values/caelundas-cli.yaml](../../../infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml). Run
+`gh workflow run caelundas-cli.yml -f environment="$(cat my.env)"` for several lines, and split a long range into several runs.
+The ConfigMap is not for secrets: the database password is a Secret reference.
+See
 [infrastructure/AGENTS.md](../../../infrastructure/AGENTS.md) for the cluster.
 
 ## Docker Workflow
@@ -123,7 +126,7 @@ IMAGE_TAG=1.2.3 nx run caelundas-cli:docker:push    # one buildx build --push
 [infrastructure/docker/application/Dockerfile](../../../infrastructure/docker/application/Dockerfile)
 builds `ghcr.io/organizzolini/caelundas-cli`, shared with the other applications and
 configured by [infrastructure/image.env](infrastructure/image.env). The image is
-the ingestion Job (same command as `nx run caelundas-cli:start`). It runs as UID
+the ingestion Job (the same command as `nx run caelundas-cli:start`, started by the image's `start` script). It runs as UID
 10001, bakes the Swiss Ephemeris files in at build time, and compiles `sweph`
 natively. It runs plain JavaScript that `nx run caelundas-cli:bundle`
 ([configuration/rolldown.config.ts](configuration/rolldown.config.ts)) writes: one
