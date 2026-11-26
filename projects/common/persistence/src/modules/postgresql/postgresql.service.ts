@@ -71,11 +71,13 @@ export class PostgresqlService implements TypeOrmOptionsFactory {
     });
   }
 
-  /** TypeORM's options for the project's connection, with no migrations: the runtime never runs them. */
+  /** TypeORM's options for the project's connection, with the migrations it was given, if any. */
   createTypeOrmOptions(): PostgresDataSourceOptions {
+    const options = this.databaseOptions();
+
     return postgresDataSourceOptions(this.connection(), {
-      ...this.databaseOptions(),
-      migrations: [],
+      ...options,
+      migrations: options.migrations ?? [],
     });
   }
 }

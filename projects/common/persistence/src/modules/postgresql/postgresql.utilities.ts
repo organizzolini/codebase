@@ -4,6 +4,7 @@ import { z } from "zod";
 import {
   DEFAULT_POSTGRES_HOST,
   DEFAULT_POSTGRES_PORT,
+  MIGRATION_LOCK_KEY,
   PluralSnakeNamingStrategy,
   POSTGRES_CONNECTION_FIELDS,
   POSTGRES_ENVIRONMENT_SUFFIXES,
@@ -22,6 +23,7 @@ import type {
   PostgresqlOptions,
   PostgresSettingsShape,
 } from "./postgresql.types";
+import type { DataSourceOptions } from "typeorm";
 
 // 🌎 Utilities
 
@@ -63,6 +65,22 @@ export function createDataSource(
       settings,
     ),
   );
+}
+
+/**
+ * Opens a data source for `PostgresqlModule`, then applies its pending
+ * migrations, if it has any, before the application starts serving.
+ */
+export async function openDataSource(
+  options: DataSourceOptions,
+): Promise<DataSource> {
+  const dataSource = new DataSource(options);
+  await dataSource.initialize();
+  if (Array.isArray(options.migrations) && options.migrations.length > 0) {
+    await runMigrationsLocked(dataSource);
+  }
+
+  return dataSource;
 }
 
 /**
@@ -206,4 +224,30 @@ export function postgresSettingsSchema(
     schema: z.string().regex(PROJECT_NAME_PATTERN).default(project),
     username: z.string().min(1).default(`${project}_username`),
   });
+}
+
+/**
+ * Applies the pending migrations of `dataSource` under a Postgres advisory
+ * lock, so instances starting together migrate one at a time and the later
+ * ones find nothing to apply.
+ */
+export async function runMigrationsLocked(
+  dataSource: DataSource,
+): Promise<void> {
+  const runner = dataSource.createQueryRunner();
+  await runner.connect();
+  try {
+    await runner.query(
+      `select pg_advisory_lock(${String(MIGRATION_LOCK_KEY)})`,
+    );
+    await dataSource.runMigrations();
+  } finally {
+    try {
+      await runner.query(
+        `select pg_advisory_unlock(${String(MIGRATION_LOCK_KEY)})`,
+      );
+    } finally {
+      await runner.release();
+    }
+  }
 }

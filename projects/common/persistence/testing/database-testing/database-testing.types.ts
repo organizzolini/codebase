@@ -50,7 +50,9 @@ export type DatabaseTestingModuleOptions = DatabaseTestingConnection &
 
 /** Every option but how the testing module connects. */
 export interface DatabaseTestingModuleSettings
-  extends Omit<PostgresqlModuleOptions, "entities">, PostgresContainerOptions {
+  extends
+    Omit<PostgresqlModuleOptions, "entities" | "migrations">,
+    PostgresContainerOptions {
   /**
    * The entity classes to register repositories for, and to connect when no
    * `database` module is given.

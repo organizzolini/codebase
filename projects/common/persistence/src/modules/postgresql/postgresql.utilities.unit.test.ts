@@ -1,17 +1,22 @@
-import { describe, expect, it } from "vitest";
+import { createMock } from "@golevelup/ts-vitest";
+import { DataSource } from "typeorm";
+import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
 
 import { PluralSnakeNamingStrategy } from "./postgresql.constants";
 import {
   assertPostgresEnvironmentKeys,
   createDataSource,
+  openDataSource,
   postgresConnection,
   postgresDataSourceOptions,
   postgresEnvironment,
   postgresEnvironmentSchema,
+  runMigrationsLocked,
 } from "./postgresql.utilities";
 
 import type { PostgresConnection } from "./postgresql.types";
+import type { QueryRunner } from "typeorm";
 
 // 🧪 Tests
 
@@ -269,6 +274,95 @@ describe("database utilities", () => {
       expect(() =>
         postgresEnvironmentSchema({ project: "fixture-api" }),
       ).toThrow(/fixture-api/);
+    });
+  });
+
+  describe(runMigrationsLocked, () => {
+    /** A data source recording, in `calls`, the lock, migration, and release order. */
+    const recordingSource = (calls: string[], failure?: Error): DataSource => {
+      const runner = createMock<QueryRunner>();
+      runner.connect.mockImplementation(async () => {
+        await Promise.resolve();
+        calls.push("connect");
+      });
+      runner.query.mockImplementation(async (sql: string) => {
+        await Promise.resolve();
+        calls.push(sql);
+
+        return [];
+      });
+      runner.release.mockImplementation(async () => {
+        await Promise.resolve();
+        calls.push("release");
+      });
+
+      return createMock<DataSource>({
+        createQueryRunner: vi.fn<DataSource["createQueryRunner"]>(() => runner),
+        runMigrations: vi.fn<DataSource["runMigrations"]>(async () => {
+          await Promise.resolve();
+          calls.push("migrate");
+          if (failure) {
+            throw failure;
+          }
+
+          return [];
+        }),
+      });
+    };
+
+    it("migrates while holding an advisory lock, then releases it", async () => {
+      const calls: string[] = [];
+
+      await runMigrationsLocked(recordingSource(calls));
+
+      expect(calls).toStrictEqual([
+        "connect",
+        "select pg_advisory_lock(7361040911)",
+        "migrate",
+        "select pg_advisory_unlock(7361040911)",
+        "release",
+      ]);
+    });
+
+    it("releases the lock and rethrows when a migration fails", async () => {
+      const calls: string[] = [];
+      const failure = new Error("boom");
+
+      await expect(
+        runMigrationsLocked(recordingSource(calls, failure)),
+      ).rejects.toThrow(failure);
+
+      expect(calls.slice(-2)).toStrictEqual([
+        "select pg_advisory_unlock(7361040911)",
+        "release",
+      ]);
+    });
+  });
+
+  describe(openDataSource, () => {
+    /** Opens a data source with the given migrations, its connection and runner stubbed. */
+    const open = async (migrations: string[]): Promise<number> => {
+      const runMigrations = vi
+        .spyOn(DataSource.prototype, "runMigrations")
+        .mockResolvedValue([]);
+      vi.spyOn(DataSource.prototype, "initialize").mockResolvedValue(
+        createMock<DataSource>(),
+      );
+      vi.spyOn(DataSource.prototype, "createQueryRunner").mockReturnValue(
+        createMock<QueryRunner>(),
+      );
+
+      await openDataSource({ migrations, type: "postgres" });
+
+      return runMigrations.mock.calls.length;
+    };
+
+    it("applies no migrations when the project gave none", async () => {
+      await expect(open([])).resolves.toBe(0);
+    });
+
+    it("applies the pending migrations when the project gave some", async () => {
+      await expect(open(["migrations/*.ts"])).resolves.toBe(1);
     });
   });
 });
