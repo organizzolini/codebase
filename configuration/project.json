@@ -73,6 +73,22 @@
   "sourceRoot": "configuration",
   "tags": ["name:configuration"],
   "targets": {
+    "actionlint": {
+      "cache": true,
+      "description": "Lint every workflow under .github/workflows with actionlint (expression types, shell steps through shellcheck, runner labels, permissions scopes). actionlint reads workflows only, so the composite actions under .github/actions are covered by zizmor. .github/actionlint.yaml holds its one ignored message with the reason. Part of lint-code. Requires actionlint on PATH.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/.github/actionlint.yaml",
+        "{workspaceRoot}/.github/workflows/*.yml",
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "command": "actionlint $(git ls-files -- '.github/workflows/*.yml')",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "build-projects": {
       "cache": false,
       "dependsOn": ["codometer"],
@@ -641,7 +657,7 @@
     },
     "shellcheck": {
       "cache": true,
-      "description": "Lint the workspace's own shell: every script under scripts/ and .devcontainer/, the sign-commits skill's script (a skill this repository owns, unlike the vendored ones), and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The other installed skills under .agents/ are owned upstream and stay out too. configuration/repository/.shellcheck.rc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. configuration/python/pyproject.toml and configuration/python/uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
+      "description": "Lint the workspace's own shell: every script under scripts/, infrastructure/scripts/, and .devcontainer/, the sign-commits skill's script (a skill this repository owns, unlike the vendored ones), and the three husky hooks, which carry no extension and so are named one by one. The file list comes from `git ls-files`, whose `*` crosses directories, so a new script is linted without editing this target. Two shell files stay out on purpose: notepads/notepad.sh is a scratch list of commands rather than a script, and the codometer-examples corpus is a measurement fixture whose content its tests count. The other installed skills under .agents/ are owned upstream and stay out too. configuration/repository/.shellcheck.rc is passed explicitly, since shellcheck only searches each script's own directory and its parents, and the minimum severity is set here because an rc file cannot set it: `style` is the lowest, so nothing is filtered out. configuration/python/pyproject.toml and configuration/python/uv.lock are inputs because they pin shellcheck itself: without them, an upgrade replays a cached pass and stops linting. Defined here rather than in nx.json targetDefaults because no other project owns shell scripts.",
       "executor": "nx:run-commands",
       "inputs": [
         "{workspaceRoot}/.agents/skills/sign-commits/scripts/*.sh",
@@ -652,10 +668,11 @@
         "{workspaceRoot}/configuration/repository/.husky/pre-commit",
         "{workspaceRoot}/configuration/repository/.husky/pre-push",
         "{workspaceRoot}/configuration/repository/.shellcheck.rc",
+        "{workspaceRoot}/infrastructure/scripts/*.sh",
         "{workspaceRoot}/scripts/**/*.sh"
       ],
       "options": {
-        "command": "uv run --project configuration/python shellcheck --rcfile configuration/repository/.shellcheck.rc --severity=style $(git ls-files -- '.agents/skills/sign-commits/scripts/*.sh' '.devcontainer/*.sh' 'scripts/*.sh' configuration/repository/.husky/commit-msg configuration/repository/.husky/pre-commit configuration/repository/.husky/pre-push)",
+        "command": "uv run --project configuration/python shellcheck --rcfile configuration/repository/.shellcheck.rc --severity=style $(git ls-files -- '.agents/skills/sign-commits/scripts/*.sh' '.devcontainer/*.sh' 'infrastructure/scripts/*.sh' 'scripts/*.sh' configuration/repository/.husky/commit-msg configuration/repository/.husky/pre-commit configuration/repository/.husky/pre-push)",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -834,6 +851,21 @@
       ],
       "options": {
         "command": "uv run --project configuration/python yamllint -c configuration/lint/yamllint.yaml .devcontainer .github configuration/lint/cspell.config.yaml configuration/lint/yamllint.yaml pnpm-workspace.yaml",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "zizmor": {
+      "cache": true,
+      "description": "Audit .github (workflows, composite actions, dependabot.yml) for security problems with zizmor, offline so the result is deterministic: template injection, excessive permissions, credential persistence, unpinned actions, Dependabot cooldown settings. .github/zizmor.yml is the policy and records each rule it changes with the reason. zizmor itself is pinned in configuration/python, so the pyproject and lockfile are inputs and an upgrade re-runs it. Part of lint-code.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/.github/**/*.yaml",
+        "{workspaceRoot}/.github/**/*.yml",
+        "{workspaceRoot}/configuration/python/pyproject.toml",
+        "{workspaceRoot}/configuration/python/uv.lock"
+      ],
+      "options": {
+        "command": "uv run --project configuration/python zizmor --offline .github",
         "cwd": "{workspaceRoot}"
       }
     }

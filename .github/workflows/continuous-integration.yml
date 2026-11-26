@@ -231,6 +231,7 @@ jobs:
         if: steps.check-skip.outputs.skip != 'true'
         uses: actions/checkout@v7
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: 🕋 Setup Codebase
@@ -255,6 +256,9 @@ jobs:
           terraform: >-
             ${{ (matrix.check.target == 'static-code' ||
             matrix.check.target == 'plan-terraform') && 'true' || 'false' }}
+          # The infrastructure and configuration projects' tflint, kubeconform,
+          # kube-linter, pluto, hadolint, and actionlint run as part of lint-code.
+          linters: ${{ matrix.check.target == 'static-code' && 'true' || 'false' }}
           nx-cache: "true"
           nx-cache-scope: >-
             ${{ github.job }}-${{ matrix.check.target }}${{ matrix.check.shard
