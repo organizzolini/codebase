@@ -28,7 +28,8 @@
     "@vitest/coverage-v8": "catalog:",
     "moment": "catalog:",
     "typescript": "catalog:",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "yaml": "catalog:"
   },
   "name": "caelundas-cli",
   "type": "module",
