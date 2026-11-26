@@ -24,9 +24,12 @@ export interface RolldownApplicationOptions {
   readonly globbedDirectories?: readonly string[];
   /** The directory of the application being bundled. */
   readonly packageDirectory: string;
-  /** Packages loaded by name at run time, which no import in the bundle shows. */
+  /** Packages this application loads by name at run time, beyond {@link BY_NAME_DEPENDENCIES}. */
   readonly runtimeDependencies?: readonly string[];
 }
+
+/** Packages a shared workspace package loads by name, which no import shows: TypeORM's driver and pino's pretty transport. */
+export const BY_NAME_DEPENDENCIES = ["pg", "pino-pretty"] as const;
 
 /** Specifier prefixes bundled into the output instead of installed beside it. */
 const BUNDLED_PREFIXES = [
@@ -40,9 +43,10 @@ const BUNDLED_PREFIXES = [
 const STORE_SEGMENT = `${path.sep}node_modules${path.sep}.pnpm${path.sep}`;
 
 /**
- * Bundles an application's TypeScript, workspace packages included, into one
- * ESM output with decorator metadata. Writes beside it a `node_modules` holding
- * only the production packages it imports, copied from the pnpm install.
+ * Compiles an application's TypeScript, workspace packages included, to one ESM
+ * file per module with decorator metadata, at its source path. Writes beside
+ * them a `node_modules` holding only the production packages they import,
+ * copied from the pnpm install.
  */
 export function createRolldownApplicationConfig({
   entry,
@@ -53,6 +57,7 @@ export function createRolldownApplicationConfig({
   const origins = new Map<string, Set<string>>();
   const roots = [
     ...declaredDependencies(packageDirectory),
+    ...BY_NAME_DEPENDENCIES,
     ...runtimeDependencies,
   ];
   const workspaceRoot = path.resolve(import.meta.dirname, "../..");
