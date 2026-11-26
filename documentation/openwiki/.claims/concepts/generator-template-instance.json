@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:1a2054a6e8fb6fc47d174a0c38767b3d0760d0b9349afc2189be5dc97e29d1dc",
+  "pageVersion": "sha256:49635b35025ac14ecc03544b86be9a9efde384b7298f2ef42aec375092f2aa73",
   "claims": [
     {
       "id": "claim_82043b01245a49f885c685a638e9338a",
@@ -35,7 +35,7 @@
       "statement": "An Instance is generated code on disk that a template explains: a whole module directory, a single file, or a set of files located together by one pattern.",
       "evidence": [
         {
-          "resource": "repo://configuration/ic-suite/conformetry.config.ts#L225-L240",
+          "resource": "repo://configuration/ic-suite/conformetry.config.ts#L249-L264",
           "version": "repo-lines-v1:sha256:531b16fe5d741f9d0148a4805893262f9608a71180c5963a7ca67150f1abfc08:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlZmFjZjA1ZDljNWNmMTAwZGNjNTg1YmViMThjNjZjMWQwMjI0ZTQzYTM2N2Y0OTQ3NTJmNTk5YzY3NzkwYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlkNzJiOTJiNGI1Yjg3ZWJiNTkzMGQzY2M1YjAxNDMxNGQwY2VmZmFkZWNjZTdkYTk4N2I2MTdhYTc3YTk5NWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNlYzk3NTRmZjVjYzk3ODQyMzRjOTYxYTI0YmU1YWY5ODg4YzU4MjNlNzQzYTRjZDAxYjJmZGFkZDVjNzNjMmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMwNjI3NmRhOWJmZTk1MGEwMjMzN2JlNTY1ZTU1NDM5ODMyNTBlNmIyYzEzYWYxMDQ5ZjFlY2ZlYzA4MzhhMjEifQ"
         },
         {
@@ -157,6 +157,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

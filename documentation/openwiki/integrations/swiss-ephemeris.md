@@ -3,6 +3,9 @@ type: integration
 title: Swiss Ephemeris Integration (Caelundas)
 description: Documents how caelundas uses the Swiss Ephemeris library with JPL DE431 data files for local astronomical computations, including download mechanism, fallback behavior, supported date range, and error handling.
 tags: [integration, swiss-ephemeris, ephemeris, astronomical-computation]
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-25T18:55:00.444Z
 sources:
   - id: openwiki-source-ec9b349af05b637843a35799
     resource: repo://projects/caelundas/caelundas-cli/AGENTS.md
@@ -26,10 +29,7 @@ sources:
     resource: repo://projects/caelundas/caelundas-cli/src/modules/ephemeris/modules/ephemeris-download/ephemeris-download.utilities.ts
   - id: openwiki-source-edceb0d5d036b656596819fc
     resource: repo://projects/caelundas/caelundas-cli/src/modules/input/input.constants.ts
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
-verified:
-  - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Swiss Ephemeris Integration
@@ -59,6 +59,38 @@ This command:
 - Writes each file to a `.part` temporary file, then atomically renames it — an interrupted download leaves no partial file that could be mistaken for a complete one
 - Skips files already present and non-empty (idempotent, safe to rerun)
 - Runs from its own entry point (`ephemeris-download-cli.main.ts`) so it does not require a database connection
+
+## Data Flow Architecture
+
+```mermaid
+sequenceDiagram
+    participant User as CLI User
+    participant Download as Download Command
+    participant Files as JPL DE431 Files
+    participant Swiss as Swiss Ephemeris (sweph)
+    participant EphemSvc as EphemerisService
+    participant AggSvc as EphemerisAggregationService
+    participant Postgres as Postgres (caelundas)
+    participant Renderer as iCalendar/JSON Renderer
+
+    User->>Download: nx run caelundas-cli:download-ephemeris
+    Download->>Files: Downloads seas_18.se1, sepl_18.se1, semo_18.se1
+    Files-->>Swiss: Binary ephemeris data (1800–2399)
+    User->>EphemSvc: START_DATE, END_DATE, LAT, LON
+    EphemSvc->>Swiss: set_ephe_path(./data/ephemeris)
+    EphemSvc->>EphemSvc: verifyFiles() — throws if missing
+    EphemSvc->>AggSvc: computeAllEphemerides()
+    AggSvc->>Swiss: calc() / pheno_ut() per minute per body
+    Swiss-->>AggSvc: Position, speed, distance, illumination
+    AggSvc-->>EphemSvc: Ephemerides per body per minute
+    EphemSvc->>Perfective: Perfective detection (minute scan)
+    Perfective->>Progressive: Exact moments → spans
+    Progressive->>Postgres: Upsert calendar_events
+    Postgres-->>Renderer: Query events for range & location
+    Renderer-->>User: output/caelundas_<start>_<end>.ics + .json
+```
+
+*Caption: Ephemeris data flow from download through detection to calendar output.*
 
 ## Initialization
 
@@ -151,18 +183,43 @@ The **timezone is derived from coordinates** rather than configured separately �
 
 ## Architecture
 
-```
-EphemerisService (orchestrator)
-├── EphemerisCoordinateService   → ecliptic longitude/latitude + speed
-├── EphemerisDistanceService     → AU distance + radial speed
-├── EphemerisIlluminationService → phase angle, illuminated fraction
-├── EphemerisHorizonService      → azimuth, elevation, rise/set/culmination
-├── EphemerisPhenomenaService    → planetary phenomena (phases, eclipses, etc.)
-├── EphemerisTimeService         → Julian day, delta T, sidereal time
-└── EphemerisAggregationService  → single-pass computation for all bodies
+<!-- openwiki: mermaid parse failed and this diagram was converted to a text fence so it does not break rendering. Fix the diagram source and restore the mermaid fence. Parser error: Heuristic: an unescaped angle bracket inside a label breaks rendering; rephrase the label. -->
+```text
+flowchart TD
+    subgraph EphemSvc[EphemerisService]
+        direction TB
+        Coord[EphemerisCoordinateService<br/>ecliptic longitude/latitude + speed]
+        Dist[EphemerisDistanceService<br/>AU distance + radial speed]
+        Illum[EphemerisIlluminationService<br/>phase angle, illuminated fraction]
+        Horiz[EphemerisHorizonService<br/>azimuth, elevation, rise/set/culmination]
+        Phenom[EphemerisPhenomenaService<br/>planetary phenomena (phases, eclipses, etc.)]
+        Time[EphemerisTimeService<br/>Julian day, delta T, sidereal time]
+        Agg[EphemerisAggregationService<br/>single-pass computation for all bodies]
+    end
+
+    Coord --> Agg
+    Dist --> Agg
+    Illum --> Agg
+    Horiz --> Agg
+    Phenom --> Agg
+    Time --> Agg
 ```
 
+*Caption: EphemerisService orchestrator with specialized sub-services; AggregationService eliminates redundant calc() calls.*
+
 `EphemerisAggregationService` computes coordinates, distance, illumination, and azimuth/elevation for all bodies in a single pass, eliminating redundant `calc()` calls.
+
+### Key Sub-services
+
+| Service | Responsibility |
+|---------|----------------|
+| `EphemerisCoordinateService` | Ecliptic longitude/latitude + speed for planets, asteroids, nodes |
+| `EphemerisDistanceService` | Geocentric distance in AU + radial speed (for apogee/perigee detection) |
+| `EphemerisIlluminationService` | Phase angle, illuminated fraction, apparent magnitude |
+| `EphemerisHorizonService` | Topocentric azimuth, elevation, rise/set/culmination with refraction |
+| `EphemerisPhenomenaService` | Planetary phenomena: phases, conjunctions, oppositions, eclipses |
+| `EphemerisTimeService` | Julian day conversions, delta T, sidereal time, minute iteration |
+| `EphemerisAggregationService` | Single-pass aggregation across all bodies and ephemeris types |
 
 ## Configuration
 
@@ -172,7 +229,14 @@ No runtime configuration beyond the download. The data directory is hardcoded to
 
 - Unit tests verify `EphemerisUnavailableError` is thrown when the `SEFLG_SWIEPH` bit is absent
 - Integration tests exercise the full download → verify → compute cycle
-- `ephemeris-horizon.service.integration.test.ts` validates rise/set/culmination against known almanac values
+- `ephemeris-horizon.service.integration.test.ts` validates rise/set/culmination against **JPL Horizons** reference values (e.g., Moon culmination elevation within 0.01°, moonrise upper limb on horizon within 0.1°)
+
+```typescript
+// ephemeris-horizon.service.integration.test.ts — validation against JPL Horizons
+const horizonsRefractedCulminationElevation = 61.795438;
+const horizonsAirlessMoonriseElevation = -0.771692;
+// Tests assert Swiss Ephemeris results match Horizons within 0.01°–0.1°
+```
 
 ## Error Summary
 
@@ -187,3 +251,4 @@ No runtime configuration beyond the download. The data directory is hardcoded to
 - [Caelundas Domain](../domain/caelundas.md) — Overall architecture and body catalog
 - [External Services](../integrations/external-services.md) — Other integrations (none for ephemeris; fully local)
 - [Local Development](../operations/local-development.md) — Running the download command in development
+- [Caelundas Testing](../testing/caelundas.md) — Testing strategy including JPL Horizons validation

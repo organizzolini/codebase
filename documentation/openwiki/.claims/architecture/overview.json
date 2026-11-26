@@ -1,108 +1,34 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:174e23044cb5b4a4ba9572da60e77d818114f41d6e2266116a00b9ee4a9de087",
+  "pageVersion": "sha256:fb4bb4395c1aa7d3b5a81b0144687e5063f90b2edc60f2d6a7f61a93d7505c32",
   "claims": [
-    {
-      "id": "claim_562338b830ca4969b96436690c62796c",
-      "statement": "The codebase has four application domains: affirmancy, caelundas, lexico, and meanderaw, each organized as a vertical slice under projects/ with its own applications and data models; caelundas and lexico each have an API, CLI, database package and web app (caelundas-api/cli/db/web, lexico-api/cli/db/web), meanderaw has a CLI and a web app, and affirmancy is a Python application.",
-      "evidence": [
-        {
-          "resource": "repo://projects/affirmancy/project.json",
-          "version": "repo-file-v1:sha256:014f3e4afdd5ee216429096cff18a94a084c4a52656aeb1c5b47644948f46cba"
-        },
-        {
-          "resource": "repo://projects/caelundas/caelundas-api/project.json",
-          "version": "repo-file-v1:sha256:892693b4859f6c34db93fd66d05942033f74b09ef775b2c9bf6541916d46a5bc"
-        },
-        {
-          "resource": "repo://projects/caelundas/caelundas-db/project.json",
-          "version": "repo-file-v1:sha256:dfbc3873c940de3b6d6fa706518c7b84db1900961644cf7eb430ee6d49dcbf7d"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-api/project.json",
-          "version": "repo-file-v1:sha256:1b4f53ea87025b3eda2e0c7821a1a6e193a835d49e9e636ced722ec62a0a0d1a"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-db/project.json",
-          "version": "repo-file-v1:sha256:df5bf38f7b3ca3ac32eb2c32619772e84b46885268b72091de508b0492b85e8b"
-        },
-        {
-          "resource": "repo://projects/meanderaw/meanderaw-web/project.json",
-          "version": "repo-file-v1:sha256:471916e59f1c44378a2a46f2e9f78b3891310c23e58a68c6411f68b2f353b1f2"
-        }
-      ]
-    },
     {
       "id": "claim_576a88738ea545b996e36054a5538e07",
       "statement": "Application domains depend on shared common packages (interface, observability, persistence, presentation, testing) but do not depend on each other; the codependix config forbids caelundas and lexico from reaching each other.",
       "evidence": [
         {
-          "resource": "repo://configuration/ic-suite/codependix.config.ts#L810-L845",
+          "resource": "repo://configuration/ic-suite/codependix.config.ts#L829-L864",
           "version": "repo-lines-v1:sha256:fc1de0f7ef060a07c9d06d33ad191ca9afa945c68e54c411a9a508fc680ca43d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNjczYWJkNDU3YTk3ZWVhMTdhNjAwNjJlYjBmYWVhNmJkZjA5NDg2OGNjNmI4ZjhjMGViZGEyZjYxZWQ0MmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc2ZDZjYTNlNDgwMTMyMmViZmM2ZThjZWUzMzU4YzA4OGI5MTI4OWQzMmU2MjgxY2M1ZmFlZWEwYzdhZTUyYmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlMTRiZWU4ODQwOTNkMDBkOTNjYTU4ZWQwYWZkOThlZjFiZTU5NmE4ZDY3YzdmYjc0YTM2ZGNiZTYzMDA4ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkZmNjN2QzNDNiYjM5MzRhNWZjNjY3ZmNkN2M4Mjg1MTQxMGZkNWIwNjNjNTAxY2RiMzE5ZjBmNzUwMTlmYmMifQ"
         },
         {
           "resource": "repo://projects/common/interface/project.json",
-          "version": "repo-file-v1:sha256:6dbd86cd02844c951701f488dbdfc49edc9186052a94be517298f9f8f7592208"
+          "version": "repo-file-v1:sha256:a4a72efa9b912c9cad9ce610d8db5806462f2ec229608cfefe5593d2aa5c5524"
         },
         {
           "resource": "repo://projects/common/observability/project.json",
-          "version": "repo-file-v1:sha256:e667ef2a37ccbdbfea73d07207ecd1206e90fbb82f8e4b533e8f85e74aa4d226"
+          "version": "repo-file-v1:sha256:41e4d0d3681790e2a82e6048f4cff272f875ebbdf0c74837c002dab56187fc7b"
         },
         {
           "resource": "repo://projects/common/persistence/project.json",
-          "version": "repo-file-v1:sha256:8ba421092dc02c0db5f5a1bd827506bfac3000a0c6c5df7575c5a1c480237f98"
+          "version": "repo-file-v1:sha256:9ed64fd0d5d24124f88a9b428d8a8242eac93a4806cd44fd124608d33bab43a8"
         },
         {
           "resource": "repo://projects/common/presentation/project.json",
-          "version": "repo-file-v1:sha256:966c138b1b9ec2140eb35dc67a846d18465dd89d914030d633a379d2ae281973"
+          "version": "repo-file-v1:sha256:67e033e6df8435d73e1911de404acc8928ca6d7260aada40c0d7aab6f76fa874"
         },
         {
           "resource": "repo://projects/common/testing/project.json",
-          "version": "repo-file-v1:sha256:de98ec8592ff9642e89f99ab31e31df63430a5e1d730be74c7c1c0196418b509"
-        }
-      ]
-    },
-    {
-      "id": "claim_2542d6a42fc9461fb7256b157592c49b",
-      "statement": "The IC-Suite contains five independently versioned toolchains (callidescope, codependix, codometer, coinagerie, conformetry) each following a five-layer spine: core, configuration, analysis, output, cli, with an optional nx plugin layer at the cli level.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L22-L35",
-          "version": "repo-lines-v1:sha256:d66100f8e3b4d2e1318e6d732be574c6e63b3ccc8e2dce4ea9ea881cfe221e97:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ2ZjFmYTdiNTczMzdhZmJiNjY3NTRmMmVkMWU3ZWI3YzFhZmI4MzBlOWVmZWY1MGIzMzgxMDViZjk0OGJhYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhZDg1MDBkOWE0MDJmYmMzN2UyY2QxMmY0Y2E0MTMxMDk0MTUzMzU3NzUxNjlkNWUxZDA3MzE1OTBiMTQ3ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjMjg3ZTZjNDhiYzdiYTY1YjI5MjcyM2Q1NTM1ZmYwY2MwYTU3MDkzNWViNGVjODgyNGE5NTdhNWM5MGUwMTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViZDNhNDE2MTM5M2EzYzVmNWRjZmQ2NTAyZWZkOGIxOGFlMmZiMTBiYmZkMDQyNmM2OWM4MzAwN2M1N2QzODEifQ"
-        },
-        {
-          "resource": "repo://projects/ic-suite/callidescope/callidescope-core/project.json",
-          "version": "repo-file-v1:sha256:d5ae82645572634f6941722bf98c10eaa3ec58c060d346c978a417bd530c6510"
-        },
-        {
-          "resource": "repo://projects/ic-suite/codependix/codependix-core/project.json",
-          "version": "repo-file-v1:sha256:b7c438735eb11e6ff186a42bac04cc40c01f341e178a3c5467c861c33d64c5d0"
-        },
-        {
-          "resource": "repo://projects/ic-suite/codometer/codometer-core/project.json",
-          "version": "repo-file-v1:sha256:7d7ff9448e30a404b06835b50bee252be6c99c853eb1a71ecc335b0d9cdcecb7"
-        },
-        {
-          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-core/project.json",
-          "version": "repo-file-v1:sha256:733920bb08089743ff5a9c97aefa6779c97f14dfbeabd5a0fc38197de5e81742"
-        },
-        {
-          "resource": "repo://projects/ic-suite/conformetry/conformetry-core/project.json",
-          "version": "repo-file-v1:sha256:6da42b19de2dca0d4e0c1c540908bc225e7fd9f2afcce0792338e9ff6d286b22"
-        }
-      ]
-    },
-    {
-      "id": "claim_1f265338c08f4dfd8cc716305e158a60",
-      "statement": "IC-Suite toolchains share only the observability package (pino-backed logger); no cross-toolchain @ic-suite/* package exists, a deliberate constraint from ADR 0013.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L101-L109",
-          "version": "repo-lines-v1:sha256:243bfc02b01d75f93945a5ac50c56f66b3dd81a3c60caf158b816e80129342de:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjNhMDg1NTY2MWE5NDY3N2ZmMGQxZmY5ZmZiYTAzOTYxNjAxOTdjN2I5MmJiNTJhYTJkOTgzNzBkYzU0ZWRiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDhlM2ViYmNiZThjMzZjOWJmMGVmNTEyMGMzY2FiYTgzZmU1NjIwYTNhNGM1YjY5NjFjMzZlOWE1NzVjNTVmZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmFhNDAyZjEzNjZjOGY1ODkwOWE4MGY1MDc0MzU2NjgzMjMzNWYyN2IyY2U0YzhhYTkzMzkxOGEzMmM2MjE5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjUxM2Y1OGQ4ZWJkZWViZmExNDEzNTMzODRlZmMxMTkzODRkNWI2NzUzZGEwNDJlYWQ0NDMzYmU5MjQ0ODY1ZiJ9"
-        },
-        {
-          "resource": "repo://projects/common/observability/project.json",
-          "version": "repo-file-v1:sha256:e667ef2a37ccbdbfea73d07207ecd1206e90fbb82f8e4b533e8f85e74aa4d226"
+          "version": "repo-file-v1:sha256:2a4176b9f1ef63662db479e372db7e824c249ea84a9cdf654d9bc239ce67dab1"
         }
       ]
     },
@@ -112,23 +38,23 @@
       "evidence": [
         {
           "resource": "repo://projects/common/interface/project.json",
-          "version": "repo-file-v1:sha256:6dbd86cd02844c951701f488dbdfc49edc9186052a94be517298f9f8f7592208"
+          "version": "repo-file-v1:sha256:a4a72efa9b912c9cad9ce610d8db5806462f2ec229608cfefe5593d2aa5c5524"
         },
         {
           "resource": "repo://projects/common/observability/project.json",
-          "version": "repo-file-v1:sha256:e667ef2a37ccbdbfea73d07207ecd1206e90fbb82f8e4b533e8f85e74aa4d226"
+          "version": "repo-file-v1:sha256:41e4d0d3681790e2a82e6048f4cff272f875ebbdf0c74837c002dab56187fc7b"
         },
         {
           "resource": "repo://projects/common/persistence/project.json",
-          "version": "repo-file-v1:sha256:8ba421092dc02c0db5f5a1bd827506bfac3000a0c6c5df7575c5a1c480237f98"
+          "version": "repo-file-v1:sha256:9ed64fd0d5d24124f88a9b428d8a8242eac93a4806cd44fd124608d33bab43a8"
         },
         {
           "resource": "repo://projects/common/presentation/project.json",
-          "version": "repo-file-v1:sha256:966c138b1b9ec2140eb35dc67a846d18465dd89d914030d633a379d2ae281973"
+          "version": "repo-file-v1:sha256:67e033e6df8435d73e1911de404acc8928ca6d7260aada40c0d7aab6f76fa874"
         },
         {
           "resource": "repo://projects/common/testing/project.json",
-          "version": "repo-file-v1:sha256:de98ec8592ff9642e89f99ab31e31df63430a5e1d730be74c7c1c0196418b509"
+          "version": "repo-file-v1:sha256:2a4176b9f1ef63662db479e372db7e824c249ea84a9cdf654d9bc239ce67dab1"
         }
       ]
     },
@@ -137,7 +63,7 @@
       "statement": "Infrastructure includes Helm charts (kubernetes-job), Terraform (Linode LKE), Docker Compose (local Postgres, SearxNG, Open WebUI), and GitHub Actions workflows for CI/CD/Compliance.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L91-L103",
+          "resource": "repo://infrastructure/README.md#L89-L101",
           "version": "repo-lines-v1:sha256:68aa8a733044a79150cabcf5070b72bef3ef6fc498ff55a28cf31e3e877696f6:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBkYTEzZjdhOGIyZTIxMzdlODgyNDZhZjc2MWFiNjEzMWY5YzBhM2Y0MzQzNjVhNWJiZTc4MjYwMjE4NWEyNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlMTVmMjU0NjAyZDVmZTk1MDU0ZjFiYjU0ZjFkYTZiMDk4ZTAxYzc2ZjE4NzcwZTUxZGRkYzQ2ZTdjMDg5ZTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0NmY5Mzc1MWIzMTUzYWY2NTdmMzJmOTcxNmZlZmIzMTRlMTRjNjM5NDY5MzdlNTI4YmRhMWExZGI2YzAxZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ5NDZiNTFiODZhN2U4OGQwNmQ5ZGNmMDgwODlhY2I2YWE4NDQ2MDUwOGUyODg5YjM1N2JmMDQ2NTg3YjExYzIifQ"
         },
         {
@@ -157,38 +83,6 @@
         {
           "resource": "repo://configuration/ic-suite/codependix.config.ts#L172-L260",
           "version": "repo-lines-v1:sha256:7d2ac2982e2a2f921d6fea0480f762769d32a09435a2116d008c7b10a88ee4fd:eyJzZWxlY3RlZExpbmVDb3VudCI6ODksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY1MWNjNDkzOGQyYTY2Y2Y3MjcyNmFhOTA3MzI1N2UyY2NiMjA2YzBkZTMwNjcwNjhjOGE3NTAyZjk2Y2I4MmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1ZWFhMTVhMTgyNWM0ZjliZGFmODJmNDFkZjZlMGNjNzUxYjhkY2FhZTE2MmNiYjg4NmMxNmUyMWY4NDU4NGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4M2QwZDAyZmRlMjA4YjM4MjI3NzQxMmY0ZTkwOTE1YmM0YjU3MDBkMDZhMTkzZmNkYWFlYmFmZGU2ZjA1ZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJjMzUyOGZhN2NkMTlhNTI1OTVkNDg4YzdmMTZkODA1ODk1ZDU4NGNkZTE1N2M1ZjczZjYzZmM2ZGNlMGE5YmUifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_e81f961611aa48a49f5196b3314f3ad8",
-      "statement": "ADR 0024 mandates every project lives under projects/ with domain grouping folders; project type is determined by type:application / type:package tags, not folder location.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0024-nest-every-project-under-projects.md#L9-L22",
-          "version": "repo-lines-v1:sha256:1fd7545507d3ac850d3d331f3733bfa5332868822634f28aedddf37e477f511a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkM2RiYzRlN2U3Y2JlNWRkYzg5MWIwODA3MTJmNjM1MWM5NGI3MjhlYzhiZDg1NTZmNDYxMmIwNzBkMjdiNDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhZjM0ZTkzZjM1N2NmMzg1OGZkNzJhZTY2NDk3NDc1ZWU4MWE2ZWYxNTc3OGUwY2ZmY2QxNzFmZmY3YWQyMGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyNmMwNzljOTk3ZTEwOTA5NDk2MzE3Yzg4ZmIyYzAxYTYwZjYzYjYzMzM2NDJhOGUyMzUyNzc0NmUyNWFjOGMifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_4389a704977b46b69a337914263cae04",
-      "statement": "ADR 0013 defines the IC-Suite five-layer spine vocabulary with layer:* tags, the core-vs-configuration test, per-suite analysis layer naming, and the no-shared-package constraint.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L101-L109",
-          "version": "repo-lines-v1:sha256:243bfc02b01d75f93945a5ac50c56f66b3dd81a3c60caf158b816e80129342de:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjNhMDg1NTY2MWE5NDY3N2ZmMGQxZmY5ZmZiYTAzOTYxNjAxOTdjN2I5MmJiNTJhYTJkOTgzNzBkYzU0ZWRiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDhlM2ViYmNiZThjMzZjOWJmMGVmNTEyMGMzY2FiYTgzZmU1NjIwYTNhNGM1YjY5NjFjMzZlOWE1NzVjNTVmZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmFhNDAyZjEzNjZjOGY1ODkwOWE4MGY1MDc0MzU2NjgzMjMzNWYyN2IyY2U0YzhhYTkzMzkxOGEzMmM2MjE5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjUxM2Y1OGQ4ZWJkZWViZmExNDEzNTMzODRlZmMxMTkzODRkNWI2NzUzZGEwNDJlYWQ0NDMzYmU5MjQ0ODY1ZiJ9"
-        },
-        {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L13-L35",
-          "version": "repo-lines-v1:sha256:66b08f0d100fded36b5c065b488ed25a735ccdb4d5c8aaab7260a7ff4c7bfd41:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhZDg1MDBkOWE0MDJmYmMzN2UyY2QxMmY0Y2E0MTMxMDk0MTUzMzU3NzUxNjlkNWUxZDA3MzE1OTBiMTQ3ZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImM4YmMwNGNkYTZjYWNhYjEwYTJjOGE4MGQ2ZWQyOWZiYjZjODJiNThjNzQ5OTg2MzcxYzg1NDlhYzFlZjRiMWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImViZDNhNDE2MTM5M2EzYzVmNWRjZmQ2NTAyZWZkOGIxOGFlMmZiMTBiYmZkMDQyNmM2OWM4MzAwN2M1N2QzODEifQ"
-        },
-        {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L47-L58",
-          "version": "repo-lines-v1:sha256:041b24e853eb1bdf0a553e25ce608a36c7cfa9bffb13cac51ad9f7a3b40e6398:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmN2ZlZThlY2Q4MjdhNzZkMWUwMzE2NDM5MDA3NTUzODFmMTA4MjVmNzAyOGE5N2VmMWYxZWMyYmZkOWQ4ZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyYTM1NDQ3OTUzNmE2NDViNjdlMjVjOGRiNDRlYWM4ZjdiYjBlNjNkNzc0NWY1ODYyMWNjYWRkYjlkYTE4NjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzMmE0YjAyOGY3NzI1MjMyODhhYzQ5YzRlMzU0MjE2OTQwNTczYTcxMWU2MzU2MDVkZDUzMDI3Mzc4MTRjZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyZTk1ZDEyZThjYTRkODRhZmVmYTczNTA0YzlmNTdjNWU5MThkNTQyZDc4NDAwYzAzM2RkZTczYjJmZTBjZWUifQ"
-        },
-        {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L60-L70",
-          "version": "repo-lines-v1:sha256:7ccc6a8e63700b84d8c5777c16277f587a67823799fca6977920e30b9616a745:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMzkxMzJhZDZlOGFiZTJmODhiMTg5ZDYzOWIxZWM1ZTY1M2Y5OWNlMmFiYjBlNmQyN2E4YzE2ZjFmN2YzMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxYzQ2NTk0NTM4OWIxYzcxNjU4ZmRmZTk2ZDIzNGFmNTVlNmI0NTY3ODZhODM2ZmIwNGQ3OTU1YTI1MTQ1NGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkNjg1NWI4YzJhZGFhZGE5MTVkMzk3NGU2MGFmY2ZhNDVmMGZkMjA5YzUwMmU1ZjA4YWU0MGQyMzI5ODExMmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmYjhmYWI2YmQ4OTQzNDY3YzRkOGY0MTI4ZDc4OGE3MzMzMzI3Y2IxZmIxOGI4ZWRjODEzYzZlMDVlMDc2NzYifQ"
         }
       ]
     },
@@ -223,7 +117,7 @@
           "version": "repo-lines-v1:sha256:d72bbae4bab05c82c397c6e186fcff47431c9c850acf4c72c916a618ffeac3fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2M2Q1MzVjZTM4MDYzZDZiNGM1MWQ4YzM4NmE3ZjliM2U1ODBhMTRhMTBjMDdiMTk4ZGZhZjE5YzkzYTNiZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2NWMzOGJkZDQwYTZhYmQyYTE5NWQ5ZWY5MmFjYmQ2NDg0YjM1ODJkMzVhMDg1MGZjMWQwZDIyNzg5OWNhMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjViNDVkOGQ0YWRiY2M5NjM0NWRkZDM0NWM5MmYyMjIxYmMxMmQ1NDM0YWZkZmQxYzkwZDFkNjE3OWUzNTE1OGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFkOWQ0MDZhZTI0YWI4ZTM0MGUxMGZkMmE1NmY3ZDFkMTQ5ZjZmNWUwODUyYzg3NzNiNWRjYmM0OTY4MmE2M2YifQ"
         },
         {
-          "resource": "repo://configuration/ic-suite/codependix.config.ts#L810-L860",
+          "resource": "repo://configuration/ic-suite/codependix.config.ts#L829-L879",
           "version": "repo-lines-v1:sha256:e5d2e40a64979955160df003747d765ab2b998074e6b4cf524615a70518bc868:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNjczYWJkNDU3YTk3ZWVhMTdhNjAwNjJlYjBmYWVhNmJkZjA5NDg2OGNjNmI4ZjhjMGViZGEyZjYxZWQ0MmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlMTRiZWU4ODQwOTNkMDBkOTNjYTU4ZWQwYWZkOThlZjFiZTU5NmE4ZDY3YzdmYjc0YTM2ZGNiZTYzMDA4ZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU1MTk1OTI3M2IwZmQ2MTM4ZDRiMmQ3YzNmNzkwZDRlYTU3YWE5ODg5NTg0Zjg0M2RhZjhmNmJmNTRlOTQyZDEifQ"
         },
         {
@@ -235,6 +129,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

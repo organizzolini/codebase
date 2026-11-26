@@ -5,14 +5,12 @@ description: Documents Docker Compose services (PostgreSQL, SearxNG, Open WebUI)
 tags: [infrastructure, deployment, kubernetes, helm, terraform, docker-compose, linode, github-actions, ci-cd]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T17:40:37.367Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
   - id: openwiki-source-105f2705156f283beb3d513c
     resource: repo://.github/workflows/continuous-deployment.yml
   - id: openwiki-source-6315af249215d8768fb68811
     resource: repo://.github/workflows/continuous-integration.yml
-  - id: openwiki-source-fde0a41d410be4adddc7d9c3
-    resource: repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md
   - id: openwiki-source-22abed0c78ef12ea57f65cad
     resource: repo://infrastructure/AGENTS.md
   - id: openwiki-source-5af1e140a8c8b0f50fd8ad35
@@ -41,7 +39,7 @@ sources:
     resource: repo://infrastructure/terraform/main.tf
   - id: openwiki-source-fee95c572f00c778206fb7e0
     resource: repo://infrastructure/terraform/openrouter/main.tf
-generated: { by: "openwiki/0.9.0", at: "2026-11-22T17:40:37.367Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Infrastructure & Deployment
@@ -56,7 +54,7 @@ The `infrastructure/` directory contains three independent deployment layers:
 |-------|------------|---------|
 | **Local services** | Docker Compose | PostgreSQL, SearxNG, Open WebUI for local development |
 | **Kubernetes workloads** | Helm (`kubernetes-job`) | Reusable chart for batch Jobs with optional PVC storage |
-| **Cluster & services provisioning** | Terraform | Linode LKE cluster, OpenRouter workspace/guardrail/key/preset, GitHub repository settings, `main` ruleset, Actions variables and secrets, Linode Object Storage buckets for Terraform state and the shared Nx cache |
+| **Cluster & services provisioning** | Terraform | Four roots: Linode LKE cluster (`main.tf`), OpenRouter workspace/guardrail/key/preset (`openrouter/`), GitHub repository settings/ruleset/Actions variables/secrets (`github/`), Linode Object Storage buckets for Terraform state and shared Nx cache (`linode/`) |
 
 These layers are orchestrated through Nx targets defined in `infrastructure/project.json`.
 
@@ -90,20 +88,20 @@ nx run infrastructure:postgres:recreate
 | Service | Image | Port | Volume | Purpose |
 |---------|-------|------|--------|---------|
 | **postgres** | `postgres:18-alpine` | 5432 | `postgres_data` | Shared PostgreSQL instance for all database-backed projects |
-| **searxng** | `searxng/searxng:latest` | 8889 | settings.yml (bind mount) | Metasearch engine for local web search |
+| **searxng** | `searxng/searxng:latest` | 8889 | settings.yml (bind mount from `projects/affirmancy/configuration/searxng.settings.yml`) | Metasearch engine for local web search |
 | **open-webui** | `ghcr.io/open-webui/open-webui:main` | 3001 | `open-webui_data` | Web UI for local LLM inference via Ollama |
 
 ### PostgreSQL Multi-Project Initialization
 
-The `postgres` service uses a Compose **config** (`postgres-databases`) that installs an executable init script at `/docker-entrypoint-initdb.d/databases.sh`. This script runs **only when the volume is empty** (i.e., on first `up` or after `recreate`).
+The `postgres` service uses a Compose **config** (`postgres-databases`) that installs an executable init script at `/docker-entrypoint-initdb.d/databases.sh` with mode `0555`. This script runs **only when the volume is empty** (i.e., on first `up` or after `recreate`).
 
-The script reads `POSTGRES_PROJECTS` (a space-separated list in the Compose environment) and for each project creates:
+The script reads `POSTGRES_PROJECTS` (a space-separated list in the Compose environment, currently `caelundas lexico meanderaw`) and for each project creates:
 
 1. A role: `<project>_username` with password `<project>_password`
 2. A database: `<project>_development` owned by that role
 3. A schema: `<project>` inside that database, owned by the role
 
-Current `POSTGRES_PROJECTS` value: `caelundas lexico meanderaw`
+The script validates project names (lowercase alphanumeric plus underscore) and stops at the first `CREATE` whose object already exists.
 
 #### Adding a Project to an Existing Volume
 
@@ -118,7 +116,13 @@ nx run infrastructure:postgres:up
 docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh
 ```
 
-The script stops at the first `CREATE` whose object already exists, so name only the projects the volume lacks. For meanderaw (whose database existed from an earlier ADR), a manual `ALTER DATABASE` is needed instead of `CREATE DATABASE` — see `documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md`.
+For caelundas (the project that most recently joined the list):
+
+```bash
+docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb.d/databases.sh
+```
+
+The script stops at the first object that already exists, so name only the projects the volume lacks. For meanderaw (whose database existed from an earlier migration), a manual `ALTER DATABASE` is needed instead of `CREATE DATABASE` — see the procedure in `infrastructure/README.md`.
 
 ---
 
@@ -144,6 +148,8 @@ Deploy batch workloads that run to completion and leave output behind (e.g., dat
 | `persistence.accessMode` | `ReadWriteOnce` | PVC access mode |
 | `persistence.size` | `1Gi` | PVC size |
 | `persistence.mountPath` | `/app/output` | Container mount path |
+| `metadata.gitCommit` | `""` | Stamps `caelundas.job/git-commit` label on Job and PVC |
+| `metadata.timestamp` | `""` | Stamps `caelundas.job/timestamp` label on Job and PVC |
 
 ### Deploying
 
@@ -244,7 +250,7 @@ Manages the Object Storage bucket that holds **all Terraform state** and the **s
 
 ### State Bucket Migration
 
-The state is moving from `organizzolini` to `organizzolini-codebase-terraform-state`. The migration procedure (from `infrastructure/README.md`):
+The state is moving from `organizzolini` to `organizzolini-codebase-terraform-state`. The migration procedure (from `infrastructure/README.md` and `infrastructure/AGENTS.md`):
 
 1. **Create**: Merge the change adding the new bucket; CD applies the `linode` root.
 2. **Read new credentials**: Initialize `linode` root against old bucket, read outputs:
@@ -277,14 +283,15 @@ The state is moving from `organizzolini` to `organizzolini-codebase-terraform-st
 ### Continuous Integration (`.github/workflows/continuous-integration.yml`)
 
 - **`helm-lint`** and **`compose-config`** run as part of `lint-code`, which depends on both (`nx run infrastructure:helm-lint` and `nx run infrastructure:compose-config`).
-- **`plan-terraform`** target runs for PRs changing `infrastructure/terraform/**`, comments plan output on the PR.
+- **`plan-terraform`** target runs for PRs changing `infrastructure/terraform/**`, comments plan output on the PR using `borchero/terraform-plan-comment@v3`.
 - **`build-devcontainer`** runs for PRs changing devcontainer, `.env.default`, CI workflows, or docker-compose.
 
-### Continuous Deployment
+### Continuous Deployment (`.github/workflows/continuous-deployment.yml`)
 
 - Applies Terraform roots in order: `openrouter` → `linode` → `github` (enforced by workflow; the github root reads the linode root's outputs, so linode applies first).
 - Pushes devcontainer image on main.
 - Uses GitHub secrets for all sensitive values (Linode token, OpenRouter keys, Terraform backend credentials).
+- Never cancels deployment runs (concurrency group per ref, `cancel-in-progress: false`).
 
 ---
 

@@ -5,7 +5,7 @@ description: Python LangGraph ReAct agent that researches spiritual subjects via
 tags: [affirmancy, langgraph, ollama, searxng, pydantic, spiritual-practices, affirmations]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
   - id: openwiki-source-5af1e140a8c8b0f50fd8ad35
     resource: repo://infrastructure/docker/docker-compose.yml
@@ -29,7 +29,7 @@ sources:
     resource: repo://projects/affirmancy/src/subjects.py
   - id: openwiki-source-29bc3185c9e8810f2d6f2941
     resource: repo://projects/affirmancy/testing/test_services.py
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Affirmancy — Affirmation Generation Pipeline
@@ -198,153 +198,108 @@ The main pipeline lives in `src/affirmancy.ipynb` as a sequence of LangGraph `St
 ### 3. Generate Document (`generate_document` node)
 - Uses `llm_generative` (temperature 0.24) with `affirmations_generate_document_prompt_template`
 - Produces a 1000-word flowing prose reference document (no markdown)
-- Writes to `output/affirmations/documents/{category}/{order}-{slug}.md`
 
 ### 4. Analyze Document (`analyze_document` node)
 - Uses `llm_analytical` with `affirmations_analyze_document_prompt_template`
-- Produces structured analysis for affirmation generation
+- Extracts structured insights for affirmation generation
 
 ### 5. Generate Affirmations (`generate_affirmations` node)
-- Iterates over all 18 `GRAMMARS`
-- For each grammar, uses `llm_creative` (temperature 0.48) with `affirmations_generate_affirmations_prompt_template`
-- Prompt includes: `grammar_name`, `grammar_description`, `grammar_specifier_descriptions`, `grammar_specifiers`, `grammar_examples`, `grammar_emoji`
-- Parses JSON5 output into `GeneratedAffirmations` (list of strings)
-- Strips leading/trailing punctuation, wraps in `Affirmation` model
-- Accumulates `GrammarAffirmations(grammar, affirmations)` list
+- Iterates through all 18 `GRAMMARS` for each subject
+- Uses `llm_creative` (temperature 0.48) with `affirmations_generate_affirmations_prompt_template`
+- Each grammar receives the grammar's specifier descriptions and examples as prompt context
+- Parses output via `Json5PydanticOutputParser` into `GeneratedAffirmations` (validated list of strings)
 
 ### 6. Validate Grammar (`validate_affirmations_grammars` node)
 - Uses `llm_validator` (temperature 0.06) with `affirmations_validate_affirmation_prompt_template`
-- Validates each affirmation against its grammar's specifiers
-- Collects failures with grammar name, affirmation text, and reason
+- Validates each affirmation against its grammar's specifier descriptions and examples
+- LLM-as-judge returns `ValidationResult(valid: bool, reason: str?)`
+- Collects failures for reporting
 
 ### 7. Validate Subject Relevance (`validate_affirmations_subject` node)
 - Uses `llm_validator` with `affirmations_validate_affirmation_subject_prompt_template`
-- Checks each affirmation against the source document for subject relevance
-- Collects failures
+- Validates each affirmation against the original subject and reference document
+- Ensures affirmations are semantically relevant, not just grammatically correct
 
 ### 8. Write Output (`write_affirmations` node)
-- Constructs `SubjectAffirmations(subject, grammars)`
-- Writes JSON to `output/affirmations/{category}/{order}-{slug}.json` (via `model_dump_json(indent=2)`)
-- Writes Markdown to `output/affirmations/{category}/{order}-{slug}.md` (structured by grammar)
+- Writes `SubjectAffirmations` to JSON: `output/affirmations/{category}/{order}-{slug}.json`
+- Writes human-readable Markdown: `output/affirmations/{category}/{order}-{slug}.md`
 
-The final loop iterates over `SUBJECTS` invoking the full compiled graph per subject.
+## Model Configuration
 
-## LLM Configuration
+Four `ChatOllama` instances share the same `gemma4:e2b` model with different temperatures:
 
-Four `ChatOllama` instances with different temperatures:
-
-| Variable | Temperature | Purpose |
-|----------|-------------|---------|
+| Instance | Temperature | Use Case |
+|----------|-------------|----------|
 | `llm_validator` | 0.06 | Grammar + subject validation (deterministic) |
-| `llm_analytical` | 0.12 | Source/document analysis |
+| `llm_analytical` | 0.12 | Source analysis, document analysis |
 | `llm_generative` | 0.24 | Reference document generation |
 | `llm_creative` | 0.48 | Affirmation generation |
 
 All use:
-- `model="gemma4:e2b"`
-- `base_url=os.environ.get("OLLAMA_HOST", "http://localhost:11434")`
-- `keep_alive="12m"`
+- `base_url` from `OLLAMA_HOST` env var
+- `keep_alive="12m"` to keep model loaded
 - `reasoning=False`
-- `TokenCountsCallbackHandler` for token accounting
+- Token counting callback handler
 
-### Ollama Model Variants
-
-| Model | Pull Command | Use Case |
-|-------|--------------|----------|
-| `gemma4:e2b` | `nx run affirmancy:ollama --configuration=pull-small` | Primary model (128k context) |
-| `gemma4:27b` | `nx run affirmancy:ollama --configuration=pull-large` | Larger model for quality (if available) |
-
-## SearxNG Configuration
-
-The `configuration/searxng.settings.yml` file configures a private instance layered on upstream defaults (`use_default_settings: true`):
-
-### Key Settings
-- **Hostname boosting** (`hostnames:` plugin): 100+ high-priority patterns for spiritual sources (sacred-texts.com, hermetic.com, biddytarot.com, labyrinthos.co, chabad.org, sefaria.org, runesecrets.com, crystalvaults.com, etc.)
-- **Low priority**: SEO farms, generic horoscope sites, dictionaries
-- **Remove**: Non-English content farms, medical sites, image-only sites, affiliate marketplaces
-- **Safe search**: Off (0) — spiritual content often misclassified
-- **Engine weights**: Wikisource (2.0), Open Library (2.0), Wikipedia (1.5), Startpage (1.5), Reddit (1.2), DuckDuckGo (1.0), Brave (0.9), Bing (0.7)
-- **Timeouts**: 8s request / 15s max for LLM tolerance
-
-## Nx Targets
-
-Targets defined in `nx.json` (inherited via `targetDefaults`) and `pyproject.toml`:
-
-| Target | Command | Description |
-|--------|---------|-------------|
-| `ruff-lint` | `ruff check src testing` | Linting |
-| `ruff-format` | `ruff format src testing` | Formatting |
-| `pyright` | `pyright` | Primary type checker (strict) |
-| `ty` | `ty check` | Supplementary type checker |
-| `pytest` | `pytest testing` | All tests (unit + integration) |
-| `pytest:unit` | `pytest testing -m unit` | Unit tests only |
-| `pytest:integration` | `pytest testing -m integration` | Integration tests (require services) |
-| `test-coverage` | `pytest --cov=src testing` | Coverage report |
-| `vulture` | `vulture src --exclude=__init__.py` | Dead code detection |
-| `bandit` | `bandit -r src` | Security linter |
-| `nbstripout` | `nbstripout src/*.ipynb` | Strip notebook outputs |
-| `typecheck` | `pyright` + `ty` (parallel) | Composite type checking |
-| `lint-code` / `format-code` / `typecheck-code` / `guard-code` / `test-code` | — | The workspace-wide aggregators every project exposes; the Python tools above run behind them |
-
-### Service Management Targets
-
-| Target | Configuration | Description |
-|--------|---------------|-------------|
-| `affirmancy:ollama` | `start` / `stop` / `pull-small` / `pull-large` | Ollama container lifecycle + model pulls |
-| `infrastructure:searxng` | `up` / `down` / `open` | SearxNG container + browser |
-| `infrastructure:open-webui` | `up` / `down` / `open` | Open WebUI container + browser |
-
-## Project Structure
+## Output Structure
 
 ```
-projects/affirmancy/
-├── src/
-│   ├── __init__.py              # Package marker
-│   ├── affirmancy.ipynb         # Main Jupyter notebook pipeline
-│   ├── grammars.py              # Grammar enums (9 axes) + Grammar model + GRAMMARS list
-│   ├── models.py                # Pydantic models (Affirmation, GrammarAffirmations, SubjectAffirmations, ValidationResult)
-│   ├── output.py                # JSON/Markdown file I/O utilities
-│   ├── prices.ipynb             # Token pricing research notebook
-│   ├── prompts.py               # LangChain prompt templates (8 templates)
-│   ├── py.typed                 # PEP 561 typed package marker
-│   ├── semantics.ipynb          # Semantic analysis notebook
-│   ├── services.py              # SearxNG health check (fails loudly if not running)
-│   └── subjects.py              # Subject + SubjectCategory definitions (~308 subjects)
-├── testing/
-│   ├── __init__.py
-│   ├── test_grammars.py
-│   ├── test_models.py
-│   ├── test_output.py
-│   ├── test_prompts.py
-│   ├── test_services.py
-│   └── test_subjects.py
-├── output/
-│   └── .gitkeep                 # Generated files (gitignored)
-├── AGENTS.md
-├── pyproject.toml
-├── uv.lock
-├── configuration/
-│   └── searxng.settings.yml
-└── README.md
+projects/affirmancy/output/
+├── affirmations/
+│   ├── documents/           # Reference documents (markdown)
+│   │   ├── tarot-card/
+│   │   ├── lenormand/
+│   │   └── ...
+│   ├── tarot-card/
+│   │   ├── 0-the-fool.json
+│   │   ├── 0-the-fool.md
+│   │   └── ...
+│   ├── lenormand/
+│   │   └── ...
+│   └── ...
+└── semantic-documents/      # Semantic embedding documents
+    ├── tarot-card/
+    └── ...
 ```
 
-## Key Dependencies (`pyproject.toml`)
+## Development & Testing
 
-**Runtime** (≥ Python 3.15):
-- `langchain>=1.4.5`, `langchain-core>=1.6.7`, `langchain-ollama>=1.0`, `langchain-community>=0.4`
-- `langgraph>=0.3`
-- `pydantic>=2.14.1`
-- `jupyter>=1.1`, `ipykernel>=6.29`, `tornado>=6.5.8`
-- `wikipedia>=1.4`, `trafilatura>=2.0`, `inflect>=7.5.0`, `pandas>=2.0`
+### Nx Targets
 
-**Dev**:
-- `ruff>=0.16.10`, `pyright>=1.1`, `ty>=0.0.28`
-- `pytest>=9.0.3`, `pytest-cov>=6.0`
-- `bandit[toml]>=1.9.4`, `vulture>=2.14`, `nbstripout>=0.8`
+The project defines the following Nx targets in `project.json`:
+
+| Target | Purpose |
+|--------|---------|
+| `bandit` | Security linting |
+| `lint-codebase` | General linting |
+| `markdown-lint` | Markdown formatting |
+| `nbstripout` | Strip notebook outputs |
+| `ollama` | Manage Ollama service (configurations: `start`, `stop`, `pull-small` (gemma4:e2b), `pull-medium` (gemma4:e4b), `pull-large` (gemma4:e26b)) |
+| `pyright` | Type checking |
+| `pytest` | Unit/integration tests |
+| `ruff-format` | Code formatting |
+| `ruff-lint` | Python linting |
+| `spell-check` | Spelling validation |
+| `test-coverage` | Coverage reporting |
+| `ty` | Type checking (ty) |
+| `typecheck` | Combined type checking |
+| `vulture` | Dead code detection |
+| `yaml-lint` | YAML validation |
+| `build-projects` / `deprecate-code` / `format-code` / `guard-code` / `lint-code` / `test-code` / `typecheck-code` | Composite targets |
+
+### Test Suites (`projects/affirmancy/testing/`)
+
+| Test File | Focus |
+|-----------|-------|
+| `test_grammars.py` | Grammar enum properties, specifiers, slugs, descriptions |
+| `test_models.py` | Pydantic model validation, trailing period stripping |
+| `test_output.py` | JSON/Markdown writers, path construction, content formatting |
+| `test_prompts.py` | Prompt template rendering, variable substitution |
+| `test_services.py` | `require_searxng` health checks (reachable, HTTP errors, unreachable with fix hint) |
+| `test_subjects.py` | Subject/category completeness, slugs, ordering, metadata |
 
 ## Related Pages
 
-- [Ollama & SearxNG Integration](../integrations/ollama-searxng.md) — Service setup and configuration details
-- [Local Development](../operations/local-development.md) — Running the pipeline locally
-- [Architecture Overview](../architecture/common-packages.md) — Shared workspace conventions
-- [Testing Affirmancy](../testing/affirmancy.md) — Test organization and running
+- [Ollama + SearxNG Integration](../integrations/ollama-searxng.md) — Service deployment and configuration
+- [Affirmancy Testing](../testing/affirmancy.md) — Test strategy and coverage
+- [Development Workflows](../workflows/development.md) — Local development loop with Nx

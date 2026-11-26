@@ -1,11 +1,11 @@
 ---
 type: Architecture
 title: Architecture Overview
-description: High-level system architecture showing the four major domains (affirmancy, caelundas, lexico, meanderaw), the IC-Suite toolchains, shared common packages, and cross-cutting infrastructure.
+description: High-level system architecture showing the four major domains (affirmancy, caelundas, lexico, meanderaw), the IC-Suite toolchains, shared common packages, and cross-cutting infrastructure. Updated to resolve stale claims against ADR 0013 and project structure.
 tags: [architecture, codebase, nx, TypeScript, Python]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
   - id: openwiki-source-d59d1fc281b8d9c7a97b4166
     resource: repo://configuration/eslint.config.ts
@@ -13,20 +13,10 @@ sources:
     resource: repo://configuration/ic-suite/codependix.config.ts
   - id: openwiki-source-6419221f89e7a55a996f3dab
     resource: repo://configuration/ic-suite/conformetry.config.ts
-  - id: openwiki-source-2611f82c4debd12996455857
-    resource: repo://documentation/adr/0013-name-the-ic-suite-layers.md
-  - id: openwiki-source-02697dfc3eaeabacfc681e88
-    resource: repo://documentation/adr/0024-nest-every-project-under-projects.md
   - id: openwiki-source-e84c9845fa1929e0b3fde349
     resource: repo://infrastructure/README.md
   - id: openwiki-source-6ba748254f38112b13d529da
     resource: repo://nx.json
-  - id: openwiki-source-aa414ec11f49c0bd0511815c
-    resource: repo://projects/affirmancy/project.json
-  - id: openwiki-source-9fd1be1a892ce2b7fa9453d3
-    resource: repo://projects/caelundas/caelundas-api/project.json
-  - id: openwiki-source-05a0bb4271c4f9caf2161a2b
-    resource: repo://projects/caelundas/caelundas-db/project.json
   - id: openwiki-source-f816dafba05f46665e78722c
     resource: repo://projects/common/interface/project.json
   - id: openwiki-source-06cec2050e1b9e3dd741c9f4
@@ -37,27 +27,11 @@ sources:
     resource: repo://projects/common/presentation/project.json
   - id: openwiki-source-8810b0ebfacea1016bc56cf4
     resource: repo://projects/common/testing/project.json
-  - id: openwiki-source-b037a02ecab615c15deb1d91
-    resource: repo://projects/ic-suite/callidescope/callidescope-core/project.json
-  - id: openwiki-source-f084a22c5c532343a9d27c48
-    resource: repo://projects/ic-suite/codependix/codependix-core/project.json
-  - id: openwiki-source-2833f4046ed31ba1123ef893
-    resource: repo://projects/ic-suite/codometer/codometer-core/project.json
-  - id: openwiki-source-5914b01677c3fe81ed73ecf5
-    resource: repo://projects/ic-suite/coinagerie/coinagerie-core/project.json
   - id: openwiki-source-1bd2cf1e4f05398afbe13eb6
     resource: repo://projects/ic-suite/conformetry/conformetry-configuration/README.md
-  - id: openwiki-source-88483a7848b23450193df8a0
-    resource: repo://projects/ic-suite/conformetry/conformetry-core/project.json
   - id: openwiki-source-9c39b5d57dccbc31a8952ba4
     resource: repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts
-  - id: openwiki-source-c816812d5348f49efc00a840
-    resource: repo://projects/lexico/lexico-api/project.json
-  - id: openwiki-source-2531e7c26d3583d919c181a6
-    resource: repo://projects/lexico/lexico-db/project.json
-  - id: openwiki-source-1b5bcbc9bc3c3bae0b2b91f8
-    resource: repo://projects/meanderaw/meanderaw-web/project.json
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Architecture Overview
@@ -71,7 +45,7 @@ flowchart TD
         Affirmancy["affirmancy<br/>Python LangGraph agent"]
         Caelundas["caelundas<br/>NestJS API + CLI + db + TanStack Start web"]
         Lexico["lexico<br/>NestJS API + CLI + db + TanStack Start web"]
-        Meanderaw["meanderaw<br/>NestJS CLI + TanStack Start web"]
+        Meanderaw["meanderaw<br/>NestJS CLI + web + core + db"]
     end
 
     subgraph ICSuite [IC-Suite Toolchains]
@@ -170,11 +144,11 @@ The codebase uses `pnpm` workspaces and `Nx` to coordinate builds, tests, and li
 | Domain | Location | Type | Key Technologies |
 |--------|----------|------|------------------|
 | **affirmancy** | `projects/affirmancy/` | Python application | LangChain, LangGraph, Ollama, SearxNG, Jupyter notebooks |
-| **caelundas** | `projects/caelundas/` | NestJS API + CLI, database package, TanStack Start web | Swiss Ephemeris, GraphQL, TypeORM, PostgreSQL, nest-commander |
-| **lexico** | `projects/lexico/` | NestJS API + CLI, database package, TanStack Start web | GraphQL, Relay, TypeORM, PostgreSQL |
-| **meanderaw** | `projects/meanderaw/` | NestJS CLI + TanStack Start web | Greek meander enumeration, TypeORM, PostgreSQL |
+| **caelundas** | `projects/caelundas/` | NestJS API (`caelundas-api`), CLI (`caelundas-cli`), database package (`caelundas-db`), TanStack Start web (`caelundas-web`) | Swiss Ephemeris, GraphQL, TypeORM, PostgreSQL, nest-commander |
+| **lexico** | `projects/lexico/` | NestJS API (`lexico-api`), CLI (`lexico-cli`), database package (`lexico-db`), TanStack Start web (`lexico-web`) | GraphQL, Relay, TypeORM, PostgreSQL |
+| **meanderaw** | `projects/meanderaw/` | NestJS CLI (`meanderaw-cli`), TanStack Start web (`meanderaw-web`), core library (`meanderaw-core`), database package (`meanderaw-db`), API (`meanderaw-api`) | Greek meander enumeration, TypeORM, PostgreSQL |
 
-Each domain is a vertical slice: it owns its applications, data models, and interfaces. Domains depend on **common packages** for shared infrastructure but do not depend on each other.
+Each domain is a vertical slice: it owns its applications, data models, and interfaces. Domains depend on **common packages** for shared infrastructure but do not depend on each other. The `codependix` configuration explicitly forbids `caelundas` and `lexico` from reaching each other (`caelundas-does-not-reach-lexico` and `lexico-does-not-reach-caelundas` rules).
 
 ### IC-Suite Toolchains
 
@@ -207,7 +181,7 @@ The `nx` plugin layer (callidescope, codependix, coinagerie, conformetry) carrie
 
 ### Common Packages (`projects/common/`)
 
-Shared infrastructure used by application domains (five packages):
+Shared infrastructure used by application domains and IC-Suite toolchains (five packages):
 
 | Package | Purpose | Consumers |
 |---------|---------|-----------|
@@ -217,7 +191,7 @@ Shared infrastructure used by application domains (five packages):
 | **presentation** | React component library (shadcn/ui + Base UI primitives) | lexico-web, caelundas-web |
 | **testing** | Shared test code as subpath exports (setup, nestjs, react, end-to-end, file-system) | Most TypeScript projects, as a development dependency |
 
-These are **internal workspace packages** (`type:package`), not published to npm.
+These are **internal workspace packages** (`type:package`), not published to npm. The `testing` package is constrained to depend only on `configuration` and `observability` (enforced by `testing-reaches-only-observability` rule).
 
 ### Configuration & Tooling (`configuration/`, `synchronization/`, `validation/`, etc.)
 
@@ -278,6 +252,7 @@ Every `project.json` carries tags that classify the project:
 - **Type**: `type:application` (executable entrypoints) or `type:package` (libraries)
 - **Layer** (IC-Suite only): `layer:core`, `layer:configuration`, `layer:analysis`, `layer:output`, `layer:cli`
 - **Framework/Language**: `language:typescript`, `language:python`, `framework:nestjs`, `framework:react`, etc.
+- **Name**: `name:<project-name>` for specific boundary rules
 
 ### Enforced Boundary Rules
 
@@ -289,7 +264,7 @@ Every `project.json` carries tags that classify the project:
 | **Packages can import packages** | `type:package` → `type:package` is allowed (shared infrastructure) |
 | **IC-Suite layer ordering** | Within each toolchain: `core` → `configuration` → `analysis` → `output` → `cli` (enforced by `codependix` boundary rules and ESLint `depConstraints`) |
 | **No cross-toolchain `@ic-suite/*` imports** | Each toolchain is independently versioned; they share only `observability` |
-| **React projects cannot depend on NestJS** | `framework:react` projects forbidden from importing `framework:nestjs` |
+| **React projects cannot depend on NestJS** | `framework:react` projects forbidden from importing `framework:nestjs` (rule `react-does-not-depend-on-nestjs`) |
 | **Domain isolation** | caelundas and lexico cannot reach each other (rules `caelundas-does-not-reach-lexico` and `lexico-does-not-reach-caelundas`) |
 | **Testing package isolation** | `name:testing` may only depend on `name:configuration` and `name:observability` (rule `testing-reaches-only-observability`) |
 | **No project cycles** | Acyclic dependency rule across all projects, including implicit edges |

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:95ef86f00f13c5504978bcbb7105e89b429476592565de31e98bcc62ccfda80d",
+  "pageVersion": "sha256:bac5f0456caff8a1b30aa4d2ddb39a0dd1a48d653e36a4b5e8bf9eb407591886",
   "claims": [
     {
       "id": "claim_0d5836ccb1294a0187993a301209a081",
       "statement": "The IC-Suite consists of five independently versioned toolchains: callidescope, codependix, codometer, coinagerie, and conformetry, each named for the command a user runs.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L135-L170",
+          "resource": "repo://nx.json#L149-L184",
           "version": "repo-lines-v1:sha256:25e44309fcd271c5d26ed7d7e80996b72b8b651c6b8e76e110e362443e7f697c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNlZjUxMTQ5NmEzMmU3MjMzMzNjYWQxMWNhZDY1YzViNWIwMDQzOTg5MjNkODE5NDU1N2UxOWM3N2I5MTk2NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkMjM3YmU3ZmRkNTczMzEwNGQyM2VmYjk4YmE0MWU2ODdiODE0MDNiYzJlNjEwOWI2MzRkNzExMWNjNjI0MGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwZTc2MjBiNzBkMWE5MTlhNzZlMGM3OTc1NmNkMTNjYzRiZDliM2VkY2FhNjQ1N2E4NThkOWFlZDQ0NTM5OWIifQ"
         },
         {
@@ -21,8 +21,8 @@
       "statement": "All IC-Suite toolchains share a five-layer architectural spine: core → configuration → analysis → output → cli, with each layer depending only downward.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L14-L34",
-          "version": "repo-lines-v1:sha256:a3333ecf4fd1203515f2746f9a213cec24f729311962991298d01b7f07a4e317:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA0NmQxYjY0MTU1MDc5ZmZmNjFhNTliMDczYWQ5YzdmNjlmNmQ2NDFhNDg3ZmQ0OTRjNTZjNTA3MzliZTM4MGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYwZDg4ZWNjYWU2Mjg4OTFlNDUyODljZmYwZTQ4MzU4ZGQ0ZDg5Y2E1ZmZlZWQwMjQzYmYxYmRlNzc1ZTI2OTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwNDhmNGRkZWYxZjk4NmUxN2MxNDVjY2VlZTBkODU1ZGU3OGU0MzM0OTRjM2ZlMDM0NTQ1ZTk3YzU3YzY2MDMifQ"
+          "resource": "repo://nx.json#L8-L12",
+          "version": "repo-lines-v1:sha256:55e49939cfad1daf86f58215e50fef37ce755cdb1d00f9fb6ff7ce9b08be57cd:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDYwYzBhZjQ0MzVjNzlmMTU3N2UyNGRkNmNhMzlkYjgxOTBmZmM5Yjc3NzFkMjRmNDRiYmE2ODYxNjk3MGViNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWY0MzJmMGI1YjhjNGQzMTc5YjRmNDNmNjc5MmRkODBlOGVhM2MxOTNjM2E1YjE3ZWVkZDA2MzA0YjAwODQwMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGE3NTFmODA0MGI2Mzc0MzUyNGZhYjE0ODM2YjA4ZTE2YWYwN2M0ODk1ODM0YzM4ZmUxMWYwNjlmYzI0ZmFkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWIzYWU3ZTU1Yzg2MDdhMTI4NjIxYTAyNTA5NzljMmI5ODZkZDRjZWYzYTU3YTczODQ0Y2JhMzhlY2Q0MzAxYiJ9"
         }
       ]
     },
@@ -31,8 +31,12 @@
       "statement": "The core layer holds only domain vocabulary (result/finding types, error classes, enums, unions, analyzer/validator contracts) and never holds services, modules, or anything executable.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L29-L29",
-          "version": "repo-lines-v1:sha256:c1a36ce3ab242cd46b5bda237441068e0fed13bc056eba3bccf6d6b1ab8074fb:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzFhMzZjZTNhYjI0MmNkNDZiNWJkYTIzNzQ0MTA2OGUwZmVkMTNiYzA1NmViYTNiY2NmNmQ2YjFhYjgwNzRmYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYzFhMzZjZTNhYjI0MmNkNDZiNWJkYTIzNzQ0MTA2OGUwZmVkMTNiYzA1NmViYTNiY2NmNmQ2YjFhYjgwNzRmYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDNjYTFhMmIxZDMyYzljODA0NDNjMWFiNjBiMjllNjQyZDU3NjE1NzJkOGQ5MGQ5ZTA5NTI3ZjlkNjQ4NmU3OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmYzYTNmN2YyMGM2ZDdmMDY3MmUzZGY0ZGU0ZmVmMTZmODY4ZDgyYmZhNzQyZjhlMGUxYmU4Y2ZkNWNhMjA1MyJ9"
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-core/src/index.ts",
+          "version": "repo-file-v1:sha256:2cc8693c9e9f905a5c5c9aa6bd6cf5851ef03db6f367697c8aee74294d985514"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-core/src/index.ts",
+          "version": "repo-file-v1:sha256:bb4657d48c22ad5738c1b0ac42a15fd2d84ef61f3989fd0b376830cfe16a0fe6"
         }
       ]
     },
@@ -41,8 +45,12 @@
       "statement": "The configuration layer holds the config file schema, loading, defaults, override resolution, and CLI flag resolution, producing one resolved configuration object; it never holds domain result types.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L30-L30",
-          "version": "repo-lines-v1:sha256:512d60fb8c7a7639fecd81438da08aafa66085d0f1b2c66920d7a9945be04ccc:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTEyZDYwZmI4YzdhNzYzOWZlY2Q4MTQzOGRhMDhhYWZhNjYwODVkMGYxYjJjNjY5MjBkN2E5OTQ1YmUwNGNjYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTEyZDYwZmI4YzdhNzYzOWZlY2Q4MTQzOGRhMDhhYWZhNjYwODVkMGYxYjJjNjY5MjBkN2E5OTQ1YmUwNGNjYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWFhZjY1MzE4YmY5OGU0ZjkyMjVmMmY0MjRiNzFjNThhN2NjYzAxZGU1Y2FlMjAxMDNjZTk3YzgxNWE4NDMyNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWVlMGM5ZjQ2MWYxODMyZDE0YTVjMWU3N2JiMzU1ZTg3OGRjY2NhZDRiY2Y4NzExNWU1NWY1MmE4MmVhY2QzNCJ9"
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-configuration/src/index.ts",
+          "version": "repo-file-v1:sha256:239153b1174e843f126828e0cdfbaa3ab075ca482da1518c36ec8d2765b81770"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/src/index.ts",
+          "version": "repo-file-v1:sha256:7219ab4db6fd16e96983a70319437a456e0ae308da05041efb0f9c5ff32b0c03"
         }
       ]
     },
@@ -51,8 +59,12 @@
       "statement": "The analysis layer holds what the tool actually does (per-suite names and shapes) and never holds rendering or command wiring.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L31-L31",
-          "version": "repo-lines-v1:sha256:671c163173a3e1262703855471ceee26932bd572ab7cf5b2bd366b239f622d43:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjcxYzE2MzE3M2EzZTEyNjI3MDM4NTU0NzFjZWVlMjY5MzJiZDU3MmFiN2NmNWIyYmQzNjZiMjM5ZjYyMmQ0MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjcxYzE2MzE3M2EzZTEyNjI3MDM4NTU0NzFjZWVlMjY5MzJiZDU3MmFiN2NmNWIyYmQzNjZiMjM5ZjYyMmQ0MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTVmMmU4NTYyZDA2OGYxZDc3NTYwMWViZjM4ZTU5MGY1ZWYzZTFiYmYyMWRlYjc1MzFjYjdkMWVjODM2OThjYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODNjYmQyNjlkY2ViYTNiNDc4NWY4MGZhMmExOTJlYzQxNjRiNmVhNTdkZjdmNmQyZmQ3NTgyZjgwMDg4MjZjNyJ9"
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-graph/src/index.ts",
+          "version": "repo-file-v1:sha256:c7debce2dd78cf269728dc6293f637c78c0be45beda328e01d2d63b898f169c9"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-boundaries/src/index.ts",
+          "version": "repo-file-v1:sha256:41a91a1dba92b221094c37d58767ce8c0c980eb0849c69f9fc35c32cea737f8d"
         }
       ]
     },
@@ -61,8 +73,12 @@
       "statement": "The output layer holds every render target (JSON, markdown, mermaid, anchor blocks, destination routing, delivery) and never holds analysis.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L32-L32",
-          "version": "repo-lines-v1:sha256:75dcebe50d68f4fec8b275793fe70377c6d1507a71c193425970083e64fe8582:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzVkY2ViZTUwZDY4ZjRmZWM4YjI3NTc5M2ZlNzAzNzdjNmQxNTA3YTcxYzE5MzQyNTk3MDA4M2U2NGZlODU4MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzVkY2ViZTUwZDY4ZjRmZWM4YjI3NTc5M2ZlNzAzNzdjNmQxNTA3YTcxYzE5MzQyNTk3MDA4M2U2NGZlODU4MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDM0ZTMxOTVkYTk0YWJiYjY1YmRkNmU4ODdkYmIyNTA2MWU3MzRlNGI1OTdkYmNkNjE3MGMyMTEzOTI2YzcxYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGVkM2EwNDAyOGUwZjRjYTMwYmI0ZjFkZDEwYTVmOTc4NjYyMGM5ZDg4ZTgwZjBmNzU4ZGIxY2UyNmY5ZTEwMCJ9"
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-output/src/index.ts",
+          "version": "repo-file-v1:sha256:75cd29562fe01bf331472387050c249036f9f5e99704020cbf15d2be865ac698"
+        },
+        {
+          "resource": "repo://projects/ic-suite/conformetry/conformetry-output/src/index.ts",
+          "version": "repo-file-v1:sha256:24ff444f08ca1467384739b6260e01089d186f02b3dc269dccf4ccae18dd5808"
         }
       ]
     },
@@ -71,8 +87,12 @@
       "statement": "The cli layer holds only *.command.ts modules and nothing else, never any logic.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L33-L33",
-          "version": "repo-lines-v1:sha256:06923c081f900b14c235cffead4e5403d4553d491f55375874b91ff2052e767d:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDY5MjNjMDgxZjkwMGIxNGMyMzVjZmZlYWQ0ZTU0MDNkNDU1M2Q0OTFmNTUzNzU4NzRiOTFmZjIwNTJlNzY3ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDY5MjNjMDgxZjkwMGIxNGMyMzVjZmZlYWQ0ZTU0MDNkNDU1M2Q0OTFmNTUzNzU4NzRiOTFmZjIwNTJlNzY3ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmYzYTNmN2YyMGM2ZDdmMDY3MmUzZGY0ZGU0ZmVmMTZmODY4ZDgyYmZhNzQyZjhlMGUxYmU4Y2ZkNWNhMjA1MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmI2YzUwYzJjNmU4ZmRhODc1YWUyYzAxNWU5NmYxNTQwNjA5MTM3NDFjMDQwMzgxZWFkZWYyMDVjN2IxYTMzYSJ9"
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.command.ts",
+          "version": "repo-file-v1:sha256:b5c4304d497b7d901e497494bf7fb3d585a7d426f78de364a1e9e4ee3fcc94df"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-cli/src/modules/map/map.command.ts",
+          "version": "repo-file-v1:sha256:3e1711daf8fb1564f015d5d891ca409c29af7ea5c671f9101b664b19533a7b89"
         }
       ]
     },
@@ -81,16 +101,12 @@
       "statement": "The nx plugin layer (callidescope, codependix, coinagerie and conformetry each have one) sits above cli and carries the layer:cli tag, not a sixth layer tag, because it is a second host for the same underlying toolchain.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L142-L152",
-          "version": "repo-lines-v1:sha256:67e036371381188f4b1fcf2d5b77e6ab4f2d6e71a970a1878bd112b80cd0843c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1NjE2NjA2MmI1YmU4MTg0ODU1MzRhNzZhMGI2OTZiNjRjM2E3Y2ViNzFjOGJkMWQwZDQ4YmNhYTMyNDNkNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2NDY4ZmUyMDExZmZkN2JhYWQ3YTI3ZWFjNzMxZTMwYzg5Mzk5ZmRiOTJkOWVhZGNkZTJhYTk1NDQ2MDk0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlOTJhNjQ1MDQwOGU1ZmM1OTJiMWE3MGFiOTk5M2M0Njg5ZjdmNTI1NmViZjRjYTRhZDA3NTU5ZDhjMGE1YTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://nx.json#L8-L12",
+          "version": "repo-lines-v1:sha256:55e49939cfad1daf86f58215e50fef37ce755cdb1d00f9fb6ff7ce9b08be57cd:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDYwYzBhZjQ0MzVjNzlmMTU3N2UyNGRkNmNhMzlkYjgxOTBmZmM5Yjc3NzFkMjRmNDRiYmE2ODYxNjk3MGViNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWY0MzJmMGI1YjhjNGQzMTc5YjRmNDNmNjc5MmRkODBlOGVhM2MxOTNjM2E1YjE3ZWVkZDA2MzA0YjAwODQwMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGE3NTFmODA0MGI2Mzc0MzUyNGZhYjE0ODM2YjA4ZTE2YWYwN2M0ODk1ODM0YzM4ZmUxMWYwNjlmYzI0ZmFkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWIzYWU3ZTU1Yzg2MDdhMTI4NjIxYTAyNTA5NzljMmI5ODZkZDRjZWYzYTU3YTczODQ0Y2JhMzhlY2Q0MzAxYiJ9"
         },
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L37-L45",
-          "version": "repo-lines-v1:sha256:d4f3b1f4ab118e99901401d9376c42486ab5ad6ca60e4c642244aa9866ebd49c:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYzQ3ZjQ1MDc0NzNiMGM3YzZlNzY4ZDU2YTk5NDM1YjQ1NTg5ZjIzZDcyNjY0YWQ0NmNhY2IzNzUwMDQ4ZjA5YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTNjNmMyNTIzNmU3MDYxMjMwNjM3ODJhNzhhNjM1MGIyYjI0OWYyYzE1NWIxNTRhZTdmNmNjMDM3ZjY2YzRmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmI2YzUwYzJjNmU4ZmRhODc1YWUyYzAxNWU5NmYxNTQwNjA5MTM3NDFjMDQwMzgxZWFkZWYyMDVjN2IxYTMzYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTcwMjQ1YzE5YWZhOWNlNjJhZjAwYmU0NWQ3ZTNiZGUyNDE2NWNkYTQzYTBlYWYzZmNjZmY3YzJmNGY0MzIzYSJ9"
-        },
-        {
-          "resource": "repo://nx.json#L63-L100",
-          "version": "repo-lines-v1:sha256:7737d70a1c09850189840e46bcb7f65b60ce3d78317cedc1554cf3a9a59c8fae:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5NDY5YzkxZTViNjgyZjYxZWJiNjgzM2FmZjdhZmE2Y2JlNTdiZTZiOWNhNzQ2NWU4MmZlNmYzOWFmOWVjYTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2NGQ4YzA3MzQyOTg5MzEwMTU3NmQ4OGQ5OTEyN2U4OWQ2ODkxZDNiMTdlODlkZjAyZWM5YWU3MDcwNWQ4YmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1ZmQ2OTU3ODJkNDBkZDBkZWQwZmZkNWM4NjZlZjMwZWVhZTA5ZDJhNTEzYjczNjI2YmFkOTdiZDYxZDg4YjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3ODUxYzdmOGQ0Mjc4N2EyM2E2NmVkZGVhNmNjYjRlNzAxNDkxZDJmMzI2NTQyNGEzN2I5MDMxNTgyZmYzNDcifQ"
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/project.json",
+          "version": "repo-file-v1:sha256:11f405506a088e87d548139644ee9c45ac72f25549411de1531e18c7f0f78e41"
         }
       ]
     },
@@ -99,8 +115,12 @@
       "statement": "The core-versus-configuration test: if a type describes what the tool produced, it belongs in core; if it describes what the user wrote in <tool>.config.ts, it belongs in configuration.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L47-L58",
-          "version": "repo-lines-v1:sha256:041b24e853eb1bdf0a553e25ce608a36c7cfa9bffb13cac51ad9f7a3b40e6398:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhmN2ZlZThlY2Q4MjdhNzZkMWUwMzE2NDM5MDA3NTUzODFmMTA4MjVmNzAyOGE5N2VmMWYxZWMyYmZkOWQ4ZDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyYTM1NDQ3OTUzNmE2NDViNjdlMjVjOGRiNDRlYWM4ZjdiYjBlNjNkNzc0NWY1ODYyMWNjYWRkYjlkYTE4NjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEzMmE0YjAyOGY3NzI1MjMyODhhYzQ5YzRlMzU0MjE2OTQwNTczYTcxMWU2MzU2MDVkZDUzMDI3Mzc4MTRjZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUyZTk1ZDEyZThjYTRkODRhZmVmYTczNTA0YzlmNTdjNWU5MThkNTQyZDc4NDAwYzAzM2RkZTczYjJmZTBjZWUifQ"
+          "resource": "repo://configuration/ic-suite/callidescope.config.ts#L1-L80",
+          "version": "repo-lines-v1:sha256:bd12870c51980e8c36a175a6b8e6b4ac839d02039b8d883170bc0b5884c274a8:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MjAwOTY0YTk3ODYzNTUyMmIyYWIwOTBjNjUwNjVkOGVmOGU4NWM0NzMwYmIyZWIwNDYwZDM0YzY3N2RkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZTBkMDhiMTJiZjYwM2QxNmJhNjg2MDdlODgxNDQ4ZDRiNzRlZWNmM2IzOGUxNDViM2QxYmUxYTJmOWEzYjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0NDk2NWI3MGEzMzg2MzFhMmNjYzJkZDdjZTA0NzQyYjQwMjA5NGZiODk2NDliODVmZjBiMDYzYTZmNjRkMGUifQ"
+        },
+        {
+          "resource": "repo://configuration/ic-suite/codometer.config.ts#L13-L140",
+          "version": "repo-lines-v1:sha256:e4541584ace43490d043963171c145f60352b438c306c05779e03396da850d2e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkZjI3YmE1OGY1ZmJmNGYxMGE5ZGNlMmFjM2EwODZiM2Q4MmIyYTY1YzBmZTRkOWQzNzAzMTY1ZTY0MmE1YmE2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiMDJkMmMwZDZkYzVlNzRkOTJmYTE0YjkxZGJlYTI2NDA5MGJlYjM1ZmRiOTE4OGQ5YjM0MTE4MWRjZTlmNGNlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0YWU1NGIyZDllNGEwNDQ1OTk5YTEyZWMxMmMzNzQyY2ZmMWJmYzdkMmM3ZThkMjcwMThkZDFkMDU3MDNkM2YyIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwZTkzNTBiNDI3OWIxNjE2MzI0ZDRlMGViOGJlMDE3ZGJmMDI0MThlZGUzNDdhYWMxYjZhMjVkYTZhODhkNWQ3In0"
         }
       ]
     },
@@ -109,8 +129,20 @@
       "statement": "The analysis layer deliberately does not converge on a shared name across toolchains; it is governed by the rule: one package per independently usable analyzer, named for what it analyzes.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L60-L70",
-          "version": "repo-lines-v1:sha256:7ccc6a8e63700b84d8c5777c16277f587a67823799fca6977920e30b9616a745:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMzkxMzJhZDZlOGFiZTJmODhiMTg5ZDYzOWIxZWM1ZTY1M2Y5OWNlMmFiYjBlNmQyN2E4YzE2ZjFmN2YzMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxYzQ2NTk0NTM4OWIxYzcxNjU4ZmRmZTk2ZDIzNGFmNTVlNmI0NTY3ODZhODM2ZmIwNGQ3OTU1YTI1MTQ1NGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkNjg1NWI4YzJhZGFhZGE5MTVkMzk3NGU2MGFmY2ZhNDVmMGZkMjA5YzUwMmU1ZjA4YWU0MGQyMzI5ODExMmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmYjhmYWI2YmQ4OTQzNDY3YzRkOGY0MTI4ZDc4OGE3MzMzMzI3Y2IxZmIxOGI4ZWRjODEzYzZlMDVlMDc2NzYifQ"
+          "resource": "repo://projects/ic-suite/codometer/codometer-languages/project.json",
+          "version": "repo-file-v1:sha256:118e90cd169a42f01f5da8b8afc84d75ee15119fc81b1ded9819b2735fc10acf"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-measurement/project.json",
+          "version": "repo-file-v1:sha256:17e76c965984c9c9ebeed7746f302a9fd9de0a70da032c2ae3ddfe28f1aa304f"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/project.json",
+          "version": "repo-file-v1:sha256:ee1dba42b966950b6ba083a28ecfe05025ee9251336f1ffa2302a3ed91db8c9d"
+        },
+        {
+          "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/project.json",
+          "version": "repo-file-v1:sha256:9f9a6c03b7f9881baf30f650ba47da3c6d95845b67a83286c0581a699e440d21"
         }
       ]
     },
@@ -119,12 +151,8 @@
       "statement": "The *-agents and *-examples packages carry no layer tag and are not in the runtime chain; they are non-publishable (private: true, and excluded from nx.json release.projects).",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L35-L35",
-          "version": "repo-lines-v1:sha256:bad8500d9a402fbc37e2cd12f4ca413109415335775169d5e1d0731590b147d8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmFkODUwMGQ5YTQwMmZiYzM3ZTJjZDEyZjRjYTQxMzEwOTQxNTMzNTc3NTE2OWQ1ZTFkMDczMTU5MGIxNDdkOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYmFkODUwMGQ5YTQwMmZiYzM3ZTJjZDEyZjRjYTQxMzEwOTQxNTMzNTc3NTE2OWQ1ZTFkMDczMTU5MGIxNDdkOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODNjYmQyNjlkY2ViYTNiNDc4NWY4MGZhMmExOTJlYzQxNjRiNmVhNTdkZjdmNmQyZmQ3NTgyZjgwMDg4MjZjNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWJkM2E0MTYxMzkzYTNjNWY1ZGNmZDY1MDJlZmQ4YjE4YWUyZmIxMGJiZmQwNDI2YzY5YzgzMDA3YzU3ZDM4MSJ9"
-        },
-        {
           "resource": "repo://nx.json#L148-L162",
-          "version": "repo-lines-v1:sha256:4de32d4db44eab58577362e21efba29c938ec6a42290c2462cfda38fe63ab91b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1NWYzZmJiOGJlZTE0NWJmOGZlNGY2NjRkNDllMzgzNDYxYjQ0NGFjYzliYWY1YmYwMzRlZTZlM2ViZWI3MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhMDUzNmZlMDAyYmYzNDgwYjRjMTdlMTRkMjczMTcwMjU2N2IwNjJjMmMwYmJiMTMyZDEwYmZmZjFkYmMxNzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmZDM2MmRiMWFkOGNmZThkZWU1MGQxZDhhZTZjZWE3ZmM1ZTIzYWFmYmY0Y2NmNWUzM2FlZWMyNzQ0Y2FjZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxOTVhOTJjNDg4NTIzN2I0ZjI0YjU4ZGZjZDdlNDdiNjY0NjNkNTQyOWE0Y2M2OTgyZmI4OTY2MGE2ZWE4Y2IifQ"
+          "version": "repo-lines-v1:sha256:fabe8d459d53288060f4c45924c103e21020043d68898fb2e64103800b39c064:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNjczYWJkNDU3YTk3ZWVhMTdhNjAwNjJlYjBmYWVhNmJkZjA5NDg2OGNjNmI4ZjhjMGViZGEyZjYxZWQ0MmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1NWYzZmJiOGJlZTE0NWJmOGZlNGY2NjRkNDllMzgzNDYxYjQ0NGFjYzliYWY1YmYwMzRlZTZlM2ViZWI3MDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjljYzY4OWQ5MGRhZDEzZmE0MDk3Y2ZlMWRhOGYxYWFiOWE1YmIyOGZhYjVmOTlhNmQ1MGQ2MDUxMGE5MDgxY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY1NGFmZjMxOWFhMzUyNDEyZmZlNDlkZGFiMDU1MGY2MGE5MDE5MjlmMTlhY2EwZDBmYTg3Y2U3OWZiZjQ4MjMifQ"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-agents/package.json",
@@ -137,30 +165,30 @@
       "statement": "Each suite's analysis layer packages are named per-suite: callidescope-graph; codependix-boundaries, file-imports, nestjs-modules, nx-projects; codometer-languages, measurement; coinagerie-languages, vocabulary; conformetry-generation, languages, validation.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L60-L70",
-          "version": "repo-lines-v1:sha256:7ccc6a8e63700b84d8c5777c16277f587a67823799fca6977920e30b9616a745:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmMzkxMzJhZDZlOGFiZTJmODhiMTg5ZDYzOWIxZWM1ZTY1M2Y5OWNlMmFiYjBlNmQyN2E4YzE2ZjFmN2YzMzIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMxYzQ2NTk0NTM4OWIxYzcxNjU4ZmRmZTk2ZDIzNGFmNTVlNmI0NTY3ODZhODM2ZmIwNGQ3OTU1YTI1MTQ1NGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImJkNjg1NWI4YzJhZGFhZGE5MTVkMzk3NGU2MGFmY2ZhNDVmMGZkMjA5YzUwMmU1ZjA4YWU0MGQyMzI5ODExMmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmYjhmYWI2YmQ4OTQzNDY3YzRkOGY0MTI4ZDc4OGE3MzMzMzI3Y2IxZmIxOGI4ZWRjODEzYzZlMDVlMDc2NzYifQ"
+          "resource": "repo://projects/ic-suite/codependix/codependix-file-imports/project.json",
+          "version": "repo-file-v1:sha256:bd40f9667c8d91ab106e271d601f6527ea1de7a610eb06410c56a2d6e559797b"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-nestjs-modules/project.json",
+          "version": "repo-file-v1:sha256:0468330db1f41ada251c78355f9d977f3cb894a5c636543975ad554e34ea68c8"
         },
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-languages/project.json",
-          "version": "repo-file-v1:sha256:e6eebc8748218e212cee8cfabb8e5b852cd47cdfb48bfdf7c1f21a1a9a1ef925"
+          "version": "repo-file-v1:sha256:ee1dba42b966950b6ba083a28ecfe05025ee9251336f1ffa2302a3ed91db8c9d"
         },
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/project.json",
-          "version": "repo-file-v1:sha256:3e292bc3ca5d454a84bc5203c891a6094a028ffd53b0b7b7d0c4b051e0a4a2ed"
+          "version": "repo-file-v1:sha256:9f9a6c03b7f9881baf30f650ba47da3c6d95845b67a83286c0581a699e440d21"
         }
       ]
     },
     {
       "id": "claim_afbcfbd298884a4487c0d459db0ea427",
-      "statement": "The 29 publishable packages across the four suites version independently using Nx Release with projectsRelationship: \"independent\", conventional commits determine semver bumps, and Nx Release cascades patch bumps to internal dependents (updateDependents: \"auto\").",
+      "statement": "The 36 publishable packages across the five suites version independently using Nx Release with projectsRelationship: \"independent\", conventional commits determine semver bumps, and Nx Release cascades patch bumps to internal dependents (updateDependents: \"auto\").",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md#L3-L10",
-          "version": "repo-lines-v1:sha256:f0ce52b1603aa677d31d2f56fa455d7ea79863cb88e8d6fcace26c8c94a2da88:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTA5OWI2ZDZhNmQwYWMyYmM5Mjc1OGJjMjlkMmQwZWY5OTE3ZWJjOTU2ZThhMWVlMDI3MjU0MDc2ZGEyYThmMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMmU2YTE1ZGI1MWQxOTQ3MWNiN2I2OTQxZDYxNTEyYjA4MDMwZGIzYWRjYjJiMTVhY2I2ZDVlOTYzODUzMzNiZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTdiNjJlOGU1OWJjN2Q4ZmU2NWQyMGExMmVmMjQ0YjM4MGExYTM1OTBmZTVhYjI2YmIwMTEyMjFjNmQ2YzFiMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjU0ZmMyZWIyMzhiYzdhN2E1NjliMmMxYmU3MzQ1NDI0NzUwZmY5ZjhkZjJjMzkwOGQ5MTEwMjE3ODA0OGRjZSJ9"
-        },
-        {
-          "resource": "repo://documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md#L50-L53",
-          "version": "repo-lines-v1:sha256:f3c2e10cb80b053308c73bd7fc68bc8f613763021307d08ea89a9f97804e4a89:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2IyYTczYTU5M2YwMTAwZjAwZDVlZDM3OWUxNDhlMDgyZTVhZDU1ZmY4OGZlNjRjMDk5ODEwZWFiNjE1M2YzZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjFkZjkyZjk1OTdhZjJjZjkzMDQ1M2RkMTlmODZlNjVmM2E0ZmE0NjIwM2JjN2FhMWQ5ODhlODI2NDM5Y2NkNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDEwYTNiMTMwZWI4MTc1Mjg5OGJiZjk2NjE3NjlmMDBiZDEwMzNjN2QzYWJmMjU0MWYxNWRlZTQ3NGUxNDJkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZWY3MzI4OWRlMWJiNWUzYTg0MzRjZmYzNjE2NzM4Zjg1ZTdkNDMyYzkxMzZjYTgwOTQwYjQ1OTgwYThhZWI4ZSJ9"
+          "resource": "repo://nx.json#L135-L170",
+          "version": "repo-lines-v1:sha256:f59f190518e57823d375a3eb485f9120be1c8e7d2ea4978cf432870c08e0811a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NzhlMjUwM2I4Y2YzN2EwNmY3ZDZmMGEzYTZiNmZlMzU2OTFmYmNhYjUwYjg3NzVjYWI2ZmFiYzcxYzU5MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiMjVmMWYxZmI3MjUwNTIyYjM4ZWFjMzQ5ZWE3N2JiZjkzZDdkYzRlOWZmZjhiZDhkNWY4MjdlNmU3NDM2NTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMGVlMGVhNDgyZGI3NThlMTQ2ZDE1ZWNmMGRhZjU0ZWI5ODlmYTQzYjY3ZmI0MmE3ZDM5ZTNlYjI0M2IyY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwZTBiNjU4NjkwMGMzMzE4NDU5OGNiMWViNTU5YjVlYTFjZmIwZDc3OWQzMWEwYmYyZDBlMDJhNmQ5ZTM3MzcifQ"
         }
       ]
     },
@@ -169,8 +197,12 @@
       "statement": "Releases operate at two tiers: repository root release (semantic-release, fixed version, no npm publishes) and publishable packages release (nx release, independent versioning, per-package tags).",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md#L16-L27",
-          "version": "repo-lines-v1:sha256:6607314685581649f2c15011c2dfd05fcbb20e66f8e7da9dded6c45e9ee5508d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU4ZjQ3OThlODgzM2Y2OTIyNzE0YjVlODYxNGVjN2U2OGQ2M2IyZjg3YzVmMDFkZWYyNGYxMDYwNjJmMjQzYmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAyNTdiNDBhNTQ1ODZhZWQxNjg1NjMxNjFjM2RhYWY0ZDA0ZmIxZjdkOWJjOWYxYTA0ZDZmNDE4YTBmNzc3OTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkZmE3NTYwOGExZTQ5NDNkNGUwYTUzOTliOTI4ZmJiODEyNDI3MWQ0MDI2ZGE3YjljZmYwNmY5MTJkM2EyZDgifQ"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L306-L308",
+          "version": "repo-lines-v1:sha256:3ef1f14ac638e1d723be8de7e2f1e379944b6b02367e4d96f322bae767fbceba:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2ViYWQyMzEyNDVmMWJlZWUzZjgxNGQyMGMxZjk2ZjVmMjVkMzAxZDU5OGJkY2Q4MDQxMzcyMGZiMGFjZWZlOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWU5NmQyYTdhYTQzNTI5ZmJkOWEwMjJkNmY3NTllYWVmN2M3YzlhNTdjNTRiZjg0NjRjZjU2ODEwNmY1YTZhYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMTg0OTc3MjNiN2JjY2VjNTI5NTFiOTkyNjBjMTA3ZTk0YjAxN2NmNzk2MGFjNmY2N2Q2MzQ1MjI2YTVkOWI3YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGQ3Mzc4YWM2MTFkMGE2YzRjY2QwZDJhYzA2ZGIwNDZiNWFhODg5YmU0NzAwOWVhNmFhNTU4YmJjNzMwYzBhYiJ9"
+        },
+        {
+          "resource": "repo://nx.json#L135-L170",
+          "version": "repo-lines-v1:sha256:f59f190518e57823d375a3eb485f9120be1c8e7d2ea4978cf432870c08e0811a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NzhlMjUwM2I4Y2YzN2EwNmY3ZDZmMGEzYTZiNmZlMzU2OTFmYmNhYjUwYjg3NzVjYWI2ZmFiYzcxYzU5MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiMjVmMWYxZmI3MjUwNTIyYjM4ZWFjMzQ5ZWE3N2JiZjkzZDdkYzRlOWZmZjhiZDhkNWY4MjdlNmU3NDM2NTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxMGVlMGVhNDgyZGI3NThlMTQ2ZDE1ZWNmMGRhZjU0ZWI5ODlmYTQzYjY3ZmI0MmE3ZDM5ZTNlYjI0M2IyY2QiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwZTBiNjU4NjkwMGMzMzE4NDU5OGNiMWViNTU5YjVlYTFjZmIwZDc3OWQzMWEwYmYyZDBlMDJhNmQ5ZTM3MzcifQ"
         }
       ]
     },
@@ -179,7 +211,7 @@
       "statement": "Non-publishable packages are held back from npm by two repository gates: private: true in the manifest and the release.projects filter in nx.json, which excludes each *-agents and *-examples project; registry permissions are a third backstop.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L148-L162",
+          "resource": "repo://nx.json#L162-L176",
           "version": "repo-lines-v1:sha256:4de32d4db44eab58577362e21efba29c938ec6a42290c2462cfda38fe63ab91b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1NWYzZmJiOGJlZTE0NWJmOGZlNGY2NjRkNDllMzgzNDYxYjQ0NGFjYzliYWY1YmYwMzRlZTZlM2ViZWI3MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhMDUzNmZlMDAyYmYzNDgwYjRjMTdlMTRkMjczMTcwMjU2N2IwNjJjMmMwYmJiMTMyZDEwYmZmZjFkYmMxNzgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmZDM2MmRiMWFkOGNmZThkZWU1MGQxZDhhZTZjZWE3ZmM1ZTIzYWFmYmY0Y2NmNWUzM2FlZWMyNzQ0Y2FjZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxOTVhOTJjNDg4NTIzN2I0ZjI0YjU4ZGZjZDdlNDdiNjY0NjNkNTQyOWE0Y2M2OTgyZmI4OTY2MGE2ZWE4Y2IifQ"
         },
         {
@@ -193,8 +225,12 @@
       "statement": "No cross-toolchain @ic-suite/* shared package is created; the common ConfigurationService shape is a convention, not an imported type — each toolchain's core declares its own structurally identical shape.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L101-L109",
-          "version": "repo-lines-v1:sha256:243bfc02b01d75f93945a5ac50c56f66b3dd81a3c60caf158b816e80129342de:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjNhMDg1NTY2MWE5NDY3N2ZmMGQxZmY5ZmZiYTAzOTYxNjAxOTdjN2I5MmJiNTJhYTJkOTgzNzBkYzU0ZWRiYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDhlM2ViYmNiZThjMzZjOWJmMGVmNTEyMGMzY2FiYTgzZmU1NjIwYTNhNGM1YjY5NjFjMzZlOWE1NzVjNTVmZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYmFhNDAyZjEzNjZjOGY1ODkwOWE4MGY1MDc0MzU2NjgzMjMzNWYyN2IyY2U0YzhhYTkzMzkxOGEzMmM2MjE5ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZjUxM2Y1OGQ4ZWJkZWViZmExNDEzNTMzODRlZmMxMTkzODRkNWI2NzUzZGEwNDJlYWQ0NDMzYmU5MjQ0ODY1ZiJ9"
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-core/src/index.ts",
+          "version": "repo-file-v1:sha256:2cc8693c9e9f905a5c5c9aa6bd6cf5851ef03db6f367697c8aee74294d985514"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-core/src/index.ts",
+          "version": "repo-file-v1:sha256:bb4657d48c22ad5738c1b0ac42a15fd2d84ef61f3989fd0b376830cfe16a0fe6"
         }
       ]
     },
@@ -203,12 +239,12 @@
       "statement": "codependix-nx-projects is an analysis-layer graph builder that reads the Nx project graph, not an Nx plugin; it keeps its name despite colliding with the nx plugin layer namespace, documented as a deliberate exception, and @codependix/nx is the plugin.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L111-L120",
-          "version": "repo-lines-v1:sha256:dca76626771f0053ab699dfa54364e7594e981a71675fbc27d5132c87d777e26:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmYzk3NjJiOGM1YzI3MTc5ZDhhYTFiNWRkMGQwZTFlZTM1NjM5MGQyZjRkZGJhYzU0NjhhMTQ4ZjVlM2ZjZjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4YjBiYjVkZmRjYzIwMzY2MmJhNjRjNTYzNDQzOTA4ZTFhN2ZjNDlmNmM2MjQ2OGMyMDQ0NTIzNTI0NzI0YTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA0ZGJkZjA1ZTJlZjdjYWJiNmNkOWE3MjY1ZjRhZmEwZTUwOTFkMzE2YTBhZTNhNDU0ZDRhMzlkNDM4ZDIwN2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmNzMyODlkZTFiYjVlM2E4NDM0Y2ZmMzYxNjczOGY4NWU3ZDQzMmM5MTM2Y2E4MDk0MGI0NTk4MGE4YWViOGUifQ"
+          "resource": "repo://projects/ic-suite/codependix/codependix-nx-projects/project.json",
+          "version": "repo-file-v1:sha256:e2d6bbf75df0fdb877d7f0fe1d1df571cd0f3870e961fac21ec76a096ef328f5"
         },
         {
-          "resource": "repo://documentation/adr/0013-name-the-ic-suite-layers.md#L142-L152",
-          "version": "repo-lines-v1:sha256:67e036371381188f4b1fcf2d5b77e6ab4f2d6e71a970a1878bd112b80cd0843c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1NjE2NjA2MmI1YmU4MTg0ODU1MzRhNzZhMGI2OTZiNjRjM2E3Y2ViNzFjOGJkMWQwZDQ4YmNhYTMyNDNkNzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2NDY4ZmUyMDExZmZkN2JhYWQ3YTI3ZWFjNzMxZTMwYzg5Mzk5ZmRiOTJkOWVhZGNkZTJhYTk1NDQ2MDk0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVlOTJhNjQ1MDQwOGU1ZmM1OTJiMWE3MGFiOTk5M2M0Njg5ZjdmNTI1NmViZjRjYTRhZDA3NTU5ZDhjMGE1YTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/ic-suite/codependix/codependix-nx/project.json",
+          "version": "repo-file-v1:sha256:cc4c1111bde8600861a4a13fe84487bb173ecb3078a0e3af5ee9c688b04f3e4d"
         }
       ]
     },
@@ -218,7 +254,7 @@
       "evidence": [
         {
           "resource": "repo://configuration/ic-suite/callidescope.config.ts#L1-L80",
-          "version": "repo-lines-v1:sha256:9e9acaf2bbfe177894e6b6fe9ff186d9571bbcde1b7afdb7e5fe8467fe7cd106:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MjAwOTY0YTk3ODYzNTUyMmIyYWIwOTBjNjUwNjVkOGVmOGU4NWM0NzMwYmIyZWIwNDYwZDM0YzY3N2RkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZTBkMDhiMTJiZjYwM2QxNmJhNjg2MDdlODgxNDQ4ZDRiNzRlZWNmM2IzOGUxNDViM2QxYmUxYTJmOWEzYjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0NDk2NWI3MGEzMzg2MzFhMmNjYzJkZDdjZTA0NzQyYjQwMjA5NGZiODk2NDliODVmZjBiMDYzYTZmNjRkMGUifQ"
+          "version": "repo-lines-v1:sha256:bd12870c51980e8c36a175a6b8e6b4ac839d02039b8d883170bc0b5884c274a8:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MjAwOTY0YTk3ODYzNTUyMmIyYWIwOTBjNjUwNjVkOGVmOGU4NWM0NzMwYmIyZWIwNDYwZDM0YzY3N2RkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZTBkMDhiMTJiZjYwM2QxNmJhNjg2MDdlODgxNDQ4ZDRiNzRlZWNmM2IzOGUxNDViM2QxYmUxYTJmOWEzYjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg0NDk2NWI3MGEzMzg2MzFhMmNjYzJkZDdjZTA0NzQyYjQwMjA5NGZiODk2NDliODVmZjBiMDYzYTZmNjRkMGUifQ"
         }
       ]
     },
@@ -245,12 +281,12 @@
       "statement": "The callidescope Nx plugin infers callidescope-trace, callidescope-depth, callidescope-breadth, and callidescope-restrict; the restrict target is the per-project gate and the one guard-code depends on.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L513-L530",
-          "version": "repo-lines-v1:sha256:137396a5911d859b1bace2696a3ab04ea9a8987488dd2b8ec2e48dd192de252b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMTZlZDQ0ODUyMzhlZWIzZjVlODZkZDAxYWM3ZmNiZmRmZTA3NmM2MzQzMGQ3Nzc4ZjllOTE1MDZmOGQ2ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5NDE5MTE5Nzk5YTUwNDVmOWY5OTkxY2YxZjkxMGE0OGZjYmNlNDU4MmRlMDE3NmM4MzJhNjRhYmM3ZmYzNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1NTBmNzc4OGM5NmFmYTQ1N2Q2YjgzMzdjY2RlM2I4MmQ5NjkzMjIxM2FkOWZlMWJlMDNlOGE0ZjJhMDI1N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmMWNkNzNhMTE2ZDYxMDQ5YTg5Yjg4YzNjNzY3ZjQ3N2FmYThhMmJlZjZlMjdmNGU1YjYwYzNjZWMzODIxZDgifQ"
+          "resource": "repo://.github/workflows/continuous-integration.yml#L72-L74",
+          "version": "repo-lines-v1:sha256:45f30802b716a441c28eb757b2ac8935f63a027ac51971e12523323b75c5a7c3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODIzNTAxMjZiMmE2ZTYyNTYyOTI0ZDVjMTRhZTljODUyNmUyOWYyMjY4ZTJmZDRhYjQ0ZDJiYjkwOThiZGNkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTBjYjc0ZDU4M2FmYTEyNjI3MDEzMWExMDlhZmFjMDg2YjAxOWM3ZTViZTg1MjU5NjdkNGVjZDBlZmFiNmIzNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2RkMmFjNmI4YjQxMGIxM2ZlZTlhNmVjZDA0ODY3MmYxNzBiZGRiMTVhNDg5MWI3OTlhYjQ4MzU4YWY0ZmY5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTFkYTBiMDdkZTg1NDFiY2ViNGNlYjMyNWRjNTlkZTNiY2JhMjZmZTg3MzVjZDAwNGJiZGM5YTY1YmIyMGEwOCJ9"
         },
         {
-          "resource": "repo://nx.json#L74-L80",
-          "version": "repo-lines-v1:sha256:51eaa517df18463167ddf33abd6899dad75ec6cd7740d4ebb377962198edf869:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTg4MzViZTk3ZjcyZmI1NTgyMmVkNzE2ZjZiZDI1MmVjOTFlODgzYzMwZDM1ZjJhYzkxNmU3ZGE1ZmVkMjE2ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjE1NzllN2I2NGQ2MjIxMzYwNGNhMDU5ZmE4NTYxYjBiMTYxYmNlZTEzMmE5YzE1NjQzYWYyYTc5MDgzMzkwMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWZlNzA1YmFmYTk1MDFkNzNjNDZiZDE3NjhhN2JlZjVmOWZkYWExYjIyODZkZDNmNGRkZDAxZThiYzE5M2RjNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDU4NzA2MDg2YmVjZjg1NjhhOTAyNDEwMjI1NjdlZDg1ZDQ0M2ZlZDRjNTExMmVmMDRiNGQ1YzIxZmQyZTgzYiJ9"
+          "resource": "repo://nx.json#L502-L515",
+          "version": "repo-lines-v1:sha256:bc29a5e574f09a9c95808fe98d32758fc69e18394b6cbf3b3df9c599d30f4e3f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjlmYzJmNWZlN2NjMTYyYzQwMTVmOTA0Mzk3N2QxMjlkYmY3NWFjMzAyYmIzOTdhYjIxNGMwODkxNzM4Y2RiNWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxZmM1YjZhZjc4MGY2ZDhmMWJmNTMzZmFkOTk3ZTM1ZTQ0OWM2NTMyMDAwOWRiMzg2ODY2YTAzOGE5M2YzZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkYzhkYjNmYjJjZmJjMWE0ZTNjMDczYjdlYmFjYzM3M2Y5NzY1ZDJjMTNjNDg3OTYyODM1MGNkNDg3NGM5MmQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUwODhlZDY4OWI1NjQzZDM0YWQyMTk3MGRjNDlmYjc0NTdiYzM5YjJjMmViNzk1OWE3ZjBlZTM2NWM2YWJhMGYifQ"
         }
       ]
     },
@@ -291,12 +327,12 @@
       "statement": "The codependix Nx plugin infers the codependix-bound gate target (named by gateTargetName in nx.json); graphs are built over the project and its dependencies, and only violations charged to the project itself fail its gate.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L513-L530",
-          "version": "repo-lines-v1:sha256:137396a5911d859b1bace2696a3ab04ea9a8987488dd2b8ec2e48dd192de252b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMTZlZDQ0ODUyMzhlZWIzZjVlODZkZDAxYWM3ZmNiZmRmZTA3NmM2MzQzMGQ3Nzc4ZjllOTE1MDZmOGQ2ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5NDE5MTE5Nzk5YTUwNDVmOWY5OTkxY2YxZjkxMGE0OGZjYmNlNDU4MmRlMDE3NmM4MzJhNjRhYmM3ZmYzNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1NTBmNzc4OGM5NmFmYTQ1N2Q2YjgzMzdjY2RlM2I4MmQ5NjkzMjIxM2FkOWZlMWJlMDNlOGE0ZjJhMDI1N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmMWNkNzNhMTE2ZDYxMDQ5YTg5Yjg4YzNjNzY3ZjQ3N2FmYThhMmJlZjZlMjdmNGU1YjYwYzNjZWMzODIxZDgifQ"
+          "resource": "repo://nx.json#L9-L11",
+          "version": "repo-lines-v1:sha256:707fe32424883a85cf402d4ee39d92df74148d8d7842e410dc4313b9629d53e3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTdhZjkwZjY5NjExNmY5OWUzN2ZmMDljODNhNjQ4NzQwOWYwMDVkNTdiNTYzMGIwM2FjZmE2MWYyNzMzZTA0YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGY1Y2VkOTNkMzhiNjAxZDRhZDRkZmRkODBjYjVjMDEzNzVhYjg0MDY2YzExMmIxODg2NTJjMDZhMDgyODk3ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjg2ZmIxZGU5ZGMxN2Y2NzM3YTExM2ViZTRjMjIxODE2ZWE4YmY0ZmY2NWQzODNkMDZlNTNkMTIzZjQyOTc5NCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTY3MDEzYjY3ZWJhN2VjMDkyNDE2MTUzMWRkMGFkNmVkMDI3MTFjYjViYjIwZTQ2MDM0YmEzZDJhZTlkZDdkMSJ9"
         },
         {
-          "resource": "repo://nx.json#L79-L87",
-          "version": "repo-lines-v1:sha256:559f9ed330013c429b59db9cc2e3203bca656cd0a57691ce731bbb6fd0857fc2:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjljYTg5MWJmZjdhYzFmN2NlYWFlNDBlZjA1MTA2NmJlOWVmZTQ3YjRlNDI4MWU4NmMzMTliZTJjNTVlYmNlNCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYwY2RiOTcyYTdiZmI3ZWQyNDZmOWZmNjcyMzg1ZTU1ZjQ5NjhmYzExMDQzZGM1YjY4NGQ1MWRmYTMxZGJjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDcxMGE2ZDQzMDE5NWU3ZGUyZDdiN2Q3OWUyZTFlZmM4NDVlODg3ODkwZDU0NWRhNGQ4Y2M5ZGZhMzE0YTUxNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzZhM2UwZjY2OTk4OGYwOThjMWFiNWFlNTViNWVlZjhmZjk0ZTM0NDE3ODcxOTk1YmM0ZDYxMTkyYWY3YmRjZCJ9"
+          "resource": "repo://projects/ic-suite/codependix/codependix-nx/project.json",
+          "version": "repo-file-v1:sha256:cc4c1111bde8600861a4a13fe84487bb173ecb3078a0e3af5ee9c688b04f3e4d"
         }
       ]
     },
@@ -319,18 +355,26 @@
           "version": "repo-lines-v1:sha256:ea2960b51ac536a39b3fc783795c193c7f1f7a1721110e569ebefd4aab9075c5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhhZjk0YWY0YWEyMzM5N2Q2ZGQzMmI1NjQ5OGNkMmI3Njg0NTEzMjljMzAxNzBkMjQwYTFlMWU2NThlM2RiOWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3M2ZmMTQ0NmM5MDk4ZGQxYzE3MzlmYjk3MDNjMWI5ZjUyOTZiYzA4NjM2MjYyZDU1OTQzZTA1OGJkMTQwYjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1YzNiN2YyMzBmMGJhOTIwNjQ3MGYyYTliZGYzNjllOGQwMzc1MGQ3M2RjZjIyODlkMWExZjNmZjVjODkwOWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNmM2RkNmRjZDQ1M2ViNjMwMzA4YjFlYTA0YWYwNTY1N2E2MTJiYTNjYWNkNzQxYWIwZjNhMTU2ZTEyMWM5YmMifQ"
         },
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts#L305-L375",
-          "version": "repo-lines-v1:sha256:31da2703e15acdeea10b7c08627e205c6383690404bbe2395afea2e5435fc991:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMmEyZjk5NmYwOGU2ODBiZDI5MjEzNWE2ZmE0OTc4YmRhMjZlNjAyZDg0ZjMzY2IxZDU5NDc3NWQ0MzA0YjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMGFhNTkyOTE2OWQyNmU1NzVjZDhkMTE4ZmI3NGJiMTVmMGRkMTNlMGFlMDRkODEyOGQ0OTFjNTJkZWFhYmYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFiZjczNmI3N2U2ZTI2YWU1Mjc1NDI4YmU2NDRiMTRjNTczYmNjY2Y2MTU4M2ZlZmVmNTkzMWQyYjBjNDc5ZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU1NGM5NTEzMjkzOTNhMTYzOWRkMGNhOGM4YjY3NGU2MDI3N2IyZDA1YWM3MDAxNjZhMDIxZmExMGQzNzgwYjUifQ"
+          "resource": "repo://projects/ic-suite/codometer/codometer-cli/src/modules/measure/measure.command.ts#L297-L367",
+          "version": "repo-lines-v1:sha256:a08f19bcdebfc9f22e1c2926fdf7dfd2c2b17af5c1a0788a996bad3fecb56566:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMGFhNTkyOTE2OWQyNmU1NzVjZDhkMTE4ZmI3NGJiMTVmMGRkMTNlMGFlMDRkODEyOGQ0OTFjNTJkZWFhYmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3ZTU3ODhkNWQ5ZDczZDI0YTgxZGJjMGE1YTc0YmZhODJjOWMzYjNhZjk5ZTUyYWY3OTZlOTBiNDY4YThhM2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFiZjczNmI3N2U2ZTI2YWU1Mjc1NDI4YmU2NDRiMTRjNTczYmNjY2Y2MTU4M2ZlZmVmNTkzMWQyYjBjNDc5ZTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU1NGM5NTEzMjkzOTNhMTYzOWRkMGNhOGM4YjY3NGU2MDI3N2IyZDA1YWM3MDAxNjZhMDIxZmExMGQzNzgwYjUifQ"
         }
       ]
     },
     {
       "id": "claim_32430fdf2f594f7a8516b631a56795e8",
-      "statement": "The codometer Nx target runs through the integration:codometer batch executor with a check configuration that gates the project's limit and a write configuration that writes documentation/codometer.md; it depends on build, and build-projects depends on build and codometer so size limits gate builds.",
+      "statement": "The codometer Nx plugin infers two targets: codometer-limit (gates comment budgets and directory ceilings, no build required) and codometer-weigh (gates compiled output size limits, runs after build via integration:codometer executor). The build-projects aggregator depends on build and codometer-weigh so size limits gate packaging.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L237-L275",
-          "version": "repo-lines-v1:sha256:fd76dc6be1bb35f5d8067cb7c65245a4cddad8a86d4fb10652540584a0c51546:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3ODlmYmE2ZjdhOWRlOGZiNWE4YjY5ZjljYmE0MzZjNmU3OWI0Zjk1MGEwZDljMTczNTc3MTliYzg3ZTk1ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhYWU4YTBjYTc2Zjk4ZjdiN2RjNzk4NDk1MWQ2M2U1N2RiM2M2NDU1NzljYTUxYmFkNmE1MzlkNjE0ZWRiYmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0N2ZlZTRhY2NhMzA5MDIxNzMwMTE1YzhhZmQwZDk4ZDBjNDEyOWQwNjc5Mzk4Zjk3ODVmYTNkN2MyZmM4NjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3OGM0MjlhMjQwYWY3ZTI0ZTIyM2JkNTU1MGZiNjA4ZDM4MzM4ZDhhZDdiMmE3MDQ1OGY4ZGIzMTE4NTgwMjMifQ"
+          "resource": "repo://.github/workflows/continuous-integration.yml#L80-L82",
+          "version": "repo-lines-v1:sha256:3b6dd25d1d8ef989e325c85028bf61082e8eaacab81224446b1a15c2ed6d67c0:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjFlN2U2NWJhNGEwZjUzNGRhZDBlNmQ3MGI5ZjZkZmQ3YjIyZDAzNmE5YmMwOTI2MGJhMDcwOWQ4NTAxNmVhNyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTY3MTc5MWQ5OWM1NGFhYzA4MjIwMDkyYmE3NGM4NGMyMzViMDM2ZjE1YzBmMTUxZWMxMzM3YjA5Y2QyOWI5ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzhhOTgxZDcyZDBlYzBmNTBmNjE1ZWUyOTAzZDk0YzQ4MGYwZGY5NjU3NTlhOTMyM2NlZGFkYmRlZTVmMzk5MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWEyNDk5ZTQyMjgzNDk0N2JmNWM5M2Y2ZjJmYjkxMzc2OTY3YzcxNGYyMzUwNjMyMDgwN2I1MzJkODQ0MjZkYyJ9"
+        },
+        {
+          "resource": "repo://nx.json#L237-L242",
+          "version": "repo-lines-v1:sha256:31b9b1f20e34dfc68cee86a8d323646fae8ea284fed9a63d2d236c2b56192346:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDY1NTI0YTdkMjNiMDhjN2U2ZTcyOGZlMWIzYWZlMzNhZTRjOTIwYmU0MTE5NjEyNWFkNjY1NzlmMTNmY2JjOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWU2NzNhYmQ0NTdhOTdlZWExN2E2MDA2MmViMGZhZWE2YmRmMDk0ODY4Y2M2YjhmOGMwZWJkYTJmNjFlZDQyZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2YyY2E4ZTYxN2Y4OTYwYjY4M2Q3NzEzOWUzZDMzMzg2Mjc0Nzk1Mjk3M2I2ZTQ1NDQ0ZjQzNmJmNzcwNTMxNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDUzYTI2MzkzN2YwOGFiOTY1MGZjNWNiY2Q1ZGM3N2FhY2E5ZTllMGM0YWMxNDE5ZTI5Y2MwM2U3OGVmNzAwZCJ9"
+        },
+        {
+          "resource": "repo://nx.json#L513-L530",
+          "version": "repo-lines-v1:sha256:400a32b1053562c02917d30e91b2f6fc604dc5d677cc9ed66958770f1575cc08:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyM2UzN2FlMjYwMGIyMDZiOTMyNjdhODEwMDNkZDMwZmU5ZmJhMDk4ZjhkYjc2NGZjMzlkNzhkOWRmZTQ2ZDAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMwYjkwZDkxM2M4YzZmYjU0NTExMzdiNzJjYTg2MGE3YWUyZWEwMzU4Y2VkMDFkZGUwNDY3ZGUzOGUzYzM4N2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3ZTZiMzE5Y2FhNjZmMjFiNjk1ZWU0OTRlN2VmNDRmZGEzYWI1YzA3M2ZlMTQ3NWM1NTZhOTAzYjhmM2JhYjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzYmYxOGFlZmIzNDA0YmNlNWZlNTE2NGI4NzVhOTE3YTg5ZWNkZTVhZDM5NzdlNDNjZWMxN2U1MWZmMTM0MmEifQ"
         }
       ]
     },
@@ -374,33 +418,21 @@
     },
     {
       "id": "claim_d3ff51ce96cd4544a0ff2d8a47b4e852",
-      "statement": "The guard-code aggregator in nx.json depends on callidescope-restrict, catalog-manifests, codependix-bound, coinagerie-check, conformetry-validate, lockfile, project-ports, readme-projects and vscode-extensions; the build-projects aggregator depends on build and codometer so size limits gate packaging.",
+      "statement": "The guard-code aggregator in nx.json depends on agent-instructions, callidescope-restrict, catalog-manifests, codependix-bound, coinagerie-check, conformetry-validate, lockfile, project-ports, pull-request-template, readme-projects, skill-descriptions, typeorm-migration-sql, and vscode-extensions; the build-projects aggregator depends on build and codometer-weigh so size limits gate packaging.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L237-L242",
-          "version": "repo-lines-v1:sha256:3ef9aabc1fcfa663bc07cb26d3a8998f2b5a5fe2a99ad72f95f579b11be01701:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc4OWZiYTZmN2E5ZGU4ZmI1YThiNjlmOWNiYTQzNmM2ZTc5YjRmOTUwYTBkOWMxNzM1NzcxOWJjODdlOTU4MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTU4MzhhMzcwMzYzNmRiYjQ2MmVmMzU3ODU1Y2E3ZTk2MGFhZDUzZDJlNWY4ZDFiNTJjMTNlZmM2OTE0ZTZhMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYjQ3ZmVlNGFjY2EzMDkwMjE3MzAxMTVjOGFmZDBkOThkMGM0MTI5ZDA2NzkzOThmOTc4NWZhM2Q3YzJmYzg2NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjYyMmEyODg1NzAwNDQ1Y2VlYjNkMzE2MGE2N2Q4YWQ2OTM5MDg2ZmU0YTdkNDA0MTcwOWRlMTJhNmRlYjE3ZiJ9"
-        },
-        {
-          "resource": "repo://nx.json#L513-L530",
-          "version": "repo-lines-v1:sha256:137396a5911d859b1bace2696a3ab04ea9a8987488dd2b8ec2e48dd192de252b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMTZlZDQ0ODUyMzhlZWIzZjVlODZkZDAxYWM3ZmNiZmRmZTA3NmM2MzQzMGQ3Nzc4ZjllOTE1MDZmOGQ2ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5NDE5MTE5Nzk5YTUwNDVmOWY5OTkxY2YxZjkxMGE0OGZjYmNlNDU4MmRlMDE3NmM4MzJhNjRhYmM3ZmYzNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1NTBmNzc4OGM5NmFmYTQ1N2Q2YjgzMzdjY2RlM2I4MmQ5NjkzMjIxM2FkOWZlMWJlMDNlOGE0ZjJhMDI1N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmMWNkNzNhMTE2ZDYxMDQ5YTg5Yjg4YzNjNzY3ZjQ3N2FmYThhMmJlZjZlMjdmNGU1YjYwYzNjZWMzODIxZDgifQ"
+          "resource": "repo://nx.json#L493-L515",
+          "version": "repo-lines-v1:sha256:56624e02554d385bbd75c82f18eb9c27c2dcfae0c3bdc869693179b44059a5fe:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMTZlZDQ0ODUyMzhlZWIzZjVlODZkZDAxYWM3ZmNiZmRmZTA3NmM2MzQzMGQ3Nzc4ZjllOTE1MDZmOGQ2ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUxZmM1YjZhZjc4MGY2ZDhmMWJmNTMzZmFkOTk3ZTM1ZTQ0OWM2NTMyMDAwOWRiMzg2ODY2YTAzOGE5M2YzZmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1NTBmNzc4OGM5NmFmYTQ1N2Q2YjgzMzdjY2RlM2I4MmQ5NjkzMjIxM2FkOWZlMWJlMDNlOGE0ZjJhMDI1N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUwODhlZDY4OWI1NjQzZDM0YWQyMTk3MGRjNDlmYjc0NTdiYzM5YjJjMmViNzk1OWE3ZjBlZTM2NWM2YWJhMGYifQ"
         }
       ]
     },
     {
       "id": "claim_a96038a1448044a6b8e72211822f7c24",
-      "statement": "CI runs each toolchain gate as its own leg of the continuous-integration matrix: Guard (catalog-manifests, coinagerie-check, lockfile, project-ports, readme-projects, vscode-extensions), Callidescope Restrict, Codependix Bound, Conformetry Validate, and Build (build-projects, which includes codometer).",
+      "statement": "CI runs each toolchain gate as its own leg of the continuous-integration matrix: Static (typecheck, format, lint, deprecate), Guard (agent-instructions, catalog-manifests, coinagerie-check, lockfile, project-ports, pull-request-template, readme-projects, skill-descriptions, typeorm-migration-sql, vscode-extensions), Callidescope Restrict, Codependix Bound, Codometer Limit (comment budgets and directory ceilings), Conformetry Validate, and Build (build-projects including codometer-weigh for compiled size).",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L125-L130",
-          "version": "repo-lines-v1:sha256:ba6efda0f24bce12f699d9c5debb25a0a21884ab7329ffe475a031c9b5b2becf:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDc5ZTljMjQ5ZDM0NDc2YmY4YTkyMDZjMjc0ZTMzOGY1NjhlMGViNGViMjY5MzY4MWYxZDIyMmRlNmMzZjgyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWEyZjkyYTE3YWI5YjIxNzA5Mzc0NzAxYjQ1ZGRmMDRkZDllYjI4NWExOTY1MTU4MmY0MWNiZDhjZjUwNTU0YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGZmYjgyOWNhOTAwMzRlNGM2NWUzOWQyNmZjZjNmNDNmZDFjYzdhMzMwNDA3YzZhNTE5NTU0YTUwZjc4N2U4OCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDA3NmI5NmQyYTMwMjNkZWM1NzE3NzUwZGM3NDc1Njc0MDE3ZTYwMzg0MjZlYjgxMzkyNTI4ODdhMTUwNTlhMyJ9"
-        },
-        {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L60-L84",
-          "version": "repo-lines-v1:sha256:d2409157513ddf30b2d6af0d3979f3055d46d5a0e72a4f278a21fad0867242b7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxY2FhMjllZjNkODE1YzUzZDZkNGVkZTk1Y2JiMTJlOWZhZDg4YmZiM2Y1Yjc0YWI5Y2RhZWEyMDJhMmE4NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1MmFkMDA3NmY3YmVjZTA3ZjBiNWQ2OGY2NjFiMzUyNDEwMTc4NzQ1MGE1YmFkYmRkZTY1OWU2NTRkODExM2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxM2IyOWFmZGQxNzlhYzJhZGVkNjUzZjgxODNiMDQyNmE2ODM3Mjg5OGMwNDVlNzUyOTY2YjIzODBhMzg1M2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2MTA2YzkwMWIwMDA0MGJkYTAyZGUzYzg5ZWM3YTJiMDA4N2ZmNDFkZjlmY2JjZmNkZDU3OWVkZmFmMzM1M2MifQ"
-        },
-        {
-          "resource": "repo://nx.json#L513-L530",
-          "version": "repo-lines-v1:sha256:137396a5911d859b1bace2696a3ab04ea9a8987488dd2b8ec2e48dd192de252b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMTZlZDQ0ODUyMzhlZWIzZjVlODZkZDAxYWM3ZmNiZmRmZTA3NmM2MzQzMGQ3Nzc4ZjllOTE1MDZmOGQ2ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5NDE5MTE5Nzk5YTUwNDVmOWY5OTkxY2YxZjkxMGE0OGZjYmNlNDU4MmRlMDE3NmM4MzJhNjRhYmM3ZmYzNmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1NTBmNzc4OGM5NmFmYTQ1N2Q2YjgzMzdjY2RlM2I4MmQ5NjkzMjIxM2FkOWZlMWJlMDNlOGE0ZjJhMDI1N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmMWNkNzNhMTE2ZDYxMDQ5YTg5Yjg4YzNjNzY3ZjQ3N2FmYThhMmJlZjZlMjdmNGU1YjYwYzNjZWMzODIxZDgifQ"
+          "resource": "repo://.github/workflows/continuous-integration.yml#L60-L100",
+          "version": "repo-lines-v1:sha256:de29d0cb24a8fbf9bf41be691dff21a5f82c9040b987efa54e6c81eb847b07f7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxY2FhMjllZjNkODE1YzUzZDZkNGVkZTk1Y2JiMTJlOWZhZDg4YmZiM2Y1Yjc0YWI5Y2RhZWEyMDJhMmE4NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1YzVkMmZhM2RlNzQ5MjJhZjg0OGZjOWIyYmFlYjkzNmEwZTRmMWE3NmRjNDllOTQ1NjM3ODRjMTZiN2Q0ZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxM2IyOWFmZGQxNzlhYzJhZGVkNjUzZjgxODNiMDQyNmE2ODM3Mjg5OGMwNDVlNzUyOTY2YjIzODBhMzg1M2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYWFiZGJlYWI5OGYyMjA5Y2FlOTE5ZjcwNDQwYmZmNzhjYWQ0ODkyNThlODQ1NjUxZjQ0ZmVmYjg0YjcxMDkifQ"
         }
       ]
     },
@@ -409,8 +441,8 @@
       "statement": "Coinagerie is the fifth IC-Suite toolchain: it lists the words a codebase uses and keeps markdown glossaries in step with the code via --check and --write, and its @coinagerie/nx plugin infers the per-project coinagerie-check gate.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L276-L285",
-          "version": "repo-lines-v1:sha256:91337ef45591a37870c98cdf97aed398c30dddac58222dcc752e406be29ad6dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NmI2ZDM2ZjU5ZDdmMTgwMGQ0OTEyYTMzNDQxY2NmMWUzYjU5N2YyNDA3MTQ1ZDY5ZWEzY2Q4NzA5NzUwNjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzMzAzNGYwZGFkZDRhMGVlZDkyNjQwNGYxY2U2ZDZlYjc1MDEwOGMzMTQ2MGFiMGFmZDFiYjI0ODU0YjZhYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYTY0NDQ1OGFmNDUxZDFkMmUyMDQyODQ5YTE0YzQ5MzM2Y2VkMzFkYTVmMmYzMWU4ZTg4MzQxZTYxNmQwZmUifQ"
+          "resource": "repo://nx.json#L8-L12",
+          "version": "repo-lines-v1:sha256:55e49939cfad1daf86f58215e50fef37ce755cdb1d00f9fb6ff7ce9b08be57cd:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDYwYzBhZjQ0MzVjNzlmMTU3N2UyNGRkNmNhMzlkYjgxOTBmZmM5Yjc3NzFkMjRmNDRiYmE2ODYxNjk3MGViNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWY0MzJmMGI1YjhjNGQzMTc5YjRmNDNmNjc5MmRkODBlOGVhM2MxOTNjM2E1YjE3ZWVkZDA2MzA0YjAwODQwMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGE3NTFmODA0MGI2Mzc0MzUyNGZhYjE0ODM2YjA4ZTE2YWYwN2M0ODk1ODM0YzM4ZmUxMWYwNjlmYzI0ZmFkMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWIzYWU3ZTU1Yzg2MDdhMTI4NjIxYTAyNTA5NzljMmI5ODZkZDRjZWYzYTU3YTczODQ0Y2JhMzhlY2Q0MzAxYiJ9"
         },
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/README.md#L1-L40",
@@ -423,7 +455,7 @@
       "statement": "The 36 publishable IC-Suite packages version independently with Nx release (projectsRelationship independent), and the 10 *-agents and *-examples projects are excluded by release.projects.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L148-L170",
+          "resource": "repo://nx.json#L162-L184",
           "version": "repo-lines-v1:sha256:d15de8a05523c25cf622042847351850ca515625364295a61f727ba557de7079:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1NWYzZmJiOGJlZTE0NWJmOGZlNGY2NjRkNDllMzgzNDYxYjQ0NGFjYzliYWY1YmYwMzRlZTZlM2ViZWI3MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmZDM2MmRiMWFkOGNmZThkZWU1MGQxZDhhZTZjZWE3ZmM1ZTIzYWFmYmY0Y2NmNWUzM2FlZWMyNzQ0Y2FjZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwZTc2MjBiNzBkMWE5MTlhNzZlMGM3OTc1NmNkMTNjYzRiZDliM2VkY2FhNjQ1N2E4NThkOWFlZDQ0NTM5OWIifQ"
         }
       ]
@@ -431,6 +463,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

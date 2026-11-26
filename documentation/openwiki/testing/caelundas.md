@@ -1,18 +1,28 @@
 ---
 type: testing-guide
 title: Caelundas Testing
-description: Caelundas-specific testing strategy covering NestJS CLI command testing, Swiss Ephemeris calculation verification, event detection accuracy tests against reference fixtures, Postgres integration tests with Testcontainers, and TanStack Start web component testing.
-tags: [caelundas, testing, nestjs, swiss-ephemeris, vitest, tanstack-start, testcontainers]
+description: Caelundas-specific testing strategy covering NestJS CLI command testing, Swiss Ephemeris calculation verification, event detection accuracy tests against reference fixtures, Postgres integration tests with Testcontainers, TanStack Start web component testing, and GraphQL API resolver tests.
+tags: [caelundas, testing, nestjs, swiss-ephemeris, vitest, tanstack-start, testcontainers, graphql]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
+  - id: openwiki-source-075d3ab402f4a46d715e9918
+    resource: repo://projects/caelundas/caelundas-api/src/modules/events/events.resolver.end-to-end.test.ts
+  - id: openwiki-source-cfb6d34742394477d2a20b04
+    resource: repo://projects/caelundas/caelundas-api/src/modules/events/events.resolver.unit.test.ts
+  - id: openwiki-source-2b1e3e88b90770668eced6f2
+    resource: repo://projects/caelundas/caelundas-api/src/modules/events/events.service.unit.test.ts
+  - id: openwiki-source-e30f1d051f4f1573564dd3a2
+    resource: repo://projects/caelundas/caelundas-api/testing/events-application.ts
   - id: openwiki-source-694bf562c061967517e6158b
     resource: repo://projects/caelundas/caelundas-cli/configuration/vitest.config.ts
   - id: openwiki-source-e32c9a740194ebef315a645b
     resource: repo://projects/caelundas/caelundas-cli/src/caelundas-cli.main.end-to-end.test.ts
   - id: openwiki-source-2721637f4b2014ef3882c3e2
     resource: repo://projects/caelundas/caelundas-cli/src/caelundas-cli.main.unit.test.ts
+  - id: openwiki-source-76bf8cf08987d13f0be8afbf
+    resource: repo://projects/caelundas/caelundas-cli/src/modules/night-sky/night-sky.service.unit.test.ts
   - id: openwiki-source-4117a805f81c95fc92ec4b7d
     resource: repo://projects/caelundas/caelundas-cli/src/modules/perfective/modules/retrogrades/retrogrades.service.integration.test.ts
   - id: openwiki-source-92352ff85a64b8546a23cc5f
@@ -39,6 +49,10 @@ sources:
     resource: repo://projects/caelundas/caelundas-cli/testing/support/calendar-command.utilities.ts
   - id: openwiki-source-0e5cf6f8d0ad4b2a32ad923d
     resource: repo://projects/caelundas/caelundas-cli/testing/support/database.ts
+  - id: openwiki-source-b7d3526a0164d1546a5bf76f
+    resource: repo://projects/caelundas/caelundas-db/src/modules/database/database.module.integration.test.ts
+  - id: openwiki-source-89328b71f0f89f11ff83fc8d
+    resource: repo://projects/caelundas/caelundas-db/src/modules/database/database.service.integration.test.ts
   - id: openwiki-source-c36af5283e8413e936075b4a
     resource: repo://projects/caelundas/caelundas-web/configuration/vitest.config.ts
   - id: openwiki-source-0e076c9da0cc0b4557956f93
@@ -61,12 +75,14 @@ sources:
     resource: repo://projects/common/persistence/testing/database-testing/database-testing.types.ts
   - id: openwiki-source-d43cf1b76d511df31f2fb62d
     resource: repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+  - id: openwiki-source-11b131a57903aa3d2e70c1ab
+    resource: repo://projects/common/testing/src/modules/browser-stand-ins/modules/route-render/route-render.utilities.tsx
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Caelundas Testing
 
-Caelundas operates two distinct test suites: a **CLI application** (`caelundas-cli`) that computes astronomical calendars using the Swiss Ephemeris, and a **web application** (`caelundas-web`) that renders those calendars in a TanStack Start SPA. Each suite has its own Vitest configuration, test utilities, and integration patterns, while sharing a common persistence testing layer for PostgreSQL.
+Caelundas operates three distinct test suites: a **CLI application** (`caelundas-cli`) that computes astronomical calendars using the Swiss Ephemeris, a **web application** (`caelundas-web`) that renders those calendars in a TanStack Start SPA, and a **GraphQL API** (`caelundas-api`) that serves calendar data. Each suite has its own Vitest configuration, test utilities, and integration patterns, while sharing a common persistence testing layer for PostgreSQL.
 
 ## Architecture Overview
 
@@ -82,7 +98,16 @@ flowchart TD
     subgraph WEB["caelundas-web"]
         WEB_UNIT["Component Unit Tests\n(React Testing Library,\njsdom)"]
         WEB_INTEGRATION["Route Integration Tests\n(TanStack Router,\nin-memory history)"]
-        WEB_DB["Mocked API Tests\n(MSW GraphQL handlers,\nfixture calendar)"]
+        WEB_API["Mocked API Tests\n(MSW GraphQL handlers,\nfixture calendar)"]
+    end
+
+    subgraph API["caelundas-api"]
+        API_UNIT["Resolver/Service Unit Tests\n(NestJS testing module,\nmocked repositories)"]
+        API_E2E["Resolver End-to-End Tests\n(real Postgres via\nTestcontainers, seeded data)"]
+    end
+
+    subgraph DB["caelundas-db"]
+        DB_INTEGRATION["Database Integration Tests\n(Testcontainers Postgres,\nreal migrations)"]
     end
 
     subgraph COMMON["common/persistence/testing"]
@@ -92,9 +117,11 @@ flowchart TD
 
     CLI_E2E --> CLI_DETECTION
     CLI_PIPELINE --> CLI_DETECTION
-    WEB_INTEGRATION --> WEB_DB
+    WEB_INTEGRATION --> WEB_API
     CLI_E2E --> PG_TEST
-    WEB_DB --> PG_TEST
+    WEB_API --> PG_TEST
+    API_E2E --> PG_TEST
+    DB_INTEGRATION --> PG_TEST
 ```
 
 ---
@@ -239,6 +266,17 @@ The `EphemerisService` orchestrates four computation types through sub-services:
 
 ---
 
+### Night Sky CLI Service Testing
+
+The `NightSkyService` (`src/modules/night-sky/night-sky.service.unit.test.ts`) is tested with a NestJS testing module that:
+- Mocks the TypeORM `DataSource` with a transaction wrapper
+- Uses a temporary directory for output files (`useTemporaryDirectory`)
+- Provides inline CSV/JSON fixtures for HYG star catalog, constellation definitions, and constellation lines
+- Verifies ingestion order: delete constellations (cascades edges), delete stars, insert stars, insert constellations
+- Tests `POSTGRES_MAXIMUM_PARAMETERS` chunking for bulk constellation inserts
+
+---
+
 ## Web Application Testing (`caelundas-web`)
 
 ### Vitest Configuration
@@ -260,47 +298,55 @@ jsdom lacks layout, scrolling, animation, and resize. Setup installs:
 
 ### Component Unit Tests
 
-Located in `src/components/*.unit.test.tsx`, using **React Testing Library** + Vitest:
-- Render component with props
-- Query by role/test-id/text
+Located in `src/components/*.unit.test.tsx`, using **React Testing Library** + Vitest. The pattern demonstrated by `calendar-toolbar.unit.test.tsx`:
+
+- Render component with props using `render()` from `@testing-library/react`
+- Query by role (`getByRole("heading", { name })`), test-id (`getByTestId`), or text
 - Assert class names, structure, accessibility attributes
 - Fire events (`fireEvent.click`, `fireEvent.keyDown`) for interactions
-- Use `vi.fn()` for callback props
+- Use `vi.fn()` for callback props and `rerender` for prop changes
 
 **Example**: `calendar-toolbar.unit.test.tsx` verifies:
-- Class name application
-- Period title rendering
-- Compact (phone) vs. wide layout
-- Navigation group (Previous/Next/Today) with heading
-- Today button disabled state when current month includes today
+- Class name application (`className` prop rendered on root element)
+- Period title rendering (heading with `name` prop value)
+- Compact (phone) vs. wide layout (separate controls row vs. single row)
+- Navigation group (Previous/Next/Today) with heading and accessibility
+- Today button disabled state when current month includes today (`isToday` prop)
+- Date heading width stability across title length changes
+
+---
 
 ### Route Integration Tests
 
-`testing/render-route.tsx` renders the **full TanStack Start router** at a given path:
+`caelundas-web/testing/render-route.tsx` renders the **full TanStack Start router** at a given path via the shared `@codebase/testing/react/renderRoute` utility:
 
 ```typescript
-export async function renderRoute(path: string, options: RenderRouteOptions = {}) {
-  const router = getRouter();
+// From @codebase/testing/react (common/testing/src/modules/browser-stand-ins/modules/route-render/route-render.utilities.tsx)
+export async function renderRoute(
+  router: AnyRouter,
+  path: string,
+): Promise<RenderResult> {
+  const rootRoute = router.routeTree as AnyRoute;
+  Object.assign(rootRoute.options, { shellComponent: PageOnly });
   router.update({
     ...router.options,
-    context: { eventsDatabase: options.eventsDatabase ?? createTestEventsDatabase() },
     history: createMemoryHistory({ initialEntries: [path] }),
     scrollRestoration: false,
   });
-  if (options.waitForLoad === false) {
-    render(<RouterProvider router={router} />);
-    return;
-  }
   await router.load();
-  render(<RouterProvider router={router} />);
+  return render(<RouterProvider router={router} />);
 }
 ```
 
 **Key features**:
-- Mocks `__root.tsx` (which renders `<html>`) with a bare root route
-- Serves the mocked calendar API (the fixture calendar) the route loader queries
-- Runs route loader (`await router.load()`) before rendering
+- Mocks `__root.tsx` (which renders `<html>`) with a bare root route that has a `PageOnly` shell component rendering just `children`
 - Uses `createMemoryHistory` for navigation simulation
+- Runs route loader (`await router.load()`) before rendering, serving the mocked calendar API (the fixture calendar) that the route loader queries
+
+The project-specific `renderCalendarRoute` wrapper in `caelundas-web/testing/render-route.tsx`:
+- Serves the mocked calendar API (fixture or test-provided) via `serveCalendarApi`
+- Accepts `waitForLoad: false` to render pending state for skeleton/error testing
+- Uses `getRouter()` from the app's router module
 
 **Route test utilities** (`testing/calendar-page.ts`):
 - `findToolbar()` — locates calendar toolbar
@@ -313,6 +359,8 @@ export async function renderRoute(path: string, options: RenderRouteOptions = {}
 - `filterLink(date, filter)` — encodes filter as URL search param
 - `findMatchingEventIds(query, options?)` — compiles filter to SQL, executes against test database, returns event IDs
 
+---
+
 ### Mocked API Testing
 
 `caelundas-web` holds no data of its own, so its tests serve a **mocked GraphQL API** instead of a database:
@@ -322,7 +370,95 @@ export async function renderRoute(path: string, options: RenderRouteOptions = {}
 - `testing/calendar-api.ts` — `serveCalendarApi(options)` answers the events, facets, dataset, windows, presets and night-sky queries from that fixture, using the mock handlers GraphQL Code Generator emits into `src/graphql/generated/mocks`.
 - `testing/render-route.tsx` — renders a route under a bare root (the real `__root` renders a whole `<html>` document) with `createMemoryHistory`, on top of `renderRoute` from `@codebase/testing/react`.
 
-**Integration test example** (`src/routes/index.integration.test.tsx`): renders the `/` route against the mocked API, then exercises month navigation, the filter builder and the error and recovery states by overriding the handlers a test serves.
+**Integration test example** (`src/routes/index.integration.test.tsx`): renders the `/` route against the mocked API, then exercises month navigation (Next/Previous buttons), the filter builder (tag rules, nested groups, negation), and the error and recovery states by overriding the handlers a test serves.
+
+---
+
+## API Application Testing (`caelundas-api`)
+
+### Vitest Configuration
+
+Extends shared base config with API-specific settings:
+- **Environment**: Node
+- **Coverage exclusions**: Test files, generated GraphQL code, and module entry points
+
+### GraphQL Resolver Unit Tests
+
+Resolvers are tested with a NestJS testing module (`buildTestingModule` from `@codebase/testing/nestjs`) that mocks the `EntityManager` or `DataSource`:
+
+**Example**: `events.resolver.unit.test.ts` and `events.service.unit.test.ts`
+- Provide mocked `EntityManager.query` for raw SQL verification
+- Test `EventsService.select()` parameter binding and Zod row parsing
+- Test window calculation logic (`findWindows`) for various timeline scales
+- Test dataset description aggregation
+
+**Night Sky resolver/service unit tests** (`night-sky.resolver.unit.test.ts`, `night-sky.service.unit.test.ts`):
+- Mock `DataSource.transaction` wrapper
+- Test star ingestion, constellation edge creation, SVG generation
+- Verify parameter chunking respects `POSTGRES_MAXIMUM_PARAMETERS`
+
+### GraphQL Resolver End-to-End Tests
+
+Full integration tests against a real Testcontainers Postgres with the actual migrations applied and seeded data:
+
+**Infrastructure**: `testing/events-application.ts`
+- `startEventsApplication()` — boots full NestJS app with `EventsModule`, connects to Testcontainers Postgres via `startDatabaseTestingModule`, runs migrations
+- `seedEvents(database)` — inserts a known fixture of calendar events with tags
+- `application.query(document, variables)` — executes GraphQL document over HTTP
+
+**Test categories** (`events.resolver.end-to-end.test.ts`):
+| Query | Verification |
+|-------|--------------|
+| `dataset` | Null when empty; count, span, most common timezone when seeded |
+| `events` | Overlapping period, earliest first, with tags and local time conversion; boundary inclusion/exclusion; instant vs span distinction |
+| `facets` | Tag counts, type breakdowns, location facets |
+| `windows` | Calendar windows for timeline/grid views |
+| `presets` | Preset filter definitions |
+
+**Filtering resolver end-to-end** (`events-filter.resolver.end-to-end.test.ts`):
+- Tests GraphQL filter input translation to SQL
+- Verifies complex nested groups (and/or), negation, tag hierarchy rules
+
+**Grouping resolver end-to-end** (`events-grouping.resolver.end-to-end.test.ts`):
+- Tests event grouping by day/week/month with local timezone
+
+---
+
+## Database Package Testing (`caelundas-db`)
+
+### Database Module Integration Tests
+
+The `DatabaseModule` is tested against a real Testcontainers Postgres with the project's actual migrations:
+
+**Test file**: `database.module.integration.test.ts`
+
+**Verified behaviors**:
+- Connects as the `caelundas` role to the `caelundas` schema
+- Creates every table, derived table, and view the entities describe — and nothing else (exact table name list asserted)
+- Constraint names match entity definitions (`constellation_edges` replaces legacy `constellation_lines`)
+- UUID v7 primary keys generated by database
+- Natural key uniqueness on `(summary, start, end, latitude, longitude)`
+- Tag tree closure table (`tags_closure`) maintained by triggers
+- Derived read model (`calendar_event_derived_times`, `calendar_event_tag_nodes`, `tag_nodes`) populated correctly
+
+### Database Service Integration Tests
+
+**Test file**: `database.service.integration.test.ts`
+
+- Boots `DatabaseModule` via `startDatabaseTestingModule` with real migrations
+- Seeds tag hierarchy (Planet → Mars → Retrograde) and a calendar event
+- Calls `DatabaseService.refreshReadModel()` and asserts:
+  - `tag_nodes` filled with each tag's depth, root, and path
+  - `calendar_event_tag_nodes` links events to all ancestor tags
+  - `calendar_event_derived_times` view computes local day/hour correctly
+
+### Database Service Unit Tests
+
+**Test file**: `database.service.unit.test.ts`
+
+- Mocks `DataSource.manager` and repositories
+- Verifies `refreshReadModel` calls the expected repository methods in order
+- Tests utility functions (`DATABASE_ENTITIES`, `CAELUNDAS_DATABASE_MIGRATIONS`)
 
 ---
 
@@ -394,14 +530,26 @@ await database.close();
 | `testing/event-filters.ts`, `testing/calendar-page.ts` | Filter helpers and interaction helpers |
 | `testing/viewport.ts` | Viewport simulation for responsive components |
 | `src/routes/index.integration.test.tsx` | Full route: render, navigation, filtering, error recovery |
+| `src/components/**/*.unit.test.tsx` | Component unit tests (toolbar, navigation, filters, events grid) |
 
-### API and Database Test Files
+### API Test Files
 
 | Path | Purpose |
 |------|---------|
-| `caelundas-api/testing/events-application.ts` | An events application over a migrated Testcontainers Postgres |
-| `caelundas-api/testing/no-database.module.ts` | Stand-in module for suites that need no database |
-| `caelundas-db/src/modules/caelundas-database/*.integration.test.ts` | The real migration, base rows, and the refreshed read model against Postgres |
+| `testing/events-application.ts` | An events application over a migrated Testcontainers Postgres |
+| `testing/no-database.module.ts` | Stand-in module for suites that need no database |
+| `src/modules/events/*.unit.test.ts` | Resolver/service unit tests with mocked repositories |
+| `src/modules/events/*.end-to-end.test.ts` | Resolver e2e tests against real Postgres with seeded data |
+| `src/modules/night-sky/*.unit.test.ts` | Night sky resolver/service unit tests |
+
+### Database Package Test Files
+
+| Path | Purpose |
+|------|---------|
+| `src/modules/database/database.module.integration.test.ts` | Real migration, schema assertions, constraint verification |
+| `src/modules/database/database.service.integration.test.ts` | Read model refresh, derived tables, tag closure |
+| `src/modules/database/database.service.unit.test.ts` | Service logic with mocked repositories |
+| `src/modules/database/modules/night-sky/constellation.entity.unit.test.ts` | Constellation entity mapping |
 
 ### Common Persistence Test Files
 
@@ -433,8 +581,21 @@ pnpm test                    # All tests (jsdom)
 pnpm test -- --run           # CI mode
 ```
 
+### API Suite
+```bash
+# From caelundas-api directory
+pnpm test                    # All tests
+pnpm test -- --run           # CI mode (requires Docker for e2e)
+```
+
+### Database Suite
+```bash
+# From caelundas-db directory
+pnpm test                    # All tests (requires Docker)
+```
+
 ### Coverage
-Both suites generate coverage reports (exclusions defined in each project's `configuration/vitest.config.ts`). CLI excludes entities; web excludes server functions, generated GraphQL code and router entry points.
+Both suites generate coverage reports (exclusions defined in each project's `configuration/vitest.config.ts`). CLI excludes entities; web excludes server functions, generated GraphQL code and router entry points; API excludes generated code and entry points.
 
 ---
 
@@ -448,3 +609,5 @@ Both suites generate coverage reports (exclusions defined in each project's `con
 6. **Testcontainers only where a database is the point**: unit tests stay free of Docker; only the integration and end-to-end suites start a container.
 7. **jsdom polyfills for layout-dependent components**: ResizeObserver, scroll, animations mocked to avoid flakiness.
 8. **TanStack Router integration tests**: Full router with loaders, not shallow component tests, to catch loader/context bugs.
+9. **GraphQL resolver e2e tests**: Real database with seeded data, HTTP query execution to verify end-to-end resolver behavior.
+10. **Schema as tested artifact**: Database integration tests assert exact table names, constraint names, and trigger behavior — the migration is the source of truth.

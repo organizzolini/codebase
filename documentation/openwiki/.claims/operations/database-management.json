@@ -1,49 +1,7 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:dee603d96b734870daf6db8afa0bde7703aded7f76db7b5edecb9e152c293997",
+  "pageVersion": "sha256:c4f67275993681e5ac3ab9a0a66cf5248c9e734ed4ab8a8b657c830be2bb1977",
   "claims": [
-    {
-      "id": "claim_928df551757e48d99136766a4b090942",
-      "statement": "Every database-backed project owns its own database, schema, and role following the naming convention: local Docker uses `<project>_development` database, `<project>` schema, and `<project>_username`/`<project>_password` role; Testcontainers uses `<project>_testing` database with same schema and role; Kubernetes will use `<project>_staging`/`<project>_production` databases with same schema.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L19-L25",
-          "version": "repo-lines-v1:sha256:5a6101fc42dee324579f2253cefe49acdff45258bffbd47ce0af6b2eaa9c3837:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGIxNDdlMDAyMzc2YjRmNWZlNWI0ZTcwZjZlZDFjNDE5OWY4NDkyYjBjMzRmMjA4YWUyZGJmZmM3Yzg1NDA1NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOTRmNTMzZTJkNmVhZGMyNjU5MzdjZWQ2ZWIwYjUyMGIzZWY1NmJhYzAxMjU1M2I0MDNjNjAyZTAzZjMxNjFhMiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWFjOWUwZjE5OWQ3ZGQ0ZTMzNWYyMzBlOWNiZDBhMjc2YmI4MWZiOTRhMmVhOWUzM2U4NjQxODgzMmI0M2IwZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODkwZTIyNzQ2YmFhOTBhMGMwMzEwM2NlODNlMjQ4NTc2ZGZmYjNjZGY4ZjYxMjE0ZTBlNGQwOTU0MzA5ZTU4MiJ9"
-        },
-        {
-          "resource": "repo://projects/common/persistence/README.md#L12-L18",
-          "version": "repo-lines-v1:sha256:ec8a6728bfb3853ca21d30cef73080254c6941a27fd197857bf62b3e0353b359:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTc2ZGFmNzdlM2ViZDc3ZWIwYjMyNGZmOTk0Yjc1MjdhZTEyZmFjOWEwM2MzMmFkZmJiMDQ1ZjRjNWE4YTc5MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmFlNDYyODJhZWQ2NTdjZjAzYjA4MDJiYjQyNjBlNTljM2MzMGQ4YmU2ZjhmYmIwZGY5NzUwYTUzNGM5YTQ3MiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjFmYzkwZjdhY2NiMGM4Njg5ZDc0MzBiMzkwNGM0NDhmNjlhYWQwODljZjAzOGUwMTU3OWZjY2MzY2ZmZGYzZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzc1MGM4YzcwMGE1MzllODg5ZjJlY2U3Mzg5NDU4NDE4MDYzZjc3YThmYTczOGVlMDBiZWJkY2EyZjY4YmE1ZSJ9"
-        }
-      ]
-    },
-    {
-      "id": "claim_b938d1fb80a34a549180bcb8ad9cafca",
-      "statement": "Each project reads only its own `<PROJECT>_POSTGRES_*` variables (`_HOST`, `_PORT`, `_USERNAME`, `_PASSWORD`, `_DATABASE`, `_SCHEMA`); the root `.env` holds unprefixed `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` for the shared container's admin login which applications never read.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L27-L28",
-          "version": "repo-lines-v1:sha256:e1363fce9b6dac0cbaa46b693aa9f80fe95d7b28be98cd67cd85a079c85d8afd:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDM2NjJmNGE0ZDc1NWY0ZTRmYTY5ZDI3MmNiZTgxOTQwZDVmODI5YjgyNzRiMzVkNDg5YzU1MjVkNDcwOWFhMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTBjMTUxNTg4NjRlY2Q2OGJkZWU3NTIxNmI1MGQxNTU0MzY4ZjUzNDdjOGU4ZWQ5ZDE2MTIxODE5ZTE4MmMzOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDg2ZmIzNTcyZWE3NTcxMWFkNjA2ZDc3MTRhYzBiZGZhNGVkMjM3ODU4NGJmMjhlMzZjMjY0OGQ5ZmRmZDNhZSJ9"
-        },
-        {
-          "resource": "repo://projects/common/persistence/README.md#L53-L64",
-          "version": "repo-lines-v1:sha256:209b1cfde8e38a2ff97ebc63a73246a660754e0ec00b6ac2cbf33f6216b591ce:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2YTMxOWFhZGUyYmY2Y2EyMjU2MTk5YzA3YzFlNzczMGE3MzFhMjNhNmIwNmI3OTE1YTU5MGM4MzIzYjk1ZTciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyYWVmYmJhODQzMzY1ZWM1MWFjZThjNmQyZmU4ZDJiOTI0MGJkMWIxMGE5ZGU1NGYxZjY1OTI3NmJlYzA5NDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRhMGJlMzkxZDVhMDkyNDQzNjA1NDk0NTA4MTMzOWMwZmRmM2E3NTQ3MGZlYTdkNDkzZGMxYjY5ZTMzMzAzZWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdlOTU1NjlkZmVmYWE5MDJhZmI5Mzk0NjMyMjE1MjM5OGEzNWQ3YzJmODllYjkwM2FhMTkyZDM1YTQ1NmU4NTUifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_ab00cb92f4454cefb34dd6c5932b54c8",
-      "statement": "Migrations are the only way the schema changes; the runtime never runs them because synchronize and migrationsRun are hard-coded to false in the shared postgresDataSourceOptions factory and cannot be overridden.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md",
-          "version": "repo-file-v1:sha256:d30354810b95f3e29adf6029f4225cda774846e774173e31d14e9b034bba6d72"
-        },
-        {
-          "resource": "repo://projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts#L85-L135",
-          "version": "repo-lines-v1:sha256:f7e5f18ab77e390e6abbda4da55f0a7e16303bc7bd69229383f6ac336c08cc58:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhNzdmYmQ1MWUxMzMwMGNjMDU3NDFjNTdkNDAwYzMxNjdlOGYyMDM5ZDI3NWFjZTFiYmJhMDAwNzlkOGFjMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4NDFiZWRiMWYzNThmM2FmMjExYjcwNjczZTUxMDZjOGIxNDgyMzViODljNTBiMGQ2YWI2OWJmNTcxYzIxZTUifQ"
-        }
-      ]
-    },
     {
       "id": "claim_217f899f0707410caa08d8ef3b35922f",
       "statement": "Migration workflow uses Nx commands: `nx run <project>:migration:run` applies pending migrations, `nx run <project>:migration:generate` creates a migration from entity changes and extracts SQL for linting, `migration:revert`, `migration:show`, `migration:extract-sql-latest`, and `migration:extract-sql-all` are also available.",
@@ -59,47 +17,11 @@
       ]
     },
     {
-      "id": "claim_1fd53c3da007445aa994837e29cb1de6",
-      "statement": "Projects opt into the shared migration target by declaring \"migration\": { \"options\": { \"module\": \"src/modules/<project>-database\" } } in project.json; the target reads data-source.constants.ts and migrations/ from that module path.",
-      "evidence": [
-        {
-          "resource": "repo://projects/caelundas/caelundas-db/README.md#L85-L100",
-          "version": "repo-lines-v1:sha256:1b9e0ff197a47f10a24702f612659d41485fac4fcd785a84f462fd7b92c602a2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4MWQ0Yjc4MjgwZWQ3YmNkNGNmM2Y5NWMwZjQ5ZjUwNzg1YThmZDAyMTA4YmUzYTY2M2Y1NjMzOTBhMzBjMWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlYzk0NWE4MTI3M2U0M2FmMWY4NzQxYzVjNjczYWM2ZjAwNmE2ZDJmMzNkYzIxMzMyMjczODk0MTU3OTc5OTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFiOTljOTJlMDZhYTZjYWQ1YTkxNWU0NmZlNjJjMDY1OWJiYmY1Y2RjMGI1YmJiMzRiZjYzZDY1ZjQxZjlhMmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0ZWVhZGY4ZWU1ZjIxZTUwM2JkZTE4ODc4ZDgxODllMTUxYTcyNzA0YzM0OTJmMzFiNDgxMjU1MGQ3ZTMwNjgifQ"
-        },
-        {
-          "resource": "repo://projects/common/persistence/README.md#L122-L150",
-          "version": "repo-lines-v1:sha256:ccd38d93faf390d1c796aefe0769b69e632bd7f536fba401b09460820eed7de1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNDA0NTkxNWFkZDFjNjE5OGE4NWU2M2ViNDI0NjU2OWY5NjM4YjU0NGJlMmFhOGMxNTFjYTU2ZDQwMmMyMjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzOGEzYmYwZDc5ZjNlMDcxNDE2NmVlOGU0ZjkwMmFiNmRiZDIwMDU2MmU5ZjhjOTc0Y2Q3NTBlY2U2YmNjMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhY2ZkOTkwYmU5MDgxYWZlN2FiMmVlYjI5ZjFmOWQzZGNlY2UwZDJiOGI2NDU0ZWY0MGUzZjIyYTkwYTBjNzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc5OWViZDI4N2M2YjUwYWIwYWE2NDE0ZmU0YmU3MzU5YjRjYTI0NjIwMTNkMTUzMzk1ZWZkMWIwZDQyYjgzNTAifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_797446b8d06f4522bbe12265d115bdb0",
-      "statement": "Export and import move tables between databases via pg_dump and pg_restore using the persistence:start:postgresql-export and persistence:start:postgresql-import Nx commands, with source and target URIs, schema, repeatable table, data and ddl selection, a file, overwrite (export), clean (import) and dry-run options.",
-      "evidence": [
-        {
-          "resource": "repo://projects/common/persistence/project.json#L45-L60",
-          "version": "repo-lines-v1:sha256:365cedaa0d0a67769eb9cadf85fffca2a824001d1b573cb289612d88c11aa619:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5ZWQ3YTVjZjVkMjEwNGExZGMwZDlhYzBlM2E1ZjlmNzJiYTk4ZGNiNDk5OTBiNzNmNmIyMjZjOGM5OGE2ZWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiYjI5YTNhY2MyZTBkOTAwNWNkYzVhMmU5YjA3YTMzY2ViMTFjNWQwNzY5ZDY5MjUxOWZiYTk1ZmYxN2JhMmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgwNDk1MTRiZGNkZjZiZTE5YTk1NGUzZDUyMzgzNTljNzY3YWE2ZDU4ZDUxMTNhNTIxZWEzZTU4ZDYyNWQ5ZDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFkYmNjODk3Nzc0ZWE1OTUyMDg2ZDc5OWQ0ZDI5MTM0ZWQ4YzQ0NWUxNzBiNDI3YzM0ZmRhMWY3ZDRlYzE4NzIifQ"
-        },
-        {
-          "resource": "repo://projects/common/persistence/src/modules/postgresql-export/postgresql-export.command.ts#L1-L263",
-          "version": "repo-lines-v1:sha256:d2bbcadf5a99e4e8ac865a08afb745e5725fc6a1c74275096a38484ba14f5ead:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5OGNmY2ZkYWM0MTYyMGUyY2FkZTY2ZmRlNWFmNzI1NmYxZTA3ZjZjMWRlMjY3ZGVmN2RkNmU1MjUwOWMwYjZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
-        },
-        {
-          "resource": "repo://projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts#L1-L358",
-          "version": "repo-lines-v1:sha256:b273b953718799945e4237e19ea3390470117f617aba2bd119e89ce09ee5832b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzU4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI1ZmI0ODUwN2E0YjljZDZhZTEwZDRkY2VjNTRiYWIyOTVlMjNlMDVlMDhmZjY5OWViMTljY2FjNzQ0ZDEwZTA5IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
-        },
-        {
-          "resource": "repo://projects/common/persistence/src/persistence.main.ts#L1-L28",
-          "version": "repo-lines-v1:sha256:e6dd9c7b4586253229066635633ff68b8d73e39e265d7952f65230ba5f05046e:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk5ZDI0ZjA2NGFlYWU5NDk3YmQwZjZlY2RmZjIyYjM5MmZhNzQyNWJmOTNiNjc0YTliOTFjMzM4ZDQ5NGVhOGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmMTIxZDQ3Yjk5Yzg4ZTdmMjkzYzhiNDAwMDRkZDUyODVhNmY4ZDYzZjk1YWExMTQ3NWJmYjc0ZjExYWYxZWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        }
-      ]
-    },
-    {
       "id": "claim_2643f5c5680949979a7ae9b6302fae35",
       "statement": "Export writes a custom-format dump with `--strict-names` (fails if table missing), uses a `.partial` file that replaces the target only on success, and refuses to overwrite existing files without `--overwrite`.",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/README.md#L302-L313",
+          "resource": "repo://projects/common/persistence/README.md#L325-L336",
           "version": "repo-lines-v1:sha256:4484ab07eb3c66e789d70e069f3f05b36b8e53ef92a86ec5cd940290313abf61:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5MjI5NmQwODk2MzdlNDRjMTYzNjdiMWU3MjBiNmY1MzYyMTU3MjIxZmNlNjk4N2MzZDFiYTQ0ZjI1ZDJiOGUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmNWNkY2ZkYWZmZDQ5NzdlNTcwMTkwODM1YjIwMDFjZWQ1NGRjYThjMDMyYjBkNTU2ZjhiZTU2MDBjYjFiMmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZiNWE0MTJjNjAzNDdiNTg0Yjk2NWFhYjY4ZDRmYjdmZTRlZWUyZWQwNzlkZmJmYzRlMWY3MmRhZTc3OTgzZDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyZmE5YThkM2UyNDNkYWI2OWY5MTQ5YzQ3OTg5MDhlNGNjZTZlNDZkODhiMmQ0ZjljZmFhM2NlNTRkZDYyYzAifQ"
         }
       ]
@@ -109,7 +31,7 @@
       "statement": "Import restores in a single transaction that stops at first error; by default deletes nothing; `--clean` empties selected tables first (with `--ddl` uses `pg_restore --clean --if-exists`, with `--data` alone uses `TRUNCATE` without `CASCADE`); truncate commits before restore so the pair is not atomic.",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/README.md#L315-L340",
+          "resource": "repo://projects/common/persistence/README.md#L338-L363",
           "version": "repo-lines-v1:sha256:3efe1e92167ba10d711808b6ae7064cb4e99a78725678bb6bffcd56ab98b48ae:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg0NjQ5MzQyNzQ5ZWU2ZmI5ODhhOGQ4M2VjMDYzZTgzZjI3OWYwYzg3N2Y2NjlkZmNmNzYzNTdlMmFhMDcxNzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEzOTVmNmNjMzkyZmYwN2U5ZmYyYTY2YjU1MjlkMWEyMGVjNmY0YzEwNjM5MzgzZmZlMzVhODkxNTY2ZWU3MGUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxYTdiZmE5MTk4Y2NmMDQ2N2JiM2MyZmMyZWViYTVmNWQ2NzQ1N2MyNmNiOTYxNGIwYmU5NDEzYTJlMTk2NTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExZDQyMzVjODMyOTc4NWE3MDZhNzU0ZDZlZjU3NDhiNDc5ZDk5MzgwMjJjZDlmZDNhNzQ3OGJmYzUxYTM3OGEifQ"
         }
       ]
@@ -119,7 +41,7 @@
       "statement": "Testcontainers integration uses startPostgresContainer (a throwaway Postgres 18 with the project's role, _testing database and schema, running the real migrations) and startDatabaseTestingModule (a Nest testing module with ConfigModule and PostgresqlModule connected to the container).",
       "evidence": [
         {
-          "resource": "repo://projects/common/persistence/README.md#L190-L235",
+          "resource": "repo://projects/common/persistence/README.md#L194-L239",
           "version": "repo-lines-v1:sha256:354ff0e12509cd70f5f63c49096c759b235b7d52edf43ee8ab65a5c00e505b0f:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU1YTcyMWVmMmNjZjgyZTFmZGVkMGFhMzYwZjQ5YTk3ZmQ0MGMxMDNiNjYzYWI5ZjUyNzhiZjVhMWQwMzAzYjMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjYWM3NzBmMTY0OTkxMWY2OTYxMTFhYmRkNmYzOTZkOTA3ODM3YjIzY2Q1MDQxMmRiYjdhYjk0Zjg1OWM0OWIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM1OTdmYTBhZjczMjgxYzYwOTdhYTMxMmJhMGNlY2YxNzg1YmE1ZGU2ZDliY2U3ZThmY2NlYWQyZGQ4ODdkNDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5OTc3M2JjMGMyNzFhNDY2NzQxZmZkZDA0MmEzMDJjNjk1ZDUyYmVkMGY4YTJiMzY4ZjdjZDk4OTZjZTNhZmMifQ"
         },
         {
@@ -133,22 +55,132 @@
       ]
     },
     {
-      "id": "claim_3ba4224997fb478faa692537ab5aa496",
+      "id": "claim_0e7a0a392570465081b76cced00f5007",
+      "statement": "Every database-backed project owns its own database, schema, and role following the naming convention: local Docker uses `<project>_development` database, `<project>` schema, and `<project>_username`/`<project>_password` role; Testcontainers uses `<project>_testing` database with same schema and role; Kubernetes will use `<project>_staging`/`<project>_production` databases with same schema.",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L45-L78",
+          "version": "repo-lines-v1:sha256:3abfef7602e9c06e2723dd231138be74858492338de802739bc989d06eacc856:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDZmY2JkNjY4OTRmMDFmOTY4NTUyNDliMDU1NDZkYjBiMjExNzFiNjRhNjkzMzU1OTMyZWIwY2E5OTE1ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMmJjNTZjYTVkYWNjMThiMDUxNGI1MGM3M2E5NjE5YjQ2YzRiZTI3NTcyZjc3NjY2ZDg1YmY2MzMxZjdhNTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwYTgwYWRhZGU4MWI5NTdkNzhlODk4OGRmZjhlMDFkZDIxMmMxYWFmYmNjMDViNTViODc5MTg2NjUzNjQ1NDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzNDg2NTZlNTM4NjI4ZmI2NzE3NmNjMjM4NDFlN2MxNGU0NDQ4ODZkM2RiMjE5ZWE4ODM1ODhjNDkwYTBmZjkifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/README.md#L12-L28",
+          "version": "repo-lines-v1:sha256:4cf1109a8875a4d95e5fef7f656501edcdc7f5937adf7eb700ecfda19862ab67:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3NmRhZjc3ZTNlYmQ3N2ViMGIzMjRmZjk5NGI3NTI3YWUxMmZhYzlhMDNjMzJhZGZiYjA0NWY0YzVhOGE3OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwOWM3YTgzOTk5MmNjOTc0M2JmN2E4M2JhNTQxMGMxZTU0YTg5OTYwMTQ1OWY3ODYyYmU4YTRhY2Y5NjQwYmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyNmFmODVlMWRmOGY3ZTU0ZjEyNzZlZGExNWI4NGNmYzY0YzQyNWMwZGE1MDMzYTk3NWQ5MzRkMjllYzg3MTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjYjM4MjI2OGQ4ZjUwMjNkNmVlY2IzNTQwNWZkYjJmOWUzMjU2ZjVkY2M2ODg4MGQ1NzQyMGFmMjQ5YzQ5NTQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9ca2ba92b55d498cb683feb9b237a8a9",
+      "statement": "Each project reads only its own `<PROJECT>_POSTGRES_*` variables (`_HOST`, `_PORT`, `_USERNAME`, `_PASSWORD`, `_DATABASE`, `_SCHEMA`); the root `.env` holds unprefixed `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` for the shared container's admin login which applications never read.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L12-L28",
+          "version": "repo-lines-v1:sha256:4cf1109a8875a4d95e5fef7f656501edcdc7f5937adf7eb700ecfda19862ab67:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3NmRhZjc3ZTNlYmQ3N2ViMGIzMjRmZjk5NGI3NTI3YWUxMmZhYzlhMDNjMzJhZGZiYjA0NWY0YzVhOGE3OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwOWM3YTgzOTk5MmNjOTc0M2JmN2E4M2JhNTQxMGMxZTU0YTg5OTYwMTQ1OWY3ODYyYmU4YTRhY2Y5NjQwYmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyNmFmODVlMWRmOGY3ZTU0ZjEyNzZlZGExNWI4NGNmYzY0YzQyNWMwZGE1MDMzYTk3NWQ5MzRkMjllYzg3MTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjYjM4MjI2OGQ4ZjUwMjNkNmVlY2IzNTQwNWZkYjJmOWUzMjU2ZjVkY2M2ODg4MGQ1NzQyMGFmMjQ5YzQ5NTQifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts#L150-L185",
+          "version": "repo-lines-v1:sha256:1062358ef3f3e7da93670ab77c458984fdb3c380174edcd7be9c0e3c03914fff:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwNDk0YjViZDI4ZThlNmJmMWY0MDQ4Y2Y3NmI2OWZiMDFmM2RiMzU1OGI2ODdkMTU5MzRiZGQ3MTdjNTg0ZTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImEyMmZiYmVkYTc3OWEzNTM5NTQyMWE2ZjRjYWE2YmY2ZDc0MmVkOWJiOGE1ZmY1ZDJjMzRhNWRkMjg3MDMyZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjMGEyYjUwZWYxZDI1NWZjYTI5ZDhmMjVkNjM3MWUyNzY0ZTJkOTFiNzViYzVmY2FkY2ZkYzRiMGRhYjk0MTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk3NzVlMGRhZmNmNzdmOGUxMzhkMTc4ZGZjYzE3Yzk2N2Y2ODgwMDE3MWM0NWIzY2Y1ZWZjYWE2ODg2MGRmYzUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_394279f4650a4971a4a5840197cd2290",
+      "statement": "Migrations are the only way the schema changes; the runtime never runs them because synchronize and migrationsRun are hard-coded to false in the shared postgresDataSourceOptions factory and cannot be overridden.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L12-L28",
+          "version": "repo-lines-v1:sha256:4cf1109a8875a4d95e5fef7f656501edcdc7f5937adf7eb700ecfda19862ab67:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3NmRhZjc3ZTNlYmQ3N2ViMGIzMjRmZjk5NGI3NTI3YWUxMmZhYzlhMDNjMzJhZGZiYjA0NWY0YzVhOGE3OTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkwOWM3YTgzOTk5MmNjOTc0M2JmN2E4M2JhNTQxMGMxZTU0YTg5OTYwMTQ1OWY3ODYyYmU4YTRhY2Y5NjQwYmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIyNmFmODVlMWRmOGY3ZTU0ZjEyNzZlZGExNWI4NGNmYzY0YzQyNWMwZGE1MDMzYTk3NWQ5MzRkMjllYzg3MTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZjYjM4MjI2OGQ4ZjUwMjNkNmVlY2IzNTQwNWZkYjJmOWUzMjU2ZjVkY2M2ODg4MGQ1NzQyMGFmMjQ5YzQ5NTQifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/src/modules/postgresql/postgresql.utilities.ts#L101-L135",
+          "version": "repo-lines-v1:sha256:b16cf27117e9a0bfe9ed1b677596c7b13f87738bd559a4349688b074250ea1f8:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkNGNkNTlhMWI0NjE1MTQ0M2RkNDcyZDZmYjljZmVmOTgwNWUwMTQ0YTlhM2U1NmQ0YWJiZjU3MjdkNDM5NTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3MmE0MjkzODJiMmUxNDcxOGUwZTM3YjA1NzBhOGExNzAyOTkxZmNkODQ5OGNkODQwNjBhOGJmNGYwNTAxN2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU5ZmUxZDQ0ZjBkNDgyMmQ4YmNjZmVkNTIyY2U4MTEwNjA2MDY3NzRkMTIxYzIwN2EyZWEwMjVhYTUxN2Q2Y2EiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM4NDFiZWRiMWYzNThmM2FmMjExYjcwNjczZTUxMDZjOGIxNDgyMzViODljNTBiMGQ2YWI2OWJmNTcxYzIxZTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d4410b2ee91d4b5b8627dbe4ec934a45",
+      "statement": "Projects opt into the shared migration target by declaring \"migration\": { \"options\": { \"module\": \"src/modules/database\" } } in project.json; the target reads data-source.constants.ts and migrations/ from that module path.",
+      "evidence": [
+        {
+          "resource": "repo://nx.json#L606-L636",
+          "version": "repo-lines-v1:sha256:2973f508a4070bf9802f627b84dfdb411ca6c958a82d2d587d02f302e2d7858c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZiMjIxMzcwMmM3MjM5ZmI2YjFhNTNiZmZkODNmOGY2YjdmMzVmYTUxMzE5Yzg0MjNkMzk5ODdiODkyMjlkODYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5OTI1OGJjMzM1ZTNjZmM2OTcwZWE2YzJiMjFlMTg4M2FhZTIwMzlkMWE2Zjk0ZWU4YzQ4ZWZmZmNjNDJmZDgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhmZmZjMjE2ZDk5MTI1YWIxODY3NjZjODM2NTY3OTE4NTVlZmE4OTg4YzI4NWMxMWZiN2RmNGIwMWYyZmY0ZDQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFmYzM0NzA5MjYxYjFjMDcxMzljY2NkODgwYWQwYTkxOTc4MGM5MWU0MjQzNTJmNWVkZjdhMDc1MzMyZjUwMTcifQ"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-db/project.json#L44-L46",
+          "version": "repo-lines-v1:sha256:0aedf9ad2d0d7c7c55c31994ea4f7a604aeee70c059ffd28637cf864a5dee438:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjk3OGUyNTAzYjhjZjM3YTA2ZjdkNmYwYTNhNmI2ZmUzNTY5MWZiY2FiNTBiODc3NWNhYjZmYWJjNzFjNTkyYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjNjOWJhZmU1NjcxYTM3NDRiYWU1MjI1ZTFjZThiNjQ3ZGIxZTlkNmVlNjZjMTRmMzI1YjZkYmZlZWZkOTA3YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWYwMmVjMzEwNmVlMTg4N2NiNmQ3MTgyMTcxNjM2MmM0NmNhZDM0YmYxM2UwNGExYmZhMDg4Y2U2MTdhMTRiMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmRmZjNlN2ExNjRjZTI4ZWFhMDUyNWE3ZWQ1NGIxZDY0MjZmNTU2MjU1ZTI1OGI0MjY2YjQ0ZDVhZWJhMjhlZCJ9"
+        },
+        {
+          "resource": "repo://projects/common/persistence/README.md#L122-L150",
+          "version": "repo-lines-v1:sha256:ccd38d93faf390d1c796aefe0769b69e632bd7f536fba401b09460820eed7de1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMyNDA0NTkxNWFkZDFjNjE5OGE4NWU2M2ViNDI0NjU2OWY5NjM4YjU0NGJlMmFhOGMxNTFjYTU2ZDQwMmMyMjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzOGEzYmYwZDc5ZjNlMDcxNDE2NmVlOGU0ZjkwMmFiNmRiZDIwMDU2MmU5ZjhjOTc0Y2Q3NTBlY2U2YmNjMjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhY2ZkOTkwYmU5MDgxYWZlN2FiMmVlYjI5ZjFmOWQzZGNlY2UwZDJiOGI2NDU0ZWY0MGUzZjIyYTkwYTBjNzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJhMzQ2MjYwYzBiMjU2NGUzZDAwOTk2Y2NkMzgzNzQ1OWI4MTVlYmY0MzNmNWRiNmZlZGNhZjZlOGY5MjgxMjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_325678c4af7b4ca99564ba323a0c175f",
+      "statement": "Export and import move tables between databases via pg_dump and pg_restore using the persistence:start:postgresql-export and persistence:start:postgresql-import Nx commands, with source and target URIs, schema, repeatable table, data and ddl selection, a file, overwrite (export), clean (import) and dry-run options.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/README.md#L301-L400",
+          "version": "repo-lines-v1:sha256:4c46e8e226a8cf736f3bb64d2b2c6dcb1fec1230630e15f24d7eff357d3d9809:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlOGI3MzY5ZWQxYmE3MzY1MzI3ZjY3YTk3MmJjMTk5MDNlNDdjMWZjY2U1MTQ5YWVjOWRiODAyYjlmZGQyNzg0IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIxNTFlOWFjYjZkOGYwZTk2YjYxMDRiYmQ1ZTI2MWY5MWYxZWZhZjMzN2RhMGNmYzg3MzA0ZDcyYjIzNTNhMmEzIn0"
+        },
+        {
+          "resource": "repo://projects/common/persistence/project.json#L60-L80",
+          "version": "repo-lines-v1:sha256:d75f748fc1f0f17364576843e3c74f90341ba33c6c0d3757e8fa416c6c87a7a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNTc5ZTdiNjRkNjIyMTM2MDRjYTA1OWZhODU2MWIwYjE2MWJjZWUxMzJhOWMxNTY0M2FmMmE3OTA4MzM5MDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5OGZiNGU0ZGZhMTI1YWU4ZGRhZTY1MDQ4MmE1NjFlYmFkZmVjNmZlZWYzZGUxMzk2MjBjZDg0Mzg3ZDVjZTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxNzEyYzA3YjE5ZDJhZDk4MWFhNzU0YzhhNWRhMGQ0NGQwMGQxZTI1ZDJiNTBjOTQ0YTAxNzA1ZWEyZGYzNDYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBjNGI4Nzk5ZjJkMjYwYmNhMzUwZmIyMzQ3NzhkMzAzNzJhM2YxOGY0ZGY3ZjUzMjlkYzkzYjI1MmNlZGQ0NWQifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/src/modules/postgresql-export/postgresql-export.command.ts",
+          "version": "repo-file-v1:sha256:d2bbcadf5a99e4e8ac865a08afb745e5725fc6a1c74275096a38484ba14f5ead"
+        },
+        {
+          "resource": "repo://projects/common/persistence/src/modules/postgresql-import/postgresql-import.command.ts",
+          "version": "repo-file-v1:sha256:b273b953718799945e4237e19ea3390470117f617aba2bd119e89ce09ee5832b"
+        }
+      ]
+    },
+    {
+      "id": "claim_841b711bcd8e4eccba61fd6a87bc0ed2",
       "statement": "Local database provisioning: the Compose postgres service creates roles, databases and schemas from the POSTGRES_PROJECTS list only on an empty volume; to add a project to an existing volume, run nx run infrastructure:postgres:up then docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh naming only the missing projects.",
       "evidence": [
         {
-          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md",
-          "version": "repo-file-v1:sha256:d30354810b95f3e29adf6029f4225cda774846e774173e31d14e9b034bba6d72"
+          "resource": "repo://infrastructure/README.md#L55-L70",
+          "version": "repo-lines-v1:sha256:45c44cf52ee52c5bf4db12d2717dbda95bfc738b852ed4aae361510e345c3c40:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNmQyN2QyMTg5MTdhNTU0MTg2N2JiOWM2N2Q1YmI3NzdjNTg5M2VmNDY4ODlkYmFlMzFlMjgxZTQ3MDA4MTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNWFlOGI4NDNlMmMyMWEyY2I4ZjMwODI5OWViMzEwMmY3ZWZmOTE4Y2ZiNGU2ZjAxNzlkMWMyMmIyNzFkMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhmN2MzZTIxZjdjMTk2NzBmYTM3NjA5ZTM1MTgyMTJmN2UzM2Q3YzdiN2I4ZTI2NDNlYjcwMjNmOGQzY2UzYmMifQ"
         },
         {
-          "resource": "repo://infrastructure/README.md#L55-L85",
-          "version": "repo-lines-v1:sha256:10113aff6ec40d4bd1a73a75428ea4c4803111e66f36b405cbe85c35e496ce98:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5ZjA1NTg1Nzg3ZDEyM2Y1YjU0YTUyNmFjNmYyZTI4MzI2ZGY1YTVlZjQwOGE3OWFlYTc3M2NhZDcyNDE1YzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNWFlOGI4NDNlMmMyMWEyY2I4ZjMwODI5OWViMzEwMmY3ZWZmOTE4Y2ZiNGU2ZjAxNzlkMWMyMmIyNzFkMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmM2ZmMmQ5NzA4MDk3NDBkYzNkODEzMzdmZWMyNzliMGRlYzE0NTlkMGU3OGI2M2I0ZTE3NjNmZjNjOTAyOTQifQ"
+          "resource": "repo://infrastructure/docker/docker-compose.yml#L45-L78",
+          "version": "repo-lines-v1:sha256:3abfef7602e9c06e2723dd231138be74858492338de802739bc989d06eacc856:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZDZmY2JkNjY4OTRmMDFmOTY4NTUyNDliMDU1NDZkYjBiMjExNzFiNjRhNjkzMzU1OTMyZWIwY2E5OTE1ZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZmMmJjNTZjYTVkYWNjMThiMDUxNGI1MGM3M2E5NjE5YjQ2YzRiZTI3NTcyZjc3NjY2ZDg1YmY2MzMxZjdhNTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMwYTgwYWRhZGU4MWI5NTdkNzhlODk4OGRmZjhlMDFkZDIxMmMxYWFmYmNjMDViNTViODc5MTg2NjUzNjQ1NDAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUzNDg2NTZlNTM4NjI4ZmI2NzE3NmNjMjM4NDFlN2MxNGU0NDQ4ODZkM2RiMjE5ZWE4ODM1ODhjNDkwYTBmZjkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_140048f934904abeaf198b0482c405cd",
+      "statement": "Testcontainers integration test harness starts a throwaway postgres:18-alpine container with the project's role, database, and schema, then runs the project's real migrations before the suite starts.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/persistence/testing/database-testing/database-testing.utilities.ts#L1-L95",
+          "version": "repo-lines-v1:sha256:25196ff70be0376870638d1db24af6a62cf0fd9bac6b48ed7ff88696da66e315:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMzgyYjVkMzhhYmRiODNmYTgwYTBiMGNiNjEyMzkxOThkMDk2MjVlODQyMGQ5YzNlNTkzODNmMmVmN2FiZjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://projects/common/persistence/testing/postgres-container/postgres-container.utilities.ts#L1-L120",
+          "version": "repo-lines-v1:sha256:fc2458446163c10a16fb117ab4ca11a1f05fb48858bd9dc800ccafd759277a89:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkMWIwNDRmOGY5OWY1YzhmZTI4NWIwMTUwMmJjNjQ2YWZmMDY4OGQwMzIyMzk2ZGU0OTc5MjY1ZmIzM2Y0MDkxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_dc52a30107b2423dacf22bfb60435265",
+      "statement": "The migration generate workflow runs TypeORM migration:generate, extracts SQL for sqlfluff and squawk linting, then runs lint-code:write and format-code:write.",
+      "evidence": [
+        {
+          "resource": "repo://nx.json#L619-L621",
+          "version": "repo-lines-v1:sha256:26d8c3c7c7cb86696390f14d2aae8eea54c15d2925a143bc92a9ae03e5dd46c2:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGEzYTBiYTAyNDkzYTcwODAyNTZhMWZhMjdkM2I1ZGExODVkYTg5MjViZTA1MDQ3MzEyMmI0OWUyYmVlN2QxZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNjNhOWVhMmExNjg2YmY5MDFlNjY5MjJlZjgyYmY1M2U3ZTljYTJhZjI1ZTU2Y2ViMjJjMzMxMjMwZTQ2OWVkOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGRkNWU3YjA3ZmU3ZDRlZmIwZTE2OWM4ZGFhMTFmODg5MDgzYzIwOGVlMTQ1Y2VhODUyMzViZWFjMDBmN2QzNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmU0ZjIwZWNjYWU5OGQxODJiY2M0OWUxZGRhYTYwYmNjYjcyNGZkNDMwNWQ4NGQ0YzE2YzI2ZTNkNDE2ZWI4NSJ9"
+        },
+        {
+          "resource": "repo://projects/common/persistence/README.md#L160-L180",
+          "version": "repo-lines-v1:sha256:76daef402ec6aedbef9572eec0b79979d45d1da63391899581c2281ab19a992a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjOTY2ZDIzNzVjMzBhZjU4YTg3NmNlZTA3ZmNhZmExMGNkMGUzYzQ3N2Y0NzM0YjFjNTVkMmRjOTI1NmM0YTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFiYzhlNzY2MWQyZGM4ZWM3ZjkzMGNmNTVlYWEwN2ExMmIxMWM2NGFjMjMwNTkyYTkzNTg5MDBjZjhkNTI3OGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRmMzgzZjMzOTYyNmZkNGU0OTZlNmU2NjczZDBhMjFkNjE0NDlkOGM0MjJiZTE0NTgxOTI0MjkzNTlkODczNTAifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }
