@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   CaelundasDatabaseService,
   CalendarEventTag,
-  Tag,
+  type Tag,
 } from "@codebase/caelundas-db";
 
 import {
@@ -13,6 +13,7 @@ import {
   startEventsApplication,
 } from "../../../../../testing/events-application";
 import { SEEDED_METRIC_SLUGS } from "../../../../../testing/metric-catalog";
+import { tagRepository } from "../../../../../testing/tag-repository";
 
 import type {
   EventsApplication,
@@ -205,7 +206,7 @@ describe("events metrics end-to-end suite", () => {
     base = await seedEvents(application.database);
     filterTags = await seedFilterTags(application.database);
 
-    const tags = application.database.dataSource.getTreeRepository(Tag);
+    const tags = tagRepository(application.database.dataSource);
     temporality = await tags.save(
       tags.create({ name: "Temporality", slug: "temporality" }),
     );

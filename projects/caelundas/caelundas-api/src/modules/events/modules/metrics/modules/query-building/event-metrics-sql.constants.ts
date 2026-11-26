@@ -10,11 +10,11 @@ import {
 const PROGRESSIVE_SQL = `exists (
     select 1
     from calendar_event_tags pet
-    join tags_closure pc on pc.descendant_id = pet.tag_id
+    join tag_closures pc on pc.descendant_id = pet.tag_id
     where pet.calendar_event_id = e.id
       and pc.ancestor_id in (
         select p.tag_id
-        from tag_info p
+        from tag_paths p
         where p.tag_path = '${PROGRESSIVE_TAG_PATH}'
       )
   )`;
@@ -26,7 +26,7 @@ const MINUTES_SQL = `floor(extract(epoch from e."end" - e."start") / 60)::intege
 // the facts hold.
 /** The columns of a facts event row, from the base tables. */
 export const RAW_EVENT_COLUMN_SQL: Readonly<Record<string, string>> = {
-  ancestor_tag_ids: `array(select distinct c.ancestor_id from calendar_event_tags t join tags_closure c on c.descendant_id = t.tag_id and c.ancestor_id <> c.descendant_id where t.calendar_event_id = e.id order by c.ancestor_id)`,
+  ancestor_tag_ids: `array(select distinct c.ancestor_id from calendar_event_tags t join tag_closures c on c.descendant_id = t.tag_id and c.ancestor_id <> c.descendant_id where t.calendar_event_id = e.id order by c.ancestor_id)`,
   covered_range: `tstzmultirange(tstzrange(e."start", e."end"))`,
   day: `e.start_local_day::date`,
   duration_minutes: MINUTES_SQL,
@@ -47,7 +47,7 @@ export const RAW_CARRIED_COLUMNS: ReadonlySet<string> = new Set([
 /** Limits tags to those beneath `{root}`. */
 export const TAG_ROOT_SQL = ` and t.tag_id <> {root}::uuid and exists (
       select 1
-      from tags_closure c
+      from tag_closures c
       where c.ancestor_id = {root}::uuid and c.descendant_id = t.tag_id
     )`;
 

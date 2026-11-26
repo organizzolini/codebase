@@ -210,8 +210,16 @@ function nestNodes(options: readonly GroupNodeOption[]): CascaderNode[] {
   const roots: CascaderNode[] = [];
   // The last node seen at each depth, which the next one deeper joins.
   const parents: CascaderNode[] = [];
+  // A tag under two parents is a branch under each, but a level groups by it once.
+  const listed = new Set<string>();
 
   for (const option of options) {
+    if (listed.has(option.id)) {
+      continue;
+    }
+
+    listed.add(option.id);
+
     const events = `${String(option.count)} ${option.count === 1 ? "event" : "events"}`;
     const node: CascaderNode = {
       description:

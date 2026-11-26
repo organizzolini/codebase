@@ -39,7 +39,7 @@ describe(DatabaseService, () => {
     expect(service.isConnected()).toBe(false);
   });
 
-  it("refreshes the tag sets first, then rebuilds the facts, each through the manager it is given", async () => {
+  it("refreshes the tag closures and the tag sets first, then rebuilds the facts, each through the manager it is given", async () => {
     const manager = createMock<EntityManager>();
 
     await service.refreshMetrics(manager);
@@ -49,6 +49,10 @@ describe(DatabaseService, () => {
     );
     expect(manager.query).toHaveBeenNthCalledWith(
       1,
+      "refresh materialized view concurrently tag_closures",
+    );
+    expect(manager.query).toHaveBeenNthCalledWith(
+      2,
       "refresh materialized view concurrently calendar_event_tag_sets",
     );
 

@@ -18,6 +18,10 @@ export interface FixtureEvent {
  * One node of the tag tree; a root has no parent.
  */
 export interface FixtureTag {
+  /**
+   * The other parents of a tag under several, as Venus is under Benefic too.
+   */
+  alsoParentIds?: readonly string[];
   id: string;
   name: string;
   parentId: null | string;
@@ -129,3 +133,18 @@ export function createBusyEvents(start: string, count: number): FixtureEvent[] {
     };
   });
 }
+
+/**
+ * The tree with Venus and Mars each under two parents.
+ */
+export const DAG_FIXTURE_TAGS: readonly FixtureTag[] = [
+  ...FIXTURE_TAGS.map((tag) =>
+    tag.id === "tag-venus"
+      ? { ...tag, alsoParentIds: ["tag-benefic"] }
+      : tag.id === "tag-mars"
+        ? { ...tag, alsoParentIds: ["tag-malefic"] }
+        : tag,
+  ),
+  { id: "tag-benefic", name: "Benefic", parentId: "tag-body" },
+  { id: "tag-malefic", name: "Malefic", parentId: "tag-body" },
+];

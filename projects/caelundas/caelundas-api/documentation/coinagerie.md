@@ -5,6 +5,7 @@
 The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **alioth**: A bright star of Ursa Major, used as a fixture in the night-sky unit tests.
+- **also**:
 - **altitude**: Angle above the horizon in degrees; `bottomAltitudeDegrees` sets the lowest altitude the night sky draws.
 - **angle**: The rotation in degrees the night sky is drawn at, set by sidereal time and the observer's longitude.
 - **appearance**: The night-sky options that set how the sky looks, such as colors and line widths, filled with defaults together.
@@ -12,6 +13,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **aspect**: An angular relationship between two bodies, the root tag most calendar events are filed under.
 - **average**:
 - **azimuth**: Compass bearing along the horizon, which a unit test reads to tell east from west.
+- **benefic**:
 - **conjunct**: The zero-degree aspect, as events and tags name it, such as Moon Conjunct Mars.
 - **constellation**: A named star figure the night sky draws on request, chosen by name, `all`, `zodiac`, or `none`.
 - **db**: Part of the `@codebase/caelundas-db` package name, the entities and database module this API reads through.
@@ -72,6 +74,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **sun**: The Sun as a body; the word also appears inside Sunday, weekday 0.
 - **temporality**: Filter field classing an event as `Instant` or `Duration`.
 - **tuesday**: Test name for a count of events that fall on a Tuesday.
+- **under**:
 - **unnamed**:
 - **unrooted**:
 - **ursa**: First word of Ursa Major, written `ursa_major` when naming a constellation to draw.

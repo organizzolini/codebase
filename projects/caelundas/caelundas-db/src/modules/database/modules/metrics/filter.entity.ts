@@ -11,7 +11,7 @@ import type { Relation } from "typeorm";
 /**
  * One row of `filters`: a group instantiated, pinning one value.
  *
- * A day filter pins a `period`. A tag filter pins a `tag_id` and sits beneath its parent tag's filter that day, or the day's, carrying the day's `period`. A fact is one measure at one filter.
+ * A day filter pins a `period`; a tag filter pins a `tag_id` and sits beneath its day's filter, never another tag's, since a tag may have several parents.
  */
 @Entity()
 @Index("filters_key", ["groupId", "period", "tagId", "eventName", "slug"], {

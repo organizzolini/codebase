@@ -74,9 +74,9 @@ export function FilterTagEditor(
           data-scroll-list=""
           role="listbox"
         >
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <TagRow
-              key={row.item.value}
+              key={`${row.item.value}:${String(index)}`}
               onKeyDown={handleOptionKeyDown}
               onOpenChange={handleOpen}
               onToggle={handleToggle}

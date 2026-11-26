@@ -13,10 +13,17 @@ export interface ClassifiedCalendarEvent {
   paths: readonly TagPath[];
 }
 
-/** Stored tags: ids by parent and name, names by parent and slug. */
+/** Stored tags: ids by parent and name, names by parent and slug, and the edges between them. */
 export interface KnownTags {
+  edges: Set<string>;
   ids: Map<string, string>;
   slugs: Map<string, string>;
+}
+
+/** One row of `tag_edges`: a parent tag and a child it refines into. */
+export interface TagEdgeRow {
+  sourceNode: string;
+  targetNode: string;
 }
 
 /**

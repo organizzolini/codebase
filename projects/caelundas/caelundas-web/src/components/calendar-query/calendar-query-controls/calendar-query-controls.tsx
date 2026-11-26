@@ -28,6 +28,7 @@ import type { EventFilterQuery } from "../calendar-filters/components/event-filt
 import type { ResolvedPreset } from "../calendar-filters/components/presets/presets.types";
 import type { EventGroupLevel } from "../calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
+import type { ViewSelection } from "../calendar-view-strip/calendar-view-strip.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -64,6 +65,8 @@ export interface CalendarQueryControlsProperties {
     | ((metrics: readonly string[] | undefined) => void)
     | undefined;
   onSortChange: (sort: readonly GroupSort[] | undefined) => void;
+  /** Writes a view's filter, group and sort to the link in one step. */
+  onViewChange: (selection: ViewSelection) => void;
   presets: readonly ResolvedPreset[];
   sort: readonly GroupSort[] | undefined;
   view: CalendarViewName;
@@ -92,6 +95,7 @@ export function CalendarQueryControls(
     onGroupingChange,
     onMetricsChange,
     onSortChange,
+    onViewChange,
     presets,
     sort,
     view,
@@ -134,11 +138,13 @@ export function CalendarQueryControls(
       {display}
       <CalendarViewStrip
         className="contents"
+        facets={facets}
+        group={isDefaultGrouping === false ? grouping : undefined}
         onSelect={(next) => {
-          onFilterChange(toLinkedEventFilter(next));
+          onViewChange({ ...next, filter: toLinkedEventFilter(next.filter) });
         }}
-        presets={presets}
         query={filter ?? getDefaultFilter(presets)}
+        sort={sort}
       />
       <CalendarPageStrip
         className="contents"

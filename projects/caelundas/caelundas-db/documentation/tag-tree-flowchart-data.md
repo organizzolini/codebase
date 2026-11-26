@@ -72,19 +72,19 @@ flowchart LR
         n214["Septile<br/><i>gem · Bodies about 51.4° apart: a fated, elusive link.</i>"]
         n215["Sextuple<br/><i>hexagon · Patterns of six bodies.</i>"]
         n217["Trine<br/><i>star · Bodies 120° apart: a harmonious flow.</i>"]
-        n227["Opposite<br/><i>star · Bodies 180° apart: two sides pulling against each other.</i>"]
-        n230["Phase<br/><i>hourglass · Where an aspect sits in its span: forming, exact or dissolving.</i>"]
-        n231["Quintile<br/><i>gem · Bodies 72° apart: a creative, talent-making link.</i>"]
-        n233["Stellium<br/><i>sparkles · Bodies bunched together, counted by how many.</i>"]
-        n236["Focal Body<br/><i>crosshair · The body a pattern points at.</i>"]
-        n239["Tredecile<br/><i>gem · Bodies 108° apart: a gentle, talented link.</i>"]
-        n243["Biquintile<br/><i>gem · Bodies 144° apart: a creative, gifted link.</i>"]
-        n233 --> n0
-        n233 --> n1
-        n233 --> n2
-        n233 --> n3
-        n236 --> n7
-        n236 --> n8
+        n228["Opposite<br/><i>star · Bodies 180° apart: two sides pulling against each other.</i>"]
+        n231["Phase<br/><i>hourglass · Where an aspect sits in its span: forming, exact or dissolving.</i>"]
+        n232["Quintile<br/><i>gem · Bodies 72° apart: a creative, talent-making link.</i>"]
+        n234["Stellium<br/><i>sparkles · Bodies bunched together, counted by how many.</i>"]
+        n237["Focal Body<br/><i>crosshair · The body a pattern points at.</i>"]
+        n241["Tredecile<br/><i>gem · Bodies 108° apart: a gentle, talented link.</i>"]
+        n245["Biquintile<br/><i>gem · Bodies 144° apart: a creative, gifted link.</i>"]
+        n234 --> n0
+        n234 --> n1
+        n234 --> n2
+        n234 --> n3
+        n237 --> n7
+        n237 --> n8
         n149 --> n23
         n119 --> n24
         n203 --> n25
@@ -100,27 +100,27 @@ flowchart LR
         n203 --> n35
         n203 --> n36
         n215 --> n37
-        n236 --> n39
-        n236 --> n40
+        n237 --> n39
+        n237 --> n40
         n149 --> n41
-        n236 --> n43
-        n236 --> n44
-        n236 --> n45
-        n236 --> n46
-        n236 --> n47
-        n236 --> n53
-        n236 --> n55
-        n236 --> n56
-        n236 --> n57
-        n236 --> n60
-        n236 --> n63
+        n237 --> n43
+        n237 --> n44
+        n237 --> n45
+        n237 --> n46
+        n237 --> n47
+        n237 --> n53
+        n237 --> n55
+        n237 --> n56
+        n237 --> n57
+        n237 --> n60
+        n237 --> n63
         n119 --> n64
-        n236 --> n67
-        n236 --> n68
-        n236 --> n70
+        n237 --> n67
+        n237 --> n68
+        n237 --> n70
         n119 --> n76
         n95 --> n84
-        n230 --> n89
+        n231 --> n89
         n184 --> n91
         n110 --> n95
         n138 --> n107
@@ -129,13 +129,13 @@ flowchart LR
         n194 --> n120
         n79 --> n126
         n194 --> n127
-        n230 --> n132
+        n231 --> n132
         n110 --> n138
         n126 --> n149
         n138 --> n153
         n95 --> n154
         n184 --> n157
-        n230 --> n174
+        n231 --> n174
         n79 --> n184
         n184 --> n185
         n194 --> n186
@@ -147,13 +147,13 @@ flowchart LR
         n194 --> n214
         n126 --> n215
         n95 --> n217
-        n95 --> n227
-        n79 --> n230
-        n194 --> n231
-        n126 --> n233
-        n79 --> n236
-        n194 --> n239
-        n194 --> n243
+        n95 --> n228
+        n79 --> n231
+        n194 --> n232
+        n126 --> n234
+        n79 --> n237
+        n194 --> n241
+        n194 --> n245
     end
     subgraph nb1["Solar"]
         n4["Autumnal Equinox<br/><i>equal · Day and night are equal, as the year turns toward winter.</i>"]
@@ -178,14 +178,14 @@ flowchart LR
         n130["Equinox<br/><i>equal · Day and night are of equal length.</i>"]
         n151["Season<br/><i>leaf · The season of the year.</i>"]
         n159["Summer<br/><i>sun · The season from the summer solstice to the autumn equinox.</i>"]
-        n169["Autumn<br/><i>leaf · The season from the autumn equinox to the winter solstice.</i>"]
+        n168["Autumn<br/><i>leaf · The season from the autumn equinox to the winter solstice.</i>"]
         n171["Cross-Quarter Day<br/><i>calendar-check · Days midway between a solstice and an equinox.</i>"]
         n204["Hexadecan<br/><i>grid-2x2 · The sixteen divisions of the year.</i>"]
         n221["Winter<br/><i>snowflake · The season from the winter solstice to the spring equinox.</i>"]
-        n229["Perihelion<br/><i>arrow-down-left · The Earth is nearest the Sun.</i>"]
-        n232["Solar<br/><i>sun · The Sun's year.</i>"]
-        n234["Aphelion<br/><i>arrow-up-right · The Earth is farthest from the Sun.</i>"]
-        n250["Retreating<br/><i>arrow-left · The Sun's days are growing shorter.</i>"]
+        n230["Perihelion<br/><i>arrow-down-left · The Earth is nearest the Sun.</i>"]
+        n233["Solar<br/><i>sun · The Sun's year.</i>"]
+        n235["Aphelion<br/><i>arrow-up-right · The Earth is farthest from the Sun.</i>"]
+        n252["Retreating<br/><i>arrow-left · The Sun's days are growing shorter.</i>"]
         n130 --> n4
         n171 --> n5
         n204 --> n12
@@ -202,19 +202,19 @@ flowchart LR
         n204 --> n66
         n130 --> n69
         n113 --> n75
-        n232 --> n77
+        n233 --> n77
         n77 --> n113
         n151 --> n114
         n77 --> n130
-        n232 --> n151
+        n233 --> n151
         n151 --> n159
-        n151 --> n169
+        n151 --> n168
         n77 --> n171
         n77 --> n204
         n151 --> n221
-        n77 --> n229
-        n77 --> n234
-        n77 --> n250
+        n77 --> n230
+        n77 --> n235
+        n77 --> n252
     end
     subgraph nb2["Planetary"]
         n6["Brightest<br/><i>milestone · The planet shines at its brightest.</i>"]
@@ -247,7 +247,7 @@ flowchart LR
         n181["Martian<br/><i>refresh-cw · Mars's cycle of visibility with the Sun.</i>"]
         n190["Retrograde Period<br/><i>rotate-ccw · The span a planet moves backward.</i>"]
         n196["Synodic Stage<br/><i>milestone · A planet's stage in its cycle with the Sun.</i>"]
-        n210["Planetary<br/><i>orbit · The planets' own cycles.</i>"]
+        n211["Planetary<br/><i>orbit · The planets' own cycles.</i>"]
         n196 --> n6
         n163 --> n9
         n96 --> n10
@@ -269,15 +269,15 @@ flowchart LR
         n163 --> n72
         n96 --> n73
         n96 --> n74
-        n210 --> n85
+        n211 --> n85
         n146 --> n96
         n85 --> n115
-        n210 --> n146
+        n211 --> n146
         n85 --> n158
         n146 --> n163
         n146 --> n181
         n85 --> n190
-        n210 --> n196
+        n211 --> n196
     end
     subgraph nb3["Zodiac"]
         n78["Aries<br/><i>star · The sign of the Ram, a cardinal fire sign.</i>"]
@@ -306,61 +306,61 @@ flowchart LR
         n199["Zodiac<br/><i>star · The signs and what they imply.</i>"]
         n200["Cancer<br/><i>star · The sign of the Crab, a cardinal water sign.</i>"]
         n202["Fall<br/><i>arrow-down · The planet sits opposite its exaltation: lowered.</i>"]
-        n208["Peak Ingress<br/><i>log-in · A body reaches the midpoint of a sign.</i>"]
+        n209["Peak Ingress<br/><i>log-in · A body reaches the midpoint of a sign.</i>"]
         n212["Polarity<br/><i>plus · The polarity of a sign: positive or negative.</i>"]
         n219["Water<br/><i>droplets · Cancer, Scorpio and Pisces.</i>"]
-        n224["Decan<br/><i>layers · The ten-degree third of a sign a body is in.</i>"]
-        n226["Leo<br/><i>star · The sign of the Lion, a fixed fire sign.</i>"]
-        n228["Peregrine<br/><i>compass · The planet holds no dignity or debility in the sign.</i>"]
-        n235["Dignity<br/><i>crown · How strongly a planet sits in its sign.</i>"]
-        n240["Virgo<br/><i>star · The sign of the Maiden, a mutable earth sign.</i>"]
-        n245["Ingress<br/><i>log-in · A body enters a sign, or a decan of one.</i>"]
-        n247["Libra<br/><i>star · The sign of the Scales, a cardinal air sign.</i>"]
-        n251["Scorpio<br/><i>star · The sign of the Scorpion, a fixed water sign.</i>"]
-        n254["Sagittarius<br/><i>star · The sign of the Archer, a mutable fire sign.</i>"]
-        n256["Capricorn<br/><i>star · The sign of the Sea-Goat, a cardinal earth sign.</i>"]
-        n258["Aquarius<br/><i>star · The sign of the Water Bearer, a fixed air sign.</i>"]
-        n259["Pisces<br/><i>star · The sign of the Fish, a mutable water sign.</i>"]
+        n225["Decan<br/><i>layers · The ten-degree third of a sign a body is in.</i>"]
+        n227["Leo<br/><i>star · The sign of the Lion, a fixed fire sign.</i>"]
+        n229["Peregrine<br/><i>compass · The planet holds no dignity or debility in the sign.</i>"]
+        n236["Dignity<br/><i>crown · How strongly a planet sits in its sign.</i>"]
+        n242["Virgo<br/><i>star · The sign of the Maiden, a mutable earth sign.</i>"]
+        n247["Ingress<br/><i>log-in · A body enters a sign, or a decan of one.</i>"]
+        n249["Libra<br/><i>star · The sign of the Scales, a cardinal air sign.</i>"]
+        n253["Scorpio<br/><i>star · The sign of the Scorpion, a fixed water sign.</i>"]
+        n256["Sagittarius<br/><i>star · The sign of the Archer, a mutable fire sign.</i>"]
+        n258["Capricorn<br/><i>star · The sign of the Sea-Goat, a cardinal earth sign.</i>"]
+        n260["Aquarius<br/><i>star · The sign of the Water Bearer, a fixed air sign.</i>"]
+        n261["Pisces<br/><i>star · The sign of the Fish, a mutable water sign.</i>"]
         n108 --> n78
         n182 --> n82
-        n235 --> n86
+        n236 --> n86
         n129 --> n87
-        n224 --> n88
+        n225 --> n88
         n212 --> n104
         n199 --> n108
-        n245 --> n109
+        n247 --> n109
         n129 --> n128
         n199 --> n129
-        n235 --> n133
+        n236 --> n133
         n182 --> n134
         n212 --> n141
-        n224 --> n152
-        n245 --> n155
+        n225 --> n152
+        n247 --> n155
         n108 --> n160
         n129 --> n167
-        n245 --> n172
-        n235 --> n173
+        n247 --> n172
+        n236 --> n173
         n108 --> n178
         n199 --> n182
         n182 --> n183
-        n224 --> n197
+        n225 --> n197
         n108 --> n200
-        n235 --> n202
-        n245 --> n208
+        n236 --> n202
+        n247 --> n209
         n199 --> n212
         n129 --> n219
-        n199 --> n224
-        n108 --> n226
-        n235 --> n228
-        n199 --> n235
-        n108 --> n240
-        n199 --> n245
-        n108 --> n247
-        n108 --> n251
-        n108 --> n254
+        n199 --> n225
+        n108 --> n227
+        n236 --> n229
+        n199 --> n236
+        n108 --> n242
+        n199 --> n247
+        n108 --> n249
+        n108 --> n253
         n108 --> n256
         n108 --> n258
-        n108 --> n259
+        n108 --> n260
+        n108 --> n261
     end
     subgraph nb4["Daily"]
         n80["Astronomical Dawn<br/><i>sunrise · The Sun is 18° below the horizon, rising: the sky begins to lighten.</i>"]
@@ -378,40 +378,40 @@ flowchart LR
         n193["Set<br/><i>sunset · The Sun crosses the horizon downward.</i>"]
         n198["Twilight<br/><i>cloud-sun · The stages between day and night.</i>"]
         n201["Daylight<br/><i>sun · The Sun is above the horizon.</i>"]
-        n206["Nadir<br/><i>arrow-down-to-line · The Sun's lowest point.</i>"]
-        n207["Nadir<br/><i>arrow-down-to-line · The Moon's lowest point.</i>"]
+        n207["Nadir<br/><i>arrow-down-to-line · The Sun's lowest point.</i>"]
+        n208["Nadir<br/><i>arrow-down-to-line · The Moon's lowest point.</i>"]
         n216["Time of Day<br/><i>clock · Whether a twilight falls in the morning or the evening.</i>"]
-        n223["Civil Dusk<br/><i>sunset · The Sun is 6° below the horizon, setting: lights are needed outdoors.</i>"]
-        n238["Nautical Dusk<br/><i>sunset · The Sun is 12° below the horizon, setting: the sea horizon fades.</i>"]
-        n242["Astronomical Dusk<br/><i>sunset · The Sun is 18° below the horizon, setting: the sky is fully dark.</i>"]
-        n244["Daily<br/><i>clock · Events that repeat every day.</i>"]
-        n249["Night<br/><i>moon · The Sun is more than 18° below the horizon.</i>"]
-        n253["Astronomical Twilight<br/><i>cloud-sun · The span between 18° and 12° below the horizon.</i>"]
-        n257["Nautical Twilight<br/><i>cloud-sun · The span between 12° and 6° below the horizon.</i>"]
+        n224["Civil Dusk<br/><i>sunset · The Sun is 6° below the horizon, setting: lights are needed outdoors.</i>"]
+        n239["Nautical Dusk<br/><i>sunset · The Sun is 12° below the horizon, setting: the sea horizon fades.</i>"]
+        n244["Astronomical Dusk<br/><i>sunset · The Sun is 18° below the horizon, setting: the sky is fully dark.</i>"]
+        n246["Daily<br/><i>clock · Events that repeat every day.</i>"]
+        n251["Night<br/><i>moon · The Sun is more than 18° below the horizon.</i>"]
+        n255["Astronomical Twilight<br/><i>cloud-sun · The span between 18° and 12° below the horizon.</i>"]
+        n259["Nautical Twilight<br/><i>cloud-sun · The span between 12° and 6° below the horizon.</i>"]
         n198 --> n80
         n216 --> n99
         n112 --> n105
         n136 --> n106
-        n244 --> n112
+        n246 --> n112
         n216 --> n131
-        n244 --> n136
+        n246 --> n136
         n198 --> n140
         n112 --> n165
         n136 --> n166
         n198 --> n170
         n136 --> n192
         n112 --> n193
-        n244 --> n198
+        n246 --> n198
         n198 --> n201
-        n112 --> n206
-        n136 --> n207
-        n244 --> n216
-        n198 --> n223
-        n198 --> n238
-        n198 --> n242
-        n198 --> n249
-        n198 --> n253
-        n198 --> n257
+        n112 --> n207
+        n136 --> n208
+        n246 --> n216
+        n198 --> n224
+        n198 --> n239
+        n198 --> n244
+        n198 --> n251
+        n198 --> n255
+        n198 --> n259
     end
     subgraph nb5["Eclipse"]
         n81["Beginning<br/><i>circle-play · The eclipse begins.</i>"]
@@ -427,22 +427,22 @@ flowchart LR
         n175["Ending<br/><i>circle-stop · The eclipse ends.</i>"]
         n177["Frame<br/><i>scan · What an eclipse is measured from.</i>"]
         n188["Partial<br/><i>contrast · The Moon covers only part of the Sun.</i>"]
-        n209["Phase<br/><i>hourglass · Where an eclipse is: beginning, maximum or ending.</i>"]
-        n248["Eclipse<br/><i>eclipse · Solar and lunar eclipses.</i>"]
-        n209 --> n81
+        n210["Phase<br/><i>hourglass · Where an eclipse is: beginning, maximum or ending.</i>"]
+        n250["Eclipse<br/><i>eclipse · Solar and lunar eclipses.</i>"]
+        n210 --> n81
         n177 --> n90
-        n248 --> n111
+        n250 --> n111
         n135 --> n117
         n111 --> n118
         n111 --> n122
-        n248 --> n135
-        n209 --> n137
+        n250 --> n135
+        n210 --> n137
         n135 --> n145
         n177 --> n161
-        n209 --> n175
-        n248 --> n177
+        n210 --> n175
+        n250 --> n177
         n111 --> n188
-        n248 --> n209
+        n250 --> n210
     end
     subgraph nb6["Body"]
         n83["Ceres<br/><i>mountain · The asteroid of nurture and harvest.</i>"]
@@ -462,18 +462,21 @@ flowchart LR
         n150["Saturn<br/><i>users · The planet of structure and limits.</i>"]
         n156["Social<br/><i>users · Jupiter and Saturn.</i>"]
         n162["Venus<br/><i>user · The planet of love and value.</i>"]
-        n168["Asteroid<br/><i>mountain · Asteroids and Chiron.</i>"]
+        n169["Benefic<br/><i>smile · The bodies tradition counts as fortunate: Venus and Jupiter.</i>"]
         n179["Juno<br/><i>mountain · The asteroid of partnership and commitment.</i>"]
         n180["Mars<br/><i>user · The planet of drive and conflict.</i>"]
         n187["Outer<br/><i>telescope · Uranus, Neptune and Pluto.</i>"]
         n189["Pluto<br/><i>telescope · The dwarf planet of transformation.</i>"]
         n205["Lunar Apogee<br/><i>map-pin · The point where the Moon is farthest from the Earth.</i>"]
-        n211["Point<br/><i>map-pin · Calculated points: Lilith, the lunar nodes and apsides.</i>"]
+        n206["Malefic<br/><i>frown · The bodies tradition counts as difficult: Mars and Saturn.</i>"]
         n218["Vesta<br/><i>mountain · The asteroid of devotion and focus.</i>"]
-        n222["Chiron<br/><i>mountain · The wounded healer, between Saturn and Uranus.</i>"]
-        n168 --> n83
+        n222["Asteroid<br/><i>mountain · Asteroids and Chiron.</i>"]
+        n223["Chiron<br/><i>mountain · The wounded healer, between Saturn and Uranus.</i>"]
+        n240["Point<br/><i>map-pin · Calculated points: Lilith, the lunar nodes and apsides.</i>"]
+        n222 --> n83
         n156 --> n92
-        n211 --> n93
+        n169 --> n92
+        n240 --> n93
         n125 --> n94
         n103 --> n97
         n147 --> n103
@@ -481,21 +484,26 @@ flowchart LR
         n187 --> n121
         n94 --> n139
         n187 --> n142
-        n211 --> n143
-        n168 --> n144
+        n240 --> n143
+        n222 --> n144
         n125 --> n147
         n156 --> n150
+        n206 --> n150
         n147 --> n156
         n103 --> n162
-        n125 --> n168
-        n168 --> n179
+        n169 --> n162
+        n125 --> n169
+        n222 --> n179
         n103 --> n180
+        n206 --> n180
         n147 --> n187
         n187 --> n189
-        n211 --> n205
-        n125 --> n211
-        n168 --> n218
-        n168 --> n222
+        n240 --> n205
+        n125 --> n206
+        n222 --> n218
+        n125 --> n222
+        n222 --> n223
+        n125 --> n240
     end
     subgraph nb7["Lunar"]
         n98["Monthly Cycle<br/><i>moon-star · The Moon's phases through the month.</i>"]
@@ -506,38 +514,38 @@ flowchart LR
         n164["Waxing Crescent<br/><i>moon-star · A thin crescent, growing from new.</i>"]
         n176["First Quarter<br/><i>contrast · Half the Moon is lit, waxing.</i>"]
         n220["Waxing Gibbous<br/><i>moon-star · More than half lit, growing to full.</i>"]
-        n225["Full<br/><i>circle · The whole face of the Moon is lit.</i>"]
-        n237["Lunar<br/><i>moon · The Moon's month and orbit.</i>"]
-        n241["Waning Gibbous<br/><i>moon-star · More than half lit, shrinking from full.</i>"]
-        n246["Last Quarter<br/><i>moon-star · Half the Moon is lit, waning.</i>"]
-        n252["Waning Crescent<br/><i>moon-star · A thin crescent, shrinking to new.</i>"]
-        n237 --> n98
+        n226["Full<br/><i>circle · The whole face of the Moon is lit.</i>"]
+        n238["Lunar<br/><i>moon · The Moon's month and orbit.</i>"]
+        n243["Waning Gibbous<br/><i>moon-star · More than half lit, shrinking from full.</i>"]
+        n248["Last Quarter<br/><i>moon-star · Half the Moon is lit, waning.</i>"]
+        n254["Waning Crescent<br/><i>moon-star · A thin crescent, shrinking to new.</i>"]
+        n238 --> n98
         n98 --> n100
         n124 --> n102
         n124 --> n123
-        n237 --> n124
+        n238 --> n124
         n98 --> n164
         n98 --> n176
         n98 --> n220
-        n98 --> n225
-        n98 --> n241
-        n98 --> n246
-        n98 --> n252
+        n98 --> n226
+        n98 --> n243
+        n98 --> n248
+        n98 --> n254
     end
     subgraph nb8["Temporality"]
         n101["Perfective<br/><i>zap · An instant in time.</i>"]
         n148["Progressive<br/><i>hourglass · Progressing over a duration of time.</i>"]
-        n255["Temporality<br/><i>timer · Whether an event is an instant or progresses over time.</i>"]
-        n255 --> n101
-        n255 --> n148
+        n257["Temporality<br/><i>timer · Whether an event is an instant or progresses over time.</i>"]
+        n257 --> n101
+        n257 --> n148
     end
     class n79 root
     class n125 root
     class n199 root
-    class n210 root
-    class n232 root
-    class n237 root
-    class n244 root
-    class n248 root
-    class n255 root
+    class n211 root
+    class n233 root
+    class n238 root
+    class n246 root
+    class n250 root
+    class n257 root
 ```

@@ -27,6 +27,7 @@ describe(CalendarQueryControls, () => {
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
         onSortChange={() => {}}
+        onViewChange={() => {}}
         presets={[]}
         sort={undefined}
         view="timeline"
@@ -48,6 +49,7 @@ describe(CalendarQueryControls, () => {
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
         onSortChange={() => {}}
+        onViewChange={() => {}}
         presets={[]}
         sort={undefined}
         view="timeline"
@@ -71,6 +73,7 @@ describe(CalendarQueryControls, () => {
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
         onSortChange={() => {}}
+        onViewChange={() => {}}
         presets={[]}
         sort={undefined}
         view="week"
@@ -90,6 +93,7 @@ describe(CalendarQueryControls, () => {
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
         onSortChange={() => {}}
+        onViewChange={() => {}}
         presets={[]}
         sort={undefined}
         view="table"
@@ -111,6 +115,7 @@ describe(CalendarQueryControls, () => {
           onFilterChange={() => {}}
           onGroupingChange={() => {}}
           onSortChange={() => {}}
+          onViewChange={() => {}}
           presets={[]}
           sort={undefined}
           view={view}
@@ -151,6 +156,7 @@ describe(CalendarQueryControls, () => {
         onGroupingChange={() => {}}
         onMetricsChange={onMetricsChange}
         onSortChange={() => {}}
+        onViewChange={() => {}}
         presets={[]}
         sort={undefined}
         view="charts"
@@ -186,6 +192,7 @@ describe(CalendarQueryControls, () => {
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
         onSortChange={() => {}}
+        onViewChange={() => {}}
         presets={[]}
         sort={undefined}
         view="table"
@@ -220,6 +227,7 @@ describe(CalendarQueryControls, () => {
         onFilterChange={() => {}}
         onGroupingChange={() => {}}
         onSortChange={() => {}}
+        onViewChange={() => {}}
         presets={[]}
         sort={undefined}
         view="table"
@@ -251,6 +259,7 @@ describe(CalendarQueryControls, () => {
           onFoldChange={onFoldChange}
           onGroupingChange={() => {}}
           onSortChange={() => {}}
+          onViewChange={() => {}}
           presets={[]}
           sort={undefined}
           view="table"

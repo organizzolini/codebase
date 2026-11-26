@@ -22,19 +22,26 @@ export function renderGraphFileTree(graph: GraphModel): GraphMermaidRendering {
   const { children, nested } = nestEdges(graph.edges, nodes);
 
   const lines = [RENDER_MERMAID_FILE_TREE_HEADER];
-  const drawn = new Set<string>();
-  const draw = (node: GraphNode, level: number): void => {
-    if (drawn.has(node.id)) return;
-    drawn.add(node.id);
+  // A node with several parents is listed under each, with what is beneath it; a walk that meets a node it is inside of ends there.
+  const draw = (
+    node: GraphNode,
+    level: number,
+    above: ReadonlySet<string>,
+  ): void => {
+    if (above.has(node.id)) return;
     const below = children.get(node.id) ?? [];
     lines.push(
       `${RENDER_MERMAID_INDENT.repeat(level)}${fileTreeLabel(fileTreeText(node, below.length > 0), false)}`,
     );
     for (const child of below)
-      draw(requireNode(nodes, child, "Edge"), level + 1);
+      draw(
+        requireNode(nodes, child, "Edge"),
+        level + 1,
+        new Set([...above, node.id]),
+      );
   };
   for (const node of graph.nodes) {
-    if (!nested.has(node.id)) draw(node, 1);
+    if (!nested.has(node.id)) draw(node, 1, new Set());
   }
 
   const diagram = lines.join("\n");

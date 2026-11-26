@@ -81,32 +81,32 @@ application's `ConfigModule` must be global, and spreads
 
 ## The schema
 
-| Entity                | Table                                              | Holds                                                                                    |
-| --------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `CalendarEvent`       | `calendar_events`                                  | One detected event for one observer location                                             |
-| `Tag`                 | `tags`, `tags_closure`                             | The tag tree, a closure table TypeORM keeps in step                                      |
-| `CalendarEventTag`    | `calendar_event_tags`                              | An event carrying a tag                                                                  |
-| `Star`                | `stars`                                            | A star of the HYG catalog, keyed by its Hipparcos number (`hipparcos_number`)            |
-| `Constellation`       | `constellations`                                   | One of the 88 IAU constellations                                                         |
-| `ConstellationEdge`   | `constellation_edges`                              | A segment of a constellation's figure (`constellation_id`, `source_node`, `target_node`) |
-| `Measure`             | `measures`                                         | Seeded catalog: a thing measured about a group of events                                 |
-| `Metric`              | `metrics`                                          | Seeded catalog: a number shown, and the root of its expression tree                      |
-| `MetricExpression`    | `metric_expressions`, `metric_expressions_closure` | Seeded closure-table tree: how a metric is composed                                      |
-| `CalendarEventFact`   | `calendar_event_facts`                             | One measure at one filter a row: `filter_id`, `measure_id`, `measurement`                |
-| `Dimension`           | `dimensions`                                       | Seeded catalog: a way events are sliced (name, day, week, month, quarter, year, tag)     |
-| `DimensionEdge`       | `dimension_edges`                                  | Seeded `@Graph` edges: a time dimension and the coarser one it rolls up into             |
-| `Group`               | `groups`                                           | Seeded catalog: a set of dimensions (day, tag, day and tag, ...)                         |
-| `GroupDimension`      | `group_dimensions`                                 | The dimensions of a group                                                                |
-| `Filter`              | `filters`                                          | A group instantiated: a day, or a tag on a day, each pinning its values                  |
-| `CalendarEventTagSet` | `calendar_event_tag_sets`                          | Materialized view: an event's tags as two sorted arrays                                  |
+| Entity                | Table                                              | Holds                                                                                          |
+| --------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `CalendarEvent`       | `calendar_events`                                  | One detected event for one observer location                                                   |
+| `Tag`                 | `tags`, `tag_edges`, `tag_closures`                | The tag graph: a tag may have several parents; the generated `@Graph` edges and a closure view |
+| `CalendarEventTag`    | `calendar_event_tags`                              | An event carrying a tag                                                                        |
+| `Star`                | `stars`                                            | A star of the HYG catalog, keyed by its Hipparcos number (`hipparcos_number`)                  |
+| `Constellation`       | `constellations`                                   | One of the 88 IAU constellations                                                               |
+| `ConstellationEdge`   | `constellation_edges`                              | A segment of a constellation's figure (`constellation_id`, `source_node`, `target_node`)       |
+| `Measure`             | `measures`                                         | Seeded catalog: a thing measured about a group of events                                       |
+| `Metric`              | `metrics`                                          | Seeded catalog: a number shown, and the root of its expression tree                            |
+| `MetricExpression`    | `metric_expressions`, `metric_expressions_closure` | Seeded closure-table tree: how a metric is composed                                            |
+| `CalendarEventFact`   | `calendar_event_facts`                             | One measure at one filter a row: `filter_id`, `measure_id`, `measurement`                      |
+| `Dimension`           | `dimensions`                                       | Seeded catalog: a way events are sliced (name, day, week, month, quarter, year, tag)           |
+| `DimensionEdge`       | `dimension_edges`                                  | Seeded `@Graph` edges: a time dimension and the coarser one it rolls up into                   |
+| `Group`               | `groups`                                           | Seeded catalog: a set of dimensions (day, tag, day and tag, ...)                               |
+| `GroupDimension`      | `group_dimensions`                                 | The dimensions of a group                                                                      |
+| `Filter`              | `filters`                                          | A group instantiated: a day, or a tag on a day, each pinning its values                        |
+| `CalendarEventTagSet` | `calendar_event_tag_sets`                          | Materialized view: an event's tags as two sorted arrays                                        |
 
 Entities are named by class: the shared naming strategy makes the tables
 plural and the columns snake case, so no entity names a table or a schema.
 
 - **Ids are `uuidv7`s the database assigns,** through
   `@codebase/persistence`'s `PostgresqlUpdatableEntity`, for `calendar_events`,
-  `tags` and the catalog tables. The closure tables, the join table, the star
-  and constellation catalogs, and the edge table keep their natural
+  `tags` and the catalog tables. The expression closure table, the join table, the
+  star and constellation catalogs, and the edge tables keep their natural
   keys.
 - **`calendar_events` upserts on its natural key,** `(name, start, end,
 latitude, longitude)`, so a re-run updates the row it wrote and a second
@@ -137,9 +137,13 @@ latitude, longitude)`, so a re-run updates the row it wrote and a second
 
 ## The read model
 
-There are no derived tag tables: a tag's depth, root, path and rank are read from
-`tags` and `tags_closure`, and an event's tags from `calendar_event_tags`, inside the
-facts at refresh and through joins at query time.
+There are no derived tag tables: a tag's parents are the rows of `tag_edges`, its
+ancestors and descendants the materialized view `tag_closures` (every path of the
+graph walked once, refreshed first by `refreshMetrics`), and an event's tags are
+`calendar_event_tags`. A tag with several parents has a depth, a path and a place
+among its siblings for each: the API walks every path from the roots, takes the
+shortest as a tag's depth where one is needed, and lists the tag under each parent
+with one id.
 
 ### The metrics facts
 
@@ -149,7 +153,7 @@ holds **one measure at one filter a row** (a `filter_id`, a `measure_id` and a
 default scope by definition, which leaves the Forming and Dissolving phase boundaries out. A
 `filters` row is a `groups` row (a set of `dimensions`) instantiated: it pins a
 `period`, a `tag_id` or an `event_name`, so a local day, or a tag on a day, the
-tag tree mirrored on each day. The materialized
+tag's filters all beneath the day's. The materialized
 view `calendar_event_tag_sets` holds each event's tags as `tag_ids` (given directly)
 and `ancestor_tag_ids`, so a tag filter matches `tag_ids || ancestor_tag_ids`.
 `CaelundasDatabaseService.refreshMetrics(manager)` refreshes the view concurrently
@@ -172,14 +176,14 @@ nx run caelundas-db:migration:show               # List applied and pending
 The `migration` target is the shared one from the root `nx.json` target
 defaults, declared here as
 `"migration": { "options": { "module": "src/modules/database" } }`.
-The one migration, `1795709495833`, creates the whole schema and has its `-up.sql` and
+The one migration, `1795718941000`, creates the whole schema and has its `-up.sql` and
 `-down.sql` beside it, linted by `sqlfluff` and checked by `squawk`. Nothing is deployed
 yet, so a schema change regenerates it rather than adding another. It carries hand edits
 after `generate`: it creates `typeorm_metadata` for the generated columns' and the view's rows (the
 generated columns' use `current_database()`), and its files open with the lock and statement timeouts
 the other projects' carry. The seed (the measures, the metrics, their expression trees with the
 closure rows, then each metric's `expression_id`) and the two functions `expand_keys` and `expand_tags`
-and the seed of the dimensions, their edges, the `groups` and the table comment are further additions, placed before the view.
+and the seed of the dimensions, their edges, the `groups` and the table comment are further additions, placed before the view. The `tag_edges_guard` and `tags_root_guard` triggers (no cycle, no repeated name or slug among siblings or roots) are hand edits too, placed before the closure view.
 
 ## Drawing the tag tree
 
@@ -189,7 +193,11 @@ nx run caelundas-db:render-tag-tree --args="--truncate-depth 2 --output-markdown
 ```
 
 The `render-tag-tree` target runs the `persistence` `render-tree-data` command
-over `tag.entity.ts`. It prints a Mermaid flowchart, or with `--diagram filetree`
+over `tag.entity.ts`, a `@Graph` entity whose generated `tag_edges` join its own
+rows, so a tag with two parents is drawn under each (one node and two edges in the
+flowchart, a listing under each parent in the file tree). `render-tag-graph` runs
+`render-graph-data` over the same entity and draws the edges alone, arrow from parent
+to child. It prints a Mermaid flowchart, or with `--diagram filetree`
 Mermaid's beta file tree, which needs Mermaid 11.14 or later. Both
 are committed, and the flowchart is the default. `--args` takes the
 command's filter, sort, depth, breadth, paging, and output options. A tag's
@@ -252,11 +260,13 @@ own, or add `--page 1`, repeating `--page` for several, to draw only those. Or p
 ## Committed diagrams
 
 [`tag-tree-flowchart-data.md`](documentation/tag-tree-flowchart-data.md),
-[`tag-tree-filetree-data.md`](documentation/tag-tree-filetree-data.md) and
+[`tag-tree-filetree-data.md`](documentation/tag-tree-filetree-data.md),
+[`tag-graph-data.md`](documentation/tag-graph-data.md) and
 [`constellation-graph-data.md`](documentation/constellation-graph-data.md)
 hold the diagrams of a local database, named `{entity}-{tree|graph}-data.md`,
 with the tag tree's `--diagram` between them. Regenerate them with the
-connection variables set:
+connection variables set (`render-tag-graph --args="--output-markdown
+projects/caelundas/caelundas-db/documentation/tag-graph-data.md --overwrite"` draws the edges):
 
 ```bash
 nx run caelundas-db:render-tag-tree --args="--diagram flowchart --output-markdown projects/caelundas/caelundas-db/documentation/tag-tree-flowchart-data.md --overwrite"

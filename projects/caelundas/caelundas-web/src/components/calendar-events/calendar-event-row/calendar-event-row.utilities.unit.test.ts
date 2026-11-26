@@ -24,4 +24,14 @@ describe(getEventRowHeight, () => {
     expect(wide).toBe(72);
     expect(narrow).toBeGreaterThan(wide);
   });
+
+  it("counts a tag that arrives once a path as one pill", () => {
+    const [first] = tags;
+    const twice = [...tags.slice(0, 2), ...tags.slice(0, 2)];
+
+    expect(first).toBeDefined();
+    expect(getEventRowHeight(twice, 500)).toBe(
+      getEventRowHeight(tags.slice(0, 2), 500),
+    );
+  });
 });

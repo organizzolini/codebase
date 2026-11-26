@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { renderRoute } from "@codebase/testing/react";
 
 import { readServedApi, serveCalendarApi } from "../../testing/calendar-api";
+import { DAG_FIXTURE_TAGS } from "../../testing/calendar-fixture";
 import {
   BUILDER_TEST,
   BUILDER_WAIT,
@@ -238,6 +239,26 @@ describe("index", () => {
     expect(screen.queryAllByRole("button", { name: /^Mercury/u })).toHaveLength(
       0,
     );
+  });
+
+  it("filters by a parent a tag sits under besides its first, which holds the tag's events", async () => {
+    await renderCalendarRoute(
+      filterLink(
+        "2026-03-01",
+        filterGroup("and", tagRule("body", "is_any_of", ["benefic"])),
+      ),
+      { api: { tags: DAG_FIXTURE_TAGS } },
+    );
+
+    await expect(
+      screen.findByRole("button", { name: /^Venus Ingress Aries/u }),
+    ).resolves.toBeDefined();
+    expect(
+      screen.getByRole("button", { name: /^Mars Conjunct Venus/u }),
+    ).toBeDefined();
+    expect(
+      screen.queryByRole("button", { name: /^Sun Ingress Aries/u }),
+    ).toBeNull();
   });
 
   it("keeps the filters when moving to another month", async () => {

@@ -10,12 +10,15 @@ const group = (slug: string): string =>
 /** The cells: one local day and tag node, with their measures. */
 const CELLS_SQL = `
   phase as (
-    select coalesce(array_agg(pc.descendant_id), '{}'::uuid[]) as ids
+    select coalesce(array_agg(distinct pc.descendant_id), '{}'::uuid[]) as ids
     from tags as p
-    inner join tags as pa on p.parent_id = pa.id
-    inner join tags as ra on pa.parent_id = ra.id and ra.parent_id is null
-    inner join tags_closure as pc on p.id = pc.ancestor_id
+    inner join tag_edges as pe on p.id = pe.target_node
+    inner join tags as pa on pe.source_node = pa.id
+    inner join tag_edges as ae on pa.id = ae.target_node
+    inner join tags as ra on ae.source_node = ra.id
+    inner join tag_closures as pc on p.id = pc.ancestor_id
     where ra."name" = 'Aspect' and pa."name" = 'Phase' and p."name" in ('Forming', 'Dissolving')
+      and not exists (select 1 from tag_edges as above where above.target_node = ra.id)
   ),
   events as (
     select
@@ -68,20 +71,15 @@ const INSERT_TAG_FILTERS_SQL = `
   where c.tag_id is not null
   on conflict do nothing`;
 
-/** Hangs each tag filter beneath its parent tag's, or the day's. */
+/** Hangs each tag filter beneath its day's, not another tag's. */
 const PLACE_TAG_FILTERS_SQL = `
   update filters as f
-  set parent_id = p.parent_id, updated_at = now()
-  from (
-    select f2.id, coalesce(pf.id, df.id) as parent_id
-    from filters as f2
-    inner join tags as t on f2.tag_id = t.id
-    left join filters as pf
-      on pf.group_id = f2.group_id and pf.period = f2.period and pf.tag_id = t.parent_id
-    inner join filters as df on df.group_id = ${group("day")} and df.period = f2.period
-    where f2.group_id = ${group("tag")}
-  ) as p
-  where f.id = p.id and f.parent_id is distinct from p.parent_id`;
+  set parent_id = df.id, updated_at = now()
+  from filters as df
+  where f.group_id = ${group("tag")}
+    and df.group_id = ${group("day")}
+    and df.period = f.period
+    and f.parent_id is distinct from df.id`;
 
 /** Drops the filters of days and tags that lost their events. */
 const DELETE_FILTERS_SQL = `
@@ -143,6 +141,7 @@ const DELETE_FACTS_SQL = `
 
 /** The refresh statements, in the order they must run. */
 export const METRICS_REFRESH_STATEMENTS: readonly string[] = [
+  "refresh materialized view concurrently tag_closures",
   "refresh materialized view concurrently calendar_event_tag_sets",
   INSERT_DAY_FILTERS_SQL,
   INSERT_TAG_FILTERS_SQL,

@@ -292,12 +292,25 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   preset, Highlights: major aspects and sign ingresses without the Moon,
   plus stations, eclipses, and the long cycles. "No filter" is therefore
   written to the link as an empty group, never left out.
+- The View menu's views (`calendar-view-strip.constants.ts`: Body Signs, Major
+  Aspects, Retrogrades, Daily Cycles, Lunar Phases, Planetary Cycles, Eclipses,
+  All Events) are the web's own, written by tag names and resolved against the
+  facets (a view whose tags the data lacks is left out). Each sets three link
+  parameters at once: `filter` to its tags, `group` to the tag's children, and
+  `sort` by its tag order. The date, layout and display are untouched, and the
+  chip reads Custom once the three stop matching one view.
 - A tag field's value editor (`filter-tag-editor.tsx`) is a searchable list of
   checkboxes, one for each tag by its own name, indented by its depth, not a
   list of paths. A tag with tags beneath it has a handle (or the right and
   left arrows) that opens and closes them; the list opens folded to the first
   level, showing the tags the rule holds, and a closed tag counts the picks
-  inside it. A search lists every match flat. Each tag's count is of the events in the days the view
+  inside it. A tag under two parents (the API lists it once a path, with the same id and
+count, and `alsoUnder` naming its other parents) is a row under each, with a small link
+mark and "also Benefic" under its name; ticking it anywhere ticks it everywhere, a
+parent's partial and full states count it once, and the rule's chip carries the same
+link mark. Event pills show it once. The group menu lists branches only, so a shared leaf
+is not in it, but the branch it sits under is (Body, Planet and Benefic side by side).
+A search lists every match flat. Each tag's count is of the events in the days the view
   shows (the facets are read for that window and cached per window), not of
   the whole dataset.
 - The fields come from the data: one per tag root, offering every tag beneath

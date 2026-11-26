@@ -1,12 +1,20 @@
 // 🌎 Utilities
 
+import {
+  generatedEdgeOf,
+  isGraphEntity,
+} from "../render-entities/render-entities-generated.utilities";
 import { escapeName } from "../render-options/render-options-reads.utilities";
 
 import { RENDER_TREES_PATH_PARENT_PATTERN } from "./render-trees.constants";
 import { requireTreeMetadata } from "./render-trees.utilities";
 
 import type { GraphTreeFields } from "../render-options/render-options.types";
-import type { GraphTreeSql, GraphTreeTable } from "./render-trees.types";
+import type {
+  GraphTreeEdge,
+  GraphTreeSql,
+  GraphTreeTable,
+} from "./render-trees.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /** The SQL that reads `table`'s rows by their parents, roots, and columns. */
@@ -23,6 +31,9 @@ export function treeSql(
       `(${parent}) AS "parentId"`,
       ...(table.icon === undefined ? [] : [`t.${table.icon}::text AS "icon"`]),
       ...(table.note === undefined ? [] : [`t.${table.note}::text AS "note"`]),
+      ...(table.edge === undefined
+        ? []
+        : [`${otherParentsSql(table, table.edge)} AS "otherParentIds"`]),
     ].join(", "),
     from: `${table.from} t`,
     roots: `(${parent}) IS NULL OR (${parent}) NOT IN (SELECT p.${table.id}::text FROM ${table.from} p)`,
@@ -38,10 +49,13 @@ export function treeTable(
   metadata: EntityMetadata,
   fields?: GraphTreeFields,
 ): GraphTreeTable {
-  requireTreeMetadata(
-    metadata.treeType,
-    `${metadata.name} is not a @Tree entity`,
-  );
+  const edge = graphTreeEdge(dataSource, metadata);
+  if (edge === undefined) {
+    requireTreeMetadata(
+      metadata.treeType,
+      `${metadata.name} is not a @Tree entity, nor a @Graph entity whose edges join its own rows`,
+    );
+  }
   const primary = requireTreeMetadata(
     metadata.primaryColumns.length === 1
       ? metadata.primaryColumns[0]
@@ -68,6 +82,7 @@ export function treeTable(
   };
 
   return {
+    edge,
     from: `${schema}${escapeName(dataSource, metadata.tableName)}`,
     icon: fieldColumn(fields?.icon),
     id,
@@ -77,9 +92,55 @@ export function treeTable(
   };
 }
 
+/** The SQL giving a row's first parent id of a graph as text: the lowest, so the choice is stable. */
+function firstParentSql(table: GraphTreeTable, edge: GraphTreeEdge): string {
+  return `SELECT min(f.${edge.source}::text) FROM ${edge.from} f WHERE f.${edge.target} = t.${table.id}`;
+}
+
+/**
+ * The generated edge table of an entity whose `@Graph` edges join its own rows,
+ * with SQL names escaped; none for any other entity.
+ */
+function graphTreeEdge(
+  dataSource: DataSource,
+  metadata: EntityMetadata,
+): GraphTreeEdge | undefined {
+  const { target } = metadata;
+  const generated = isGraphEntity(target) ? generatedEdgeOf(target) : undefined;
+  if (generated === undefined || generated.nodes !== generated.graph) {
+    return undefined;
+  }
+
+  const edgeMetadata = dataSource.getMetadata(generated.edge);
+  const column = (relation: "source" | "target"): string =>
+    escapeName(
+      dataSource,
+      requireTreeMetadata(
+        edgeMetadata.findRelationWithPropertyPath(relation)?.joinColumns[0],
+        `${edgeMetadata.name} has no ${relation} relation`,
+      ).databaseName,
+    );
+  const schema =
+    edgeMetadata.schema === undefined
+      ? ""
+      : `${escapeName(dataSource, edgeMetadata.schema)}.`;
+
+  return {
+    from: `${schema}${escapeName(dataSource, edgeMetadata.tableName)}`,
+    source: column("source"),
+    target: column("target"),
+  };
+}
+
+/** The SQL giving every parent id of a row but its first, as text, in order. */
+function otherParentsSql(table: GraphTreeTable, edge: GraphTreeEdge): string {
+  return `ARRAY(SELECT o.${edge.source}::text FROM ${edge.from} o WHERE o.${edge.target} = t.${table.id} AND o.${edge.source}::text <> (${firstParentSql(table, edge)}) ORDER BY o.${edge.source}::text)`;
+}
+
 /** The SQL giving a row's parent id as text, or NULL for a root. */
 function parentKeySql(dataSource: DataSource, table: GraphTreeTable): string {
-  const { metadata } = table;
+  const { edge, metadata } = table;
+  if (edge !== undefined) return firstParentSql(table, edge);
   if (metadata.treeType === "nested-set") {
     const left = escapeName(
       dataSource,

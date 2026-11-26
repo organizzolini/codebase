@@ -81,6 +81,10 @@ export interface EventFacet {
  */
 export interface EventFacetValue {
   /**
+   * The other parents of a tag under several, as paths from the root.
+   */
+  alsoUnder?: readonly string[];
+  /**
    * Events carrying the tag or any tag beneath it, among those overlapping the facets' window.
    */
   count: number;

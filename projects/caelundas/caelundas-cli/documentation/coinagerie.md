@@ -29,6 +29,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **azimuth**: Compass bearing of a body along the horizon, one of the horizon ephemeris fields the calendar can carry.
 - **band**: Latitude band index used by the night-sky projection code to bin star vertices and find their neighbors.
 - **beltane**: The Beltane cross-quarter event, built by the annual solar cycle service on the day between the spring equinox and solstice.
+- **benefic**:
 - **biquintile**: Harmonic aspect of 144 degrees, defined in the caelundas constants and detected by the specialty aspects service.
 - **boomerang**: Quadruple compound pattern mapped to a returning-arrow glyph in the symbol constants, one of the compound shapes detected.
 - **brightness**: Apparent magnitude of a planet, used in phase calculations, and the weight of a symbol that grows with the planets involved.
@@ -125,6 +126,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **lunar**: Relating to the Moon, covering its phases, nodes, apogee and perigee, daily rise and set, and eclipse events.
 - **mag**: Column of the night-sky star catalog holding a star's brightness on the astronomical magnitude scale.
 - **magnitude**: Brightness of a body on the astronomical scale, estimated by the phenomena service and listed in the night-sky star catalog.
+- **malefic**:
 - **martian**: Group label in the caelundas constants for the Mars phase events, such as its conjunctions and opposition.
 - **merak**: Star in the Big Dipper, used as a sample catalog row in the night-sky service unit tests.
 - **mercurian**: Group label for Mercury's phase events in the caelundas constants and types, such as its elongations.

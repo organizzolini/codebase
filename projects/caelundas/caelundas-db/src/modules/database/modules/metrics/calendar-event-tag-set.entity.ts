@@ -30,7 +30,7 @@ left join (
         et.calendar_event_id,
         array_agg(distinct c.ancestor_id order by c.ancestor_id) as ancestor_tag_ids
     from calendar_event_tags as et
-    inner join tags_closure as c on et.tag_id = c.descendant_id and c.ancestor_id <> c.descendant_id
+    inner join tag_closures as c on et.tag_id = c.descendant_id and c.ancestor_id <> c.descendant_id
     group by et.calendar_event_id
 ) as a on e.id = a.calendar_event_id`,
   materialized: true,

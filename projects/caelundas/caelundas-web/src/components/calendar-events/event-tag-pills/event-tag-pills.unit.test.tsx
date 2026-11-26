@@ -47,4 +47,29 @@ describe(EventTagPills, () => {
         ?.querySelector("[data-testid='tag-icon']"),
     ).not.toBeNull();
   });
+
+  it("draws a tag under two parents once, though it arrives once a path", () => {
+    render(
+      <EventTagPills
+        tags={[
+          {
+            depth: 2,
+            id: "venus",
+            name: "Venus",
+            path: "Body / Benefic / Venus",
+          },
+          {
+            depth: 3,
+            id: "venus",
+            name: "Venus",
+            path: "Body / Planet / Personal / Venus",
+          },
+          { depth: 1, id: "sun", name: "Sun", path: "Body / Sun" },
+        ]}
+      />,
+    );
+
+    expect(screen.getAllByText("Venus")).toHaveLength(1);
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+  });
 });

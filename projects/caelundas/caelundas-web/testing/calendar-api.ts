@@ -107,6 +107,16 @@ export interface CalendarApiOptions {
 }
 
 /**
+ * One place a tag sits in the tag graph.
+ */
+interface Appearance {
+  depth: number;
+  parentId: null | string;
+  path: string;
+  rootId: string;
+}
+
+/**
  * One filter preset as the API answers it.
  */
 type Preset = PresetsQuery["presets"][number];
@@ -116,6 +126,8 @@ type Preset = PresetsQuery["presets"][number];
  */
 interface Tree {
   ancestors: (id: string) => readonly string[];
+  /** Every place the tag sits: one a path from a root, which a tag under two parents has twice. */
+  appearances: (id: string) => readonly Appearance[];
   byId: ReadonlyMap<string, FixtureTag>;
   depth: (id: string) => number;
   path: (id: string) => string;
@@ -123,6 +135,16 @@ interface Tree {
 }
 
 let served: CalendarApi | undefined;
+
+/**
+ * One group key, as the API answers it.
+ */
+interface GroupKey {
+  key: string;
+  label: null | string;
+  path: null | string;
+  rank: null | string;
+}
 
 /**
  * The API the test serves last, which a route test reads what was asked of
@@ -144,7 +166,9 @@ export function serveCalendarApi(
 ): CalendarApi {
   const events = options.events ?? FIXTURE_EVENTS;
   const tree = createTree(options.tags ?? FIXTURE_TAGS);
-  const roots = [...tree.byId.values()].filter((tag) => tag.parentId === null);
+  const roots = [...tree.byId.values()].filter(
+    (tag) => tag.parentId === null && (tag.alsoParentIds ?? []).length === 0,
+  );
   const api: CalendarApi = {
     fail: (message) => {
       failure = message;
@@ -259,21 +283,46 @@ export function serveCalendarApi(
  */
 function createTree(tags: readonly FixtureTag[]): Tree {
   const byId = new Map(tags.map((tag) => [tag.id, tag]));
-  const ancestors = (id: string): readonly string[] => {
-    const parent = byId.get(id)?.parentId ?? null;
+  const parentsOf = (id: string): readonly string[] => {
+    const tag = byId.get(id);
 
-    return parent === null ? [] : [parent, ...ancestors(parent)];
+    return [tag?.parentId ?? null, ...(tag?.alsoParentIds ?? [])].filter(
+      (parent) => parent !== null,
+    );
+  };
+  const ancestors = (id: string): readonly string[] => [
+    ...new Set(
+      parentsOf(id).flatMap((parent) => [parent, ...ancestors(parent)]),
+    ),
+  ];
+  const appearances = (id: string): readonly Appearance[] => {
+    const name = byId.get(id)?.name ?? id;
+    const parents = parentsOf(id);
+
+    return parents.length === 0
+      ? [{ depth: 0, parentId: null, path: name, rootId: id }]
+      : parents
+          .flatMap((parent) =>
+            appearances(parent).map((above) => ({
+              depth: above.depth + 1,
+              parentId: parent,
+              path: `${above.path} / ${name}`,
+              rootId: above.rootId,
+            })),
+          )
+          .toSorted(
+            (left, right) =>
+              left.depth - right.depth || left.path.localeCompare(right.path),
+          );
   };
 
   return {
     ancestors,
+    appearances,
     byId,
-    depth: (id) => ancestors(id).length,
-    path: (id) =>
-      [...ancestors(id).toReversed(), id]
-        .map((part) => byId.get(part)?.name ?? part)
-        .join(" / "),
-    root: (id) => ancestors(id).at(-1) ?? id,
+    depth: (id) => appearances(id)[0]?.depth ?? 0,
+    path: (id) => appearances(id)[0]?.path ?? id,
+    root: (id) => appearances(id)[0]?.rootId ?? id,
   };
 }
 
@@ -347,12 +396,14 @@ function findEvents(
         startLocalDay: readLocalDay(event),
         startLocalHour: Number(readLocalHour(event)),
         tags: event.tagIds
-          .map((id) => ({
-            depth: tree.depth(id),
-            id,
-            name: tree.byId.get(id)?.name ?? id,
-            path: tree.path(id),
-          }))
+          .flatMap((id) =>
+            tree.appearances(id).map((appearance) => ({
+              depth: appearance.depth,
+              id,
+              name: tree.byId.get(id)?.name ?? id,
+              path: appearance.path,
+            })),
+          )
           .toSorted((left, right) => left.path.localeCompare(right.path)),
         timezone: event.timezone,
       };
@@ -383,20 +434,34 @@ function findFacets(
       name: root.name,
       note: null,
       values: [...tree.byId.values()]
-        .filter((tag) => tag.parentId !== null && tree.root(tag.id) === root.id)
-        .toSorted((left, right) =>
-          tree.path(left.id).localeCompare(tree.path(right.id)),
+        .flatMap((tag) =>
+          tree
+            .appearances(tag.id)
+            .filter(
+              (appearance) =>
+                appearance.rootId === root.id && appearance.depth > 0,
+            )
+            .map((appearance) => ({ appearance, tag })),
         )
-        .map((tag) => ({
+        .toSorted((left, right) =>
+          left.appearance.path.localeCompare(right.appearance.path),
+        )
+        .map(({ appearance, tag }) => ({
+          alsoUnder: tree
+            .appearances(tag.id)
+            .filter((other) => other.parentId !== appearance.parentId)
+            .map((other) =>
+              other.path.slice(0, other.path.length - tag.name.length - 3),
+            ),
           count: counted.filter((event) =>
             listEventTags(event, tree).has(tag.id),
           ).length,
-          depth: tree.depth(tag.id),
+          depth: appearance.depth,
           icon: null,
           id: tag.id,
           name: tag.name,
           note: null,
-          path: tree.path(tag.id).slice(root.name.length + " / ".length),
+          path: appearance.path.slice(root.name.length + " / ".length),
         })),
     }));
 }
@@ -408,12 +473,7 @@ function findGroupKeys(
   event: FixtureEvent,
   tree: Tree,
   level: EventGroupLevelInput,
-): {
-  key: string;
-  label: null | string;
-  path: null | string;
-  rank: null | string;
-}[] {
+): GroupKey[] {
   if (!level.field.startsWith("tag:")) {
     return [
       {
@@ -437,31 +497,44 @@ function findGroupKeys(
   );
   const depth = level.depth ?? 1;
 
-  if (level.parent !== null && level.parent !== undefined) {
-    return carried
-      .filter((id) => tree.byId.get(id)?.parentId === level.parent)
-      .map((id) => ({
-        key: id,
-        label: tree.byId.get(id)?.name ?? id,
-        path: tree.path(id),
-        rank: null,
-      }));
-  }
-
-  const keys = carried.filter((id) =>
-    picked === undefined
-      ? tree.depth(id) === depth ||
-        (tree.depth(id) < depth &&
-          !carried.some((other) => tree.ancestors(other).includes(id)))
-      : picked.includes(id),
-  );
-
-  return keys.map((id) => ({
+  const asKey = (id: string, path: string): GroupKey => ({
     key: id,
     label: tree.byId.get(id)?.name ?? id,
-    path: tree.path(id),
+    path,
     rank: null,
-  }));
+  });
+
+  if (level.parent !== null && level.parent !== undefined) {
+    return carried.flatMap((id) => {
+      const appearance = tree
+        .appearances(id)
+        .find((candidate) => candidate.parentId === level.parent);
+
+      return appearance === undefined ? [] : [asKey(id, appearance.path)];
+    });
+  }
+
+  if (picked !== undefined) {
+    return carried
+      .filter((id) => picked.includes(id))
+      .map((id) => asKey(id, tree.path(id)));
+  }
+
+  // A tag under two parents has a path a place; a level keeps the one at its depth, else the first.
+  return carried.flatMap((id) => {
+    const places = tree
+      .appearances(id)
+      .filter((place) => place.rootId === rootId && place.depth > 0);
+    const exact = places.find((place) => place.depth === depth);
+    const shallower = places[0];
+    const leaf =
+      shallower !== undefined &&
+      shallower.depth < depth &&
+      !carried.some((other) => tree.ancestors(other).includes(id));
+    const place = exact ?? (leaf ? shallower : undefined);
+
+    return place === undefined ? [] : [asKey(id, place.path)];
+  });
 }
 
 /**

@@ -3,6 +3,8 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
+import { tagRepository } from "../../../testing/tag-repository";
+
 import {
   CAELUNDAS_DATABASE_MIGRATIONS,
   DATABASE_ENTITIES,
@@ -11,10 +13,10 @@ import { DatabaseModule } from "./database.module";
 import { DatabaseService } from "./database.service";
 import { CalendarEventTag } from "./modules/calendar-events/calendar-event-tag.entity";
 import { CalendarEvent } from "./modules/calendar-events/calendar-event.entity";
-import { Tag } from "./modules/tags/tag.entity";
 
+import type { TagRepository } from "../../../testing/tag-repository";
+import type { Tag } from "./modules/tags/tag.entity";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
-import type { TreeRepository } from "typeorm";
 
 // 🧪 Tests
 
@@ -30,7 +32,7 @@ const CONTAINER_TIMEOUT_MILLISECONDS = 120_000;
 describe(DatabaseService, () => {
   let database: DatabaseTestingModule;
   let service: DatabaseService;
-  let tags: TreeRepository<Tag>;
+  let tags: TagRepository;
   let mars: Tag;
   let planet: Tag;
   let retrograde: Tag;
@@ -44,12 +46,12 @@ describe(DatabaseService, () => {
       project: "caelundas",
     });
     service = database.module.get(DatabaseService);
-    tags = database.dataSource.getTreeRepository(Tag);
+    tags = tagRepository(database.dataSource);
   }, CONTAINER_TIMEOUT_MILLISECONDS);
 
   beforeEach(async () => {
     await database.dataSource.query(
-      "truncate calendar_event_tags, calendar_events, tags, tags_closure cascade",
+      "truncate calendar_event_tags, calendar_events, tags cascade",
     );
     planet = await tags.save(tags.create({ name: "Planet", slug: "planet" }));
     mars = await tags.save(
@@ -136,7 +138,7 @@ describe(DatabaseService, () => {
     ]);
   });
 
-  it("gives each tag a filter on the day that mirrors the tag tree and copies nothing from it", async () => {
+  it("gives each tag a filter beneath its day, not nested in the tag tree, and copies nothing from it", async () => {
     expect.hasAssertions();
 
     await refresh();
@@ -161,12 +163,13 @@ describe(DatabaseService, () => {
     );
     const parents = new Map(rows.map((row) => [row.tag_id, row]));
 
-    expect(parents.get(planet.id)).toMatchObject({
-      parent_group: "day",
-      parent_tag: null,
-    });
-    expect(parents.get(mars.id)?.parent_tag).toBe(planet.id);
-    expect(parents.get(retrograde.id)?.parent_tag).toBe(mars.id);
+    for (const tag of [planet, mars, retrograde]) {
+      expect(parents.get(tag.id)).toMatchObject({
+        parent_group: "day",
+        parent_tag: null,
+      });
+    }
+
     expect(rows.every(({ name }) => name === null)).toBe(true);
   });
 

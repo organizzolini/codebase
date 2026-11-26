@@ -374,6 +374,9 @@ describe(EventsService, () => {
       path_below_root,
       root_id,
       slug: name.toLowerCase(),
+      tag_rank: [root_id, ...path_below_root.split(" / ").filter(Boolean)]
+        .map((level) => `00000:${level}`)
+        .join(" / "),
     });
 
     query.mockResolvedValueOnce([
@@ -390,7 +393,7 @@ describe(EventsService, () => {
         ),
         icon: "rotate-ccw",
         note: "Moving backward.",
-        parent_id: "mars",
+        parent_path: "planet / Mars",
       },
     ]);
 
@@ -408,6 +411,7 @@ describe(EventsService, () => {
         slug: "planet",
         values: [
           {
+            alsoUnder: [],
             count: 2,
             depth: 1,
             icon: null,
@@ -418,6 +422,7 @@ describe(EventsService, () => {
             slug: "mars",
           },
           {
+            alsoUnder: [],
             count: 1,
             depth: 2,
             icon: "rotate-ccw",
@@ -451,6 +456,9 @@ describe(EventsService, () => {
       path_below_root,
       root_id: "harmonic",
       slug: path_below_root.toLowerCase().replaceAll(" ", "-"),
+      tag_rank: ["harmonic", ...path_below_root.split(" / ").filter(Boolean)]
+        .map((level) => `00000:${level}`)
+        .join(" / "),
     });
 
     query.mockResolvedValueOnce([
@@ -483,11 +491,15 @@ describe(EventsService, () => {
       depth: path.split(" / ").length,
       id,
       name,
-      parent_id: parent,
       path_below_root: path,
       rank,
       root_id: "sign",
       slug: name.toLowerCase(),
+      tag_rank: [
+        "00000:Sign",
+        ...(parent === "aries" ? ["00001:Aries"] : []),
+        `0000${String(rank)}:${name}`,
+      ].join(" / "),
     });
 
     query.mockResolvedValueOnce([
@@ -499,6 +511,7 @@ describe(EventsService, () => {
         path_below_root: "",
         root_id: "sign",
         slug: "sign",
+        tag_rank: "00000:Sign",
       },
       row("taurus", "Taurus", 2, "sign", "Taurus"),
       row("aries", "Aries", 1, "sign", "Aries"),
@@ -513,6 +526,61 @@ describe(EventsService, () => {
       "Aries / A",
       "Aries / B",
       "Taurus",
+    ]);
+  });
+
+  it("lists a tag with two parents once a path, each naming where else it sits", async () => {
+    expect.hasAssertions();
+
+    const row = (
+      id: string,
+      depth: string,
+      path: string,
+      parentPath: null | string,
+      rank: string,
+    ): Record<string, null | string> => ({
+      count: "4",
+      depth,
+      id,
+      name: path.split(" / ").at(-1) ?? "Body",
+      parent_id:
+        parentPath === null ? null : (parentPath.split(" / ").at(-1) ?? null),
+      parent_path: parentPath,
+      path_below_root: path,
+      root_id: "body",
+      slug: "x",
+      tag_rank: rank,
+    });
+
+    query.mockResolvedValueOnce([
+      row("body", "0", "", null, "00000:Body"),
+      row("planet", "1", "Planet", "Body", "00000:Body / 00002:Planet"),
+      row(
+        "venus",
+        "2",
+        "Planet / Venus",
+        "Body / Planet",
+        "00000:Body / 00002:Planet / 00001:Venus",
+      ),
+      row("benefic", "1", "Benefic", "Body", "00000:Body / 00003:Benefic"),
+      row(
+        "venus",
+        "2",
+        "Benefic / Venus",
+        "Body / Benefic",
+        "00000:Body / 00003:Benefic / 00002:Venus",
+      ),
+    ]);
+
+    const [facet] = await service.findFacets();
+
+    expect(
+      facet?.values.map(({ alsoUnder, id, path }) => [id, path, alsoUnder]),
+    ).toStrictEqual([
+      ["planet", "Planet", []],
+      ["venus", "Planet / Venus", ["Body / Benefic"]],
+      ["benefic", "Benefic", []],
+      ["venus", "Benefic / Venus", ["Body / Planet"]],
     ]);
   });
 
@@ -547,6 +615,7 @@ describe(EventsService, () => {
         path_below_root: "",
         root_id: "planetary",
         slug: "planetary",
+        tag_rank: "00000:Planetary",
       },
       {
         count: "3",
@@ -556,6 +625,7 @@ describe(EventsService, () => {
         path_below_root: "Direction",
         root_id: "planetary",
         slug: "direction",
+        tag_rank: "00000:Planetary / 00000:Direction",
       },
     ]);
 

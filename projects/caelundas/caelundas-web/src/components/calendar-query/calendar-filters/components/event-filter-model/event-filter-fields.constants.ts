@@ -19,6 +19,17 @@ export const NUMERIC_TAG_NAME = /\d$/u;
 
 export const EVENT_COUNT_FORMAT = new Intl.PluralRules("en-US");
 
+/** The noun after a count of events, by plural category. */
+export const EVENT_COUNT_NOUNS: Readonly<Record<Intl.LDMLPluralRule, string>> =
+  {
+    few: "events",
+    many: "events",
+    one: "event",
+    other: "events",
+    two: "events",
+    zero: "events",
+  };
+
 /**
  * Operators every tag field offers, in builder order.
  */

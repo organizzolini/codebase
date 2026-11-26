@@ -55,9 +55,19 @@ migrations/                              # The migrations, each with its .sql pa
 
 ## Rules
 
-- **Every table's id is a database-assigned `uuidv7`,** except the closure tables, the join
-  table, the star and constellation catalogs and the edge table, which keep
+- **Every table's id is a database-assigned `uuidv7`,** except the expression closure table, the
+  join table, the star and constellation catalogs and the edge tables, which keep
   natural keys.
+- **The tags are a directed acyclic graph.** `Tag` is `@Graph({ edge: "TagEdge", nodes: () => Tag })`,
+  so `tag_edges` (`source_node` the parent, `target_node` the child, primary key the pair, cascading) is
+  generated, never hand-written. A tag with no incoming edge is a root; a tag may have several parents
+  (Venus is under Planet / Personal and under Benefic). `tags.parent_id` and TypeORM's `@Tree` closure
+  table are gone. `tag_closures` is a materialized view, `(ancestor_id, descendant_id)` over a recursive
+  walk of every path with the tag itself included and each pair once, refreshed first (concurrently) by
+  `refreshMetrics`; read ancestors and descendants from it, never from a path. A `tag_edges_guard`
+  trigger refuses an edge that closes a cycle, joins a tag to itself or gives a parent two children of
+  one name or slug, and a deferred `tags_root_guard` constraint trigger refuses two roots of one name or
+  slug. Both are hand edits of the migration, since the entity cannot declare them.
 - **`calendar_events` upserts on its natural key** `(name, start, end, latitude,
 longitude)`; never insert an event without it. Its columns are `name`, `note`, `start`,
   `end`, `timezone`, `latitude`, `longitude`; `location` and `color` were dropped (no
@@ -66,7 +76,7 @@ longitude)`; never insert an event without it. Its columns are `name`, `note`, `
 - **`tags.slug` is the machine-readable name,** `name` lowercased, each run of characters
   outside a-z and 0-9 replaced by one `-`, leading and trailing `-` trimmed (`Forming` is
   `forming`, `Cross-Quarter Day` is `cross-quarter-day`), unique among siblings like the
-  name: one partial unique index on the root slugs, one on `(parent_id, slug)`.
+  name, by the two guard triggers (the same name may repeat elsewhere in the tree).
 - **Renames to know:** `stars.hip` is `hipparcos_number`; `constellations.zodiac` is
   `is_zodiac`; `constellation_edges` has `constellation_id` (its owner), and `source_node` and
   `target_node`, the `@Graph` decorator's defaults; it is a hand-written edge entity because the
@@ -82,7 +92,8 @@ timezone` (Postgres 18 treats `timezone(text, timestamptz)` as immutable), decla
   [documentation/metrics-facts.md](documentation/metrics-facts.md)). TypeORM keeps each generated column's
   expression in `typeorm_metadata`, which the migration fills with `current_database()` so the rows match
   whatever database it runs in. There are no `tag_nodes` or `calendar_event_tag_nodes` tables: read a tag's
-  depth, root, path and rank from `tags` and `tags_closure`.
+  depth, root, path and rank from `tags`, `tag_edges` and `tag_closures`; a tag with several parents has
+  a path for each, and a depth means the shortest.
 - **`calendar_event_facts` is one measure at one filter a row,** `(filter_id, measure_id, measurement)`, in the
   unit of the measure, a plain table `refreshMetrics(manager)` brings up to date (upsert the new or changed,
   delete the gone; a refresh that changes nothing writes nothing). Only the measures that merge across days are
@@ -97,8 +108,8 @@ timezone` (Postgres 18 treats `timezone(text, timestamptz)` as immutable), decla
   `tag` is flat, its values the rows of `tags`. `groups` are sets of dimensions (`group_dimensions`), one
   dimension each for now, and stay a table for the dimensions that will not mirror a group. `filters`
   instantiate a group by pinning a `period`, a `tag_id` or an `event_name` (never a copied name): a day
-  filter has no parent, and a tag filter sits beneath its parent tag's filter on the same day, or the day's,
-  and carries the day's `period` so a window is an index range.
+  filter has no parent, and a tag filter sits beneath its day's filter and carries the day's `period` so a
+  window is an index range; tag filters are not nested, since a tag may have several parents.
 - **`calendar_event_tag_sets` is the materialized view the event path reads,** an event's `tag_ids` and
   `ancestor_tag_ids` as sorted GIN-indexed arrays, refreshed concurrently first. Filtering by a tag matches
   `tag_ids || ancestor_tag_ids`. Everything else an event row needs comes from `calendar_events`. The groups,
@@ -116,7 +127,7 @@ timezone` (Postgres 18 treats `timezone(text, timestamptz)` as immutable), decla
   roots its closure-table expression tree (no owner column, a `metric` node reads another metric
   through `metric_id`), and which facts column or aggregate a measure uses lives in the API's
   registry keyed by `slug`.
-- **One migration, `1795709495833`, creates the whole schema,** the functions, the tag sets view and the seed included. Nothing is
+- **One migration, `1795718941000`, creates the whole schema,** the functions, the triggers, the closure and tag sets views and the seed included. Nothing is
   deployed yet, so a schema change regenerates it: empty the migrations, run
   `nx run caelundas-db:migration:generate` against an empty local Postgres
   (schema-unqualified), then apply the hand edits the README lists. Never edit the

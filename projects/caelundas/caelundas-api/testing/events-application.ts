@@ -9,12 +9,14 @@ import {
   CaelundasDatabaseModule,
   CaelundasDatabaseService,
   CalendarEventTag,
-  Tag,
+  type Tag,
 } from "@codebase/caelundas-db";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../src/caelundas-api.constants";
 import { EventsModule } from "../src/modules/events/events.module";
+
+import { tagRepository } from "./tag-repository";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { INestApplication } from "@nestjs/common";
@@ -79,7 +81,7 @@ interface SeedEvent {
 export async function seedEvents(
   database: DatabaseTestingModule,
 ): Promise<Record<string, Tag>> {
-  const tags = database.dataSource.getTreeRepository(Tag);
+  const tags = tagRepository(database.dataSource);
   const planet = await tags.save(
     tags.create({ name: "Planet", slug: "planet" }),
   );
@@ -175,7 +177,7 @@ export async function seedEvents(
 export async function seedFilterTags(
   database: DatabaseTestingModule,
 ): Promise<FilterTags> {
-  const tags = database.dataSource.getTreeRepository(Tag);
+  const tags = tagRepository(database.dataSource);
   const planet = await tags.findOneByOrFail({ name: "Planet" });
   const aspect = await tags.findOneByOrFail({ name: "Aspect" });
   const moon = await tags.save(

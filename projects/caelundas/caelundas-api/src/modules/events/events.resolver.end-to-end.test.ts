@@ -5,6 +5,7 @@ import {
   seedEvents,
   startEventsApplication,
 } from "../../../testing/events-application";
+import { tagRepository } from "../../../testing/tag-repository";
 
 import type { EventsApplication } from "../../../testing/events-application";
 
@@ -241,6 +242,50 @@ describe("events resolver end-to-end suite", () => {
             },
           ],
         },
+      ]);
+    });
+
+    it("lists a tag under each of its parents with one id and one count", async () => {
+      expect.hasAssertions();
+
+      const repository = tagRepository(application.database.dataSource);
+      const mars = await repository.findOneByOrFail({ name: "Mars" });
+      const benefic = await repository.save({
+        name: "Benefic",
+        slug: "benefic",
+      });
+
+      await application.database.dataSource
+        .getRepository("TagEdge")
+        .insert({ sourceNode: benefic.id, targetNode: mars.id });
+      await application.database.dataSource.query(
+        "refresh materialized view tag_closures",
+      );
+
+      const { facets } = (await query(`
+        { facets { name values { id name path depth count alsoUnder } } }
+      `)) as {
+        facets: {
+          name: string;
+          values: {
+            alsoUnder: string[];
+            count: number;
+            id: string;
+            path: string;
+          }[];
+        }[];
+      };
+      const planet = facets.find(({ name }) => name === "Planet");
+      const under = facets.find(({ name }) => name === "Benefic");
+
+      expect(planet?.values.find(({ path }) => path === "Mars")).toMatchObject({
+        alsoUnder: ["Benefic"],
+        count: 1,
+        id: mars.id,
+      });
+      expect(under?.values).toMatchObject([
+        { alsoUnder: ["Planet"], count: 1, id: mars.id, path: "Mars" },
+        { alsoUnder: [], path: "Mars / Retrograde" },
       ]);
     });
   });

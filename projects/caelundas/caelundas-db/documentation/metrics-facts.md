@@ -27,8 +27,9 @@ A **dimension** is a way events are sliced: `name`, `day`, `week`, `month`,
 `quarter`, `year` and `tag`. The time dimensions are a graph, kept as
 `dimension_edges` (a `@Graph` edge, source the finer, target the coarser), because a
 day has two parents: day to week, day to month, month to quarter, quarter to year.
-`tag` is one flat dimension whose **values are the rows of `tags`** and its
-closure, never copied (the tags are not a graph here), and `name` is one flat
+`tag` is one flat dimension whose **values are the rows of `tags`** and their
+closure, never copied (the tags are a graph, in `tag_edges`, but a filter pins one
+tag), and `name` is one flat
 dimension whose values are the distinct event names, so recurrences aggregate by
 name, name and day, or name and month; no filter pins a name yet. An event is base
 data in `calendar_events`, not a dimension.
@@ -46,17 +47,19 @@ scope **by definition**, stated in the comment on the `calendar_event_facts` tab
 and in `calendar-event-facts.constants.ts`. The tables are in
 [catalog-tables.md](catalog-tables.md).
 
-| Filter               | Group | Pins                   | Parent filter                                       | Rows (50,113 events) |
-| -------------------- | ----- | ---------------------- | --------------------------------------------------- | -------------------- |
-| a day, the whole set | `day` | `period`               | none                                                | 365                  |
-| a tag on a day       | `tag` | `tag_id`, and `period` | that day's filter of its tag's parent, or the day's | 42,368               |
+| Filter               | Group | Pins                   | Parent filter     | Rows (50,113 events) |
+| -------------------- | ----- | ---------------------- | ----------------- | -------------------- |
+| a day, the whole set | `day` | `period`               | none              | 365                  |
+| a tag on a day       | `tag` | `tag_id`, and `period` | that day's filter | 42,368               |
 
 A fact sits at a day filter, the measures of the whole set on that day, or at a tag
 filter, the measures of the events carrying that tag or a descendant, so a parent's
-figures include its children's. The tag tree is mirrored on each day: a root tag's
-filter is beneath the day, and every other tag's beneath its parent's filter of the
-same day. A tag filter carries its day's `period` as well, copied from the filter
-above, so a window of days is a range of one index and not a walk up the parents.
+figures include its children's. Tag filters are not nested in one another: a tag may
+have several parents (Venus is under Planet and under Benefic), so one parent filter
+could not say where it sits, and `tag_closures` gives the ancestry instead. Every tag
+filter is beneath its day's filter, and carries the day's `period` as well, so a window
+of days is a range of one index and not a walk up the parents. A shared tag's filter
+and facts are one, counting an event once however many paths lead to it.
 Only the `day` and `tag` groups have filters; the others are catalog rows for filters
 a later change may add, which the edges say roll up. A filter has the audit columns
 of every table, an optional `name`, `icon` and `note` that nothing sets today, and
@@ -148,7 +151,7 @@ generated columns and the whole minutes computed inline:
 
 Filtering by a tag, with its subtree, matches `tag_ids || ancestor_tag_ids`. Both
 arrays are kept: dropping the ancestors saves 9.4 MB but sends the planner into
-joins of `tags_closure` for every event, JIT and disk sorts.
+joins of `tag_closures` for every event, JIT and disk sorts.
 
 ## The local-time fields
 

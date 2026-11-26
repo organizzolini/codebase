@@ -1,3 +1,5 @@
+import { render, screen } from "@testing-library/react";
+import { createElement } from "react";
 import { describe, expect, it } from "vitest";
 
 import { serveCalendarApi } from "../../../../../../testing/calendar-api";
@@ -157,10 +159,10 @@ describe(createEventFilterFields, () => {
     expect(
       type?.options?.map((option) => [option.value, option.data]),
     ).toStrictEqual([
-      ["tag-simple", { depth: 0, name: "Simple" }],
-      ["tag-major", { depth: 1, name: "Major" }],
-      ["tag-conjunct", { depth: 2, name: "Conjunct" }],
-      ["tag-square", { depth: 2, name: "Square" }],
+      ["tag-simple", { alsoUnder: [], depth: 0, name: "Simple" }],
+      ["tag-major", { alsoUnder: [], depth: 1, name: "Major" }],
+      ["tag-conjunct", { alsoUnder: [], depth: 2, name: "Conjunct" }],
+      ["tag-square", { alsoUnder: [], depth: 2, name: "Square" }],
     ]);
   });
 
@@ -284,12 +286,17 @@ describe(createEventFilterFields, () => {
 
       expect(moon?.icon).toBeDefined();
       expect(moon?.data).toStrictEqual({
+        alsoUnder: undefined,
         depth: 0,
         name: "Moon",
         note: "The Moon.",
       });
       expect(sun?.icon).toBeDefined();
-      expect(sun?.data).toStrictEqual({ depth: 0, name: "Sun" });
+      expect(sun?.data).toStrictEqual({
+        alsoUnder: undefined,
+        depth: 0,
+        name: "Sun",
+      });
     });
 
     it("says a tag's note before its count of events", () => {
@@ -299,6 +306,137 @@ describe(createEventFilterFields, () => {
 
       expect(moon).toBe("The Moon. · 2 events");
       expect(sun).toBe("1 event");
+    });
+  });
+
+  describe("a tag under two parents", () => {
+    const facet = {
+      icon: null,
+      id: "body",
+      name: "Body",
+      note: null,
+      values: [
+        {
+          alsoUnder: [],
+          count: 3,
+          depth: 1,
+          id: "benefic",
+          name: "Benefic",
+          path: "Benefic",
+        },
+        {
+          alsoUnder: ["Body / Planet"],
+          count: 2,
+          depth: 2,
+          id: "venus",
+          name: "Venus",
+          path: "Benefic / Venus",
+        },
+        {
+          alsoUnder: [],
+          count: 5,
+          depth: 1,
+          id: "planet",
+          name: "Planet",
+          path: "Planet",
+        },
+        {
+          alsoUnder: ["Body / Benefic"],
+          count: 2,
+          depth: 2,
+          id: "venus",
+          name: "Venus",
+          path: "Planet / Venus",
+        },
+        {
+          alsoUnder: [],
+          count: 1,
+          depth: 2,
+          id: "other",
+          name: "Venus",
+          path: "Planet / Other / Venus",
+        },
+      ],
+    };
+
+    it("is one option a place, with one value, and says where else it sits", () => {
+      const options = createTagOptions(facet);
+
+      expect(options.map((option) => option.value)).toStrictEqual([
+        "benefic",
+        "venus",
+        "planet",
+        "venus",
+        "other",
+      ]);
+      expect(options[1]?.data).toMatchObject({ alsoUnder: ["Body / Planet"] });
+      expect(options[0]?.data).toMatchObject({ alsoUnder: [] });
+    });
+
+    it("marks the chip of a rule holding it, and only that", () => {
+      const field = createEventFilterFields([facet]).find(
+        ({ id }) => id === "tag:body",
+      );
+      const options = createTagOptions({
+        ...facet,
+        values: facet.values.slice(0, 4),
+      });
+      const labels = {
+        selectPlaceholder: "Select...",
+        valueCount: (count: number) => `${String(count)} selected`,
+      };
+      const show = (values: string[], picked: typeof options): void => {
+        render(
+          createElement(
+            "div",
+            { "data-testid": "chip" },
+            field?.renderValue?.({
+              field,
+              labels,
+              operator: { label: "is any of", value: "is_any_of" },
+              options: picked,
+              value: values,
+              values,
+            } as never),
+          ),
+        );
+      };
+
+      show([], []);
+
+      expect(screen.getByTestId("chip").textContent).toBe("Select...");
+
+      show(["benefic", "planet"], [options[0], options[2]] as typeof options);
+
+      expect(screen.getAllByTestId("chip")[1]?.textContent).toBe("2 selected");
+
+      show(["benefic"], [options[0]] as typeof options);
+
+      expect(screen.getAllByTestId("chip")[2]?.textContent).toBe("Benefic");
+      expect(screen.queryByTestId("chip-also-under")).toBeNull();
+
+      show(["venus"], [options[1]] as typeof options);
+
+      expect(screen.getAllByTestId("chip")[3]?.textContent).toBe("Venus");
+      expect(screen.getByTestId("chip-also-under").getAttribute("title")).toBe(
+        "Also under Body / Planet",
+      );
+
+      show(["gone"], []);
+
+      expect(screen.getAllByTestId("chip")[4]?.textContent).toBe("gone");
+    });
+
+    it("keeps its plain name, and uses a path only against a different tag of that name", () => {
+      const labels = createTagOptions({
+        ...facet,
+        values: facet.values.slice(0, 4),
+      }).map((option) => option.label);
+
+      expect(labels).toStrictEqual(["Benefic", "Venus", "Planet", "Venus"]);
+      expect(createTagOptions(facet).map((option) => option.label)).toContain(
+        "Benefic / Venus",
+      );
     });
   });
 });

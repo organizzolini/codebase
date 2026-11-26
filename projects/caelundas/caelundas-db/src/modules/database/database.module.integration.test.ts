@@ -93,8 +93,8 @@ describe(DatabaseModule, () => {
       "metrics",
       "migrations",
       "stars",
+      "tag_edges",
       "tags",
-      "tags_closure",
       "typeorm_metadata",
     ]);
   });

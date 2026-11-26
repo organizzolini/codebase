@@ -54,7 +54,7 @@ const EVENT_ROW_SQL = `{e}.events, {e}.perfective_events, {e}.progressive_events
 /** The events of a tag level with none of the root's tags. */
 const UNTAGGED_SQL = `where not f.tag_ids && (
       select coalesce(array_agg(tc.descendant_id), '{}'::uuid[])
-      from tags_closure tc
+      from tag_closures tc
       where tc.ancestor_id = {root}::uuid and tc.descendant_id <> {root}::uuid
     )`;
 
@@ -131,7 +131,7 @@ export const ROLLUP_TAG_CELLS_SQL = `
     from periods p
     join filters tf on tf.group_id = ${group("tag")}
       and tf.period >= p.from_day and tf.period < p.to_day
-      and tf.tag_id in (select ct.id from tags ct where ct.parent_id = {root}::uuid)
+      and tf.tag_id in (select ce.target_node from tag_edges ce where ce.source_node = {root}::uuid)
     join calendar_event_facts r on r.filter_id = tf.id
     join measures m on m.id = r.measure_id
     group by p.period, tf.period, tf.tag_id`;
@@ -181,7 +181,7 @@ export const ROLLUP_TAG_JOIN_SQL = ` left join tag_info tn on tn.tag_id = t.tag_
 export const ROLLUP_TAG_CROSSING_SQL = ` cross join lateral (
       select distinct a.id from unnest(x.tag_ids || x.ancestor_tag_ids) as a (id)
     ) as n (tag_id)
-      join tags tn on tn.id = n.tag_id and tn.parent_id = {root}::uuid`;
+      join tag_edges te on te.target_node = n.tag_id and te.source_node = {root}::uuid`;
 
 /** The zone every event shares, when the periods align to its days. */
 export const ROLLUP_GUARD_SQL = `

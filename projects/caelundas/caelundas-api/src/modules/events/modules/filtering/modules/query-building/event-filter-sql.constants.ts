@@ -14,7 +14,7 @@ export const CALENDAR_FIELD_SQL = {
 export const EVENT_TAGS_MATCHING_SQL = `
   select c.ancestor_id as tag_id
   from calendar_event_tags et
-  join tags_closure c on c.descendant_id = et.tag_id
+  join tag_closures c on c.descendant_id = et.tag_id
   where et.calendar_event_id = e.id and c.ancestor_id = any({tags}::uuid[])
 `;
 
@@ -22,7 +22,7 @@ export const EVENT_TAGS_MATCHING_SQL = `
 export const EVENT_TAG_NUMBERS_SQL = `
   select 1
   from calendar_event_tags et
-  join tags_closure c on c.descendant_id = et.tag_id
+  join tag_closures c on c.descendant_id = et.tag_id
   join tag_info t on t.tag_id = c.ancestor_id
   where et.calendar_event_id = e.id
     and t.tag_root_id::text = {root}::text
@@ -35,26 +35,38 @@ export const TAG_NUMBER_SQL = `(case when t.tag_name ~ '[0-9]$' then replace(t.t
 /** How Postgres writes a bound number in SQL. */
 export const PLACEHOLDER_PREFIX = "$";
 
-/** Each tag's depth, root, path and rank: a statement's first CTEs. */
-export const TAG_INFO_SQL = `tag_levels as materialized (
-    select descendant_id as tag_id, count(*) as level
-    from tags_closure
-    group by descendant_id
-  ),
-  tag_info as materialized (
+// `recursive` leads the first CTE, as every statement opens `with ${TAG_INFO_SQL}`. `tag_paths` walks
+// every path from the roots, one row a path; `tag_info` keeps each tag's shortest, then first by rank.
+/** Each tag's paths, then its primary path: depth, root, path and rank. */
+export const TAG_INFO_SQL = `recursive tag_paths as (
     select
       t.id as tag_id,
       t."name" as tag_name,
-      own.level - 1 as tag_depth,
-      (array_agg(a.id order by al.level))[1] as tag_root_id,
-      string_agg(a."name", ' / ' order by al.level) as tag_path,
-      string_agg(lpad(a.rank::text, 5, '0') || ':' || a."name", ' / ' order by al.level) as tag_rank
+      0 as tag_depth,
+      t.id as tag_root_id,
+      null::uuid as tag_parent_id,
+      t."name" as tag_path,
+      lpad(t.rank::text, 5, '0') || ':' || t."name" as tag_rank
     from tags t
-    join tag_levels own on own.tag_id = t.id
-    join tags_closure c on c.descendant_id = t.id
-    join tags a on a.id = c.ancestor_id
-    join tag_levels al on al.tag_id = a.id
-    group by t.id, t."name", own.level
+    where not exists (select 1 from tag_edges e where e.target_node = t.id)
+    union all
+    select
+      t.id,
+      t."name",
+      p.tag_depth + 1,
+      p.tag_root_id,
+      p.tag_id,
+      p.tag_path || ' / ' || t."name",
+      p.tag_rank || ' / ' || lpad(t.rank::text, 5, '0') || ':' || t."name"
+    from tag_paths p
+    join tag_edges e on e.source_node = p.tag_id
+    join tags t on t.id = e.target_node
+  ),
+  tag_info as materialized (
+    select distinct on (p.tag_id)
+      p.tag_id, p.tag_name, p.tag_depth, p.tag_root_id, p.tag_path, p.tag_rank
+    from tag_paths p
+    order by p.tag_id, p.tag_depth, p.tag_rank collate "C"
   )`;
 
 /** Paths of the boundary instants paired into Progressive events. */
@@ -63,25 +75,25 @@ export const PHASE_BOUNDARY_TAG_PATHS = [
   "Aspect / Phase / Dissolving",
 ] as const;
 
-// It reads `tag_info`, so its statement starts with TAG_INFO_SQL, and it binds
+// It reads `tag_paths`, so its statement starts with TAG_INFO_SQL, and it binds
 // nothing, so Postgres computes it once.
 /** The ids of the boundary tags and their descendants. */
 export const PHASE_BOUNDARY_TAG_IDS_SQL = `(
-    select coalesce(array_agg(pc.descendant_id), '{}'::uuid[])
-    from tag_info p
-    join tags_closure pc on pc.ancestor_id = p.tag_id
+    select coalesce(array_agg(distinct pc.descendant_id), '{}'::uuid[])
+    from tag_paths p
+    join tag_closures pc on pc.ancestor_id = p.tag_id
     where p.tag_path in (${PHASE_BOUNDARY_TAG_PATHS.map((path) => `'${path}'`).join(", ")})
   )`;
 
 /** Path of the tag whose events last. */
 export const PROGRESSIVE_TAG_PATH = "Temporality / Progressive";
 
-// Like the boundary ids, it reads `tag_info` and binds nothing.
+// Like the boundary ids, it reads `tag_paths` and binds nothing.
 /** The ids of the Progressive tag and its descendants. */
 export const PROGRESSIVE_TAG_IDS_SQL = `(
-    select coalesce(array_agg(pc.descendant_id), '{}'::uuid[])
-    from tag_info p
-    join tags_closure pc on pc.ancestor_id = p.tag_id
+    select coalesce(array_agg(distinct pc.descendant_id), '{}'::uuid[])
+    from tag_paths p
+    join tag_closures pc on pc.ancestor_id = p.tag_id
     where p.tag_path = '${PROGRESSIVE_TAG_PATH}'
   )`;
 

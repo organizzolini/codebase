@@ -3,14 +3,22 @@ import { Injectable } from "@nestjs/common";
 import { Tag } from "@codebase/caelundas-db";
 
 import { tagMetadata } from "./modules/tag-metadata/tag-metadata.utilities";
-import { tagNodeKey, tagPathKey, tagRank, tagSlug } from "./tags.utilities";
+import {
+  tagEdgeKey,
+  tagExtraParents,
+  tagNodeKey,
+  tagPathKey,
+  tagRank,
+  tagSlug,
+} from "./tags.utilities";
 
-import type { KnownTags, TagPath } from "./tags.types";
+import type { KnownTags, TagEdgeRow, TagPath } from "./tags.types";
 import type { EntityManager } from "typeorm";
 
 /**
  * Turns the paths events are classified under into nodes of the stored
- * `tags` tree, inserting any node that is missing.
+ * `tags` graph, inserting any node or edge that is missing. A node declared
+ * under several parents gets an edge from each.
  */
 @Injectable()
 export class TagsService {
@@ -23,6 +31,25 @@ export class TagsService {
   // 🔑 Public Fields
 
   // 🔏 Private Methods
+
+  /**
+   * Records the node among a parent's children, so a sibling with its name or slug is caught here and not by the database.
+   */
+  private claimSibling(
+    known: KnownTags,
+    parentId: string,
+    node: { id: string; name: string },
+  ): void {
+    const named = known.ids.get(tagNodeKey(parentId, node.name));
+
+    if (named !== undefined && named !== node.id) {
+      throw new Error(
+        `🚫 The tag "${node.name}" is already a different child of ${parentId}.`,
+      );
+    }
+    this.claimSlug(known.slugs, parentId, node.name);
+    known.ids.set(tagNodeKey(parentId, node.name), node.id);
+  }
 
   /**
    * Records a new node's slug among its siblings; throws when one has it.
@@ -47,6 +74,29 @@ export class TagsService {
   }
 
   /**
+   * Gives the node an edge from each other parent its path declares, saving the parents on the way.
+   */
+  private async ensureExtraParents(
+    manager: EntityManager,
+    node: { id: string; path: TagPath },
+    known: KnownTags,
+  ): Promise<void> {
+    const name = node.path.at(-1) ?? "";
+
+    for (const parentPath of tagExtraParents(node.path)) {
+      const parentId = await this.ensurePath(manager, parentPath, known);
+
+      if (!known.edges.has(tagEdgeKey(parentId, node.id))) {
+        this.claimSibling(known, parentId, { id: node.id, name });
+        await manager
+          .getRepository<TagEdgeRow>("TagEdge")
+          .insert({ sourceNode: parentId, targetNode: node.id });
+        known.edges.add(tagEdgeKey(parentId, node.id));
+      }
+    }
+  }
+
+  /**
    * The id of a path's last node, saving missing nodes on the way down and recording them in `known`.
    */
   private async ensurePath(
@@ -67,6 +117,7 @@ export class TagsService {
         ));
       parentId = id;
     }
+    await this.ensureExtraParents(manager, { id, path }, known);
 
     return id;
   }
@@ -83,16 +134,22 @@ export class TagsService {
     const name = path.at(-1) ?? "";
     const slug = this.claimSlug(known.slugs, parentId, name);
     const { icon, note } = tagMetadata(path);
-    const saved = await manager.getTreeRepository(Tag).save(
+    const saved = await manager.getRepository(Tag).save(
       manager.create(Tag, {
         icon,
         name,
         note,
-        parent: parentId === null ? null : { id: parentId },
         rank: tagRank(path),
         slug,
       }),
     );
+
+    if (parentId !== null) {
+      await manager
+        .getRepository<TagEdgeRow>("TagEdge")
+        .insert({ sourceNode: parentId, targetNode: saved.id });
+      known.edges.add(tagEdgeKey(parentId, saved.id));
+    }
     known.ids.set(tagNodeKey(parentId, name), saved.id);
 
     return saved.id;
@@ -108,22 +165,36 @@ export class TagsService {
     paths: readonly TagPath[],
   ): Promise<Map<string, string>> {
     const stored = await manager.getRepository(Tag).find({
-      select: { id: true, name: true, parentId: true, slug: true },
+      select: { id: true, name: true, slug: true },
     });
-    const known = {
-      ids: new Map(
-        stored.map((tag) => [
-          tagNodeKey(tag.parentId ?? null, tag.name),
-          tag.id,
-        ]),
+    const edges = await manager.getRepository<TagEdgeRow>("TagEdge").find();
+    const parentsOf = new Map<string, string[]>();
+
+    for (const { sourceNode, targetNode } of edges) {
+      parentsOf.set(targetNode, [
+        ...(parentsOf.get(targetNode) ?? []),
+        sourceNode,
+      ]);
+    }
+
+    const known: KnownTags = {
+      edges: new Set(
+        edges.map(({ sourceNode, targetNode }) =>
+          tagEdgeKey(sourceNode, targetNode),
+        ),
       ),
-      slugs: new Map(
-        stored.map((tag) => [
-          tagNodeKey(tag.parentId ?? null, tag.slug),
-          tag.name,
-        ]),
-      ),
+      ids: new Map(),
+      slugs: new Map(),
     };
+
+    // A node is found under each of its parents, or as a root when it has none.
+    for (const tag of stored) {
+      for (const parentId of parentsOf.get(tag.id) ?? [null]) {
+        known.ids.set(tagNodeKey(parentId, tag.name), tag.id);
+        known.slugs.set(tagNodeKey(parentId, tag.slug), tag.name);
+      }
+    }
+
     const resolved = new Map<string, string>();
 
     for (const path of paths) {

@@ -21,6 +21,7 @@ import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startCaelundasDatabase,
 } from "../../../testing/support/database";
+import { tagRepository } from "../../../testing/support/tag-repository";
 import { tagSlug } from "../tags/tags.utilities";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
@@ -29,7 +30,7 @@ import { CalendarEventsService } from "./calendar-events.service";
 
 import type { DetectedCalendarEvent } from "./calendar-events.types";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
-import type { Repository, TreeRepository } from "typeorm";
+import type { Repository } from "typeorm";
 
 const philadelphia = {
   latitude: 39.949_309,
@@ -71,7 +72,7 @@ describe("calendar events service integration", () => {
   let database: DatabaseTestingModule;
   let service: CalendarEventsService;
   let repository: Repository<CalendarEvent>;
-  let tags: TreeRepository<Tag>;
+  let tags: Repository<Tag>;
 
   beforeAll(async () => {
     database = await startCaelundasDatabase([
@@ -80,7 +81,7 @@ describe("calendar events service integration", () => {
     ]);
     service = database.module.get(CalendarEventsService);
     repository = database.repository(CalendarEvent);
-    tags = database.dataSource.getTreeRepository(Tag);
+    tags = database.repository(Tag);
   }, DATABASE_TIMEOUT_MILLISECONDS);
 
   afterEach(() => {
@@ -488,8 +489,30 @@ describe("calendar events service integration", () => {
   });
 
   describe("tags", () => {
-    async function tag(name: string, parent: null | Tag = null): Promise<Tag> {
-      return tags.save(tags.create({ name, parent, slug: tagSlug(name) }));
+    async function tag(name: string, parent?: Tag): Promise<Tag> {
+      return tagRepository(database.dataSource).save({
+        name,
+        parent,
+        slug: tagSlug(name),
+      });
+    }
+
+    /** The names of the tags the closure holds above (or beneath) `node`, itself included, after refreshing it. */
+    async function closureOf(
+      node: Tag,
+      direction: "ancestors" | "descendants",
+    ): Promise<string[]> {
+      await database.dataSource.query("refresh materialized view tag_closures");
+      const [near, far] =
+        direction === "ancestors"
+          ? ["descendant_id", "ancestor_id"]
+          : ["ancestor_id", "descendant_id"];
+      const rows = await database.dataSource.query<{ name: string }[]>(
+        `select t."name" from tag_closures c join tags t on t.id = c.${far} where c.${near} = $1 order by t."name"`,
+        [node.id],
+      );
+
+      return rows.map(({ name }) => name);
     }
 
     /** The name of the root above the one node named `name`. */
@@ -498,8 +521,13 @@ describe("calendar events service integration", () => {
       if (node === undefined) {
         return undefined;
       }
-      const ancestors = await tags.findAncestors(node);
-      return ancestors.find(({ parentId }) => parentId === null)?.name;
+      const rows = await database.dataSource.query<{ name: string }[]>(
+        `select t."name" from tag_closures c join tags t on t.id = c.ancestor_id
+        where c.descendant_id = $1
+          and not exists (select 1 from tag_edges e where e.target_node = t.id)`,
+        [node.id],
+      );
+      return rows[0]?.name;
     }
 
     it("resolves ancestors and descendants through the closure table", async () => {
@@ -510,15 +538,15 @@ describe("calendar events service integration", () => {
       const major = await tag("Tree major", aspect);
       await tag("Tree minor", aspect);
 
-      const ancestors = await tags.findAncestors(major);
-      const descendants = await tags.findDescendants(aspect);
+      const ancestors = await closureOf(major, "ancestors");
+      const descendants = await closureOf(aspect, "descendants");
 
-      expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([
+      expect(ancestors).toStrictEqual([
         "Tree aspect",
         "Tree major",
         "Tree type",
       ]);
-      expect(descendants.map(({ name }) => name).toSorted()).toStrictEqual([
+      expect(descendants).toStrictEqual([
         "Tree aspect",
         "Tree major",
         "Tree minor",
@@ -536,13 +564,15 @@ describe("calendar events service integration", () => {
         order: { name: "ASC" },
         where: { name: In(["rooted a", "rooted b"]) },
       });
+      const edges = await database.dataSource
+        .getRepository("TagEdge")
+        .countBy({ targetNode: In(roots.map(({ id }) => id)) });
 
-      expect(roots.map(({ name, parentId }) => [name, parentId])).toStrictEqual(
-        [
-          ["rooted a", null],
-          ["rooted b", null],
-        ],
-      );
+      expect(roots.map(({ name }) => name)).toStrictEqual([
+        "rooted a",
+        "rooted b",
+      ]);
+      expect(edges).toBe(0);
     });
 
     it("replaces an event's tags when a re-run changes them", async () => {
@@ -613,15 +643,10 @@ describe("calendar events service integration", () => {
       const leaves = await tags.findBy({ name: "Trine" });
       const [leaf] = leaves;
       const ancestors =
-        leaf === undefined ? [] : await tags.findAncestors(leaf);
+        leaf === undefined ? [] : await closureOf(leaf, "ancestors");
 
       expect(leaves).toHaveLength(1);
-      expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([
-        "Aspect",
-        "Major",
-        "Simple",
-        "Trine",
-      ]);
+      expect(ancestors).toStrictEqual(["Aspect", "Major", "Simple", "Trine"]);
     });
 
     it("tags an Aries event with its sign, element, modality and polarity side by side", async () => {
@@ -682,16 +707,89 @@ describe("calendar events service integration", () => {
       });
       const [opposition] = await tags.findBy({ name: "Martian Opposition" });
       const ancestors =
-        opposition === undefined ? [] : await tags.findAncestors(opposition);
+        opposition === undefined
+          ? []
+          : await closureOf(opposition, "ancestors");
 
       expect(row?.tags).toStrictEqual(
         expect.arrayContaining(["Mars", "Martian Opposition", "Opposition"]),
       );
-      expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([
+      expect(ancestors).toStrictEqual([
         "Martian",
         "Martian Opposition",
         "Phase",
         "Planetary",
+      ]);
+    });
+
+    it("puts Venus under Planet and Benefic as one node, however many events carry it", async () => {
+      expect.hasAssertions();
+
+      const start = "2026-10-10T00:00:00Z";
+      await service.upsert(
+        [
+          tagged("Venus one", start, ["Astronomy", "Astrology", "Venus"]),
+          tagged("Venus two", "2026-10-11T00:00:00Z", [
+            "Astronomy",
+            "Astrology",
+            "Venus",
+          ]),
+        ],
+        philadelphia,
+      );
+      const venus = await tags.findBy({ name: "Venus" });
+      const [node] = venus;
+      const parents = await database.dataSource.query<{ name: string }[]>(
+        `select p."name" from tag_edges e join tags p on p.id = e.source_node
+        where e.target_node = $1 order by p."name"`,
+        [node?.id],
+      );
+      const ancestors =
+        node === undefined ? [] : await closureOf(node, "ancestors");
+
+      expect(venus).toHaveLength(1);
+      expect(parents.map(({ name }) => name)).toStrictEqual([
+        "Benefic",
+        "Personal",
+      ]);
+      expect(ancestors).toStrictEqual([
+        "Benefic",
+        "Body",
+        "Personal",
+        "Planet",
+        "Venus",
+      ]);
+    });
+
+    it("gives a node that already exists its other parent when an event carries it again", async () => {
+      expect.hasAssertions();
+
+      const [saturn] = await tags.findBy({ name: "Saturn" });
+      const edges = database.dataSource.getRepository("TagEdge");
+
+      expect(saturn).toBeUndefined();
+
+      await service.upsert(
+        [tagged("Saturn one", "2026-10-12T00:00:00Z", ["Saturn"])],
+        philadelphia,
+      );
+      const [created] = await tags.findBy({ name: "Saturn" });
+      await edges.delete({ targetNode: created?.id });
+      const social = await tags.findOneByOrFail({ name: "Social" });
+      await edges.insert({ sourceNode: social.id, targetNode: created?.id });
+      await service.upsert(
+        [tagged("Saturn two", "2026-10-13T00:00:00Z", ["Saturn"])],
+        philadelphia,
+      );
+      const parents = await database.dataSource.query<{ name: string }[]>(
+        `select p."name" from tag_edges e join tags p on p.id = e.source_node
+        where e.target_node = $1 order by p."name"`,
+        [created?.id],
+      );
+
+      expect(parents.map(({ name }) => name)).toStrictEqual([
+        "Malefic",
+        "Social",
       ]);
     });
 
@@ -721,12 +819,8 @@ describe("calendar events service integration", () => {
       await tag("Mars", planet);
       await tag("Mars", sign);
 
-      await expect(tag("Mars", planet)).rejects.toThrow(
-        /tags_sibling_(name|slug)/u,
-      );
-      await expect(tag("Unique planet")).rejects.toThrow(
-        /tags_root_(name|slug)/u,
-      );
+      await expect(tag("Mars", planet)).rejects.toThrow(/same name or slug/u);
+      await expect(tag("Unique planet")).rejects.toThrow(/another root/u);
     });
 
     it("stores each written tag with its slug", async () => {

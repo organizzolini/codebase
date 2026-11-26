@@ -3,10 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { getGraphEdgeMetadata } from "@codebase/persistence";
 
-import {
-  DATABASE_ENTITIES,
-  databaseDataSource,
-} from "../../data-source.constants";
+import { databaseDataSource } from "../../data-source.constants";
 
 import { ConstellationEdge } from "./constellation-edge.entity";
 import { Constellation } from "./constellation.entity";
@@ -27,7 +24,6 @@ async function buildEdge(): Promise<{
 }> {
   const dataSource = new MetadataDataSource({
     ...databaseDataSource.options,
-    entities: [...DATABASE_ENTITIES],
   });
   await dataSource.build();
   return { dataSource, edge: dataSource.getMetadata(ConstellationEdge) };

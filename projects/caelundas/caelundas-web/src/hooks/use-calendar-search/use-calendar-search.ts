@@ -106,6 +106,10 @@ export function useCalendarSearch(
       // The table's extra days stay behind with a view change.
       updateSearch({ days: undefined, view });
     },
+    handleViewPresetChange: ({ filter, group, sort }) => {
+      // A view sets the filter, group and sort alone: the days, layout and display stay.
+      updateSearch({ filter, group, sort });
+    },
     updateSearch,
   };
 }

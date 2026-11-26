@@ -15,6 +15,23 @@ where "type" = $1 and "name" = $2 and "schema" = $3;
 
 drop materialized view calendar_event_tag_sets;
 
+drop index caelundas.tag_closures_descendant_id;
+
+drop index caelundas.tag_closures_ancestor_id_descendant_id;
+
+delete from caelundas.typeorm_metadata
+where "type" = $1 and "name" = $2 and "schema" = $3;
+
+drop materialized view tag_closures;
+
+drop trigger tags_root_guard on tags;
+
+drop function tags_root_guard();
+
+drop trigger tag_edges_guard on tag_edges;
+
+drop function tag_edges_guard();
+
 drop function expand_keys(text[]);
 
 drop function expand_tags(uuid[]);
@@ -57,13 +74,13 @@ drop index caelundas.groups_slug;
 
 drop table "groups";
 
+alter table tag_edges drop constraint "FK_4ebc4574b20762da23f596a8303";
+
+alter table tag_edges drop constraint "FK_57008c88a60a908ca4b8bbf5807";
+
 alter table metric_expressions_closure drop constraint "FK_4c8cc112ad12a06cebe2d12f45e";
 
 alter table metric_expressions_closure drop constraint "FK_4dd9ee9dd9e246b4cbe04f14e7c";
-
-alter table tags_closure drop constraint "FK_8a4bf589d19e5060d7ccbf1fd51";
-
-alter table tags_closure drop constraint "FK_3f3680694135907038de253a57e";
 
 alter table constellation_edges drop constraint "FK_a7954f4db381f98e1b7a734b1c5";
 
@@ -83,19 +100,17 @@ alter table calendar_event_tags drop constraint "FK_6f0520ed07726fe729a882a6928"
 
 alter table calendar_event_tags drop constraint "FK_146237171c57f84a0ff62036294";
 
-alter table tags drop constraint "FK_bd19ddcde86ca1882599dbace11";
-
 drop index caelundas."IDX_4c8cc112ad12a06cebe2d12f45";
 
 drop index caelundas."IDX_4dd9ee9dd9e246b4cbe04f14e7";
 
 drop table metric_expressions_closure;
 
-drop index caelundas."IDX_8a4bf589d19e5060d7ccbf1fd5";
+drop index caelundas.tag_edges_source_node;
 
-drop index caelundas."IDX_3f3680694135907038de253a57";
+drop index caelundas.tag_edges_target_node;
 
-drop table tags_closure;
+drop table tag_edges;
 
 drop table stars;
 
@@ -144,12 +159,6 @@ where "type" = $1 and "name" = $2 and "database" = current_database() and "schem
 delete from caelundas.typeorm_metadata
 where "type" = $1 and "name" = $2 and "database" = current_database() and "schema" = $3 and "table" = $4;
 
-drop index caelundas.tags_sibling_name;
-
-drop index caelundas.tags_root_name;
-
-drop index caelundas.tags_sibling_slug;
-
-drop index caelundas.tags_root_slug;
+drop index caelundas.tags_slug;
 
 drop table tags;

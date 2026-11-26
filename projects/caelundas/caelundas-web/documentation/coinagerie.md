@@ -6,6 +6,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 
 - **abbreviate**: To write a duration's units by their short symbols, `8 y 11 mo 3 w`, rather than by name; every span under a day does, and a compact one always.
 - **air**: One of the four sign elements used as a filter field, with a value of fire, earth, air or water.
+- **also**:
 - **altitude**: Height of a star above the horizon in degrees, where the pole observer sees altitude equal declination, shown by the night sky.
 - **angle**: Degree rotation the night sky star group is drawn at, derived from sidereal time as the sky turns.
 - **apogee**:
@@ -40,7 +41,9 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **cradle**: Calendar glyph mapped from the bed emoji to cradle-icon.png, used for one event label in the glyph map.
 - **crescent**: Moon phase between new and quarter, offered as a filter value and drawn with waxing or waning crescent icons.
 - **crosshair**:
+- **cue**:
 - **cut**: Verb for removing or trimming: a view is added or cut from the list, and night sky rings are cut at the window edge.
+- **dag**:
 - **dasharray**:
 - **dawn**: Twilight start of morning, labeled Astronomical or Civil Dawn, each with its glyph in calendar icon constants.
 - **daylight**: Event label for the sun above the horizon, mapped to day-icon.svg as its calendar glyph.
@@ -57,6 +60,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **epoch**:
 - **eris**: Dwarf planet Eris, a body whose aspects the CLI's triple-aspect tests tag; the web app never names it.
 - **expandable**:
+- **few**:
 - **fire**: A value of the Element filter that marks a sign as belonging to the fire element.
 - **flow**:
 - **forget**:
@@ -86,6 +90,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **lack**:
 - **lammas**: The cross-quarter festival of early August, mapped to its PNG icon in the event glyph table.
 - **latitude**: The observer's north-south angle, read from skyfield.lat to place the night sky, and a column of each calendar event.
+- **ldml**:
 - **leo**: The zodiac sign of the lion, whose ♌ glyph maps to leo-icon.svg and tags events as Sign / Leo.
 - **libra**: The scales sign of the zodiac, ♎ mapped to libra-icon.svg, and a constellation folder the night-sky picker lists.
 - **lilith**: The Black Moon point, the lunar apogee body whose ⚸ glyph maps to its SVG icon in the glyph table.
@@ -125,7 +130,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **pholus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.
 - **piece**:
 - **pisces**: Zodiac sign whose glyph maps to its own SVG icon, and a constellation listed in the sky menu.
-- **planet**:
 - **planetary**:
 - **plot**:
 - **pluto**: Dwarf-planet body whose glyph maps to its own SVG icon and appears in event names.
@@ -157,6 +161,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **sesquiquadrate**:
 - **sextile**: The 60-degree aspect, a harmonic-six pattern, shown in event names with the star glyph.
 - **sextuple**: Stellium label for six bodies clustered together, mapped to its own PNG icon in the glyph set.
+- **shallower**:
 - **sizer**:
 - **sky**: The night-sky backdrop behind the calendar, also the old spelling of the skyfield link keys, which links still read.
 - **skyfield**: The prefix of every link key that sets the night-sky backdrop, such as skyfield.top, skyfield.lat and skyfield.lon.

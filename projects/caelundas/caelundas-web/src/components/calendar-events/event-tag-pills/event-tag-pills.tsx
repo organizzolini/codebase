@@ -28,6 +28,16 @@ export function EventTagPills(
   // 🪝 Hooks
 
   // 🏗 Setup
+  // A tag under two parents arrives once a path but is one pill.
+  const pills: CalendarEventTag[] = [];
+  const drawn = new Set<string>();
+
+  for (const tag of tags) {
+    if (!drawn.has(tag.id)) {
+      drawn.add(tag.id);
+      pills.push(tag);
+    }
+  }
 
   // 💪 Handlers
 
@@ -45,7 +55,7 @@ export function EventTagPills(
         aria-label="Tags"
         className="flex flex-wrap gap-1"
       >
-        {tags.map((tag) => (
+        {pills.map((tag) => (
           <li
             key={tag.id}
             className="rounded-full border px-1.5 text-[0.65rem] leading-4 whitespace-nowrap"

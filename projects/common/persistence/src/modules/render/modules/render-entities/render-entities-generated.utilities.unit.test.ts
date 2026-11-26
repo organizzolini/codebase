@@ -7,7 +7,11 @@ import { Pipeline } from "../../../../../testing/fixtures/graphs/generated/pipel
 import { Station } from "../../../../../testing/fixtures/graphs/generated/station.entity";
 import { PluralSnakeNamingStrategy } from "../../../postgresql/postgresql.constants";
 
-import { withGeneratedEdges } from "./render-entities-generated.utilities";
+import {
+  generatedEntitiesOf,
+  isGraphEntity,
+  withGeneratedEdges,
+} from "./render-entities-generated.utilities";
 import { RenderEntitiesEdgeError } from "./render-entities.constants";
 import {
   DirectedAcyclicGraph,
@@ -148,6 +152,21 @@ describe("generated edge entities", () => {
         sourceColumn: "fromCode",
         targetColumn: "toCode",
       });
+    });
+
+    it("lists only the edge and nodes a graph generated that the list lacks", () => {
+      expect(
+        generatedEntitiesOf([Network]).map(({ name }) => name),
+      ).toStrictEqual(["NetworkLine", "Station"]);
+      expect(
+        generatedEntitiesOf([Network, Station]).map(({ name }) => name),
+      ).toStrictEqual(["NetworkLine"]);
+      expect(generatedEntitiesOf([Job, "other"])).toStrictEqual([]);
+    });
+
+    it("tells a class from anything else an entity list may hold", () => {
+      expect(isGraphEntity(Network)).toBe(true);
+      expect(isGraphEntity("jobs")).toBe(false);
     });
 
     it("names the generated columns by their property for --filter and --sort", () => {

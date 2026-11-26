@@ -1,6 +1,7 @@
 import { bodyFromDisplayName, isSign } from "../caelundas/caelundas.types";
 
 import { TAG_CHILD_RANKS } from "./modules/tag-metadata/tag-metadata-rank.constants";
+import { TAG_EXTRA_PARENTS } from "./modules/tag-metadata/tag-metadata.constants";
 import { SIGNS_BY_DIGNITY_BY_PLANET } from "./tag-dimensions.constants";
 import {
   CONTEXT_TAG_MAPS,
@@ -30,6 +31,16 @@ export function classifyEvent(event: ClassifiableEvent): TagPath[] {
     ...eclipsePaths(rawTags),
     [TAG_ROOT.temporality, isInstant(event) ? "Perfective" : "Progressive"],
   ]);
+}
+
+/** The key an edge is told apart by: its parent and child ids. */
+export function tagEdgeKey(parentId: string, childId: string): string {
+  return `${parentId}\u0000${childId}`;
+}
+
+/** The other parents the node at `path` sits under, each as a path; none for most nodes. */
+export function tagExtraParents(path: TagPath): readonly TagPath[] {
+  return TAG_EXTRA_PARENTS[path.join(" / ")] ?? [];
 }
 
 /**

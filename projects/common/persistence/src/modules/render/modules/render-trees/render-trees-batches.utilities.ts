@@ -60,13 +60,14 @@ function admitRows(
   rows: readonly z.infer<typeof RENDER_TREES_ROW_SCHEMA>[],
 ): string[] {
   const fresh: string[] = [];
-  for (const { icon, id, label, note, parentId } of rows) {
+  for (const { icon, id, label, note, otherParentIds, parentId } of rows) {
     if (!loaded.has(id)) {
       loaded.set(id, {
         icon: icon ?? undefined,
         id,
         label,
         note: note ?? undefined,
+        otherParentIds: otherParentIds ?? undefined,
         parentId: parentId ?? undefined,
       });
       fresh.push(id);

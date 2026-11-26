@@ -22,6 +22,7 @@ import { WindowsService } from "./modules/windows/windows.service";
 import type { EventsDatasetEntity } from "./events.entities";
 import type { EventsReadOptions } from "./events.types";
 import type { CalendarEventEntity } from "./modules/calendar-event/calendar-event.entities";
+import type { EventFacetValueEntity } from "./modules/facets/event-facet-value.entities";
 import type { EventFacetEntity } from "./modules/facets/event-facet.entities";
 import type { EventFilterGroup } from "./modules/filtering/event-filter.types";
 import type { RankedName } from "./modules/natural-order/natural-order.types";
@@ -57,58 +58,71 @@ export class EventsService {
   // 🔏 Private Methods
 
   /**
-   * Assembles the tag roots from the facet rows, each with its tags beneath it.
+   * Each tag's parents, by id, with the path of one appearance of each.
+   */
+  private collectParents(
+    rows: readonly z.infer<typeof facetRowSchema>[],
+  ): Map<string, Map<string, string>> {
+    const parentPaths = new Map<string, Map<string, string>>();
+
+    for (const row of rows) {
+      if (row.parent_id !== null && row.parent_path !== null) {
+        const parents = parentPaths.get(row.id) ?? new Map<string, string>();
+
+        parents.set(
+          row.parent_id,
+          parents.get(row.parent_id) ?? row.parent_path,
+        );
+        parentPaths.set(row.id, parents);
+      }
+    }
+
+    return parentPaths;
+  }
+
+  /**
+   * A tag root, with no tags beneath it yet.
+   */
+  private toFacetRoot(row: z.infer<typeof facetRowSchema>): EventFacetEntity {
+    return {
+      icon: row.icon,
+      id: row.id,
+      name: row.name,
+      note: row.note,
+      slug: row.slug,
+      values: [],
+    };
+  }
+
+  /**
+   * Assembles the tag roots, each with its tags, one value a path.
    */
   private toFacets(
     rows: readonly z.infer<typeof facetRowSchema>[],
   ): EventFacetEntity[] {
     const facets = new Map<string, EventFacetEntity>();
-    const levelsById = new Map<string, RankedName[]>();
-    const byId = new Map(rows.map((row) => [row.id, row]));
+    const levelsByPath = new Map<string, RankedName[]>();
+    const parentPaths = this.collectParents(rows);
 
     for (const row of rows) {
       if (row.depth === 0) {
-        facets.set(row.id, {
-          icon: row.icon,
-          id: row.id,
-          name: row.name,
-          note: row.note,
-          slug: row.slug,
-          values: [],
-        });
-        continue;
+        facets.set(row.id, this.toFacetRoot(row));
+      } else {
+        levelsByPath.set(
+          `${row.id}\u0000${row.path_below_root}`,
+          this.toRankedLevels(row.tag_rank),
+        );
+        facets
+          .get(row.root_id)
+          ?.values.push(this.toFacetValue(row, parentPaths.get(row.id)));
       }
-
-      // Each level beneath the root with its place among its siblings, from
-      // the tag's ancestors, so siblings sort as intended.
-      const levels: RankedName[] = [];
-
-      for (
-        let node: (typeof rows)[number] | undefined = row;
-        node !== undefined && node.depth > 0;
-        node = node.parent_id === null ? undefined : byId.get(node.parent_id)
-      ) {
-        levels.unshift({ name: node.name, rank: node.rank });
-      }
-
-      levelsById.set(row.id, levels);
-      facets.get(row.root_id)?.values.push({
-        count: row.count,
-        depth: row.depth,
-        icon: row.icon,
-        id: row.id,
-        name: row.name,
-        note: row.note,
-        path: row.path_below_root,
-        slug: row.slug,
-      });
     }
 
     for (const facet of facets.values()) {
       facet.values.sort((left, right) =>
         compareRankedPaths(
-          levelsById.get(left.id) ?? [],
-          levelsById.get(right.id) ?? [],
+          levelsByPath.get(`${left.id}\u0000${left.path}`) ?? [],
+          levelsByPath.get(`${right.id}\u0000${right.path}`) ?? [],
         ),
       );
     }
@@ -117,10 +131,51 @@ export class EventsService {
   }
 
   /**
+   * One place a tag sits, naming the other parents it sits under.
+   */
+  private toFacetValue(
+    row: z.infer<typeof facetRowSchema>,
+    parents: ReadonlyMap<string, string> | undefined,
+  ): EventFacetValueEntity {
+    const otherParents = [...(parents ?? [])]
+      .filter(([parentId]) => parentId !== row.parent_id)
+      .map(([, parentPath]) => parentPath);
+
+    return {
+      alsoUnder: otherParents.toSorted(),
+      count: row.count,
+      depth: row.depth,
+      icon: row.icon,
+      id: row.id,
+      name: row.name,
+      note: row.note,
+      path: row.path_below_root,
+      slug: row.slug,
+    };
+  }
+
+  /**
    * Formats an instant as the ISO 8601 text Postgres reads as a timestamptz.
    */
   private toIsoString(instant: Date | string): string {
     return new Date(instant).toISOString();
+  }
+
+  /**
+   * Each level of a rank path beneath the root, with its place among its siblings, so siblings sort as intended.
+   */
+  private toRankedLevels(rankPath: string): RankedName[] {
+    return rankPath
+      .split(" / ")
+      .slice(1)
+      .map((level) => {
+        const colon = level.indexOf(":");
+
+        return {
+          name: level.slice(colon + 1),
+          rank: Number(level.slice(0, colon)),
+        };
+      });
   }
 
   // 🌎 Public Methods

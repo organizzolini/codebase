@@ -9,7 +9,7 @@ the file; the queries are listed at the end.
 ## Dimensions
 
 The `tag` dimension is flat, and its values are the rows of `tags` and their
-closure. The `name` dimension is flat too: its values are the distinct event names.
+closure (`tag_closures`, over the `tag_edges` graph). The `name` dimension is flat too: its values are the distinct event names.
 The time dimensions are a graph. An event is base data in `calendar_events`, not a
 dimension.
 

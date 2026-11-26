@@ -78,7 +78,7 @@ describe(EventGroupingService, () => {
       );
 
       expect(compiled.parameters).toStrictEqual([MARS]);
-      expect(compiled.sql).toContain("child.parent_id = $3::uuid");
+      expect(compiled.sql).toContain("t.tag_parent_id = $3::uuid");
       expect(compiled.sql).not.toContain(MARS);
       expect(compiled.sql).toContain(
         PARENT_TAG_GROUP_SQL.replace("{parent}", "$3"),

@@ -64,4 +64,37 @@ describe(TagRow, () => {
 
     expect(screen.getByText("2")).toBeDefined();
   });
+
+  it("says where else a tag under two parents sits, with the full paths on hover", () => {
+    render(
+      <TagRow
+        onKeyDown={vi.fn<() => void>()}
+        onOpenChange={vi.fn<() => void>()}
+        onToggle={vi.fn<() => void>()}
+        row={{
+          ...ROW,
+          hasChildren: false,
+          item: {
+            data: { alsoUnder: ["Body / Benefic"], depth: 2, name: "Venus" },
+            label: "Venus",
+            value: "venus",
+          },
+          name: "Venus",
+          selectedBelow: 0,
+          state: "unchecked",
+        }}
+      />,
+    );
+
+    const cue = screen.getByTestId("tag-also-under");
+
+    expect(cue.textContent).toBe("also Benefic");
+    expect(cue.getAttribute("title")).toBe("Also under Body / Benefic");
+  });
+
+  it("shows no cue on a tag with one parent", () => {
+    renderRow();
+
+    expect(screen.queryByTestId("tag-also-under")).toBeNull();
+  });
 });

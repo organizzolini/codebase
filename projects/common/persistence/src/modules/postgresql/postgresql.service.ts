@@ -6,6 +6,7 @@ import {
   postgresConnection,
   postgresDataSourceOptions,
   postgresEnvironmentKeys,
+  withGeneratedEntities,
 } from "./postgresql.utilities";
 
 import type {
@@ -73,8 +74,10 @@ export class PostgresqlService implements TypeOrmOptionsFactory {
 
   /** TypeORM's options for the project's connection, with no migrations: the runtime never runs them. */
   createTypeOrmOptions(): PostgresDataSourceOptions {
+    const { entities } = this.databaseOptions();
+
     return postgresDataSourceOptions(this.connection(), {
-      ...this.databaseOptions(),
+      entities: withGeneratedEntities(entities),
       migrations: [],
     });
   }

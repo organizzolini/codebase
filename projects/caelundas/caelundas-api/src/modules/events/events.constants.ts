@@ -66,7 +66,7 @@ export const EVENTS_IN_PERIOD_SQL = `
           order by t.tag_path collate "C"
         )
         from calendar_event_tags et
-        join tag_info t on t.tag_id = et.tag_id
+        join tag_paths t on t.tag_id = et.tag_id
         join tags et_tag on et_tag.id = et.tag_id
         where et.calendar_event_id = e.id
       ),
@@ -128,7 +128,7 @@ export const FACETS_SQL = `
       select distinct c.ancestor_id as tag_id, et.calendar_event_id
       from calendar_event_tags et
       join in_period w on w.id = et.calendar_event_id
-      join tags_closure c on c.descendant_id = et.tag_id
+      join tag_closures c on c.descendant_id = et.tag_id
     ) z
     group by z.tag_id
   )
@@ -137,16 +137,20 @@ export const FACETS_SQL = `
     n.tag_name as "name",
     n.tag_depth as depth,
     n.tag_root_id as root_id,
-    substr(n.tag_path, length(r.tag_name) + length(' / ') + 1) as path_below_root,
+    substr(n.tag_path, length(r."name") + length(' / ') + 1) as path_below_root,
+    case when n.tag_depth > 0
+      then substr(n.tag_path, 1, length(n.tag_path) - length(n.tag_name) - length(' / '))
+    end as parent_path,
+    n.tag_rank,
+    n.tag_parent_id as parent_id,
     coalesce(c.count, 0) as count,
     t.icon,
     t.note,
     t.rank,
-    t.slug,
-    t.parent_id
-  from tag_info n
+    t.slug
+  from tag_paths n
   join tags t on t.id = n.tag_id
-  join tag_info r on r.tag_id = n.tag_root_id
+  join tags r on r.id = n.tag_root_id
   left join tag_counts c on c.tag_id = n.tag_id
   order by n.tag_path collate "C"
 `;
@@ -160,10 +164,12 @@ export const facetRowSchema = z.object({
   name: z.string(),
   note: z.string().nullish().default(null),
   parent_id: z.string().nullish().default(null),
+  parent_path: z.string().nullish().default(null),
   path_below_root: z.string(),
   rank: z.coerce.number().default(0),
   root_id: z.string(),
   slug: z.string(),
+  tag_rank: z.string(),
 });
 
 /** Compares text counting digits as numbers: "Harmonic 2" precedes "Harmonic 10". */

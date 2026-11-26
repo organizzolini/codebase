@@ -35,6 +35,49 @@ describe("graph tree utilities", () => {
     });
   });
 
+  describe("a node with several parents", () => {
+    const ROWS: GraphTreeRow[] = [
+      { id: "a", label: "A", parentId: undefined },
+      { id: "b", label: "B", parentId: undefined },
+      { id: "c", label: "C", otherParentIds: ["b"], parentId: "a" },
+    ];
+
+    it("draws an edge from each parent to the one node, and marks only the rows without a parent as roots", () => {
+      const graph = buildTreeGraph(ROWS);
+
+      expect(graph.edges).toStrictEqual([
+        { source: "a", target: "c" },
+        { source: "b", target: "c" },
+      ]);
+      expect(graph.nodes.map(({ marker }) => marker)).toStrictEqual([
+        "root",
+        "root",
+        undefined,
+      ]);
+    });
+
+    it("keeps every parent of a match, and the subtree below each parent's match", () => {
+      expect(
+        [...matchedAncestors(ROWS, new Set(["c"]))].toSorted(),
+      ).toStrictEqual(["a", "b", "c"]);
+      expect(
+        [...matchedSubtrees(ROWS, new Set(["b"]))].toSorted(),
+      ).toStrictEqual(["b", "c"]);
+    });
+
+    it("pages a root with the node it shares", () => {
+      const page = pageTreeRows(ROWS, { limit: 1, page: 2 });
+
+      expect(page.rows.map(({ id }) => id)).toStrictEqual(["b", "c"]);
+    });
+
+    it("shows the node under both parents when the caps leave them", () => {
+      const graph = capped(ROWS, { truncateBreadth: 5, truncateDepth: 5 });
+
+      expect(graph.edges).toHaveLength(2);
+    });
+  });
+
   describe(buildTreeGraph, () => {
     it("draws each parent-to-child edge and marks rows without a parent as roots", () => {
       const graph = buildTreeGraph([

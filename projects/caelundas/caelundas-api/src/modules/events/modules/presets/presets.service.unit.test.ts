@@ -14,6 +14,7 @@ function facet(id: string, name: string, paths: string[]): EventFacetEntity {
     note: null,
     slug: id,
     values: paths.map((path) => ({
+      alsoUnder: [],
       count: 1,
       depth: path.split(" / ").length,
       icon: null,

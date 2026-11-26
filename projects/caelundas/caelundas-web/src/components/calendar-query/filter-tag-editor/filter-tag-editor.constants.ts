@@ -5,6 +5,9 @@ import { z } from "zod";
 /** The note a tag option carries. */
 export const TAG_NOTE = z.object({ note: z.string() });
 
+/** The other parents a tag listed under several carries. */
+export const TAG_ALSO_UNDER = z.object({ alsoUnder: z.array(z.string()) });
+
 export const INDENT_REM = 0.875;
 
 // A partly ticked tag is a box with a dash in place of the check.

@@ -1,69 +1,240 @@
 import { toEventFilterInput } from "../calendar-filters/components/event-filter-model/event-filter-input.utilities";
 import { EMPTY_EVENT_FILTER } from "../calendar-filters/components/event-filter-model/event-filter-tree.constants";
+import { TAG_FIELD_PREFIX } from "../calendar-filters/components/event-filter-model/event-filters.constants";
 
-import {
-  ALL_EVENTS_ID,
-  CUSTOM_ID,
-  DEFAULT_VIEW_ICON,
-  VIEW_ICONS,
-} from "./calendar-view-strip.constants";
+import { CUSTOM_ID, VIEWS } from "./calendar-view-strip.constants";
 
-import type { EventFilterQuery } from "../calendar-filters/components/event-filter-model/event-filters.types";
-import type { ResolvedPreset } from "../calendar-filters/components/presets/presets.types";
-import type { ViewChoice } from "./calendar-view-strip.types";
+import type {
+  EventFacet,
+  EventFacetValue,
+} from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
+import type { EventFilterNode } from "../calendar-filters/components/event-filter-model/event-filters.types";
+import type { EventGroupLevel } from "../calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
+import type {
+  ViewChoice,
+  ViewDefinition,
+  ViewLevelReference,
+  ViewResolved,
+  ViewSelection,
+} from "./calendar-view-strip.types";
 
 // 🔏 Private Functions
 
-// 🌎 Public Functions
+// Loops rather than find or map callbacks keep the call stacks shallow.
 
-/** The id of the choice the filter tree matches, or custom; the API input, not ids, decides whether trees filter alike. */
+/** The id of the view the link's filter, group and sort match, or custom; the API input, not ids, decides whether trees filter alike. */
 export function findActiveViewId(
-  presets: readonly ResolvedPreset[],
-  query: EventFilterQuery,
+  views: readonly ViewResolved[],
+  current: Readonly<ViewSelection>,
 ): string {
-  const current = JSON.stringify(toEventFilterInput(query));
+  const key = toSelectionKey(current);
 
-  if (current === "null") {
-    return ALL_EVENTS_ID;
+  for (const view of views) {
+    if (toSelectionKey(view) === key) {
+      return view.id;
+    }
   }
 
-  const match = presets.find(
-    (preset) => JSON.stringify(toEventFilterInput(preset.filter)) === current,
-  );
-
-  return match?.id ?? CUSTOM_ID;
+  return CUSTOM_ID;
 }
 
-/**
- * The filter tree a choice applies: its preset's, or none for every event, which also stands for a choice the presets no longer have.
- */
-export function getViewFilter(
-  presets: readonly ResolvedPreset[],
+/** What a view writes to the link, or nothing for a view the data lacks. */
+export function getViewSelection(
+  views: readonly ViewResolved[],
   id: string | undefined,
-): EventFilterQuery {
-  return (
-    presets.find((preset) => preset.id === id)?.filter ?? EMPTY_EVENT_FILTER
-  );
+): undefined | ViewSelection {
+  for (const view of views) {
+    if (view.id === id) {
+      return { filter: view.filter, group: view.group, sort: view.sort };
+    }
+  }
+
+  return undefined;
 }
 
-/**
- * What can be picked: each preset, then every event.
- */
-export function listViewChoices(
-  presets: readonly ResolvedPreset[],
-): ViewChoice[] {
-  return [
-    ...presets.map((preset) => ({
-      description: preset.description,
-      icon: VIEW_ICONS[preset.id] ?? DEFAULT_VIEW_ICON,
-      id: preset.id,
-      label: preset.name,
-    })),
-    {
-      description: "Every event, with no filter.",
-      icon: VIEW_ICONS[ALL_EVENTS_ID] ?? DEFAULT_VIEW_ICON,
-      id: ALL_EVENTS_ID,
-      label: "All events",
-    },
-  ];
+/** What can be picked: the views the data has the tags for. */
+export function listViewChoices(views: readonly ViewResolved[]): ViewChoice[] {
+  return views.map((view) => ({
+    description: view.description,
+    icon: view.icon,
+    id: view.id,
+    label: view.name,
+  }));
+}
+
+/** The views the data can show, in menu order, leaving out any whose tags it lacks. */
+export function resolveViews(facets: readonly EventFacet[]): ViewResolved[] {
+  const views: ViewResolved[] = [];
+
+  for (const definition of VIEWS) {
+    const rules = resolveRules(definition, facets);
+
+    if (definition.filter.length === 0 || rules.length > 0) {
+      views.push({
+        description: definition.description,
+        filter:
+          rules.length === 0
+            ? EMPTY_EVENT_FILTER
+            : {
+                combinator: rules.length > 1 ? "or" : "and",
+                id: `view-${definition.id}`,
+                rules,
+                type: "group",
+              },
+        group: resolveGroup(definition, facets),
+        icon: definition.icon,
+        id: definition.id,
+        name: definition.name,
+        sort: resolveSort(definition, facets),
+      });
+    }
+  }
+
+  return views;
+}
+
+/** The facet of the root with this name, if the data has it. */
+function findRoot(
+  facets: readonly EventFacet[],
+  name: string,
+): EventFacet | undefined {
+  for (const facet of facets) {
+    if (facet.name === name) {
+      return facet;
+    }
+  }
+
+  return undefined;
+}
+
+/** The tag of a root at a path beneath it, if the data has it. */
+function findTag(
+  facet: Readonly<EventFacet>,
+  path: string,
+): EventFacetValue | undefined {
+  for (const value of facet.values) {
+    if (value.path === path) {
+      return value;
+    }
+  }
+
+  return undefined;
+}
+
+/** The group levels a definition resolves to; none for the default grouping. */
+function resolveGroup(
+  definition: Readonly<ViewDefinition>,
+  facets: readonly EventFacet[],
+): EventGroupLevel[] | undefined {
+  const group: EventGroupLevel[] = [];
+
+  for (const reference of definition.group) {
+    const found = resolveReference(reference, facets);
+
+    if (found !== undefined) {
+      group.push(
+        found.tag === undefined
+          ? { field: found.field }
+          : { field: found.field, parent: found.tag },
+      );
+    }
+  }
+
+  return group.length === 0 ? undefined : group;
+}
+
+// 🌎 Public Functions
+
+/** What a level or sort reference names: its root's field id and the tag id of its path, when it has one. */
+function resolveReference(
+  reference: Readonly<ViewLevelReference>,
+  facets: readonly EventFacet[],
+): undefined | { field: string; tag?: string } {
+  const facet = findRoot(facets, reference.root);
+
+  if (facet === undefined) {
+    return undefined;
+  }
+
+  const field = `${TAG_FIELD_PREFIX}${facet.id}`;
+
+  if (reference.path === undefined) {
+    return { field };
+  }
+
+  const tag = findTag(facet, reference.path);
+
+  return tag === undefined ? undefined : { field, tag: tag.id };
+}
+
+/** The filter rules the definition's tags resolve to, one for each root that has some. */
+function resolveRules(
+  definition: Readonly<ViewDefinition>,
+  facets: readonly EventFacet[],
+): EventFilterNode[] {
+  const rules: EventFilterNode[] = [];
+
+  for (const reference of definition.filter) {
+    const facet = findRoot(facets, reference.root);
+    const ids: string[] = [];
+
+    for (const path of reference.paths) {
+      const tag = facet === undefined ? undefined : findTag(facet, path);
+
+      if (tag !== undefined) {
+        ids.push(tag.id);
+      }
+    }
+
+    if (facet !== undefined && ids.length > 0) {
+      rules.push({
+        id: `view-${definition.id}-${String(rules.length)}`,
+        operator: "is_any_of",
+        path: [`${TAG_FIELD_PREFIX}${facet.id}`],
+        type: "rule",
+        value: ids,
+      });
+    }
+  }
+
+  return rules;
+}
+
+/** The tag sorts a definition resolves to; none for the default sort. */
+function resolveSort(
+  definition: Readonly<ViewDefinition>,
+  facets: readonly EventFacet[],
+): GroupSort[] | undefined {
+  const sort: GroupSort[] = [];
+
+  for (const reference of definition.sort) {
+    const found = resolveReference(reference, facets);
+
+    if (found !== undefined) {
+      sort.push({
+        direction: "asc",
+        key: "tag",
+        tag: found.tag ?? found.field,
+      });
+    }
+  }
+
+  return sort.length === 0 ? undefined : sort;
+}
+
+/** A selection written one way whatever the order of its keys, to compare; an absent key writes as null. */
+function toSelectionKey(selection: Readonly<ViewSelection>): string {
+  const group: unknown[] = [];
+  const sort: unknown[] = [];
+
+  for (const level of selection.group ?? []) {
+    group.push([level.field, level.parent, level.depth, level.tags]);
+  }
+
+  for (const one of selection.sort ?? []) {
+    sort.push([one.key, one.direction, one.tag, one.metric]);
+  }
+
+  return JSON.stringify([toEventFilterInput(selection.filter), group, sort]);
 }

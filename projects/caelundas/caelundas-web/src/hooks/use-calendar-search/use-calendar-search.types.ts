@@ -7,6 +7,7 @@ import type { CalendarSymbols } from "../../components/calendar-events/event-gly
 import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 import type { EventGrouping } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
+import type { ViewSelection } from "../../components/calendar-query/calendar-view-strip/calendar-view-strip.types";
 import type { CalendarSearch } from "./calendar-search.types";
 
 // 🏷️ Types
@@ -29,6 +30,7 @@ export interface UseCalendarSearchResult {
   handleSortChange: (sort: readonly GroupSort[] | undefined) => void;
   handleSymbolsChange: (symbols: CalendarSymbols) => void;
   handleViewChange: (view: CalendarViewName) => void;
+  handleViewPresetChange: (selection: ViewSelection) => void;
   /**
    * Writes a change over the search the link already holds, pushing a new
    * entry unless `replace` is set.

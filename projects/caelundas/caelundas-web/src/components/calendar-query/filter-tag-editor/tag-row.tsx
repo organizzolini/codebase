@@ -8,6 +8,7 @@ import {
   TAG_NOTE,
 } from "./filter-tag-editor.constants";
 import { describeHandle, showsPickCount } from "./filter-tag-editor.utilities";
+import { TagRowDetail } from "./tag-row-detail";
 
 import type { TagTreeRow } from "./event-filter-tag-tree.types";
 import type { KeyboardEvent, ReactNode } from "react";
@@ -110,11 +111,10 @@ export function TagRow(properties: Readonly<TagRowProperties>): ReactNode {
         )}
         <span className="flex min-w-0 grow flex-col">
           <span className="truncate">{row.name}</span>
-          {note === undefined ? null : (
-            <span className="text-muted-foreground truncate text-xs">
-              {note}
-            </span>
-          )}
+          <TagRowDetail
+            item={item}
+            note={note}
+          />
         </span>
         {showsPickCount(row) ? (
           <span className="bg-primary text-primary-foreground shrink-0 rounded-full px-1.5 text-xs tabular-nums">

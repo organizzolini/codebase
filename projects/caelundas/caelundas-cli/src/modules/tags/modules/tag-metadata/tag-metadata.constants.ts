@@ -1,5 +1,17 @@
 // ♟️ Constants
 
+/**
+ * The other parents of a tag, by its own path: the tag is one node, listed under each parent, so an event carrying it is under every one. Each parent is a path to a node of its own.
+ */
+export const TAG_EXTRA_PARENTS: Readonly<
+  Record<string, readonly (readonly [string, ...string[]])[]>
+> = {
+  "Body / Planet / Personal / Mars": [["Body", "Malefic"]],
+  "Body / Planet / Personal / Venus": [["Body", "Benefic"]],
+  "Body / Planet / Social / Jupiter": [["Body", "Benefic"]],
+  "Body / Planet / Social / Saturn": [["Body", "Malefic"]],
+};
+
 /** A node's icon slug and note, by path. */
 export const TAG_METADATA: Readonly<
   Record<string, readonly [icon: string, note: string]>
@@ -42,7 +54,15 @@ export const TAG_METADATA: Readonly<
   "Aspect / Simple / Specialty": ["gem", "Rare aspects of higher harmonics."],
   Body: ["globe", "The bodies an event involves, grouped by class."],
   "Body / Asteroid": ["mountain", "Asteroids and Chiron."],
+  "Body / Benefic": [
+    "smile",
+    "The bodies tradition counts as fortunate: Venus and Jupiter.",
+  ],
   "Body / Luminary": ["sun-moon", "The Sun and the Moon."],
+  "Body / Malefic": [
+    "frown",
+    "The bodies tradition counts as difficult: Mars and Saturn.",
+  ],
   "Body / Planet": ["earth", "The planets, by how far they reach."],
   "Body / Planet / Outer": ["telescope", "Uranus, Neptune and Pluto."],
   "Body / Planet / Personal": ["user", "Mercury, Venus and Mars."],

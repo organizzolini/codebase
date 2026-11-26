@@ -49,6 +49,18 @@ export function generatedEdgeOf(
 }
 
 /**
+ * The edge, node, and graph entities of each generated edge whose graph is among
+ * `entities`, other than those `entities` list already, once each.
+ */
+export function generatedEntitiesOf(
+  entities: readonly unknown[],
+): GraphEntity[] {
+  const classes = entities.filter((entity) => isGraphEntity(entity));
+
+  return withGeneratedEdges(classes).slice(classes.length);
+}
+
+/**
  * The names `options` carries, or `undefined` when it asks for no generation.
  * @throws RenderEntitiesEdgeError when it names the edge or the nodes alone.
  */
@@ -103,6 +115,11 @@ export function GraphIncomingEdges(edge: string): PropertyDecorator {
  */
 export function GraphOutgoingEdges(edge: string): PropertyDecorator {
   return reverseRelation(edge, "source");
+}
+
+/** Whether `value` is a class, which a generated edge may belong to. */
+export function isGraphEntity(value: unknown): value is GraphEntity {
+  return typeof value === "function";
 }
 
 /** `entities` plus the edge, node, and graph entities of each generated edge in them, once each. */

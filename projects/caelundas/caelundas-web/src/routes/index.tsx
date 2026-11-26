@@ -132,6 +132,7 @@ function IndexPage(): ReactNode {
     handleMetricsChange,
     handleRangeChange,
     handleSortChange,
+    handleViewPresetChange,
   } = useCalendarSearch(timeZone, facets);
   const agendaDays = search.days ?? AGENDA_DAY_COUNT;
 
@@ -184,6 +185,7 @@ function IndexPage(): ReactNode {
                     onGroupingChange={handleGroupingChange}
                     onMetricsChange={handleMetricsChange}
                     onSortChange={handleSortChange}
+                    onViewChange={handleViewPresetChange}
                     presets={presets}
                     sort={search.sort}
                     view={view}

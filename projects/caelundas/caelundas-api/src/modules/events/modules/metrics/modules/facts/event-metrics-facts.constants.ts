@@ -117,7 +117,7 @@ export const FACTS_SIDE_SQL = {
 export const FACTS_TAG_ROOT_SQL = `
     where d.id <> {root}::uuid and exists (
       select 1
-      from tags_closure c
+      from tag_closures c
       where c.ancestor_id = {root}::uuid and c.descendant_id = d.id
     )`;
 

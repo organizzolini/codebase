@@ -191,7 +191,7 @@ describe("event metrics rollup utilities", () => {
         "UTC",
         ROOT,
       ]);
-      expect(compiled?.sql).toContain("ct.parent_id = $4::uuid");
+      expect(compiled?.sql).toContain("ce.source_node = $4::uuid");
       expect(compiled?.sql).toContain(
         "join calendar_event_facts r on r.filter_id = tf.id",
       );

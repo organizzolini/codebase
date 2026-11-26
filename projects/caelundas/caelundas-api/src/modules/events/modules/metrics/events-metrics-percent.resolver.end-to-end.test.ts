@@ -3,13 +3,14 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import {
   CaelundasDatabaseService,
   CalendarEventTag,
-  Tag,
+  type Tag,
 } from "@codebase/caelundas-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startEventsApplication,
 } from "../../../../../testing/events-application";
+import { tagRepository } from "../../../../../testing/tag-repository";
 
 import type { EventsApplication } from "../../../../../testing/events-application";
 
@@ -136,7 +137,7 @@ describe("events metrics percent end-to-end suite", () => {
   beforeAll(async () => {
     application = await startEventsApplication();
 
-    const repository = application.database.dataSource.getTreeRepository(Tag);
+    const repository = tagRepository(application.database.dataSource);
     const temporality = await repository.save(
       repository.create({ name: "Temporality", slug: "temporality" }),
     );

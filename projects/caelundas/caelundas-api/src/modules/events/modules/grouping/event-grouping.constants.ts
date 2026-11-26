@@ -68,14 +68,16 @@ export const NO_GROUP_SQL = `select null::text as "key", null::text as label, nu
 const EVENT_NODE_IDS_SQL = `(
       select c.ancestor_id
       from calendar_event_tags et
-      join tags_closure c on c.descendant_id = et.tag_id
+      join tag_closures c on c.descendant_id = et.tag_id
       where et.calendar_event_id = e.id
     )`;
 
+// A tag with several parents has a row a path, and a key is one group a level, so each level keeps the
+// path whose depth is the level's, else the first by rank.
 /** Tags an event falls under at a depth; shallower leaves count. */
 export const TAG_GROUP_SQL = `
-  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path", t.tag_rank as "rank"
-  from tag_info t
+  select distinct on (t.tag_id) t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path", t.tag_rank as "rank"
+  from tag_paths t
   where
     t.tag_id in ${EVENT_NODE_IDS_SQL}
     and t.tag_root_id::text = {root}
@@ -87,7 +89,7 @@ export const TAG_GROUP_SQL = `
         and not exists (
           select 1
           from calendar_event_tags x
-          join tags_closure c on c.descendant_id = x.tag_id
+          join tag_closures c on c.descendant_id = x.tag_id
           where
             x.calendar_event_id = e.id
             and c.ancestor_id = t.tag_id
@@ -95,16 +97,17 @@ export const TAG_GROUP_SQL = `
         )
       )
     )
+  order by t.tag_id, (t.tag_depth = {depth}::bigint) desc, t.tag_rank collate "C"
 `;
 
-/** The children of a tag an event carries. */
+/** The children of a tag an event carries, under that tag's path. */
 export const PARENT_TAG_GROUP_SQL = `
-  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path", t.tag_rank as "rank"
-  from tag_info t
-  join tags child on child.id = t.tag_id
+  select distinct on (t.tag_id) t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path", t.tag_rank as "rank"
+  from tag_paths t
   where
     t.tag_id in ${EVENT_NODE_IDS_SQL}
-    and child.parent_id = {parent}::uuid
+    and t.tag_parent_id = {parent}::uuid
+  order by t.tag_id, t.tag_rank collate "C"
 `;
 
 /** Picked tags an event falls under, including every ancestor tag. */

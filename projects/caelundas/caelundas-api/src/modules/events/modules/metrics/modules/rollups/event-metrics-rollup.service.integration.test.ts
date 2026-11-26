@@ -3,13 +3,14 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import {
   CaelundasDatabaseService,
   CalendarEventTag,
-  Tag,
+  type Tag,
 } from "@codebase/caelundas-db";
 
 import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startEventsApplication,
 } from "../../../../../../../testing/events-application";
+import { tagRepository } from "../../../../../../../testing/tag-repository";
 import { EventsService } from "../../../../events.service";
 import { EventFilterCombinator } from "../../../filtering/modules/rules/event-filter-combinator.entities";
 import { EventMetricsService } from "../../event-metrics.service";
@@ -207,7 +208,7 @@ describe("event metrics rollups", () => {
 
   /** Saves a tag, beneath `parent` when one is named. */
   async function addTag(name: string, parent?: string): Promise<void> {
-    const repository = application.database.dataSource.getTreeRepository(Tag);
+    const repository = tagRepository(application.database.dataSource);
     const above = tags.get(parent ?? "");
 
     tags.set(

@@ -15,6 +15,7 @@ export const RENDER_TREES_ROW_SCHEMA = z.object({
   id: z.string(),
   label: z.string(),
   note: z.string().nullish(),
+  otherParentIds: z.array(z.string()).nullish(),
   parentId: z.string().nullable(),
 });
 

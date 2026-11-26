@@ -110,6 +110,14 @@ testing/
   `--truncate-breadth` keeps its first children in row order. Each hidden group is
   drawn as one "… K more" truncation node under its parent and warned about.
   Nodes no root reaches, such as a cycle, stay as drawn.
+- **Graph trees:** a node entity whose generated `@Graph` edge joins its own rows
+  (`@Graph({ edge, nodes: () => Itself })`) is also a `render-tree-data` pick, the way
+  a `@Tree` is, for a tree whose nodes may have several parents. `treeTable` reads its
+  edge table: a row's `parentId` is its lowest parent id and `otherParentIds` the rest
+  (`GraphTreeRow`), so the level-by-level read still finds every row by one parent and
+  `buildTreeGraph`, the match walks, paging and the caps follow all of them. A node with
+  two parents is one node with two edges in the flowchart, and the file tree lists it under
+  each parent (a walk ends at a node it is already inside of, so a cycle cannot loop).
 - **Tree matches:** the ancestor and descendant walks each join a row once, so a
   cycle ends them instead of looping.
 - **Mermaid:** `renderGraphMermaid` draws short node ids, escaped labels, and
@@ -135,8 +143,9 @@ testing/
   entity. `generateEdgeEntity` registers a nameless class, its table, key
   columns, cascading relations and indexes with TypeORM's metadata storage when
   the decorator runs; the class is reachable only through
-  `generatedEdgeOf` and `withGeneratedEdges`, which `createGraphDataSource` and a
-  project's own entity list must use. A graph entity is a pick candidate, but the
+  `generatedEdgeOf` and `withGeneratedEdges`; `postgresDataSourceOptions` applies
+  them to its `entities` (`generatedEntitiesOf`), so a project lists only the
+  graph entity. A graph entity is a pick candidate, but the
   command reads the generated class, so `--filter` and `--sort` name its columns.
   The generated edge has no owner column, since not every graph has
   subgraphs, only the source and target columns, which default to `sourceNode`

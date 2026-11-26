@@ -489,6 +489,11 @@ storage the `@Tree` names:
 | `materialized-path` | The segment before the last of the materialized path column, so `a.b.c` has parent `b`. Requires the path column           |
 | `nested-set`        | The nearest row whose left bound is below the row's and whose right bound is above it. Requires the left and right columns |
 
+A node entity whose generated `@Graph` edge joins its own rows is a tree as well, and
+the one kind in which a node may have several parents: the edge table gives each row's
+parents, a node is drawn once with an edge from each parent, and a file tree lists it
+under each. Roots are the rows no edge ends at.
+
 The closure table itself is not read: a closure-table tree's parent comes
 from its `@TreeParent` column, as an adjacency list's does.
 
@@ -601,10 +606,13 @@ export class Station {
   It has no owner column, since not every graph has subgraphs: for edges that
   belong to a subgraph, write the edge entity by hand with its own owner column
   (the first form).
-- **Reaching it:** a data source must list the generated class beside the
-  node entity. `withGeneratedEdges(entities)` adds the edge, node, and
-  declaring entities of each graph in the list once, and the drawing commands
-  and `createGraphDataSource` use it. The edge has no class to import, so
+- **Reaching it:** a data source needs the generated class beside the
+  node entity. `postgresDataSourceOptions` (so `createDataSource`,
+  `PostgresqlModule.forRoot` and the testing module) adds it for every graph in
+  its `entities`, so listing the declaring entity is enough;
+  `withGeneratedEdges(entities)` does the same for any other data source, adding
+  the edge, node, and declaring entities of each graph once, as the drawing
+  commands and `createGraphDataSource` do. The edge has no class to import, so
   callers address it by name: `manager.getRepository("NetworkLine")`.
 - **Reverse relations:** on a node entity, `@GraphOutgoingEdges(edge)` lists
   the edges that start at it and `@GraphIncomingEdges(edge)` those that end at

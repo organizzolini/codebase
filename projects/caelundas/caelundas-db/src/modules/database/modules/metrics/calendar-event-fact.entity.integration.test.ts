@@ -3,6 +3,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
+import { tagRepository } from "../../../../../testing/tag-repository";
 import {
   CAELUNDAS_DATABASE_MIGRATIONS,
   DATABASE_ENTITIES,
@@ -11,12 +12,12 @@ import { DatabaseModule } from "../../database.module";
 import { DatabaseService } from "../../database.service";
 import { CalendarEventTag } from "../calendar-events/calendar-event-tag.entity";
 import { CalendarEvent } from "../calendar-events/calendar-event.entity";
-import { Tag } from "../tags/tag.entity";
 
 import { CalendarEventFact } from "./calendar-event-fact.entity";
 
+import type { TagRepository } from "../../../../../testing/tag-repository";
+import type { Tag } from "../tags/tag.entity";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
-import type { TreeRepository } from "typeorm";
 
 // 🧪 Tests
 
@@ -47,7 +48,7 @@ with events as (
         and not exists (
             select 1
             from calendar_event_tags as et
-            inner join tags_closure as c on et.tag_id = c.descendant_id
+            inner join tag_closures as c on et.tag_id = c.descendant_id
             inner join tags as t on c.ancestor_id = t.id
             where et.calendar_event_id = e.id and t."name" in ('Forming', 'Dissolving')
         )
@@ -55,7 +56,7 @@ with events as (
 carried as (
     select et.calendar_event_id, c.ancestor_id as tag_id
     from calendar_event_tags as et
-    inner join tags_closure as c on et.tag_id = c.descendant_id
+    inner join tag_closures as c on et.tag_id = c.descendant_id
     group by et.calendar_event_id, c.ancestor_id
 ),
 pairs as (
@@ -126,7 +127,7 @@ type MetricRow = Record<string, null | number | string>;
 describe("metrics facts", () => {
   let database: DatabaseTestingModule;
   let service: DatabaseService;
-  let tags: TreeRepository<Tag>;
+  let tags: TagRepository;
   const tagged = new Map<string, Tag>();
 
   /** Saves one event and links it to the named tags. */
@@ -200,12 +201,12 @@ describe("metrics facts", () => {
       project: "caelundas",
     });
     service = database.module.get(DatabaseService);
-    tags = database.dataSource.getTreeRepository(Tag);
+    tags = tagRepository(database.dataSource);
   }, CONTAINER_TIMEOUT_MILLISECONDS);
 
   beforeEach(async () => {
     await database.dataSource.query(
-      "truncate calendar_event_tags, calendar_events, tags, tags_closure cascade",
+      "truncate calendar_event_tags, calendar_events, tags cascade",
     );
     tagged.clear();
     await addTag("Planet");
@@ -534,5 +535,98 @@ describe("metrics facts", () => {
     expect.hasAssertions();
 
     await expect(refresh()).resolves.toBeUndefined();
+  });
+
+  describe("a tag under two parents", () => {
+    let benefic: Tag;
+
+    beforeEach(async () => {
+      benefic = await tags.save(
+        tags.create({ name: "Benefic", slug: "benefic" }),
+      );
+      await database.dataSource.getRepository("TagEdge").insert({
+        sourceNode: benefic.id,
+        targetNode: tagged.get("Venus")?.id,
+      });
+      await refresh();
+    });
+
+    it("walks every path, so the tag has the ancestors of both parents, once each", async () => {
+      expect.hasAssertions();
+
+      const rows = await database.dataSource.query<{ ancestor: string }[]>(
+        `select a."name" as ancestor
+        from tag_closures c
+        join tags a on a.id = c.ancestor_id
+        where c.descendant_id = $1
+        order by a."name"`,
+        [tagged.get("Venus")?.id],
+      );
+
+      expect(rows.map(({ ancestor }) => ancestor)).toStrictEqual([
+        "Benefic",
+        "Planet",
+        "Venus",
+      ]);
+    });
+
+    it("gives an event of the tag both parents among its ancestors without a new tag link", async () => {
+      expect.hasAssertions();
+
+      const [row] = await database.dataSource.query<
+        { ancestor_tag_ids: string[] }[]
+      >(
+        `select s.ancestor_tag_ids
+        from calendar_event_tag_sets s
+        join calendar_events e on e.id = s.calendar_event_id
+        where e."name" = 'Venus Station' limit 1`,
+      );
+
+      expect(row?.ancestor_tag_ids).toStrictEqual(
+        [benefic.id, tagged.get("Planet")?.id].toSorted(),
+      );
+    });
+
+    it("counts an event once at a parent, and keeps a filter of the new parent", async () => {
+      expect.hasAssertions();
+
+      const rows = await database.dataSource.query<{ events: number }[]>(
+        `select r.measurement as events
+        from calendar_event_facts r
+        join measures m on m.id = r.measure_id
+        join filters f on f.id = r.filter_id
+        where m.slug = 'events' and f.tag_id = $1 and f.period = '2026-03-10'`,
+        [benefic.id],
+      );
+
+      expect(rows).toStrictEqual([{ events: 1 }]);
+    });
+
+    it("refuses an edge that would close a cycle, join a tag to itself or repeat a sibling's name", async () => {
+      expect.hasAssertions();
+
+      const edges = database.dataSource.getRepository("TagEdge");
+
+      await expect(
+        edges.insert({
+          sourceNode: tagged.get("Venus")?.id,
+          targetNode: benefic.id,
+        }),
+      ).rejects.toThrow(/cyclic/u);
+      await expect(
+        edges.insert({ sourceNode: benefic.id, targetNode: benefic.id }),
+      ).rejects.toThrow(/cyclic/u);
+
+      const twin = await tags.save(
+        tags.create({ name: "Venus", slug: "venus" }),
+      );
+
+      await expect(
+        edges.insert({
+          sourceNode: tagged.get("Planet")?.id,
+          targetNode: twin.id,
+        }),
+      ).rejects.toThrow(/sibling/u);
+    });
   });
 });

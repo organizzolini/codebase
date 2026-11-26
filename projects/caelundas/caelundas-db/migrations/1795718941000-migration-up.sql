@@ -2,15 +2,9 @@ SET lock_timeout = '10s';
 
 SET statement_timeout = '5min';
 
-CREATE TABLE "tags" ("id" uuid NOT NULL DEFAULT uuidv7(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "created_by" uuid, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_by" uuid, "icon" text, "name" text NOT NULL, "note" text, "parent_id" uuid, "rank" smallint NOT NULL DEFAULT '0', "slug" text NOT NULL, CONSTRAINT "PK_e7dc17249a1148a1970748eda99" PRIMARY KEY ("id")); COMMENT ON COLUMN "tags"."id" IS 'Primary key, a uuidv7 the database assigns on insert'; COMMENT ON COLUMN "tags"."created_at" IS 'Timestamp when the record was created'; COMMENT ON COLUMN "tags"."created_by" IS 'Identifier of the user or process that created the record'; COMMENT ON COLUMN "tags"."updated_at" IS 'Timestamp when the record was last updated'; COMMENT ON COLUMN "tags"."updated_by" IS 'Identifier of the user or process that last updated the record';
+CREATE TABLE "tags" ("id" uuid NOT NULL DEFAULT uuidv7(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "created_by" uuid, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_by" uuid, "icon" text, "name" text NOT NULL, "note" text, "rank" smallint NOT NULL DEFAULT '0', "slug" text NOT NULL, CONSTRAINT "PK_e7dc17249a1148a1970748eda99" PRIMARY KEY ("id")); COMMENT ON COLUMN "tags"."id" IS 'Primary key, a uuidv7 the database assigns on insert'; COMMENT ON COLUMN "tags"."created_at" IS 'Timestamp when the record was created'; COMMENT ON COLUMN "tags"."created_by" IS 'Identifier of the user or process that created the record'; COMMENT ON COLUMN "tags"."updated_at" IS 'Timestamp when the record was last updated'; COMMENT ON COLUMN "tags"."updated_by" IS 'Identifier of the user or process that last updated the record';
 
-CREATE UNIQUE INDEX "tags_root_slug" ON "tags"  ("slug") WHERE "parent_id" IS NULL;
-
-CREATE UNIQUE INDEX "tags_sibling_slug" ON "tags"  ("parent_id", "slug") WHERE "parent_id" IS NOT NULL;
-
-CREATE UNIQUE INDEX "tags_root_name" ON "tags"  ("name") WHERE "parent_id" IS NULL;
-
-CREATE UNIQUE INDEX "tags_sibling_name" ON "tags"  ("parent_id", "name") WHERE "parent_id" IS NOT NULL;
+CREATE INDEX "tags_slug" ON "tags"  ("slug");
 
 CREATE TABLE IF NOT EXISTS "caelundas"."typeorm_metadata" ("type" character varying NOT NULL, "database" character varying, "schema" character varying, "table" character varying, "name" character varying, "value" text);
 
@@ -58,19 +52,17 @@ CREATE TABLE "constellations" ("designation" text NOT NULL, "is_zodiac" boolean 
 
 CREATE TABLE "stars" ("color_index" real NOT NULL, "declination_degrees" real NOT NULL, "hipparcos_number" bigint NOT NULL, "magnitude" real NOT NULL, "right_ascension_hours" real NOT NULL, CONSTRAINT "PK_f227cc7d7b5630d31397da00507" PRIMARY KEY ("hipparcos_number"));
 
-CREATE TABLE "tags_closure" ("ancestor_id" uuid NOT NULL, "descendant_id" uuid NOT NULL, CONSTRAINT "PK_74a541ab48f1e2c9f148e9011fc" PRIMARY KEY ("ancestor_id", "descendant_id"));
+CREATE TABLE "tag_edges" ("source_node" uuid NOT NULL, "target_node" uuid NOT NULL, CONSTRAINT "PK_tag_edges" PRIMARY KEY ("source_node", "target_node"));
 
-CREATE INDEX "IDX_3f3680694135907038de253a57" ON "tags_closure"  ("ancestor_id");
+CREATE INDEX "tag_edges_target_node" ON "tag_edges"  ("target_node");
 
-CREATE INDEX "IDX_8a4bf589d19e5060d7ccbf1fd5" ON "tags_closure"  ("descendant_id");
+CREATE INDEX "tag_edges_source_node" ON "tag_edges"  ("source_node");
 
 CREATE TABLE "metric_expressions_closure" ("ancestor_id" uuid NOT NULL, "descendant_id" uuid NOT NULL, CONSTRAINT "PK_317f275950bb7a558756794a7d6" PRIMARY KEY ("ancestor_id", "descendant_id"));
 
 CREATE INDEX "IDX_4dd9ee9dd9e246b4cbe04f14e7" ON "metric_expressions_closure"  ("ancestor_id");
 
 CREATE INDEX "IDX_4c8cc112ad12a06cebe2d12f45" ON "metric_expressions_closure"  ("descendant_id");
-
-ALTER TABLE "tags" ADD CONSTRAINT "FK_bd19ddcde86ca1882599dbace11" FOREIGN KEY ("parent_id") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 ALTER TABLE "calendar_event_tags" ADD CONSTRAINT "FK_146237171c57f84a0ff62036294" FOREIGN KEY ("calendar_event_id") REFERENCES "calendar_events"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
@@ -90,9 +82,9 @@ ALTER TABLE "constellation_edges" ADD CONSTRAINT "FK_0d6cd1241fe640015005c630a03
 
 ALTER TABLE "constellation_edges" ADD CONSTRAINT "FK_a7954f4db381f98e1b7a734b1c5" FOREIGN KEY ("target_node") REFERENCES "stars"("hipparcos_number") ON DELETE CASCADE ON UPDATE NO ACTION;
 
-ALTER TABLE "tags_closure" ADD CONSTRAINT "FK_3f3680694135907038de253a57e" FOREIGN KEY ("ancestor_id") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "tag_edges" ADD CONSTRAINT "FK_57008c88a60a908ca4b8bbf5807" FOREIGN KEY ("source_node") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
-ALTER TABLE "tags_closure" ADD CONSTRAINT "FK_8a4bf589d19e5060d7ccbf1fd51" FOREIGN KEY ("descendant_id") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "tag_edges" ADD CONSTRAINT "FK_4ebc4574b20762da23f596a8303" FOREIGN KEY ("target_node") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 ALTER TABLE "metric_expressions_closure" ADD CONSTRAINT "FK_4dd9ee9dd9e246b4cbe04f14e7c" FOREIGN KEY ("ancestor_id") REFERENCES "metric_expressions"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
@@ -310,6 +302,29 @@ CREATE FUNCTION "expand_keys"(keys text[]) RETURNS TABLE (key text) LANGUAGE plp
 
 CREATE FUNCTION "expand_tags"(ids uuid[]) RETURNS TABLE (id uuid) LANGUAGE plpgsql IMMUTABLE PARALLEL SAFE ROWS 6 AS $$ BEGIN RETURN QUERY SELECT unnest(ids); END $$;
 
+CREATE FUNCTION "tag_edges_guard"() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.source_node = NEW.target_node OR EXISTS (WITH RECURSIVE below AS (SELECT NEW.target_node AS id UNION SELECT e.target_node FROM below AS b INNER JOIN tag_edges AS e ON e.source_node = b.id) SELECT 1 FROM below WHERE id = NEW.source_node) THEN RAISE check_violation USING MESSAGE = format('tag edge %s to %s would make the tag graph cyclic', NEW.source_node, NEW.target_node); END IF; IF EXISTS (SELECT 1 FROM tag_edges AS e INNER JOIN tags AS sibling ON sibling.id = e.target_node INNER JOIN tags AS child ON child.id = NEW.target_node WHERE e.source_node = NEW.source_node AND e.target_node <> NEW.target_node AND (sibling.name = child.name OR sibling.slug = child.slug)) THEN RAISE unique_violation USING MESSAGE = format('tag %s has a sibling with the same name or slug under %s', NEW.target_node, NEW.source_node); END IF; RETURN NEW; END $$;
+
+CREATE TRIGGER "tag_edges_guard" BEFORE INSERT OR UPDATE ON "tag_edges" FOR EACH ROW EXECUTE FUNCTION "tag_edges_guard"();
+
+CREATE FUNCTION "tags_root_guard"() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NOT EXISTS (SELECT 1 FROM tag_edges WHERE target_node = NEW.id) AND EXISTS (SELECT 1 FROM tags AS other WHERE other.id <> NEW.id AND (other.name = NEW.name OR other.slug = NEW.slug) AND NOT EXISTS (SELECT 1 FROM tag_edges WHERE target_node = other.id)) THEN RAISE unique_violation USING MESSAGE = format('tag %s shares its name or slug with another root', NEW.id); END IF; RETURN NULL; END $$;
+
+CREATE CONSTRAINT TRIGGER "tags_root_guard" AFTER INSERT OR UPDATE ON "tags" DEFERRABLE INITIALLY DEFERRED FOR EACH ROW EXECUTE FUNCTION "tags_root_guard"();
+
+CREATE MATERIALIZED VIEW "tag_closures" AS with recursive walk as (
+    select id as ancestor_id, id as descendant_id from tags
+    union
+    select w.ancestor_id, e.target_node
+    from walk as w
+    inner join tag_edges as e on e.source_node = w.descendant_id
+)
+select ancestor_id, descendant_id from walk;
+
+INSERT INTO "caelundas"."typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES (DEFAULT, $1, DEFAULT, $2, $3, $4);
+
+CREATE UNIQUE INDEX "tag_closures_ancestor_id_descendant_id" ON "tag_closures"  ("ancestor_id", "descendant_id");
+
+CREATE INDEX "tag_closures_descendant_id" ON "tag_closures"  ("descendant_id");
+
 CREATE MATERIALIZED VIEW "calendar_event_tag_sets" AS select
     e.id as calendar_event_id,
     coalesce(g.tag_ids, '{}'::uuid[]) as tag_ids,
@@ -327,7 +342,7 @@ left join (
         et.calendar_event_id,
         array_agg(distinct c.ancestor_id order by c.ancestor_id) as ancestor_tag_ids
     from calendar_event_tags as et
-    inner join tags_closure as c on et.tag_id = c.descendant_id and c.ancestor_id <> c.descendant_id
+    inner join tag_closures as c on et.tag_id = c.descendant_id and c.ancestor_id <> c.descendant_id
     group by et.calendar_event_id
 ) as a on e.id = a.calendar_event_id;
 

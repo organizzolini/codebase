@@ -24,8 +24,16 @@ export function getEventRowHeight(
   const available = width - EVENT_ROW_CHROME_WIDTH;
   let lines = 0;
   let used = 0;
+  // A tag under two parents arrives once a path but is drawn once.
+  const drawn = new Set<string>();
 
   for (const tag of tags) {
+    if (drawn.has(tag.id)) {
+      continue;
+    }
+
+    drawn.add(tag.id);
+
     const pill = tag.name.length * PILL_CHARACTER_WIDTH + PILL_CHROME_WIDTH;
 
     if (lines === 0 || used + PILL_GAP + pill > available) {

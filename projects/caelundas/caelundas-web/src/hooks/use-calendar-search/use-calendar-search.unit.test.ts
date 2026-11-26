@@ -53,6 +53,7 @@ describe(useCalendarSearch, () => {
       handleSortChange: expect.any(Function),
       handleSymbolsChange: expect.any(Function),
       handleViewChange: expect.any(Function),
+      handleViewPresetChange: expect.any(Function),
       updateSearch: expect.any(Function),
     });
   });
@@ -93,6 +94,33 @@ describe(useCalendarSearch, () => {
     result.current.handleGroupingChange([{ field: "tag:type" }]);
 
     expect(readWritten().search.group).toStrictEqual([{ field: "tag:type" }]);
+  });
+
+  it("writes a view's filter, group and sort in one entry, leaving the rest of the link", () => {
+    const { result } = renderHook(() => useCalendarSearch("UTC"));
+    const filter = {
+      combinator: "and" as const,
+      id: "filter",
+      rules: [],
+      type: "group" as const,
+    };
+
+    result.current.handleViewPresetChange({
+      filter,
+      group: [{ field: "tag:type" }],
+      sort: undefined,
+    });
+
+    expect(readWritten({ date: "2026-01-02", view: "table" })).toStrictEqual({
+      replace: false,
+      search: {
+        date: "2026-01-02",
+        filter,
+        group: [{ field: "tag:type" }],
+        sort: undefined,
+        view: "table",
+      },
+    });
   });
 
   it("writes the folded strips in place, dropping them when none is folded", () => {

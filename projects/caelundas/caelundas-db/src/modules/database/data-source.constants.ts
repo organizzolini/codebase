@@ -2,7 +2,7 @@ import "reflect-metadata";
 
 import { createDataSource } from "@codebase/persistence";
 
-import { Migration1795709495833 } from "../../../migrations/1795709495833-migration";
+import { Migration1795718941000 } from "../../../migrations/1795718941000-migration";
 
 import { DATABASE_PROJECT } from "./database.constants";
 import { CalendarEventTag } from "./modules/calendar-events/calendar-event-tag.entity";
@@ -20,6 +20,7 @@ import { Group } from "./modules/metrics/group.entity";
 import { ConstellationEdge } from "./modules/night-sky/constellation-edge.entity";
 import { Constellation } from "./modules/night-sky/constellation.entity";
 import { Star } from "./modules/night-sky/star.entity";
+import { TagClosure } from "./modules/tags/tag-closure.entity";
 import { Tag } from "./modules/tags/tag.entity";
 
 /** Tables and views shared by every caelundas-schema app. */
@@ -40,10 +41,11 @@ export const DATABASE_ENTITIES = [
   ConstellationEdge,
   Star,
   Tag,
+  TagClosure,
 ] as const;
 
 /** All migrations in order, for tests; the runtime runs none. */
-export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1795709495833] as const;
+export const CAELUNDAS_DATABASE_MIGRATIONS = [Migration1795718941000] as const;
 
 /** TypeORM CLI data source; reads only `CAELUNDAS_POSTGRES_*`, never syncs. */
 export const databaseDataSource = createDataSource({

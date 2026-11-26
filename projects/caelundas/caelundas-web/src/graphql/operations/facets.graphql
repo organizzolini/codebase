@@ -5,6 +5,7 @@ query Facets($period: PeriodInput, $filter: EventFilterGroupInput) {
     name
     note
     values {
+      alsoUnder
       count
       depth
       icon

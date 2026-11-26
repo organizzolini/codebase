@@ -30,6 +30,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **serial**: A PostgreSQL integer type that supplies sequential values, mapped
   to Mermaid `int` by `POSTGRESQL_ERD_TYPE_MAP` in
   `postgresql-erd.constants.ts`.
+- **shelf**:
 - **smallint**: A PostgreSQL two-byte integer type, mapped to Mermaid `int` by
   `POSTGRESQL_ERD_TYPE_MAP` in `postgresql-erd.constants.ts`.
 - **station**:

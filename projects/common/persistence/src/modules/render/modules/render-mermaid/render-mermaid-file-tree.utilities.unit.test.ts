@@ -151,6 +151,51 @@ describe(renderGraphFileTree, () => {
     ).toThrow('Edge target "z" is not a node');
   });
 
+  it("lists a node with two parents under each, with what is beneath it", () => {
+    const node = (id: string): GraphNode => ({ id, label: id });
+    const { diagram } = renderGraphFileTree({
+      directed: true,
+      edges: [
+        { source: "a", target: "c" },
+        { source: "b", target: "c" },
+        { source: "c", target: "d" },
+      ],
+      nodes: [node("a"), node("b"), node("c"), node("d")],
+      warnings: [],
+    });
+
+    expect(diagram.split("\n")).toStrictEqual([
+      "treeView-beta",
+      '    "a/"',
+      '        "c/"',
+      '            "d"',
+      '    "b/"',
+      '        "c/"',
+      '            "d"',
+    ]);
+  });
+
+  it("ends a walk that meets a node it is inside of", () => {
+    const node = (id: string): GraphNode => ({ id, label: id });
+    const { diagram } = renderGraphFileTree({
+      directed: true,
+      edges: [
+        { source: "r", target: "a" },
+        { source: "a", target: "b" },
+        { source: "b", target: "a" },
+      ],
+      nodes: [node("r"), node("a"), node("b")],
+      warnings: [],
+    });
+
+    expect(diagram.split("\n")).toStrictEqual([
+      "treeView-beta",
+      '    "r/"',
+      '        "a/"',
+      '            "b/"',
+    ]);
+  });
+
   describe("a node's icon and note in a file tree", () => {
     it("draws the icon in brackets and the note after a dash, after a directory's slash", () => {
       const { diagram } = renderGraphFileTree(

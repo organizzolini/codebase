@@ -1,12 +1,15 @@
+import { Link2 } from "lucide-react";
 import { createElement } from "react";
 
 import { TagLead } from "../../../../calendar-events/tag-lead/tag-lead";
 import { TAG_NOTE } from "../../../filter-tag-editor/filter-tag-editor.constants";
+import { describeAlsoUnder } from "../../../filter-tag-editor/filter-tag-editor.utilities";
 
 import {
   DERIVED_FIELDS,
   DERIVED_LABELS,
   EVENT_COUNT_FORMAT,
+  EVENT_COUNT_NOUNS,
   NUMBER_FIELD_OPERATORS,
   NUMERIC_TAG_NAME,
   TAG_FIELD_OPERATORS,
@@ -20,8 +23,11 @@ import {
 } from "./event-filters.constants";
 
 import type { EventFacet } from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
-import type { EventFilterField } from "./event-filters.types";
-import type { FilterOption } from "@codebase/presentation";
+import type { EventFilterField, EventFilterValue } from "./event-filters.types";
+import type {
+  FilterOption,
+  FilterValueDisplayContext,
+} from "@codebase/presentation";
 import type { ReactNode } from "react";
 
 /**
@@ -60,15 +66,18 @@ export function createRootIcon(facet: EventFacet): ReactNode {
  */
 export function createTagOptions(facet: EventFacet): FilterOption[] {
   const options: FilterOption[] = [];
-  const seen = new Set<string>();
+  // The tag first seen under each name: another tag with that name, not the same tag listed under a second parent, makes the name ambiguous.
+  const seen = new Map<string, string>();
   const shared = new Set<string>();
 
   for (const value of facet.values) {
-    if (seen.has(value.name)) {
+    const first = seen.get(value.name) ?? value.id;
+
+    if (first !== value.id) {
       shared.add(value.name);
     }
 
-    seen.add(value.name);
+    seen.set(value.name, first);
   }
 
   for (const value of facet.values) {
@@ -76,11 +85,12 @@ export function createTagOptions(facet: EventFacet): FilterOption[] {
     // call on every stack beneath.
     options.push({
       data: {
+        alsoUnder: value.alsoUnder,
         depth: value.depth - 1,
         name: value.name,
         ...(typeof value.note === "string" ? { note: value.note } : {}),
       },
-      description: `${String(value.count)} ${EVENT_COUNT_FORMAT.select(value.count) === "one" ? "event" : "events"}`,
+      description: `${String(value.count)} ${EVENT_COUNT_NOUNS[EVENT_COUNT_FORMAT.select(value.count)]}`,
       icon: createElement(TagLead, {
         icon: value.icon ?? undefined,
         id: value.id,
@@ -129,6 +139,47 @@ function isNumericFacet(facet: EventFacet): boolean {
 }
 
 /**
+ * What a tag rule's chip shows: one tag with its icon, and a link mark if it has several parents, else a count.
+ */
+function renderTagValue(
+  context: FilterValueDisplayContext<EventFilterValue>,
+): ReactNode {
+  const { labels, options, values } = context;
+  const [option] = options;
+
+  if (values.length === 0) {
+    return labels.selectPlaceholder;
+  }
+
+  if (values.length > 1) {
+    return labels.valueCount(values.length);
+  }
+
+  const alsoUnder =
+    option === undefined ? undefined : describeAlsoUnder(option);
+
+  return createElement(
+    "span",
+    { className: "flex items-center gap-1.5" },
+    option?.icon,
+    option?.label ?? String(values[0]),
+    alsoUnder === undefined
+      ? null
+      : createElement(
+          "span",
+          {
+            "aria-label": alsoUnder.title,
+            className: "text-muted-foreground flex shrink-0 items-center",
+            "data-testid": "chip-also-under",
+            role: "img",
+            title: alsoUnder.title,
+          },
+          createElement(Link2, { "aria-hidden": true, className: "size-3" }),
+        ),
+  );
+}
+
+/**
  * Builds the field for one tag root. Each option is labeled with its path
  * beneath the root, so a nested tag reads in context.
  */
@@ -156,6 +207,7 @@ function toTagField(facet: EventFacet): EventFilterField {
     label: facet.name,
     operators: TAG_FIELD_OPERATORS,
     options,
+    renderValue: renderTagValue,
     type: "multiselect",
   };
 }

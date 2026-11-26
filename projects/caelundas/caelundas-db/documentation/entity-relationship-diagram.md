@@ -26,12 +26,12 @@ erDiagram
   MetricExpression }o--|| MetricExpression : parent
   Star ||--o{ ConstellationEdge : incomingEdges
   Star ||--o{ ConstellationEdge : outgoingEdges
-  Tag ||--o{ Tag : children
-  Tag }o--|| Tag : parent
+  Tag ||--o{ TagEdge : childEdges
+  Tag ||--o{ TagEdge : parentEdges
+  TagEdge }o--|| Tag : source
+  TagEdge }o--|| Tag : target
   metric_expressions_closure }o--|| MetricExpression : ancestor_id
   metric_expressions_closure }o--|| MetricExpression : descendant_id
-  tags_closure }o--|| Tag : ancestor_id
-  tags_closure }o--|| Tag : descendant_id
   CalendarEvent {
     string id PK "not nullable"
     date createdAt "not nullable"
@@ -171,17 +171,20 @@ erDiagram
     string icon "nullable"
     string name "not nullable"
     string note "nullable"
-    string parentId "nullable"
     int rank "not nullable"
     string slug "not nullable"
     date updatedAt "not nullable"
     string updatedBy "nullable"
   }
-  metric_expressions_closure {
-    string ancestor_id PK "not nullable"
-    string descendant_id PK "not nullable"
+  tag_closures["tag_closures (materialized view)"] {
+    string ancestorId "not nullable"
+    string descendantId "not nullable"
   }
-  tags_closure {
+  TagEdge {
+    string source_node PK "not nullable"
+    string target_node PK "not nullable"
+  }
+  metric_expressions_closure {
     string ancestor_id PK "not nullable"
     string descendant_id PK "not nullable"
   }

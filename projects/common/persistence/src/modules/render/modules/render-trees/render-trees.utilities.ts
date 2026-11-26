@@ -41,10 +41,10 @@ export function buildTreeGraph(rows: readonly GraphTreeRow[]): GraphModel {
     return { id, label, ...detail, marker: "root" };
   });
 
-  const edges: GraphEdge[] = rows.flatMap(({ id, parentId }) =>
-    parentId === undefined || !ids.has(parentId)
-      ? []
-      : [{ source: parentId, target: id }],
+  const edges: GraphEdge[] = rows.flatMap((row) =>
+    parentIdsOf(row)
+      .filter((parentId) => ids.has(parentId))
+      .map((parentId) => ({ source: parentId, target: row.id })),
   );
 
   return { directed: true, edges, nodes, warnings };
@@ -107,15 +107,15 @@ export function matchedAncestors(
   rows: readonly GraphTreeRow[],
   matches: ReadonlySet<string>,
 ): Set<string> {
-  const parents = new Map<string, string | undefined>();
-  for (const { id, parentId } of rows) parents.set(id, parentId);
+  const parents = new Map<string, string[]>();
+  for (const row of rows) parents.set(row.id, parentIdsOf(row));
 
   const kept = new Set<string>();
-  for (const match of matches) {
-    let id: string | undefined = match;
-    while (id !== undefined && parents.has(id) && !kept.has(id)) {
+  const pending = [...matches];
+  for (let id = pending.pop(); id !== undefined; id = pending.pop()) {
+    if (parents.has(id) && !kept.has(id)) {
       kept.add(id);
-      id = parents.get(id);
+      pending.push(...(parents.get(id) ?? []));
     }
   }
   return kept;
@@ -130,11 +130,12 @@ export function matchedSubtrees(
   matches: ReadonlySet<string>,
 ): Set<string> {
   const children = new Map<string, string[]>();
-  for (const { id, parentId } of rows) {
-    if (parentId === undefined) continue;
-    const ids = children.get(parentId);
-    if (ids === undefined) children.set(parentId, [id]);
-    else ids.push(id);
+  for (const row of rows) {
+    for (const parentId of parentIdsOf(row)) {
+      const ids = children.get(parentId);
+      if (ids === undefined) children.set(parentId, [row.id]);
+      else ids.push(row.id);
+    }
   }
 
   const subtree = new Set(matches);
@@ -287,6 +288,14 @@ function childrenToShow(
   };
 }
 
+/** Every parent of a row: its own, then the others of a graph's node. */
+function parentIdsOf({
+  otherParentIds = [],
+  parentId,
+}: GraphTreeRow): string[] {
+  return parentId === undefined ? [] : [parentId, ...otherParentIds];
+}
+
 /**
  * The ids of each root and its descendants, found through parent ids.
  * A cycle ends its walk.
@@ -296,10 +305,10 @@ function subtreeIds(
   roots: readonly string[],
 ): Set<string> {
   const ids = new Set(rows.map(({ id }) => id));
-  const edges = rows.flatMap(({ id, parentId }) =>
-    parentId === undefined || !ids.has(parentId)
-      ? []
-      : [{ source: parentId, target: id }],
+  const edges = rows.flatMap((row) =>
+    parentIdsOf(row)
+      .filter((parentId) => ids.has(parentId))
+      .map((parentId) => ({ source: parentId, target: row.id })),
   );
   const children = childrenByParent(edges);
 

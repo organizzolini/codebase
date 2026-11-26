@@ -292,7 +292,7 @@ describe(EventMetricsFactsService, () => {
         tagRoot: ROOT,
       });
 
-      expect(compiled.sql).toContain("from tags_closure c");
+      expect(compiled.sql).toContain("from tag_closures c");
       expect(compiled.parameters).toContain(ROOT);
     });
 

@@ -70,6 +70,46 @@ describe("calendar-group-strip utilities", () => {
       expect(day?.icon).toBeDefined();
     });
 
+    it("lists a branch under two parents once, so a level groups by it once", () => {
+      const value = (
+        id: string,
+        depth: number,
+        path: string,
+      ): Parameters<
+        typeof createEventGroupFields
+      >[0][number]["values"][number] => ({
+        count: 1,
+        depth,
+        id,
+        name: path.split(" / ").at(-1) ?? path,
+        path,
+      });
+      const shared = createEventGroupFields([
+        {
+          id: "body",
+          name: "Body",
+          values: [
+            value("planet", 1, "Planet"),
+            value("inner", 2, "Planet / Inner"),
+            value("venus", 3, "Planet / Inner / Venus"),
+            value("tradition", 1, "Tradition"),
+            value("inner", 2, "Tradition / Inner"),
+            value("venus", 3, "Tradition / Inner / Venus"),
+          ],
+        },
+      ]);
+      const [body] = createGroupItems(shared)[0]?.children ?? [];
+
+      expect(body?.children?.map((child) => child.value)).toStrictEqual([
+        "planet",
+        "tradition",
+      ]);
+      expect(
+        body?.children?.[0]?.children?.map((child) => child.value),
+      ).toStrictEqual(["inner"]);
+      expect(body?.children?.[1]?.children).toBeUndefined();
+    });
+
     it("describes a tag by its note and event count, and a bare one by its count", () => {
       const [item] = createGroupItems(FIELDS)[0]?.children ?? [];
       const [aspect] = item?.children ?? [];
