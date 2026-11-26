@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
-# Installs the pinned helm-unittest plugin when `helm plugin list` lacks it.
-# The tarball must match its sha256 (the integrity gate; both hashes match the
-# release's helm-unittest-checksum.sha). It is copied into the plugins directory
-# without its install hook, which would download the tarball again.
-# Requires helm, curl, and sha256sum on PATH; supports Linux amd64 and arm64.
+# Installs the pinned helm-unittest plugin unless helm already lists it.
+# The tarball must match its sha256, and the plugin's install hook is dropped
+# since it would download the tarball again. Linux amd64 and arm64 only.
+
 set -euo pipefail
 
 version="1.2.1"
