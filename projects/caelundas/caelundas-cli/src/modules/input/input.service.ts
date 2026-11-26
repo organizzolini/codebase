@@ -31,36 +31,6 @@ export class InputService {
 
   // 🔏 Private Methods
 
-  /**
-   * Returns the calendar year of `START_YEAR + JOB_COMPLETION_INDEX` as dates when
-   * both are set, otherwise the `START_DATE` and `END_DATE` as given.
-   */
-  private resolveDateRange(): {
-    endDate: string | undefined;
-    startDate: string | undefined;
-  } {
-    const startYear = this.configService.get<number>("START_YEAR");
-    const jobCompletionIndex = this.configService.get<number>(
-      "JOB_COMPLETION_INDEX",
-    );
-
-    if (startYear === undefined || jobCompletionIndex === undefined) {
-      return {
-        endDate: this.configService.get<string>("END_DATE"),
-        startDate: this.configService.get<string>("START_DATE"),
-      };
-    }
-
-    const year = startYear + jobCompletionIndex;
-    this.logger.info(
-      "📅 Derived the year from START_YEAR and JOB_COMPLETION_INDEX; START_DATE and END_DATE are ignored",
-      undefined,
-      { year },
-    );
-
-    return { endDate: `${year}-12-31`, startDate: `${year}-01-01` };
-  }
-
   // 🌎 Public Methods
 
   /**
@@ -68,12 +38,11 @@ export class InputService {
    * the date range.
    */
   parse(): Input {
-    const { endDate, startDate } = this.resolveDateRange();
     const input = inputSchema.parse({
-      endDate,
+      endDate: this.configService.get<string>("END_DATE"),
       latitude: this.configService.get<number>("LATITUDE"),
       longitude: this.configService.get<number>("LONGITUDE"),
-      startDate,
+      startDate: this.configService.get<string>("START_DATE"),
     });
 
     this.logger.debug("📥 Parsed input configuration", undefined, {

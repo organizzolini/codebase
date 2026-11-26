@@ -106,105 +106,19 @@ describe(InputService, () => {
         /date/i,
       );
     });
-
-    it("rejects START_YEAR without JOB_COMPLETION_INDEX", () => {
-      expect(() => environmentSchema.parse({ START_YEAR: 1900 })).toThrow(
-        /START_YEAR and JOB_COMPLETION_INDEX must be set together/,
-      );
-    });
-
-    it("rejects JOB_COMPLETION_INDEX without START_YEAR", () => {
-      expect(() =>
-        environmentSchema.parse({ JOB_COMPLETION_INDEX: 3 }),
-      ).toThrow(/START_YEAR and JOB_COMPLETION_INDEX must be set together/);
-    });
   });
 
   describe("parse", () => {
     mockDates();
 
-    function makeService(
-      environment: Partial<Environment>,
-      logger: LoggerService = createMock<LoggerService>(),
-    ): InputService {
+    function makeService(environment: Partial<Environment>): InputService {
       const configService = {
         get: vi.fn<ConfigService<Environment>["get"]>(
           (key: string) => environment[key as keyof Environment],
         ),
       } as unknown as ConfigService<Environment>;
-      return new InputService(configService, logger);
+      return new InputService(configService, createMock<LoggerService>());
     }
-
-    it("derives one calendar year from START_YEAR and JOB_COMPLETION_INDEX", () => {
-      const result = makeService({
-        JOB_COMPLETION_INDEX: 3,
-        START_YEAR: 1900,
-      }).parse();
-
-      expect(result.start.format("YYYY-MM-DD")).toBe("1903-01-01");
-      expect(result.end.format("YYYY-MM-DD")).toBe("1903-12-31");
-    });
-
-    it("index 0 is the start year itself", () => {
-      const result = makeService({
-        JOB_COMPLETION_INDEX: 0,
-        START_YEAR: 1950,
-      }).parse();
-
-      expect(result.start.format("YYYY-MM-DD")).toBe("1950-01-01");
-      expect(result.end.format("YYYY-MM-DD")).toBe("1950-12-31");
-    });
-
-    it("consecutive indexes neither overlap nor gap", () => {
-      const first = makeService({
-        JOB_COMPLETION_INDEX: 0,
-        START_YEAR: 1900,
-      }).parse();
-      const second = makeService({
-        JOB_COMPLETION_INDEX: 1,
-        START_YEAR: 1900,
-      }).parse();
-
-      expect(moment(first.end).add(1, "day").format("YYYY-MM-DD")).toBe(
-        second.start.format("YYYY-MM-DD"),
-      );
-    });
-
-    it("uses START_DATE and END_DATE when neither START_YEAR nor JOB_COMPLETION_INDEX is set", () => {
-      const result = makeService({
-        END_DATE: "2025-03-31",
-        START_DATE: "2025-03-01",
-      }).parse();
-
-      expect(result.start.format("YYYY-MM-DD")).toBe("2025-03-01");
-      expect(result.end.format("YYYY-MM-DD")).toBe("2025-03-31");
-    });
-
-    it("logs that START_DATE and END_DATE are ignored when deriving from the index", () => {
-      const logger = createMock<LoggerService>();
-
-      makeService(
-        {
-          END_DATE: "2025-03-31",
-          JOB_COMPLETION_INDEX: 0,
-          START_DATE: "2025-03-01",
-          START_YEAR: 1900,
-        },
-        logger,
-      ).parse();
-
-      expect(logger.info).toHaveBeenCalledWith(
-        expect.stringContaining("START_DATE and END_DATE are ignored"),
-        undefined,
-        { year: 1900 },
-      );
-    });
-
-    it("a derived year past 2100 fails range validation", () => {
-      expect(() =>
-        makeService({ JOB_COMPLETION_INDEX: 1, START_YEAR: 2100 }).parse(),
-      ).toThrow(/Start date must be on or before 2100-12-31/i);
-    });
 
     it("parses valid environment into an Input domain object", () => {
       const service = makeService({
