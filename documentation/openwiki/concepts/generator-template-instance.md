@@ -5,7 +5,7 @@ description: Explains the conformetry generator/template/instance model that gov
 tags: [conformetry, architecture, scaffolding, generation, validation]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
   - id: openwiki-source-6419221f89e7a55a996f3dab
     resource: repo://configuration/ic-suite/conformetry.config.ts
@@ -29,8 +29,9 @@ sources:
     resource: repo://projects/ic-suite/conformetry/conformetry-validation/README.md
   - id: openwiki-source-9c39b5d57dccbc31a8952ba4
     resource: repo://projects/ic-suite/conformetry/conformetry-validation/src/modules/runner/runner.service.ts
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
+
 # Generator / Template / Instance Model
 
 Conformetry scaffolding is built around three core concepts that form a closed loop: a **Template** is the source of truth, **Generation** renders it with substitutions into an **Instance** on disk, and **Validation** re-renders the same template with the same substitutions and structurally compares the result against the instance.
@@ -117,7 +118,7 @@ The lifecycle is:
 3. **Pre-generation hook** — optional `preGenerate` hook runs before any file is written
 4. **Render** — the template tree is walked; every path and file content is rendered with Mustache
 5. **Post-generation hook** — optional `postGenerate` hook runs after rendering, before formatting
-6. **Format** — generated files are formatted (Prettier for TS/JS/JSON/MD, Ruff for Python)
+6. **Format** — generated files are formatted via the host's `FormatterAdapter` (Nx plugin uses `@nx/devkit` `formatFiles` for `--dry-run` support; CLI defers to the workspace formatter)
 
 ```bash
 # CLI example
@@ -268,7 +269,7 @@ The generator registry is declared in `configuration/ic-suite/conformetry.config
 
 | Generator | Template | Description |
 |-----------|----------|-------------|
-| `jupyter-notebook-application` | `configuration/ic-suite/conformetry-templates/jupyter-notebook-application` | Standalone Python application with Jupyter notebook entry point, pytest/pyright/ruff, shared uv workspace venv |
+| `jupyter-notebook-application` | `configuration/ic-suite/conformetry-templates/jupyter-notebook-application` | Standalone Python application with Jupyter notebook entry point, pytest/pyright/ruff tooling, shared uv workspace venv |
 | `nestjs-command-project` | `configuration/ic-suite/conformetry-templates/nestjs-command-project` | Standalone NestJS CLI application on nest-commander |
 | `nestjs-graphql-application` | `configuration/ic-suite/conformetry-templates/nestjs-graphql-application` | Standalone NestJS GraphQL API application over HTTP |
 | `nestjs-service-project` | `configuration/ic-suite/conformetry-templates/nestjs-service-project` | Standalone NestJS library package for internal workspace code |
@@ -321,6 +322,15 @@ The complete loop from generator declaration to continuous validation:
 4. **Match** — Each instance weighed against all templates; best fit wins (`no-match` / `ambiguous` reported explicitly)
 5. **Validate** — For each matched instance: capture substitutions → re-render → structural compare per language
 6. **Report** — Scores computed, thresholds applied, report printed (CLI) or target succeeds/fails (Nx executor); CI gates on `success: false`
+
+---
+
+## Continuous Conformance
+
+Conformetry enforces continuous conformance through two mechanisms:
+
+- **Synchronization** — The `synchronization` project runs `nx run synchronization:conformetry-generators:write` to emit Nx plugin generator factories from the configuration, keeping the Nx plugin generators in sync with the source of truth.
+- **CI Validation** — The `conformetry-validate` executor (inferred by `createNodes` onto every project holding instances) runs validation in CI. A failed validation (`success: false`) blocks merge.
 
 ---
 

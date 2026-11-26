@@ -1,10 +1,11 @@
 ---
 type: "Reference"
 title: "Coinagerie — Vocabulary Toolchain"
-openwiki_generated: true
+description: "Documents the coinagerie vocabulary extraction and glossary management toolchain: collects identifiers, splits into words, maintains markdown glossaries. Updated to resolve unresolved claims against nx.json."
+tags: ["toolchain", "vocabulary", "glossary", "nx", "cli", "analysis", "output"]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
   - id: openwiki-source-6ba748254f38112b13d529da
     resource: repo://nx.json
@@ -46,9 +47,8 @@ sources:
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.ts
   - id: openwiki-source-bddf27016584b016332c14b7
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/words/words.service.ts
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
-
 
 # Coinagerie — Vocabulary Toolchain
 
@@ -68,8 +68,7 @@ Coinagerie follows the IC-Suite five-layer spine, with seven published packages 
 | `@coinagerie/vocabulary` | Extraction pipeline: discovers files, tokenizes per language, splits paths and identifiers into words, folds words, applies exclusions, sorts and deduplicates. |
 | `@coinagerie/output` | Renders and parses glossary blocks (markdown and JSON), compares vocabulary against destinations, writes reconciled glossaries while preserving definitions. |
 | `@coinagerie/cli` | Commands: `collect` (print/check/write), `batch` (multi-project). Wires the pipeline together and handles terminal output. |
-
-An Nx plugin `@coinagerie/nx` provides a `check` executor that infers a `coinagerie-check` target on every configured project, enabling `nx affected` to judge only touched projects.
+| `@coinagerie/nx` | Nx plugin: infers a `coinagerie-check` target on every project with a configuration, groups tasks by mode and command for batch execution via `coinagerie batch`, and supports `nx affected` for incremental checks. |
 
 ---
 
@@ -104,6 +103,8 @@ flowchart TD
 ### Tokenization
 
 `LanguagesService` (in `@coinagerie/languages`) selects a tokenizer by file extension. Each tokenizer extracts identifiers (variable names, function names, class names, keys, enum members) from the file content. If no tokenizer claims the extension, only the file path contributes words.
+
+Supported languages: CSS, HCL, JSON, Python, shell, SQL, TOML, TypeScript, YAML. Each language module provides a `ScannerService` that tokenizes its syntax and a service that extracts identifiers appropriate to that language.
 
 ### Word Splitting
 
@@ -164,6 +165,8 @@ Optional description paragraph.
 - **Bullets**: One per word, format `- **word**: definition`. The definition may be empty or multi-line (indented continuation lines).
 - **Strict parsing**: `MarkdownService.parse` and `JsonService.parse` throw `MalformedGlossaryError` on any unrecognized line, duplicate word, or malformed anchor. A parse error stops the run before any write.
 
+The JSON glossary format is a flat object sorted by word, each value a definition string (empty string for no definition). The whole file is the glossary; writing replaces it.
+
 ---
 
 ## Configuration
@@ -199,144 +202,135 @@ export default {
 
 ### CLI Flag Overrides
 
-Flags override the config file:
+Flags override their configuration fields:
 
 | Flag | Overrides |
 |------|-----------|
-| `--include` | `include` |
-| `--exclude-paths` | `exclude.paths` |
-| `--output-markdown <path>` | Adds/replaces a markdown output |
-| `--output-json <path>` | Adds/replaces a JSON output |
-| `--description <text>` | Sets description for markdown outputs created by flags |
+| `--include <globs>` | `include` |
+| `--exclude <globs>` | `exclude.paths` |
+| `--output-markdown <path>` | Adds a markdown output (replaces `outputs` if any `--output-*` given) |
+| `--output-json <path>` | Adds a JSON output (replaces `outputs` if any `--output-*` given) |
+| `--description <text>` | Description for the markdown output added by `--output-markdown` |
+
+`--config` is required: coinagerie never searches for or assumes a configuration file, and a run without it exits 1.
 
 ---
 
 ## CLI Commands
 
-The `@coinagerie/cli` package exposes the `coinagerie` command with three subcommands.
+The CLI (`@coinagerie/cli`) provides two commands: `collect` and `batch`.
 
-### `collect` (default)
-
-```bash
-coinagerie                       # print glossary block to stdout, write nothing
-coinagerie --check               # exit 1 naming missing and stale words
-coinagerie --write               # rewrite every glossary, keeping definitions
-coinagerie --config path/to/coinagerie.config.ts --check
-coinagerie --format json         # print as flat JSON object
-```
-
-- **Print mode** (no flags): renders the glossary block (markdown or JSON) to stdout with empty definitions.
-- **Check mode** (`--check`): compares vocabulary against each destination. Exits 0 if all match; exits 1 and prints a report for each destination with `missing` (words the code uses that the glossary lacks) and `stale` (words the glossary has that the code no longer uses).
-- **Write mode** (`--write`): rewrites each destination to hold exactly the vocabulary, sorted, preserving each kept word's existing definition. Stale words are removed with their definitions. A destination that already matches is untouched.
-- **Malformed glossary**: if any destination cannot be parsed, the run aborts before any write.
-
-### `batch`
+### `collect` — Single Project
 
 ```bash
-coinagerie batch apps/api apps/web --write
+coinagerie --config path/to/coinagerie.config.ts          # print the glossary block, write nothing
+coinagerie --config path/to/coinagerie.config.ts --check  # exit 1 naming missing and stale words
+coinagerie --config path/to/coinagerie.config.ts --write  # rewrite every glossary, keeping definitions
 ```
 
-Runs check or write across multiple project directories in one process, avoiding repeated startup. Each directory must have its own configuration. Output is a JSON array of verdicts:
+- **Print** (default): emits the markdown block to stdout, writes nothing.
+- **`--check`**: compares vocabulary against every glossary destination. A word the code uses with no glossary entry (**missing**) and an entry for a word the code no longer uses (**stale**) both cause exit 1 with a report.
+- **`--write`**: rewrites every glossary destination. Existing definitions are preserved; missing words get empty definitions; stale entries are removed.
 
-```json
-[
-  { "directory": "apps/api", "ok": true, "report": "✅ Found every glossary in step with the code" },
-  { "directory": "apps/web", "ok": false, "report": "🪙 Found a glossary out of step with the code..." }
-]
-```
+A glossary block that cannot be fully parsed is never written.
 
-Exit code is 1 if any verdict has `ok: false`.
-
----
-
-## Nx Integration
-
-The `@coinagerie/nx` plugin provides a `check` executor that is **inferred onto every project** with a `coinagerie.config.ts`. This enables:
+### `batch` — Multi-Project
 
 ```bash
-# Check all projects
-nx run-many -t coinagerie-check
-
-# Check only affected projects
-nx affected -t coinagerie-check
-
-# Write glossaries for affected projects
-nx affected -t coinagerie-check --configuration=write
+coinagerie batch \
+  --project-configuration-path path/to/coinagerie.config.ts \
+  [--write] \
+  <directory> ...
 ```
 
-### Executor Options
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `command` | `string` | Shell command that starts the `coinagerie` CLI (e.g., `npx @coinagerie/cli`). |
-| `write` | `boolean` | When `true`, rewrites glossaries instead of judging. |
-
-### Batch Execution
-
-The executor groups tasks by `(mode, command)` so projects sharing the same command and mode run in a single `coinagerie batch` invocation. Each task receives its own verdict; a task whose project is unknown fails immediately.
+Runs the vocabulary pipeline for each given directory (which must be a project root) in one process, printing a JSON array of verdicts (one per directory, each with `directory`, `ok`, `report`). Used internally by the Nx plugin's batch executor.
 
 ---
 
-## Core Vocabulary
+## Nx Plugin (`@coinagerie/nx`)
 
-| Term | Meaning |
-|------|---------|
-| **Word** | One lowercase piece of an identifier, object key, enum member, folder name or file name, at least two characters and not a bare number |
-| **Headword** | The form a word folds into: its singular, then its lemma, then the configuration's optional `fold` mapping |
-| **Vocabulary** | The sorted, deduplicated headwords a project uses |
-| **Glossary** | The markdown or JSON block, in a declared destination, that defines each headword; kept in step with the vocabulary by `--check` and `--write` |
-| **Missing / stale word** | A headword the code uses with no glossary entry, and an entry for a headword the code no longer uses; either fails `--check` |
+The Nx plugin adds a `coinagerie-check` target to every project that has a configuration file at the plugin's `projectConfigurationPath` (by default `configuration/coinagerie.config.ts` relative to the workspace root).
 
----
+### Target Inference
 
-## Error Semantics
+The plugin reads the workspace's project graph and, for each project whose root contains the configured configuration path, infers a `coinagerie-check` target with:
 
-| Error | When Raised | Behavior |
-|-------|-------------|----------|
-| `ConfigurationFileNotFoundError` | Named config path does not exist | Run fails, names the path. |
-| `InvalidConfigurationError` | Config schema validation fails, `fold` throws or returns invalid value, `exclude.words` throws, duplicate output paths | Run fails, names the file and reason. |
-| `MalformedGlossaryError` | Glossary block has misplaced/duplicate anchors, unrecognized line, duplicate word, invalid JSON | Run fails before any write; names file, line, and reason. |
+- `executor: "@coinagerie/nx:check"`
+- Options: `command`, `projectConfigurationPath`, `write: false`
 
-All errors are thrown, not returned, so the CLI and Nx executor catch them and produce a verdict with `ok: false`.
+The `write` configuration is added in `nx.json` under `targetDefaults["coinagerie-check"].configurations.write` so `nx run <project>:coinagerie-check:write` rewrites glossaries instead of judging them.
 
----
+### Batch Executor
 
-## Extension Points
+`coinagerie-check` tasks from `nx affected` are grouped by `(mode, command, projectConfigurationPath)` so each group shares one `coinagerie batch` process. The batch executor (`batch-executor.ts`) calls `runBatch`, which:
 
-1. **Custom tokenizer**: Add a language tokenizer to `@coinagerie/languages` and it will be picked up by file extension.
-2. **Custom fold function**: Provide `fold` in configuration to merge derivational families (e.g., `configuration` → `config`).
-3. **Dynamic exclusions**: `exclude.words` can be an async function for generated exclusion lists.
-4. **New output format**: Implement `GlossaryFormatHandler` and register it in `DeliveryService.handlers`.
-5. **Nx executor options**: The `command` option allows pointing to a workspace-local CLI build.
+1. Groups tasks using `groupTasks` (by mode, command, config path)
+2. For each group, runs `runGroup` → builds the shell command → spawns `coinagerie batch`
+3. Parses JSON verdicts and assigns each task its own success/failure
+
+This allows `nx affected --target=coinagerie-check` to judge only touched projects in a single batched run per group.
+
+### Executors
+
+- **`check` executor** (`executor.ts`): Judges one project's glossaries. Reads the project's root from the Nx project graph, calls `runGroup` with a single-task group, and returns `{ success: boolean }`.
+- **`batch` executor** (`batch-executor.ts`): Judges every Nx-batched task in one command-line process. Each task still passes or fails independently and is cached separately.
+
+Both executors are defined in `projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/`.
 
 ---
 
-## Testing
+## Output & Comparison
 
-Each package has unit tests for its services:
+`@coinagerie/output` handles glossary rendering, parsing, and comparison.
 
-- `vocabulary.service.unit.test.ts` — pipeline integration with stubbed services
-- `discovery.service.unit.test.ts` — gitignore handling, glob selection, skip logic
-- `words.service.unit.test.ts` — identifier and path splitting edge cases
-- `folding.service.unit.test.ts` — plural/verb folding, custom fold
-- `markdown.service.unit.test.ts` — block parsing, rendering, splicing, anchor validation
-- `json.service.unit.test.ts` — JSON parsing, rendering
-- `comparison.service.unit.test.ts` — missing/stale detection, reconciliation
-- `delivery.service.unit.test.ts` — check/write atomicity, definition preservation
-- `configuration.service.unit.test.ts` — config loading, overrides, resolution
-- `check.service.unit.test.ts` — per-project check/write verdicts
-- `collect.command.unit.test.ts` — CLI flag parsing, mode selection
-- `batch.command.unit.test.ts` — multi-project verdict aggregation
-- Nx executor unit tests — task grouping, process spawning, verdict parsing
+### Rendering
 
-Run tests with `nx run <package>:vitest`.
+- **`MarkdownService.render`**: produces the anchor-delimited block with heading, optional description, and one bullet per word sorted alphabetically.
+- **`JsonService.render`**: produces a sorted JSON object.
+
+### Parsing
+
+- **`MarkdownService.parse`**: strict parse of the anchor block. Throws `MalformedGlossaryError` on any unrecognized line, duplicate word, or malformed anchor.
+- **`JsonService.parse`**: strict parse of the entire file as a JSON object.
+
+### Comparison
+
+`ComparisonService.compare` takes the current vocabulary (sorted headwords) and a parsed glossary, returning a `GlossaryDifference` with:
+
+- `missing`: words in vocabulary but not in glossary
+- `stale`: words in glossary but not in vocabulary
+- `shared`: words present in both (with their definitions)
+
+### Writing
+
+`DeliveryService.writeGlossary` writes reconciled glossaries:
+
+1. Parses existing glossary (if any)
+2. Compares against vocabulary
+3. Renders new block: keeps definitions for shared words, empty definitions for missing, drops stale
+4. Splices into file (markdown: between anchors; JSON: replaces file)
+5. Validates by re-parsing the written content
+
+A glossary block that cannot be fully parsed is never written — the run aborts with `MalformedGlossaryError`.
 
 ---
 
-## Related Pages
+## Cross-References
 
-- [IC Suite Architecture](../architecture/ic-suite.md) — Monorepo structure and tooling
-- [Ollama + SearXNG Integration](../integrations/ollama-searxng.md) — AI tooling used alongside Coinagerie
-<!-- openwiki: broken internal link [../testing/ic-suite.md] file "../testing/ic-suite.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [Testing IC Suite](../testing/ic-suite.md) — Test strategies across the monorepo
-- [Scaffolding Workflows](../workflows/scaffolding.md) — Conformetry generators and templates
+<!-- openwiki: broken internal link [../workflows/code-quality.md#coinagerie--words] heading anchor "coinagerie--words" does not exist in "../workflows/code-quality.md". Fix the href or restore the target, then delete this comment. -->
+- **Code Quality Gates**: The `coinagerie-check` target is part of the workspace quality gates. See [Code Quality Gates](../workflows/code-quality.md#coinagerie--words).
+- **Coinagerie Testing**: Unit tests for vocabulary extraction, folding, exclusion; integration tests for glossary generation; CLI packing tests. See [Coinagerie Testing](../testing/coinagerie.md).
+- **IC-Suite Architecture**: Coinagerie is one of the five IC-Suite toolchains. See [IC-Suite Overview](../architecture/ic-suite.md).
+- **Domain Overview**: How coinagerie fits in the domain. See [Domain Overview](../domain/overview.md).
+
+---
+
+## Key Invariants
+
+1. **No implicit config**: `--config` is required; no file searching.
+2. **No self-read**: Output files are excluded from discovery.
+3. **Strict parsing**: A malformed glossary aborts the run before any write.
+4. **Definitions preserved**: `--write` keeps existing definitions for words still in the vocabulary.
+5. **Headwords are the unit**: Exclusion, folding, and comparison all operate on headwords.
+6. **Batched by mode+command+config**: Nx batch executor groups tasks so each distinct (mode, command, config) tuple runs in one process.
+7. **Incremental via `nx affected`**: Only projects whose files changed (or whose dependencies changed) run `coinagerie-check`.

@@ -5,7 +5,7 @@ description: Documents affirmancy's pytest suites, test organization, type check
 tags: [affirmancy, testing, pytest, type-checking, notebooks, langgraph, ollama, searxng]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
   - id: openwiki-source-6ba748254f38112b13d529da
     resource: repo://nx.json
@@ -29,7 +29,7 @@ sources:
     resource: repo://projects/affirmancy/testing/test_services.py
   - id: openwiki-source-4c172bf9a04a8dafe2a723fe
     resource: repo://projects/affirmancy/testing/test_subjects.py
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Affirmancy Testing
@@ -75,6 +75,9 @@ The project exposes Nx targets for common test workflows:
 - `nx run affirmancy:pytest:unit` — only unit tests
 - `nx run affirmancy:pytest:integration` — only integration tests
 - `nx run affirmancy:pytest:coverage` — all tests + coverage report (XML for CI)
+- `nx run affirmancy:pytest:watch` — watch mode for continuous testing
+
+The pytest target is defined in `nx.json` targetDefaults with configurations for each mode. The `unit` and `integration` configurations select tests by the markers declared in `pyproject.toml`, while `coverage` adds coverage reporting and `watch` runs `pytest-watch` for continuous testing.
 
 ## Pytest Configuration
 
@@ -99,265 +102,77 @@ Two type checkers run in parallel as part of the type-checking gate:
 
 ### ty (supplementary)
 
-- Pre-1.0 type checker with project-level config in `pyproject.toml`
-- Configured for Python 3.14, root `./src`
-- Ignores `invalid-argument-type` for LangGraph TypedDict subclasses
-
-Run both via:
-
-```bash
-uv run pyright
-uv run ty check
-```
-
-Or via Nx: `nx run affirmancy:typecheck` (runs both in parallel).
-
-## Notebook Output Stripping
-
-Jupyter notebooks in `src/` (e.g., `affirmancy.ipynb`, `prices.ipynb`, `semantics.ipynb`) have their outputs stripped on commit by `nbstripout`. This ensures diffs show code changes rather than the last run's results.
-
-The tool is a dev dependency in `pyproject.toml` installed in the shared workspace, and the `nbstripout` Nx target runs it over every notebook in `src/`: its `check` configuration (the default) verifies the outputs are stripped and its `write` configuration strips them.
-
-## LangGraph Agent Testing Patterns
-
-The `affirmancy.ipynb` notebook contains multiple LangGraph agents that interact with Ollama (LLM) and SearxNG (search). These agents are structured as state graphs with typed state dictionaries. Key patterns for testing:
-
-### Graph Structure
-
-Agents are built using `StateGraph` with `TypedDict` state schemas:
-
-```python
-class SubjectState(TypedDict):
-    subject: Subject
-    query: NotRequired[str]
-    sources: NotRequired[str]
-
-class GenerateAffirmationsState(GenerateDocumentFromAnalysisState):
-    document_analysis: NotRequired[str]
-    grammars: list[Grammar]
-    grammar_affirmations: NotRequired[list[GrammarAffirmations]]
-    validation_failures: NotRequired[Annotated[list[str], operator.add]]
-```
-
-Nodes are plain functions that take state and return partial state updates. Edges form a linear or branching pipeline:
-
-```
-START → search_sources → analyze_sources → generate_document → analyze_document 
-       → generate_affirmations → validate_affirmations_grammars 
-       → validate_affirmations_subject → write_affirmations → END
-```
-
-### Testing Strategy for LangGraph Agents
-
-1. **Unit test individual nodes** — Each node function can be tested in isolation with mocked LLM and search dependencies
-2. **Mock Ollama** — Replace `ChatOllama` with a mock that returns deterministic responses
-3. **Mock SearxNG** — Use the existing `require_searxng` validation with a test HTTP server (see `test_services.py`)
-4. **Validate state transitions** — Assert that graph invocation produces expected state keys
-
-Example pattern for mocking the LLM chain:
-
-```python
-from unittest.mock import MagicMock
-from langchain_core.outputs import LLMResult, Generation
-
-def test_generate_affirmations_node():
-    # Arrange
-    mock_llm = MagicMock()
-    mock_llm.invoke.return_value = MagicMock(
-        content='{"affirmations": ["I am brave.", "I am strong."]}'
-    )
-    # ... inject mock into chain
-    
-    # Act
-    result = generate_affirmations(state_with_document_analysis)
-    
-    # Assert
-    assert "grammar_affirmations" in result
-    assert len(result["grammar_affirmations"]) > 0
-```
-
-### Validation Retry Logic
-
-Nodes like `analyze_sources`, `generate_affirmations`, `validate_affirmations_grammars`, and `validate_affirmations_subject` use Tenacity retry logic:
-
-```python
-def attempts() -> Retrying:
-    return Retrying(
-        stop=stop_after_attempt(6),
-        wait=wait_exponential(multiplier=1, min=1, max=10),
-        before_sleep=before_sleep,
-        reraise=True,
-    )
-```
-
-Tests should verify both success paths and that failures propagate correctly after max retries.
-
-## Ollama/SearxNG Mocking
-
-### SearxNG Health Check Testing (`test_services.py`)
-
-The `require_searxng()` function validates SearxNG availability. Tests use a fixture-based HTTP server:
-
-```python
-@pytest.fixture()
-def serve() -> Iterator[Callable[[int], str]]:
-    # Spawns HTTPServer on random port returning given status code
-    ...
-
-def test_reachable_host_returns_none(serve):
-    assert require_searxng(serve(200)) is None
-
-@pytest.mark.parametrize("status", [403, 404, 500])
-def test_non_success_response_still_counts_as_running(serve, status):
-    assert require_searxng(serve(status)) is None
-
-def test_unreachable_host_raises_naming_host_and_fix(closed_host):
-    with pytest.raises(RuntimeError) as error:
-        require_searxng(closed_host)
-    assert closed_host in str(error.value)
-    assert START_COMMAND in str(error.value)
-```
-
-Key behaviors tested:
-- HTTP 200 → service available (returns `None`)
-- HTTP 4xx/5xx → service running but unhealthy (returns `None` — caller decides)
-- Connection refused → raises `RuntimeError` with host URL and fix command
-
-### Ollama Mocking Strategy
-
-Ollama is accessed via `ChatOllama` from `langchain-ollama`. For unit tests:
-
-1. **Mock the model class** — Patch `ChatOllama` to return a mock with controlled `invoke()`/`bind()` behavior
-2. **Use JSON schema binding** — The notebook binds `GeneratedAffirmations.model_json_schema()` and `ValidationResult.model_json_schema()` to the model; mocks must honor this
-3. **Handle the output parser** — `Json5PydanticOutputParser` strips markdown fences and parses lenient JSON; mocks should return valid JSON strings
-
-## Grammar Axis Enum and Pydantic Model Validation Tests
-
-### Grammar Enums (`test_grammars.py`)
-
-The grammar system uses `DescribedEnum` (a `StrEnum` subclass) for axes: `Mood`, `Tense`, `Aspect`, `Form`, `Voice`, `Person`, `Number`. Each enum member carries a description and six examples.
-
-Tests verify:
-- **Emoji prefix**: `PRESENT.name.startswith("⭐")`
-- **Title case naming**: `"Indicative" in PRESENT.name`
-- **Slug format**: kebab-case, lowercase, no spaces/underscores
-- **Specifier extraction**: `specifiers` property returns non-None axis values as uppercase strings
-- **Predefined grammar properties**: `PAST.tense == Tense.PAST`, `FUTURE.aspect == Aspect.SIMPLE`
-- **Example count**: all predefined grammars have ≥3 examples
-
-### Pydantic Models (`test_models.py`)
-
-Models under test: `Affirmation`, `GrammarAffirmations`, `SubjectAffirmations`, `GeneratedAffirmations`, `ValidationResult`.
-
-Tests cover:
-- **Construction**: required fields, optional fields with defaults
-- **Serialization round-trip**: `model_dump_json()` → `json.loads()` → field equality
-- **Nested serialization**: `SubjectAffirmations` containing `GrammarAffirmations` containing `Grammar` enum and `Affirmation` list
-- **Custom validators**: `GeneratedAffirmations.strip_trailing_periods` removes trailing periods from each affirmation
-- **Validation logic**: `ValidationResult` with `valid=True/False` and optional `reason`
-
-### Prompt Template Tests (`test_prompts.py`)
-
-LangChain prompt templates are tested for correct message structure:
-
-```python
-def test_generate_affirmations_prompt_format():
-    messages = generate_affirmations_prompt_template.format_messages(...)
-    assert len(messages) == 2
-    assert isinstance(messages[0], SystemMessage)
-    assert isinstance(messages[1], HumanMessage)
-    content = str(messages[1].content)
-    assert "The Fool" in content
-    assert "Indicative" in content
-```
-
-Tests verify:
-- Correct message types (`SystemMessage` + `HumanMessage`)
-- Variable interpolation into template
-- All required template variables present in output
-
-### Subject Tests (`test_subjects.py`)
-
-Tests verify predefined subject collections have expected counts:
-
-| Collection | Expected count |
-|------------|----------------|
-| `TAROT_CARDS` | 78 |
-| `LENORMAND_CARDS` | 38 |
-| `ASTROLOGY_SIGNS` | 13 |
-| `ASTROLOGY_HOUSES` | 12 |
-| `CHAKRAS` | 7 |
-| `RUNES` | 24 |
-| `SEPHIROTH` | 10 |
-| `HEBREW_LETTERS` | 22 |
-| `ELEMENTS` | 4 |
-| `NUMBERS` | 32 |
-
-Also tests `SubjectCategory` and `Subject` construction, slug generation, and metadata handling.
-
-### Output Tests (`test_output.py`)
-
-Tests use `tmp_path` and `monkeypatch` to isolate filesystem writes:
-
-```python
-@pytest.fixture()
-def output_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    out = tmp_path / "output"
-    monkeypatch.setattr(output_module, "PROJECT_DIRECTORY", tmp_path)
-    monkeypatch.setattr(output_module, "OUTPUT_DIRECTORY", out)
-    return out
-```
-
-Verifies:
-- JSON/Markdown file creation at correct paths
-- Directory structure: `output/affirmations/<category>/<order>-<slug>.json`
-- Markdown headings: `# {subject.name} Affirmations`
-- Grammar subheadings: `## {grammar.name}`
-- Numbered lists: `1. ...`, `2. ...`
-- Document and semantics document writing with markdown fence stripping
+- Validates type annotations with additional rules
+- Configured in `pyproject.toml` with Python 3.14 target
+- Ignores false-positive bound violations from LangGraph TypedDict subclasses
+- Root set to `./src` for source-only checking
 
 ## Linting and Security
 
-The test environment includes several static analysis tools:
+- **ruff**: Extends workspace config, excludes notebooks and vulture whitelist; per-file ignores for notebooks (F811, TC002) and Pydantic BaseModel runtime evaluation
+- **bandit**: Excludes `testing/`, `output/`, `notebooks/`; skips B101 (assert_used) which appears in test fixtures
 
-- **ruff**: linting and formatting (extends shared workspace config, excludes notebooks)
-- **vulture**: dead code detection (reads `configuration/.vulture_whitelist.py`)
-- **bandit**: security linting (excludes `testing/`, `output/`, `notebooks/`, skips B101)
+## Jupyter Notebook Output Stripping
 
-Run all checks via:
+Jupyter notebooks in `src/` (`affirmancy.ipynb`, `prices.ipynb`, `semantics.ipynb`) have their outputs stripped on commit by `nbstripout`. This ensures diffs show code changes rather than the last run's results.
 
-```bash
-nx run affirmancy:lint-code
-nx run affirmancy:format-code
-```
+The tool is a dev dependency in `pyproject.toml` installed in the shared workspace venv. The `nbstripout` Nx target in `nx.json` runs it over every notebook in `src/` with two configurations:
+- **check** (default): runs `nbstripout --verify` to verify outputs are stripped without modifying files
+- **write**: runs `nbstripout` to strip outputs from all notebooks
 
-Or individually: `nx run affirmancy:ruff-lint`, `nx run affirmancy:vulture`, `nx run affirmancy:bandit`.
+The target is filtered to projects tagged `language:python` and uses the workspace Python environment.
 
-## Mermaid Diagram: LangGraph Agent Pipeline
+## LangGraph Agent Testing
 
-```mermaid
-flowchart TD
-    START([START]) --> SEARCH[search_sources]
-    SEARCH --> ANALYZE_SOURCES[analyze_sources]
-    ANALYZE_SOURCES --> GEN_DOC[generate_document]
-    GEN_DOC --> ANALYZE_DOC[analyze_document]
-    ANALYZE_DOC --> GEN_AFF[generate_affirmations]
-    GEN_AFF --> VAL_GRAMMAR[validate_affirmations_grammars]
-    VAL_GRAMMAR --> VAL_SUBJECT[validate_affirmations_subject]
-    VAL_SUBJECT --> WRITE[write_affirmations]
-    WRITE --> END([END])
-    
-    SEARCH -.->|SearxNG + trafilatura| EXT1[External Services]
-    GEN_AFF -.->|Ollama LLM| EXT2[Ollama]
-    VAL_GRAMMAR -.->|Ollama LLM| EXT2
-    VAL_SUBJECT -.->|Ollama LLM| EXT2
-```
+The main pipeline in `src/affirmancy.ipynb` builds LangGraph state graphs for:
+1. **Search sources** — queries SearxNG, fetches and extracts content via trafilatura
+2. **Generate document** — uses LLM to generate affirmations from sources
+3. **Analyze sources** — LLM analyzes sources with retry logic (tenacity)
+4. **Generate from analysis** — LLM generates final document from analysis
 
-Caption: LangGraph agent pipeline in `affirmancy.ipynb` showing node sequence and external service dependencies.
+Testing strategies for these agents:
 
-## Related Pages
+### Fixed clock and deterministic execution
 
-- [Affirmancy Domain](../domain/affirmancy.md) — project overview and architecture
-- [Ollama/SearxNG Integration](../integrations/ollama-searxng.md) — service setup and configuration
-<!-- openwiki: broken internal link [../overview.md] file "../overview.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [Testing Overview](../overview.md) — workspace-wide testing conventions
+Not explicitly configured in current tests; the notebook pipeline relies on Ollama's `temperature` parameter for reproducibility (lower for validation/analytical, higher for generative/creative).
+
+### Mocked external services
+
+- **SearxNG**: `test_services.py` uses a local HTTP server fixture (`serve`) that returns configurable status codes (200, 403, 404, 500) to test `require_searxng()` behavior. Any HTTP response (including 4xx/5xx) proves the server is up; only connection failures (refused, DNS, timeout) count as down.
+- **Ollama**: Not currently mocked in unit tests; the notebooks require a running Ollama instance at `OLLAMA_HOST` (default `http://localhost:11434`) with the `gemma4:e2b` model pulled.
+
+### Service validation
+
+`src/services.py` provides `require_searxng(host)` which:
+- Accepts any HTTP response as "service is running"
+- Raises `RuntimeError` with the host and fix command (`nx run infrastructure:searxng:up`) on connection failure
+- Uses a 3-second timeout for connection attempts
+
+This allows unit tests to verify the validation logic without requiring a real SearxNG instance.
+
+## Test Files Overview
+
+### `test_services.py`
+Tests `require_searxng()` with a parameterized HTTP server fixture:
+- `test_reachable_host_returns_none` — 200 OK returns None
+- `test_non_success_response_still_counts_as_running` — 403/404/500 still return None (server is up)
+- `test_unreachable_host_raises_naming_host_and_fix` — connection refused raises RuntimeError with host and fix command
+
+### `test_prompts.py`
+Tests all LangChain prompt templates format correctly:
+- Verifies SystemMessage + HumanMessage structure
+- Checks subject name, category, and key content appear in formatted messages
+- Tests: analyze document, generate affirmations, validate affirmation, search query, analyze sources
+
+### `test_output.py`
+Tests file I/O with `tmp_path` fixture:
+- JSON and Markdown writers create correct directory structure
+- Content formatting matches expected schema
+- Predefined subject counts are accurate
+
+### Other test files
+Follow similar patterns: unit tests with mocked I/O, Pydantic model validation, enum value verification.
+
+## Continuous Integration
+
+The Nx `test-code` aggregate target runs `pytest` and `vitest` across the workspace. The pytest coverage configuration produces JUnit XML at `coverage/python.xml` for CI consumption.
