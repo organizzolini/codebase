@@ -28,6 +28,12 @@ tests:
   - it: probes the metrics endpoint
     asserts:
       - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.path
+          value: /healthcheck
+      - equal:
+          path: spec.template.spec.containers[0].livenessProbe.httpGet.port
+          value: 2000
+      - equal:
           path: spec.template.spec.containers[0].readinessProbe.httpGet.path
           value: /ready
       - equal:

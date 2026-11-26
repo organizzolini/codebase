@@ -9,12 +9,12 @@ image:
   # Exact release, never latest
   tag: 2026.10.7
 
-# Secret holding the tunnel token, created by the bootstrap root
+# Secret holding the tunnel token, created by the organizzolini Terraform root
 tokenSecret:
   name: cloudflared-token
   key: token
 
-# Metrics and probe port; the connector dials out, so no Service is needed
+# Metrics and probe port (/healthcheck for liveness, /ready for readiness); the connector dials out, so no Service is needed
 metricsPort: 2000
 
 resources:
