@@ -3,21 +3,15 @@
 # One Dockerfile for every Node application image (`--target node`) and every static site image
 # (`--target static`). The base image tags are literal so Dependabot reads them. `docker-image.sh` builds it from the workspace root, passing the build
 # arguments below from the project's own `infrastructure/image.env`.
-# The workspace install, shared by every image: the pnpm closure of one project, with its dev dependencies.
-FROM node:26.13.1-trixie-slim AS install
+# The workspace install, shared by every image: the pnpm closure of one project, with its dev dependencies. The full
+# (not slim) Node image carries the toolchain a native addon compiles with (g++, make, python3), and this stage never ships.
+FROM node:26.13.1-trixie AS install
 ARG PROJECT
 # The pnpm release the root package.json `packageManager` names; docker-image.sh fills it.
 ARG PNPM_VERSION
-# Packages the install compiles with, such as a native addon's toolchain; they stay in this stage.
-ARG BUILD_PACKAGES=""
 # Native dependencies to rebuild after the install, which skips scripts.
 ARG REBUILT_PACKAGES=""
 ENV npm_config_store_dir=/pnpm/store
-RUN if [ -n "$BUILD_PACKAGES" ]; then \
-      apt-get update && \
-      apt-get install --yes --no-install-recommends $BUILD_PACKAGES && \
-      rm -rf /var/lib/apt/lists/*; \
-    fi
 WORKDIR /workspace
 COPY . .
 # An optional CA bundle (`--secret id=ca-bundle`) lets the install trust a TLS-inspecting proxy; it is never baked in.
@@ -54,9 +48,10 @@ RUN mkdir /out && \
 
 # What the Node runtime keeps from Debian: `tini`, and `dash` as `sh` for the start command (`/bin` links to `/usr/bin`). The `app` directory is
 # owned by the runtime user, and `node` is reachable on PATH, as a Kubernetes `command` names it.
+# The tini version is Debian trixie's; Dependabot does not track it, so a base image bump that moves trixie past it needs the new version here.
 FROM node:26.13.1-trixie-slim AS runtime-tools
 RUN apt-get update && \
-    apt-get install --yes --no-install-recommends tini && \
+    apt-get install --yes --no-install-recommends tini=0.19.0-3+b8 && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /tools/app /tools/usr/bin /tools/usr/local/bin && \
     chown 10001:10001 /tools/app && \
@@ -82,6 +77,8 @@ ENV NODE_ENV=production \
     APPLICATION_PORT_VARIABLE=${PORT_VARIABLE}
 # tini is PID 1, so signals reach Node and orphaned children are reaped.
 COPY --from=runtime-tools /tools/ /
+# Sets the application's port variable unless the environment does, then runs the entry file with node.
+COPY infrastructure/docker/application/start.sh /usr/local/bin/start
 WORKDIR /app
 COPY --from=build /out ./
 USER 10001:10001
@@ -89,7 +86,7 @@ EXPOSE ${EXPOSED_PORTS}
 # Kubernetes ignores HEALTHCHECK and probes the application itself, so the image declares none.
 HEALTHCHECK NONE
 ENTRYPOINT ["tini", "--"]
-CMD ["sh", "-c", "if [ -n \"$APPLICATION_PORT_VARIABLE\" ] && eval \"[ -z \\\"\\${$APPLICATION_PORT_VARIABLE-}\\\" ]\"; then export \"$APPLICATION_PORT_VARIABLE=$APPLICATION_PORT\"; fi; exec node $APPLICATION_ENTRY"]
+CMD ["start"]
 
 # The nginx server block for a static site, with its port filled in.
 FROM install AS static-configuration

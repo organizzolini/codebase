@@ -121,17 +121,19 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
   another; the image sets `CAELUNDAS_API_PORT` unless the environment does.
 - **Tini.** The `node` target runs under `tini` as `ENTRYPOINT`, for signals and
   zombie reaping, per docker-node. A Kubernetes `command` replaces the entry
-  point, so the ingestion Job names `tini` itself.
+  point, so a Job that sets one names `tini` itself; the ingestion Job sets none.
 - **`HEALTHCHECK NONE` on Node images.** Kubernetes ignores `HEALTHCHECK` and
   probes Lightship on 9000, which answers only inside Kubernetes, so there is
   nothing cleaner to check outside it.
 - **Base: `gcr.io/distroless/nodejs26-debian13`.** Node 26.13.1 on glibc, 243 MB
   against 353 MB for `node:26.13.1-trixie-slim`, with no package manager or
   coreutils. It has no `tini` and no shell, so a stage copies in `tini` and
-  `dash` as `sh` (the chart's Job command runs `tini -- sh -c ... node`), and a
-  `node` link on `PATH`. The start command uses shell builtins only, since
-  `printenv` is gone. The build still runs on `node:26.13.1-trixie-slim`, the
-  same Debian release and glibc, so `sweph`'s binding runs unchanged. The tag
+  `dash` as `sh` (the `start` script, `docker/application/start.sh`, is `CMD`),
+  and a `node` link on `PATH`. The script uses shell builtins only, since
+  `printenv` is gone. The build runs on `node:26.13.1-trixie`, the same Debian
+  release and glibc as the base, with the toolchain `sweph` compiles with, so
+  its binding runs unchanged and no stage calls `apt-get install` on a
+  variable package list (`tini` is the one pinned package). The tag
   tracks Node 26 by minor; Dependabot has no `docker` entry for these
   Dockerfiles, so a digest would freeze security fixes.
 - **Not added: SBOM or provenance flags.** They fail on the classic image

@@ -18,17 +18,17 @@
     "guard-code": {},
     "hadolint": {
       "cache": true,
-      "description": "Lint every Dockerfile in the repository (found with git ls-files) with hadolint and infrastructure/configuration/hadolint.yaml, which lists each ignored rule with its reason. Part of lint-code. Requires hadolint on PATH.",
+      "description": "Lint every Dockerfile in the repository (found with git ls-files) with hadolint and the shared configuration/lint/hadolint.yaml, which ignores no rule. Part of lint-code. Requires hadolint on PATH.",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/configuration/hadolint.yaml",
         "{workspaceRoot}/**/*Dockerfile*",
+        "{workspaceRoot}/configuration/lint/hadolint.yaml",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "hadolint --config {projectRoot}/configuration/hadolint.yaml $(git ls-files -- '*Dockerfile*')",
+        "command": "hadolint --config configuration/lint/hadolint.yaml $(git ls-files -- '*Dockerfile*')",
         "cwd": "{workspaceRoot}"
       }
     },

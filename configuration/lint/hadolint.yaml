@@ -1,0 +1,6 @@
+# hadolint policy for the repository's Dockerfiles: every rule applies and none is ignored, so a finding is fixed in the Dockerfile.
+failure-threshold: info
+# DL3026: a base image comes from Docker Hub (including the nginx image) or the distroless registry.
+trustedRegistries:
+  - docker.io
+  - gcr.io
