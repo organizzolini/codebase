@@ -1,0 +1,33 @@
+{
+  "name": "organizzolini-codebase",
+  "owner": {
+    "name": "Organizzolini"
+  },
+  "plugins": [
+    {
+      "name": "callidescope-agents",
+      "source": "./projects/ic-suite/callidescope/callidescope-agents",
+      "description": "Agent skills for callidescope"
+    },
+    {
+      "name": "codependix-agents",
+      "source": "./projects/ic-suite/codependix/codependix-agents",
+      "description": "Agent skills for codependix"
+    },
+    {
+      "name": "codometer-agents",
+      "source": "./projects/ic-suite/codometer/codometer-agents",
+      "description": "Agent skills for codometer"
+    },
+    {
+      "name": "coinagerie-agents",
+      "source": "./projects/ic-suite/coinagerie/coinagerie-agents",
+      "description": "Agent skills for coinagerie"
+    },
+    {
+      "name": "conformetry-agents",
+      "source": "./projects/ic-suite/conformetry/conformetry-agents",
+      "description": "Agent skills for conformetry"
+    }
+  ]
+}

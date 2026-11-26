@@ -1,6 +1,6 @@
 ---
 name: coinagerie-collect
-description: Use when running coinagerie or npx @coinagerie/cli, printing the vocabulary of a codebase, checking or writing a glossary, choosing between --check, --write, and a bare run, reading the glossary block or JSON it printed, reading the missing and stale words a failed check named, finding which words are still undefined, or wiring a glossary check into CI, a commit hook, or an Nx target.
+description: "Run coinagerie to list the words a codebase uses and check or write its glossary. Use when running coinagerie, choosing between --check, --write, and a bare run, reading what a failed check named, or wiring a glossary check into CI or an Nx target."
 license: MIT
 ---
 
@@ -14,24 +14,25 @@ literals, template text, and regular expressions contribute nothing.
 
 ## One folder at a time
 
-A run scans the folder its configuration file sits in. `--config <path>`
-names the file, relative to the working directory. Without the flag, the
-working directory (never a parent) is searched for `coinagerie.config.ts`,
-then `.mts`, `.cts`, `.js`, `.mjs`, `.cjs`, first match wins. With no file,
-defaults apply: scan the working directory, write nothing.
+`--config <path>` is required and names the configuration file, relative to
+the working directory. Coinagerie never searches for a file or assumes a name:
+without the flag the run exits 1 saying `--config is required`. A run scans the
+folder the file sits in.
 
 ```bash
-cd packages/widgets && coinagerie --check
+cd packages/widgets && coinagerie --config coinagerie.config.ts --check
 coinagerie --config packages/widgets/coinagerie.config.ts --check
 ```
 
 ## Three modes
 
-| Invocation           | Writes                                 | Exits 1 when                                                                                                             |
-| -------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `coinagerie`         | nothing; prints a glossary to stdout   | the configuration or command line is rejected                                                                            |
-| `coinagerie --check` | nothing                                | a destination has a missing or stale word, a glossary cannot be parsed, or the configuration or command line is rejected |
-| `coinagerie --write` | each destination whose content changes | a glossary cannot be parsed, or the configuration is rejected                                                            |
+Every invocation also carries `--config <path>`; without it the run exits 1.
+
+| Invocation   | Writes                                 | Exits 1 when                                                                                                             |
+| ------------ | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| no mode flag | nothing; prints a glossary to stdout   | the configuration or command line is rejected                                                                            |
+| `--check`    | nothing                                | a destination has a missing or stale word, a glossary cannot be parsed, or the configuration or command line is rejected |
+| `--write`    | each destination whose content changes | a glossary cannot be parsed, or the configuration is rejected                                                            |
 
 - `--check` and `--write` together are refused.
 - Each needs a destination, which is an `outputs` entry in the configuration or
@@ -133,14 +134,13 @@ live in the configuration. The `coinagerie-configure` skill covers every field.
 
 ## Wiring it in
 
-- **CI or a commit hook**: run `coinagerie --check` from the folder holding the
-  configuration, and let the exit code gate. Write locally with `--write`,
+- **CI or a commit hook**: run `coinagerie --config <path> --check`, and let the exit code gate. Write locally with `--write`,
   commit the glossary, and check in CI.
 - **Nx** (optional): the `@coinagerie/nx` plugin infers a cached
-  `coinagerie-check` target, running `coinagerie --check` in the project's
-  folder, for every project with a configuration file beside its
-  `project.json` or a named `package.json`. The configuration and the project's
-  own files are its inputs. A file the configuration reads from elsewhere, such
+  `coinagerie-check` target, running `coinagerie batch` over the project's
+  folder, for every project holding a file at the plugin's required
+  `projectConfigurationPath` beside its `project.json` or a named
+  `package.json`. That file and the project's own files are its inputs. A file the configuration reads from elsewhere, such
   as a parent glossary, belongs in the plugin's `inputs` option: otherwise a
   cached pass outlives an edit to it. The `command` option names how to run the
   binary when `coinagerie` is not on the path.

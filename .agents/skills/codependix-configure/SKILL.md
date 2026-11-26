@@ -1,6 +1,6 @@
 ---
 name: codependix-configure
-description: Write or edit a codependix.config.ts — which graph types run, per-project overrides, include and exclude globs, the whole-workspace graph, where each export lands, and the boundary rules every built graph is judged against. Use when a workspace has no codependix configuration yet, when a run produced no output because everything resolved to target none, when adding a JSON or Markdown destination, when choosing between an anchor block and a standalone file, when a configuration is rejected for a missing destination or an empty selector, when adding a forbid, allow, or acyclic rule, when registering the per-project Nx gate, or when deciding whether one configuration can describe every project in a workspace.
+description: "Write or edit a codependix.config.ts: which graph types run, globs, per-project overrides, export destinations, and the boundary rules. Use when a workspace has no configuration, a run wrote nothing, a configuration is rejected, or when adding an export destination, a boundary rule, or the per-project Nx gate."
 license: MIT
 ---
 
@@ -9,7 +9,7 @@ license: MIT
 Codependix produces nothing until a configuration tells it what to export and
 where. Every field of the file is optional, but the file itself never is: every
 run names it with `--config <path>` (in this repository,
-`--config configuration/codependix.config.ts`), and a run naming none
+`--config configuration/ic-suite/codependix.config.ts`), and a run naming none
 is refused. A configuration that leaves out `include` resolves every graph type
 for every project to `target: "none"` — a successful run that writes nothing.
 The configuration is the whole control surface; there is no flag that selects a
@@ -20,8 +20,14 @@ import { type CodependixConfiguration } from "@codependix/configuration";
 
 const codependixConfiguration: CodependixConfiguration = {
   defaults: {
-    imports: { markdown: { anchor: "codependix-file-imports" }, target: "markdown" },
-    nestjs: { markdown: { anchor: "codependix-nestjs-modules" }, target: "markdown" },
+    imports: {
+      markdown: { anchor: "codependix-file-imports" },
+      target: "markdown",
+    },
+    nestjs: {
+      markdown: { anchor: "codependix-nestjs-modules" },
+      target: "markdown",
+    },
     nx: { markdown: { anchor: "codependix-nx-projects" }, target: "markdown" },
   },
   exclude: ["fixtures/**"],
@@ -30,7 +36,10 @@ const codependixConfiguration: CodependixConfiguration = {
     widgets: {
       nx: {
         json: { path: "output/nx-graph.json" },
-        markdown: { anchor: "codependix-nx-projects", path: "docs/architecture.md" },
+        markdown: {
+          anchor: "codependix-nx-projects",
+          path: "docs/architecture.md",
+        },
         target: "both",
       },
     },
@@ -47,21 +56,32 @@ export default codependixConfiguration;
 
 Nowhere: it is named. `--config <path>` is required, with no default filename,
 no search, and no walk upward, so `codependix map --write --config
-configuration/codependix.config.ts` reads that file and nothing else.
+configuration/ic-suite/codependix.config.ts` reads that file and nothing else.
 Any extension in `ts`, `mts`, `cts`, `js`, `mjs`, `cjs`, or `json` loads; a
 neighboring file is never read in its place.
 
 - **A path given with `--config` must exist.** A typo fails the run rather than
-  quietly resolving every graph to `"none"`. It is resolved against the working
-  directory first, then against the workspace root, so a configuration kept in
-  a `configuration/` folder can be named relative to either.
+  quietly resolving every graph to `"none"`. A relative path is resolved
+  against the working directory alone — never retried from the workspace root —
+  and the Nx plugin resolves its own `configurationPath` against the workspace
+  root before it calls in.
 - **A missing `--config` fails the run too.** The flag is required: omitting
   it is refused with an error naming `--config`, and nothing falls back to a
   `codependix.config.ts` at the workspace root.
 
-A project's own `codependix.config.ts` is the one file that is found rather
-than named: it is read from beside the project root, never from a parent, and a
-project without one produces no per-project output.
+A project's own configuration file is named too: the workspace file's required
+`projectConfigurationPath` setting gives its path relative to each project's
+root (`"codependix.config.ts"`, or `"configuration/ic-suite/codependix.config.ts"`).
+Only that path is read, never a parent's file and never a neighbor, and a
+project with no file there produces no per-project output. A configuration
+without `projectConfigurationPath` is rejected.
+
+A project's TypeScript configuration is located the same way: the required
+`projectTsconfigPath` setting gives its path relative to each project's root
+(`"tsconfig.json"`, or `"configuration/tsconfig.json"`). No file name is
+assumed, and a configuration without `projectTsconfigPath` is rejected. The
+project's root stays the directory the tsconfig is resolved against, never the
+folder the tsconfig sits in.
 
 ## `defaults`, never `default`
 
@@ -78,12 +98,12 @@ like a tool that ignored it.
 Each graph type's export target is named, never inferred from which
 destinations are present:
 
-| `target` | Writes |
-| -------- | ------ |
-| `"both"` | The JSON and the Markdown destination together |
-| `"json"` | The JSON destination only |
-| `"markdown"` | The Markdown destination only |
-| `"none"` | Nothing — and the default for every unset target |
+| `target`     | Writes                                           |
+| ------------ | ------------------------------------------------ |
+| `"both"`     | The JSON and the Markdown destination together   |
+| `"json"`     | The JSON destination only                        |
+| `"markdown"` | The Markdown destination only                    |
+| `"none"`     | Nothing — and the default for every unset target |
 
 That explicitness is what lets a project keep a `json` destination it is not
 ready to write yet: leave the destination in place and set `target: "markdown"`.
@@ -205,7 +225,9 @@ draws the graph over the projects it named, and writes it wherever
 ## `projectGraph` — reading a graph rather than resolving one
 
 ```ts
-{ projectGraph: "artifacts/graph.json" }
+{
+  projectGraph: "artifacts/graph.json";
+}
 ```
 
 A path, relative to the workspace root, to the JSON
@@ -219,7 +241,7 @@ refused. See `codependix-export` for what that does and does not cover.
 ## Configuring a graph type a project does not have costs nothing
 
 A project that is not a NestJS project never appears in the NestJS pass; a
-project with no `tsconfig.json` never appears in the TypeScript import pass.
+project with no tsconfig at `projectTsconfigPath` never appears in the TypeScript import pass.
 Neither is a failure and neither needs an override, so a single `defaults`
 block naming all four graph types is the normal shape of a
 whole-workspace configuration rather than an over-broad one.
@@ -257,22 +279,22 @@ const codependixConfiguration: CodependixConfiguration = {
 
 Three kinds:
 
-| Kind | Reports |
-| ---- | ------- |
-| `forbid` | An edge whose source matches `from` and whose target matches `to` |
-| `allow` | An edge leaving `from` for anywhere `to` does not claim |
+| Kind      | Reports                                                           |
+| --------- | ----------------------------------------------------------------- |
+| `forbid`  | An edge whose source matches `from` and whose target matches `to` |
+| `allow`   | An edge leaving `from` for anywhere `to` does not claim           |
 | `acyclic` | A cycle among the nodes `nodes` selects, defaulting to every node |
 
 A selector's four fields are all lists of globs, and they **narrow** each
 other — every field a selector states must match, while within one field one
 glob matching is enough:
 
-| Field | Matches | Carried at |
-| ----- | ------- | ---------- |
-| `id` | The node's identifier — a project name, a file path, or a module class name | every level |
-| `path` | A workspace-relative project root, or a project-relative file path | `nx`, `imports`, `pythonImports` |
-| `project` | The Nx project a node belongs to | `nx`, `imports`, `pythonImports` |
-| `tags` | The node's Nx tags; one tag matching is enough | `nx` |
+| Field     | Matches                                                                     | Carried at                       |
+| --------- | --------------------------------------------------------------------------- | -------------------------------- |
+| `id`      | The node's identifier — a project name, a file path, or a module class name | every level                      |
+| `path`    | A workspace-relative project root, or a project-relative file path          | `nx`, `imports`, `pythonImports` |
+| `project` | The Nx project a node belongs to                                            | `nx`, `imports`, `pythonImports` |
+| `tags`    | The node's Nx tags; one tag matching is enough                              | `nx`                             |
 
 An access rule may also narrow **which edges** it judges, with `edges`:
 `{ implicit: false }` sees only edges backed by an import statement — exactly
@@ -305,11 +327,11 @@ Verify a candidate rule against the whole workspace before committing it.
 A finding is charged to projects, and a run fails only when one is charged to a
 project it judges. The rule kind decides who that is:
 
-| Finding | Charged to |
-| ------- | ---------- |
-| `forbid` match, or an edge no `allow` rule covers | The project owning the edge's **source**, and no other |
-| `acyclic` cycle | Every project owning a node on the cycle, so a cycle across A and B fails both |
-| Container that cannot boot | The project whose container failed, named with the owner of the failing class when that is another project |
+| Finding                                           | Charged to                                                                                                 |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `forbid` match, or an edge no `allow` rule covers | The project owning the edge's **source**, and no other                                                     |
+| `acyclic` cycle                                   | Every project owning a node on the cycle, so a cycle across A and B fails both                             |
+| Container that cannot boot                        | The project whose container failed, named with the owner of the failing class when that is another project |
 
 A project that merely depends on a project with a cycle or a forbidden edge is
 not failed: it sees the finding as a note, "in dependency". So a rule is
@@ -333,8 +355,10 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
     {
       "plugin": "@codependix/nx",
       "options": {
-        "configurationPath": "configuration/codependix.config.ts",
-        "gateTargetName": "codependix-bound"
+        "configurationPath": "configuration/ic-suite/codependix.config.ts",
+        "gateTargetName": "codependix-bound",
+        "projectConfigurationPath": "codependix.config.ts",
+        "projectTsconfigPath": "tsconfig.json"
       }
     }
   ]
@@ -343,7 +367,10 @@ it is given a `project.json`. Register the plugin once in `nx.json`:
 
 `configurationPath` names the one configuration every gate reads, and it is
 required: a registration without it fails with an error naming the option, and
-no `codependix.config.ts` at the workspace root is assumed. A gate target can
+no `codependix.config.ts` at the workspace root is assumed. `projectConfigurationPath`
+and `projectTsconfigPath` are required too, and must match the workspace
+file's settings of those names: they name each project's own file and its
+TypeScript configuration for the cache inputs. A gate target can
 override it with the executor option `configuration` (not Nx's own
 `--configuration` flag, which selects `check` or `write`); a blank value is
 refused, naming that option. Nothing else is configured per project: the rules in `boundaries`
@@ -355,8 +382,8 @@ does need a `tsconfig.json` that emits decorator metadata, because the hooks
 read it from the working directory and NestJS constructor injection depends on
 it.
 
-The gate is cached. A project's own `codependix.config.*` is one of its cache
-inputs, so editing it re-runs that gate. So is the codependix command line
+The gate is cached. A project's own file, at `projectConfigurationPath`, and its tsconfig, at
+`projectTsconfigPath`, are among its cache inputs, so editing it re-runs that gate. So is the codependix command line
 itself: its `package.json` and sources when it is a package of the workspace, or
 its installed version when it comes from a registry. So is the workspace root's
 `tsconfig.json`, which the loader reads. Test files are not inputs, so a

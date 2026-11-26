@@ -1,6 +1,6 @@
 ---
 name: coinagerie-define
-description: Use when writing or improving a definition in a coinagerie glossary, filling a bare `- **word**:` bullet or an empty JSON value, reviewing a definition that restates its word or reads like a dictionary entry, or explaining a word whose meaning in this codebase differs from its everyday English meaning.
+description: "Write the definitions in a coinagerie glossary: what a word means in this codebase, not in a dictionary. Use when filling a bare `- **word**:` bullet or an empty JSON value, or when reviewing a definition that restates its word or reads like a dictionary entry."
 license: MIT
 ---
 
@@ -55,7 +55,7 @@ defining by a synonym that is itself undefined.
 4. **Several meanings.** Define the dominant one and name the other in the same
    definition. A word that only completes a larger name (`service` in
    `HoldService`) is defined by how this codebase uses the suffix.
-5. **Check the file still parses.** Run `coinagerie --check`. Definitions never
+5. **Check the file still parses.** Run `coinagerie --config <path> --check`. Definitions never
    change a check's verdict, but a parse failure shows up there.
 
 ## Formats

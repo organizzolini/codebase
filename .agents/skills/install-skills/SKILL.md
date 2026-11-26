@@ -42,6 +42,8 @@ pnpm exec skills update
 
 ## Skills Without a GitHub Source
 
+The IC-suite skills this repository authors ride it too, but `skills update` finds skills only within five folders of the repository root, and theirs sit six deep under `projects/ic-suite/`. `.claude-plugin/marketplace.json` lists each `*-agents` package so the search reaches them; without it every one is reported "deleted upstream" and never refreshes. A new `*-agents` package needs an entry there.
+
 `skills update` re-fetches each entry from its GitHub source, so a skill published any other way cannot ride it. The ReUI skill is one: reui.io serves it only as a JSON bundle. It is locked as `sourceType: "local"`, which `skills update` skips, and the `installation` project's `update-reui-skill` command is its update step. The weekly `upgrade-dependencies.yml` runs it right after `skills update`; run it sooner with `pnpm exec nx run installation:start:update-reui-skill`. It re-pins `computedHash` and also heals a folder edited by hand. Give any later skill of this kind its own command rather than hand-editing the folder.
 
 ## Restoring Missing Skills

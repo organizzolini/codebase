@@ -937,6 +937,14 @@
       {
         "children": [
           {
+            "ruleId": "any-file"
+          }
+        ],
+        "name": ".claude-plugin"
+      },
+      {
+        "children": [
+          {
             "ruleId": "kebab-case-folder"
           },
           {
