@@ -13,7 +13,6 @@ import { ReleaseArchivesService } from "../../../release-archives/release-archiv
 import {
   ARCHIVE_TOOL_NAMES,
   archiveToolOnMacMessage,
-  GO_TOOL_NAMES,
   GO_TOOLS,
   NAMED_SOFTWARE,
   POSTGRES_CLIENT_NAME,
@@ -62,30 +61,6 @@ export class SoftwareNamedService {
     ];
   }
 
-  /** Installs one release archive tool by name. */
-  private installArchiveTool(name: string): void {
-    const tool = RELEASE_ARCHIVE_TOOLS.find(
-      ({ name: known }) => known === name,
-    );
-
-    if (tool === undefined) {
-      throw new Error(unknownNamesMessage([name]));
-    }
-
-    this.releaseArchivesService.install(tool);
-  }
-
-  /** Builds one Go linter by name. */
-  private installGoTool(name: string): void {
-    const tool = GO_TOOLS.find(({ name: known }) => known === name);
-
-    if (tool === undefined) {
-      throw new Error(unknownNamesMessage([name]));
-    }
-
-    this.softwareGoToolsService.install(tool);
-  }
-
   /** Installs PostgreSQL 18's client and checks that it is the one found first. */
   private installPostgresClient(): void {
     this.softwareDatabaseService.installPostgres();
@@ -96,6 +71,19 @@ export class SoftwareNamedService {
 
     if (!version.includes(POSTGRES_VERSION_MARKER)) {
       throw new Error(POSTGRES_NOT_18_MESSAGE);
+    }
+  }
+
+  /** Installs the release archive tool or Go linter of this name; `validate` has made sure one exists. */
+  private installTool(name: string): void {
+    for (const tool of RELEASE_ARCHIVE_TOOLS.filter(
+      ({ name: known }) => known === name,
+    )) {
+      this.releaseArchivesService.install(tool);
+    }
+
+    for (const tool of GO_TOOLS.filter(({ name: known }) => known === name)) {
+      this.softwareGoToolsService.install(tool);
     }
   }
 
@@ -135,10 +123,8 @@ export class SoftwareNamedService {
     for (const name of tools) {
       if (name === POSTGRES_CLIENT_NAME) {
         this.installPostgresClient();
-      } else if (GO_TOOL_NAMES.has(name)) {
-        this.installGoTool(name);
       } else {
-        this.installArchiveTool(name);
+        this.installTool(name);
       }
     }
 
