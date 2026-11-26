@@ -3,3 +3,6 @@ rules:
   dependabot-cooldown:
     config:
       days: 1
+  # Local actions are referenced as ./.github/actions/<name>. zizmor wants $/, which actionlint rejects.
+  self-repository:
+    disable: true
