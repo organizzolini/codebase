@@ -53,7 +53,14 @@ probes:
 # Environment variables
 env: []
 
-resources: {}
+# Every container states what it needs and may use; a release with its own numbers overrides these
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 nodeSelector: {}
 
