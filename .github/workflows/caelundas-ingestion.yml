@@ -92,7 +92,7 @@ jobs:
             -f infrastructure/helm/kubernetes-job/values/base.yaml \
             -f infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml \
             --set fullnameOverride="$release" \
-            --set image.tag="$IMAGE_TAG" \
+            --set-string image.tag="$IMAGE_TAG" \
             --set job.completions="$((END_YEAR - START_YEAR + 1))" \
             --set job.parallelism="$PARALLELISM" \
             --set-json extraEnv="$extra_env"
@@ -102,6 +102,7 @@ jobs:
             echo '```bash'
             echo "kubectl get jobs -n caelundas"
             echo "kubectl logs -n caelundas job/$release"
+            echo "kubectl get pods -n caelundas -l job-name=$release"
             echo '```'
             echo "Tidy the release record afterwards with \`helm uninstall $release -n caelundas\`."
           } >> "$GITHUB_STEP_SUMMARY"

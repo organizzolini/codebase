@@ -200,14 +200,16 @@ serving all three roots, so the move can stop at any point.
 
 ```bash
 kubectl get jobs -n caelundas
-kubectl logs -n caelundas job/<release-name>
+kubectl logs -n caelundas job/<release-name>   # one pod only
+kubectl get pods -n caelundas -l job-name=<release-name>
+kubectl logs -n caelundas -l job-name=<release-name> --prefix --tail=50   # every index
 ```
 
 **Clean up**: Argo CD never tracks the release, so it neither prunes nor reports it. The Job's `ttlSecondsAfterFinished` (86400) removes it a day after it finishes; `helm uninstall <release-name> -n caelundas` tidies the release record.
 
 **Duration**: one year takes about 45 minutes on 1 CPU at about 800 MiB peak (limit 1.5 GiB). With `parallelism: 1` a century is about 75 hours, and a failed index retries up to twice more (`backoffLimitPerIndex: 2`). Raise the `parallelism` input to 2 at most on the single node, which has about 1 GB of headroom; more needs a second node from the autoscaler.
 
-**Night sky, one-off**: `nx run caelundas-cli:start:night-sky` fills `stars`, `constellations` and `constellation_edges` from three downloaded files (see the caelundas-cli README). Either `pg_restore` those three tables from a local database into `caelundas_staging`, or install a plain `kubernetes-job` release with `--set job.completionMode=NonIndexed` and `--set-json args='["night-sky","--stars","<file>","--constellations","<file>","--lines","<file>"]'`, where the image must have the files available.
+**Night sky, one-off**: the `stars`, `constellations` and `constellation_edges` tables come from `nx run caelundas-cli:start:night-sky` run locally against three hand-downloaded files (see the caelundas-cli README). Restore just those tables into `caelundas_staging` (or production) with the `pg_dump`/`pg_restore` pair from the postgres runbook, adding `--table stars --table constellations --table constellation_edges` to both. A Job route is not provided: the image carries no night-sky input files.
 
 ## Troubleshooting
 
