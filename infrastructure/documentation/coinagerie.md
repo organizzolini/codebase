@@ -13,6 +13,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **backup**: Copy of the database kept in object storage, taken by the scheduled backup and used for restores.
 - **barman**: Backup and recovery tool that the Barman Cloud plugin runs against the object store.
 - **ca**: Certificate authority; the bootstrap root decodes the cluster's CA from the kubeconfig to trust the API server.
+- **cainjector**: cert-manager component that injects the certificate authority into webhook configurations and CRDs; it gets its own memory limits.
 - **capability**: Linux privilege a container can hold; the cloudflared pods drop all of them.
 - **certificate**: Certificate that a TLS client trusts; the kubeconfig carries the cluster's certificate authority data.
 - **cloudflare**: DNS and edge provider that serves the public host and runs the tunnel.
@@ -34,10 +35,12 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **proxied**: DNS record that Cloudflare answers for itself, hiding the origin; the caelundas record is proxied.
 - **redi**: Headword of Redis, the cache Argo CD runs, whose memory limit the core profile sets.
 - **seccomp**: Linux kernel filter that limits which system calls a container may make.
+- **startupapicheck**: cert-manager hook Job that waits for the webhook to answer before the install finishes.
 - **tftest**: Terraform test file, written in HCL and read by `terraform test` against mock providers, so it needs no credentials.
 - **tunnel**: Cloudflare Tunnel: an outbound connection from the cluster to Cloudflare that carries the public traffic in.
 - **visibility**: Repository setting that makes the GitHub repository public, set to public in the github root.
 - **wal**: Write-ahead log, the sequence of changes that backups archive for point-in-time recovery.
+- **webhook**: Admission endpoint that the Kubernetes API server calls to validate or change an object; cert-manager and CloudNativePG each run one.
 - **yamldecode**: Terraform function that parses a YAML string; the bootstrap root uses it on the kubeconfig and on rendered chart values.
 - **yamlencode**: Terraform function that renders a value as YAML; the bootstrap root uses it for the root Application values.
 

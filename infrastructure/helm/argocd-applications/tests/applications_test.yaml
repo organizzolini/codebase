@@ -174,3 +174,39 @@ tests:
       - equal:
           path: globalDefault
           value: false
+
+  - it: applies the cloudnative-pg CRDs server-side
+    template: templates/applications.yaml
+    asserts:
+      - contains:
+          path: spec.syncPolicy.syncOptions
+          content: ServerSideApply=true
+        documentIndex: 1
+
+  - it: sets requests and limits on every upstream chart workload
+    template: templates/applications.yaml
+    asserts:
+      - equal:
+          path: spec.source.helm.valuesObject.resources.limits.memory
+          value: 128Mi
+        documentIndex: 0
+      - equal:
+          path: spec.source.helm.valuesObject.webhook.resources.limits.memory
+          value: 64Mi
+        documentIndex: 0
+      - equal:
+          path: spec.source.helm.valuesObject.cainjector.resources.requests.memory
+          value: 32Mi
+        documentIndex: 0
+      - equal:
+          path: spec.source.helm.valuesObject.resources.requests.memory
+          value: 64Mi
+        documentIndex: 1
+      - equal:
+          path: spec.source.helm.valuesObject.resources.limits.memory
+          value: 256Mi
+        documentIndex: 1
+      - equal:
+          path: spec.source.helm.valuesObject.resources.limits.memory
+          value: 128Mi
+        documentIndex: 2
