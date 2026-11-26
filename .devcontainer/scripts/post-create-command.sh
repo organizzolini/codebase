@@ -28,6 +28,12 @@ curl -sSfL \
   | tar -xzC /usr/local/bin trivy
 echo "✅ Trivy installed: $(trivy --version)"
 
+# The infrastructure and workflow linters lint-code runs: kubeconform, kube-linter,
+# pluto, actionlint, and hadolint. tflint comes from the Terraform feature.
+echo "🧹 Installing infrastructure linters..."
+LINTERS_BIN=/usr/local/bin infrastructure/scripts/install-linters.sh
+echo "✅ Infrastructure linters installed"
+
 echo "🔎 Checking for .env file..."
 if [[ ! -f ".env" ]]; then
   if [[ -f ".env.default" ]]; then

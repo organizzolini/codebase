@@ -93,7 +93,7 @@ The container uses [Dev Container Features](https://containers.dev/features) for
 | `docker-outside-of-docker` | 1       | Mounts host Docker socket (DooD)               | Local only |
 | `github-cli`               | 1       | `gh` command for GitHub operations             | Both       |
 | `kubectl-helm-minikube`    | 1       | kubectl and Helm (minikube disabled)           | Both       |
-| `terraform`                | 1       | Terraform CLI + tflint for infrastructure      | Both       |
+| `terraform`                | 1       | Terraform CLI + tflint 0.66.0 for infrastructure      | Both       |
 
 ### Custom Installations
 
