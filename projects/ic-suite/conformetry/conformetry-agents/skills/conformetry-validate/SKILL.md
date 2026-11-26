@@ -1,6 +1,6 @@
 ---
 name: conformetry-validate
-description: Run a conformetry conformance check and act on what it reports. Use when a conformetry-validate target fails; when a composite lint run reports conformance differences; when a report names a missing file, a missing declaration, a missing comment, a placeholder it could not infer, an ambiguous instance, or an unmatched instance; when deciding whether to edit an instance or regenerate it; or before claiming generated code is finished. Covers both the Nx plugin and the conformetry command-line host.
+description: "Run a conformetry conformance check and act on its report: a missing file, declaration, or comment, a placeholder it could not infer, or an ambiguous or unmatched instance. Use when a conformetry-validate target fails, or when deciding whether to edit an instance or regenerate it."
 license: MIT
 ---
 

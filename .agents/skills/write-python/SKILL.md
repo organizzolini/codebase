@@ -1,6 +1,6 @@
 ---
 name: write-python
-description: Python project conventions for this codebase. Use when creating a new Python project, configuring Python tools (ruff, pyright, ty, pytest, bandit, vulture), writing or reviewing pyproject.toml, setting up Nx targets for Python, or asked about Python tooling setup, uv, or the language:python tag. Covers the project.json pattern, pyproject.toml structure, targetDefaults, tool execution via uv run, and ty pre-1.0 configuration rules.
+description: "Python project conventions: the uv workspace, pyproject.toml and project.json patterns, and the ruff, pyright, ty, pytest, bandit, and vulture targets. Use when creating a Python project, configuring its tools or Nx targets, or asked about Python tooling or the language:python tag."
 license: MIT
 ---
 

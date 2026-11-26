@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:a5991787465329cb3b74dccbdff2e6ecbcd6f5986cd16aca1082817fcf876e3d",
+  "pageVersion": "sha256:ae65940da7811539b4aefb198f23a42b2be49fa21a44b641762279633dbbea27",
   "claims": [
     {
       "id": "claim_30dc8a5f4ef74ee3936fe068af7960fb",
@@ -18,23 +18,19 @@
     },
     {
       "id": "claim_fd4efb803b014657ac8cdb383b04155d",
-      "statement": "The dev container pre-installs Node.js 26.13.1, pnpm 12.21.0, kubectl, Helm, Terraform, GitHub CLI, Docker, and SQLite via Dev Container Features and apt-get.",
+      "statement": "The dev container pre-installs Node.js 26 (LTS), pnpm 11.2.2, kubectl 1.35.1, Helm 4.1.1, Terraform 1.14.5 with tflint 0.61.0, GitHub CLI 2.87.3, Docker (via DooD or DinD feature), Python 3.14 with JupyterLab, Nx 22.7.3, uv (latest), SQLite 3.40.1, jq 1.8.1 via Dev Container Features; additionally installs PostgreSQL 18 client, Gitleaks 8.30.1, Trivy 0.74.0, uv 0.12.3, and node-gyp via postCreateCommand (apt-get and curl).",
       "evidence": [
         {
-          "resource": "repo://.devcontainer/README.md#L89-L97",
-          "version": "repo-lines-v1:sha256:a14f93b218005befaeed7d6b25fcd5a4c4dea84d8dd64e25f8c87934b30762bd:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiY2E5NDZkMWI4Y2FhOWY0YjI0ZGMyZTkzOTgyNzI1NTYzOGUwMjkzN2Y4YzJjNGY4NjZmMTc4NDYwN2U2YzczMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzZiZmYyNTgxZDRmNzgwMWU1M2M3ZDFlYTk3Y2Y0NjAwMjliNjFkZjI2NGM1ZTExODdmNDM2NjllYTI0YWM2MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2I0ODJkOWZkNDMzODI0NzhhYzk3ODVmNGI1MzcxZDE2OTY3ZjI1OTkwNzc4MDc0NzgyOTU2MjhlZDY5MTllMCJ9"
+          "resource": "repo://.devcontainer/cloud/devcontainer.json#L101-L180",
+          "version": "repo-lines-v1:sha256:28594b4f7dc5591f63e741d200e72d4a0da7482a80d3e9a3f1c3e3df24062ed3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkOWRkYjQ2OTVlMTkwZWI5YmJiMWQ1YTI2YjM3ZjdmNzg4ZTcyNDZiYzcxNmVjMzI2MGMxMzA0ZTk1Y2MzZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlZTYzZTgyNDBjYThlYmE1MWVhY2I2OTYxZDhlOTYwNzVmZWM0NTNlZjQzYTA0ZjFlMzg5ZjgxYzdhZDJkYjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhZmRmZWZlNzIyNTUyZTk5YWEyNDQ5YTYxMzZlYzg4MjllODhiYWVkM2RkZGNiNjUxNTIyYzMzZThmNjZmYjAifQ"
         },
         {
-          "resource": "repo://.devcontainer/README.md#L9-L16",
-          "version": "repo-lines-v1:sha256:a734b0f2ef58c2538d9133ac8770ec498f4030768ae0c5a97f8081eb26fa0b1f:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGFiNGZjN2FlYTQ3MTEyOTZmYzc5ZGY0ZmUxODQwNWU1MTY2M2YxN2QxMGQ2ZmQwZDQ3NmFmOGU4YjJkYmI1NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWYxZDM0OTJjMmUxZDdkZWFlOWYwMTIzMTFhZTllZGYzOWIwNDc4YjgzNGYwYTA3MmMyZjhjMGQ5NDk2MGRmOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmNlZDIyZTI2N2U2YjYxMjNmZGViY2ZhN2Y5NWU1M2RkZThmMjU4N2Y3Y2ZlNjdiYWY4YzNkMGY1OTQ2ZTdiNCJ9"
+          "resource": "repo://.devcontainer/local/devcontainer.json#L101-L180",
+          "version": "repo-lines-v1:sha256:28594b4f7dc5591f63e741d200e72d4a0da7482a80d3e9a3f1c3e3df24062ed3:eyJzZWxlY3RlZExpbmVDb3VudCI6ODAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkOWRkYjQ2OTVlMTkwZWI5YmJiMWQ1YTI2YjM3ZjdmNzg4ZTcyNDZiYzcxNmVjMzI2MGMxMzA0ZTk1Y2MzZTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRlZTYzZTgyNDBjYThlYmE1MWVhY2I2OTYxZDhlOTYwNzVmZWM0NTNlZjQzYTA0ZjFlMzg5ZjgxYzdhZDJkYjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlZDUxOGU1NGM3ODNhYTYxMDMwNDQ1YmIyZmY2ZjI1NWIzNjhjZmUyMTExYjRhYmYzNDZmZGYwMThkY2M3NDgifQ"
         },
         {
-          "resource": "repo://.devcontainer/local/devcontainer.json#L5-L15",
-          "version": "repo-lines-v1:sha256:12063ea2e78296eddf21731b42f06e45a265926b88b808e8ccde7795989e8bbe:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxZjFjYjgxOGZmNjVlNDZjNjc0MmUwMTMwOGFhYjlmY2ZhZDliZWFiMjE1ZjZiMjZkOTk4MjdmZmJkOWYyMWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmMGJjNzkxZTA5MTFmM2E1MTQ3Nzg1MjRjNDQyNDJhZWZlNGE4ODgyNjhlNjdjZjgwYmY4MWU1ZGIwNjE0N2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjM5ODdkODkwOTAzYmJjYzEwMDI0YTQxYTNhZjhmYmY0MTI3MmU2ODlmMDU3N2M1ZTEzMzQ1OGZkOGExYjQwOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijc1YTc2OWUxN2JkZjlkYzM4ZTQwYzYwMDU2M2ZmZWJkYjI4OGQ1ZmQ5ZTcyMzliZWM5MWQ5ZTBlYjU2YjRkNzQifQ"
-        },
-        {
-          "resource": "repo://package.json#L84-L96",
-          "version": "repo-lines-v1:sha256:1f9852869011079cc9f65af12447ba0db32d5131f1884ae944d5278ab46a97d0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmNjAxNTU0MTIyZWZlODU1ZDU2ZTEwY2M5YmFmMjAzMWNhM2Y0YWIxMWNkYmEyMmYxZWJjNWQzOWE3NTU4MjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmNzM4MjZjMzMyNmVlMGJkODU3NTgxOWNhY2M2Yzc1OWY4OGEyZmNjZDYwZGIxZmFkODJlNjFkNDg3MjZlNzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ODdkNWUwNzQ3Nzc5YjdhMWQzNDE4YjU0ZWRlOTBkOWU2Y2ZkMTIzYmI1NjMzM2I4YjhlN2MyYzQ4NTMzZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZWJhODI2NGFmYjEyZmM3MzA1Y2E0NGZmYmRmM2IzMGE3ZjBlMTYzOTdhNGUwZDZkODcxOTYwMzk3MzEzYjEifQ"
+          "resource": "repo://.devcontainer/scripts/post-create-command.sh#L1-L75",
+          "version": "repo-lines-v1:sha256:d3e7ea1660aa85b51a1051973b8117e7f8408770902f2e3c7769f1403fc128c9:eyJzZWxlY3RlZExpbmVDb3VudCI6NzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkOTVmYzA0YTgwYzk1MmY0OWNlNDE4ODYyN2M1M2IwZmJlOGM0NDA0MWI5NTJkNTkyYWNkMWRlOTk4NjE0NjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMzNmMzZjFhODE4ZGI5YjMyYjgyMGZlYTc1ZGFmMDAwOGFhOGQ0ZjgwNWRiZjVmZGJhZWU5OTI2ZDk4MWRiYTciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -53,8 +49,8 @@
       "statement": "The PostgreSQL service creates project databases from the POSTGRES_PROJECTS list (caelundas, lexico, meanderaw) only when the volume is empty, creating a <project>_username role, <project>_development database, and <project> schema for each.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L55-L80",
-          "version": "repo-lines-v1:sha256:4e9921c955905f44a3bf0c094b0c9c54e4473559f1badb52a50723eb2f584c2b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MDdiNGU5NDI4ODdmODkxZDhiNGFkZGUxOThjMjNlYmEwZDllMTVmNmJjNzAxNDk1YjJjMDMyYmY0MzU1NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNWFlOGI4NDNlMmMyMWEyY2I4ZjMwODI5OWViMzEwMmY3ZWZmOTE4Y2ZiNGU2ZjAxNzlkMWMyMmIyNzFkMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
+          "resource": "repo://infrastructure/README.md#L55-L78",
+          "version": "repo-lines-v1:sha256:5202172d19bf22227654a9145681c19fde7c951d7e5b193f3a0e1d1f08b55b3f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZWNlOTVlYjk2MGI2Yzg5N2Q3MGFiN2Q5MDFlNjBjMWEzZWZkZGE2ZTcxZjJkNmYzYjgzYThmYzJmZmUwOTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNWFlOGI4NDNlMmMyMWEyY2I4ZjMwODI5OWViMzEwMmY3ZWZmOTE4Y2ZiNGU2ZjAxNzlkMWMyMmIyNzFkMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
         },
         {
           "resource": "repo://infrastructure/docker/docker-compose.yml#L26-L50",
@@ -71,12 +67,12 @@
       "statement": "Nx targets in the infrastructure project provide service management: postgres (up/down/recreate), searxng (up/down/open), open-webui (up/down/open).",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L95-L106",
+          "resource": "repo://infrastructure/README.md#L93-L104",
           "version": "repo-lines-v1:sha256:fc55eeec5d04cb89e6d21998b640f5cd70a61adc8fbe51128cbac0d890e056ee:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4YTA4MGNiZjZlZTk0MDBiZGJhMTJkMmJlOWU2MmQ5NjE0ZTI0OGRkMjE3NTdlMWRjNmExMjIyNzc0YmI5NDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyNmE1OTUyN2VkNTlkZDU5MGY4YzhlMjFkYmNmNThjYjA5Y2M0Yzg0ZWNiMWZkYzFiYzM3ZjRjNDUxNmRhOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjliZGQ3OWIxNTk1ZjRlMWM3NjY5YzQzZjE1Mzg1NDJhNDA2ZTczNmY4NzA0NmJlNzNmZDYyYWU0ZGViYmFiZmYifQ"
         },
         {
           "resource": "repo://infrastructure/project.json",
-          "version": "repo-file-v1:sha256:6813a66490da2e79c7269cdbf39e8ec3ed5e802554a1bdcf3a000fd52a32c5d9"
+          "version": "repo-file-v1:sha256:bc3b9c0bf977b73fe23a8e193786f51159b9bc40c72061061da470cdc018cf4d"
         }
       ]
     },
@@ -108,7 +104,7 @@
         },
         {
           "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L20-L30",
-          "version": "repo-lines-v1:sha256:fb876896049241a488c369f78dd1ba3ae5d0e131f1288fa64513b66d95bc9126:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1OTkyNjlkMTZkMmY4OGUwZDllMDhhNmM0NzQzYTE3NjVhYzE4NzgxNjJiMzhkZDQ3NDllODU2NzNhMWY1MDYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNzg1ZjlhMTlmNWVmOWIxMjAwYWUzYjNjYjQ5N2ZlYzQ3NDVmMjM2YmNlNmE0MTg1MzQyZTY5ODNkOTYxMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxMTBjZGM4ZmQwNzMyOGFjZTI1YmU2MGYzZDVmNGYxNjEwY2Y1YzI4MDk3NGQ1MWFhZTVmNTRlMzliMTM5MTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkYzQ1NDM1NTUyZjMwZmU1NjEyMjc4OWVmMjExODk4YWNhYmRlOTQzZTA5NDM0NjJiNDljNGE1ZmU1YWU2N2QifQ"
+          "version": "repo-lines-v1:sha256:938f1e05a4a697e3916db5b49a905e33827dd47de9670ec583d20a2997a55f03:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1YTUzZGQyMGNhOWY1NmEzZjQ2OTNiOTBhMDA0NjEyNGE2NmM5NWZiZTcxNmYzODdhMjE5MDFmOTZkNjI1ZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYyNzg1ZjlhMTlmNWVmOWIxMjAwYWUzYjNjYjQ5N2ZlYzQ3NDVmMjM2YmNlNmE0MTg1MzQyZTY5ODNkOTYxMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYxMTBjZGM4ZmQwNzMyOGFjZTI1YmU2MGYzZDVmNGYxNjEwY2Y1YzI4MDk3NGQ1MWFhZTVmNTRlMzliMTM5MTYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRkYzQ1NDM1NTUyZjMwZmU1NjEyMjc4OWVmMjExODk4YWNhYmRlOTQzZTA5NDM0NjJiNDljNGE1ZmU1YWU2N2QifQ"
         },
         {
           "resource": "repo://projects/meanderaw/meanderaw-cli/configuration/.env.default#L1-L9",
@@ -118,7 +114,7 @@
     },
     {
       "id": "claim_c049b615698d41eab76f9b950db03e15",
-      "statement": "Node.js/TypeScript dependencies are installed with pnpm install at the repository root; Python dependencies are installed with uv sync --project configuration/python from the repository root using the uv workspace declared in configuration/python/pyproject.toml.",
+      "statement": "Node.js/TypeScript dependencies are installed with pnpm install at the repository root (using pnpm@12.21.0 per packageManager); Python dependencies are installed with uv sync --project configuration/python from the repository root using the uv workspace declared in configuration/python/pyproject.toml.",
       "evidence": [
         {
           "resource": "repo://configuration/python/pyproject.toml",
@@ -126,11 +122,11 @@
         },
         {
           "resource": "repo://package.json#L84-L96",
-          "version": "repo-lines-v1:sha256:1f9852869011079cc9f65af12447ba0db32d5131f1884ae944d5278ab46a97d0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmNjAxNTU0MTIyZWZlODU1ZDU2ZTEwY2M5YmFmMjAzMWNhM2Y0YWIxMWNkYmEyMmYxZWJjNWQzOWE3NTU4MjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmNzM4MjZjMzMyNmVlMGJkODU3NTgxOWNhY2M2Yzc1OWY4OGEyZmNjZDYwZGIxZmFkODJlNjFkNDg3MjZlNzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ODdkNWUwNzQ3Nzc5YjdhMWQzNDE4YjU0ZWRlOTBkOWU2Y2ZkMTIzYmI1NjMzM2I4YjhlN2MyYzQ4NTMzZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE3ZWJhODI2NGFmYjEyZmM3MzA1Y2E0NGZmYmRmM2IzMGE3ZjBlMTYzOTdhNGUwZDZkODcxOTYwMzk3MzEzYjEifQ"
+          "version": "repo-lines-v1:sha256:900b5a5bd570e7c5d87e94ed1b9eced056c0ffc0325ad8a5b0f6870b76ada24b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmNjAxNTU0MTIyZWZlODU1ZDU2ZTEwY2M5YmFmMjAzMWNhM2Y0YWIxMWNkYmEyMmYxZWJjNWQzOWE3NTU4MjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM0ODMzZDU5NDljMDNhNDBjYTk1MjQ5MTYxMGE2NjU5NjQ0YjNhYTQ2NjM2MmY3OTkwMjBkYmYxOTgxNTQ3ZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ODdkNWUwNzQ3Nzc5YjdhMWQzNDE4YjU0ZWRlOTBkOWU2Y2ZkMTIzYmI1NjMzM2I4YjhlN2MyYzQ4NTMzZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4YWVhNDJkM2EwZDBlYjYyNTYwNjRiNTNhOTI0NzJiNDViMzlhMGY2YmExYTcwYWU2MTFjZTkwODYxZDMwYWEifQ"
         },
         {
-          "resource": "repo://pnpm-workspace.yaml#L1-L30",
-          "version": "repo-lines-v1:sha256:f4bd2209e6ad895ec30921c4294cba55ba70c6f84f98019cedd2e3a2fd949d7f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkYjA3NmViODBhZGUxOWZlYTNlMGE0MzE5ODZiNjU1ZjVmYTU5ZWQ2MjY3ZTEwN2Q2ODhiNjFjM2Y0MjE3OTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI1NDVmYjRlNDgyZThiZWMzYjE4YjIzZTMyNDkyMmM4ZTM3MDYyM2JlMjI2NzY5YTEwZTEyN2VjM2EwOWM2YmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE4ZjBiYWVlNTg1MTE4MTVkZjEyOGY0NmUzYjc0MTJiYmZmYzgwZTAwMDA2MjdkZWVmMDJjZTE3NWYwOTBjYTgifQ"
+          "resource": "repo://pnpm-workspace.yaml",
+          "version": "repo-file-v1:sha256:68439cefeed8fbc2f4693e4acb264fafe21bf5756f1cc3dd2ea00dd58b73d8e0"
         },
         {
           "resource": "repo://projects/affirmancy/README.md#L22-L35",
@@ -174,7 +170,7 @@
       "evidence": [
         {
           "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L1-L7",
-          "version": "repo-lines-v1:sha256:1567a6555563e05a221f2cff6efe64b7f6c8316b1f7e31551bbd25d9e79b1667:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI0YWMyNWQ4OTIyZTJiMTJiNmIyMDY0OWRjZGI0YjIwZmQxNzRhZGQzNDA2NmJhZTZjYTczZTdhZGEwYTk0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWQ0YTY1OTA3MTY2MmM4YjM2NzEzYjMwNjZiYWU4ZmRkOGE0ZWY4OWQ2M2FhZGVlZWFmNDQ4OWYwMWRmYjg2MyJ9"
+          "version": "repo-lines-v1:sha256:4707e126bb850eea3e219262b7ad8fa638a7c58a912c3450c07e219241ac81c3:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGI0YWMyNWQ4OTIyZTJiMTJiNmIyMDY0OWRjZGI0YjIwZmQxNzRhZGQzNDA2NmJhZTZjYTczZTdhZGEwYTk0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdjMDZjNTYxZDVjMzI3MzQzNjg1MjY4YTQ2YjMzOTFmMzk5OGVlZTg5MGQyYmU1MWYwZDIxY2M0YTUzYWU2ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWQ0YTY1OTA3MTY2MmM4YjM2NzEzYjMwNjZiYWU4ZmRkOGE0ZWY4OWQ2M2FhZGVlZWFmNDQ4OWYwMWRmYjg2MyJ9"
         },
         {
           "resource": "repo://projects/meanderaw/meanderaw-cli/README.md#L32-L46",
@@ -185,6 +181,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T17:40:37.367Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

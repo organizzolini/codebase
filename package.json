@@ -91,7 +91,7 @@
   "keywords": [],
   "license": "MIT",
   "name": "codebase",
-  "packageManager": "pnpm@12.21.0",
+  "packageManager": "pnpm@12.23.0",
   "repository": "organizzolini/codebase.git",
   "scripts": {
     "postinstall": "conformetry-nx-bootstrap-generators && (NODE_OPTIONS='' SWC_NODE_PROJECT=configuration/typescript/tsconfig.workspace.json node --import @swc-node/register/esm-register installation/src/installation.main.ts installed-skills write || echo \"⚠️  The installed-skills command could not run, so no skill was restored. Retry with 'pnpm exec nx run installation:installed-skills:write'\")",
@@ -110,5 +110,5 @@
     ]
   },
   "type": "module",
-  "version": "6.14.0"
+  "version": "6.15.1"
 }

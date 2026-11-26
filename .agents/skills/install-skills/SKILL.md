@@ -1,17 +1,32 @@
 ---
 name: install-skills
-description: Explains how skills are synchronized, updated, and excluded from various tools in the repository. Use when adding a new skill, running skills update, investigating missing skills, or wondering why a skill is ignored by formatters and linters.
+description: "Where agent skills and instructions live, and how skills are installed, updated, and kept out of repository tooling. Use when adding a skill, running skills update, when a skill is missing or ignored by a linter, or when editing agent instructions."
 ---
+
 # Install Skills and Synchronization
 
 This skill explains how agent skills are maintained in this repository, including how they are synchronized from external sources, checked in, and excluded from static analysis tools.
 
 ## When to Use This Skill
 
-- When adding a new skill (vendored or native).
+- When adding a new skill (vendored or native). Keep a native skill's description to about 40 words and never over 128, within a shared 12,288-character budget: `nx run integration:skill-descriptions` checks every skill this repository authors.
 - When a skill goes missing and needs to be restored.
 - When you need to understand the `skills update` process.
 - When configuring exclusions for tools like Prettier, CSpell, Codometer, etc.
+- When editing agent instructions, or a file like `.claude/CLAUDE.md` turns out to be a mirror.
+
+## Where Agent Instructions Live
+
+`AGENTS.md` and `.agents/skills/` are the single sources of truth. Every other entry point is a symlink to them, so edit the source, never the mirror:
+
+| Symlink                           | Target           |
+| --------------------------------- | ---------------- |
+| `.claude/CLAUDE.md`               | `AGENTS.md`      |
+| `.claude/skills`                  | `.agents/skills` |
+| `.github/copilot-instructions.md` | `AGENTS.md`      |
+| `.github/skills`                  | `.agents/skills` |
+
+A new agent harness gets a symlink of its own to the same targets, never a copy.
 
 ## The Rule of Committing
 
@@ -26,6 +41,8 @@ pnpm exec skills update
 ```
 
 ## Skills Without a GitHub Source
+
+The IC-suite skills this repository authors do not ride it: `skills update` searches only five folders down from the repository root, and they sit six down, so it reported each as deleted upstream and never refreshed it. Their lock entries are `local`, pointing at the `skills/<name>` folder inside each `*-agents` package. The weekly workflow refreshes them with `skills add ./projects/ic-suite/<toolchain>/<toolchain>-agents/skills/<name> -y`, which copies the folder and re-pins its hash; run the same command after editing one of those skills.
 
 `skills update` re-fetches each entry from its GitHub source, so a skill published any other way cannot ride it. The ReUI skill is one: reui.io serves it only as a JSON bundle. It is locked as `sourceType: "local"`, which `skills update` skips, and the `installation` project's `update-reui-skill` command is its update step. The weekly `upgrade-dependencies.yml` runs it right after `skills update`; run it sooner with `pnpm exec nx run installation:start:update-reui-skill`. It re-pins `computedHash` and also heals a folder edited by hand. Give any later skill of this kind its own command rather than hand-editing the folder.
 

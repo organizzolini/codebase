@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "@codebase/observability": "workspace:*",
-    "@conformetry/configuration": "workspace:*",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
@@ -9,6 +8,7 @@
     "lodash": "catalog:",
     "nest-commander": "catalog:",
     "reflect-metadata": "catalog:",
+    "yaml": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

@@ -107,7 +107,6 @@
     "**/CHANGELOG.md",
     "coverage/**",
     "dist/**",
-    "documentation/planning/**",
     "node_modules/**",
     "projects/common/presentation/src/components/**",
     "projects/common/presentation/src/hooks/use-mobile.tsx",

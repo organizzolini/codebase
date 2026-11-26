@@ -1,6 +1,6 @@
 ---
 name: callidescope-configure
-description: Tell callidescope what to do — the command-line flags (--check, --write, --addresses, --config, --format, and an override for every configured field, from --directories and --exclude through --include-tests, --maximum-depth, --maximum-breadth, --json, --markdown, and --mermaid) and the callidescope.config.ts they layer over, covering the two depth and breadth limits, entry points, exclusions and excluded callees, and where a run writes its JSON, markdown, and mermaid reports. Use when wiring a depth gate into CI or a commit hook, when a whole-workspace run is slow, when choosing between --check and --write, when a repository has no callidescope configuration yet, when a traced project has no callidescope.config.ts of its own or one that leaves a field out, when a project needs its own depth or breadth limit, when a package low in the graph measures nothing, when a trace judges code it should not, when everything is reported as an orphan root, or when deciding where a committed report should live.
+description: "Configure callidescope through callidescope.config.ts and the flags that override it: limits, entry points, exclusions, and report destinations. Use when setting up a depth gate, giving a project its own limit, or when a run is slow, measures nothing, or judges code it should not."
 license: MIT
 ---
 

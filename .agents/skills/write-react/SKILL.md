@@ -1,6 +1,6 @@
 ---
 name: write-react
-description: React coding conventions for this codebase. Use when writing or reviewing React components, when asked about component structure, section ordering, Tailwind CSS usage, state management patterns, conditional rendering, list rendering, or React 19 conventions. Covers the conformetry generators for components, hooks, routes, and server functions, component section layout (🔖🧩🪝🏗💪♻️🏁🎨), Tailwind CSS with theme tokens, TanStack Start routes, loaders, and server functions, components usage, and testing with Vitest + RTL.
+description: "React conventions: the conformetry generators for components, hooks, routes, and server functions, component section layout, Tailwind theme tokens, and TanStack Start routes and loaders. Use when writing or reviewing React components, hooks, or routes."
 license: MIT
 ---
 
@@ -15,15 +15,15 @@ Every shape below has a conformetry generator, and the generator's template is
 also the standard the file is validated against. Generate rather than writing
 the file by hand:
 
-| Shape | Generator | Lands in |
-| ----- | --------- | -------- |
-| Component folder | `nx g conformetry:react-component-folder --name=user-card --project=<project>` | `src/components/user-card/` |
+| Shape                 | Generator                                                                                         | Lands in                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| Component folder      | `nx g conformetry:react-component-folder --name=user-card --project=<project>`                    | `src/components/user-card/`                |
 | Component in a folder | `nx g conformetry:react-component-file --name=user-avatar --module=user-card --project=<project>` | `src/components/user-card/user-avatar.tsx` |
-| Hook folder | `nx g conformetry:react-hook-folder --name=use-user --project=<project>` | `src/hooks/use-user/` |
-| Hook in a folder | `nx g conformetry:react-hook-file --name=use-user-name --module=use-user --project=<project>` | `src/hooks/use-user/use-user-name.ts` |
-| Route | `nx g conformetry:tanstack-route --name=word.$id --path=/word/$id --project=<project>` | `src/routes/word.$id.tsx` |
-| Server functions | `nx g conformetry:tanstack-server-function --name=bookmarks --project=<project>` | `src/modules/bookmarks/` |
-| Application | `nx g conformetry:tanstack-application --name=<name> --directory=projects` | `projects/<name>/` |
+| Hook folder           | `nx g conformetry:react-hook-folder --name=use-user --project=<project>`                          | `src/hooks/use-user/`                      |
+| Hook in a folder      | `nx g conformetry:react-hook-file --name=use-user-name --module=use-user --project=<project>`     | `src/hooks/use-user/use-user-name.ts`      |
+| Route                 | `nx g conformetry:tanstack-route --name=word.$id --path=/word/$id --project=<project>`            | `src/routes/word.$id.tsx`                  |
+| Server functions      | `nx g conformetry:tanstack-server-function --name=bookmarks --project=<project>`                  | `src/modules/bookmarks/`                   |
+| Application           | `nx g conformetry:tanstack-application --name=<name> --directory=projects`                        | `projects/<name>/`                         |
 
 A template is the standard its instances are validated against, bodies
 included: every declaration, statement, and section comment it writes must
@@ -36,14 +36,14 @@ In a React application — a project tagged `framework:react` and
 `type:application` — every file in `src/` is one kind, and ESLint fails a file
 that holds anything else:
 
-| File | Holds only |
-| ---- | ---------- |
+| File                                           | Holds only                                                           |
+| ---------------------------------------------- | -------------------------------------------------------------------- |
 | `src/components/<feature>/<folder>/<name>.tsx` | Imports, one exported component, and its exported `<Name>Properties` |
-| `src/hooks/<folder>/use-<name>.ts` | Imports and one exported hook |
-| `src/routes/<route>.tsx` | Imports, the exported `Route`, and the components it renders |
-| `*.types.ts` | Types and interfaces |
-| `*.constants.ts` | `const` declarations, and the `Error` classes thrown beside them |
-| `*.utilities.ts` | Function declarations |
+| `src/hooks/<folder>/use-<name>.ts`             | Imports and one exported hook                                        |
+| `src/routes/<route>.tsx`                       | Imports, the exported `Route`, and the components it renders         |
+| `*.types.ts`                                   | Types and interfaces                                                 |
+| `*.constants.ts`                               | `const` declarations, and the `Error` classes thrown beside them     |
+| `*.utilities.ts`                               | Function declarations                                                |
 
 `src/` holds `components/`, `hooks/`, and `routes/`, and every component and
 hook sits in a folder of its own with its `.types.ts`, `.constants.ts`, and
@@ -74,16 +74,16 @@ A component lives in a kebab-case file and is a function declaration taking
 `properties`. Mark its sections **in this order**, keeping a marker even when
 its section is empty:
 
-| Section | Emoji | Contents |
-| ------- | ----- | -------- |
-| Type | 🔖 | The `<Name>Properties` interface |
-| Component | 🧩 | The component declaration |
-| Hooks | 🪝 | `useState`, `useEffect`, custom hooks |
-| Setup | 🏗 | Computed values, memoized callbacks |
-| Handlers | 💪 | Event handlers |
-| Lifecycle | ♻️ | `useEffect` and other effects |
-| Early Returns | 🏁 | Loading and error states |
-| Markup | 🎨 | The JSX return |
+| Section       | Emoji | Contents                              |
+| ------------- | ----- | ------------------------------------- |
+| Type          | 🔖    | The `<Name>Properties` interface      |
+| Component     | 🧩    | The component declaration             |
+| Hooks         | 🪝    | `useState`, `useEffect`, custom hooks |
+| Setup         | 🏗     | Computed values, memoized callbacks   |
+| Handlers      | 💪    | Event handlers                        |
+| Lifecycle     | ♻️    | `useEffect` and other effects         |
+| Early Returns | 🏁    | Loading and error states              |
+| Markup        | 🎨    | The JSX return                        |
 
 ```typescript
 // src/components/user-card/user-card.tsx
@@ -205,6 +205,8 @@ import { cn } from "@codebase/presentation";
 
 ## TanStack Start Routes
 
+A web application is TanStack Start on Vite, with file-based TanStack Router from `src/routes/`, React 19 and Tailwind CSS 4, shared UI from `@codebase/presentation`, and Vitest with React Testing Library under jsdom. An application may build as a static single-page app with no server functions; its own `AGENTS.md` says so when it does.
+
 Routes are files in `src/routes/`, named the way TanStack Router names them:
 `index.tsx` serves `/`, `word.$id.tsx` serves `/word/$id`. A route file holds
 its `Route` under a `// 🧭 Route` marker and the page it renders. Reusable
@@ -269,12 +271,12 @@ function module keeps its logic in `<feature>.utilities.ts`, outside
 
 ## State Management
 
-| Scenario | Pattern |
-| -------- | ------- |
-| Component-local state | `useState` |
-| Server/fetched data | TanStack Router loaders |
-| Expensive computations | `useMemo` |
-| Stable callbacks | `useCallback` |
+| Scenario               | Pattern                 |
+| ---------------------- | ----------------------- |
+| Component-local state  | `useState`              |
+| Server/fetched data    | TanStack Router loaders |
+| Expensive computations | `useMemo`               |
+| Stable callbacks       | `useCallback`           |
 
 ## Common Patterns
 
@@ -313,32 +315,4 @@ function module keeps its logic in `<feature>.utilities.ts`, outside
 
 ## Testing React Components
 
-Use Vitest and React Testing Library, beside the file under test:
-
-| File | Test | Shape |
-| ---- | ---- | ----- |
-| `user-card/user-card.tsx` | `user-card/user-card.unit.test.tsx` | `describe(UserCard, …)`, rendering with `render` |
-| `use-user/use-user.ts` | `use-user/use-user.unit.test.ts` | `describe(useUser, …)`, rendering with `renderHook` |
-| `word.$id.tsx` | `word.$id.integration.test.tsx` | `describe("word.$id", …)`, rendering with `renderRoute` |
-
-`renderRoute` comes from `@codebase/testing/react` and takes the application's
-router, as in `renderRoute(getRouter(), "/word/1")`: it loads the real route
-tree in a memory history without the root's document shell, so the route's
-loader, head, and page all run. That is why a route test is an integration test. The
-distinct suffix is also what keeps a route's files from fitting the component
-template when conformance is checked.
-
-```typescript
-import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
-
-import { UserCard } from "./user-card";
-
-describe(UserCard, () => {
-  it("applies its class name", () => {
-    const { container } = render(<UserCard className="card" userId="1" />);
-
-    expect(container.firstElementChild?.className).toBe("card");
-  });
-});
-```
+Component, hook, and route tests follow the [write-tests skill](../write-tests/SKILL.md); its [react.md](../write-tests/references/react.md) has the file names and `renderRoute`.

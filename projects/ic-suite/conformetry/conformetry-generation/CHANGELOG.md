@@ -1,3 +1,21 @@
+## 0.0.99 (2026-11-25)
+
+### 🚀 Features
+
+- **integration,documentation,callidescope:** ✨ reorganize agent skills and cap description length ([#2595](https://github.com/organizzolini/codebase/pull/2595), [#2562](https://github.com/organizzolini/codebase/issues/2562))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.99
+- Updated conformetry-core to 0.0.97
+
+## 0.0.98 (2026-11-25)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.98
+- Updated conformetry-core to 0.0.96
+
 ## 0.0.97 (2026-11-23)
 
 ### 🧱 Updated Dependencies

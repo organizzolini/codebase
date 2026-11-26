@@ -71,10 +71,10 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
     label: "Upgrade Python dependencies",
   },
   {
-    // The skills CLI installs for every agent when none is detected and --yes
-    // is passed, leaving an untracked agent/ folder that lint rejects, so it is
-    // removed. ReUI serves its skill as a JSON bundle that `skills update`
-    // skips, so the installation project re-fetches it.
+    // `skills update` installs for every agent when none is detected, leaving
+    // an untracked agent/ folder, so it is removed. It skips ReUI's JSON bundle
+    // and the IC-suite skills, which sit too deep to find, so both are
+    // re-added from local sources.
     commands: [
       ["pnpm", "exec", "skills", "update", "--yes"],
       ["rm", "-rf", "agent/"],
@@ -85,6 +85,25 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
         "installation/src/installation.main.ts",
         "update-reui-skill",
       ],
+      [
+        "find",
+        "./projects/ic-suite",
+        "-mindepth",
+        "4",
+        "-maxdepth",
+        "4",
+        "-path",
+        "*-agents/skills/*",
+        "-exec",
+        "pnpm",
+        "exec",
+        "skills",
+        "add",
+        "{}",
+        "-y",
+        ";",
+      ],
+      ["rm", "-rf", "agent/"],
       FORMAT_UPGRADED_FILES,
     ],
     label: "Upgrade skills",

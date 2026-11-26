@@ -33,9 +33,12 @@ rules to keep in mind here:
 ## Writing a skill here
 
 Skills are model-invoked: omit `disable-model-invocation`, and write a
-`description` that is only the situations that should fire it. Front matter
-needs a `name` matching the directory and a `description`; the skills tool
-skips a skill missing either without saying so.
+`description` that says in one clause what the skill does, then the situations
+that should fire it, in the language an agent would actually be prompted with.
+The description is the entire trigger surface, and every installed skill's
+description shares one listing budget, so keep it to about 40 words and never
+over 128. Front matter needs a `name` matching the directory and a
+`description`; the skills tool skips a skill missing either without saying so.
 
 Content rules specific to coinagerie:
 

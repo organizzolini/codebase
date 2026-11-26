@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:e429ba78a63e7f58c3806843a41b22fd787230c83de767349fc13e048077a312",
+  "pageVersion": "sha256:c908c53cfcc8febbb167fc75b1e1e6f2c569b30696548251109b3d43a7e7ee29",
   "claims": [
     {
       "id": "claim_ff8afaf5ab934fa5a4f1b86668eaf53e",
@@ -65,32 +65,12 @@
       ]
     },
     {
-      "id": "claim_89d37b9704de4a1681039d56f3e1d8bb",
-      "statement": "ADR 0001 absorbed size-limit into codometer as a general capability: any metric may carry a limit, and a build artifact is just another target.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0001-absorb-size-limit-into-codometer.md",
-          "version": "repo-file-v1:sha256:5480d5c29818938c23709a742ca698ab8cd381c60116557f8a88601c57028467"
-        }
-      ]
-    },
-    {
-      "id": "claim_bdef24616bbc4e2797b0cd60ad42ab9e",
-      "statement": "ADR 0003 folded bundle-size reporting into codometer: deleted tools/reporting, moved diffing to codometer-changes, rendering to codometer-markdown, composed in codometer-cli's changes command.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0003-fold-bundle-reporting-into-codometer.md",
-          "version": "repo-file-v1:sha256:14659248d755b688720e679bc98c7173c44f67d68af252ee576cecbbd6503c1a"
-        }
-      ]
-    },
-    {
       "id": "claim_edc39dcd519b427c8c3ebc0416592223",
       "statement": "Limits are absolute (no baseline or floor), carry a severity (fail or warn, default fail), and are evaluated against exactly one metric; ambiguous or unbound paths fail the run.",
       "evidence": [
         {
-          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.types.ts#L180-L260",
-          "version": "repo-lines-v1:sha256:eddfb2daba0ced5a503c951000a33ebb848c6d693dd2c4f91988a7bf7636c91f:eyJzZWxlY3RlZExpbmVDb3VudCI6ODEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0NTNhMDAwZDA0MGFlMGNmZTdiNWU4MjQxN2IzMWUyZDM4Njg4ODgzMmFhZGU5NDhjMDk1MDM5ZDM3Yzc1NjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2MjU1YjgxNjA0NjEwNDJiOTE2ODNlMDUxMjk0ZTFiOTRlZDE1ZjY1M2M2YzQ3ZjhjNjI2MGJhMmIwNWI5NTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "resource": "repo://projects/ic-suite/codometer/codometer-configuration/src/modules/configuration/configuration.types.ts#L180-L261",
+          "version": "repo-lines-v1:sha256:a426b4f051a5cd703330158d2bd057dbd1d570bba2117c88821b8447591ec061:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU0NTNhMDAwZDA0MGFlMGNmZTdiNWU4MjQxN2IzMWUyZDM4Njg4ODgzMmFhZGU5NDhjMDk1MDM5ZDM3Yzc1NjkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2MjU1YjgxNjA0NjEwNDJiOTE2ODNlMDUxMjk0ZTFiOTRlZDE1ZjY1M2M2YzQ3ZjhjNjI2MGJhMmIwNWI5NTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-measurement/src/modules/limits/limits.service.ts#L1-L208",
@@ -113,8 +93,36 @@
       ]
     },
     {
-      "id": "claim_cfdf85ac53af4fa09f0e00af20baed1c",
-      "statement": "Codometer consists of eight packages: codometer-agents, codometer-cli, codometer-configuration, codometer-core, codometer-examples, codometer-languages, codometer-measurement, codometer-output (the agents and examples packages are not published to npm).",
+      "id": "claim_8f2f9415837f4d53adc14df7ca11b1f4",
+      "statement": "The size-limit tool's job was folded into codometer as a general capability: any metric may carry a limit, and a build artifact is just another target (the Compiled JavaScript target with size analysis).",
+      "evidence": [
+        {
+          "resource": "repo://configuration/ic-suite/codometer.config.ts#L10-L30",
+          "version": "repo-lines-v1:sha256:da554898642a002887f1ea4c85cef919bd4883455669ca8ee41282400d1b583a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkyN2FmNjI4ZWNmZDJiNGEzMGI5OWM5YTEzNThkYzIxZTM2ODY1MDU0MjllYmRjYWViMDMyZjAzNzM5NzZlMDkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjY2Q2MTdjNWI1MWZkNGI1MzA0MDQ5Y2Q3NGYwMDNlMzEzNTM1MTI5YTFjMjU2MzFjNWJjMzkyNTk2OTEwMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI3ZTE3ZjRkZDA5YTA3ZTRkYzI2Y2Q2NDRmMWM0YzExYjY0MjI1ZWIxMDE5ZGFmZGI2NTBhYzA3OTg5NTVkMjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdmOWM5NDgxMjZhOGRlNDZhYWZkZDMyZGUyMzgyODAyMTY5M2FmYTEyZjFjYjg5NjA5MWM1MWZlNzg3ZjUyNTEifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-measurement/src/modules/limits/limits.service.ts#L140-L180",
+          "version": "repo-lines-v1:sha256:6d8e2e8d9f2b01042d7aa6cca59d40b1df0a8a0382a43728aff30df35a3e5c42:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlNzExMjdmN2Y1ZjE3MTdiOTZlN2U5NzY5MGE3ZDE4MWE1MDcyMzdmY2FkMTg4NDBiYmIwOTM0MDIyYTkyMGIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgyMTQ4NWVhNTQ1NDlhMTc2NmEwYjUwMGRjMzA5YTI2NjcxYmY3MTE2MTk5NGFiYTlmNzQ3MzEzMWJiZGMzZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyYTVmOWRjYWFkNmYxOGQ2OGE1ZTk0ZTE4OTkwNTViMTNkOGFjNjhkZDVhNzk0YjRiMWU0OWNjYjk2ZGEyYzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b8db6ca993ac4dc1a49865613cd0ab25",
+      "statement": "Bundle-size reporting was folded into codometer: the tools/reporting directory was deleted; diffing moved to codometer-output's ChangesService, rendering to the shared markdown badge renderer, and both composed in codometer-cli's changes command.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts#L90-L110",
+          "version": "repo-lines-v1:sha256:d877f261e4e0b0f499e339a3099d26c1060f21837a2d19b3c510cd3a855397a9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5N2Q0MDE1NWRiMGYzNzUzMWNlMGRkNWJkNDVhMTk3OTNkMzdiNGJlOTkwNzE1MGZlMzk2N2Y5ZjY3MWI0M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQxNTkxMDg1NjNmYzA0MTQ0NDEyYzgwNWI2NzU0YWU2MDVkNTI0OTFiN2Q4MjA1ZDNmMDBiZGU3YTc4NGNmZTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkYjg3OTJjNmM5NDMzNDMxYWVlMmIwMzI4NDRmOTkzN2Y3MWVhYTEwMDJiNDQxNTY0NDE2MzA2MzhjNTY5YmQifQ"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-output/src/modules/changes/changes.service.ts#L1-L100",
+          "version": "repo-lines-v1:sha256:64def23fd842f59d6757cbfaeb340c761e91b70b6b55cd3a78e8d4a40c548027:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwZDI4YjAzZTJjN2JmMTk1YTdhNjc2YzczNWM2ODE3YTcyNTdjZWJkZjBlMDI2Njk0M2Q3OWRhMmM5ZjExMWQ3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI3Njc3ZmUxZjFjZDFiYTJjZmNjNzBhNjYxZWViMWFiOGE5YzJmNGUyZDEyYTllZjI0ZDUxOTg2NjQyYzAxNzlhIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJiOWExYjg3ZTkwMzkxYzk2YjJhYWVjY2JlNTg1MjcxNjE5MjgyN2EzZGZkODg1YzE3NzU0ZDA5ZDIyYTgxNGU0In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_2c850d67f080421a943ac56b71821234",
+      "statement": "Codemeter consists of nine packages: codometer-agents (private), codometer-cli, codometer-configuration, codometer-core, codometer-examples (private), codometer-languages, codometer-measurement, codometer-output, and codometer-nx.",
       "evidence": [
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-agents/package.json",
@@ -122,15 +130,15 @@
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-cli/package.json",
-          "version": "repo-file-v1:sha256:05aa8215d7671fc5fa283ff09b620f7cb8a9865f5c2572f5283eee5484df414d"
+          "version": "repo-file-v1:sha256:6de37e26e534956b095a2fcc2404965c0f56def5863863c5bcc9d58664d4e8ab"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-configuration/package.json",
-          "version": "repo-file-v1:sha256:d42ae6b02991e7a6ec075d85ac82f93f88f0b3bdfa42f58341aa3db91e31ae5a"
+          "version": "repo-file-v1:sha256:f029e1291837893c317ec160b81527ec118b90228de1605bbf8ca1eb13fef982"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-core/package.json",
-          "version": "repo-file-v1:sha256:39923300517fb53d30cb8d58902269cd41f9832d04b1f6fb93c946ad674ebe53"
+          "version": "repo-file-v1:sha256:e77d66fce9ddc5a76b3a849a89c6d48f92264e6ceece04b1b01ec87e1fc95053"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-examples/package.json",
@@ -138,21 +146,25 @@
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-languages/package.json",
-          "version": "repo-file-v1:sha256:f65dd3d5eee59c8fc5a7f74b4e46eb68ca2c7b1e1a7d28631e62c257e96a1611"
+          "version": "repo-file-v1:sha256:6c6bc76daac4fc945da351b2728b20e4033f43260f832b399c995fa893c774d7"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-measurement/package.json",
-          "version": "repo-file-v1:sha256:920ab4b4d26c4a34fedcc86b503edc4ccb5121c3c11913306d78d6ada25d740c"
+          "version": "repo-file-v1:sha256:c5b6370994069dbf28785a331f7c6303a629b4ddb4a0386513a75a8d15ec10a6"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codometer/codometer-nx/package.json",
+          "version": "repo-file-v1:sha256:8b554ce4914b0cec2fdf6db432257aa10adcb01f6fd1d89160f7b06c2ab45092"
         },
         {
           "resource": "repo://projects/ic-suite/codometer/codometer-output/package.json",
-          "version": "repo-file-v1:sha256:79138578f28d0242b95183a52f6a91bad198143c4c684f88ec447bb3beafe3d2"
+          "version": "repo-file-v1:sha256:eb6d40b3f48b6e12a5d3106826dfab63eae15be99160be42594e79cfbdc32c33"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

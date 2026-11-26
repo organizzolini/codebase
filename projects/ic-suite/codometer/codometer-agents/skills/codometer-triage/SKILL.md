@@ -1,6 +1,6 @@
 ---
 name: codometer-triage
-description: Act on a codometer limit breach, a comment budget breach, a stale committed report, or a run that failed outright. Use when a codometer --check exits non-zero, when a size or count limit was breached, when a comment block ran past its word, line, or character budget, when a committed report reads stale against a fresh measurement even though nothing changed, when a limit fails to bind or an input matches no files, or before reaching for a repository's limit value to make a failing check pass.
+description: "Act on a codometer failure: a limit or comment-budget breach, a stale committed report, or a failed run. Use when codometer --check exits non-zero, when a report reads stale though nothing changed, or before raising a limit to make a check pass."
 license: MIT
 ---
 

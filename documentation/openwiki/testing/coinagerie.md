@@ -5,12 +5,16 @@ description: "Documents the testing approach for the Coinagerie vocabulary toolc
 tags: ["testing", "coinagerie", "vocabulary", "glossary", "integration", "unit", "fixtures"]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
+  - id: openwiki-source-0144ea531e31aa5c07ef9da9
+    resource: repo://configuration/typescript/vitest.config.ts
   - id: openwiki-source-146038c965029e9cdb787e14
     resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/configuration/vitest.config.ts
   - id: openwiki-source-c782c5f4d341f62f31fe8aab
     resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/package.json
+  - id: openwiki-source-fadb2af32c0186cd8acc2af5
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/project.json
   - id: openwiki-source-cb8ea6fd8e68fb0f16b0e7e6
     resource: repo://projects/ic-suite/coinagerie/coinagerie-cli/testing/coinagerie-cli.packed.test.ts
   - id: openwiki-source-15f3036c83c5c3226c3adb12
@@ -25,6 +29,8 @@ sources:
     resource: repo://projects/ic-suite/coinagerie/coinagerie-examples/testing/runs.ts
   - id: openwiki-source-fd5a7207dc2eee266f96846a
     resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/configuration/vitest.config.ts
+  - id: openwiki-source-30d75b38e319b302ec825e0e
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/project.json
   - id: openwiki-source-d33e44f6901d7d4ceb3e57a7
     resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/css/css.service.unit.test.ts
   - id: openwiki-source-316d4a6ddfb90ca45669f3f6
@@ -43,10 +49,22 @@ sources:
     resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/typescript/typescript.service.unit.test.ts
   - id: openwiki-source-d4f062129c82d76b6e718cc9
     resource: repo://projects/ic-suite/coinagerie/coinagerie-languages/src/modules/yaml/yaml.service.unit.test.ts
+  - id: openwiki-source-fea62684da5ba2d95dcc3522
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-nx/project.json
+  - id: openwiki-source-76dff91407afb2340c85cf82
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/batch-executor.unit.test.ts
+  - id: openwiki-source-91a28ef941c24037a736a4ca
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/executor.unit.test.ts
+  - id: openwiki-source-5f1facf0bc98490e5f722055
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-nx/src/index.unit.test.ts
+  - id: openwiki-source-64bb17892814f6763ed7e353
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-nx/testing/coinagerie-nx.packed.test.ts
   - id: openwiki-source-d9beb5e3b1172ee0958ece67
     resource: repo://projects/ic-suite/coinagerie/coinagerie-output/configuration/vitest.config.ts
   - id: openwiki-source-347c68f86a13b6e7135295c1
     resource: repo://projects/ic-suite/coinagerie/coinagerie-output/package.json
+  - id: openwiki-source-d740ffb7861a3fb7c35528bc
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-output/project.json
   - id: openwiki-source-3a3a2838d2fe0c4a69fbc396
     resource: repo://projects/ic-suite/coinagerie/coinagerie-output/src/modules/comparison/comparison.service.unit.test.ts
   - id: openwiki-source-dea2e37fcae41ab7580606ff
@@ -59,6 +77,8 @@ sources:
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/configuration/vitest.config.ts
   - id: openwiki-source-8c0b95231e8cdb31b9cc8c5f
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/package.json
+  - id: openwiki-source-570f4b453a6a63a61dce6558
+    resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/project.json
   - id: openwiki-source-e0ce648d3104cf4b33e8d245
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/discovery/discovery.service.unit.test.ts
   - id: openwiki-source-788a78ad1419fa56a74f4c36
@@ -67,7 +87,7 @@ sources:
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/vocabulary/vocabulary.service.unit.test.ts
   - id: openwiki-source-f79d9d1e2be203a6739ca67e
     resource: repo://projects/ic-suite/coinagerie/coinagerie-vocabulary/src/modules/words/words.service.unit.test.ts
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Coinagerie Testing
@@ -80,13 +100,14 @@ Coinagerie tests are organized by package, each with its own `vitest` configurat
 
 | Package | Test Command | Purpose |
 |---------|--------------|---------|
-| `@coinagerie/cli` | `nx run coinagerie-cli:vitest:unit` | CLI packing and end-to-end command tests |
-| `@coinagerie/vocabulary` | `nx run coinagerie-vocabulary:vitest:unit` | Discovery, tokenization, word splitting, folding, exclusion |
-| `@coinagerie/output` | `nx run coinagerie-output:vitest:unit` | Markdown/JSON rendering, comparison, anchor block splicing |
-| `@coinagerie/languages` | `nx run coinagerie-languages:vitest:unit` | Tokenizers for TypeScript, Python, JSON, YAML, TOML, Shell, SQL, HCL, CSS |
+| `@coinagerie/cli` | `nx run coinagerie-cli:vitest` | CLI packing and end-to-end command tests |
+| `@coinagerie/vocabulary` | `nx run coinagerie-vocabulary:vitest` | Discovery, tokenization, word splitting, folding, exclusion |
+| `@coinagerie/output` | `nx run coinagerie-output:vitest` | Markdown/JSON rendering, comparison, anchor block splicing |
+| `@coinagerie/languages` | `nx run coinagerie-languages:vitest` | Tokenizers for TypeScript, Python, JSON, YAML, TOML, Shell, SQL, HCL, CSS |
 | `@coinagerie/examples` | `nx run coinagerie-examples:examples` | Integration smoke gate over documented example runs |
+| `@coinagerie/nx` | `nx run coinagerie-nx:vitest` | Nx plugin inference, `coinagerie-check` executor, and batch executor tests |
 
-All packages require **100% type coverage** (`typeCoverage.atLeast: 100`, `strict: true`) and **96% code coverage** on branches, functions, lines, and statements.
+All packages require **100% type coverage** (`typeCoverage.atLeast: 100`, `strict: true`) and **96% code coverage** on branches, functions, lines, and statements (defined in `configuration/typescript/vitest.config.ts`).
 
 ## Vocabulary Service Unit Tests (`coinagerie-vocabulary`)
 
@@ -283,6 +304,85 @@ Tests `check(destinations, words)` and `write(destinations, words)` for multiple
 - `--check` and `--write` together is rejected before execution
 - Parse failures (malformed JSON, duplicate keys, stray anchor content) fail without modifying files
 
+## Nx Plugin Tests (`coinagerie-nx`)
+
+The `@coinagerie/nx` package provides the `coinagerie-check` inferred target and its executor. Its tests cover the plugin's target inference, the single-project executor, and the batch executor that runs `coinagerie batch` across multiple projects.
+
+### Target Inference Tests (`index.unit.test.ts`)
+
+Tests that the plugin infers a `coinagerie-check` target for every project containing a `coinagerie.config.*` file:
+
+```typescript
+it("infers coinagerie-check for a project with a config file", () => {
+  const targets = createProjectGraphAndInferTargets({
+    "packages/alpha/coinagerie.config.ts": "",
+  });
+  expect(targets["alpha"]).toContain("coinagerie-check");
+});
+```
+
+### Check Executor Unit Tests (`executor.unit.test.ts`)
+
+Tests the single-project `checkExecutor` that spawns the `coinagerie batch` command:
+
+- Passes when the CLI exits 0 (glossary matches vocabulary)
+- Fails with the CLI's report when the CLI exits non-zero (missing/stale words)
+- Writes the glossary when `write: true` option is passed
+- Rejects execution with no project or an unknown project
+
+### Batch Executor Unit Tests (`batch-executor.unit.test.ts`)
+
+Tests the batched execution that runs one `coinagerie batch` process per project:
+
+```typescript
+it("judges every task from one process, each by its own verdict", async () => {
+  const results = await checkBatchExecutor(
+    ...buildArguments(["a", "bad-b", "c"]),
+  );
+
+  expect(results).toStrictEqual({
+    "a:coinagerie-check": { success: true, terminalOutput: "" },
+    "bad-b:coinagerie-check": {
+      success: false,
+      terminalOutput: "missing: argv",
+    },
+    "c:coinagerie-check": { success: true, terminalOutput: "" },
+  });
+});
+```
+
+Key behaviors:
+- Judges every task from one process, each by its own verdict
+- Prints a failed task's report under its task ID, nothing for a passing one
+- Writes the tasks that ask to write, in a process of their own
+- Fails a task whose process printed no verdict, without losing its peers
+- Fails every task of a group whose process printed no verdicts, with what it printed
+- Fails every task when the process prints invalid JSON (not a list, list holding non-verdicts)
+- Fails a task whose project the graph does not know, without losing its peers
+- Starts nothing for a batch of no tasks
+
+### Packed Plugin Test (`coinagerie-nx.packed.test.ts`)
+
+End-to-end test that installs the packed `@coinagerie/nx` plugin into an isolated Nx workspace and runs the inferred `coinagerie-check` target:
+
+```typescript
+it("passes the check of a project whose glossary covers its words", async () => {
+  const written = await runTarget("documented:coinagerie-check", ["--write"]);
+  expect(written.exitCode).toBe(0);
+
+  const result = await runTarget("documented:coinagerie-check");
+  expect(result.exitCode).toBe(0);
+});
+
+it("fails the check of a project whose glossary lacks its words", async () => {
+  const result = await runTarget("undocumented:coinagerie-check");
+  expect(result.exitCode).not.toBe(0);
+  expect(result.stdout + result.stderr).toContain("orbit");
+});
+```
+
+This validates the complete inference → execution → verdict pipeline against the exact tarball that would be published.
+
 ## CLI Packing Tests (`coinagerie-cli`)
 
 The CLI package has a unique test: **`coinagerie-cli.packed.test.ts`** verifies the published `@coinagerie/cli` tarball contents by installing it into a temporary sandbox and running the binary.
@@ -368,7 +468,7 @@ The `layered-glossaries` example demonstrates:
 
 ## Test Configuration
 
-All packages extend `configuration/vitest.config.ts` with package-specific coverage exclusions:
+All packages extend `configuration/typescript/vitest.config.ts` with package-specific coverage exclusions:
 
 ```typescript
 // coinagerie-cli/vitest.config.ts
@@ -394,12 +494,13 @@ The examples package disables coverage (`include: []`) and extends timeouts to 1
 
 ```bash
 # Unit tests per package
-nx run coinagerie-vocabulary:vitest:unit
-nx run coinagerie-output:vitest:unit
-nx run coinagerie-languages:vitest:unit
+nx run coinagerie-vocabulary:vitest
+nx run coinagerie-output:vitest
+nx run coinagerie-languages:vitest
+nx run coinagerie-nx:vitest
 
 # CLI packing test (slow, spawns tarball sandbox)
-nx run coinagerie-cli:vitest:unit
+nx run coinagerie-cli:vitest
 
 # Integration smoke gate over all examples
 nx run coinagerie-examples:examples

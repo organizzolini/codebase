@@ -1,6 +1,6 @@
 ---
 name: codependix-export
-description: Run a codependix dependency graph export or boundary check, choose between --check boundaries, --check reports, and --write, point a run at a workspace root or a configuration file, or read a Mermaid block or JSON graph it produced. Use when running codependix or npx codependix, when a run exits 0 having written nothing, when --check is refused for carrying no value, when looking for a flag that selects one graph type, when wiring codependix into a CI step or an Nx task, when a codependix-bound target failed, or when reading an exported Nx Neighborhood, NestJS module graph, or file-level import graph. Covers the command-line host directly, without assuming any task runner.
+description: "Run a codependix export or boundary check (--check boundaries, --check reports, or --write) over Nx project, NestJS module, or file-import graphs, and read the Mermaid or JSON it produced. Use when running codependix, wiring it into CI, or when a run exits 0 having written nothing."
 license: MIT
 ---
 
@@ -48,11 +48,11 @@ The `codependix-configure` skill covers all three.
 `--check` takes a **comma-separated set**, and naming the set is what selects
 which finding fails the run.
 
-| Mode | Meaning |
-| ---- | ------- |
+| Mode                 | Meaning                                                                                       |
+| -------------------- | --------------------------------------------------------------------------------------------- |
 | `--check boundaries` | Fails on an edge or a cycle breaking a declared rule. Reads no destination and writes nothing |
-| `--check reports` | Fails on a configured destination no longer holding what a fresh run would write |
-| `--write` | Writes every configured export |
+| `--check reports`    | Fails on a configured destination no longer holding what a fresh run would write              |
+| `--write`            | Writes every configured export                                                                |
 
 The two `--check` names exist because the findings belong on opposite sides of
 a pull request. A broken boundary is caused by the branch and fixed by the
@@ -85,10 +85,10 @@ to add `--check <set>` or `--write`.
 
 Two options qualify whichever mode was picked, the first of them mandatory:
 
-| Option | Meaning |
-| ------ | ------- |
-| `--config <config>` | **Required.** Path to the codependix configuration file, resolved against the working directory alone. Omitting it fails the run; nothing is searched for |
-| `-d, --directory [directory]` | Workspace root whose Nx project graph this run reads. Defaults to the working directory |
+| Option                        | Meaning                                                                                                                                                   |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--config <config>`           | **Required.** Path to the codependix configuration file, resolved against the working directory alone. Omitting it fails the run; nothing is searched for |
+| `-d, --directory [directory]` | Workspace root whose Nx project graph this run reads. Defaults to the working directory                                                                   |
 
 ```bash
 codependix map --write --config configuration/ic-suite/codependix.config.ts
@@ -119,7 +119,9 @@ A configuration may name a **`projectGraph`** file to read instead of resolving
 one:
 
 ```ts
-{ projectGraph: "artifacts/graph.json" }
+{
+  projectGraph: "artifacts/graph.json";
+}
 ```
 
 It is a path, relative to the workspace root, to the JSON that
@@ -148,12 +150,12 @@ the graph.
 
 Each is keyed by name in the configuration:
 
-| Key | What it exports | Which projects appear |
-| --- | --------------- | --------------------- |
-| `nx` | A project's one-hop Neighborhood — what it depends on, and what depends on it | Every project the Nx graph knows, except the workspace root itself |
-| `nestjs` | A project's NestJS module import graph | Only projects tagged `framework:nestjs` |
-| `imports` | A project's own file-level TypeScript import graph | Every project with a tsconfig at the configured `projectTsconfigPath` |
-| `pythonImports` | The Python equivalent, parsed from `import` / `from ... import` statements | Only projects tagged `language:python` |
+| Key             | What it exports                                                               | Which projects appear                                                 |
+| --------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `nx`            | A project's one-hop Neighborhood — what it depends on, and what depends on it | Every project the Nx graph knows, except the workspace root itself    |
+| `nestjs`        | A project's NestJS module import graph                                        | Only projects tagged `framework:nestjs`                               |
+| `imports`       | A project's own file-level TypeScript import graph                            | Every project with a tsconfig at the configured `projectTsconfigPath` |
+| `pythonImports` | The Python equivalent, parsed from `import` / `from ... import` statements    | Only projects tagged `language:python`                                |
 
 The whole-workspace Nx graph is configured separately, under `workspace.nx`.
 It is exported **once for the repository** rather than once per project, has no
@@ -318,6 +320,7 @@ spliced between two HTML comment markers naming the anchor:
 
 ````markdown
 <!-- codependix:start name="codependix-nx-projects" -->
+
 ```mermaid
 graph LR
   widgets["widgets"]
@@ -326,6 +329,7 @@ graph LR
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class widgets subject
 ```
+
 <!-- codependix:end name="codependix-nx-projects" -->
 ````
 

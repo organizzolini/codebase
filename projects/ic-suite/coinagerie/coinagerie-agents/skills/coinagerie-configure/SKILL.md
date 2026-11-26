@@ -1,6 +1,6 @@
 ---
 name: coinagerie-configure
-description: Use when writing or changing a coinagerie.config.ts, choosing which files are scanned, excluding paths or words, reading another glossary into exclude.words, merging a word family with fold, declaring markdown or JSON glossary destinations, sharing one base configuration across folders, or when a configuration is rejected, a keyword list will not import, or a word is wrongly listed in the glossary.
+description: "Write or change a coinagerie.config.ts: files scanned, excluded paths and words, merged word families, and glossary destinations. Use when setting coinagerie up, when a configuration is rejected, or when a word is wrongly listed in the glossary."
 license: MIT
 ---
 
@@ -31,7 +31,8 @@ export default {
   unfolded: ["pisces"],
   outputs: [
     {
-      description: "Words this project uses. Regenerate with `coinagerie --write`.",
+      description:
+        "Words this project uses. Regenerate with `coinagerie --write`.",
       path: "README.md",
       type: "markdown",
     },
@@ -73,7 +74,9 @@ import path from "node:path";
 
 const parentWords = async (): Promise<string[]> =>
   Object.keys(
-    JSON.parse(await readFile(path.join(__dirname, "../glossary.json"), "utf8")),
+    JSON.parse(
+      await readFile(path.join(__dirname, "../glossary.json"), "utf8"),
+    ),
   );
 
 export default { exclude: { words: parentWords } };
@@ -163,7 +166,10 @@ import base from "../coinagerie.base";
 
 export default {
   ...base,
-  exclude: { ...base.exclude, paths: [...(base.exclude?.paths ?? []), "fixtures"] },
+  exclude: {
+    ...base.exclude,
+    paths: [...(base.exclude?.paths ?? []), "fixtures"],
+  },
   outputs: [{ path: "README.md", type: "markdown" }],
 };
 ```

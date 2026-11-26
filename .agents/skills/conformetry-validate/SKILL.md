@@ -1,6 +1,6 @@
 ---
 name: conformetry-validate
-description: Run a conformetry conformance check and act on what it reports. Use when a conformetry-validate target fails; when a composite lint run reports conformance differences; when a report names a missing file, a missing declaration, a missing comment, a placeholder it could not infer, an ambiguous instance, or an unmatched instance; when deciding whether to edit an instance or regenerate it; or before claiming generated code is finished. Covers both the Nx plugin and the conformetry command-line host.
+description: "Run a conformetry conformance check and act on its report: a missing file, declaration, or comment, a placeholder it could not infer, or an ambiguous or unmatched instance. Use when a conformetry-validate target fails, or when deciding whether to edit an instance or regenerate it."
 license: MIT
 ---
 
@@ -35,7 +35,7 @@ Without Nx, the command-line host does the same, given `--config <path>` — the
 flag is required and no default file is assumed:
 
 ```bash
-conformetry validate --config configuration/conformetry.config.ts
+conformetry validate --config configuration/ic-suite/conformetry.config.ts
 ```
 
 In an Nx workspace the path comes from the `configurationPath` option of the
@@ -50,8 +50,8 @@ naming which templates to measure against. Narrowing is for iterating; let the
 full run be the gate.
 
 ```bash
-conformetry validate --config configuration/conformetry.config.ts --templates nestjs-service-module
-conformetry validate --config configuration/conformetry.config.ts --templates nestjs-service-module --languages typescript
+conformetry validate --config configuration/ic-suite/conformetry.config.ts --templates nestjs-service-module
+conformetry validate --config configuration/ic-suite/conformetry.config.ts --templates nestjs-service-module --languages typescript
 ```
 
 `--templates` and `--instances` narrow opposite halves of the pairing and the
@@ -66,7 +66,7 @@ select, so `src/modules/*` means nothing until a project root is joined to it.
 The host leaves such a group out rather than globbing it from the working
 directory, and a narrowed run tells you so instead of reporting nothing found.
 Reach for the Nx targets there, or pass `--instances` with the paths. This is
-why `conformetry validate --config configuration/conformetry.config.ts --templates nestjs-service-module` can report nothing
+why `conformetry validate --config configuration/ic-suite/conformetry.config.ts --templates nestjs-service-module` can report nothing
 to check while `nx run <project>:conformetry-validate` checks plenty.
 
 **An agent shell is not a terminal**, so omitting `--templates` there validates
@@ -83,7 +83,7 @@ with a suggested fix:
 ```text
   1. file: orders.service.ts
      Instance: packages/widgets/src/modules/orders/orders.service.ts
-     Template: configuration/conformetry-templates/nestjs-service-module/…
+     Template: configuration/ic-suite/conformetry-templates/nestjs-service-module/…
 
      1. Missing Decorator "Injectable"
         Instance: Line 12, Column 1
@@ -135,18 +135,18 @@ are the hardest to act on from the report alone. Diagnose them by asking which
 templates explain the path:
 
 ```bash
-conformetry templates --config configuration/conformetry.config.ts --instances packages/widgets/src/modules/orders
+conformetry templates --config configuration/ic-suite/conformetry.config.ts --instances packages/widgets/src/modules/orders
 ```
 
 ```text
   nestjs-service-module (nsm)
     Generate a NestJS service module
-    Template: configuration/conformetry-templates/nestjs-service-module
+    Template: configuration/ic-suite/conformetry-templates/nestjs-service-module
     Instances:
       packages/widgets/src/modules/orders 5/5 files 100%
   nestjs-command-module (ncm)
     Generate a NestJS command module
-    Template: configuration/conformetry-templates/nestjs-command-module
+    Template: configuration/ic-suite/conformetry-templates/nestjs-command-module
     Instances:
       packages/widgets/src/modules/orders 3/5 files 60%
 ```
@@ -161,8 +161,8 @@ The complement asks the other direction — what generated code exists, and what
 each piece answers to:
 
 ```bash
-conformetry instances --config configuration/conformetry.config.ts
-conformetry instances --config configuration/conformetry.config.ts --templates nestjs-service-module
+conformetry instances --config configuration/ic-suite/conformetry.config.ts
+conformetry instances --config configuration/ic-suite/conformetry.config.ts --templates nestjs-service-module
 ```
 
 Each path it prints is usable as the `--instances` argument above, so the two
@@ -232,7 +232,7 @@ files, and before saying an implementation is finished.
 
 ## Reproducing a difference in a sandbox
 
-[`conformetry-examples`](https://github.com/JimmyPaolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples) carries one instance per kind of
+[`conformetry-examples`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples) carries one instance per kind of
 difference, deliberately broken, so a report can be understood without the
 surrounding project's conventions muddying it.
 
@@ -245,6 +245,6 @@ surrounding project's conventions muddying it.
 - **`ambiguous-attribution`** — an instance two templates explain equally well.
 - **`failure-modes`** — two things that conform for the wrong reasons.
 
-[Its AGENTS.md](https://github.com/JimmyPaolini/codebase/blob/main/projects/ic-suite/conformetry/conformetry-examples/AGENTS.md) maps report text to the example that reproduces
+[Its AGENTS.md](https://github.com/Organizzolini/codebase/blob/main/projects/ic-suite/conformetry/conformetry-examples/AGENTS.md) maps report text to the example that reproduces
 it, and lists which changes to an instance are differences and which are not.
 The broken instances there are broken on purpose — do not repair them.

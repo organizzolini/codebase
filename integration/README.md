@@ -3,10 +3,12 @@ checks and derivations that run at commit, at push, and on a pull request, and
 the steps that run around a Continuous Integration job.
 
 - **Checks**, which run in check mode and say what to fix: `catalog-manifests`
-  pins externals to `catalog:`, `lockfile` runs the frozen install, and
-  `readme-projects` links every workspace project from the root README.
+  pins externals to `catalog:`, `lockfile` runs the frozen install,
+  `readme-projects` links every workspace project from the root README, and
+  `skill-descriptions` holds every authored skill description to 128 words
+  and all of them to a listing budget of 12,288 characters.
 - **Derivations**, which check by default and rewrite with `:write`:
-  `conformetry-generators`, `conventional-config`, `devcontainer-configuration`,
+  `agent-instructions`, `conventional-config`, `devcontainer-configuration`,
   `package-manifests`, `project-ports`, `skill-exclusions`, and
   `vscode-extensions`.
 - **Continuous Integration plumbing**: `setup-codebase` and `cleanup-codebase`
@@ -18,7 +20,7 @@ the steps that run around a Continuous Integration job.
   `report-codometer-changes` keep codometer's baseline and its pull request
   report. `upgrade-dependencies` runs the weekly dependency upgrades.
 
-`nx run integration:start` runs the ten checks and derivations in one process,
+`nx run integration:start` runs the nine checks and derivations in one process,
 and names the command that fixes each failure. The aggregate's CLI command is
 still named `synchronization`, a name the conformetry template fixes. "Integration"
 here means the change's path to `main`, not the `vitest:integration` test kind.

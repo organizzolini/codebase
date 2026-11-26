@@ -1,8 +1,4 @@
-# CaelundasWeb: TanStack Start Web Application
-
-## Quick Start
-
-**Type**: Server-rendered web application (TanStack Start)
+# caelundas-web
 
 **Build**: Fully static, in TanStack Start's single-page mode: the build
 renders one shell page ahead of time, every route renders in the browser, and
@@ -12,12 +8,6 @@ API, which the browser calls directly
 **Purpose**: Browse the astronomical events `caelundas-cli` calculates, as a
 calendar over the `caelundas-api` GraphQL API, which reads the Caelundas
 Postgres
-
-### Run Locally
-
-```bash
-nx run caelundas-web:start
-```
 
 It needs the API, which needs a migrated and ingested Postgres:
 
@@ -76,55 +66,7 @@ document to the API with `queryApi`. The API's address is the
 `VITE_CAELUNDAS_API_URL` build variable, `http://localhost:6173/graphql` when
 unset.
 
-## Architecture Overview
-
-### Tech Stack
-
-- **Framework**: TanStack Start (server rendering, server functions) on Vite
-- **Routing**: TanStack Router, file-based, from `src/routes/`
-- **UI**: React 19 with Tailwind CSS 4
-- **Calendar**: the vendored ReUI event calendar from `@codebase/presentation`,
-  composed here and never edited
-- **Data**: the `caelundas-api` GraphQL API, through typed documents generated from its schema
-- **Testing**: Vitest and React Testing Library under jsdom
-
-### Directory Layout
-
-```text
-src/
-  client.tsx                     # Client entry, hydrates the document
-  router.tsx                     # Creates the router; TanStack Start requires it here
-  routeTree.gen.ts               # Generated route tree — never edit
-  routes/
-    __root.tsx                   # Document shell every route renders inside
-    <route>.tsx                  # One file per route, e.g. index.tsx, word.$id.tsx
-    <route>.integration.test.tsx # Ignored by the route generator
-  components/
-    <feature>/                   # Components that work together, and nothing else
-      <component>/
-        <component>.tsx            # The folder's component and its Properties
-        <component>.unit.test.tsx
-        <component>.types.ts
-        <component>.constants.ts
-        <component>.utilities.ts
-        <part>.tsx                 # More components the folder's is built from
-        <module>.<kind>.ts         # Shared code the folder owns, tested beside it
-        components/                # Child component folders, shaped like this one
-  hooks/
-    use-<hook>/
-      use-<hook>.ts                # The folder's hook
-      use-<hook>.unit.test.ts
-      use-<hook>.types.ts
-      use-<hook>.constants.ts
-      use-<hook>.utilities.ts
-      hooks/                       # Child hook folders, shaped like this one
-  modules/
-    <feature>/                   # Server functions and the utilities behind them
-  styles/
-    application.css
-testing/
-  setup.ts                       # Shared test setup
-```
+- **Calendar**: the vendored ReUI event calendar from `@codebase/presentation`, composed here and never edited.
 
 The calendar adds its data layer:
 
@@ -182,70 +124,6 @@ and the Default button beside the sky's switch removes them all but
 ReUI color picker, and the panel keeps arrow and letter keys from the menu
 around it so a slider keeps focus.
 
-## Development
-
-Scaffold with the generators rather than writing these shapes by hand — each one
-is also the standard its files are validated against:
-
-```bash
-nx g conformetry:tanstack-route --name=<file-stem> --path=<url-path> --project=caelundas-web
-nx g conformetry:tanstack-server-function --name=<feature> --project=caelundas-web
-nx g conformetry:react-component-folder --name=<component> --project=caelundas-web
-nx g conformetry:react-component-file --name=<part> --module=<component> --project=caelundas-web
-nx g conformetry:react-hook-folder --name=use-<hook> --project=caelundas-web
-nx g conformetry:react-hook-file --name=use-<other> --module=use-<hook> --project=caelundas-web
-```
-
-### Routes
-
-A route's name is its file stem — `index`, `search`, `word.$id` — and its route
-path is the URL it serves: `/`, `/search`, `/word/$id`. TanStack's route
-generator rewrites the path argument to match the file whenever they disagree,
-and regenerates `src/routeTree.gen.ts` on every `start` or `build`. Each page
-is a `<section>` with an `<h1>`, named after its route — `word.$id` renders
-`WordIdPage` — inside the layout the root route renders.
-
-Keep a route file to its `Route` and the page it renders. Reusable pieces belong
-in `src/components/`, stateful logic in `src/hooks/`, and anything that runs on
-the server in `src/modules/`.
-
-### Loaders and Actions
-
-TanStack Start has no separate loader or action files. Data is read by a GET
-server function called from the route's `loader`, then read in the page with
-`Route.useLoaderData()`. Data is written by a POST server function called from a
-component through `useServerFn`, followed by `router.invalidate()` so every
-loader on the page runs again.
-
-A generated server function module keeps that logic in `<feature>.utilities.ts`,
-outside `createServerFn`, so it is unit tested without the Start runtime. Add
-`zod` to this project's dependencies before generating the first one:
-
-```bash
-pnpm add --filter caelundas-web zod
-```
-
-### Key Commands
-
-```bash
-nx run caelundas-web:start      # Development server
-nx run caelundas-web:build        # Production build into dist/
-nx run caelundas-web:preview      # Serve the production build
-nx run caelundas-web:vitest       # Unit tests
-nx run caelundas-web:typecheck-code,lint-code,format-code,deprecate-code,guard-code
-```
-
-### Testing
-
-Route tests call `renderRoute` from `@codebase/testing/react` with the
-application's router, which loads the real route tree in a memory history and
-renders the page without the root's document shell, so the route's loader,
-head, and page all run as a navigation would run them. They are
-integration tests for that reason, and the distinct suffix is also what tells a
-route's files apart from a component's when conformance is checked.
-`vitest.config.ts` deliberately leaves the TanStack Start plugin out, so route
-components are not code-split into lazy chunks under test.
-
 The calendar's tests call `renderCalendarRoute` from `testing/render-route.tsx`,
 which first serves the mocked calendar API, or the one a test passes, and then
 renders through that same function.
@@ -253,11 +131,6 @@ renders through that same function.
 The views' route tests live in `src/components/calendar-display/events-calendar/components/calendar-views/calendar-views.utilities.integration.test.tsx`, beside
 the route's own, only to keep each file under the line limit; shared steps
 live in `testing/calendar-page.ts`.
-
-See the [write-react skill](/.agents/skills/write-react/SKILL.md) for
-component conventions and the
-[testing-strategy skill](/.agents/skills/testing-strategy/SKILL.md) for
-test tiers.
 
 ## Layout
 
@@ -480,15 +353,9 @@ month, as the seeded data holds no busy day, and keyboard-only scrolling of the
 table and the timeline in browsers that do not make a scrollable region
 focusable by themselves.
 
-## Key Files
+## Key files
 
-- [src/router.tsx](src/router.tsx): Router factory
-- [src/routes/\_\_root.tsx](src/routes/__root.tsx): Document shell
-- [vite.config.mts](vite.config.mts): TanStack Start, Tailwind, and React plugins
-- [vitest.config.ts](vitest.config.ts): Test configuration
-- [src/components/calendar-display/events-calendar/components/calendar-loader/calendar-records.types.ts](src/components/calendar-display/events-calendar/components/calendar-loader/calendar-records.types.ts):
-  The event, facet, dataset and window types the views share
-- [src/components/calendar-display/events-calendar/components/events-api/events-api.utilities.ts](src/components/calendar-display/events-calendar/components/events-api/events-api.utilities.ts):
-  `queryApi`, the one way the app reaches the API
+- [src/components/calendar-display/events-calendar/components/calendar-loader/calendar-records.types.ts](src/components/calendar-display/events-calendar/components/calendar-loader/calendar-records.types.ts): The event, facet, dataset and window types the views share
+- [src/components/calendar-display/events-calendar/components/events-api/events-api.utilities.ts](src/components/calendar-display/events-calendar/components/events-api/events-api.utilities.ts): `queryApi`, the one way the app reaches the API
 - [configuration/codegen.ts](configuration/codegen.ts): GraphQL Code Generator configuration
 - [src/routes/index.tsx](src/routes/index.tsx): The calendar page

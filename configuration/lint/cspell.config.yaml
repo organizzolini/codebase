@@ -37,7 +37,6 @@ ignorePaths:
   - "**/projects/lexico/lexico-cli/data/**"
   - "**/projects/lexico/lexico-cli/src/modules/lexico-ingestion/modules/literature/literature.constants.ts"
   - "**/projects/lexico/lexico-cli/src/modules/library/library.constants.ts"
-  - "**/documentation/planning/**"
   # Diagrams the persistence render commands draw from database rows, whose
   # labels are data, such as the IAU abbreviations of constellations.
   - "**/documentation/*-data.md"

@@ -13,12 +13,12 @@ const BOOT_TIMEOUT_MILLISECONDS = 60_000;
 
 /** The commands the container must register, each named in the help. */
 const COMMAND_NAMES = [
+  "agent-instructions",
   "adopt-task-database",
   "bound-base-to-push",
   "catalog-manifests",
   "cleanup-codebase",
   "collect-codometer-baseline",
-  "conformetry-generators",
   "conventional-config",
   "devcontainer-configuration",
   "import-pr-task-cache",
@@ -31,6 +31,7 @@ const COMMAND_NAMES = [
   "report-codometer-changes",
   "run-affected",
   "setup-codebase",
+  "skill-descriptions",
   "skill-exclusions",
   "synchronization",
   "upgrade-dependencies",

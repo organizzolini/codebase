@@ -1,6 +1,6 @@
 ---
 name: codependix-configure
-description: Write or edit a codependix.config.ts — which graph types run, per-project overrides, include and exclude globs, the whole-workspace graph, where each export lands, and the boundary rules every built graph is judged against. Use when a workspace has no codependix configuration yet, when a run produced no output because everything resolved to target none, when adding a JSON or Markdown destination, when choosing between an anchor block and a standalone file, when a configuration is rejected for a missing destination or an empty selector, when adding a forbid, allow, or acyclic rule, when registering the per-project Nx gate, or when deciding whether one configuration can describe every project in a workspace.
+description: "Write or edit a codependix.config.ts: which graph types run, globs, per-project overrides, export destinations, and the boundary rules. Use when a workspace has no configuration, a run wrote nothing, a configuration is rejected, or when adding an export destination, a boundary rule, or the per-project Nx gate."
 license: MIT
 ---
 
@@ -20,8 +20,14 @@ import { type CodependixConfiguration } from "@codependix/configuration";
 
 const codependixConfiguration: CodependixConfiguration = {
   defaults: {
-    imports: { markdown: { anchor: "codependix-file-imports" }, target: "markdown" },
-    nestjs: { markdown: { anchor: "codependix-nestjs-modules" }, target: "markdown" },
+    imports: {
+      markdown: { anchor: "codependix-file-imports" },
+      target: "markdown",
+    },
+    nestjs: {
+      markdown: { anchor: "codependix-nestjs-modules" },
+      target: "markdown",
+    },
     nx: { markdown: { anchor: "codependix-nx-projects" }, target: "markdown" },
   },
   exclude: ["fixtures/**"],
@@ -30,7 +36,10 @@ const codependixConfiguration: CodependixConfiguration = {
     widgets: {
       nx: {
         json: { path: "output/nx-graph.json" },
-        markdown: { anchor: "codependix-nx-projects", path: "docs/architecture.md" },
+        markdown: {
+          anchor: "codependix-nx-projects",
+          path: "docs/architecture.md",
+        },
         target: "both",
       },
     },
@@ -89,12 +98,12 @@ like a tool that ignored it.
 Each graph type's export target is named, never inferred from which
 destinations are present:
 
-| `target` | Writes |
-| -------- | ------ |
-| `"both"` | The JSON and the Markdown destination together |
-| `"json"` | The JSON destination only |
-| `"markdown"` | The Markdown destination only |
-| `"none"` | Nothing — and the default for every unset target |
+| `target`     | Writes                                           |
+| ------------ | ------------------------------------------------ |
+| `"both"`     | The JSON and the Markdown destination together   |
+| `"json"`     | The JSON destination only                        |
+| `"markdown"` | The Markdown destination only                    |
+| `"none"`     | Nothing — and the default for every unset target |
 
 That explicitness is what lets a project keep a `json` destination it is not
 ready to write yet: leave the destination in place and set `target: "markdown"`.
@@ -216,7 +225,9 @@ draws the graph over the projects it named, and writes it wherever
 ## `projectGraph` — reading a graph rather than resolving one
 
 ```ts
-{ projectGraph: "artifacts/graph.json" }
+{
+  projectGraph: "artifacts/graph.json";
+}
 ```
 
 A path, relative to the workspace root, to the JSON
@@ -268,22 +279,22 @@ const codependixConfiguration: CodependixConfiguration = {
 
 Three kinds:
 
-| Kind | Reports |
-| ---- | ------- |
-| `forbid` | An edge whose source matches `from` and whose target matches `to` |
-| `allow` | An edge leaving `from` for anywhere `to` does not claim |
+| Kind      | Reports                                                           |
+| --------- | ----------------------------------------------------------------- |
+| `forbid`  | An edge whose source matches `from` and whose target matches `to` |
+| `allow`   | An edge leaving `from` for anywhere `to` does not claim           |
 | `acyclic` | A cycle among the nodes `nodes` selects, defaulting to every node |
 
 A selector's four fields are all lists of globs, and they **narrow** each
 other — every field a selector states must match, while within one field one
 glob matching is enough:
 
-| Field | Matches | Carried at |
-| ----- | ------- | ---------- |
-| `id` | The node's identifier — a project name, a file path, or a module class name | every level |
-| `path` | A workspace-relative project root, or a project-relative file path | `nx`, `imports`, `pythonImports` |
-| `project` | The Nx project a node belongs to | `nx`, `imports`, `pythonImports` |
-| `tags` | The node's Nx tags; one tag matching is enough | `nx` |
+| Field     | Matches                                                                     | Carried at                       |
+| --------- | --------------------------------------------------------------------------- | -------------------------------- |
+| `id`      | The node's identifier — a project name, a file path, or a module class name | every level                      |
+| `path`    | A workspace-relative project root, or a project-relative file path          | `nx`, `imports`, `pythonImports` |
+| `project` | The Nx project a node belongs to                                            | `nx`, `imports`, `pythonImports` |
+| `tags`    | The node's Nx tags; one tag matching is enough                              | `nx`                             |
 
 An access rule may also narrow **which edges** it judges, with `edges`:
 `{ implicit: false }` sees only edges backed by an import statement — exactly
@@ -316,11 +327,11 @@ Verify a candidate rule against the whole workspace before committing it.
 A finding is charged to projects, and a run fails only when one is charged to a
 project it judges. The rule kind decides who that is:
 
-| Finding | Charged to |
-| ------- | ---------- |
-| `forbid` match, or an edge no `allow` rule covers | The project owning the edge's **source**, and no other |
-| `acyclic` cycle | Every project owning a node on the cycle, so a cycle across A and B fails both |
-| Container that cannot boot | The project whose container failed, named with the owner of the failing class when that is another project |
+| Finding                                           | Charged to                                                                                                 |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `forbid` match, or an edge no `allow` rule covers | The project owning the edge's **source**, and no other                                                     |
+| `acyclic` cycle                                   | Every project owning a node on the cycle, so a cycle across A and B fails both                             |
+| Container that cannot boot                        | The project whose container failed, named with the owner of the failing class when that is another project |
 
 A project that merely depends on a project with a cycle or a forbidden edge is
 not failed: it sees the finding as a note, "in dependency". So a rule is

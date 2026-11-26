@@ -70,7 +70,7 @@ Lexico is a four-project suite that builds a Latin–English dictionary from pub
 |---------|------|------------|
 | **lexico-db** | Single source of truth for the database schema: TypeORM entities, PostgreSQL migrations, shared grammatical enumerations. | TypeORM, PostgreSQL |
 | **lexico-cli** | NestJS command-line ingestion pipeline. Scrapes/loads dictionary and literature sources into the `lexico` schema. | NestJS, `nest-commander`, cheerio |
-| **lexico-api** | NestJS GraphQL API. Exposes dictionary and literature entities via Relay cursor connections, with DataLoaders to prevent N+1 queries. | NestJS, Apollo, `@nestjs/graphql`, `nestjs-graphql-connection` |
+| **lexico-api** | NestJS GraphQL API. Exposes dictionary and literature entities via Relay cursor connections, with DataLoaders to prevent N+1 queries. | NestJS, Apollo, `@nestjs/graphql`, `@codebase/interface` |
 | **lexico-web** | TanStack Start SSR web application. File-based routing, server functions call the GraphQL API, UI from shared `presentation` component library. | TanStack Start, React 19, Tailwind, TanStack Router |
 
 All projects share the `lexico` PostgreSQL schema (database `lexico_development`, role `lexico_username`). The schema is defined **only** in `lexico-db`; both the CLI (writer) and the API (reader) depend on that package, so the written and read shapes cannot drift.
@@ -250,7 +250,7 @@ NestJS + Apollo Server (`ApolloDriver`), code-first schema emitted to `src/schem
 
 - **Root module** (`LexicoApiModule`) imports: `DatabaseModule` (from `lexico-db`), `GraphQLModule`, `HealthModule`, `LexemesModule`, `LiteratureModule`, `SearchModule`, `WordsModule`, `MacronsModule`.
 - **Global modules**: `LoggerModule` (from `@codebase/observability`, pino-backed, `Scope.TRANSIENT`), `ConfigModule` (Zod-validated env).
-- **Pagination**: Relay connections via `nestjs-graphql-connection`. All list queries return `Connection<T>` with `Edge<T>` and `PageInfo`.
+- **Pagination**: Relay connections built with the Relay helpers in `@codebase/interface`. All list queries return `Connection<T>` with `Edge<T>` and `PageInfo`.
 - **Cursors**: Opaque Base64 (`toCursor`/`fromCursor`/`fromCursorSafe` from `@codebase/interface`) and offset-based (`encodeOffsetCursor`/`decodeOffsetCursor`).
 - **DataLoaders**: Request-scoped `dataloader` instances for all relation fields (prevents N+1). Loaders live in `<domain>.loader.ts` and are registered in module `providers` + `exports`.
 - **Entity → GraphQL mapping**: Each API module defines its own GraphQL object types (e.g., `LexemeType` in `lexemes/lexeme.entities.ts`) implementing `GraphQLObjectOf<Entity, Self, DatabaseOnlyField, RelationField>` from `src/lexico-api.types.ts`. This type contract **fails compilation** if:

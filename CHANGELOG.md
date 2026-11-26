@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.15.1](https://github.com/organizzolini/codebase/compare/v6.15.0...v6.15.1) (2026-11-26)
+
+## [6.15.0](https://github.com/organizzolini/codebase/compare/v6.14.1...v6.15.0) (2026-11-25)
+
+### ✨ Features
+
+* **integration,documentation,callidescope:** ✨ reorganize agent skills and cap description length ([#2595](https://github.com/organizzolini/codebase/issues/2595)) ([3d2c97a](https://github.com/organizzolini/codebase/commit/3d2c97a63f3d0bc561c928233227cc7db1ef7bc2)), closes [#2562](https://github.com/organizzolini/codebase/issues/2562)
+
+### 📝 Documentation
+
+* **documentation,deployment:** 📝 add start and agents sections to readme ([#2557](https://github.com/organizzolini/codebase/issues/2557)) ([e7a8f93](https://github.com/organizzolini/codebase/commit/e7a8f937e44751eb162894d4b3bcbf76265430cf)), closes [#2556](https://github.com/organizzolini/codebase/issues/2556)
+* **documentation:** 📝 reorganize readme agent skills ([#2571](https://github.com/organizzolini/codebase/issues/2571)) ([5c59c2b](https://github.com/organizzolini/codebase/commit/5c59c2b9ba473f2417091bfced4cb27d47669533)), closes [#2570](https://github.com/organizzolini/codebase/issues/2570)
+* **documentation:** 📝 simplify readme start commands ([#2561](https://github.com/organizzolini/codebase/issues/2561)) ([7fd38c7](https://github.com/organizzolini/codebase/commit/7fd38c7649532deeb013a588110a2ab6e9ec4374)), closes [#2560](https://github.com/organizzolini/codebase/issues/2560)
+* **documentation:** 🔥 prune stale planning, research, and development docs ([#2594](https://github.com/organizzolini/codebase/issues/2594)) ([28a2ffd](https://github.com/organizzolini/codebase/commit/28a2ffdf5cfbfd02bb70dfd0ac56a14415973405)), closes [#2593](https://github.com/organizzolini/codebase/issues/2593)
+
+## [6.14.1](https://github.com/organizzolini/codebase/compare/v6.14.0...v6.14.1) (2026-11-25)
+
+### ♻️ Code Refactoring
+
+* **integration,documentation:** ♻️ remove the generated Conformetry README section ([#2559](https://github.com/organizzolini/codebase/issues/2559)) ([a117ae4](https://github.com/organizzolini/codebase/commit/a117ae45059aa2286a3e60997c118b74196ee5aa)), closes [#2558](https://github.com/organizzolini/codebase/issues/2558)
+
 ## [6.14.0](https://github.com/organizzolini/codebase/compare/v6.13.1...v6.14.0) (2026-11-24)
 
 ### ✨ Features
