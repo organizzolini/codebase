@@ -143,7 +143,7 @@ jobs:
           - target: end-to-end
             name: End to End IC Suite
             emoji: 🤵
-          # Plans the OpenRouter Terraform for a pull request and comments the result.
+          # Plans the four Terraform roots for a pull request and comments the result.
           # Nothing applies here: Continuous Deployment applies it on `main`. The leg
           # always reports, so it can be a required check; its steps run only for a
           # same-repository pull request, since forks get no secrets.
@@ -174,8 +174,6 @@ jobs:
           filters: |
             terraform:
               - infrastructure/terraform/**
-              - infrastructure/terraform/kubernetes/**
-              - infrastructure/terraform/bootstrap/**
 
       - name: 🚦 Detect Devcontainer Changes
         id: devcontainer-changes
@@ -266,39 +264,6 @@ jobs:
           nx-base: push-before
           eslint-cache: ${{ matrix.check.target == 'static-code' && 'true' || 'false' }}
 
-      # Bootstrap and github read the kubernetes state, which exists only after the
-      # cluster's first apply. Until then their plans are skipped.
-      - name: 🧭 Initialize Kubernetes Root
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
-          AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
-          TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
-        run: pnpm exec nx run infrastructure:terraform-init:kubernetes
-
-      # The kubeconfig stays inside the pipe: only jq's verdict is printed. A missing
-      # state or an empty output set reads as no cluster, so the job stays green.
-      - name: 🔍 Check Cluster Exists
-        id: cluster
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
-          AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
-        working-directory: infrastructure/terraform/kubernetes
-        run: |
-          if terraform output -json | jq -e 'has("kubeconfig")' > /dev/null; then
-            echo "cluster-exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "cluster-exists=false" >> "$GITHUB_OUTPUT"
-            echo "⏭️ github and bootstrap plans skipped: the cluster does not exist yet"
-          fi
-
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
@@ -318,34 +283,8 @@ jobs:
         run: |
           pnpm exec nx run infrastructure:terraform-plan:openrouter
           pnpm exec nx run infrastructure:terraform-plan:linode
-          pnpm exec nx run infrastructure:terraform-plan:kubernetes
-
-      - name: 🐙 Plan GitHub
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform' &&
-          steps.cluster.outputs.cluster-exists == 'true'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
-          AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
-          TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
-          TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
-          TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
-        run: pnpm exec nx run infrastructure:terraform-plan:github
-
-      - name: 🧱 Plan Bootstrap
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform' &&
-          steps.cluster.outputs.cluster-exists == 'true'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
-          AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
-          TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
-          TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
-        run: pnpm exec nx run infrastructure:terraform-plan:bootstrap
+          pnpm exec nx run infrastructure:terraform-plan:organizzolini
+          pnpm exec nx run infrastructure:terraform-plan:github
 
       # Posts each root's plan as one comment that every push updates. A
       # failed plan fails the leg above and shows in its log instead.
@@ -360,18 +299,6 @@ jobs:
           planfile: plan.tfplan
           header: 🏗️ Terraform Plan (OpenRouter)
 
-      - name: 📊 Report GitHub Plan
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform' &&
-          steps.cluster.outputs.cluster-exists == 'true'
-        uses: borchero/terraform-plan-comment@v3
-        with:
-          token: ${{ github.token }}
-          working-directory: infrastructure/terraform/github
-          planfile: plan.tfplan
-          header: 🏗️ Terraform Plan (GitHub)
-
       - name: 📊 Report Linode Plan
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
@@ -383,28 +310,27 @@ jobs:
           planfile: plan.tfplan
           header: 🏗️ Terraform Plan (Linode)
 
-      - name: 📊 Report Kubernetes Plan
+      - name: 📊 Report Organizzolini Plan
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'plan-terraform'
         uses: borchero/terraform-plan-comment@v3
         with:
           token: ${{ github.token }}
-          working-directory: infrastructure/terraform/kubernetes
+          working-directory: infrastructure/terraform/organizzolini
           planfile: plan.tfplan
-          header: 🏗️ Terraform Plan (Kubernetes)
+          header: 🏗️ Terraform Plan (Organizzolini)
 
-      - name: 📊 Report Bootstrap Plan
+      - name: 📊 Report GitHub Plan
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform' &&
-          steps.cluster.outputs.cluster-exists == 'true'
+          matrix.check.target == 'plan-terraform'
         uses: borchero/terraform-plan-comment@v3
         with:
           token: ${{ github.token }}
-          working-directory: infrastructure/terraform/bootstrap
+          working-directory: infrastructure/terraform/github
           planfile: plan.tfplan
-          header: 🏗️ Terraform Plan (Bootstrap)
+          header: 🏗️ Terraform Plan (GitHub)
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-

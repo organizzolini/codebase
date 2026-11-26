@@ -58,8 +58,8 @@ jobs:
             name: Releases
             emoji: 🦸
             timeout: 50
-          # Applies the five Terraform roots in order when a push to main changes
-          # them: OpenRouter, Linode, Kubernetes, Bootstrap, then GitHub. State has no
+          # Applies the four Terraform roots in order when a push to main changes
+          # them: OpenRouter, Linode, Organizzolini, then GitHub. State has no
           # lock, so the never-cancelling per-ref concurrency group prevents overlap.
           # 40 minutes cover the first cluster: creation, readiness wait, Argo CD.
           - id: apply-terraform
@@ -142,8 +142,6 @@ jobs:
           filters: |
             terraform:
               - infrastructure/terraform/**
-              - infrastructure/terraform/kubernetes/**
-              - infrastructure/terraform/bootstrap/**
 
       # Devcontainer Build & Publish Steps
       - name: 🗂️ Setup Environment File
@@ -434,14 +432,13 @@ jobs:
           TF_VAR_cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           TF_VAR_cloudflare_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
         # Each root reads the outputs of the roots before it, so this order is the
-        # dependency order: OpenRouter, Linode, Kubernetes, Bootstrap, then GitHub,
-        # which reads the kubeconfig. The kubernetes root's readiness wait runs
-        # kubectl, which the GitHub-hosted ubuntu image ships.
+        # dependency order: OpenRouter, Linode, Organizzolini, then GitHub. The
+        # organizzolini root's readiness wait runs kubectl, which the GitHub-hosted
+        # ubuntu image ships.
         run: |
           pnpm exec nx run infrastructure:terraform-apply:openrouter
           pnpm exec nx run infrastructure:terraform-apply:linode
-          pnpm exec nx run infrastructure:terraform-apply:kubernetes
-          pnpm exec nx run infrastructure:terraform-apply:bootstrap
+          pnpm exec nx run infrastructure:terraform-apply:organizzolini
           pnpm exec nx run infrastructure:terraform-apply:github
 
       # The only save of this workflow's Nx cache, which the next release
