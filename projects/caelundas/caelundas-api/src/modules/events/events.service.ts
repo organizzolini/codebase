@@ -11,9 +11,7 @@ import {
   FACETS_SQL,
   groupKeysSchema,
 } from "./events.constants";
-import { DEFAULT_EVENT_SCOPE } from "./modules/filtering/event-filter.constants";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
-import { compileEventScope } from "./modules/filtering/modules/query-building/event-scope.utilities";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { compareRankedPaths } from "./modules/natural-order/natural-order.utilities";
 import { PresetsService } from "./modules/presets/presets.service";
@@ -198,7 +196,7 @@ export class EventsService {
   }
 
   /**
-   * Events overlapping the period, in scope and meeting the filter, earliest
+   * Events overlapping the period and meeting the filter, earliest
    * first, with their tags and group keys.
    */
   public async findEvents(
@@ -206,7 +204,7 @@ export class EventsService {
     filter?: EventFilterGroup | null,
     options: EventsReadOptions = {},
   ): Promise<CalendarEventEntity[]> {
-    const { grouping = [], scope = DEFAULT_EVENT_SCOPE } = options;
+    const { grouping = [] } = options;
     const compiled = this.filterService.compile(filter, 2);
     const filterParameters = compiled?.parameters ?? [];
     const groups = this.groupingService.compile(
@@ -214,13 +212,9 @@ export class EventsService {
       2 + filterParameters.length,
     );
     const rows = await this.select(
-      EVENTS_IN_PERIOD_SQL.replace("{scope}", () =>
-        compileEventScope(scope, "e.id"),
-      )
-        .replace("{filter}", () =>
-          compiled === null ? "" : `and ${compiled.sql}`,
-        )
-        .replace("{groups}", () => groups.sql),
+      EVENTS_IN_PERIOD_SQL.replace("{filter}", () =>
+        compiled === null ? "" : `and ${compiled.sql}`,
+      ).replace("{groups}", () => groups.sql),
       [
         this.toIsoString(period.end),
         this.toIsoString(period.start),

@@ -70,7 +70,22 @@ export class CaelundasCommand extends CommandRunner {
       count: progressiveEvents.length,
     });
 
-    const allEvents = [...perfectiveEvents, ...progressiveEvents].toSorted(
+    // The sweep needed every instant to build the spans; storing the ones a
+    // span starts or ends on would only repeat what the span says.
+    const keptPerfectiveEvents =
+      this.progressiveEventsService.withoutSpanBoundaries(
+        perfectiveEvents,
+        progressiveEvents,
+      );
+    this.logger.info(
+      "✂️ Left out the instants a span starts or ends on",
+      undefined,
+      {
+        count: perfectiveEvents.length - keptPerfectiveEvents.length,
+      },
+    );
+
+    const allEvents = [...keptPerfectiveEvents, ...progressiveEvents].toSorted(
       (a, b) => a.start.valueOf() - b.start.valueOf(),
     );
 

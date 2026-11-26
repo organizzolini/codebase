@@ -74,6 +74,9 @@ describe(CaelundasCommand, () => {
     progressiveService.detect.mockReturnValue([
       detectedEvent("Middle", "2026-01-15T00:00:00Z"),
     ]);
+    progressiveService.withoutSpanBoundaries.mockImplementation((events) => [
+      ...events,
+    ]);
     calendarEventsService.upsert.mockImplementation(async () => {
       callOrder.push("upsert");
       await Promise.resolve();
@@ -140,9 +143,32 @@ describe(CaelundasCommand, () => {
       });
     });
 
+    it("stores the instants the progressive service keeps, and every span", async () => {
+      const station = detectedEvent("Station", "2026-01-12T00:00:00Z");
+      const earlier = detectedEvent("Earlier", "2026-01-10T00:00:00Z");
+      const span = detectedEvent("Retrograde", "2026-01-12T00:00:00Z");
+      perfectiveService.detect.mockReturnValue([station, earlier]);
+      progressiveService.detect.mockReturnValue([span]);
+      progressiveService.withoutSpanBoundaries.mockReturnValue([earlier]);
+
+      await command.run();
+
+      const [events] = calendarEventsService.upsert.mock.calls[0] ?? [];
+
+      expect(progressiveService.withoutSpanBoundaries).toHaveBeenCalledWith(
+        [station, earlier],
+        [span],
+      );
+      expect(events?.map((event) => event.summary)).toStrictEqual([
+        "Earlier",
+        "Retrograde",
+      ]);
+    });
+
     it("upserts an empty batch when nothing is detected", async () => {
       perfectiveService.detect.mockReturnValue([]);
       progressiveService.detect.mockReturnValue([]);
+      progressiveService.withoutSpanBoundaries.mockReturnValue([]);
 
       await command.run();
 

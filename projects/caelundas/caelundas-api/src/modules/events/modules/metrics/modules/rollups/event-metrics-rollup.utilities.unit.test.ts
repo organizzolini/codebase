@@ -15,7 +15,7 @@ import type { EventMetricsQueryRequest } from "../../event-metrics.types";
 const ROOT = "0199b1a0-0000-7000-8000-000000000002";
 const MARS = "0199b1a0-0000-7000-8000-000000000001";
 
-/** A request for March in the default scope, which the facts are built for. */
+/** A request for March. */
 function request(rest: RequestParts = {}): EventMetricsQueryRequest {
   return createRequest(rest);
 }
@@ -35,16 +35,8 @@ function tagLevel(
 
 describe("event metrics rollup utilities", () => {
   describe(isRollupRequest, () => {
-    it("accepts an unfiltered request of measures that merge, in the default scope", () => {
+    it("accepts an unfiltered request of measures that merge", () => {
       expect(isRollupRequest(request())).toBe(true);
-    });
-
-    it("refuses a scope that keeps the phase boundaries, which the facts leave out", () => {
-      expect(
-        isRollupRequest(
-          createRequest({ scope: { includePhaseBoundaries: true } }),
-        ),
-      ).toBe(false);
     });
 
     it("refuses a filter, a percent and a measure that does not merge", () => {
@@ -260,26 +252,13 @@ describe("event metrics rollup utilities", () => {
     });
   });
 
-  describe("scope", () => {
-    it("leaves the phase boundaries out of the events it reads, as the facts do", () => {
+  describe("every stored event", () => {
+    it("reads the events whole, with no condition on phase boundaries", () => {
       expect.hasAssertions();
 
       const sql = compileRollupRead(tagLevel(), "UTC")?.sql;
 
-      expect(sql).toContain("Aspect / Phase");
-      expect(sql).toContain("not (f.tag_ids &&");
-    });
-
-    it("reads the events whole when the scope keeps the boundaries", () => {
-      expect.hasAssertions();
-
-      const sql = compileRollupRead(
-        tagLevel({}, `tag:${ROOT}`, {
-          scope: { includePhaseBoundaries: true },
-        }),
-        "UTC",
-      )?.sql;
-
+      expect(sql).not.toContain("Aspect / Phase");
       expect(sql).not.toContain("not (f.tag_ids &&");
     });
   });

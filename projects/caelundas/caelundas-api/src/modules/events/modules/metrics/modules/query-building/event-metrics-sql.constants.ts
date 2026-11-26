@@ -61,7 +61,6 @@ export const EVENT_METRICS_HEAD_SQL = `
     select p.period, p.period_start, p.period_end, e.*{extra}
     from ${EVENTS_LOCAL_SQL} e
     join periods p on e."start" < p.period_end and e."end" >= p.period_start{tagSets}
-    where {scope}
     {filter}
   )
 `;

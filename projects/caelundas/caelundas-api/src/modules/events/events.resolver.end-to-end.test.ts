@@ -55,7 +55,7 @@ describe("events resolver end-to-end suite", () => {
         query("{ dataset { count start end timezone } }"),
       ).resolves.toStrictEqual({
         dataset: {
-          count: 5,
+          count: 4,
           end: "2026-03-21T00:00:00.000Z",
           start: "2026-03-05T03:30:00.000Z",
           timezone: "America/New_York",
@@ -146,21 +146,6 @@ describe("events resolver end-to-end suite", () => {
       ).toStrictEqual(["Moon Conjunct Mars"]);
     });
 
-    it("leaves out the instants where an aspect begins forming", async () => {
-      expect.hasAssertions();
-
-      const { events } = await query(EVENTS, {
-        period: {
-          end: "2026-03-11T00:00:00.000Z",
-          start: "2026-03-10T00:00:00.000Z",
-        },
-      });
-
-      expect(
-        (events as { name: string }[]).map(({ name }) => name),
-      ).not.toContain("Moon Conjunct Mars Forming");
-    });
-
     it("answers no events for a period the data does not reach", async () => {
       expect.hasAssertions();
 
@@ -189,9 +174,9 @@ describe("events resolver end-to-end suite", () => {
       {
         name: "Aspect",
         values: [
-          { count: 2, depth: 1, name: "Conjunct", path: "Conjunct" },
-          { count: 1, depth: 1, name: "Phase", path: "Phase" },
-          { count: 1, depth: 2, name: "Forming", path: "Phase / Forming" },
+          { count: 1, depth: 1, name: "Conjunct", path: "Conjunct" },
+          { count: 0, depth: 1, name: "Phase", path: "Phase" },
+          { count: 0, depth: 2, name: "Forming", path: "Phase / Forming" },
         ],
       },
       {

@@ -53,9 +53,6 @@ const EVENT_METRICS = [
   "unique-tags",
 ];
 
-/** The scope that keeps the phase boundaries, which the facts leave out. */
-const WITH_BOUNDARIES = { includePhaseBoundaries: true };
-
 /** The SQL of the whole set's facts, and of a tag level's. */
 const WHOLE_FACTS = "join calendar_event_facts r on r.filter_id = df.id";
 const TAG_FACTS = "join calendar_event_facts r on r.filter_id = tf.id";
@@ -131,12 +128,6 @@ const SEEDS: Seed[] = [
     tags: ["Sun", "Progressive", "Conjunct"],
   },
   {
-    end: "2026-01-16T12:00:00.000Z",
-    name: "Forming",
-    start: "2026-01-16T12:00:00.000Z",
-    tags: ["Mars", "Forming"],
-  },
-  {
     end: "2026-01-05T11:00:00.000Z",
     name: "Mars Station",
     start: "2026-01-05T10:00:00.000Z",
@@ -177,7 +168,7 @@ describe("event metrics rollups", () => {
   let queries: string[] = [];
   const tags = new Map<string, Tag>();
 
-  /** Measures the input in the default scope, which the rollups answer. */
+  /** Measures the input, which the rollups answer when they can. */
   async function findMetrics(
     input: EventMetricsInputEntity,
   ): ReturnType<EventMetricsService["findMetrics"]> {
@@ -312,7 +303,7 @@ describe("event metrics rollups", () => {
 
     expect(sql).toContain(WHOLE_FACTS);
     expect(sql).not.toContain("events_in_periods");
-    // Six events start in the window; the forming boundary is left out.
+    // Six events start in the window.
     expect(total[0]?.value).toBe(6);
   });
 
@@ -430,22 +421,6 @@ describe("event metrics rollups", () => {
     });
 
     expect(total[0]?.value).toBe(3);
-  });
-
-  it("reads the events, not the rollups, when the scope keeps the phase boundaries", async () => {
-    expect.hasAssertions();
-
-    fallback = false;
-    queries = [];
-
-    const { total } = await metricsService.findMetrics(
-      { metrics: ["events"], period: WINDOW },
-      WITH_BOUNDARIES,
-    );
-
-    expect(queries.join("\n")).not.toContain(WHOLE_FACTS);
-    // Seven events start in the window, the forming boundary included.
-    expect(total[0]?.value).toBe(7);
   });
 
   it("falls back to the events for a period that starts mid-day", async () => {

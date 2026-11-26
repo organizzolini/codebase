@@ -38,7 +38,7 @@ const group = (slug: string): string =>
 const CROSSING_SQL = `x as not materialized (
     select p.period, ${EVENT_COLUMNS_SQL}
     from periods p
-    join ${FACTS_EVENT_SOURCE_SQL} f on {eventRows} and f."start" < p.period_start and f."end" >= p.period_start
+    join ${FACTS_EVENT_SOURCE_SQL} f on f."start" < p.period_start and f."end" >= p.period_start
   )`;
 
 /** The periods, with the local days they start and stop on. */
@@ -73,12 +73,12 @@ export const ROLLUP_UNTAGGED_SQL = `,
   c as not materialized (
     select p.period, ${EVENT_COLUMNS_SQL}
     from periods p
-    join ${FACTS_EVENT_SOURCE_SQL} f on {eventRows} and f."day" >= p.from_day and f."day" < p.to_day
+    join ${FACTS_EVENT_SOURCE_SQL} f on f."day" >= p.from_day and f."day" < p.to_day
     ${UNTAGGED_SQL}
     union all
     select p.period, ${EVENT_COLUMNS_SQL}
     from periods p
-    join ${FACTS_EVENT_SOURCE_SQL} f on {eventRows} and f."start" < p.period_start and f."end" >= p.period_start
+    join ${FACTS_EVENT_SOURCE_SQL} f on f."start" < p.period_start and f."end" >= p.period_start
     ${UNTAGGED_SQL}
   )`;
 

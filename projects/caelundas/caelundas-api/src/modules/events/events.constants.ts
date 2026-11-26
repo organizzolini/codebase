@@ -40,7 +40,7 @@ export const datasetRowSchema = z.object({
   timezone: z.string(),
 });
 
-/** Events in scope overlapping a period, with tags and group keys. */
+/** Events overlapping a period, with tags and group keys. */
 export const EVENTS_IN_PERIOD_SQL = `
   with ${TAG_INFO_SQL}
   select
@@ -74,7 +74,6 @@ export const EVENTS_IN_PERIOD_SQL = `
     ) as tags {groups}
   from ${EVENTS_LOCAL_SQL} e
   where e."start" < $1::timestamptz and e."end" >= $2::timestamptz
-    and {scope}
     {filter}
   order by e."start", e."name" collate "C", e.id
 `;

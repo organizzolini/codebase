@@ -35,6 +35,40 @@ describe(
       expect(window.input.timezone).toBe("America/New_York");
     });
 
+    it("stores every span, and leaves out the instants a span starts or ends on", async () => {
+      expect.hasAssertions();
+
+      const { perfective, progressive, stored } =
+        await runPipelineWindow(equinoxDay);
+      const has = (event: DetectedCalendarEvent, tag: string): boolean =>
+        event.tags.includes(tag);
+      const storedInstants = stored.filter((event) =>
+        event.start.isSame(event.end),
+      );
+
+      expect(
+        stored.filter((event) => !event.start.isSame(event.end)),
+      ).toHaveLength(progressive.length);
+      // The twilights, the equinox and the ingresses are all span boundaries.
+      expect(perfective.some((event) => has(event, "Twilight"))).toBe(true);
+      expect(storedInstants.some((event) => has(event, "Twilight"))).toBe(
+        false,
+      );
+      expect(storedInstants.some((event) => has(event, "Ingress"))).toBe(false);
+      expect(storedInstants.some((event) => has(event, "Forming"))).toBe(false);
+      expect(storedInstants.some((event) => has(event, "Dissolving"))).toBe(
+        false,
+      );
+      // Sunrise, solar noon and the exact aspects bound no span, so they stay.
+      expect(storedInstants.some((event) => has(event, "Sunrise"))).toBe(true);
+      expect(storedInstants.some((event) => has(event, "Solar Zenith"))).toBe(
+        true,
+      );
+      expect(storedInstants.some((event) => has(event, "Perfective"))).toBe(
+        true,
+      );
+    });
+
     it("returns every event sorted by start time", async () => {
       expect.hasAssertions();
 

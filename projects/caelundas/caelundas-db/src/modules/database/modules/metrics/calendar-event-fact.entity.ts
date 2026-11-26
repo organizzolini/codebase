@@ -11,10 +11,7 @@ import type { Relation } from "typeorm";
  *
  * The key is the pair. The value is in the measure's unit, an instant in epoch milliseconds. A zero has no row, nor has a measure that does not merge. A refresh writes only what changed.
  */
-@Entity({
-  comment:
-    "One measure at one filter. The facts are those of the default scope by definition: every event except the Forming and Dissolving phase boundaries (tags Aspect / Phase / Forming and Dissolving).",
-})
+@Entity()
 export class CalendarEventFact {
   @JoinColumn({ name: "filter_id" })
   @ManyToOne(() => Filter, { onDelete: "CASCADE" })

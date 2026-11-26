@@ -296,7 +296,6 @@ INSERT INTO "group_dimensions" ("group_id", "dimension_id") VALUES
 ('01a215c3-1002-7000-8000-000000000006', '01a215c3-1000-7000-8000-000000000006'),
 ('01a215c3-1002-7000-8000-000000000007', '01a215c3-1000-7000-8000-000000000007');
 
-COMMENT ON TABLE "calendar_event_facts" IS 'One measure at one filter. The facts are those of the default scope by definition: every event except the Forming and Dissolving phase boundaries (tags Aspect / Phase / Forming and Dissolving).';
 
 CREATE FUNCTION "expand_keys"(keys text[]) RETURNS TABLE (key text) LANGUAGE plpgsql IMMUTABLE PARALLEL SAFE ROWS 2 AS $$ BEGIN IF cardinality(keys) = 0 THEN key := NULL; RETURN NEXT; ELSE RETURN QUERY SELECT unnest(keys); END IF; END $$;
 

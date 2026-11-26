@@ -103,8 +103,7 @@ timezone` (Postgres 18 treats `timezone(text, timestamptz)` as immutable), decla
   unit of the measure, a plain table `refreshMetrics(manager)` brings up to date (upsert the new or changed,
   delete the gone; a refresh that changes nothing writes nothing). Only the measures that merge across days are
   stored (`events`, `perfective-events`, `progressive-events`, `duration`, `first-start`,
-  `last-start`; a zero has no row), for the default scope by definition (every event except the Forming and
-  Dissolving phase boundaries, in the table's comment and the refresh), and never the six that do not
+  `last-start`; a zero has no row), over every stored event, and never the six that do not
   (`unique-names`, `unique-tags`, `covered-duration`, the longest, shortest and median progressive duration),
   which the API reads from the events. A perfective event lasts no minutes and every other event is
   progressive, so the old `progressive-duration` equalled `duration` and was merged into it. `dimensions` are

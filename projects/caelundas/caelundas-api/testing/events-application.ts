@@ -119,13 +119,6 @@ export async function seedEvents(
       timezone: "America/New_York",
     },
     {
-      end: "2026-03-10T12:00:00.000Z",
-      name: "Moon Conjunct Mars Forming",
-      start: "2026-03-10T12:00:00.000Z",
-      tags: [conjunct, forming],
-      timezone: "America/New_York",
-    },
-    {
       end: "2026-03-20T09:00:00.000Z",
       name: "Sun Enters Aries",
       start: "2026-03-20T09:00:00.000Z",

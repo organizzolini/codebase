@@ -332,7 +332,7 @@ describe(DatabaseService, () => {
     expect(before).toHaveLength(4);
   });
 
-  it("leaves a phase boundary event out of the facts, the default scope's way", async () => {
+  it("counts a phase boundary event like any other", async () => {
     expect.hasAssertions();
 
     const forming = await tags.save(
@@ -355,8 +355,8 @@ describe(DatabaseService, () => {
       .insert({ calendarEventId: event.id, tagId: forming.id });
     await refresh();
 
-    await expect(countTagDays()).resolves.toBe(0);
-    await expect(readMeasurement("events", null)).resolves.toBeNull();
+    await expect(readMeasurement("events", null)).resolves.toBe(1);
+    await expect(readMeasurement("events", forming.id)).resolves.toBe(1);
   });
 
   it("computes an event's local day, hour, minutes and temporality inline, in the zone it names", async () => {

@@ -58,7 +58,7 @@ export const FACTS_EVENT_ROWS_SQL = `
         f.duration_minutes, case when f."start" = f."end" then 'Instant' else 'Duration' end as temporality,
         f.tag_ids, f.ancestor_tag_ids{extra}
       from periods p
-      join lateral window_events(p.period_start, p.period_end) f on {eventRows}`;
+      join lateral window_events(p.period_start, p.period_end) f on true`;
 
 /** The events in the periods, a row each, with each level's keys. */
 export const FACTS_EVENTS_SQL = `

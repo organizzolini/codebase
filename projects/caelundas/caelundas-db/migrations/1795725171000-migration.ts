@@ -355,7 +355,7 @@ export class Migration1795725171000 implements MigrationInterface {
       `ALTER TABLE "group_dimensions" ADD CONSTRAINT "FK_9dc7962e1301aad95b372b90ba2" FOREIGN KEY ("group_id") REFERENCES "groups"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     // Seeded reference rows: the dimensions and the roll-up graph of the time ones, the groups (sets of
-    // dimensions), and the default scope, whose days and tags the refresh adds.
+    // dimensions), and the groups of the day and tag filters the refresh adds.
     await queryRunner.query(`INSERT INTO "dimensions" ("id", "slug", "name", "icon", "note") VALUES
 ('01a215c3-1000-7000-8000-000000000001', 'name', 'Name', 'type', 'One distinct event name, so the recurrences of an event aggregate.'),
 ('01a215c3-1000-7000-8000-000000000002', 'day', 'Day', 'calendar-days', 'One local day, the date of the events'' start in their own zone.'),
@@ -385,9 +385,6 @@ export class Migration1795725171000 implements MigrationInterface {
 ('01a215c3-1002-7000-8000-000000000005', '01a215c3-1000-7000-8000-000000000005'),
 ('01a215c3-1002-7000-8000-000000000006', '01a215c3-1000-7000-8000-000000000006'),
 ('01a215c3-1002-7000-8000-000000000007', '01a215c3-1000-7000-8000-000000000007')`);
-    await queryRunner.query(
-      `COMMENT ON TABLE "calendar_event_facts" IS 'One measure at one filter. The facts are those of the default scope by definition: every event except the Forming and Dissolving phase boundaries (tags Aspect / Phase / Forming and Dissolving).'`,
-    );
     // Set-returning functions that declare their row counts (`ROWS`), which `unnest` over a computed
     // array hides, so the planner estimates the metrics statements honestly. plpgsql, so Postgres
     // keeps the estimate instead of inlining it.

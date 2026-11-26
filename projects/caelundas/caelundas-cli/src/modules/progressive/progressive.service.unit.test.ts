@@ -14,12 +14,31 @@ import { RetrogradesService } from "../perfective/modules/retrogrades/retrograde
 import { TwilightsService } from "../perfective/modules/twilights/twilights.service";
 
 import { ProgressiveUtilitiesService } from "./progressive-utilities.service";
-import { EDGE_EVENTS_FINDERS_TOKEN } from "./progressive.constants";
+import {
+  EDGE_EVENTS_FINDERS_TOKEN,
+  SPAN_BOUNDARY_RULES,
+} from "./progressive.constants";
 import { ProgressiveService } from "./progressive.service";
 
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { EdgeEventsFinder } from "../ephemeris/modules/boundary-search/boundary-search.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
+/** An event with the tags, an instant when it has no end. */
+function event(
+  summary: string,
+  tags: string[],
+  start: string,
+  end = start,
+): DetectedCalendarEvent {
+  return {
+    description: summary,
+    end: moment.utc(end),
+    start: moment.utc(start),
+    summary,
+    tags,
+  };
+}
+
 function makeEvent(summary: string): DetectedCalendarEvent {
   return {
     description: summary,
@@ -349,6 +368,175 @@ describe(ProgressiveService, () => {
       expect(warnSpy).not.toHaveBeenCalled();
 
       warnSpy.mockRestore();
+    });
+  });
+
+  describe("withoutSpanBoundaries", () => {
+    /** The summaries the events keep, in order. */
+    function kept(
+      instants: DetectedCalendarEvent[],
+      spans: DetectedCalendarEvent[],
+    ): string[] {
+      return service
+        .withoutSpanBoundaries(instants, spans)
+        .map((remaining) => remaining.summary);
+    }
+
+    it.each([
+      ["aspect forming", "Forming", "Simple Aspect", "2026-01-01T00:00:00Z"],
+      [
+        "compound forming",
+        "Forming",
+        "Compound Aspect",
+        "2026-01-01T00:00:00Z",
+      ],
+      [
+        "aspect dissolving",
+        "Dissolving",
+        "Simple Aspect",
+        "2026-01-02T00:00:00Z",
+      ],
+      [
+        "moon phase",
+        "Monthly Lunar Cycle",
+        "Monthly Lunar Cycle",
+        "2026-01-01T00:00:00Z",
+      ],
+      ["lunar apsis", "Lunar Apsides", "Lunar Apsides", "2026-01-02T00:00:00Z"],
+      [
+        "morning rise",
+        "Morning Rise",
+        "Planetary Phase",
+        "2026-01-01T00:00:00Z",
+      ],
+      [
+        "western elongation",
+        "Western Elongation",
+        "Planetary Phase",
+        "2026-01-02T00:00:00Z",
+      ],
+      ["opposition", "Opposition", "Planetary Phase", "2026-01-01T00:00:00Z"],
+      ["eclipse beginning", "Beginning", "Eclipse", "2026-01-01T00:00:00Z"],
+      ["eclipse ending", "Ending", "Eclipse", "2026-01-02T00:00:00Z"],
+      [
+        "retrograde station",
+        "Direction",
+        "Retrogrades",
+        "2026-01-01T00:00:00Z",
+      ],
+      ["direct station", "Direction", "Directs", "2026-01-02T00:00:00Z"],
+      ["ingress", "Ingress", "Ingress", "2026-01-01T00:00:00Z"],
+      [
+        "solar year point",
+        "Annual Solar Cycle",
+        "Annual Solar Cycle",
+        "2026-01-02T00:00:00Z",
+      ],
+      ["moonrise", "Moonrise", "Moon Up", "2026-01-01T00:00:00Z"],
+      ["moonset", "Moonset", "Moon Up", "2026-01-02T00:00:00Z"],
+      ["twilight boundary", "Twilight", "Twilight", "2026-01-01T00:00:00Z"],
+    ])(
+      "drops the %s instant a span of its family starts or ends on",
+      (_name, instantTag, spanTag, at) => {
+        const instant = event("instant", [instantTag], at);
+        const span = event(
+          "span",
+          [spanTag],
+          "2026-01-01T00:00:00Z",
+          "2026-01-02T00:00:00Z",
+        );
+
+        expect(kept([instant], [span])).toStrictEqual([]);
+      },
+    );
+
+    it("keeps an instant no span has on its edge, such as a station whose span was not stored", () => {
+      const station = event("station", ["Direction"], "2026-01-05T00:00:00Z");
+      const span = event(
+        "span",
+        ["Retrogrades"],
+        "2026-01-01T00:00:00Z",
+        "2026-01-02T00:00:00Z",
+      );
+
+      expect(kept([station], [span])).toStrictEqual(["station"]);
+      expect(kept([station], [])).toStrictEqual(["station"]);
+    });
+
+    it("keeps an instant on the edge of a span of another family", () => {
+      const station = event("station", ["Direction"], "2026-01-01T00:00:00Z");
+      const span = event(
+        "span",
+        ["Ingress"],
+        "2026-01-01T00:00:00Z",
+        "2026-01-02T00:00:00Z",
+      );
+
+      expect(kept([station], [span])).toStrictEqual(["station"]);
+    });
+
+    it("keeps an instant inside a span, such as an eclipse maximum or an exact aspect", () => {
+      const span = event(
+        "span",
+        ["Eclipse", "Simple Aspect"],
+        "2026-01-01T00:00:00Z",
+        "2026-01-03T00:00:00Z",
+      );
+      const maximum = event(
+        "maximum",
+        ["Eclipse", "Maximum"],
+        "2026-01-02T00:00:00Z",
+      );
+      const exact = event("exact", ["Perfective"], "2026-01-01T00:00:00Z");
+
+      expect(kept([maximum, exact], [span])).toStrictEqual([
+        "maximum",
+        "exact",
+      ]);
+    });
+
+    it("keeps a forming instant on a span's end and a moonrise on its end, since each sits on one edge only", () => {
+      const span = event(
+        "span",
+        ["Simple Aspect", "Moon Up"],
+        "2026-01-01T00:00:00Z",
+        "2026-01-02T00:00:00Z",
+      );
+      const forming = event("forming", ["Forming"], "2026-01-02T00:00:00Z");
+      const dissolving = event(
+        "dissolving",
+        ["Dissolving"],
+        "2026-01-01T00:00:00Z",
+      );
+      const moonrise = event("moonrise", ["Moonrise"], "2026-01-02T00:00:00Z");
+
+      expect(kept([forming, dissolving, moonrise], [span])).toStrictEqual([
+        "forming",
+        "dissolving",
+        "moonrise",
+      ]);
+    });
+
+    it("never drops a span, and ignores a span of no duration as an edge", () => {
+      const span = event(
+        "span",
+        ["Ingress"],
+        "2026-01-01T00:00:00Z",
+        "2026-01-02T00:00:00Z",
+      );
+      const emptySpan = event("empty", ["Ingress"], "2026-01-09T00:00:00Z");
+      const instant = event("instant", ["Ingress"], "2026-01-09T00:00:00Z");
+
+      expect(kept([span, instant], [emptySpan])).toStrictEqual([
+        "span",
+        "instant",
+      ]);
+    });
+
+    it("names every family once", () => {
+      const names = SPAN_BOUNDARY_RULES.map((rule) => rule.name);
+
+      expect(new Set(names).size).toBe(names.length);
     });
   });
 });

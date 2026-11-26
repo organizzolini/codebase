@@ -112,12 +112,6 @@ const SEEDS: Seed[] = [
     tags: ["Sun", "Progressive", "Conjunct"],
   },
   {
-    end: "2026-01-16T12:00:00.000Z",
-    name: "Forming",
-    start: "2026-01-16T12:00:00.000Z",
-    tags: ["Mars", "Forming"],
-  },
-  {
     end: "2026-01-14T15:00:00.000Z",
     name: "Untagged",
     start: "2026-01-14T15:00:00.000Z",
@@ -392,7 +386,7 @@ describe("event metrics over the facts", () => {
             ...(filtered ? { filter } : {}),
           });
 
-          expect(sql).toContain("on true and not (f.tag_ids && (");
+          expect(sql).toContain("on true");
           expect(sql).not.toContain("events_in_periods");
         }
       }

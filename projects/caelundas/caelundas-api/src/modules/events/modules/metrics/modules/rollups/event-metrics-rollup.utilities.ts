@@ -1,5 +1,4 @@
 import { TAG_FIELD_PREFIX } from "../../../filtering/modules/query-building/event-filter-fields.constants";
-import { compileFactsScope } from "../../../filtering/modules/query-building/event-scope.utilities";
 import { UUID_PATTERN } from "../../../filtering/modules/values/event-filter-values.constants";
 import { collectMeasures } from "../catalog/event-metrics-catalog.utilities";
 import {
@@ -90,7 +89,6 @@ export function compileRollupRead(
       ["{periods}", periods],
       ["{zone}", `${bound}::text`],
       ["{root}", root],
-      ["{eventRows}", `true${compileFactsScope(request.scope, "f")}`],
     ]),
   };
 }
@@ -122,14 +120,11 @@ export function findRollupTarget(
     : describeCalendar(calendar);
 }
 
-// The facts are built for the default scope and cannot drop an event by its
-// tags, so a scope that keeps the phase boundaries reads the events.
 /**
- * Whether the rollups answer the request: no filter, metrics that merge, the default scope.
+ * Whether the rollups answer the request: no filter and metrics that merge.
  */
 export function isRollupRequest(request: EventMetricsQueryRequest): boolean {
   return (
-    !request.scope.includePhaseBoundaries &&
     request.filter === null &&
     collectMeasures(request.metrics, request.catalog).every((measure) =>
       isRolledMeasure(measure),

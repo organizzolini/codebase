@@ -1,6 +1,5 @@
 import { MetricExpression } from "@codebase/caelundas-db";
 
-import { DEFAULT_EVENT_SCOPE } from "../src/modules/events/modules/filtering/event-filter.constants";
 import { buildCatalog } from "../src/modules/events/modules/metrics/modules/catalog/event-metrics-catalog.utilities";
 
 import type { EventMetricsQueryRequest } from "../src/modules/events/modules/metrics/event-metrics.types";
@@ -171,7 +170,6 @@ export function createRequest(
       start: "2026-03-01T00:00:00.000Z",
     },
     previous: null,
-    scope: DEFAULT_EVENT_SCOPE,
     tagRoot: null,
     ...parts,
   };

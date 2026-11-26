@@ -149,8 +149,8 @@ with one id.
 
 Charts, Totals, the Table and the Timeline read two things. `calendar_event_facts`
 holds **one measure at one filter a row** (a `filter_id`, a `measure_id` and a
-`measurement` in the measure's unit) for the measures that merge across days, in the
-default scope by definition, which leaves the Forming and Dissolving phase boundaries out. A
+`measurement` in the measure's unit) for the measures that merge across days, over every
+stored event. A
 `filters` row is a `groups` row (a set of `dimensions`) instantiated: it pins a
 `period`, a `tag_id` or an `event_name`, so a local day, or a tag on a day, the
 tag's filters all beneath the day's. The materialized

@@ -226,32 +226,6 @@ describe(EventsService, () => {
     );
   });
 
-  it("leaves out the phase boundaries by default, and reads them when the scope asks", async () => {
-    expect.hasAssertions();
-
-    const period = {
-      end: new Date("2026-03-06T00:00:00Z"),
-      start: new Date("2026-03-05T00:00:00Z"),
-    };
-    query.mockResolvedValue([]);
-
-    await service.findEvents(period);
-
-    expect(query).toHaveBeenLastCalledWith(
-      expect.stringContaining("and not exists ("),
-      expect.anything(),
-    );
-
-    await service.findEvents(period, null, {
-      scope: { includePhaseBoundaries: true },
-    });
-
-    expect(query).toHaveBeenLastCalledWith(
-      expect.stringContaining("and true"),
-      expect.anything(),
-    );
-  });
-
   it("reads each level's group keys with the event, binding them after the filter", async () => {
     expect.hasAssertions();
 

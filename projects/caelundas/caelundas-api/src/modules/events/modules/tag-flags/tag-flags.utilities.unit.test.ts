@@ -115,4 +115,48 @@ describe("tag flags", () => {
       ]);
     });
   });
+
+  describe("optional parts", () => {
+    it("keeps a level's depth and parent, and a rule's negation, when they are set", () => {
+      expect(
+        keepLevel(
+          { depth: 2, field: "tag:root", parent: "leaf", tags: ["leaf"] },
+          BLOCKED,
+        ),
+      ).toStrictEqual({
+        depth: 2,
+        field: "tag:root",
+        parent: "leaf",
+        tags: ["leaf"],
+      });
+      expect(
+        sanitizeFilter(
+          {
+            combinator: EventFilterCombinator.AND,
+            rules: [{ ...RULE, negated: true }],
+          },
+          BLOCKED,
+        )?.rules,
+      ).toStrictEqual([{ ...RULE, negated: true, values: ["leaf"] }]);
+    });
+
+    it("reads a filter with no rules or groups, and a rule with no values", () => {
+      expect(
+        sanitizeFilter({ combinator: EventFilterCombinator.AND }, BLOCKED),
+      ).toStrictEqual({
+        combinator: EventFilterCombinator.AND,
+        groups: [],
+        rules: [],
+      });
+      expect(
+        sanitizeFilter(
+          {
+            combinator: EventFilterCombinator.AND,
+            rules: [{ operator: "is_set", path: ["tag:root"] }],
+          },
+          BLOCKED,
+        )?.rules,
+      ).toStrictEqual([{ operator: "is_set", path: ["tag:root"] }]);
+    });
+  });
 });

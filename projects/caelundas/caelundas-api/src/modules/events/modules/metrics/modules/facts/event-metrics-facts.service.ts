@@ -3,7 +3,6 @@ import { Inject, Injectable } from "@nestjs/common";
 import { EventFilterService } from "../../../filtering/event-filter.service";
 import { TAG_FIELD_PREFIX } from "../../../filtering/modules/query-building/event-filter-fields.constants";
 import { EventFilterParametersService } from "../../../filtering/modules/query-building/event-filter-parameters.service";
-import { compileFactsScope } from "../../../filtering/modules/query-building/event-scope.utilities";
 import { UUID_PATTERN } from "../../../filtering/modules/values/event-filter-values.constants";
 import { EventGroupingService } from "../../../grouping/event-grouping.service";
 import { collectMeasures } from "../catalog/event-metrics-catalog.utilities";
@@ -406,11 +405,9 @@ export class EventMetricsFactsService {
       children,
       levels: levels.length,
       parameters: parameters.values,
-      sql: FACTS_EVENTS_SQL.replace(
-        "{eventRows}",
-        () => `true${compileFactsScope(request.scope, "f")}`,
+      sql: FACTS_EVENTS_SQL.replace("{ancestors}", () =>
+        children ? ", e.ancestor_tag_ids" : "",
       )
-        .replace("{ancestors}", () => (children ? ", e.ancestor_tag_ids" : ""))
         .replace("{extra}", () =>
           listEventColumns(measures)
             .map((column) => `, ${readEventColumn(column)} as "${column}"`)

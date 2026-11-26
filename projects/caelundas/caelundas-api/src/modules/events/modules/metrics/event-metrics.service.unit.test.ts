@@ -20,7 +20,6 @@ import type { MetricCatalog } from "./modules/catalog/event-metrics-catalog.type
 import type { EventMetricsInputEntity } from "./modules/inputs/event-metrics-input.entities";
 
 const ROOT = "0199b1a0-0000-7000-8000-000000000002";
-const WITH_BOUNDARIES = { includePhaseBoundaries: true };
 const MARS = "0199b1a0-0000-7000-8000-000000000001";
 
 const select = vi.fn<(...parameters: unknown[]) => Promise<unknown[]>>();
@@ -302,18 +301,6 @@ describe(EventMetricsService, () => {
       expect(statements()).toContain("events_in_periods");
     });
 
-    it("asks no guard when the scope keeps the phase boundaries, which the facts leave out", async () => {
-      expect.hasAssertions();
-
-      answer([{ timezone: "UTC" }]);
-
-      await service.findMetrics(grouped([]), WITH_BOUNDARIES);
-
-      expect(select).toHaveBeenCalledTimes(1);
-      expect(statements()).toContain("events_in_periods");
-      expect(statements()).not.toContain("join calendar_event_facts r on");
-    });
-
     it("reads the first level from the rollups, and the rest from the events", async () => {
       expect.hasAssertions();
 
@@ -344,11 +331,10 @@ describe(EventMetricsService, () => {
       ]);
 
       const result = await service.findMetrics(
-        input({ grouping: [{ field: "year" }], metrics: ["events"] }),
-        WITH_BOUNDARIES,
+        input({ grouping: [{ field: "year" }], metrics: ["unique-names"] }),
       );
 
-      // A scope that keeps the boundaries never asks the rollups' guard, so only the facts run.
+      // A measure that does not merge never asks the rollups' guard, so only the facts run.
       expect(select).toHaveBeenCalledTimes(1);
       expect(select).toHaveBeenLastCalledWith(
         "select facts",

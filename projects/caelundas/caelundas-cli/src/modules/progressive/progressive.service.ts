@@ -11,7 +11,10 @@ import { PhasesService } from "../perfective/modules/phases/phases.service";
 import { RetrogradesService } from "../perfective/modules/retrogrades/retrogrades.service";
 import { TwilightsService } from "../perfective/modules/twilights/twilights.service";
 
-import { EDGE_EVENTS_FINDERS_TOKEN } from "./progressive.constants";
+import {
+  EDGE_EVENTS_FINDERS_TOKEN,
+  SPAN_BOUNDARY_RULES,
+} from "./progressive.constants";
 
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type {
@@ -19,6 +22,7 @@ import type {
   SweepWindow,
 } from "../ephemeris/modules/boundary-search/boundary-search.types";
 import type { Input } from "../input/input.types";
+import type { SpanBoundaryRule } from "./progressive.types";
 
 /**
  * Aggregates progressive event detection from all sub-services.
@@ -51,6 +55,23 @@ export class ProgressiveService {
 
   // 🔏 Private Methods
 
+  /** The minutes the spans of a rule start and end on. */
+  private collectEdges(
+    rule: SpanBoundaryRule,
+    spans: readonly DetectedCalendarEvent[],
+  ): { ends: Set<number>; starts: Set<number> } {
+    const ends = new Set<number>();
+    const starts = new Set<number>();
+    for (const span of spans) {
+      if (!this.isInstant(span) && this.hasAnyTag(span, rule.spans)) {
+        starts.add(span.start.valueOf());
+        ends.add(span.end.valueOf());
+      }
+    }
+
+    return { ends, starts };
+  }
+
   /**
    * The perfective events with the boundary events the finders add outside
    * the sweep's window; as they are when there is no window.
@@ -82,6 +103,36 @@ export class ProgressiveService {
     };
   }
 
+  /** Whether the event carries any of the tags. */
+  private hasAnyTag(
+    event: DetectedCalendarEvent,
+    tags: readonly string[],
+  ): boolean {
+    return tags.some((tag) => event.tags.includes(tag));
+  }
+
+  /** Whether the instant is of the rule's family and sits on an edge of one of its spans. */
+  private isBoundary(
+    instant: DetectedCalendarEvent,
+    rule: SpanBoundaryRule,
+    edges: { ends: Set<number>; starts: Set<number> },
+  ): boolean {
+    if (!this.hasAnyTag(instant, rule.instants)) {
+      return false;
+    }
+    const minute = instant.start.valueOf();
+
+    return (
+      (rule.edge !== "end" && edges.starts.has(minute)) ||
+      (rule.edge !== "start" && edges.ends.has(minute))
+    );
+  }
+
+  /** Whether the event has no duration. */
+  private isInstant(event: DetectedCalendarEvent): boolean {
+    return event.start.valueOf() === event.end.valueOf();
+  }
+
   // 🌎 Public Methods
 
   /**
@@ -111,5 +162,32 @@ export class ProgressiveService {
     return window === undefined
       ? spans
       : spans.filter((span) => span.end.isAfter(span.start));
+  }
+
+  /**
+   * The perfective events without the instants that start or end a span in
+   * `spans`: the sweep finds them to build the spans, but a stored span already
+   * says when it starts and ends. An instant stays when no span of its family
+   * has it on its edge.
+   */
+  withoutSpanBoundaries(
+    perfectiveEvents: readonly DetectedCalendarEvent[],
+    spans: readonly DetectedCalendarEvent[],
+  ): DetectedCalendarEvent[] {
+    const edges = SPAN_BOUNDARY_RULES.map((rule) =>
+      this.collectEdges(rule, spans),
+    );
+
+    return perfectiveEvents.filter(
+      (event) =>
+        !this.isInstant(event) ||
+        !SPAN_BOUNDARY_RULES.some((rule, index) => {
+          const ruleEdges = edges[index];
+
+          return (
+            ruleEdges !== undefined && this.isBoundary(event, rule, ruleEdges)
+          );
+        }),
+    );
   }
 }

@@ -348,21 +348,13 @@ describe(EventMetricsQueryService, () => {
     });
   });
 
-  describe("scope", () => {
-    it("leaves out the phase boundaries by default", () => {
+  describe("every stored event", () => {
+    it("reads every event, with no condition on phase boundaries", () => {
       expect.hasAssertions();
 
-      expect(service.compile(request()).sql).toContain("where not exists (");
-    });
+      const { sql } = service.compile(request());
 
-    it("reads them when the scope asks for them", () => {
-      expect.hasAssertions();
-
-      const { sql } = service.compile(
-        request({ scope: { includePhaseBoundaries: true } }),
-      );
-
-      expect(sql).toContain("where true");
+      expect(sql).not.toContain("Aspect / Phase");
       expect(sql).not.toContain("pet.calendar_event_id");
     });
   });

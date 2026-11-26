@@ -52,9 +52,7 @@ A group is a set of dimensions (`group_dimensions`). Each is one dimension for n
 ## Filters
 
 A filter is a group instantiated, pinning a `period` for a time dimension, an
-`event_name` for the name dimension or a `tag_id` for the tag dimension. There is no
-filter for the default scope: the facts are its by definition, the predicate being
-in the comment on the `calendar_event_facts` table.
+`event_name` for the name dimension or a `tag_id` for the tag dimension.
 
 Filters per group on the 50,113 development events:
 

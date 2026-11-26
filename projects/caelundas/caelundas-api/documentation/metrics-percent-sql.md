@@ -42,9 +42,7 @@ The percent metrics are not read from the rollups. A rollup holds each event's w
 multirange, so a percent needs the `event` grain or the base-table statement above. A request
 that asks for any percent never reads the day grains.
 
-The day grains are read at all only when the scope includes the phase boundaries: a day row
-cannot drop an event by its tags, so every request under the default scope reads the `event`
-grain, whose rows carry the tags the exclusion tests.
+The day grains answer every request that has no filter and asks only for measures that merge.
 
 ### Measured
 
@@ -64,8 +62,7 @@ equal to six decimals:
 
 `m/replay2` over the development data (50,113 events), the Charts and Totals requests the web sends,
 median of five runs. Before, the unfiltered whole-set statements read the day grains with a
-flag that dropped the phase boundaries; now the default scope reads the `event` grain and drops
-them by tag. The results were identical (2.9 million values compared, no difference).
+flag that dropped the phase boundaries; now they are never stored, and the day grains answer. The results were identical (2.9 million values compared, no difference).
 
 | Request                       | Day grains and flag | Event grain, by tag |
 | ----------------------------- | ------------------- | ------------------- |

@@ -33,8 +33,7 @@ const WINDOWS: readonly (readonly [string, string])[] = [
 ];
 
 // Every measure the facts hold, per tag node and for the whole set under a
-// null tag, from the raw events and the tag tree: the reference. The phase
-// boundary events are left out, as the default scope leaves them.
+// null tag, from the raw events and the tag tree: the reference.
 const RAW_SQL = `
 with events as (
     select
@@ -45,13 +44,6 @@ with events as (
         floor(extract(epoch from e."end" - e."start") / 60) as minutes
     from calendar_events as e
     where e.start_local_day >= $1::date and e.start_local_day < $2::date
-        and not exists (
-            select 1
-            from calendar_event_tags as et
-            inner join tag_trees as c on et.tag_id = c.descendant_id
-            inner join tags as t on c.ancestor_id = t.id
-            where et.calendar_event_id = e.id and t."name" in ('Forming', 'Dissolving')
-        )
 ),
 carried as (
     select et.calendar_event_id, c.ancestor_id as tag_id
@@ -297,14 +289,14 @@ describe("metrics facts", () => {
 
     expect(raw[0]).toMatchObject({
       days: 4,
-      events: 7,
+      events: 8,
       perfective_events: 2,
-      progressive_events: 5,
+      progressive_events: 6,
     });
     expect(raw.length).toBeGreaterThan(5);
   });
 
-  it("leaves out the events tagged as a phase forming or dissolving, as the default scope does", async () => {
+  it("counts the events tagged as a phase forming like any other", async () => {
     expect.hasAssertions();
 
     const [row] = await database.dataSource.query<{ events: number }[]>(
@@ -315,7 +307,7 @@ describe("metrics facts", () => {
       where m.slug = 'events' and f.period = '2026-03-10' and f.tag_id is null`,
     );
 
-    expect(row?.events).toBe(4);
+    expect(row?.events).toBe(5);
   });
 
   it("seeds the dimensions, their roll-up graph and a group for each", async () => {
@@ -370,7 +362,7 @@ describe("metrics facts", () => {
     ]);
   });
 
-  it("holds no scope filter: the facts are the default scope's by definition", async () => {
+  it("holds no filter without a day, a tag or a name, and no table comment", async () => {
     expect.hasAssertions();
 
     const [row] = await database.dataSource.query<{ roots: string }[]>(
@@ -380,7 +372,7 @@ describe("metrics facts", () => {
     expect(row?.roots).toBe("0");
     expect(
       database.dataSource.getMetadata(CalendarEventFact).comment,
-    ).toContain("Forming and Dissolving");
+    ).toBeUndefined();
   });
 
   it("holds one measure at one filter a row, in the unit of its measure", async () => {

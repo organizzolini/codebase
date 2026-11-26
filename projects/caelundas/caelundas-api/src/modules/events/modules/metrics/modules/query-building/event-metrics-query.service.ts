@@ -2,7 +2,6 @@ import { Inject, Injectable } from "@nestjs/common";
 
 import { EventFilterService } from "../../../filtering/event-filter.service";
 import { EventFilterParametersService } from "../../../filtering/modules/query-building/event-filter-parameters.service";
-import { compileEventScope } from "../../../filtering/modules/query-building/event-scope.utilities";
 import { UUID_PATTERN } from "../../../filtering/modules/values/event-filter-values.constants";
 import { EventGroupingService } from "../../../grouping/event-grouping.service";
 import { METRIC_COLUMN_PREFIX } from "../../event-metrics.constants";
@@ -281,11 +280,12 @@ export class EventMetricsQueryService {
     return {
       parameters: parameters.values,
       sql: template
-        .replace("{scope}", () => compileEventScope(request.scope, "e.id"))
         .replace("{tagSets}", () => (children ? EVENT_TAG_SETS_JOIN_SQL : ""))
         .replace("{extra}", () => this.compileColumns(request))
         .replace("{periods}", () => periods)
-        .replace("{filter}", () => (filter === null ? "" : `and ${filter.sql}`))
+        .replace("{filter}", () =>
+          filter === null ? "" : `where ${filter.sql}`,
+        )
         .replace("{columns}", () => columns + metrics)
         .replace("{metrics}", () => metrics)
         .replace("{outer}", () =>

@@ -531,8 +531,8 @@ describe("events filtering end-to-end suite", () => {
         rules: [{ operator: "is_any_of", path: ["weekday"], values: ["2"] }],
       });
 
-      expect(everything).toMatchObject({ Conjunct: 2, Mars: 1, Moon: 1 });
-      expect(tuesdays).toMatchObject({ Conjunct: 2, Mars: 0, Moon: 1 });
+      expect(everything).toMatchObject({ Conjunct: 1, Mars: 1, Moon: 1 });
+      expect(tuesdays).toMatchObject({ Conjunct: 1, Mars: 0, Moon: 1 });
     });
   });
 

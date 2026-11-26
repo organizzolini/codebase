@@ -77,6 +77,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **equinox**: Moment the Sun crosses the celestial equator in spring or autumn, one of the annual solar cycle's marked events.
 - **estimate**: Provisional eclipse type assigned to an eclipse when it first appears, replaced by a settled type later.
 - **exaltation**:
+- **excess**:
 - **fall**:
 - **family**: Group of related events, such as Aspects, Eclipses, or Twilights, that a README table and service folder share.
 - **filterable**:
@@ -110,6 +111,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ingest**: Load the star catalog and constellation figures into the database through the night-sky command.
 - **ingress**: Moment a body crosses a sign, decan, or 15-degree midpoint boundary, the event the ingresses module detects.
 - **instant**: Moment with equal start and end, such as a single-minute event, stored as the same timestamp in both columns.
+- **ip**:
 - **jd**: Julian Day number, the continuous day count from the utc_to_jd function that Swiss Ephemeris uses for time.
 - **jpl**: NASA Jet Propulsion Laboratory, whose DE431 planetary ephemeris data files and Horizons service supply reference positions.
 - **julian**: Continuous day count that Swiss Ephemeris time conversions turn UTC moments into, as a Julian Day number.
@@ -118,6 +120,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **kite**: Quadruple aspect pattern: a grand trine with a fourth body opposite one trine body, named in calendar event summaries.
 - **knot**: A fixed (day, longitude) point a test body's motion is drawn between in a straight line, to stand in for an ephemeris.
 - **lammas**: The August cross-quarter day in the annual solar cycle, built by the Lammas event builder.
+- **lateral**:
 - **latitude**: Angle north or south of the reference plane in degrees, also the observer's LATITUDE setting from -90 to 90.
 - **leo**: Zodiac sign and constellation named Leo, one of the twelve signs an event can be tagged with.
 - **libra**: Zodiac sign mapped to its own symbol in the caelundas symbol table and listed as a constellation in the night-sky seed.

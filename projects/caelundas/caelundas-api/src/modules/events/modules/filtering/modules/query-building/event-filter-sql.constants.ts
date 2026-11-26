@@ -69,26 +69,11 @@ export const TAG_INFO_SQL = `recursive tag_paths as (
     order by p.tag_id, p.tag_depth, p.tag_rank collate "C"
   )`;
 
-/** Paths of the boundary instants paired into Progressive events. */
-export const PHASE_BOUNDARY_TAG_PATHS = [
-  "Aspect / Phase / Forming",
-  "Aspect / Phase / Dissolving",
-] as const;
-
-// It reads `tag_paths`, so its statement starts with TAG_INFO_SQL, and it binds
-// nothing, so Postgres computes it once.
-/** The ids of the boundary tags and their descendants. */
-export const PHASE_BOUNDARY_TAG_IDS_SQL = `(
-    select coalesce(array_agg(distinct pc.descendant_id), '{}'::uuid[])
-    from tag_paths p
-    join tag_trees pc on pc.ancestor_id = p.tag_id
-    where p.tag_path in (${PHASE_BOUNDARY_TAG_PATHS.map((path) => `'${path}'`).join(", ")})
-  )`;
-
 /** Path of the tag whose events last. */
 export const PROGRESSIVE_TAG_PATH = "Temporality / Progressive";
 
-// Like the boundary ids, it reads `tag_paths` and binds nothing.
+// It reads `tag_paths`, so its statement starts with TAG_INFO_SQL, and it binds
+// nothing, so Postgres computes it once.
 /** The ids of the Progressive tag and its descendants. */
 export const PROGRESSIVE_TAG_IDS_SQL = `(
     select coalesce(array_agg(distinct pc.descendant_id), '{}'::uuid[])
@@ -96,17 +81,6 @@ export const PROGRESSIVE_TAG_IDS_SQL = `(
     join tag_trees pc on pc.ancestor_id = p.tag_id
     where p.tag_path = '${PROGRESSIVE_TAG_PATH}'
   )`;
-
-/** True for an event `{event}` that carries no phase boundary tag. */
-export const NOT_PHASE_BOUNDARY_SQL = `not exists (
-    select 1
-    from calendar_event_tags pet
-    where pet.calendar_event_id = {event}
-      and pet.tag_id = any(${PHASE_BOUNDARY_TAG_IDS_SQL}::uuid[])
-  )`;
-
-/** True for the facts event row `{alias}` with no boundary tag. */
-export const NOT_PHASE_BOUNDARY_FACTS_SQL = `not ({alias}.tag_ids && ${PHASE_BOUNDARY_TAG_IDS_SQL})`;
 
 // The stored local day and hour, its whole minutes and whether it is an
 // instant, in place of a view. Postgres folds the subquery in.

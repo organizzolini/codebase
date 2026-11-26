@@ -362,7 +362,7 @@ describe(EventMetricsFactsService, () => {
     });
   });
 
-  describe("read the events and the scope", () => {
+  describe("read the events", () => {
     it("reads every event row from the events of the period and their tag sets", () => {
       expect.hasAssertions();
 
@@ -385,21 +385,15 @@ describe(EventMetricsFactsService, () => {
       }
     });
 
-    it("leaves out the phase boundaries unless the scope asks for them", () => {
+    it("reads every event row, with no condition on phase boundaries", () => {
       expect.hasAssertions();
 
-      const excluded = compile().sql;
+      const { sql } = compile();
 
-      expect(excluded).toContain(`on true and not (f.tag_ids && (`);
-      expect(excluded).toContain("'Aspect / Phase / Forming'");
-      expect(excluded).toContain("'Aspect / Phase / Dissolving'");
-
-      const included = compile({ scope: { includePhaseBoundaries: true } });
-
-      expect(included.sql).toContain(
+      expect(sql).toContain(
         "window_events(p.period_start, p.period_end) f on true",
       );
-      expect(included.sql).not.toContain("Aspect / Phase");
+      expect(sql).not.toContain("Aspect / Phase");
     });
   });
 });

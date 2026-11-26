@@ -77,7 +77,12 @@ export async function runCalendarCommand(
       },
       {
         provide: ProgressiveService,
-        useValue: { detect: (): DetectedCalendarEvent[] => [] },
+        useValue: {
+          detect: (): DetectedCalendarEvent[] => [],
+          withoutSpanBoundaries: (
+            events: DetectedCalendarEvent[],
+          ): DetectedCalendarEvent[] => events,
+        },
       },
     ],
   })

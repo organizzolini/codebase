@@ -42,9 +42,7 @@ copy of its group.
 A **filter** is a group instantiated: it pins a value of its group's dimension, a
 `period` (the first date of the period) for a time dimension, an `event_name` for the
 name dimension or a `tag_id` for the tag dimension, and may sit under a parent
-filter. There is no filter for the default scope: the facts are those of the default
-scope **by definition**, stated in the comment on the `calendar_event_facts` table
-and in `calendar-event-facts.constants.ts`. The tables are in
+filter. The facts are over every stored event. The tables are in
 [catalog-tables.md](catalog-tables.md).
 
 | Filter               | Group | Pins                   | Parent filter     | Rows (50,113 events) |
@@ -67,10 +65,9 @@ the unique key `(group_id, period, tag_id, event_name, slug)` with nulls equal, 
 day is one filter and a tag on a day is one. A tag removed from `tags` takes its
 filters and facts with it.
 
-**Only the default scope is stored.** The predicate is every event except the Forming
-and Dissolving phase boundaries (the tags `Aspect / Phase / Forming` and `Dissolving`,
-with their descendants), which is what the API's default scope does. A request that
-keeps them, or filters by tag, reads the events.
+**Every stored event is counted.** The CLI never stores the instants a stored span
+starts or ends on, so the facts need no predicate. A request that filters by tag
+reads the events.
 
 ## Facts
 
@@ -116,13 +113,13 @@ events. The registry says so with `grains: ["event"]` against the `["day",
 
 ## Reading the facts
 
-Routing is in the API (`isRollupRequest`): an unfiltered request in the default
-scope whose measures all merge, in a zone every event shares and over windows that
+Routing is in the API (`isRollupRequest`): an unfiltered request
+whose measures all merge, in a zone every event shares and over windows that
 start and end at local midnight, reads the facts. The level is the whole set, a
 calendar field (`day`, `month`, `quarter`, `year`), or the children of one root
 tag. Everything else reads the events in one statement.
 
-- **Whole set.** The day filters `df` beneath the default scope whose `period` is in
+- **Whole set.** The day filters `df` whose `period` is in
   the window, their facts pivoted back to columns with one conditional aggregate a
   measure.
 - **Tag level.** The day-and-tag filters `tf` whose `period` is in the window and
@@ -176,7 +173,7 @@ inline: `duration_minutes` is `floor(extract(epoch from "end" - "start") / 60)`,
 ## Catalog tables
 
 `measures`, `metrics`, `metric_expressions` and `metric_expressions_closure`, like
-`groups` and the default scope, are reference data the migration seeds, with
+`groups`, are reference data the migration seeds, with
 deterministic uuidv7-form ids. They hold the catalog and the composition only:
 **which aggregate, event column or grain a measure uses is not stored.** The API
 keeps a code registry keyed by the measure's `slug`.
@@ -205,12 +202,11 @@ migration.
 The statements run in this order, each one set-based over the events:
 
 1. `refresh materialized view concurrently calendar_event_tag_sets`.
-2. Restore the default scope if a truncate of the tags took it.
-3. Add a day filter for each day with an event and a day-and-tag filter for each tag
+2. Add a day filter for each day with an event and a day-and-tag filter for each tag
    that day's events carry or descend from, `on conflict do nothing`, so a filter
    keeps its id; hang each tag filter beneath its parent's of the same day; drop the
    filters that lost their events, with their facts.
-4. Upsert each cell's measures, writing only those that are new or changed, and
+3. Upsert each cell's measures, writing only those that are new or changed, and
    delete the ones no cell holds any more. A refresh that finds nothing changed
    writes no row.
 

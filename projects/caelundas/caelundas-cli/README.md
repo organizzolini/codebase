@@ -78,17 +78,17 @@ aspect is in orb, the weeks a planet is retrograde.
 
 | Family              | Events                                                                                                                                                                                                                                                                                                                     |
 | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Aspects             | Major (conjunct, opposite, sextile, square, trine), minor, and harmonic aspects between the Sun, Moon, planets, Chiron, Lilith, four asteroids, the north lunar node, and the lunar apogee; forming, exact, and dissolving moments, and the span between them, through both edges of the window                            |
+| Aspects             | Major (conjunct, opposite, sextile, square, trine), minor, and harmonic aspects between the Sun, Moon, planets, Chiron, Lilith, four asteroids, the north lunar node, and the lunar apogee; exact moments, and the span from forming to dissolving, through both edges of the window                                       |
 | Compound aspects    | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of three or more bodies, each beginning when the last of its aspects forms and ending when the first dissolves, through both edges of the window |
-| Monthly lunar cycle | The eight Moon phases, each as an instant and as the span until the next                                                                                                                                                                                                                                                   |
-| Planetary phases    | Mercury, Venus, and Mars: rise and set, for Mercury and Venus the greatest elongation and brightest, and for Mars its opposition, with each apparition split into a widening half and a closing half                                                                                                                       |
-| Eclipses            | Solar and lunar: begin, maximum, and end                                                                                                                                                                                                                                                                                   |
-| Retrogrades         | Stations, and the retrograde and direct periods between them, through both edges of the window                                                                                                                                                                                                                             |
-| Ingresses           | Sign, decan, and peak ingresses, and each body's stay in a sign, in a decan, and in a half of a sign, through both edges of the window                                                                                                                                                                                     |
-| Annual solar cycle  | Solstices, equinoxes, cross-quarter days, hexadecans, perihelion and aphelion, the four seasons, and the sixteen pre- and post- intervals between the points                                                                                                                                                               |
-| Lunar apsides       | Lunar apogee and perigee, where the Moon's radial speed changes sign, and the Moon's advancing and retreating between them                                                                                                                                                                                                 |
-| Daily cycles        | Sunrise, sunset, solar zenith and nadir, moonrise, moonset, lunar zenith and nadir, and the span the Moon is up                                                                                                                                                                                                            |
-| Twilights           | Civil, nautical, and astronomical dawn and dusk, with the Daylight, twilight, and Night spans                                                                                                                                                                                                                              |
+| Monthly lunar cycle | The eight Moon phases, each as the span until the next                                                                                                                                                                                                                                                                     |
+| Planetary phases    | Mercury, Venus, and Mars: rise and set, for Mercury and Venus the greatest elongation and brightest, and for Mars its opposition, with each apparition split into a widening half and a closing half (the brightest instants are the ones stored)                                                                          |
+| Eclipses            | Solar and lunar: the span from begin to end, and the maximum                                                                                                                                                                                                                                                               |
+| Retrogrades         | The retrograde and direct periods between the stations, through both edges of the window                                                                                                                                                                                                                                   |
+| Ingresses           | Each body's stay in a sign, in a decan, and in a half of a sign, through both edges of the window                                                                                                                                                                                                                          |
+| Annual solar cycle  | The four seasons, the sixteen pre- and post- intervals between the points of the year (solstices, equinoxes, cross-quarter days, hexadecans), and the Sun's advancing and retreating between perihelion and aphelion                                                                                                       |
+| Lunar apsides       | The Moon's advancing and retreating between apogee and perigee, where its radial speed changes sign                                                                                                                                                                                                                        |
+| Daily cycles        | Sunrise, sunset, solar zenith and nadir, lunar zenith and nadir, and the span the Moon is up                                                                                                                                                                                                                               |
+| Twilights           | The Daylight, twilight, and Night spans, between civil, nautical, and astronomical dawn and dusk                                                                                                                                                                                                                           |
 
 ### Which events have a span
 
@@ -120,10 +120,38 @@ an end boundary. It classifies as `Temporality / Progressive`, and an instant as
 | Twilight, Daylight, and Night                    | Dawn or dusk                            | The next boundary                  | Completed    |
 | Moon up                                          | Moonrise                                | Moonset                            | Completed    |
 
-These are perfective events with no duration, because nothing of them lasts: exact
-aspects, stations, peak ingresses, brightest, lunar apogee and perigee, eclipse
-maximum, solar zenith and nadir, sunrise and sunset, moonrise and moonset,
-cross-quarter days, and hexadecans.
+#### Which instants are stored
+
+A run finds every boundary, because it builds and completes the spans from them,
+but stores only the instants no span says. An instant that starts or ends a stored
+span is left out, since the span has the same minute (`ProgressiveService.withoutSpanBoundaries`,
+from the rules in `SPAN_BOUNDARY_RULES`, in `progressive.constants.ts`). The rule
+holds only while a span of the instant's family has it on that edge, so an instant
+whose span was not stored stays.
+
+| Left out: the instants of                            | Because the span                                             |
+| ---------------------------------------------------- | ------------------------------------------------------------ |
+| Forming and Dissolving, of simple and compound       | Aspect in orb, and each compound aspect                      |
+| The eight Moon phases                                | Moon phase                                                   |
+| Lunar apogee and perigee                             | Lunar advancing and retreating                               |
+| Mercury, Venus, Mars rise and set; the elongations   | Visibility, widening and closing                             |
+| Mars opposition                                      | Mars widening and closing                                    |
+| Eclipse begin and end                                | Eclipse, in each frame                                       |
+| Retrograde and direct stations                       | Retrograde period and direct period                          |
+| Sign, decan, and peak ingresses                      | Stay in a sign, a decan, or on a side of the peak            |
+| The sixteen points of the year, perihelion, aphelion | Season, interval of the year, solar advancing and retreating |
+| Moonrise and moonset                                 | Moon up                                                      |
+| Civil, nautical, and astronomical dawn and dusk      | Twilight, Daylight, and Night                                |
+
+These stay, because they last no time and no span starts or ends on them: exact
+aspects, eclipse maximum, brightest, solar and lunar zenith and nadir, and sunrise
+and sunset.
+
+An upsert does not delete a row a run stops generating, so the instants earlier
+runs stored stay until they are pruned. After a run that stores the spans,
+[`documentation/prune-span-boundaries.sql`](documentation/prune-span-boundaries.sql)
+lists them with a count a family and deletes them on request; see its header for
+the commands.
 
 Mars has no greatest elongation, because it reaches 180° from the Sun. Its
 apparition runs from its rise in the morning sky, widening from the Sun to

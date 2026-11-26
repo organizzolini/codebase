@@ -1,7 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 
 import { EventsService } from "../../events.service";
-import { DEFAULT_EVENT_SCOPE } from "../filtering/event-filter.constants";
 import { EventFilterService } from "../filtering/event-filter.service";
 import { TAG_FIELD_PREFIX } from "../filtering/modules/query-building/event-filter-fields.constants";
 import { UUID_PATTERN } from "../filtering/modules/values/event-filter-values.constants";
@@ -32,7 +31,6 @@ import {
   toMetricValues,
 } from "./modules/tree/event-metrics-tree.utilities";
 
-import type { EventScope } from "../filtering/event-filter.types";
 import type { EventGroupLevel } from "../grouping/event-grouping.types";
 import type { PeriodInput } from "../windows/period-input.entities";
 import type {
@@ -235,11 +233,10 @@ export class EventMetricsService {
   // 🌎 Public Methods
 
   /**
-   * The metrics over every matching event in scope and over each group of the tree.
+   * The metrics over every matching event and over each group of the tree.
    */
   public async findMetrics(
     input: EventMetricsInputEntity,
-    scope: EventScope = DEFAULT_EVENT_SCOPE,
   ): Promise<EventMetricsResultEntity> {
     const compare = input.compareToPrevious === true;
     const catalog = await this.catalogService.getCatalog();
@@ -255,7 +252,6 @@ export class EventMetricsService {
       metrics,
       period: current,
       previous,
-      scope,
       tagRoot: input.tagRoot ?? null,
     };
     const zone = await this.findZone(base);

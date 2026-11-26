@@ -1,7 +1,4 @@
-import type {
-  EventFilterGroup,
-  EventScope,
-} from "../filtering/event-filter.types";
+import type { EventFilterGroup } from "../filtering/event-filter.types";
 import type { EventGroupLevel } from "../grouping/event-grouping.types";
 import type {
   CatalogMetric,
@@ -36,7 +33,6 @@ export interface EventMetricsQueryRequest {
   metrics: readonly CatalogMetric[];
   period: MetricsPeriod;
   previous: MetricsPeriod | null;
-  scope: EventScope;
   tagRoot: null | string;
 }
 

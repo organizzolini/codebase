@@ -4,22 +4,10 @@
 const group = (slug: string): string =>
   `(select id from "groups" where slug = '${slug}')`;
 
-// A cell is a local day and a tag node, or a day alone. The facts are the default
-// scope's by definition: every event except the Forming and Dissolving phase
-// boundaries, which `phase` finds by tag path. A node counts its descendants.
+// A cell is a local day and a tag node, or a day alone, over every stored event.
+// A node counts its descendants.
 /** The cells: one local day and tag node, with their measures. */
 const CELLS_SQL = `
-  phase as (
-    select coalesce(array_agg(distinct pc.descendant_id), '{}'::uuid[]) as ids
-    from tags as p
-    inner join tag_edges as pe on p.id = pe.target_node
-    inner join tags as pa on pe.source_node = pa.id
-    inner join tag_edges as ae on pa.id = ae.target_node
-    inner join tags as ra on ae.source_node = ra.id
-    inner join tag_trees as pc on p.id = pc.ancestor_id
-    where ra."name" = 'Aspect' and pa."name" = 'Phase' and p."name" in ('Forming', 'Dissolving')
-      and not exists (select 1 from tag_edges as above where above.target_node = ra.id)
-  ),
   events as (
     select
       e."start",
@@ -29,8 +17,6 @@ const CELLS_SQL = `
       s.tag_ids || s.ancestor_tag_ids as carried
     from calendar_events as e
     inner join calendar_event_tag_sets as s on e.id = s.calendar_event_id
-    cross join phase
-    where not (s.tag_ids && phase.ids)
   ),
   expanded as (
     select v."day", v."start", v."end", v.minutes, null::uuid as tag_id
