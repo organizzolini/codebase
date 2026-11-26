@@ -4,6 +4,7 @@
 
 The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
+- **actionlint**:
 - **anchor**: A named block marker in a README that codependix fills with its generated dependency graph, so the rendered diagram stays current.
 - **band**: Appears only inside the word bandit, the Python security scanner named in the Python project templates.
 - **boundary**: The layer rule that codependix checks on every built graph, forbidding imports the workspace declares out of bounds.
@@ -22,5 +23,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **statistic**: A codometer custom measurement declared with its own label in codometer.config.ts and reported under the custom namespace.
 - **trace**: Callidescope step that follows calls from entry points to record each stack depth and each callable breadth.
 - **verb**: Grammatical form a log message must use after its subject, present progressive or past tense, checked by the logger convention rule.
+- **zizmor**:
 
 <!-- coinagerie:end -->

@@ -1,0 +1,8 @@
+# hadolint policy for the repository's Dockerfiles. Every ignore needs a reason.
+ignored:
+  # Debian drops superseded package versions from its archive, so an apt pin breaks the
+  # build without notice. The base image tag is pinned and updated deliberately instead.
+  - DL3008
+  # False positive: the CMD is a valid JSON array, but hadolint's parser misreads the
+  # escaped quotes in its shell snippet and reports it as shell form.
+  - DL3025

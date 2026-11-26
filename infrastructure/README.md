@@ -117,13 +117,19 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 | `searxng`        | `up`, `down`, `open` for the SearxNG metasearch service                |
 | `open-webui`     | `up`, `down`, `open` for the Open WebUI service                        |
 | `terraform`      | `plan` (default) or `import` against the cluster                       |
-| `trivy-config`   | Trivy misconfiguration scan of the Terraform code                      |
-| `helm-lint`      | Lint every Helm chart under `helm/` against its base values            |
+| `trivy-config`   | Trivy misconfiguration scan of the Terraform code and rendered charts  |
+| `helm-lint`      | `helm lint --strict` every Helm release, with its Argo CD values files |
+| `helm-render`    | Render every release to `dist/infrastructure/helm-render/`             |
+| `kubeconform`    | Validate the rendered manifests against Kubernetes and CRD schemas     |
+| `kube-linter`    | Lint the rendered manifests for hardening and resource settings        |
+| `pluto`          | Flag deprecated or removed Kubernetes APIs in the rendered manifests   |
+| `tflint`         | Lint each Terraform root with tflint's terraform ruleset               |
+| `hadolint`       | Lint every Dockerfile                                                  |
 | `helm-test`      | Run the helm-unittest suites under every chart with a `tests/` folder  |
 | `terraform-test` | Run the Terraform unit tests under every root with a `tests/` folder   |
 | `compose-config` | Validate the Docker Compose file                                       |
 
-`helm-lint`, `helm-test`, `terraform-test`, and `compose-config` also run in CI: `lint-code` depends on them, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. They need `helm` and `docker compose` (`helm-test` installs the pinned helm-unittest plugin on first run); `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
+`helm-lint`, `helm-test`, `kubeconform`, `kube-linter`, `pluto`, `tflint`, `hadolint`, `terraform-test`, and `compose-config` also run in CI: `lint-code` depends on them, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. The workflow linters `actionlint` and `zizmor` belong to the configuration project and run in the same leg. The linters come from `scripts/install-linters.sh` (kubeconform, kube-linter, pluto, actionlint, hadolint), setup-tflint, and the uv lockfile (zizmor), through the `linters` input of the setup-codebase action and the devcontainer. They need `helm` and `docker compose` (`helm-test` installs the pinned helm-unittest plugin on first run); `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
 
 ## Documentation
 

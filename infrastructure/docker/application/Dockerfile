@@ -66,7 +66,7 @@ RUN apt-get update && \
 
 # A Node application: the build output and its production node_modules, no dev dependencies, on a distroless base
 # (glibc and Node only: no package manager, no coreutils, so the start command uses only shell builtins).
-FROM gcr.io/distroless/nodejs26-debian13 AS node
+FROM gcr.io/distroless/nodejs26-debian13:nonroot AS node
 LABEL org.opencontainers.image.source="https://github.com/organizzolini/codebase"
 # The entry file, run with node from /app.
 ARG ENTRY

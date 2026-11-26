@@ -4,6 +4,7 @@
 
 The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
+- **actionlint**:
 - **archiver**: PostgreSQL component that ships WAL segments to the backup store; the `isWALArchiver` plugin flag selects it.
 - **argo**: Argo CD, whose Helm repository and chart the organizzolini root installs.
 - **argocd**: GitOps controller that syncs the cluster from this repository and runs the hook Jobs.
@@ -24,17 +25,24 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **conn**: Short for connection, as in the PgBouncer `max_client_conn` limit on client connections.
 - **dex**: Argo CD's single sign-on component, disabled in the core profile.
 - **escalation**: Privilege gain after a process starts; `allowPrivilegeEscalation: false` blocks it.
+- **gobin**:
+- **gotoolchain**:
+- **hadolint**:
 - **heal**: Argo CD's self-healing, which reverts a live object that drifts from the repository; the `selfHeal` sync policy enables it.
 - **ingress**: Tunnel rule list that maps a hostname and path to a service; the last rule answers 404.
+- **kube**:
+- **kubeconform**:
 - **liveness**: Probe that restarts a container when its health endpoint stops answering.
 - **nginx**: The unprivileged web server that serves a built web app from its image; its server block is shared under `docker/nginx`.
 - **organizzolini**: GitHub organization and the `organizzolini.net` domain that this project's resources live under.
 - **pgbouncer**: Connection pooler that sits in front of PostgreSQL and multiplexes client connections.
 - **plane**: Control plane of the Kubernetes cluster: the API server and controllers that Linode runs.
+- **pluto**:
 - **pooler**: PgBouncer deployment that the apps connect through, rather than the database directly.
 - **preemption**: the scheduler evicting a lower-priority pod to fit a higher one; `batch-low` sets `preemptionPolicy: Never` to opt out.
 - **profile**: Named security policy applied to a container, such as the `RuntimeDefault` seccomp profile.
 - **proxied**: DNS record that Cloudflare answers for itself, hiding the origin; the caelundas record is proxied.
+- **ra**:
 - **redi**: Headword of Redis, the cache Argo CD runs, whose memory limit the core profile sets.
 - **seccomp**: Linux kernel filter that limits which system calls a container may make.
 - **sidecar**: Helper container that runs beside the Postgres container in the same pod; the Barman plugin ships WAL and backups from one.

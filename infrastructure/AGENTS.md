@@ -68,7 +68,7 @@ Use a Job for work that runs to completion and leaves output behind (caelundas i
 - `persistence.type`: `persistentVolumeClaim` (default) or `emptyDir`. With `emptyDir`, `pvc.yaml` renders nothing and the output path mounts an `emptyDir`.
 - `extraEnv`: list appended after `env`, for per-run values passed with `--set-json` (the ingestion workflow uses it).
 
-`values/caelundas-cli.yaml` layers over `values/base.yaml` for the caelundas-cli ingestion Job: an Indexed job with `persistence.enabled: false` (it writes only to Postgres, so no volume or PVC), `batch-low` priority, and the staging Postgres environment.
+`values/caelundas-cli.yaml` layers over `values/base.yaml` for the caelundas-cli ingestion Job: an Indexed job with `persistence.enabled: false` (it writes only to Postgres, so no data volume or PVC; every Job mounts an `emptyDir` for scratch space beside its read-only root filesystem), `batch-low` priority, and the staging Postgres environment.
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
 
@@ -155,7 +155,21 @@ argocd app diff --core <name>                 # the live-versus-desired diff, re
 
 ## Kubernetes Deployment
 
-See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint`, `helm-test`, `terraform-test`, and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
+See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint`, `helm-test`, `kubeconform`, `kube-linter`, `pluto`, `tflint`, `hadolint`, `terraform-test`, and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
+
+## Linters
+
+`scripts/helm-releases.sh` is the one table of Helm releases: each chart with the values files its Argo CD Application or workflow passes. `helm-lint` runs `helm lint --strict` over it, and `helm-render` templates it into `dist/infrastructure/helm-render/`, which `kubeconform`, `kube-linter`, `pluto`, and `trivy-config` read. Add a release or values file there, never in a tool.
+
+- **kubeconform**: strict schemas for Kubernetes 1.35.0 plus the datreeio CRDs catalog for Argo CD, CloudNativePG, Barman Cloud, and cert-manager. A kind with no schema fails, so nothing is skipped. It reads schemas from raw.githubusercontent.com.
+- **kube-linter**: `configuration/kube-linter.yaml` adds the hardening checks to the defaults, with no exclusions. Fix the chart, not the config.
+- **pluto**: a removed API fails, a deprecated one prints and passes.
+- **trivy-config**: also scans the rendered manifests at CRITICAL and HIGH. Fix the chart; never add a trivyignore entry.
+- **tflint**: `terraform/.tflint.hcl` enables the bundled terraform ruleset (`preset = "all"`). `terraform/github/.tflint.hcl` turns off `terraform_standard_module_structure` for that root alone.
+- **hadolint**: `configuration/hadolint.yaml` ignores DL3008 (apt pins) and DL3025 (a parser false positive), each with its reason.
+- **actionlint** and **zizmor** (configuration project): `.github/actionlint.yaml` and `.github/zizmor.yml` record every ignored message and changed rule with its reason.
+
+A failure prints the tool's own message with the file and line; the rendered file name is the release, so open `dist/infrastructure/helm-render/<release>.yaml` to see what was linted.
 
 ## Moving the Terraform State Bucket
 
