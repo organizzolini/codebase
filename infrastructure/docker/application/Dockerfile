@@ -34,8 +34,8 @@ ARG OUTPUT_PATH=/workspace/dist/${PROJECT}
 ARG PREPARE_COMMAND=""
 # Project paths copied beside the build output.
 ARG RUNTIME_PATHS=""
-# Directories under /app the application writes to, owned by the runtime user; the rest stays root-owned.
-ARG WRITABLE_PATHS=""
+# Files under /app the application writes at startup: each links to the same name in /tmp, the one place a read-only root filesystem leaves writable.
+ARG TEMPORARY_PATHS=""
 WORKDIR /workspace/${PROJECT_DIRECTORY}
 RUN env ${BUILD_ENVIRONMENT} sh -c "${BUILD_COMMAND}"
 RUN --mount=type=secret,id=ca-bundle,required=false \
@@ -44,7 +44,7 @@ RUN --mount=type=secret,id=ca-bundle,required=false \
 RUN mkdir /out && \
     cp -a "${OUTPUT_PATH}/." /out/ && \
     for path in ${RUNTIME_PATHS}; do cp -a "$path" /out/; done && \
-    for path in ${WRITABLE_PATHS}; do chown 10001:10001 "/out/$path"; done
+    for path in ${TEMPORARY_PATHS}; do ln -s "/tmp/$(basename "$path")" "/out/$path"; done
 
 # What the Node runtime keeps from Debian: `tini`, and `dash` as `sh` for the start command (`/bin` links to `/usr/bin`). The `app` directory is
 # owned by the runtime user, and `node` is reachable on PATH, as a Kubernetes `command` names it.

@@ -27,7 +27,7 @@ set -- --platform linux/amd64 "${DOCKER_OUTPUT:?set DOCKER_OUTPUT to --load or -
   --build-arg "ENTRY=${ENTRY:-}" --build-arg "PORT_VARIABLE=${PORT_VARIABLE:-}"
 
 for name in REBUILT_PACKAGES BUILD_COMMAND BUILD_ENVIRONMENT OUTPUT_PATH \
-  PREPARE_COMMAND RUNTIME_PATHS RUNTIME_NODE_OPTIONS WRITABLE_PATHS; do
+  PREPARE_COMMAND RUNTIME_PATHS RUNTIME_NODE_OPTIONS TEMPORARY_PATHS; do
   eval "value=\${$name:-}"
   if [ -n "$value" ]; then
     set -- "$@" --build-arg "$name=$value"
