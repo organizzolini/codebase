@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { LinkPackagesModule } from "./modules/link-packages/link-packages.module";
 import type { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
+import type { ReleaseImagesModule } from "./modules/release-images/release-images.module";
 import type { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
 import type { TagPackagesModule } from "./modules/tag-packages/tag-packages.module";
 import type { VersionPackagesModule } from "./modules/version-packages/version-packages.module";
@@ -21,6 +22,7 @@ const run = vi.fn<CommandFactoryRun>().mockResolvedValue(undefined);
 const loggerServiceMock = createMock<LoggerService>();
 const tagCodebaseModuleMock = createMock<TagCodebaseModule>();
 const versionPackagesModuleMock = createMock<VersionPackagesModule>();
+const releaseImagesModuleMock = createMock<ReleaseImagesModule>();
 const tagPackagesModuleMock = createMock<TagPackagesModule>();
 const publishPackagesModuleMock = createMock<PublishPackagesModule>();
 const linkPackagesModuleMock = createMock<LinkPackagesModule>();
@@ -63,6 +65,12 @@ vi.mock("./modules/link-packages/link-packages.module", () => ({
 vi.mock("./modules/publish-packages/publish-packages.module", () => ({
   PublishPackagesModule: function PublishPackagesModule() {
     return publishPackagesModuleMock;
+  },
+}));
+
+vi.mock("./modules/release-images/release-images.module", () => ({
+  ReleaseImagesModule: function ReleaseImagesModule() {
+    return releaseImagesModuleMock;
   },
 }));
 

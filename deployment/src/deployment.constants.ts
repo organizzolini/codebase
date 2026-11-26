@@ -2,6 +2,7 @@ import { z } from "zod";
 
 /** Input variables read by deployment commands; each is optional. */
 export const environmentSchema = z.object({
+  DRY_RUN: z.string().optional(),
   GITHUB_ENV: z.string().optional(),
   GITHUB_OUTPUT: z.string().optional(),
   GITHUB_PACKAGES_REGISTRY: z.string().optional(),

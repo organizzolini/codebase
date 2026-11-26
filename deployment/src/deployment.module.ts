@@ -7,6 +7,7 @@ import { LoggerModule } from "@codebase/observability";
 import { environmentSchema } from "./deployment.constants";
 import { LinkPackagesModule } from "./modules/link-packages/link-packages.module";
 import { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
+import { ReleaseImagesModule } from "./modules/release-images/release-images.module";
 import { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
 import { TagPackagesModule } from "./modules/tag-packages/tag-packages.module";
 import { VersionPackagesModule } from "./modules/version-packages/version-packages.module";
@@ -26,6 +27,7 @@ import { VersionPackagesModule } from "./modules/version-packages/version-packag
     LoggerModule,
     LinkPackagesModule,
     PublishPackagesModule,
+    ReleaseImagesModule,
     TagCodebaseModule,
     TagPackagesModule,
     VersionPackagesModule,

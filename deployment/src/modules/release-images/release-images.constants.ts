@@ -1,0 +1,52 @@
+import { z } from "zod";
+
+import type { ImageTarget } from "./release-images.types";
+
+// ♟️ Constants
+
+const API_VALUES =
+  "infrastructure/helm/kubernetes-deployment/values/caelundas-api.yaml";
+
+/** What a release version looks like; it is spliced into a yq expression. */
+export const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[\w.\-]+)?$/v;
+
+/** What `nx show projects --json` prints: the project names. */
+export const projectNamesSchema = z.array(z.string());
+
+/** The images a release builds when changed, and where their tags are written. */
+export const IMAGE_TARGETS: readonly ImageTarget[] = [
+  {
+    fields: [{ file: API_VALUES, path: ["image", "tag"] }],
+    project: "caelundas-api",
+  },
+  {
+    fields: [
+      {
+        file: "infrastructure/helm/kubernetes-deployment/values/caelundas-web.yaml",
+        path: ["image", "tag"],
+      },
+    ],
+    project: "caelundas-web",
+  },
+  {
+    fields: [
+      {
+        file: "infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml",
+        path: ["image", "tag"],
+      },
+      // The API's migration hook runs the CLI image.
+      { file: API_VALUES, path: ["hook", "image", "tag"] },
+    ],
+    project: "caelundas-cli",
+  },
+];
+
+/** Reports a version that cannot be a release's. */
+export const invalidVersionMessage = (version: string): string =>
+  `❌ "${version}" is not a release version`;
+
+/** Reports an image about to be built, or one a release leaves be. */
+export const imageMessage = (project: string, affected: boolean): string =>
+  affected
+    ? `📦 ${project} changed since the last release; building it`
+    : `⏭️ ${project} did not change since the last release; keeping its tag`;

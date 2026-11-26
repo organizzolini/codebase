@@ -41,6 +41,7 @@ one class.
 | Command | Module | Called from |
 | ------- | ------ | ----------- |
 | `version-packages` | `src/modules/version-packages` | 🏷️ Version Packages in Continuous Deployment |
+| `release-images` | `src/modules/release-images` | semantic-release's `prepareCmd`, inside 🔖 Tag Codebase |
 | `tag-codebase` | `src/modules/tag-codebase` | 🔖 Tag Codebase in Continuous Deployment |
 | `tag-packages` | `src/modules/tag-packages` | 🔖 Tag Packages in Continuous Deployment, and `version-packages` first |
 | `publish-packages` | `src/modules/publish-packages` | 📦 Publish Packages in Continuous Deployment |

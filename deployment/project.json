@@ -34,6 +34,9 @@
         "publish-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts publish-packages"
         },
+        "release-images": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts release-images"
+        },
         "tag-codebase": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts tag-codebase"
         },
