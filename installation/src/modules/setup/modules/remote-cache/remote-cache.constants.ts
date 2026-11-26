@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // ♟️ Constants
 
-/** The bucket the shared Nx cache lives in, as `infrastructure/terraform/linode` names it. */
+/** The bucket the shared Nx cache lives in, as `infrastructure/terraform/organizzolini` names it. */
 export const REMOTE_CACHE_BUCKET = "organizzolini-codebase-nx-cache";
 
 /** The region a scoped Linode key files its bucket under. */
