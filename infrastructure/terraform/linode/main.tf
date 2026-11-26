@@ -176,7 +176,7 @@ resource "linode_object_storage_key" "nx_cache_read_write" {
 # The bucket CloudNativePG archives Postgres WAL and base backups to. Barman
 # runs the retention, so there is no lifecycle rule: one would expire backups
 # Barman still needs. Destroying it deletes every backup, so Terraform refuses to.
-resource "linode_object_storage_bucket" "organizzolini_codebase_postgres_backups" {
+resource "linode_object_storage_bucket" "organizzolini_postgres_backups" {
   label         = var.postgres_backups_bucket_label
   region        = var.region
   endpoint_type = "E3"
@@ -189,11 +189,11 @@ resource "linode_object_storage_bucket" "organizzolini_codebase_postgres_backups
 
 # The key CloudNativePG authenticates with. It reaches only the backups bucket,
 # and a rotated key loses no backups, so it has no prevent_destroy.
-resource "linode_object_storage_key" "organizzolini_codebase_postgres_backups" {
+resource "linode_object_storage_key" "organizzolini_postgres_backups" {
   label = var.postgres_backups_bucket_label
 
   bucket_access {
-    bucket_name = linode_object_storage_bucket.organizzolini_codebase_postgres_backups.label
+    bucket_name = linode_object_storage_bucket.organizzolini_postgres_backups.label
     region      = var.region
     permissions = "read_write"
   }

@@ -13,7 +13,7 @@ mock_provider "random" {}
 # The Kubernetes and Helm providers are configured from the cluster's kubeconfig, so the
 # mocked cluster carries a valid one: base64 of a minimal YAML kubeconfig.
 override_resource {
-  target          = linode_lke_cluster.organizzolini_codebase
+  target          = linode_lke_cluster.organizzolini
   override_during = plan
   values = {
     kubeconfig = "Y2x1c3RlcnM6CiAgLSBjbHVzdGVyOgogICAgICBzZXJ2ZXI6IGh0dHBzOi8vY2x1c3Rlci5leGFtcGxlLmNvbQogICAgICBjZXJ0aWZpY2F0ZS1hdXRob3JpdHktZGF0YTogYlc5amF5MWpZUT09CnVzZXJzOgogIC0gdXNlcjoKICAgICAgdG9rZW46IG1vY2stdG9rZW4K"
@@ -27,7 +27,7 @@ override_resource {
 
 # An overridden ID keeps the tunnel ID known in a plan, where mocks would leave it unknown.
 override_resource {
-  target          = cloudflare_zero_trust_tunnel_cloudflared.organizzolini_codebase
+  target          = cloudflare_zero_trust_tunnel_cloudflared.organizzolini
   override_during = plan
   values = {
     id = "0123456789abcdef0123456789abcdef"
@@ -54,8 +54,8 @@ override_data {
   target = data.terraform_remote_state.linode
   values = {
     outputs = {
-      organizzolini_codebase_postgres_backups_access_key = "mock-access-key"
-      organizzolini_codebase_postgres_backups_secret_key = "mock-secret-key"
+      organizzolini_postgres_backups_access_key = "mock-access-key"
+      organizzolini_postgres_backups_secret_key = "mock-secret-key"
     }
   }
 }
@@ -70,31 +70,31 @@ variables {
   state_bucket          = "mock-state-bucket"
 }
 
-run "the_cluster_is_the_small_autoscaling_organizzolini_codebase" {
+run "the_cluster_is_the_small_autoscaling_organizzolini" {
   command = plan
 
   assert {
-    condition     = linode_lke_cluster.organizzolini_codebase.label == "organizzolini-codebase"
-    error_message = "The cluster must be labelled organizzolini-codebase."
+    condition     = linode_lke_cluster.organizzolini.label == "organizzolini"
+    error_message = "The cluster must be labelled organizzolini."
   }
 
   assert {
-    condition     = linode_lke_cluster.organizzolini_codebase.region == "us-iad"
+    condition     = linode_lke_cluster.organizzolini.region == "us-iad"
     error_message = "The cluster must sit in us-iad."
   }
 
   assert {
-    condition     = linode_lke_cluster.organizzolini_codebase.pool[0].type == "g6-standard-2"
+    condition     = linode_lke_cluster.organizzolini.pool[0].type == "g6-standard-2"
     error_message = "The pool must use the g6-standard-2 node type."
   }
 
   assert {
-    condition     = linode_lke_cluster.organizzolini_codebase.pool[0].autoscaler[0].min == 1 && linode_lke_cluster.organizzolini_codebase.pool[0].autoscaler[0].max == 2
+    condition     = linode_lke_cluster.organizzolini.pool[0].autoscaler[0].min == 1 && linode_lke_cluster.organizzolini.pool[0].autoscaler[0].max == 2
     error_message = "The pool autoscaler must run between 1 and 2 nodes."
   }
 
   assert {
-    condition     = linode_lke_cluster.organizzolini_codebase.control_plane[0].high_availability == false
+    condition     = linode_lke_cluster.organizzolini.control_plane[0].high_availability == false
     error_message = "The control plane must be standard, not high availability."
   }
 }
@@ -103,12 +103,12 @@ run "the_tunnel_answers_404_until_an_application_adds_rules" {
   command = plan
 
   assert {
-    condition     = length(cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini_codebase.config.ingress) == 1
+    condition     = length(cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress) == 1
     error_message = "The tunnel must carry only the catch-all rule: no public hostname exists before an application does."
   }
 
   assert {
-    condition     = cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini_codebase.config.ingress[0].service == "http_status:404"
+    condition     = cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].service == "http_status:404"
     error_message = "The catch-all rule must answer 404."
   }
 }
