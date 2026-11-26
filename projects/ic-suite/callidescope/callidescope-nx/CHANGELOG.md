@@ -1,3 +1,17 @@
+## 0.0.100 (2026-11-26)
+
+### 💅 Refactors
+
+- **callidescope,caelundas:** ♻️ move callidescope to the microscope emoji and caelundas to the telescope ([#2618](https://github.com/organizzolini/codebase/pull/2618), [#2617](https://github.com/organizzolini/codebase/issues/2617))
+
+### 🧱 Updated Dependencies
+
+- Updated callidescope-configuration to 0.0.99
+- Updated callidescope-output to 0.0.98
+- Updated callidescope-graph to 0.0.98
+- Updated callidescope-core to 0.0.98
+- Updated callidescope-cli to 0.0.99
+
 ## 0.0.99 (2026-11-26)
 
 ### 🧱 Updated Dependencies

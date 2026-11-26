@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.15.3](https://github.com/organizzolini/codebase/compare/v6.15.2...v6.15.3) (2026-11-26)
+
+### ♻️ Code Refactoring
+
+* **callidescope,caelundas:** ♻️ move callidescope to the microscope emoji and caelundas to the telescope ([#2618](https://github.com/organizzolini/codebase/issues/2618)) ([57d8558](https://github.com/organizzolini/codebase/commit/57d8558de54852f75f3860ba9aa61ff0f2579144)), closes [#2617](https://github.com/organizzolini/codebase/issues/2617)
+
 ## [6.15.2](https://github.com/organizzolini/codebase/compare/v6.15.1...v6.15.2) (2026-11-26)
 
 ### 📝 Documentation

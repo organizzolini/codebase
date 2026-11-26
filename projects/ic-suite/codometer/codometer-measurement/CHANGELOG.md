@@ -1,3 +1,15 @@
+## 0.0.98 (2026-11-26)
+
+### 💅 Refactors
+
+- **callidescope,caelundas:** ♻️ move callidescope to the microscope emoji and caelundas to the telescope ([#2618](https://github.com/organizzolini/codebase/pull/2618), [#2617](https://github.com/organizzolini/codebase/issues/2617))
+
+### 🧱 Updated Dependencies
+
+- Updated codometer-configuration to 0.0.98
+- Updated codometer-languages to 0.0.98
+- Updated codometer-core to 0.0.98
+
 ## 0.0.97 (2026-11-26)
 
 ### 🧱 Updated Dependencies

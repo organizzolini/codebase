@@ -1,3 +1,9 @@
+## 0.0.37 (2026-11-26)
+
+### 💅 Refactors
+
+- **callidescope,caelundas:** ♻️ move callidescope to the microscope emoji and caelundas to the telescope ([#2618](https://github.com/organizzolini/codebase/pull/2618), [#2617](https://github.com/organizzolini/codebase/issues/2617))
+
 ## 0.0.36 (2026-11-26)
 
 This was a version bump only for coinagerie-core to align it with other projects, there were no code changes.
