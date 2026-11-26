@@ -266,8 +266,8 @@ jobs:
           nx-base: push-before
           eslint-cache: ${{ matrix.check.target == 'static-code' && 'true' || 'false' }}
 
-      # Bootstrap reads the kubeconfig output of the kubernetes state, which exists
-      # only after the cluster's first apply. Until then its plan is skipped.
+      # Bootstrap and github read the kubernetes state, which exists only after the
+      # cluster's first apply. Until then their plans are skipped.
       - name: 🧭 Initialize Kubernetes Root
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
@@ -296,7 +296,7 @@ jobs:
             echo "cluster-exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "cluster-exists=false" >> "$GITHUB_OUTPUT"
-            echo "⏭️ bootstrap plan skipped: the cluster does not exist yet"
+            echo "⏭️ github and bootstrap plans skipped: the cluster does not exist yet"
           fi
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
@@ -317,9 +317,22 @@ jobs:
           TF_VAR_cloudflare_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
         run: |
           pnpm exec nx run infrastructure:terraform-plan:openrouter
-          pnpm exec nx run infrastructure:terraform-plan:github
           pnpm exec nx run infrastructure:terraform-plan:linode
           pnpm exec nx run infrastructure:terraform-plan:kubernetes
+
+      - name: 🐙 Plan GitHub
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform' &&
+          steps.cluster.outputs.cluster-exists == 'true'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TERRAFORM_STATE_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRAFORM_STATE_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL_S3: ${{ secrets.TERRAFORM_STATE_ENDPOINT }}
+          TF_STATE_BUCKET: ${{ secrets.TERRAFORM_STATE_BUCKET }}
+          TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
+          TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
+        run: pnpm exec nx run infrastructure:terraform-plan:github
 
       - name: 🧱 Plan Bootstrap
         if: >-
@@ -350,7 +363,8 @@ jobs:
       - name: 📊 Report GitHub Plan
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform'
+          matrix.check.target == 'plan-terraform' &&
+          steps.cluster.outputs.cluster-exists == 'true'
         uses: borchero/terraform-plan-comment@v3
         with:
           token: ${{ github.token }}
