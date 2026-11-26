@@ -18,17 +18,17 @@
     "guard-code": {},
     "helm-lint": {
       "cache": true,
-      "description": "Lint every Helm release this repository ships with `helm lint --strict`, each chart layered with the values files its Argo CD Application uses. The release table lives in scripts/helm-releases.sh, which helm-render reads too, so lint and every render-based check judge the same set. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
+      "description": "Lint every Helm release this repository ships with `helm lint --strict`, each chart layered with the values files its Argo CD Application uses. The release table lives in the `helm-releases` command of the deployment project, which helm-render runs too, so lint and every render-based check judge the same set. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/helm/**/*",
-        "{projectRoot}/scripts/helm-releases.sh",
+        "{workspaceRoot}/deployment/src/**/*",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "{projectRoot}/scripts/helm-releases.sh lint",
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-releases lint",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -38,13 +38,13 @@
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/helm/**/*",
-        "{projectRoot}/scripts/helm-releases.sh",
+        "{workspaceRoot}/deployment/src/**/*",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "rm -rf dist/infrastructure/helm-render && {projectRoot}/scripts/helm-releases.sh render dist/infrastructure/helm-render",
+        "command": "rm -rf dist/infrastructure/helm-render && NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-releases render dist/infrastructure/helm-render",
         "cwd": "{workspaceRoot}"
       },
       "outputs": ["{workspaceRoot}/dist/infrastructure/helm-render"]

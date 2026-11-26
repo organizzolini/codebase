@@ -1,4 +1,4 @@
-# kube-linter policy for the manifests `helm-releases.sh render` produces.
+# kube-linter policy for the manifests `helm-releases render` produces.
 # The default checks stay on; the ones below are named so a change to kube-linter's
 # defaults cannot quietly drop a hardening rule the charts already meet.
 checks:

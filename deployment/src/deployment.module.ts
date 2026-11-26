@@ -5,6 +5,7 @@ import { DiscoveryModule } from "@nestjs/core";
 import { LoggerModule } from "@codebase/observability";
 
 import { environmentSchema } from "./deployment.constants";
+import { HelmReleasesModule } from "./modules/helm-releases/helm-releases.module";
 import { LinkPackagesModule } from "./modules/link-packages/link-packages.module";
 import { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
 import { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
@@ -24,6 +25,7 @@ import { VersionPackagesModule } from "./modules/version-packages/version-packag
     }),
     DiscoveryModule,
     LoggerModule,
+    HelmReleasesModule,
     LinkPackagesModule,
     PublishPackagesModule,
     TagCodebaseModule,

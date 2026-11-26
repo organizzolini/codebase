@@ -28,6 +28,9 @@
     "start": {
       "cache": false,
       "configurations": {
+        "helm-releases": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-releases"
+        },
         "link-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts link-packages"
         },

@@ -16,6 +16,7 @@ one class.
 | `tag-packages`     | `src/modules/tag-packages`     | 🔖 Tag Packages in Continuous Deployment, and `version-packages` first |
 | `publish-packages` | `src/modules/publish-packages` | 📦 Publish Packages in Continuous Deployment                           |
 | `link-packages`    | `src/modules/link-packages`    | 🔗 Link Packages in Continuous Deployment                              |
+| `helm-releases`    | `src/modules/helm-releases`    | The infrastructure project's `helm-lint` and `helm-render` targets     |
 
 `src/modules/process-runner` holds the shared wrapper over `node:child_process`
 (`capture` returns the output, `captureAsync` does so without blocking, and
