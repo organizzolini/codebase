@@ -36,7 +36,7 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "cluster" {
       {
         hostname = var.hostname
         path     = "^/graphql"
-        service  = "http://caelundas-api.caelundas.svc.cluster.local:3000"
+        service  = "http://caelundas-api.caelundas.svc.cluster.local:6173"
       },
       {
         hostname = var.hostname

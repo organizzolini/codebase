@@ -9,7 +9,7 @@
 | Directory                                                | Purpose                                                           |
 | -------------------------------------------------------- | ----------------------------------------------------------------- |
 | [helm/kubernetes-job](helm/kubernetes-job)               | Reusable Helm chart for batch job deployments with PVC storage    |
-| [helm/kubernetes-deployment](helm/kubernetes-deployment) | Reusable Helm chart for services with an optional PreSync hook    |
+| [helm/kubernetes-deployment](helm/kubernetes-deployment) | Reusable Helm chart for long-running services                     |
 | [helm/postgres](helm/postgres)                           | Shared PostgreSQL on CloudNativePG, with PgBouncer and backups    |
 | [helm/cloudflared](helm/cloudflared)                     | Cloudflare Tunnel connector, routed from Cloudflare               |
 | [helm/argocd-applications](helm/argocd-applications)     | Argo CD app-of-apps tree, synced in waves, plus `batch-low`       |
@@ -53,7 +53,7 @@ Continuous Integration plans a pull request that changes the root and comments t
 
 ### Manage the Kubernetes Root with Terraform
 
-The `terraform/kubernetes` root creates the `organizzolini-codebase` LKE cluster (region `us-iad`, one `g6-standard-2` pool whose autoscaler keeps 1 to 2 nodes) and everything Cloudflare does for the public host `caelundas.organizzolini.net`. It imports the existing `organizzolini.net` zone, which it refuses to destroy, and manages no zone settings or other records. Its tunnel routes `/graphql` to `caelundas-api:3000` and everything else to `caelundas-web:80`, and a proxied CNAME points the host at the tunnel. It needs `TF_VAR_linode_token`, plus `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_account_id`, and `TF_VAR_cloudflare_zone_id`. The optional `TF_VAR_k8s_version` pins the LKE Kubernetes version; unset, the cluster takes the newest available.
+The `terraform/kubernetes` root creates the `organizzolini-codebase` LKE cluster (region `us-iad`, one `g6-standard-2` pool whose autoscaler keeps 1 to 2 nodes) and everything Cloudflare does for the public host `caelundas.organizzolini.net`. It imports the existing `organizzolini.net` zone, which it refuses to destroy, and manages no zone settings or other records. Its tunnel routes `/graphql` to `caelundas-api:6173`, the API's development port, and everything else to `caelundas-web:80`, and a proxied CNAME points the host at the tunnel. It needs `TF_VAR_linode_token`, plus `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_account_id`, and `TF_VAR_cloudflare_zone_id`. The optional `TF_VAR_k8s_version` pins the LKE Kubernetes version; unset, the cluster takes the newest available.
 
 ### Manage the Bootstrap Root with Terraform
 

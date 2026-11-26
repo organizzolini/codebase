@@ -6,7 +6,7 @@ replicaCount: 1
 image:
   repository: my-application
   pullPolicy: IfNotPresent
-  # Empty renders nothing: no Deployment, Service, or hook Job until a release sets it.
+  # Empty renders nothing: no Deployment or Service until a release sets it.
   tag: ""
 
 imagePullSecrets: []
@@ -41,14 +41,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-# PreSync Job that runs before each rollout, such as database migrations
-hook:
-  enabled: false
-  image:
-    repository: my-application
-    # Required when the hook is enabled and image.tag is set
-    tag: ""
-  command: []
-  env: []
-  resources: {}

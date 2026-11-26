@@ -3,10 +3,11 @@
 image:
   repository: ghcr.io/organizzolini/caelundas-api
 
-containerPort: 3000
+# The API's development port, from caelundas-api's configuration/.env.default, which the image listens on
+containerPort: 6173
 
 service:
-  port: 3000
+  port: 6173
 
 # Lightship serves probes on 9000, separate from the application port
 probes:
@@ -39,36 +40,3 @@ env:
       secretKeyRef:
         name: caelundas-postgres
         key: password
-
-hook:
-  enabled: true
-  image:
-    repository: ghcr.io/organizzolini/caelundas-cli
-    # Set by the release commit; required while the hook is enabled
-    tag: ""
-  # The caelundas-migrate command ships in the CLI image from a later commit
-  command:
-    - caelundas-migrate
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
-  env:
-    - name: CAELUNDAS_POSTGRES_HOST
-      value: postgres-rw.codebase.svc.cluster.local
-    - name: CAELUNDAS_POSTGRES_DATABASE
-      value: caelundas_production
-    - name: CAELUNDAS_POSTGRES_SCHEMA
-      value: caelundas
-    - name: CAELUNDAS_POSTGRES_USERNAME
-      value: caelundas_username
-    - name: CAELUNDAS_POSTGRES_PASSWORD
-      valueFrom:
-        secretKeyRef:
-          name: caelundas-postgres
-          key: password
-    - name: CAELUNDAS_MIGRATION_DATABASES
-      value: caelundas_production,caelundas_staging
