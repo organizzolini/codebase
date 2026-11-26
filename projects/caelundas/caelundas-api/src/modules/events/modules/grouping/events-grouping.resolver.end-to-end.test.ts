@@ -137,7 +137,7 @@ describe("events grouping end-to-end suite", () => {
       .insert({ calendarEventId: event.id, tagId: idOf("mars") });
     await application.database.module
       .get(CaelundasDatabaseService)
-      .refreshReadModel(application.database.dataSource.manager);
+      .refreshMetrics(application.database.dataSource.manager);
   }, DATABASE_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {

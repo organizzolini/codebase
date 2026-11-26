@@ -64,28 +64,20 @@ export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, n
 /** Puts every event in no group, for an unknown field. */
 export const NO_GROUP_SQL = `select null::text as "key", null::text as label, null::text as "path", null::text as "rank" where false`;
 
-/**
- * A tag's rank: each ancestor's padded `order`, then its name.
- */
-export const TAG_RANK_SQL = `(
-      select string_agg(
-        lpad(a.rank::text, 5, '0') || ':' || a."name",
-        ' / '
-        order by an.depth
-      )
-      from tags_closure oc
-      join tags a on a.id = oc.ancestor_id
-      join tag_nodes an on an.id = a.id
-      where oc.descendant_id = t.tag_id
-    ) as "rank"`;
+/** Ids of every tag event `e` carries, ancestors included. */
+const EVENT_NODE_IDS_SQL = `(
+      select c.ancestor_id
+      from calendar_event_tags et
+      join tags_closure c on c.descendant_id = et.tag_id
+      where et.calendar_event_id = e.id
+    )`;
 
 /** Tags an event falls under at a depth; shallower leaves count. */
 export const TAG_GROUP_SQL = `
-  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path",
-    ${TAG_RANK_SQL}
-  from calendar_event_tag_nodes t
+  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path", t.tag_rank as "rank"
+  from tag_info t
   where
-    t.calendar_event_id = e.id
+    t.tag_id in ${EVENT_NODE_IDS_SQL}
     and t.tag_root_id::text = {root}
     and t.tag_depth > 0
     and (
@@ -94,7 +86,7 @@ export const TAG_GROUP_SQL = `
         t.tag_depth < {depth}::bigint
         and not exists (
           select 1
-          from calendar_event_tag_nodes x
+          from calendar_event_tags x
           join tags_closure c on c.descendant_id = x.tag_id
           where
             x.calendar_event_id = e.id
@@ -107,21 +99,19 @@ export const TAG_GROUP_SQL = `
 
 /** The children of a tag an event carries. */
 export const PARENT_TAG_GROUP_SQL = `
-  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path",
-    ${TAG_RANK_SQL}
-  from calendar_event_tag_nodes t
+  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path", t.tag_rank as "rank"
+  from tag_info t
   join tags child on child.id = t.tag_id
   where
-    t.calendar_event_id = e.id
+    t.tag_id in ${EVENT_NODE_IDS_SQL}
     and child.parent_id = {parent}::uuid
 `;
 
 /** Picked tags an event falls under, including every ancestor tag. */
 export const PICKED_TAG_GROUP_SQL = `
-  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path",
-    ${TAG_RANK_SQL}
-  from calendar_event_tag_nodes t
-  where t.calendar_event_id = e.id and t.tag_id = any({tags}::uuid[])
+  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path", t.tag_rank as "rank"
+  from tag_info t
+  where t.tag_id = any({tags}::uuid[]) and t.tag_id in ${EVENT_NODE_IDS_SQL}
 `;
 
 /** Gathers a level's rows into JSON; unknown keys mean no group. */

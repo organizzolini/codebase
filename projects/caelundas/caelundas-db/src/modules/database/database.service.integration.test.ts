@@ -10,10 +10,8 @@ import {
 import { DatabaseModule } from "./database.module";
 import { DatabaseService } from "./database.service";
 import { CalendarEventDerivedTime } from "./modules/calendar-events/calendar-event-derived-time.entity";
-import { CalendarEventTagNode } from "./modules/calendar-events/calendar-event-tag-node.entity";
 import { CalendarEventTag } from "./modules/calendar-events/calendar-event-tag.entity";
 import { CalendarEvent } from "./modules/calendar-events/calendar-event.entity";
-import { TagNode } from "./modules/tags/tag-node.entity";
 import { Tag } from "./modules/tags/tag.entity";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
@@ -27,7 +25,7 @@ const CONTAINER_TIMEOUT_MILLISECONDS = 120_000;
 /**
  * Rebuilds the read model on a throwaway Postgres container migrated by the
  * project's real migration: base rows go in through the entities, the refresh
- * runs, and the derived tag tables and the derived-times view are asserted.
+ * runs, and the facts view and the derived-times view are asserted.
  */
 describe(DatabaseService, () => {
   let database: DatabaseTestingModule;
@@ -51,7 +49,7 @@ describe(DatabaseService, () => {
 
   beforeEach(async () => {
     await database.dataSource.query(
-      "truncate calendar_event_tags, calendar_events, tags, tags_closure, tag_nodes, calendar_event_tag_nodes cascade",
+      "truncate calendar_event_tags, calendar_events, tags, tags_closure cascade",
     );
     planet = await tags.save(tags.create({ name: "Planet" }));
     mars = await tags.save(tags.create({ name: "Mars", parent: planet }));
@@ -78,124 +76,130 @@ describe(DatabaseService, () => {
     await database.close();
   });
 
-  it("fills tag_nodes with each tag's depth, root and path", async () => {
+  /** The day-tag rows of the facts: each tag the event carries, with its depth, root, path and rank. */
+  async function readTagRows(): Promise<
+    {
+      tag_depth: string;
+      tag_name: string;
+      tag_path: string;
+      tag_rank: string;
+      tag_root_id: string;
+    }[]
+  > {
+    return database.dataSource.query(
+      `select tag_name, tag_depth, tag_root_id, tag_path, tag_rank from calendar_event_facts where "filter" = 'day-tag' order by tag_depth`,
+    );
+  }
+
+  it("fills each tag's depth, root, path and rank into the day-tag rows", async () => {
     expect.hasAssertions();
 
-    await service.refreshReadModel(database.dataSource.manager);
+    await service.refreshMetrics(database.dataSource.manager);
 
-    const nodes = await database
-      .repository(TagNode)
-      .find({ order: { depth: "ASC" } });
-
-    expect(
-      nodes.map(({ depth, id, name, path, rootId }) => ({
-        depth,
-        id,
-        name,
-        path,
-        rootId,
-      })),
-    ).toStrictEqual([
+    await expect(readTagRows()).resolves.toStrictEqual([
       {
-        depth: 0,
-        id: planet.id,
-        name: "Planet",
-        path: "Planet",
-        rootId: planet.id,
+        tag_depth: "0",
+        tag_name: "Planet",
+        tag_path: "Planet",
+        tag_rank: "00000:Planet",
+        tag_root_id: planet.id,
       },
       {
-        depth: 1,
-        id: mars.id,
-        name: "Mars",
-        path: "Planet / Mars",
-        rootId: planet.id,
+        tag_depth: "1",
+        tag_name: "Mars",
+        tag_path: "Planet / Mars",
+        tag_rank: "00000:Planet / 00000:Mars",
+        tag_root_id: planet.id,
       },
       {
-        depth: 2,
-        id: retrograde.id,
-        name: "Retrograde",
-        path: "Planet / Mars / Retrograde",
-        rootId: planet.id,
+        tag_depth: "2",
+        tag_name: "Retrograde",
+        tag_path: "Planet / Mars / Retrograde",
+        tag_rank: "00000:Planet / 00000:Mars / 00000:Retrograde",
+        tag_root_id: planet.id,
       },
     ]);
   });
 
-  it("gives an event a row for every tag it carries and every ancestor, marking the direct one", async () => {
+  it("gives the event row every tag it carries and every ancestor, and the one it was given", async () => {
     expect.hasAssertions();
 
-    await service.refreshReadModel(database.dataSource.manager);
+    await service.refreshMetrics(database.dataSource.manager);
 
-    const rows = await database
-      .repository(CalendarEventTagNode)
-      .find({ order: { tagDepth: "ASC" } });
+    const [row] = await database.dataSource.query<
+      { direct_tag_ids: string[]; tag_ids: string[] }[]
+    >(
+      `select tag_ids, direct_tag_ids from calendar_event_facts where "filter" = 'event' and calendar_event_id = $1`,
+      [event.id],
+    );
 
-    expect(
-      rows.map(({ calendarEventId, isDirect, tagDepth, tagName, tagPath }) => ({
-        calendarEventId,
-        isDirect,
-        tagDepth,
-        tagName,
-        tagPath,
-      })),
-    ).toStrictEqual([
-      {
-        calendarEventId: event.id,
-        isDirect: false,
-        tagDepth: 0,
-        tagName: "Planet",
-        tagPath: "Planet",
-      },
-      {
-        calendarEventId: event.id,
-        isDirect: false,
-        tagDepth: 1,
-        tagName: "Mars",
-        tagPath: "Planet / Mars",
-      },
-      {
-        calendarEventId: event.id,
-        isDirect: true,
-        tagDepth: 2,
-        tagName: "Retrograde",
-        tagPath: "Planet / Mars / Retrograde",
-      },
-    ]);
+    expect(row?.tag_ids.toSorted()).toStrictEqual(
+      [planet.id, mars.id, retrograde.id].toSorted(),
+    );
+    expect(row?.direct_tag_ids).toStrictEqual([retrograde.id]);
   });
 
   it("replaces what it built before, so a removed tag leaves no stale row", async () => {
     expect.hasAssertions();
 
-    await service.refreshReadModel(database.dataSource.manager);
+    await service.refreshMetrics(database.dataSource.manager);
     await database
       .repository(CalendarEventTag)
       .delete({ calendarEventId: event.id });
-    await service.refreshReadModel(database.dataSource.manager);
+    await service.refreshMetrics(database.dataSource.manager);
 
-    await expect(
-      database.repository(CalendarEventTagNode).count(),
-    ).resolves.toBe(0);
-    await expect(database.repository(TagNode).count()).resolves.toBe(3);
+    await expect(readTagRows()).resolves.toHaveLength(0);
   });
 
-  it("runs inside the caller's transaction, so a rollback keeps the earlier read model", async () => {
+  it("runs inside the caller's transaction, so a rollback keeps the earlier view", async () => {
     expect.hasAssertions();
 
-    await service.refreshReadModel(database.dataSource.manager);
+    await service.refreshMetrics(database.dataSource.manager);
     await database
       .repository(CalendarEventTag)
       .delete({ calendarEventId: event.id });
 
     await database.dataSource.manager
       .transaction(async (manager) => {
-        await service.refreshReadModel(manager);
+        await service.refreshMetrics(manager);
 
         throw new Error("roll back");
       })
       .catch(() => {});
 
-    await expect(
-      database.repository(CalendarEventTagNode).count(),
-    ).resolves.toBe(3);
+    await expect(readTagRows()).resolves.toHaveLength(3);
+  });
+
+  it("keeps a phase boundary, flagged, and refreshes twice with nothing changed", async () => {
+    expect.hasAssertions();
+
+    const forming = await tags.save(
+      tags.create({
+        name: "Forming",
+        parent: await tags.save(
+          tags.create({
+            name: "Phase",
+            parent: await tags.save(tags.create({ name: "Aspect" })),
+          }),
+        ),
+      }),
+    );
+    await database
+      .repository(CalendarEventTag)
+      .insert({ calendarEventId: event.id, tagId: forming.id });
+    await service.refreshMetrics(database.dataSource.manager);
+    await service.refreshMetrics(database.dataSource.manager);
+
+    const rows = await database.dataSource.query<
+      { filter: string; is_phase_boundary: boolean }[]
+    >(
+      `select distinct "filter", is_phase_boundary from calendar_event_facts where "filter" in ('event', 'day') order by 1`,
+    );
+
+    expect(rows).toStrictEqual([
+      { filter: "day", is_phase_boundary: true },
+      { filter: "event", is_phase_boundary: true },
+    ]);
   });
 
   it("derives an event's UTC and local times in the view, in the zone the event names", async () => {

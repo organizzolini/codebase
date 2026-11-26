@@ -101,7 +101,7 @@ describe(EventsResolver, () => {
         start: new Date("2026-03-01T00:00:00Z"),
       },
       null,
-      [],
+      { grouping: [] },
     );
   });
 
@@ -135,7 +135,9 @@ describe(EventsResolver, () => {
     await resolver.events(period, filter);
     await resolver.facets(period, filter);
 
-    expect(findEvents).toHaveBeenLastCalledWith(period, parsed, []);
+    expect(findEvents).toHaveBeenLastCalledWith(period, parsed, {
+      grouping: [],
+    });
     expect(findFacets).toHaveBeenLastCalledWith(period, parsed);
     await expect(
       resolver.events(period, {
@@ -159,11 +161,13 @@ describe(EventsResolver, () => {
       levels: [{ field: "year" }, { depth: 2, field: "tag:root", tags: ["a"] }],
     });
 
-    expect(findEvents).toHaveBeenLastCalledWith(period, null, [
-      { field: "year", tags: [] },
-      { depth: 2, field: "tag:root", tags: ["a"] },
-      { field: "hour", tags: [] },
-    ]);
+    expect(findEvents).toHaveBeenLastCalledWith(period, null, {
+      grouping: [
+        { field: "year", tags: [] },
+        { depth: 2, field: "tag:root", tags: ["a"] },
+        { field: "hour", tags: [] },
+      ],
+    });
     await expect(
       resolver.events(period, null, {
         levels: Array.from({ length: MAXIMUM_GROUP_LEVELS + 1 }, () => ({

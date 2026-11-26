@@ -225,7 +225,7 @@ describe(CalendarSortStrip, () => {
     fireEvent.click(screen.getByRole("button", { name: "Sort" }));
 
     await expect(screen.findByText("Spans")).resolves.toBeDefined();
-    expect(screen.getByText("Tag order")).toBeDefined();
+    expect(screen.getAllByText("Tags").length).toBeGreaterThan(0);
     expect(screen.getByText("Name")).toBeDefined();
     expect(screen.getByText("Events")).toBeDefined();
     expect(screen.queryByText("Event count")).toBeNull();

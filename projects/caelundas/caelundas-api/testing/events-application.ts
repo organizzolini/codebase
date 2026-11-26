@@ -155,7 +155,7 @@ export async function seedEvents(
 
   await database.module
     .get(CaelundasDatabaseService)
-    .refreshReadModel(database.dataSource.manager);
+    .refreshMetrics(database.dataSource.manager);
 
   return { aspect, conjunct, forming, mars, phase, planet, retrograde };
 }
@@ -227,7 +227,7 @@ export async function seedFilterTags(
 
   await database.module
     .get(CaelundasDatabaseService)
-    .refreshReadModel(database.dataSource.manager);
+    .refreshMetrics(database.dataSource.manager);
 
   return {
     aspect,

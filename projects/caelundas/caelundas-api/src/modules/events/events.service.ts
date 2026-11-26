@@ -12,17 +12,19 @@ import {
   groupKeysSchema,
   TUNING_SQL,
 } from "./events.constants";
+import { DEFAULT_EVENT_SCOPE } from "./modules/filtering/event-filter.constants";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
+import { compileEventScope } from "./modules/filtering/modules/query-building/event-scope.utilities";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { compareRankedPaths } from "./modules/natural-order/natural-order.utilities";
 import { PresetsService } from "./modules/presets/presets.service";
 import { WindowsService } from "./modules/windows/windows.service";
 
 import type { EventsDatasetEntity } from "./events.entities";
+import type { EventsReadOptions } from "./events.types";
 import type { CalendarEventEntity } from "./modules/calendar-event/calendar-event.entities";
 import type { EventFacetEntity } from "./modules/facets/event-facet.entities";
 import type { EventFilterGroup } from "./modules/filtering/event-filter.types";
-import type { EventGroupLevel } from "./modules/grouping/event-grouping.types";
 import type { RankedName } from "./modules/natural-order/natural-order.types";
 import type { ResolvedPreset } from "./modules/presets/presets.types";
 import type { PeriodInput } from "./modules/windows/period-input.entities";
@@ -132,14 +134,15 @@ export class EventsService {
   }
 
   /**
-   * Events overlapping the period and meeting the filter, earliest first, with
-   * their tags and group keys.
+   * Events overlapping the period, in scope and meeting the filter, earliest
+   * first, with their tags and group keys.
    */
   public async findEvents(
     period: PeriodInput,
     filter?: EventFilterGroup | null,
-    grouping: readonly EventGroupLevel[] = [],
+    options: EventsReadOptions = {},
   ): Promise<CalendarEventEntity[]> {
+    const { grouping = [], scope = DEFAULT_EVENT_SCOPE } = options;
     const compiled = this.filterService.compile(filter, 2);
     const filterParameters = compiled?.parameters ?? [];
     const groups = this.groupingService.compile(
@@ -147,9 +150,13 @@ export class EventsService {
       2 + filterParameters.length,
     );
     const rows = await this.select(
-      EVENTS_IN_PERIOD_SQL.replace("{filter}", () =>
-        compiled === null ? "" : `and ${compiled.sql}`,
-      ).replace("{groups}", () => groups.sql),
+      EVENTS_IN_PERIOD_SQL.replace("{scope}", () =>
+        compileEventScope(scope, "e.id"),
+      )
+        .replace("{filter}", () =>
+          compiled === null ? "" : `and ${compiled.sql}`,
+        )
+        .replace("{groups}", () => groups.sql),
       [
         this.toIsoString(period.end),
         this.toIsoString(period.start),

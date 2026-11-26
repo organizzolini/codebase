@@ -4,6 +4,14 @@ import { EventMetric } from "./modules/inputs/event-metric.entities";
 
 // ♟️ Constants
 
+/** The grains of `calendar_event_facts`, by the value of its `filter` column. */
+export const FACTS_GRAINS = {
+  day: "day",
+  dayTag: "day-tag",
+  dayTagName: "day-tag-name",
+  event: "event",
+} as const;
+
 /** Most subgroups one group returns, in order. */
 export const MAXIMUM_METRIC_GROUPS = 500;
 

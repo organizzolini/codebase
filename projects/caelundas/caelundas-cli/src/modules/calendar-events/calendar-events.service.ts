@@ -358,7 +358,7 @@ export class CalendarEventsService {
         );
       }
 
-      await this.databaseService.refreshReadModel(manager);
+      await this.databaseService.refreshMetrics(manager);
     });
 
     this.logger.info("💾 Stored events", undefined, {

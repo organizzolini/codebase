@@ -23,8 +23,8 @@ content between the PostgreSQL entity relationship diagram markers.
 
 **Type**: NestJS library (`type:package`), published to no registry
 
-**Purpose**: The Postgres schema Caelundas shares: entities, one migration,
-the derived-times view, and the refresh service for the derived tag tables.
+**Purpose**: The Postgres schema Caelundas shares: entities, the migrations,
+the derived-times view, and the refresh service for the metrics view.
 `caelundas-cli` writes through it and `caelundas-api` reads through it.
 
 ## Architecture Overview
@@ -43,12 +43,12 @@ src/
   index.ts                               # Public exports
   modules/database/                      # The database module
     database.module.ts                   # CaelundasDatabaseModule
-    database.service.ts                  # isConnected, refreshReadModel, refreshMetrics
-    database.constants.ts                # Project, coordinate scale, read model SQL
+    database.service.ts                  # isConnected, refreshMetrics
+    database.constants.ts                # Project, coordinate scale, metrics view refresh
     database.utilities.ts                # Value transformers
     data-source.constants.ts             # Entities, migrations, databaseDataSource
     modules/                             # One *.entity.ts per table or view, by domain
-      metrics/                           # The materialized views the metrics read
+      metrics/                           # The one materialized view the metrics read
 migrations/                              # The migrations, each with its .sql pair
 ```
 
@@ -60,17 +60,23 @@ migrations/                              # The migrations, each with its .sql pa
   longitude)`; never insert an event without it.
 - **Instants are `timestamptz`, coordinates `numeric(9,6)`, whole numbers `bigint`.** Each
   has a transformer in `database.utilities.ts`; `squawk` rejects `integer`.
-- **The derived-times view needs no refresh;** the two derived tag tables are rebuilt by
-  `refreshReadModel(manager)` in the caller's transaction, which then refreshes the four
-  metrics materialized views concurrently. A view's name is not pluralized into sense:
-  `calendar_event_derived_times` is already plural.
-- **The metrics views are the pre-aggregation layer** Charts and Totals read:
-  `calendar_event_facts` (one row per counted event) and the rollups `calendar_event_day_tag_rollups`,
-  `calendar_event_day_tag_name_rollups` and `calendar_event_day_rollups`. Each is a
-  `@ViewEntity({ materialized: true })` with a unique index, so `refreshMetrics(manager)` can run
-  `refresh materialized view concurrently`. The grain, columns, indexes and the SQL for every
-  metric are in [documentation/metrics-rollups.md](documentation/metrics-rollups.md); keep it
-  current when a view changes. A view's `@Index` is created by the migration like a table's.
+- **The derived-times view needs no refresh;** the one metrics materialized view is refreshed
+  concurrently by `refreshMetrics(manager)`, in the caller's transaction when it has one. A
+  view's name is not pluralized into sense: `calendar_event_derived_times` is already plural.
+  There are no `tag_nodes` or `calendar_event_tag_nodes` tables: read a tag's depth, root, path
+  and rank from `tags` and `tags_closure`, and an event's tags from `calendar_event_tags`.
+- **`calendar_event_facts` is the one table Charts and Totals read,** a
+  `@ViewEntity({ materialized: true })` built with `GROUPING SETS`. Its `filter` column names the
+  grain of each row (`event`, `day`, `day-tag`, `day-tag-name`), every query must pin it
+  (`filter = 'day-tag'`), and every index leads with it. `is_phase_boundary` is in every grain's
+  key. The unique key a concurrent refresh needs is the not-null `row_key` (a hash of the grain's
+  keys): a unique index over nullable key columns, even `NULLS NOT DISTINCT`, makes the refresh
+  delete and reinsert every row. The grains, columns, indexes and the SQL for every metric are in
+  [documentation/metrics-facts.md](documentation/metrics-facts.md); keep it current when the
+  view changes. A view's `@Index` is created by the migration like a table's, and TypeORM compares
+  only an index's name, so the `where` of a partial index lives in the migration too.
+- **Migration `1795568633626` creates the view,** and `1795631900000` drops the two derived tag
+  tables the baseline created (its `down` recreates them empty).
 - **The first migration is the baseline,** and the second replaces
   `constellation_lines` with the generated `constellation_edges`. Regenerate the first with `nx run caelundas-db:migration:generate` against
   an empty local Postgres (schema-unqualified), then apply the two hand edits the README

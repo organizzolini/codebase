@@ -13,7 +13,7 @@ export const SORT_OPTIONS = [
       "Each group's place among its siblings as its tag is meant to read; times and durations in their own order.",
     icon: "list-ordered",
     key: "order",
-    label: "Tag order",
+    label: "Tags",
   },
   {
     description: "Alphabetical by the group's name.",

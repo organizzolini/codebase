@@ -202,7 +202,7 @@ describe("events metrics percent end-to-end suite", () => {
     });
     await application.database.module
       .get(CaelundasDatabaseService)
-      .refreshReadModel(application.database.dataSource.manager);
+      .refreshMetrics(application.database.dataSource.manager);
   }, DATABASE_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {

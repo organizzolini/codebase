@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { DEFAULT_EVENT_SCOPE } from "../../../filtering/event-filter.constants";
 import { EventFilterService } from "../../../filtering/event-filter.service";
 import { EventFilterCalendarFieldsService } from "../../../filtering/modules/query-building/event-filter-calendar-fields.service";
 import { EventFilterParametersService } from "../../../filtering/modules/query-building/event-filter-parameters.service";
@@ -44,6 +45,7 @@ function request(
     metrics: [EventMetric.EVENTS],
     period: PERIOD,
     previous: null,
+    scope: DEFAULT_EVENT_SCOPE,
     tagRoot: null,
     ...rest,
   };
@@ -161,7 +163,7 @@ describe(EventMetricsQueryService, () => {
       const ignored = service.compile(request({ tagRoot: ROOT }));
 
       expect(rooted.parameters).toStrictEqual([PERIOD.start, PERIOD.end, ROOT]);
-      expect(rooted.sql).toContain("tags_closure");
+      expect(rooted.sql).toContain("c.ancestor_id = $3::uuid");
       expect(rooted.sql).toContain("t.tag_id <> $3::uuid");
       expect(invalid.parameters).toStrictEqual([
         PERIOD.start,
@@ -169,7 +171,7 @@ describe(EventMetricsQueryService, () => {
         null,
       ]);
       expect(unrooted.parameters).toHaveLength(2);
-      expect(unrooted.sql).not.toContain("tags_closure");
+      expect(unrooted.sql).not.toContain("c.ancestor_id = $");
       expect(ignored.parameters).toHaveLength(2);
     });
   });
@@ -324,6 +326,25 @@ describe(EventMetricsQueryService, () => {
         PERIOD.end,
         MARS,
       ]);
+    });
+  });
+
+  describe("scope", () => {
+    it("leaves out the phase boundaries by default", () => {
+      expect.hasAssertions();
+
+      expect(service.compile(request()).sql).toContain("where not exists (");
+    });
+
+    it("reads them when the scope asks for them", () => {
+      expect.hasAssertions();
+
+      const { sql } = service.compile(
+        request({ scope: { includePhaseBoundaries: true } }),
+      );
+
+      expect(sql).toContain("where true");
+      expect(sql).not.toContain("pet.calendar_event_id");
     });
   });
 });

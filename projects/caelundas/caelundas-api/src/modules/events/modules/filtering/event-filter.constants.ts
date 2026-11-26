@@ -1,8 +1,17 @@
 import { z } from "zod";
 
-import type { EventFilterGroup, EventFilterRule } from "./event-filter.types";
+import type {
+  EventFilterGroup,
+  EventFilterRule,
+  EventScope,
+} from "./event-filter.types";
 
 // ♟️ Constants
+
+/** The one default scope: phase boundaries left out everywhere. */
+export const DEFAULT_EVENT_SCOPE: EventScope = {
+  includePhaseBoundaries: false,
+};
 
 /** Caps each node's size, so requests cannot build unbounded SQL. */
 export const EVENT_FILTER_MAXIMUM_BREADTH = 256;

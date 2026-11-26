@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { DEFAULT_EVENT_SCOPE } from "../../../filtering/event-filter.constants";
 import { EventFilterService } from "../../../filtering/event-filter.service";
 import { EventFilterCalendarFieldsService } from "../../../filtering/modules/query-building/event-filter-calendar-fields.service";
 import { EventFilterParametersService } from "../../../filtering/modules/query-building/event-filter-parameters.service";
@@ -45,6 +46,7 @@ function request(
     metrics: [EventMetric.EVENTS],
     period: PERIOD,
     previous: null,
+    scope: DEFAULT_EVENT_SCOPE,
     tagRoot: null,
     ...rest,
   };
@@ -176,7 +178,7 @@ describe(EventMetricsFactsService, () => {
       expect(compiled.sql).toContain("group by x.period, x.t0, x.t1");
       expect(compiled.sql).toContain("null::text as t1");
       expect(compiled.sql).toContain("left join dim d on d.key = r.leaf");
-      expect(compiled.sql).toContain("from tag_nodes n");
+      expect(compiled.sql).toContain("from tag_info t");
     });
 
     it("names no tags for a grouping of calendar fields", () => {
@@ -232,7 +234,7 @@ describe(EventMetricsFactsService, () => {
 
       expect(compiled.sql).toContain("where ((exists (");
       expect(compiled.sql).toContain("from unnest(e.tag_ids) as m (tag_id)");
-      expect(compiled.sql).not.toContain("from calendar_event_tag_nodes t");
+      expect(compiled.sql).not.toContain("from calendar_event_tags et");
       expect(compiled.parameters).toContainEqual([MARS]);
     });
 
@@ -287,7 +289,7 @@ describe(EventMetricsFactsService, () => {
       expect(compiled.sql).toContain(
         "coalesce(d_tags.t0, '~null~') = coalesce(a.t0, '~null~')",
       );
-      expect(compiled.sql).not.toContain("tags_closure");
+      expect(compiled.sql).not.toContain("c.ancestor_id = $");
     });
 
     it("limits them to the tags beneath a root", () => {
@@ -332,6 +334,43 @@ describe(EventMetricsFactsService, () => {
       expect(compiled.sql).toContain("count(distinct x.summary)");
       expect(compiled.sql).toContain("count(distinct x.start_local_day)");
       expect(compiled.sql).not.toContain("names0 as (");
+    });
+  });
+
+  describe("pin the grain and the scope", () => {
+    it("pins every read of the facts to the event grain", () => {
+      expect.hasAssertions();
+
+      const requests = [
+        request(),
+        request({
+          grouping: [level("year")],
+          metrics: [EventMetric.UNIQUE_TAGS],
+        }),
+        request({ grouping: [level("tag:*", { tags: [MARS] })] }),
+      ];
+
+      for (const rest of requests) {
+        const sql = service.compile(rest)?.sql ?? "";
+
+        expect(sql.match(/calendar_event_facts/gu)).toHaveLength(
+          sql.match(/\."filter" = '/gu)?.length ?? 0,
+        );
+        expect(sql).toContain(`f."filter" = 'event'`);
+      }
+    });
+
+    it("leaves out the phase boundaries unless the scope asks for them", () => {
+      expect.hasAssertions();
+
+      expect(compile().sql).toContain(
+        `f."filter" = 'event' and f.is_phase_boundary = false`,
+      );
+
+      const included = compile({ scope: { includePhaseBoundaries: true } });
+
+      expect(included.sql).toContain(`f."filter" = 'event'`);
+      expect(included.sql).not.toContain("is_phase_boundary");
     });
   });
 });

@@ -1,10 +1,29 @@
 // ♟️ Constants
 
 // Every metric per tag node, and for the whole set under a null tag, computed
-// from the raw events: the reference the rollups must equal.
+// from the raw events and the tag tree: the reference the facts must equal.
 /** Reference metrics from the raw events. */
 export const RAW_METRICS_SQL = `
-with raw as (
+with phase as (
+    select f.id
+    from tags as f
+    inner join tags as p on f.parent_id = p.id
+    inner join tags as a on p.parent_id = a.id and a.parent_id is null
+    where a."name" = 'Aspect' and p."name" = 'Phase' and f."name" in ('Forming', 'Dissolving')
+),
+progressive as (
+    select f.id
+    from tags as f
+    inner join tags as a on f.parent_id = a.id and a.parent_id is null
+    where a."name" = 'Temporality' and f."name" = 'Progressive'
+),
+carried as (
+    select et.calendar_event_id, c.ancestor_id as tag_id
+    from calendar_event_tags as et
+    inner join tags_closure as c on et.tag_id = c.descendant_id
+    group by et.calendar_event_id, c.ancestor_id
+),
+raw as (
     select
         e.id,
         e.summary,
@@ -16,13 +35,12 @@ with raw as (
     where (e."start" at time zone e.timezone)::date >= $1::date
         and (e."start" at time zone e.timezone)::date < $2::date
         and not exists (
-            select 1 from calendar_event_tag_nodes as x
-            where x.calendar_event_id = e.id
-                and x.tag_path in ('Aspect / Phase / Forming', 'Aspect / Phase / Dissolving')
+            select 1 from carried as x
+            where x.calendar_event_id = e.id and x.tag_id in (select id from phase)
         )
 ),
 pairs as (
-    select r.id, n.tag_id from raw as r inner join calendar_event_tag_nodes as n on r.id = n.calendar_event_id
+    select r.id, n.tag_id from raw as r inner join carried as n on r.id = n.calendar_event_id
     union all
     select r.id, null from raw as r
 )
@@ -40,26 +58,27 @@ select
     (percentile_cont(0.5) within group (order by r.seconds / 60) filter (where r."end" > r."start"))::float8 as median,
     count(distinct r.summary)::float8 as names,
     (coalesce(sum(r.seconds) filter (where exists (
-        select 1 from calendar_event_tag_nodes as g
-        where g.calendar_event_id = r.id and g.tag_path = 'Temporality / Progressive'
+        select 1 from carried as g
+        where g.calendar_event_id = r.id and g.tag_id in (select id from progressive)
     )), 0) / 3600)::float8 as progressive_hours,
     (min(r.seconds / 60) filter (where r."end" > r."start"))::float8 as shortest,
     (count(*) filter (where r."end" > r."start"))::float8 as spans,
     (coalesce(sum(r.seconds), 0) / 60)::float8 as total_minutes,
-    (select count(distinct d.tag_id) from calendar_event_tag_nodes as d
-        where d.is_direct and d.calendar_event_id = any(array_agg(r.id)))::float8 as unique_tags
+    (select count(distinct d.tag_id) from calendar_event_tags as d
+        where d.calendar_event_id = any(array_agg(r.id)))::float8 as unique_tags
 from pairs as p
 inner join raw as r on p.id = r.id
 group by p.tag_id
 order by p.tag_id::text collate "C" nulls first`;
 
-// Every metric per tag node, from the day × tag and day × tag × name rollups
-// alone, over `[$1, $2)` local days.
-/** Per-tag metrics from the rollups. */
+// Every metric per tag node, from the day-tag and day-tag-name grains of the
+// facts alone, over `[$1, $2)` local days.
+/** Per-tag metrics from the facts. */
 export const ROLLUP_METRICS_SQL = `
 with window_rows as not materialized (
-    select * from calendar_event_day_tag_rollups as r
-    where r.local_day >= $1::date and r.local_day < $2::date
+    select * from calendar_event_facts as r
+    where r."filter" = 'day-tag' and r.is_phase_boundary = false
+        and r.local_day >= $1::date and r.local_day < $2::date
 ),
 totals as (
     select
@@ -71,7 +90,7 @@ totals as (
         sum(w.progressive_seconds) as progressive_seconds,
         min(w.first_start) as first_start,
         max(w.last_start) as last_start,
-        count(*) as days,
+        count(distinct w.local_day) as days,
         range_agg(w.covered_range) as covered
     from window_rows as w
     group by w.tag_id
@@ -91,8 +110,9 @@ names as (
     select z.tag_id, count(*) as names
     from (
         select distinct m.tag_id, m.name
-        from calendar_event_day_tag_name_rollups as m
-        where m.local_day >= $1::date and m.local_day < $2::date
+        from calendar_event_facts as m
+        where m."filter" = 'day-tag-name' and m.is_phase_boundary = false
+            and m.local_day >= $1::date and m.local_day < $2::date
     ) as z
     group by z.tag_id
 ),
@@ -128,13 +148,14 @@ left join names as n on t.tag_id = n.tag_id
 left join directs as k on t.tag_id = k.tag_id
 order by t.tag_id::text collate "C"`;
 
-// Every metric for the whole set under a null tag, from the day rollups alone,
-// over `[$1, $2)` local days: no join and no tag.
-/** Whole-set metrics from the rollups. */
+// Every metric for the whole set under a null tag, from the day grain of the
+// facts alone, over `[$1, $2)` local days: no join and no tag.
+/** Whole-set metrics from the facts. */
 export const ROLLUP_TOTAL_METRICS_SQL = `
 with window_rows as not materialized (
-    select * from calendar_event_day_rollups as r
-    where r.local_day >= $1::date and r.local_day < $2::date
+    select * from calendar_event_facts as r
+    where r."filter" = 'day' and r.is_phase_boundary = false
+        and r.local_day >= $1::date and r.local_day < $2::date
 ),
 durations as (
     select
@@ -162,7 +183,7 @@ totals as (
         sum(w.progressive_seconds) as progressive_seconds,
         min(w.first_start) as first_start,
         max(w.last_start) as last_start,
-        count(*) as days,
+        count(distinct w.local_day) as days,
         range_agg(w.covered_range) as covered
     from window_rows as w
 )

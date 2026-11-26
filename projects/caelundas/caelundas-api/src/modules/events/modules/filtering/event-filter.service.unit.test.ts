@@ -185,7 +185,7 @@ describe(EventFilterService, () => {
 
         expect(compiled?.sql).toContain("unnest(e.tag_ids)");
         expect(compiled?.sql).toContain("any($3::uuid[])");
-        expect(compiled?.sql).not.toContain("calendar_event_tag_nodes");
+        expect(compiled?.sql).not.toContain("calendar_event_tags");
       });
 
       it("compares the numbers its tags are named for", () => {

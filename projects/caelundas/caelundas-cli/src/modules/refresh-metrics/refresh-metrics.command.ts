@@ -7,13 +7,12 @@ import { CaelundasDatabaseService } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
 /**
- * Refreshes the metrics materialized views by hand, with no ingest: the
- * facts, then the rollups built on them. An ingest already does this, so run
- * it after editing the tag tree or the events by other means.
+ * Refreshes the metrics materialized view by hand, with no ingest. An
+ * ingest already does this, so run it after editing the tag tree or the events by other means.
  */
 @Command({
   description:
-    "Refresh the materialized views the metrics charts and totals read",
+    "Refresh the materialized view the metrics charts and totals read",
   name: "refresh-metrics",
 })
 @Injectable()

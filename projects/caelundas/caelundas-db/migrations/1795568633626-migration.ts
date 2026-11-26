@@ -1,11 +1,10 @@
 import type { MigrationInterface, QueryRunner } from "typeorm";
 
 /**
- * Adds the metrics pre-aggregation layer: the materialized views
- * `calendar_event_facts`, `calendar_event_day_tag_rollups`,
- * `calendar_event_day_tag_name_rollups` and `calendar_event_day_rollups`, each
- * with the unique index that lets `refreshMetrics` refresh it concurrently,
- * and the indexes the read model's tables lacked.
+ * Adds the metrics pre-aggregation layer: the one materialized view
+ * `calendar_event_facts`, whose `filter` column names each row's grain, with
+ * the unique `row_key` index that lets `refreshMetrics` refresh it
+ * concurrently, filter-led indexes, and the base table indexes.
  */
 export class Migration1795568633626 implements MigrationInterface {
   name = "Migration1795568633626";
@@ -14,300 +13,260 @@ export class Migration1795568633626 implements MigrationInterface {
     await queryRunner.query(`SET lock_timeout = '10s'`);
     await queryRunner.query(`SET statement_timeout = '5min'`);
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_tag_nodes_direct_tag" ON "calendar_event_tag_nodes"  ("tag_id", "calendar_event_id") WHERE "is_direct"`,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "calendar_event_tag_nodes_root_tag" ON "calendar_event_tag_nodes"  ("tag_root_id", "tag_id") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "calendar_event_tag_nodes_path_event" ON "calendar_event_tag_nodes"  ("tag_path", "calendar_event_id") `,
-    );
-    await queryRunner.query(
       `CREATE INDEX "calendar_events_location_start" ON "calendar_events"  ("latitude", "longitude", "start") `,
     );
     await queryRunner.query(
       `CREATE INDEX "calendar_events_end" ON "calendar_events"  ("end") `,
     );
-    await queryRunner.query(
-      `CREATE INDEX "tag_nodes_path" ON "tag_nodes"  ("path") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "tag_nodes_root_depth" ON "tag_nodes"  ("root_id", "depth") `,
-    );
-    await queryRunner.query(`CREATE MATERIALIZED VIEW "calendar_event_facts" AS with tag_facts as (
+    await queryRunner.query(`CREATE MATERIALIZED VIEW "calendar_event_facts" AS with levels as (
     select
-        n.calendar_event_id,
-        array_agg(n.tag_id order by n.tag_id) as tag_ids,
-        coalesce(array_agg(n.tag_id order by n.tag_id) filter (where n.is_direct), '{}'::uuid[]) as direct_tag_ids,
+        descendant_id as id,
+        count(*) as generation
+    from tags_closure
+    group by descendant_id
+),
+
+nodes as (
+    select
+        t.id,
+        t."name",
+        own.generation - 1 as tag_depth,
+        (array_agg(a.id order by ancestor_level.generation))[1] as tag_root_id,
+        string_agg(a."name", ' / ' order by ancestor_level.generation) as tag_path,
+        string_agg(lpad(a.rank::text, 5, '0') || ':' || a."name", ' / ' order by ancestor_level.generation) as tag_rank
+    from tags as t
+    inner join levels as own on t.id = own.id
+    inner join tags_closure as c on t.id = c.descendant_id
+    inner join tags as a on c.ancestor_id = a.id
+    inner join levels as ancestor_level on a.id = ancestor_level.id
+    group by t.id, t."name", own.generation
+),
+
+carried as (
+    select
+        et.calendar_event_id,
+        c.ancestor_id as tag_id
+    from calendar_event_tags as et
+    inner join tags_closure as c on et.tag_id = c.descendant_id
+    group by et.calendar_event_id, c.ancestor_id
+),
+
+marks as (
+    select
+        k.calendar_event_id,
+        array_agg(k.tag_id order by k.tag_id) as tag_ids,
         count(*) filter (where n.tag_path = 'Temporality / Progressive') > 0 as is_progressive,
-        count(*) filter (where n.tag_path in ('Aspect / Phase / Forming', 'Aspect / Phase / Dissolving')) > 0 as is_excluded
-    from calendar_event_tag_nodes as n
-    group by n.calendar_event_id
-)
+        count(*) filter (where n.tag_path in ('Aspect / Phase / Forming', 'Aspect / Phase / Dissolving')) > 0 as is_phase_boundary
+    from carried as k
+    inner join nodes as n on k.tag_id = n.id
+    group by k.calendar_event_id
+),
+
+given as (
+    select
+        calendar_event_id,
+        array_agg(tag_id order by tag_id) as direct_tag_ids
+    from calendar_event_tags
+    group by calendar_event_id
+),
+
+events as (
+    select
+        e.id as calendar_event_id,
+        e."summary" as "name",
+        e."start",
+        e."end",
+        (e."start" at time zone e.timezone)::date as local_day,
+        date_trunc('week', e."start" at time zone e.timezone)::date as local_week,
+        date_trunc('month', e."start" at time zone e.timezone)::date as local_month,
+        date_trunc('quarter', e."start" at time zone e.timezone)::date as local_quarter,
+        extract(year from e."start" at time zone e.timezone)::bigint as local_year,
+        extract(dow from e."start" at time zone e.timezone)::bigint as local_weekday,
+        extract(hour from e."start" at time zone e.timezone)::bigint as local_hour,
+        extract(epoch from e."end" - e."start")::bigint as duration_seconds,
+        e."start" = e."end" as is_instant,
+        coalesce(m.is_progressive, false) as is_progressive,
+        coalesce(m.is_phase_boundary, false) as is_phase_boundary,
+        tstzrange(e."start", e."end") as span,
+        tstzrange(e."start", e."end", '[]') as extent,
+        coalesce(m.tag_ids, '{}'::uuid[]) as tag_ids,
+        coalesce(g.direct_tag_ids, '{}'::uuid[]) as direct_tag_ids
+    from calendar_events as e
+    left join marks as m on e.id = m.calendar_event_id
+    left join given as g on e.id = g.calendar_event_id
+),
+
+expanded as (
+    select
+        v.*,
+        null::uuid as tag_id
+    from events as v
+    union all
+    select
+        v.*,
+        k.tag_id
+    from events as v
+    inner join carried as k on v.calendar_event_id = k.calendar_event_id
+),
+
+sums as (
+    select
+        case
+            when grouping(x.calendar_event_id) = 0 then 'event'
+            when grouping(x."name") = 0 then 'day-tag-name'
+            when x.tag_id is null then 'day'
+            else 'day-tag'
+        end as "filter",
+        x.calendar_event_id,
+        x.local_day,
+        x.is_phase_boundary,
+        x.tag_id,
+        x."name",
+        count(*) as events,
+        count(*) filter (where x.is_instant) as instants,
+        count(*) filter (where not x.is_instant) as spans,
+        coalesce(sum(x.duration_seconds), 0)::bigint as duration_seconds,
+        coalesce(sum(x.duration_seconds) filter (where x.is_progressive), 0)::bigint as progressive_seconds,
+        min(x."start") as first_start,
+        max(x."start") as last_start,
+        range_agg(x.span) as covered_range,
+        coalesce(
+            array_agg(x.duration_seconds order by x.duration_seconds) filter (where not x.is_instant), '{}'::bigint[]
+        ) as span_duration_seconds,
+        array_agg(distinct x."name" order by x."name") filter (where x.tag_id is null) as event_names
+    from expanded as x
+    group by grouping sets (
+        (x.calendar_event_id),
+        (x.local_day, x.is_phase_boundary, x.tag_id),
+        (x.local_day, x.is_phase_boundary, x.tag_id, x."name")
+    )
+),
+
+directs as (
+    select
+        x.local_day,
+        x.is_phase_boundary,
+        x.tag_id,
+        array_agg(distinct d.id order by d.id) as direct_tag_ids
+    from expanded as x
+    cross join lateral unnest(x.direct_tag_ids) as d (id)
+    group by x.local_day, x.is_phase_boundary, x.tag_id
+),
+
+facts as (
 select
-    e.id as calendar_event_id,
-    e."summary" as "name",
-    e."start",
-    e."end",
-    (e."start" at time zone e.timezone)::date as local_day,
-    date_trunc('week', e."start" at time zone e.timezone)::date as local_week,
-    date_trunc('month', e."start" at time zone e.timezone)::date as local_month,
-    date_trunc('quarter', e."start" at time zone e.timezone)::date as local_quarter,
-    extract(year from e."start" at time zone e.timezone)::bigint as local_year,
-    extract(dow from e."start" at time zone e.timezone)::bigint as local_weekday,
-    extract(hour from e."start" at time zone e.timezone)::bigint as local_hour,
-    extract(epoch from e."end" - e."start")::bigint as duration_seconds,
-    e."start" = e."end" as is_instant,
-    coalesce(t.is_progressive, false) as is_progressive,
-    tstzrange(e."start", e."end") as span,
-    tstzrange(e."start", e."end", '[]') as extent,
-    coalesce(t.tag_ids, '{}'::uuid[]) as tag_ids,
-    coalesce(t.direct_tag_ids, '{}'::uuid[]) as direct_tag_ids
-from calendar_events as e
-left join tag_facts as t on e.id = t.calendar_event_id
-where not coalesce(t.is_excluded, false)`);
+    s."filter",
+    s.calendar_event_id,
+    case when s."filter" in ('event', 'day-tag-name') then coalesce(v."name", s."name") end as "name",
+    v."start",
+    v."end",
+    coalesce(v.local_day, s.local_day) as local_day,
+    date_trunc('week', coalesce(v.local_day, s.local_day)::timestamp)::date as local_week,
+    date_trunc('month', coalesce(v.local_day, s.local_day)::timestamp)::date as local_month,
+    date_trunc('quarter', coalesce(v.local_day, s.local_day)::timestamp)::date as local_quarter,
+    extract(year from coalesce(v.local_day, s.local_day))::bigint as local_year,
+    v.local_weekday,
+    v.local_hour,
+    v.is_instant,
+    v.is_progressive,
+    coalesce(v.is_phase_boundary, s.is_phase_boundary) as is_phase_boundary,
+    v.extent,
+    v.tag_ids,
+    case when s."filter" = 'event' then v.direct_tag_ids else u.direct_tag_ids end as direct_tag_ids,
+    s.tag_id,
+    case when s."filter" = 'day-tag' then n."name" end as tag_name,
+    case when s."filter" = 'day-tag' then n.tag_path end as tag_path,
+    case when s."filter" = 'day-tag' then n.tag_depth end as tag_depth,
+    n.tag_root_id as tag_root_id,
+    case when s."filter" = 'day-tag' then n.tag_rank end as tag_rank,
+    case when s."filter" = 'event' then 1 else s.events end as events,
+    case when s."filter" = 'event' then v.is_instant::int when s."filter" <> 'day-tag-name' then s.instants end as instants,
+    case when s."filter" = 'event' then (not v.is_instant)::int when s."filter" <> 'day-tag-name' then s.spans end as spans,
+    case when s."filter" = 'event' then v.duration_seconds when s."filter" <> 'day-tag-name' then s.duration_seconds end as duration_seconds,
+    case
+        when s."filter" = 'event' then (case when v.is_progressive then v.duration_seconds else 0 end)
+        when s."filter" <> 'day-tag-name' then s.progressive_seconds
+    end as progressive_seconds,
+    case when s."filter" = 'event' then v."start" when s."filter" <> 'day-tag-name' then s.first_start end as first_start,
+    case when s."filter" = 'event' then v."start" when s."filter" <> 'day-tag-name' then s.last_start end as last_start,
+    case when s."filter" = 'event' then tstzmultirange(v.span) when s."filter" <> 'day-tag-name' then s.covered_range end as covered_range,
+    case
+        when s."filter" = 'event' then (case when v.is_instant then '{}'::bigint[] else array[v.duration_seconds] end)
+        when s."filter" <> 'day-tag-name' then s.span_duration_seconds
+    end as span_duration_seconds,
+    case when s."filter" = 'day' then s.event_names end as event_names
+from sums as s
+left join events as v on s.calendar_event_id = v.calendar_event_id
+left join nodes as n on s.tag_id = n.id
+left join directs as u
+    on
+        s."filter" in ('day', 'day-tag')
+        and s.local_day = u.local_day
+        and s.is_phase_boundary = u.is_phase_boundary
+        and coalesce(s.tag_id, '00000000-0000-0000-0000-000000000000'::uuid) = coalesce(u.tag_id, '00000000-0000-0000-0000-000000000000'::uuid)
+where not (s."filter" = 'day-tag-name' and s.tag_id is null)
+)
+
+select
+    f.*,
+    md5(
+        f."filter" || '|' || coalesce(f.calendar_event_id::text, '') || '|' || coalesce(f.local_day::text, '') || '|'
+        || f.is_phase_boundary::text || '|' || coalesce(f.tag_id::text, '') || '|' || coalesce(f."name", '')
+    )::uuid as row_key
+from facts as f`);
     await queryRunner.query(
       `INSERT INTO "caelundas"."typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES (DEFAULT, $1, DEFAULT, $2, $3, $4)`,
       [
         "caelundas",
         "MATERIALIZED_VIEW",
         "calendar_event_facts",
-        'with tag_facts as (\n    select\n        n.calendar_event_id,\n        array_agg(n.tag_id order by n.tag_id) as tag_ids,\n        coalesce(array_agg(n.tag_id order by n.tag_id) filter (where n.is_direct), \'{}\'::uuid[]) as direct_tag_ids,\n        count(*) filter (where n.tag_path = \'Temporality / Progressive\') > 0 as is_progressive,\n        count(*) filter (where n.tag_path in (\'Aspect / Phase / Forming\', \'Aspect / Phase / Dissolving\')) > 0 as is_excluded\n    from calendar_event_tag_nodes as n\n    group by n.calendar_event_id\n)\nselect\n    e.id as calendar_event_id,\n    e."summary" as "name",\n    e."start",\n    e."end",\n    (e."start" at time zone e.timezone)::date as local_day,\n    date_trunc(\'week\', e."start" at time zone e.timezone)::date as local_week,\n    date_trunc(\'month\', e."start" at time zone e.timezone)::date as local_month,\n    date_trunc(\'quarter\', e."start" at time zone e.timezone)::date as local_quarter,\n    extract(year from e."start" at time zone e.timezone)::bigint as local_year,\n    extract(dow from e."start" at time zone e.timezone)::bigint as local_weekday,\n    extract(hour from e."start" at time zone e.timezone)::bigint as local_hour,\n    extract(epoch from e."end" - e."start")::bigint as duration_seconds,\n    e."start" = e."end" as is_instant,\n    coalesce(t.is_progressive, false) as is_progressive,\n    tstzrange(e."start", e."end") as span,\n    tstzrange(e."start", e."end", \'[]\') as extent,\n    coalesce(t.tag_ids, \'{}\'::uuid[]) as tag_ids,\n    coalesce(t.direct_tag_ids, \'{}\'::uuid[]) as direct_tag_ids\nfrom calendar_events as e\nleft join tag_facts as t on e.id = t.calendar_event_id\nwhere not coalesce(t.is_excluded, false)',
-      ],
-    );
-    await queryRunner.query(`CREATE MATERIALIZED VIEW "calendar_event_day_tag_rollups" AS with sums as (
-    select
-        f.local_day,
-        f.local_week,
-        f.local_month,
-        f.local_quarter,
-        f.local_year,
-        n.tag_id,
-        count(*) as events,
-        count(*) filter (where n.is_direct) as direct_events,
-        count(*) filter (where f.is_instant) as instants,
-        count(*) filter (where not f.is_instant) as spans,
-        coalesce(sum(f.duration_seconds), 0)::bigint as duration_seconds,
-        coalesce(sum(f.duration_seconds) filter (where f.is_progressive), 0)::bigint as progressive_seconds,
-        min(f."start") as first_start,
-        max(f."start") as last_start,
-        range_agg(f.span) as covered_range,
-        coalesce(array_agg(f.duration_seconds order by f.duration_seconds) filter (where not f.is_instant), '{}'::bigint[]) as span_duration_seconds
-    from calendar_event_facts as f
-    inner join calendar_event_tag_nodes as n on f.calendar_event_id = n.calendar_event_id
-    group by f.local_day, f.local_week, f.local_month, f.local_quarter, f.local_year, n.tag_id
-),
-directs as (
-    select
-        f.local_day,
-        n.tag_id,
-        array_agg(distinct d.id order by d.id) as direct_tag_ids
-    from calendar_event_facts as f
-    inner join calendar_event_tag_nodes as n on f.calendar_event_id = n.calendar_event_id
-    cross join lateral unnest(f.direct_tag_ids) as d (id)
-    group by f.local_day, n.tag_id
-),
-ranks as (
-    select
-        node.id as tag_id,
-        string_agg(lpad(a.rank::text, 5, '0') || ':' || a."name", ' / ' order by ancestor_node."depth") as rank
-    from tag_nodes as node
-    inner join tags_closure as c on node.id = c.descendant_id
-    inner join tags as a on c.ancestor_id = a.id
-    inner join tag_nodes as ancestor_node on a.id = ancestor_node.id
-    group by node.id
-)
-select
-    s.local_day,
-    s.tag_id,
-    node."name" as tag_name,
-    node."path" as tag_path,
-    node."depth" as tag_depth,
-    node.root_id as tag_root_id,
-    k.rank as tag_rank,
-    s.local_week,
-    s.local_month,
-    s.local_quarter,
-    s.local_year,
-    s.events,
-    s.direct_events,
-    s.instants,
-    s.spans,
-    s.duration_seconds,
-    s.progressive_seconds,
-    s.first_start,
-    s.last_start,
-    s.covered_range,
-    s.span_duration_seconds,
-    coalesce(d.direct_tag_ids, '{}'::uuid[]) as direct_tag_ids
-from sums as s
-inner join tag_nodes as node on s.tag_id = node.id
-inner join ranks as k on s.tag_id = k.tag_id
-left join directs as d on s.local_day = d.local_day and s.tag_id = d.tag_id`);
-    await queryRunner.query(
-      `INSERT INTO "caelundas"."typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES (DEFAULT, $1, DEFAULT, $2, $3, $4)`,
-      [
-        "caelundas",
-        "MATERIALIZED_VIEW",
-        "calendar_event_day_tag_rollups",
-        'with sums as (\n    select\n        f.local_day,\n        f.local_week,\n        f.local_month,\n        f.local_quarter,\n        f.local_year,\n        n.tag_id,\n        count(*) as events,\n        count(*) filter (where n.is_direct) as direct_events,\n        count(*) filter (where f.is_instant) as instants,\n        count(*) filter (where not f.is_instant) as spans,\n        coalesce(sum(f.duration_seconds), 0)::bigint as duration_seconds,\n        coalesce(sum(f.duration_seconds) filter (where f.is_progressive), 0)::bigint as progressive_seconds,\n        min(f."start") as first_start,\n        max(f."start") as last_start,\n        range_agg(f.span) as covered_range,\n        coalesce(array_agg(f.duration_seconds order by f.duration_seconds) filter (where not f.is_instant), \'{}\'::bigint[]) as span_duration_seconds\n    from calendar_event_facts as f\n    inner join calendar_event_tag_nodes as n on f.calendar_event_id = n.calendar_event_id\n    group by f.local_day, f.local_week, f.local_month, f.local_quarter, f.local_year, n.tag_id\n),\ndirects as (\n    select\n        f.local_day,\n        n.tag_id,\n        array_agg(distinct d.id order by d.id) as direct_tag_ids\n    from calendar_event_facts as f\n    inner join calendar_event_tag_nodes as n on f.calendar_event_id = n.calendar_event_id\n    cross join lateral unnest(f.direct_tag_ids) as d (id)\n    group by f.local_day, n.tag_id\n),\nranks as (\n    select\n        node.id as tag_id,\n        string_agg(lpad(a.rank::text, 5, \'0\') || \':\' || a."name", \' / \' order by ancestor_node."depth") as rank\n    from tag_nodes as node\n    inner join tags_closure as c on node.id = c.descendant_id\n    inner join tags as a on c.ancestor_id = a.id\n    inner join tag_nodes as ancestor_node on a.id = ancestor_node.id\n    group by node.id\n)\nselect\n    s.local_day,\n    s.tag_id,\n    node."name" as tag_name,\n    node."path" as tag_path,\n    node."depth" as tag_depth,\n    node.root_id as tag_root_id,\n    k.rank as tag_rank,\n    s.local_week,\n    s.local_month,\n    s.local_quarter,\n    s.local_year,\n    s.events,\n    s.direct_events,\n    s.instants,\n    s.spans,\n    s.duration_seconds,\n    s.progressive_seconds,\n    s.first_start,\n    s.last_start,\n    s.covered_range,\n    s.span_duration_seconds,\n    coalesce(d.direct_tag_ids, \'{}\'::uuid[]) as direct_tag_ids\nfrom sums as s\ninner join tag_nodes as node on s.tag_id = node.id\ninner join ranks as k on s.tag_id = k.tag_id\nleft join directs as d on s.local_day = d.local_day and s.tag_id = d.tag_id',
-      ],
-    );
-    await queryRunner.query(`CREATE MATERIALIZED VIEW "calendar_event_day_tag_name_rollups" AS select
-    f.local_day,
-    n.tag_id,
-    f."name",
-    n.tag_root_id,
-    f.local_week,
-    f.local_month,
-    f.local_quarter,
-    f.local_year,
-    count(*) as events
-from calendar_event_facts as f
-inner join calendar_event_tag_nodes as n on f.calendar_event_id = n.calendar_event_id
-group by f.local_day, n.tag_id, f."name", n.tag_root_id, f.local_week, f.local_month, f.local_quarter, f.local_year`);
-    await queryRunner.query(
-      `INSERT INTO "caelundas"."typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES (DEFAULT, $1, DEFAULT, $2, $3, $4)`,
-      [
-        "caelundas",
-        "MATERIALIZED_VIEW",
-        "calendar_event_day_tag_name_rollups",
-        'select\n    f.local_day,\n    n.tag_id,\n    f."name",\n    n.tag_root_id,\n    f.local_week,\n    f.local_month,\n    f.local_quarter,\n    f.local_year,\n    count(*) as events\nfrom calendar_event_facts as f\ninner join calendar_event_tag_nodes as n on f.calendar_event_id = n.calendar_event_id\ngroup by f.local_day, n.tag_id, f."name", n.tag_root_id, f.local_week, f.local_month, f.local_quarter, f.local_year',
-      ],
-    );
-    await queryRunner.query(`CREATE MATERIALIZED VIEW "calendar_event_day_rollups" AS with directs as (
-    select
-        g.local_day,
-        array_agg(distinct d.id order by d.id) as direct_tag_ids
-    from calendar_event_facts as g
-    cross join lateral unnest(g.direct_tag_ids) as d (id)
-    group by g.local_day
-),
-sums as (
-    select
-        f.local_day,
-        f.local_week,
-        f.local_month,
-        f.local_quarter,
-        f.local_year,
-        count(*) as events,
-        count(*) filter (where f.is_instant) as instants,
-        count(*) filter (where not f.is_instant) as spans,
-        coalesce(sum(f.duration_seconds), 0)::bigint as duration_seconds,
-        coalesce(sum(f.duration_seconds) filter (where f.is_progressive), 0)::bigint as progressive_seconds,
-        min(f."start") as first_start,
-        max(f."start") as last_start,
-        range_agg(f.span) as covered_range,
-        coalesce(array_agg(f.duration_seconds order by f.duration_seconds) filter (where not f.is_instant), '{}'::bigint[]) as span_duration_seconds,
-        array_agg(distinct f."name" order by f."name") as event_names
-    from calendar_event_facts as f
-    group by f.local_day, f.local_week, f.local_month, f.local_quarter, f.local_year
-)
-select
-    s.local_day,
-    s.local_week,
-    s.local_month,
-    s.local_quarter,
-    s.local_year,
-    s.events,
-    s.instants,
-    s.spans,
-    s.duration_seconds,
-    s.progressive_seconds,
-    s.first_start,
-    s.last_start,
-    s.covered_range,
-    s.span_duration_seconds,
-    s.event_names,
-    coalesce(d.direct_tag_ids, '{}'::uuid[]) as direct_tag_ids
-from sums as s
-left join directs as d on s.local_day = d.local_day`);
-    await queryRunner.query(
-      `INSERT INTO "caelundas"."typeorm_metadata"("database", "schema", "table", "type", "name", "value") VALUES (DEFAULT, $1, DEFAULT, $2, $3, $4)`,
-      [
-        "caelundas",
-        "MATERIALIZED_VIEW",
-        "calendar_event_day_rollups",
-        'with directs as (\n    select\n        g.local_day,\n        array_agg(distinct d.id order by d.id) as direct_tag_ids\n    from calendar_event_facts as g\n    cross join lateral unnest(g.direct_tag_ids) as d (id)\n    group by g.local_day\n),\nsums as (\n    select\n        f.local_day,\n        f.local_week,\n        f.local_month,\n        f.local_quarter,\n        f.local_year,\n        count(*) as events,\n        count(*) filter (where f.is_instant) as instants,\n        count(*) filter (where not f.is_instant) as spans,\n        coalesce(sum(f.duration_seconds), 0)::bigint as duration_seconds,\n        coalesce(sum(f.duration_seconds) filter (where f.is_progressive), 0)::bigint as progressive_seconds,\n        min(f."start") as first_start,\n        max(f."start") as last_start,\n        range_agg(f.span) as covered_range,\n        coalesce(array_agg(f.duration_seconds order by f.duration_seconds) filter (where not f.is_instant), \'{}\'::bigint[]) as span_duration_seconds,\n        array_agg(distinct f."name" order by f."name") as event_names\n    from calendar_event_facts as f\n    group by f.local_day, f.local_week, f.local_month, f.local_quarter, f.local_year\n)\nselect\n    s.local_day,\n    s.local_week,\n    s.local_month,\n    s.local_quarter,\n    s.local_year,\n    s.events,\n    s.instants,\n    s.spans,\n    s.duration_seconds,\n    s.progressive_seconds,\n    s.first_start,\n    s.last_start,\n    s.covered_range,\n    s.span_duration_seconds,\n    s.event_names,\n    coalesce(d.direct_tag_ids, \'{}\'::uuid[]) as direct_tag_ids\nfrom sums as s\nleft join directs as d on s.local_day = d.local_day',
+        'with levels as (\n    select\n        descendant_id as id,\n        count(*) as generation\n    from tags_closure\n    group by descendant_id\n),\n\nnodes as (\n    select\n        t.id,\n        t."name",\n        own.generation - 1 as tag_depth,\n        (array_agg(a.id order by ancestor_level.generation))[1] as tag_root_id,\n        string_agg(a."name", \' / \' order by ancestor_level.generation) as tag_path,\n        string_agg(lpad(a.rank::text, 5, \'0\') || \':\' || a."name", \' / \' order by ancestor_level.generation) as tag_rank\n    from tags as t\n    inner join levels as own on t.id = own.id\n    inner join tags_closure as c on t.id = c.descendant_id\n    inner join tags as a on c.ancestor_id = a.id\n    inner join levels as ancestor_level on a.id = ancestor_level.id\n    group by t.id, t."name", own.generation\n),\n\ncarried as (\n    select\n        et.calendar_event_id,\n        c.ancestor_id as tag_id\n    from calendar_event_tags as et\n    inner join tags_closure as c on et.tag_id = c.descendant_id\n    group by et.calendar_event_id, c.ancestor_id\n),\n\nmarks as (\n    select\n        k.calendar_event_id,\n        array_agg(k.tag_id order by k.tag_id) as tag_ids,\n        count(*) filter (where n.tag_path = \'Temporality / Progressive\') > 0 as is_progressive,\n        count(*) filter (where n.tag_path in (\'Aspect / Phase / Forming\', \'Aspect / Phase / Dissolving\')) > 0 as is_phase_boundary\n    from carried as k\n    inner join nodes as n on k.tag_id = n.id\n    group by k.calendar_event_id\n),\n\ngiven as (\n    select\n        calendar_event_id,\n        array_agg(tag_id order by tag_id) as direct_tag_ids\n    from calendar_event_tags\n    group by calendar_event_id\n),\n\nevents as (\n    select\n        e.id as calendar_event_id,\n        e."summary" as "name",\n        e."start",\n        e."end",\n        (e."start" at time zone e.timezone)::date as local_day,\n        date_trunc(\'week\', e."start" at time zone e.timezone)::date as local_week,\n        date_trunc(\'month\', e."start" at time zone e.timezone)::date as local_month,\n        date_trunc(\'quarter\', e."start" at time zone e.timezone)::date as local_quarter,\n        extract(year from e."start" at time zone e.timezone)::bigint as local_year,\n        extract(dow from e."start" at time zone e.timezone)::bigint as local_weekday,\n        extract(hour from e."start" at time zone e.timezone)::bigint as local_hour,\n        extract(epoch from e."end" - e."start")::bigint as duration_seconds,\n        e."start" = e."end" as is_instant,\n        coalesce(m.is_progressive, false) as is_progressive,\n        coalesce(m.is_phase_boundary, false) as is_phase_boundary,\n        tstzrange(e."start", e."end") as span,\n        tstzrange(e."start", e."end", \'[]\') as extent,\n        coalesce(m.tag_ids, \'{}\'::uuid[]) as tag_ids,\n        coalesce(g.direct_tag_ids, \'{}\'::uuid[]) as direct_tag_ids\n    from calendar_events as e\n    left join marks as m on e.id = m.calendar_event_id\n    left join given as g on e.id = g.calendar_event_id\n),\n\nexpanded as (\n    select\n        v.*,\n        null::uuid as tag_id\n    from events as v\n    union all\n    select\n        v.*,\n        k.tag_id\n    from events as v\n    inner join carried as k on v.calendar_event_id = k.calendar_event_id\n),\n\nsums as (\n    select\n        case\n            when grouping(x.calendar_event_id) = 0 then \'event\'\n            when grouping(x."name") = 0 then \'day-tag-name\'\n            when x.tag_id is null then \'day\'\n            else \'day-tag\'\n        end as "filter",\n        x.calendar_event_id,\n        x.local_day,\n        x.is_phase_boundary,\n        x.tag_id,\n        x."name",\n        count(*) as events,\n        count(*) filter (where x.is_instant) as instants,\n        count(*) filter (where not x.is_instant) as spans,\n        coalesce(sum(x.duration_seconds), 0)::bigint as duration_seconds,\n        coalesce(sum(x.duration_seconds) filter (where x.is_progressive), 0)::bigint as progressive_seconds,\n        min(x."start") as first_start,\n        max(x."start") as last_start,\n        range_agg(x.span) as covered_range,\n        coalesce(\n            array_agg(x.duration_seconds order by x.duration_seconds) filter (where not x.is_instant), \'{}\'::bigint[]\n        ) as span_duration_seconds,\n        array_agg(distinct x."name" order by x."name") filter (where x.tag_id is null) as event_names\n    from expanded as x\n    group by grouping sets (\n        (x.calendar_event_id),\n        (x.local_day, x.is_phase_boundary, x.tag_id),\n        (x.local_day, x.is_phase_boundary, x.tag_id, x."name")\n    )\n),\n\ndirects as (\n    select\n        x.local_day,\n        x.is_phase_boundary,\n        x.tag_id,\n        array_agg(distinct d.id order by d.id) as direct_tag_ids\n    from expanded as x\n    cross join lateral unnest(x.direct_tag_ids) as d (id)\n    group by x.local_day, x.is_phase_boundary, x.tag_id\n),\n\nfacts as (\nselect\n    s."filter",\n    s.calendar_event_id,\n    case when s."filter" in (\'event\', \'day-tag-name\') then coalesce(v."name", s."name") end as "name",\n    v."start",\n    v."end",\n    coalesce(v.local_day, s.local_day) as local_day,\n    date_trunc(\'week\', coalesce(v.local_day, s.local_day)::timestamp)::date as local_week,\n    date_trunc(\'month\', coalesce(v.local_day, s.local_day)::timestamp)::date as local_month,\n    date_trunc(\'quarter\', coalesce(v.local_day, s.local_day)::timestamp)::date as local_quarter,\n    extract(year from coalesce(v.local_day, s.local_day))::bigint as local_year,\n    v.local_weekday,\n    v.local_hour,\n    v.is_instant,\n    v.is_progressive,\n    coalesce(v.is_phase_boundary, s.is_phase_boundary) as is_phase_boundary,\n    v.extent,\n    v.tag_ids,\n    case when s."filter" = \'event\' then v.direct_tag_ids else u.direct_tag_ids end as direct_tag_ids,\n    s.tag_id,\n    case when s."filter" = \'day-tag\' then n."name" end as tag_name,\n    case when s."filter" = \'day-tag\' then n.tag_path end as tag_path,\n    case when s."filter" = \'day-tag\' then n.tag_depth end as tag_depth,\n    n.tag_root_id as tag_root_id,\n    case when s."filter" = \'day-tag\' then n.tag_rank end as tag_rank,\n    case when s."filter" = \'event\' then 1 else s.events end as events,\n    case when s."filter" = \'event\' then v.is_instant::int when s."filter" <> \'day-tag-name\' then s.instants end as instants,\n    case when s."filter" = \'event\' then (not v.is_instant)::int when s."filter" <> \'day-tag-name\' then s.spans end as spans,\n    case when s."filter" = \'event\' then v.duration_seconds when s."filter" <> \'day-tag-name\' then s.duration_seconds end as duration_seconds,\n    case\n        when s."filter" = \'event\' then (case when v.is_progressive then v.duration_seconds else 0 end)\n        when s."filter" <> \'day-tag-name\' then s.progressive_seconds\n    end as progressive_seconds,\n    case when s."filter" = \'event\' then v."start" when s."filter" <> \'day-tag-name\' then s.first_start end as first_start,\n    case when s."filter" = \'event\' then v."start" when s."filter" <> \'day-tag-name\' then s.last_start end as last_start,\n    case when s."filter" = \'event\' then tstzmultirange(v.span) when s."filter" <> \'day-tag-name\' then s.covered_range end as covered_range,\n    case\n        when s."filter" = \'event\' then (case when v.is_instant then \'{}\'::bigint[] else array[v.duration_seconds] end)\n        when s."filter" <> \'day-tag-name\' then s.span_duration_seconds\n    end as span_duration_seconds,\n    case when s."filter" = \'day\' then s.event_names end as event_names\nfrom sums as s\nleft join events as v on s.calendar_event_id = v.calendar_event_id\nleft join nodes as n on s.tag_id = n.id\nleft join directs as u\n    on\n        s."filter" in (\'day\', \'day-tag\')\n        and s.local_day = u.local_day\n        and s.is_phase_boundary = u.is_phase_boundary\n        and coalesce(s.tag_id, \'00000000-0000-0000-0000-000000000000\'::uuid) = coalesce(u.tag_id, \'00000000-0000-0000-0000-000000000000\'::uuid)\nwhere not (s."filter" = \'day-tag-name\' and s.tag_id is null)\n)\n\nselect\n    f.*,\n    md5(\n        f."filter" || \'|\' || coalesce(f.calendar_event_id::text, \'\') || \'|\' || coalesce(f.local_day::text, \'\') || \'|\'\n        || f.is_phase_boundary::text || \'|\' || coalesce(f.tag_id::text, \'\') || \'|\' || coalesce(f."name", \'\')\n    )::uuid as row_key\nfrom facts as f',
       ],
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_facts_direct_tag_ids" ON "calendar_event_facts" USING gin ("direct_tag_ids") `,
+      `CREATE INDEX "calendar_event_facts_direct_tag_ids" ON "calendar_event_facts" USING gin  ("direct_tag_ids")  WHERE "filter" = 'event'`,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_facts_tag_ids" ON "calendar_event_facts" USING gin ("tag_ids") `,
+      `CREATE INDEX "calendar_event_facts_tag_ids" ON "calendar_event_facts" USING gin  ("tag_ids")  WHERE "filter" = 'event'`,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_facts_extent" ON "calendar_event_facts" USING gist ("extent") `,
+      `CREATE INDEX "calendar_event_facts_extent" ON "calendar_event_facts" USING gist  ("extent")  WHERE "filter" = 'event'`,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_facts_name_day" ON "calendar_event_facts"  ("name", "local_day") `,
+      `CREATE INDEX "calendar_event_facts_start" ON "calendar_event_facts"  ("filter", "start") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_facts_start" ON "calendar_event_facts"  ("start") `,
+      `CREATE INDEX "calendar_event_facts_weekday_day" ON "calendar_event_facts"  ("filter", "is_phase_boundary", "local_weekday", "local_day") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_facts_local_weekday" ON "calendar_event_facts"  ("local_weekday", "local_day") `,
+      `CREATE INDEX "calendar_event_facts_name_day" ON "calendar_event_facts"  ("filter", "is_phase_boundary", "name", "local_day") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_facts_local_day_hour" ON "calendar_event_facts"  ("local_day", "local_hour") `,
+      `CREATE INDEX "calendar_event_facts_year_tag" ON "calendar_event_facts"  ("filter", "is_phase_boundary", "local_year", "tag_id") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_facts_local_day" ON "calendar_event_facts"  ("local_day") `,
+      `CREATE INDEX "calendar_event_facts_quarter_tag" ON "calendar_event_facts"  ("filter", "is_phase_boundary", "local_quarter", "tag_id") `,
     );
     await queryRunner.query(
-      `CREATE UNIQUE INDEX "calendar_event_facts_calendar_event_id" ON "calendar_event_facts"  ("calendar_event_id") `,
+      `CREATE INDEX "calendar_event_facts_month_tag" ON "calendar_event_facts"  ("filter", "is_phase_boundary", "local_month", "tag_id") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_tag_rollups_year_tag" ON "calendar_event_day_tag_rollups"  ("local_year", "tag_id") `,
+      `CREATE INDEX "calendar_event_facts_week_tag" ON "calendar_event_facts"  ("filter", "is_phase_boundary", "local_week", "tag_id") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_tag_rollups_quarter_tag" ON "calendar_event_day_tag_rollups"  ("local_quarter", "tag_id") `,
+      `CREATE INDEX "calendar_event_facts_depth_day" ON "calendar_event_facts"  ("filter", "is_phase_boundary", "tag_depth", "local_day") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_tag_rollups_week_tag" ON "calendar_event_day_tag_rollups"  ("local_week", "tag_id") `,
+      `CREATE INDEX "calendar_event_facts_root_day" ON "calendar_event_facts"  ("filter", "is_phase_boundary", "tag_root_id", "local_day", "name") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_tag_rollups_month_tag" ON "calendar_event_day_tag_rollups"  ("local_month", "tag_id") `,
+      `CREATE INDEX "calendar_event_facts_tag_day" ON "calendar_event_facts"  ("filter", "is_phase_boundary", "tag_id", "local_day", "name") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_tag_rollups_depth_day" ON "calendar_event_day_tag_rollups"  ("tag_depth", "local_day") `,
+      `CREATE INDEX "calendar_event_facts_day" ON "calendar_event_facts"  ("filter", "is_phase_boundary", "local_day", "tag_id") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_tag_rollups_root_day" ON "calendar_event_day_tag_rollups"  ("tag_root_id", "local_day") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_tag_rollups_tag_day" ON "calendar_event_day_tag_rollups"  ("tag_id", "local_day") `,
-    );
-    await queryRunner.query(
-      `CREATE UNIQUE INDEX "calendar_event_day_tag_rollups_day_tag" ON "calendar_event_day_tag_rollups"  ("local_day", "tag_id") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_tag_name_rollups_name_day" ON "calendar_event_day_tag_name_rollups"  ("name", "local_day") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_tag_name_rollups_root_day_name" ON "calendar_event_day_tag_name_rollups"  ("tag_root_id", "local_day", "name") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_tag_name_rollups_tag_day_name" ON "calendar_event_day_tag_name_rollups"  ("tag_id", "local_day", "name") `,
-    );
-    await queryRunner.query(
-      `CREATE UNIQUE INDEX "calendar_event_day_tag_name_rollups_day_tag_name" ON "calendar_event_day_tag_name_rollups"  ("local_day", "tag_id", "name") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_rollups_year" ON "calendar_event_day_rollups"  ("local_year") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_rollups_quarter" ON "calendar_event_day_rollups"  ("local_quarter") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_rollups_week" ON "calendar_event_day_rollups"  ("local_week") `,
-    );
-    await queryRunner.query(
-      `CREATE INDEX "calendar_event_day_rollups_month" ON "calendar_event_day_rollups"  ("local_month") `,
-    );
-    await queryRunner.query(
-      `CREATE UNIQUE INDEX "calendar_event_day_rollups_day" ON "calendar_event_day_rollups"  ("local_day") `,
+      `CREATE UNIQUE INDEX "calendar_event_facts_row_key" ON "calendar_event_facts"  ("row_key") `,
     );
   }
 
@@ -315,22 +274,40 @@ left join directs as d on s.local_day = d.local_day`);
     await queryRunner.query(`SET lock_timeout = '10s'`);
     await queryRunner.query(`SET statement_timeout = '5min'`);
     await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_facts_calendar_event_id"`,
+      `DROP INDEX "caelundas"."calendar_event_facts_row_key"`,
     );
     await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_facts_local_day"`,
+      `DROP INDEX "caelundas"."calendar_event_facts_day"`,
     );
     await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_facts_local_day_hour"`,
+      `DROP INDEX "caelundas"."calendar_event_facts_tag_day"`,
     );
     await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_facts_local_weekday"`,
+      `DROP INDEX "caelundas"."calendar_event_facts_root_day"`,
     );
     await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_facts_start"`,
+      `DROP INDEX "caelundas"."calendar_event_facts_depth_day"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "caelundas"."calendar_event_facts_week_tag"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "caelundas"."calendar_event_facts_month_tag"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "caelundas"."calendar_event_facts_quarter_tag"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "caelundas"."calendar_event_facts_year_tag"`,
     );
     await queryRunner.query(
       `DROP INDEX "caelundas"."calendar_event_facts_name_day"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "caelundas"."calendar_event_facts_weekday_day"`,
+    );
+    await queryRunner.query(
+      `DROP INDEX "caelundas"."calendar_event_facts_start"`,
     );
     await queryRunner.query(
       `DROP INDEX "caelundas"."calendar_event_facts_extent"`,
@@ -342,96 +319,13 @@ left join directs as d on s.local_day = d.local_day`);
       `DROP INDEX "caelundas"."calendar_event_facts_direct_tag_ids"`,
     );
     await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_rollups_day_tag"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_rollups_tag_day"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_rollups_root_day"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_rollups_depth_day"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_rollups_month_tag"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_rollups_week_tag"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_rollups_quarter_tag"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_rollups_year_tag"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_name_rollups_day_tag_name"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_name_rollups_tag_day_name"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_name_rollups_root_day_name"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_tag_name_rollups_name_day"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_rollups_day"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_rollups_month"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_rollups_week"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_rollups_quarter"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_day_rollups_year"`,
-    );
-    await queryRunner.query(
-      `DELETE FROM "caelundas"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
-      ["MATERIALIZED_VIEW", "calendar_event_day_rollups", "caelundas"],
-    );
-    await queryRunner.query(
-      `DROP MATERIALIZED VIEW "calendar_event_day_rollups"`,
-    );
-    await queryRunner.query(
-      `DELETE FROM "caelundas"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
-      ["MATERIALIZED_VIEW", "calendar_event_day_tag_name_rollups", "caelundas"],
-    );
-    await queryRunner.query(
-      `DROP MATERIALIZED VIEW "calendar_event_day_tag_name_rollups"`,
-    );
-    await queryRunner.query(
-      `DELETE FROM "caelundas"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
-      ["MATERIALIZED_VIEW", "calendar_event_day_tag_rollups", "caelundas"],
-    );
-    await queryRunner.query(
-      `DROP MATERIALIZED VIEW "calendar_event_day_tag_rollups"`,
-    );
-    await queryRunner.query(
       `DELETE FROM "caelundas"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
       ["MATERIALIZED_VIEW", "calendar_event_facts", "caelundas"],
     );
     await queryRunner.query(`DROP MATERIALIZED VIEW "calendar_event_facts"`);
-    await queryRunner.query(`DROP INDEX "caelundas"."tag_nodes_root_depth"`);
-    await queryRunner.query(`DROP INDEX "caelundas"."tag_nodes_path"`);
     await queryRunner.query(`DROP INDEX "caelundas"."calendar_events_end"`);
     await queryRunner.query(
       `DROP INDEX "caelundas"."calendar_events_location_start"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_tag_nodes_path_event"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_tag_nodes_root_tag"`,
-    );
-    await queryRunner.query(
-      `DROP INDEX "caelundas"."calendar_event_tag_nodes_direct_tag"`,
     );
   }
 }

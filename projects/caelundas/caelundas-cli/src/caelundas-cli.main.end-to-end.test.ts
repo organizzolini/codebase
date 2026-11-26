@@ -523,7 +523,7 @@ describe("main end-to-end suite", () => {
       expect(ics).toContain("SUMMARY:Retrograde");
     });
 
-    it("leaves the read model current after a run", async () => {
+    it("leaves the metrics view current after a run", async () => {
       expect.hasAssertions();
 
       await run(
@@ -533,28 +533,27 @@ describe("main end-to-end suite", () => {
       );
       const { dataSource } = database;
       const [counts] = await dataSource.query<
-        { derived: string; events: string; nodes: string; tags: string }[]
+        { derived: string; events: string; facts: string }[]
       >(
         `select
           (select count(*) from calendar_event_derived_times) as derived,
           (select count(*) from calendar_events) as events,
-          (select count(*) from tag_nodes) as nodes,
-          (select count(*) from tags) as tags`,
+          (select count(*) from calendar_event_facts where "filter" = 'event') as facts`,
       );
       const fresh = await dataSource.query<
         { is_direct: boolean; tag_name: string }[]
       >(
-        `select n.tag_name, n.is_direct
-          from calendar_event_tag_nodes as n
-          inner join calendar_events as e on e.id = n.calendar_event_id
-          where e.summary = 'Fresh'
-          order by n.tag_name`,
+        `select t.name as tag_name, t.id = any(f.direct_tag_ids) as is_direct
+          from calendar_event_facts as f
+          inner join tags as t on t.id = any(f.tag_ids)
+          where f."filter" = 'event' and f.name = 'Fresh'
+          order by t.name`,
       );
 
-      expect(counts?.nodes).toBe(counts?.tags);
+      expect(counts?.facts).toBe(counts?.events);
       expect(counts?.derived).toBe(counts?.events);
-      // The tag the event was given, and the node above it, are derived in
-      // the transaction that wrote the event.
+      // The tag the event was given, and the node above it, are in the facts
+      // refreshed in the transaction that wrote the event.
       expect(fresh).toStrictEqual(
         expect.arrayContaining([
           { is_direct: true, tag_name: "Perfective" },

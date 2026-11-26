@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { TAG_INFO_SQL } from "../../../filtering/modules/query-building/event-filter-sql.constants";
 import { EventMetric } from "../inputs/event-metric.entities";
 
 import type {
@@ -10,17 +11,11 @@ import type {
 
 // ♟️ Constants
 
-/** The day rollup: one row a local day, no tag. */
-export const DAY_ROLLUP_TABLE = "calendar_event_day_rollups";
-
-/** The day and tag rollup: a row a local day and tag. */
-export const DAY_TAG_ROLLUP_TABLE = "calendar_event_day_tag_rollups";
-
 /** The events that start before a period and reach into it. */
 const CROSSING_SQL = `x as not materialized (
     select p.period, f.*
     from periods p
-    join calendar_event_facts f on f.extent @> p.period_start and f."start" < p.period_start
+    join calendar_event_facts f on {eventRows} and f.extent @> p.period_start and f."start" < p.period_start
   )`;
 
 /** The periods, with the local days they start and stop on. */
@@ -29,17 +24,15 @@ const PERIODS_SQL = `periods (period, period_start, from_day, to_day) as (
     from (values {periods}) as p (period, period_start, period_end)
   )`;
 
-/** One event `{e}` as the single row of a rollup. */
-const EVENT_ROW_SQL = `1::bigint, (case when {e}.is_instant then 1 else 0 end)::bigint, (case when {e}.is_instant then 0 else 1 end)::bigint,
-      {e}.duration_seconds, case when {e}.is_progressive then {e}.duration_seconds else 0 end,
-      {e}."start", {e}."start", tstzmultirange({e}.span),
-      case when {e}.is_instant then '{}'::bigint[] else array[{e}.duration_seconds] end, {e}.direct_tag_ids`;
+/** Event row `{e}` as a rollup's single row. */
+const EVENT_ROW_SQL = `{e}.events, {e}.instants, {e}.spans, {e}.duration_seconds, {e}.progressive_seconds,
+      {e}.first_start, {e}.last_start, {e}.covered_range, {e}.span_duration_seconds, {e}.direct_tag_ids`;
 
 /** The events of a tag level with none of the root's tags. */
 const UNTAGGED_SQL = `where not f.tag_ids && (
-      select coalesce(array_agg(tn.id), '{}'::uuid[])
-      from tag_nodes tn
-      where tn.root_id = {root}::uuid and tn.depth > 0
+      select coalesce(array_agg(tc.descendant_id), '{}'::uuid[])
+      from tags_closure tc
+      where tc.ancestor_id = {root}::uuid and tc.descendant_id <> {root}::uuid
     )`;
 
 /** The events of the periods in no group of a tag level. */
@@ -47,12 +40,12 @@ export const ROLLUP_UNTAGGED_SQL = `,
   c as not materialized (
     select p.period, f.*
     from periods p
-    join calendar_event_facts f on f.local_day >= p.from_day and f.local_day < p.to_day
+    join calendar_event_facts f on {eventRows} and f.local_day >= p.from_day and f.local_day < p.to_day
     ${UNTAGGED_SQL}
     union all
     select p.period, f.*
     from periods p
-    join calendar_event_facts f on f.extent @> p.period_start and f."start" < p.period_start
+    join calendar_event_facts f on {eventRows} and f.extent @> p.period_start and f."start" < p.period_start
     ${UNTAGGED_SQL}
   )`;
 
@@ -66,11 +59,10 @@ export const ROLLUP_UNTAGGED_ROWS_SQL = `
 /** The metrics' columns over a rollup row `r` or crossing event `x`. */
 const ROLLUP_ROWS_SQL = `
     select p.period, r.local_day{rollupExtra},
-      r.events, r.instants, r.spans, r.duration_seconds, r.progressive_seconds,
-      r.first_start, r.last_start, r.covered_range, r.span_duration_seconds, r.direct_tag_ids
-    from {table} r
+      ${EVENT_ROW_SQL.replaceAll("{e}", "r")}
+    from calendar_event_facts r
     join periods p on r.local_day >= p.from_day and r.local_day < p.to_day
-    {restrict}
+    where {rollupRows}{restrict}
     union all
     select x.period, x.local_day{crossingExtra},
       ${EVENT_ROW_SQL.replaceAll("{e}", "x")}
@@ -78,7 +70,8 @@ const ROLLUP_ROWS_SQL = `
 
 /** The window's rows: the rollup's, and the crossing events. */
 export const ROLLUP_FACTS_SQL = `
-  with ${PERIODS_SQL},
+  with ${TAG_INFO_SQL},
+  ${PERIODS_SQL},
   ${CROSSING_SQL}{untagged},
   w as not materialized (${ROLLUP_ROWS_SQL}
   ),
@@ -173,9 +166,10 @@ export const ROLLUP_TAG_NAMES_SQL = `,
     select z.period, z.tag_id, count(*) as names
     from (
       select p.period, r.tag_id, r.name
-      from calendar_event_day_tag_name_rollups r
+      from calendar_event_facts r
       join periods p on r.local_day >= p.from_day and r.local_day < p.to_day
-      join tag_nodes tn on tn.id = r.tag_id and tn.root_id = {root}::uuid and tn.depth = 1
+      join tags tn on tn.id = r.tag_id and tn.parent_id = {root}::uuid
+      where {nameRows}
       union
       select x.period, n.tag_id, x.name
       from x{crossingJoin}
@@ -218,15 +212,14 @@ export const ROLLUP_CALENDAR_COLUMNS_SQL = `,
 
 /** The group columns of a tag node. */
 export const ROLLUP_TAG_COLUMNS_SQL = `,
-    '/0:' || coalesce(t.tag_id::text, '') as id, ''::text as parent_id, t.tag_id::text as "key", tn.name as label, tn.path as "path",
-    (select r.tag_rank from calendar_event_day_tag_rollups r where r.tag_id = t.tag_id limit 1) as "rank"`;
+    '/0:' || coalesce(t.tag_id::text, '') as id, ''::text as parent_id, t.tag_id::text as "key", tn.tag_name as label, tn.tag_path as "path", tn.tag_rank as "rank"`;
 
 /** Joins a tag's node to its group. */
-export const ROLLUP_TAG_JOIN_SQL = ` left join tag_nodes tn on tn.id = t.tag_id`;
+export const ROLLUP_TAG_JOIN_SQL = ` left join tag_info tn on tn.tag_id = t.tag_id`;
 
 /** Explodes a crossing event into the tag nodes of a level. */
 export const ROLLUP_TAG_CROSSING_SQL = ` cross join lateral unnest(x.tag_ids) as n (tag_id)
-      join tag_nodes tn on tn.id = n.tag_id and tn.root_id = {root}::uuid and tn.depth = 1`;
+      join tags tn on tn.id = n.tag_id and tn.parent_id = {root}::uuid`;
 
 /** The zone every event shares, when the periods align to its days. */
 export const ROLLUP_GUARD_SQL = `
@@ -253,13 +246,13 @@ export const ROLLUP_TOTAL_TARGET: RollupTarget = {
   columns: "",
   crossingExtra: ", array[x.name] as event_names",
   crossingJoin: "",
+  grain: "day",
   group: null,
   join: "",
   names: ROLLUP_NAMES_SQL,
   restrict: "",
   rollupExtra: ", r.event_names",
   root: null,
-  table: DAY_ROLLUP_TABLE,
   untagged: "",
   untaggedRows: "",
 };
@@ -269,13 +262,13 @@ export const ROLLUP_TAG_TARGET: RollupTarget = {
   columns: ROLLUP_TAG_COLUMNS_SQL,
   crossingExtra: ", n.tag_id",
   crossingJoin: ROLLUP_TAG_CROSSING_SQL,
+  grain: "dayTag",
   group: "tag_id",
   join: ROLLUP_TAG_JOIN_SQL,
   names: ROLLUP_TAG_NAMES_SQL,
-  restrict: "where r.tag_root_id = {root}::uuid and r.tag_depth = 1",
+  restrict: " and r.tag_root_id = {root}::uuid and r.tag_depth = 1",
   rollupExtra: ", r.tag_id",
   root: null,
-  table: DAY_TAG_ROLLUP_TABLE,
   untagged: ROLLUP_UNTAGGED_SQL,
   untaggedRows: ROLLUP_UNTAGGED_ROWS_SQL,
 };

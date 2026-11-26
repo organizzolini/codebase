@@ -90,7 +90,7 @@ export class EventsResolver {
     return this.eventsService.findEvents(
       period,
       this.filterService.parse(filter),
-      this.groupingService.parse(grouping),
+      { grouping: this.groupingService.parse(grouping) },
     );
   }
 

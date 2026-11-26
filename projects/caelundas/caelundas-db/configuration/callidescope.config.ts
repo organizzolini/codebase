@@ -3,9 +3,9 @@ import { projectDefaults } from "@codebase/configuration/callidescope.config";
 /**
  * What caelundas-db is held to, measured rather than assumed.
  *
- * Two frames of depth: `DatabaseService.refreshReadModel` runs its
- * statements inside the transaction callback it hands to the entity manager.
- * Entities and a migration make up the rest, so there is little else to call.
+ * One frame of depth: `DatabaseService.refreshMetrics` runs its one
+ * statement through the entity manager. Entities and migrations make up the
+ * rest, so there is little else to call.
  *
  * Measured by a run scoped to this project and its dependency closure, and set
  * **at** what it measured rather than above it, so each number is a starting

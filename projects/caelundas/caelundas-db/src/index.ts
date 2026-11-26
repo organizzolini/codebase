@@ -9,7 +9,6 @@ export { DatabaseModule as CaelundasDatabaseModule } from "./modules/database/da
 export { DatabaseService as CaelundasDatabaseService } from "./modules/database/database.service";
 export { createMomentTransformer } from "./modules/database/database.utilities";
 export { CalendarEventDerivedTime } from "./modules/database/modules/calendar-events/calendar-event-derived-time.entity";
-export { CalendarEventTagNode } from "./modules/database/modules/calendar-events/calendar-event-tag-node.entity";
 export { CalendarEventTag } from "./modules/database/modules/calendar-events/calendar-event-tag.entity";
 export { CalendarEvent } from "./modules/database/modules/calendar-events/calendar-event.entity";
 export {
@@ -17,5 +16,4 @@ export {
   type ConstellationEdge,
 } from "./modules/database/modules/night-sky/constellation.entity";
 export { Star } from "./modules/database/modules/night-sky/star.entity";
-export { TagNode } from "./modules/database/modules/tags/tag-node.entity";
 export { Tag } from "./modules/database/modules/tags/tag.entity";

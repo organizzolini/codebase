@@ -1,6 +1,8 @@
 import { TAG_FIELD_PREFIX } from "../../../filtering/modules/query-building/event-filter-fields.constants";
+import { compileFactsScope } from "../../../filtering/modules/query-building/event-scope.utilities";
 import { UUID_PATTERN } from "../../../filtering/modules/values/event-filter-values.constants";
 import { METRIC_COLUMN_PREFIX } from "../../event-metrics.constants";
+import { pinGrain } from "../../event-metrics.utilities";
 import { EventMetric } from "../inputs/event-metric.entities";
 
 import {
@@ -23,6 +25,7 @@ import type { EventGroupLevel } from "../../../grouping/event-grouping.types";
 import type {
   CompiledEventMetricsQuery,
   EventMetricsQueryRequest,
+  FactsGrain,
 } from "../../event-metrics.types";
 import type {
   RollupCalendarKey,
@@ -86,7 +89,6 @@ export function compileRollupRead(
       ["{crossingExtra}", target.crossingExtra],
       ["{crossingJoin}", target.crossingJoin],
       ["{restrict}", target.restrict],
-      ["{table}", target.table],
       ["{tagRoot}", unique],
       ["{group}", group],
       ["{zGroup}", zGroup],
@@ -96,6 +98,9 @@ export function compileRollupRead(
       ["{periods}", periods],
       ["{zone}", `${bound}::text`],
       ["{root}", root],
+      ["{rollupRows}", scoped(request, "r", target.grain)],
+      ["{nameRows}", scoped(request, "r", "dayTagName")],
+      ["{eventRows}", scoped(request, "f", "event")],
     ]),
   };
 }
@@ -299,4 +304,16 @@ function findFamilies(metrics: readonly EventMetric[]): RollupFamily[] {
   }
 
   return [...families];
+}
+
+/**
+ * The condition that pins the facts rows `alias` names to one grain and the
+ * request's scope.
+ */
+function scoped(
+  request: EventMetricsQueryRequest,
+  alias: string,
+  grain: FactsGrain,
+): string {
+  return `${pinGrain(alias, grain)}${compileFactsScope(request.scope, alias)}`;
 }

@@ -36,7 +36,7 @@ See [documentation/entity-relationship-diagram.md](documentation/entity-relation
 - [src/modules/database/database.module.ts](src/modules/database/database.module.ts): NestJS database module
 - [src/modules/database/database.service.ts](src/modules/database/database.service.ts): Database service
 - [documentation/entity-relationship-diagram.md](documentation/entity-relationship-diagram.md): Generated entity relationship diagram
-- [documentation/metrics-rollups.md](documentation/metrics-rollups.md): The metrics views: grain, columns, indexes, and the SQL for each metric
+- [documentation/metrics-facts.md](documentation/metrics-facts.md): The metrics views: grain, columns, indexes, and the SQL for each metric
 
 ## 🌌 Caelundas Database
 
@@ -81,21 +81,16 @@ application's `ConfigModule` must be global, and spreads
 
 ## The schema
 
-| Entity                          | Table                                 | Holds                                                                             |
-| ------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------- |
-| `CalendarEvent`                 | `calendar_events`                     | One detected event for one observer location                                      |
-| `Tag`                           | `tags`, `tags_closure`                | The tag tree, a closure table TypeORM keeps in step                               |
-| `CalendarEventTag`              | `calendar_event_tags`                 | An event carrying a tag                                                           |
-| `Star`                          | `stars`                               | A star of the HYG catalog, keyed by its Hipparcos number                          |
-| `Constellation`                 | `constellations`                      | One of the 88 IAU constellations                                                  |
-| `ConstellationEdge`             | `constellation_edges`                 | Generated: a segment of a constellation's figure                                  |
-| `TagNode`                       | `tag_nodes`                           | Derived: a tag with its depth, root, and path                                     |
-| `CalendarEventTagNode`          | `calendar_event_tag_nodes`            | Derived: an event and every tag it carries, ancestors too                         |
-| `CalendarEventDerivedTime`      | `calendar_event_derived_times`        | Derived view: an event's UTC and local year, day, hour, and so on                 |
-| `CalendarEventFact`             | `calendar_event_facts`                | Materialized view: a counted event with its local periods and tag ids             |
-| `CalendarEventDayTagRollup`     | `calendar_event_day_tag_rollups`      | Materialized view: per local day and tag node, the metrics' sums and raw material |
-| `CalendarEventDayTagNameRollup` | `calendar_event_day_tag_name_rollups` | Materialized view: per local day, tag node and event name                         |
-| `CalendarEventDayRollup`        | `calendar_event_day_rollups`          | Materialized view: per local day, the whole set with no tag                       |
+| Entity                     | Table                          | Holds                                                                                          |
+| -------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `CalendarEvent`            | `calendar_events`              | One detected event for one observer location                                                   |
+| `Tag`                      | `tags`, `tags_closure`         | The tag tree, a closure table TypeORM keeps in step                                            |
+| `CalendarEventTag`         | `calendar_event_tags`          | An event carrying a tag                                                                        |
+| `Star`                     | `stars`                        | A star of the HYG catalog, keyed by its Hipparcos number                                       |
+| `Constellation`            | `constellations`               | One of the 88 IAU constellations                                                               |
+| `ConstellationEdge`        | `constellation_edges`          | Generated: a segment of a constellation's figure                                               |
+| `CalendarEventDerivedTime` | `calendar_event_derived_times` | Derived view: an event's UTC and local year, day, hour, and so on                              |
+| `CalendarEventFact`        | `calendar_event_facts`         | Materialized view: the metrics' one table, a row per grain (event, day, day-tag, day-tag-name) |
 
 Entities are named by class: the shared naming strategy makes the tables
 plural and the columns snake case, so no entity names a table or a schema.
@@ -118,21 +113,23 @@ The derived times are a plain view, so there is nothing to refresh: Postgres
 computes them from the event on every read, and the local day and hour,
 `start_local_day` and `start_local_hour`, are `start AT TIME ZONE timezone`.
 
-The two derived tag tables are rebuilt by
-`CaelundasDatabaseService.refreshReadModel(manager)`, one insert-select
-statement each, inside the caller's transaction: a command line ingest ends
-with it, and a reader never sees the tables half rebuilt.
+There are no derived tag tables: a tag's depth, root, path and rank are read from
+`tags` and `tags_closure`, and an event's tags from `calendar_event_tags`, inside the
+metrics view at refresh and through joins at query time.
 
-### The metrics views
+### The metrics view
 
-Charts and Totals read four materialized views instead of every event and
-tag it carries: `calendar_event_facts` and three rollups built on it, each with
-the unique index a concurrent refresh needs and the indexes its queries filter
-and group on. `refreshReadModel` refreshes them last, in the same transaction;
-`refreshMetrics(manager)` refreshes only them, and `nx run
-caelundas-cli:start:refresh-metrics` does so from a shell. Their grain, columns,
-indexes, and the SQL for every metric are in
-[documentation/metrics-rollups.md](documentation/metrics-rollups.md).
+Charts, Totals, the Table and the Timeline read one materialized view,
+`calendar_event_facts`, built with `GROUPING SETS` over the event, day, tag and
+name grains. Its `filter` column names the grain of each row (`event`, `day`,
+`day-tag` or `day-tag-name`) and every read pins it; `is_phase_boundary` is in
+every grain's key, so the Forming and Dissolving boundary instants are kept and
+left out by a query-time default. `CaelundasDatabaseService.refreshMetrics(manager)`
+refreshes it concurrently, in the caller's transaction when it has one: a command
+line ingest ends with it, and `nx run caelundas-cli:start:refresh-metrics` does so
+from a shell. Its grains, columns, indexes, the exclusion default, the SQL for every
+metric and a before and after benchmark are in
+[documentation/metrics-facts.md](documentation/metrics-facts.md).
 
 ## Migrations
 

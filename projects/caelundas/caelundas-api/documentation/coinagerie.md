@@ -27,6 +27,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **equinox**: The moment the Sun crosses the celestial equator, used as a sample event and tag in filter tests.
 - **family**:
 - **gamma**:
+- **grain**:
 - **greenwich**: The prime meridian; Greenwich sidereal time plus the observer's longitude gives the sky's rotation.
 - **harmonic**: A numbered aspect family, such as Harmonic 6, whose trailing number filters can compare.
 - **hip**: A star's Hipparcos catalog number, which keys each star and each end of a constellation line.

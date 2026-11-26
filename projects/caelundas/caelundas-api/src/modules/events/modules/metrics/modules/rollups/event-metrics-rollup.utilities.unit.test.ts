@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { DEFAULT_EVENT_SCOPE } from "../../../filtering/event-filter.constants";
 import { EventMetric } from "../inputs/event-metric.entities";
 
 import {
@@ -27,6 +28,7 @@ function request(
       start: "2026-03-01T00:00:00.000Z",
     },
     previous: null,
+    scope: DEFAULT_EVENT_SCOPE,
     tagRoot: null,
     ...rest,
   };
@@ -59,10 +61,8 @@ describe("event metrics rollup utilities", () => {
   });
 
   describe(findRollupTarget, () => {
-    it("reads the whole set from the day rollup", () => {
-      expect(findRollupTarget(request())?.table).toBe(
-        "calendar_event_day_rollups",
-      );
+    it("reads the whole set from the day grain", () => {
+      expect(findRollupTarget(request())?.grain).toBe("day");
     });
 
     it("reads a calendar field from the day rollup by its column", () => {
@@ -70,7 +70,7 @@ describe("event metrics rollup utilities", () => {
         request({ grouping: [{ field: "month", tags: [] }], level: 0 }),
       );
 
-      expect(target?.table).toBe("calendar_event_day_rollups");
+      expect(target?.grain).toBe("day");
       expect(target?.group).toBe("local_month");
       expect(target?.rollupExtra).toBe(", r.event_names, r.local_month");
     });
@@ -84,13 +84,10 @@ describe("event metrics rollup utilities", () => {
       expect(target?.crossingExtra).toBe(", array[x.name] as event_names");
     });
 
-    it("reads the first level of a root's children from the tag rollup", () => {
+    it("reads the first level of a root's children from the day-tag grain", () => {
       const target = findRollupTarget(tagLevel({ depth: 1 }));
 
-      expect(target).toMatchObject({
-        root: ROOT,
-        table: "calendar_event_day_tag_rollups",
-      });
+      expect(target).toMatchObject({ grain: "dayTag", root: ROOT });
     });
 
     it("refuses every level it cannot answer", () => {
@@ -186,7 +183,8 @@ describe("event metrics rollup utilities", () => {
       ]);
       expect(compiled?.sql).toContain("r.tag_root_id = $4::uuid");
       expect(compiled?.sql).toContain("c.ancestor_id = $5::uuid");
-      expect(compiled?.sql).toContain("calendar_event_day_tag_name_rollups");
+      expect(compiled?.sql).toContain(`r."filter" = 'day-tag-name'`);
+      expect(compiled?.sql).toContain(`r."filter" = 'day-tag'`);
     });
 
     it("reads each side statement once and joins it by the group", () => {
@@ -226,7 +224,43 @@ describe("event metrics rollup utilities", () => {
       );
 
       expect(compiled?.parameters).toHaveLength(3);
-      expect(compiled?.sql).not.toContain("tags_closure");
+      expect(compiled?.sql).not.toContain("c.ancestor_id = $");
+    });
+  });
+
+  describe("grain and scope", () => {
+    it("pins every read of the facts to one grain", () => {
+      expect.hasAssertions();
+
+      const requests = [
+        request({ metrics: [EventMetric.UNIQUE_NAMES] }),
+        {
+          ...tagLevel(),
+          metrics: [EventMetric.UNIQUE_NAMES, EventMetric.UNIQUE_TAGS],
+        },
+      ];
+
+      for (const rest of requests) {
+        const sql = compileRollupRead(rest, "UTC")?.sql ?? "";
+
+        expect(sql).toContain("calendar_event_facts");
+        expect(sql.match(/calendar_event_facts/gu)).toHaveLength(
+          sql.match(/\."filter" = '/gu)?.length ?? 0,
+        );
+      }
+    });
+
+    it("leaves out the phase boundaries unless the scope asks for them", () => {
+      expect.hasAssertions();
+
+      const excluded = compileRollupRead(request(), "UTC")?.sql;
+      const included = compileRollupRead(
+        request({ scope: { includePhaseBoundaries: true } }),
+        "UTC",
+      )?.sql;
+
+      expect(excluded).toContain("r.is_phase_boundary = false");
+      expect(included).not.toContain("is_phase_boundary");
     });
   });
 });

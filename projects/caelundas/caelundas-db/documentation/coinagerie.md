@@ -22,6 +22,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **longitude**: The observer's east-west position in degrees, part of the natural key of `calendar_events`.
 - **lpad**:
 - **magnitude**: A star's apparent visual brightness, where a lower number is brighter, stored on the `Star` entity.
+- **phase**:
 - **planet**: Sample root tag in the integration tests, with body tags such as Mars beneath it.
 - **progressive**:
 - **quarter**: The calendar quarter of the year an event starts in, the `start_quarter` column of the derived-time view.
@@ -30,6 +31,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **smallint**:
 - **star**: A star of the HYG catalog, the `Star` entity, keyed by its Hipparcos number.
 - **temporality**: Derived column classing an event as `Instant` when its start equals its end, and `Duration` otherwise.
+- **tstzmultirange**:
 - **tstzrange**:
 - **unnest**:
 - **updatable**: The `PostgresqlUpdatableEntity` base from `@codebase/persistence`, which gives `calendar_events` its audit columns.

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { TAG_INFO_SQL } from "./modules/filtering/modules/query-building/event-filter-sql.constants";
+
 // ♟️ Constants
 
 /** What a filter argument keeps, written once for both queries. */
@@ -35,8 +37,9 @@ export const datasetRowSchema = z.object({
   timezone: z.string(),
 });
 
-/** Events overlapping a period, minus aspect forming and dissolving instants. */
+/** Events in scope overlapping a period, with tags and group keys. */
 export const EVENTS_IN_PERIOD_SQL = `
+  with ${TAG_INFO_SQL}
   select
     e.id,
     e.color,
@@ -60,19 +63,15 @@ export const EVENTS_IN_PERIOD_SQL = `
           )
           order by t.tag_path collate "C"
         )
-        from calendar_event_tag_nodes t
-        where t.calendar_event_id = e.id and t.is_direct
+        from calendar_event_tags et
+        join tag_info t on t.tag_id = et.tag_id
+        where et.calendar_event_id = e.id
       ),
       '[]'::json
     ) as tags {groups}
   from calendar_event_derived_times e
   where e."start" < $1::timestamptz and e."end" >= $2::timestamptz
-    and not exists (
-      select 1
-      from calendar_event_tag_nodes n
-      where n.calendar_event_id = e.id
-        and n.tag_path in ('Aspect / Phase / Forming', 'Aspect / Phase / Dissolving')
-    )
+    and {scope}
     {filter}
   order by e."start", e."summary" collate "C", e.id
 `;
@@ -113,7 +112,8 @@ export const eventRowSchema = z.looseObject({
 
 /** Every tag with its root, path, and count of matching events. */
 export const FACETS_SQL = `
-  with in_period as (
+  with ${TAG_INFO_SQL},
+  in_period as (
     select e.id
     from calendar_event_derived_times e
     where e."start" < coalesce($1::timestamptz, 'infinity')
@@ -121,27 +121,31 @@ export const FACETS_SQL = `
       {filter}
   ),
   tag_counts as (
-    select t.tag_id, count(*) as count
-    from calendar_event_tag_nodes t
-    join in_period w on w.id = t.calendar_event_id
-    group by t.tag_id
+    select z.tag_id, count(*) as count
+    from (
+      select distinct c.ancestor_id as tag_id, et.calendar_event_id
+      from calendar_event_tags et
+      join in_period w on w.id = et.calendar_event_id
+      join tags_closure c on c.descendant_id = et.tag_id
+    ) z
+    group by z.tag_id
   )
   select
-    n.id,
-    n."name",
-    n.depth,
-    n.root_id,
-    substr(n."path", length(r."name") + length(' / ') + 1) as path_below_root,
+    n.tag_id as id,
+    n.tag_name as "name",
+    n.tag_depth as depth,
+    n.tag_root_id as root_id,
+    substr(n.tag_path, length(r.tag_name) + length(' / ') + 1) as path_below_root,
     coalesce(c.count, 0) as count,
     t.icon,
     t.note,
     t.rank,
     t.parent_id
-  from tag_nodes n
-  join tags t on t.id = n.id
-  join tag_nodes r on r.id = n.root_id
-  left join tag_counts c on c.tag_id = n.id
-  order by n."path" collate "C"
+  from tag_info n
+  join tags t on t.id = n.tag_id
+  join tag_info r on r.tag_id = n.tag_root_id
+  left join tag_counts c on c.tag_id = n.tag_id
+  order by n.tag_path collate "C"
 `;
 
 /** One row of {@link FACETS_SQL}; Postgres answers counts as text. */

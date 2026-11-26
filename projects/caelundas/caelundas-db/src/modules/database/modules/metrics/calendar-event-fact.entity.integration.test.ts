@@ -17,7 +17,7 @@ import {
   RAW_METRICS_SQL,
   ROLLUP_METRICS_SQL,
   ROLLUP_TOTAL_METRICS_SQL,
-} from "./calendar-event-rollups.constants";
+} from "./calendar-event-facts.constants";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { TreeRepository } from "typeorm";
@@ -51,10 +51,10 @@ function normalize(rows: readonly MetricRow[]): MetricRow[] {
 
 /**
  * Seeds events across tags, zones and days on a throwaway Postgres migrated by
- * the real migrations, refreshes the read model and the metrics views, and
- * asserts every rollup answers each metric exactly as the raw events do.
+ * the real migrations, refreshes the metrics view, and asserts every grain
+ * answers each metric exactly as the raw events do.
  */
-describe("metrics rollups", () => {
+describe("metrics facts", () => {
   let database: DatabaseTestingModule;
   let service: DatabaseService;
   let tags: TreeRepository<Tag>;
@@ -103,9 +103,8 @@ describe("metrics rollups", () => {
     );
   }
 
-  /** Rebuilds the read model, then the metrics views. */
+  /** Refreshes the metrics view. */
   async function refresh(): Promise<void> {
-    await service.refreshReadModel(database.dataSource.manager);
     await service.refreshMetrics(database.dataSource.manager);
   }
 
@@ -138,7 +137,7 @@ describe("metrics rollups", () => {
 
   beforeEach(async () => {
     await database.dataSource.query(
-      "truncate calendar_event_tags, calendar_events, tags, tags_closure, tag_nodes, calendar_event_tag_nodes cascade",
+      "truncate calendar_event_tags, calendar_events, tags, tags_closure cascade",
     );
     tagged.clear();
     await addTag("Planet");
@@ -238,14 +237,16 @@ describe("metrics rollups", () => {
     });
   });
 
-  it("leaves out the events tagged as a phase forming or dissolving", async () => {
+  it("keeps the events tagged as a phase forming or dissolving, flagged", async () => {
     expect.hasAssertions();
 
-    const [row] = await database.dataSource.query<{ count: string }[]>(
-      "select count(*) from calendar_event_facts where name = 'Forming Moon'",
+    const rows = await database.dataSource.query<
+      { is_phase_boundary: boolean }[]
+    >(
+      `select is_phase_boundary from calendar_event_facts where "filter" = 'event' and name = 'Forming Moon'`,
     );
 
-    expect(row?.count).toBe("0");
+    expect(rows).toStrictEqual([{ is_phase_boundary: true }]);
   });
 
   it("denormalizes an event's local periods and whole-second duration", async () => {
@@ -254,7 +255,7 @@ describe("metrics rollups", () => {
     const [row] = await database.dataSource.query<MetricRow[]>(
       `select local_day::text, local_week::text, local_month::text, local_quarter::text,
         local_year::int, local_weekday::int, local_hour::int, duration_seconds::int
-      from calendar_event_facts where name = 'Mars Retrograde' order by "start" limit 1`,
+      from calendar_event_facts where "filter" = 'event' and name = 'Mars Retrograde' order by "start" limit 1`,
     );
 
     expect(row).toStrictEqual({
@@ -269,7 +270,7 @@ describe("metrics rollups", () => {
     });
   });
 
-  it("follows the events: a refresh drops a removed event and its stale rollup rows", async () => {
+  it("follows the events: a refresh drops a removed event and its stale rows", async () => {
     expect.hasAssertions();
 
     await database.dataSource.query(
@@ -282,7 +283,7 @@ describe("metrics rollups", () => {
     expect(rollup).toStrictEqual(raw);
     await expect(
       database.dataSource.query<unknown[]>(
-        "select 1 from calendar_event_day_rollups where local_day = '2026-04-20'",
+        `select 1 from calendar_event_facts where "filter" = 'day' and local_day = '2026-04-20'`,
       ),
     ).resolves.toHaveLength(0);
   });

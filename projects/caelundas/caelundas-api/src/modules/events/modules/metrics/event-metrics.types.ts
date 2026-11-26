@@ -1,4 +1,7 @@
-import type { EventFilterGroup } from "../filtering/event-filter.types";
+import type {
+  EventFilterGroup,
+  EventScope,
+} from "../filtering/event-filter.types";
 import type { EventGroupLevel } from "../grouping/event-grouping.types";
 import type { EventMetric } from "./modules/inputs/event-metric.entities";
 import type { EventMetricGroupEntity } from "./modules/results/event-metric-group.entities";
@@ -27,6 +30,7 @@ export interface EventMetricsQueryRequest {
   metrics: readonly EventMetric[];
   period: MetricsPeriod;
   previous: MetricsPeriod | null;
+  scope: EventScope;
   tagRoot: null | string;
 }
 
@@ -50,6 +54,9 @@ export interface EventMetricsTreeSource {
   names: ReadonlyMap<string, string>;
   rows: readonly (readonly EventMetricsRow[])[];
 }
+
+/** A grain of `calendar_event_facts`, by its key in `FACTS_GRAINS`. */
+export type FactsGrain = "day" | "dayTag" | "dayTagName" | "event";
 
 /** A level's lateral join: its grouping, place and key source. */
 export interface LevelJoin {

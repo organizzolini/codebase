@@ -3,8 +3,10 @@ import { Inject, Injectable } from "@nestjs/common";
 import { EventFilterService } from "../../../filtering/event-filter.service";
 import { TAG_FIELD_PREFIX } from "../../../filtering/modules/query-building/event-filter-fields.constants";
 import { EventFilterParametersService } from "../../../filtering/modules/query-building/event-filter-parameters.service";
+import { compileFactsScope } from "../../../filtering/modules/query-building/event-scope.utilities";
 import { UUID_PATTERN } from "../../../filtering/modules/values/event-filter-values.constants";
 import { EventGroupingService } from "../../../grouping/event-grouping.service";
+import { pinGrain } from "../../event-metrics.utilities";
 import { EventMetric } from "../inputs/event-metric.entities";
 import {
   DISTINCT_MEASURE_SQL,
@@ -345,7 +347,12 @@ export class EventMetricsFactsService {
       levels: levels.length,
       measures,
       parameters: parameters.values,
-      sql: FACTS_EVENTS_SQL.replace("{periods}", () => periods)
+      sql: FACTS_EVENTS_SQL.replace(
+        "{eventRows}",
+        () =>
+          `${pinGrain("f", "event")}${compileFactsScope(request.scope, "f")}`,
+      )
+        .replace("{periods}", () => periods)
         .replace("{keys}", () => keys)
         .replace("{where}", () =>
           filter === null ? "" : `where ${filter.sql}`,

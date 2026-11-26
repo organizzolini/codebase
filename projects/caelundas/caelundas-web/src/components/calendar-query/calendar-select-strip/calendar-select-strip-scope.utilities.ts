@@ -89,7 +89,7 @@ export function restrictGroupFields(
 }
 
 /**
- * The sort keys for the selected columns: Tag order and Event count, Name with Name, First event with Start or End.
+ * The sort keys for the selected columns: Tags and Event count, Name with Name, First event with Start or End.
  */
 export function restrictSortKeys(
   selected: readonly string[],

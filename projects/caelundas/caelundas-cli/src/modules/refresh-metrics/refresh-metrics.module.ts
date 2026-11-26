@@ -7,7 +7,7 @@ import { RefreshMetricsCommand } from "./refresh-metrics.command";
 
 /**
  * Registers the `refresh-metrics` command, which refreshes the metrics
- * materialized views of the caelundas database.
+ * materialized view of the caelundas database.
  */
 @Module({
   controllers: [],

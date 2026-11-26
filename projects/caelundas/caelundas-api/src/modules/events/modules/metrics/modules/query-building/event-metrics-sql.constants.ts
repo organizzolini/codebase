@@ -1,3 +1,4 @@
+import { TAG_INFO_SQL } from "../../../filtering/modules/query-building/event-filter-sql.constants";
 import { EventMetric } from "../inputs/event-metric.entities";
 
 // ♟️ Constants
@@ -17,8 +18,14 @@ const PERIOD_MINUTES_SQL = `nullif(extract(epoch from (min(e.period_end) - min(e
 /** Narrows an aggregate to the events carrying the progressive tag. */
 const PROGRESSIVE_ONLY_SQL = `filter (where exists (
     select 1
-    from calendar_event_tag_nodes n
-    where n.calendar_event_id = e.id and n.tag_path = '${PROGRESSIVE_TAG_PATH}'
+    from calendar_event_tags pet
+    join tags_closure pc on pc.descendant_id = pet.tag_id
+    where pet.calendar_event_id = e.id
+      and pc.ancestor_id in (
+        select p.tag_id
+        from tag_info p
+        where p.tag_path = '${PROGRESSIVE_TAG_PATH}'
+      )
   ))`;
 
 /** Percent of the period the clipped intervals add up to. */
@@ -61,8 +68,8 @@ export const EVENT_METRIC_SQL: Readonly<Record<EventMetric, string>> = {
   [EventMetric.UNIQUE_NAMES]: `count(distinct e."summary")`,
   [EventMetric.UNIQUE_TAGS]: `(
     select count(distinct t.tag_id)
-    from calendar_event_tag_nodes t
-    where t.calendar_event_id = any(array_agg(e.id)) and t.is_direct{tagRoot}
+    from calendar_event_tags t
+    where t.calendar_event_id = any(array_agg(e.id)){tagRoot}
   )`,
 };
 
@@ -75,19 +82,15 @@ export const TAG_ROOT_SQL = ` and t.tag_id <> {root}::uuid and exists (
 
 /** The events in the periods, a row per period. */
 export const EVENT_METRICS_SQL = `
-  with periods (period, period_start, period_end) as (
+  with ${TAG_INFO_SQL},
+  periods (period, period_start, period_end) as (
     values {periods}
   ),
   events_in_periods as (
     select p.period, p.period_start, p.period_end, e.*
     from calendar_event_derived_times e
     join periods p on e."start" < p.period_end and e."end" >= p.period_start
-    where not exists (
-      select 1
-      from calendar_event_tag_nodes n
-      where n.calendar_event_id = e.id
-        and n.tag_path in ('Aspect / Phase / Forming', 'Aspect / Phase / Dissolving')
-    )
+    where {scope}
     {filter}
   )
   select e.period{columns}

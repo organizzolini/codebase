@@ -238,7 +238,7 @@ describe(EventMetricsService, () => {
 
       await service.findMetrics(grouped([]));
 
-      expect(statements()).toContain("from calendar_event_day_rollups r");
+      expect(statements()).toContain(`r."filter" = 'day'`);
       expect(statements()).not.toContain("calendar_event_derived_times");
     });
 
@@ -250,7 +250,7 @@ describe(EventMetricsService, () => {
       await service.findMetrics(grouped([]));
 
       expect(statements()).toContain("calendar_event_derived_times");
-      expect(statements()).not.toContain("calendar_event_day_rollups r");
+      expect(statements()).not.toContain(`r."filter" = 'day'`);
     });
 
     it("asks no guard of a request the rollups cannot answer", async () => {
@@ -273,7 +273,7 @@ describe(EventMetricsService, () => {
         grouped([{ field: `tag:${ROOT}` }, { field: "month" }]),
       );
 
-      expect(statements()).toContain("from calendar_event_day_tag_rollups r");
+      expect(statements()).toContain(`r."filter" = 'day-tag'`);
       expect(statements()).toContain("calendar_event_derived_times");
     });
   });

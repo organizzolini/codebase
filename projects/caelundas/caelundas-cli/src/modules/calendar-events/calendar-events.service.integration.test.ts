@@ -103,38 +103,45 @@ describe("calendar events service integration", () => {
     expect(row?.longitude).toBe("-75.171690");
   });
 
-  it("rewrites the read model caelundas-web queries after every upsert", async () => {
+  it("refreshes the facts view caelundas-web queries after every upsert", async () => {
     expect.hasAssertions();
 
     await service.upsert(
       [tagged("Read model", "2026-01-13T00:00:00Z", ["Planet", "Sun"])],
       philadelphia,
     );
-    const nodes = await repository.manager.query<
-      { is_direct: boolean; tag_name: string }[]
+    const [fact] = await repository.manager.query<
+      { direct: string[]; tags: string[] }[]
     >(
-      `select tag_name, is_direct from calendar_event_tag_nodes n join calendar_events e on e.id = n.calendar_event_id where e.summary = 'Read model' order by tag_name`,
+      `select
+        (select array_agg(t.name order by t.name) from tags t where t.id = any(f.tag_ids)) as tags,
+        (select array_agg(t.name order by t.name) from tags t where t.id = any(f.direct_tag_ids)) as direct
+      from calendar_event_facts f
+      where f."filter" = 'event' and f.name = 'Read model'`,
     );
     const [derived] = await repository.manager.query<{ temporality: string }[]>(
       `select temporality from calendar_event_derived_times where summary = 'Read model'`,
     );
-    const paths = await repository.manager.query<{ path: string }[]>(
-      `select path from tag_nodes where name = 'Sun'`,
+    const paths = await repository.manager.query<{ tag_path: string }[]>(
+      `select distinct tag_path from calendar_event_facts where "filter" = 'day-tag' and tag_name = 'Sun'`,
     );
 
-    expect(nodes.map(({ tag_name: name }) => name)).toContain("Sun");
+    expect(fact?.tags).toContain("Sun");
+    expect(fact?.direct).toContain("Sun");
     expect(derived?.temporality).toBe("Instant");
-    expect(paths.map(({ path }) => path)).toContain("Body / Luminary / Sun");
+    expect(paths.map(({ tag_path: path }) => path)).toContain(
+      "Body / Luminary / Sun",
+    );
   });
 
   it(
-    "rebuilds the read model once per upsert, after the last batch is written",
+    "refreshes the metrics view once per upsert, after the last batch is written",
     async () => {
       expect.hasAssertions();
 
       const databaseService = database.module.get(CaelundasDatabaseService);
-      const rebuild = databaseService.refreshReadModel.bind(databaseService);
-      const refresh = vi.spyOn(databaseService, "refreshReadModel");
+      const rebuild = databaseService.refreshMetrics.bind(databaseService);
+      const refresh = vi.spyOn(databaseService, "refreshMetrics");
       refresh.mockClear();
       const count = CALENDAR_EVENT_BATCH_SIZE + 1;
       const stored: number[] = [];
@@ -166,7 +173,7 @@ describe("calendar events service integration", () => {
     BULK_UPSERT_TIMEOUT_MILLISECONDS,
   );
 
-  it("refreshes the metrics views with the read model, so a rollup counts the new event", async () => {
+  it("refreshes the metrics view, so the day row counts the new event", async () => {
     expect.hasAssertions();
 
     await service.upsert(
@@ -176,22 +183,22 @@ describe("calendar events service integration", () => {
     const [day] = await repository.manager.query<
       { duration_seconds: string; events: string }[]
     >(
-      `select events, duration_seconds from calendar_event_day_rollups where local_day = '2032-02-03'`,
+      `select events, duration_seconds from calendar_event_facts where "filter" = 'day' and local_day = '2032-02-03'`,
     );
     const [tagRollups] = await repository.manager.query<{ count: string }[]>(
-      `select count(*) from calendar_event_day_tag_rollups where local_day = '2032-02-03'`,
+      `select count(*) from calendar_event_facts where "filter" = 'day-tag' and local_day = '2032-02-03'`,
     );
 
     expect(day).toStrictEqual({ duration_seconds: "9000", events: "1" });
     expect(Number(tagRollups?.count)).toBeGreaterThan(0);
   });
 
-  it("stores no event when the read model rebuild fails", async () => {
+  it("stores no event when the metrics refresh fails", async () => {
     expect.hasAssertions();
 
     vi.spyOn(
       database.module.get(CaelundasDatabaseService),
-      "refreshReadModel",
+      "refreshMetrics",
     ).mockRejectedValueOnce(new Error("refresh failed"));
 
     await expect(

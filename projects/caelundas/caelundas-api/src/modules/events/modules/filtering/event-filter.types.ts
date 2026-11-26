@@ -31,6 +31,12 @@ export interface EventFilterRule {
   values: string[];
 }
 
+/** Kinds of event a query reads; each is left out unless asked. */
+export interface EventScope {
+  /** Also reads the Forming and Dissolving boundary instants. */
+  includePhaseBoundaries: boolean;
+}
+
 /** A SQL comparison; neq and not-between are negated, flipping it. */
 export interface NumberCondition {
   negated: boolean;

@@ -317,7 +317,7 @@ describe("event metrics over the facts", () => {
 
     await application.database.module
       .get(CaelundasDatabaseService)
-      .refreshReadModel(application.database.dataSource.manager);
+      .refreshMetrics(application.database.dataSource.manager);
   }, DATABASE_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {
@@ -354,7 +354,9 @@ describe("event metrics over the facts", () => {
           ...(filtered ? { filter } : {}),
         });
 
-        expect(sql).toContain("join calendar_event_facts f on f.extent");
+        expect(sql).toContain(
+          "join calendar_event_facts f on f.\"filter\" = 'event' and f.is_phase_boundary = false and f.extent",
+        );
         expect(sql).not.toContain("from calendar_event_derived_times");
       }
     }

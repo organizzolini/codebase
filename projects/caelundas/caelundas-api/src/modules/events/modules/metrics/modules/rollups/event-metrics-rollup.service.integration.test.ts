@@ -16,11 +16,6 @@ import { EventMetricsService } from "../../event-metrics.service";
 import { EventMetricsFactsService } from "../facts/event-metrics-facts.service";
 import { EventMetric } from "../inputs/event-metric.entities";
 
-import {
-  DAY_ROLLUP_TABLE,
-  DAY_TAG_ROLLUP_TABLE,
-} from "./event-metrics-rollup.constants";
-
 import type { EventsApplication } from "../../../../../../../testing/events-application";
 import type { EventMetricsInputEntity } from "../inputs/event-metrics-input.entities";
 
@@ -225,7 +220,7 @@ describe("event metrics rollups", () => {
   async function refresh(): Promise<void> {
     await application.database.module
       .get(CaelundasDatabaseService)
-      .refreshReadModel(application.database.dataSource.manager);
+      .refreshMetrics(application.database.dataSource.manager);
   }
 
   beforeAll(async () => {
@@ -295,7 +290,7 @@ describe("event metrics rollups", () => {
       period: WINDOW,
     });
 
-    expect(sql).toContain(`from ${DAY_ROLLUP_TABLE} r`);
+    expect(sql).toContain(`r."filter" = 'day'`);
     expect(sql).not.toContain("calendar_event_derived_times");
     // Six events start in the window; the forming one is left out.
     expect(total[0]?.value).toBe(6);
@@ -328,7 +323,7 @@ describe("event metrics rollups", () => {
       period: WINDOW,
     });
 
-    expect(sql).toContain(`from ${DAY_TAG_ROLLUP_TABLE} r`);
+    expect(sql).toContain(`r."filter" = 'day-tag'`);
     expect(groups.map(({ label }) => label)).toStrictEqual([
       "Mars",
       "Moon",
@@ -347,7 +342,7 @@ describe("event metrics rollups", () => {
         period: WINDOW,
       });
 
-      expect(sql).toContain(`from ${DAY_ROLLUP_TABLE} r`);
+      expect(sql).toContain(`r."filter" = 'day'`);
     }
   });
 
@@ -380,7 +375,7 @@ describe("event metrics rollups", () => {
       period: WINDOW,
     });
 
-    expect(sql).toContain(`from ${DAY_TAG_ROLLUP_TABLE} r`);
+    expect(sql).toContain(`r."filter" = 'day-tag'`);
     // Both Mars Stations carry no aspect.
     expect(groups.map(({ key, label }) => [key, label])).toContainEqual([
       null,
@@ -403,7 +398,9 @@ describe("event metrics rollups", () => {
         period: NARROWER,
       });
 
-      expect(sql).toContain("calendar_event_facts f on f.extent");
+      expect(sql).toContain(
+        "calendar_event_facts f on f.\"filter\" = 'event' and f.is_phase_boundary = false and f.extent",
+      );
     }
 
     // Mars Retrograde starts on the 10th and reaches the 13th, with two more.
@@ -423,7 +420,7 @@ describe("event metrics rollups", () => {
       period: { end: WINDOW.end, start: "2026-01-10T06:00:00.000Z" },
     });
 
-    expect(sql).not.toContain(`from ${DAY_ROLLUP_TABLE} r`);
+    expect(sql).not.toContain(`r."filter" = 'day'`);
   });
 
   it("falls back to the events for percents, a filter and a deeper tag level", async () => {
@@ -478,7 +475,7 @@ describe("event metrics rollups", () => {
         period: WINDOW,
       });
 
-      expect(sql).toContain("calendar_event_day_");
+      expect(sql).toContain('r."filter" = \'day');
     }
 
     const { groups, total } = await metricsService.findMetrics({

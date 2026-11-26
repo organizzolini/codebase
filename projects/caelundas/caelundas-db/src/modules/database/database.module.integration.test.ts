@@ -68,7 +68,7 @@ describe(DatabaseModule, () => {
     expect(database.container.connection.username).toBe("caelundas_username");
   });
 
-  it("creates every table, derived table and the view the entities describe, and nothing else", async () => {
+  it("creates every table, derived time view the entities describe, and nothing else", async () => {
     expect.hasAssertions();
 
     const relations = await database.dataSource.query<{ name: string }[]>(
@@ -78,14 +78,12 @@ describe(DatabaseModule, () => {
 
     expect(relations.map(({ name }) => name)).toStrictEqual([
       "calendar_event_derived_times",
-      "calendar_event_tag_nodes",
       "calendar_event_tags",
       "calendar_events",
       "constellation_edges",
       "constellations",
       "migrations",
       "stars",
-      "tag_nodes",
       "tags",
       "tags_closure",
       "typeorm_metadata",

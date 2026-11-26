@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { TAG_RANK_SQL } from "../../../grouping/event-grouping.constants";
+import { TAG_INFO_SQL } from "../../../filtering/modules/query-building/event-filter-sql.constants";
 
 // ♟️ Constants
 
@@ -23,7 +23,8 @@ export const FACTS_CALENDAR_KEYS_SQL = `array_remove(array[(select s."key" from 
 
 /** The events in the periods, a row each, with each level's keys. */
 export const FACTS_EVENTS_SQL = `
-  with periods (period, period_start, period_end) as (
+  with ${TAG_INFO_SQL},
+  periods (period, period_start, period_end) as (
     values {periods}
   ),
   ev as materialized (
@@ -36,7 +37,7 @@ export const FACTS_EVENTS_SQL = `
         case when f.is_instant then 'Instant' else 'Duration' end as temporality,
         f.duration_seconds, f.is_progressive, f.direct_tag_ids, f.tag_ids
       from periods p
-      join calendar_event_facts f on f.extent && tstzrange(p.period_start, p.period_end, '[)')
+      join calendar_event_facts f on {eventRows} and f.extent && tstzrange(p.period_start, p.period_end, '[)')
       join calendar_events c on c.id = f.calendar_event_id
     ) e
     {where}
@@ -84,12 +85,9 @@ export const FACTS_TAG_ROOT_SQL = `
 /** The names of the tags picked, with their ranks. */
 export const FACTS_DIMENSION_SQL = `,
   dim as (
-    select t.tag_id::text as key, t.tag_name, t.tag_path, ${TAG_RANK_SQL}
-    from (
-      select n.id as tag_id, n.name as tag_name, n.path as tag_path
-      from tag_nodes n
-      where n.id = any({picked}::uuid[])
-    ) t
+    select t.tag_id::text as key, t.tag_name, t.tag_path, t.tag_rank as "rank"
+    from tag_info t
+    where t.tag_id = any({picked}::uuid[])
   )`;
 
 /** One row of the facts statement; keys and measures read apart. */

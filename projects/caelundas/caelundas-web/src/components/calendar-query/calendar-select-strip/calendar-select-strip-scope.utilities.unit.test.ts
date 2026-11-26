@@ -105,7 +105,7 @@ describe("column scope utilities", () => {
   });
 
   describe(restrictSortKeys, () => {
-    it("always offers Tag order and Event count", () => {
+    it("always offers Tags and Event count", () => {
       expect(restrictSortKeys([])).toStrictEqual(["order", "count"]);
     });
 

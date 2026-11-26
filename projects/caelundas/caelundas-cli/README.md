@@ -263,9 +263,9 @@ sized by their columns to stay under Postgres's 65,535 bind parameters per
 statement. The entities, the one migration, and the read model come from the
 `caelundas-db` library: apply the migration with
 `nx run caelundas-db:migration:run` before the first run (`migration:generate`
-creates the next one). Every run ends by rebuilding the read model
-(`tag_nodes`, `calendar_event_tag_nodes`, and the `calendar_event_derived_times`
-view the API queries) with `CaelundasDatabaseService.refreshReadModel`, in the
+creates the next one). Every run ends by refreshing the metrics view
+(`calendar_event_facts`, which the API queries beside the plain
+`calendar_event_derived_times` view) with `CaelundasDatabaseService.refreshMetrics`, in the
 same transaction that wrote the events, so a failed refresh stores nothing and
 there is no separate build step.
 
@@ -274,19 +274,18 @@ tag at once make the second fail on the tag's unique name; run it again.
 
 ## Metrics views
 
-An ingest rebuilds the read model and then refreshes the four materialized views
-the Charts and Totals layouts read (`calendar_event_facts` and the day rollups),
-inside the same transaction, so nothing else is needed after a run. To refresh
-them alone, after editing events or tags by hand:
+An ingest refreshes the one materialized view the Charts and Totals layouts read
+(`calendar_event_facts`), inside the same transaction, so nothing else is needed
+after a run. To refresh it alone, after editing events or tags by hand:
 
 ```bash
 nx run caelundas-cli:start:refresh-metrics
 ```
 
-It refreshes them concurrently, so readers are never blocked, and logs the time
-it took (about 4.5 seconds for 50,000 events). The views and the SQL that reads
-them are in
-[`caelundas-db`'s `metrics-rollups.md`](../caelundas-db/documentation/metrics-rollups.md).
+It refreshes it concurrently, so readers are never blocked, and logs the time
+it took (about 8.6 seconds for 50,000 events). The view and the SQL that reads
+it are in
+[`caelundas-db`'s `metrics-facts.md`](../caelundas-db/documentation/metrics-facts.md).
 
 ## Night sky
 
