@@ -42,6 +42,30 @@ tests:
           path: spec.template.spec.securityContext.runAsNonRoot
           value: true
 
+  - it: hardens the container with a read-only root filesystem and scratch space
+    set:
+      image.tag: 1.0.0
+    template: templates/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: true
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0].mountPath
+          value: /tmp
+
+  - it: gives the web nginx a writable cache directory
+    values:
+      - ../values/base.yaml
+      - ../values/caelundas-web.yaml
+    set:
+      image.tag: 1.0.0
+    template: templates/deployment.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[1].mountPath
+          value: /var/cache/nginx
+
   - it: labels the Service selector and the Deployment pods by component
     values:
       - ../values/base.yaml

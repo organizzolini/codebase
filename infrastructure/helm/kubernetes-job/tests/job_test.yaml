@@ -110,17 +110,27 @@ tests:
                 name: caelundas-postgres
                 key: password
 
-  - it: caelundas-cli mounts no volume and creates no PVC
+  - it: caelundas-cli mounts only scratch space and creates no PVC
     values:
       - ../values/base.yaml
       - ../values/caelundas-cli.yaml
     asserts:
       - template: templates/job.yaml
-        notExists:
+        equal:
           path: spec.template.spec.volumes
+          value:
+            - name: tmp
+              emptyDir: {}
       - template: templates/job.yaml
-        notExists:
+        equal:
           path: spec.template.spec.containers[0].volumeMounts
+          value:
+            - name: tmp
+              mountPath: /tmp
+      - template: templates/job.yaml
+        equal:
+          path: spec.template.spec.containers[0].securityContext.readOnlyRootFilesystem
+          value: true
       - template: templates/pvc.yaml
         hasDocuments:
           count: 0

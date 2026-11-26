@@ -17,16 +17,18 @@ fullnameOverride: ""
 
 podAnnotations: {}
 
-podSecurityContext: {}
-# fsGroup: 2000
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
 
-securityContext: {}
-# capabilities:
-#   drop:
-#   - ALL
-# readOnlyRootFilesystem: true
-# runAsNonRoot: true
-# runAsUser: 1000
+# The root filesystem is read-only; the Job mounts an emptyDir at the temporary directory for scratch space
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
 
 # Labels the templates stamp on the Job and PVC when set. Declared here so the
 # templates can read them when a deploy passes neither.

@@ -24,3 +24,16 @@ resources:
   limits:
     cpu: 100m
     memory: 64Mi
+
+# Unprivileged nginx writes its pid file to the temporary directory and its request buffers to /var/cache/nginx
+volumes:
+  - name: tmp
+    emptyDir: {}
+  - name: cache
+    emptyDir: {}
+
+volumeMounts:
+  - name: tmp
+    mountPath: /tmp
+  - name: cache
+    mountPath: /var/cache/nginx

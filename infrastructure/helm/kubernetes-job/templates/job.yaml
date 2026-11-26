@@ -82,13 +82,17 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.persistence.enabled }}
           volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            {{- if .Values.persistence.enabled }}
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
-          {{- end }}
-      {{- if .Values.persistence.enabled }}
+            {{- end }}
       volumes:
+        - name: tmp
+          emptyDir: {}
+        {{- if .Values.persistence.enabled }}
         - name: data
           {{- if eq .Values.persistence.type "emptyDir" }}
           emptyDir: {}
@@ -96,7 +100,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ include "kubernetes-job.fullname" . }}
           {{- end }}
-      {{- end }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

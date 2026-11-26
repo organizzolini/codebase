@@ -15,6 +15,25 @@ podAnnotations: {}
 
 podSecurityContext:
   runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# The container's own context: the root filesystem is read-only, so a writable path is a volume
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# Scratch space for the read-only root filesystem, mounted at the temporary directory; a values file that sets either list replaces it
+volumes:
+  - name: tmp
+    emptyDir: {}
+
+volumeMounts:
+  - name: tmp
+    mountPath: /tmp
 
 # Port the application listens on, and the port the Service targets
 containerPort: 8080
