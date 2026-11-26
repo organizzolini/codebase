@@ -1,17 +1,5 @@
 rules:
-  # The repository pins actions by version tag, so a tag pin is the policy.
-  unpinned-uses:
-    config:
-      policies:
-        "*": ref-pin
-  # The npm ecosystem's one-day cooldown matches pnpm's minimumReleaseAge, and the rest follow it.
+  # The npm ecosystem's one-day cooldown matches pnpm's minimumReleaseAge, and the rest are longer.
   dependabot-cooldown:
     config:
       days: 1
-  # `$/` is a GitHub syntax newer than the pinned actionlint knows; `./` is the form it accepts.
-  self-repository:
-    disable: true
-  # setup-pnpm/action.yml line 78 writes PNPM_HOME and PATH after a cache hit, from values it computes itself.
-  github-env:
-    ignore:
-      - action.yml:78

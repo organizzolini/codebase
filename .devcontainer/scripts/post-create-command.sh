@@ -28,12 +28,6 @@ curl -sSfL \
   | tar -xzC /usr/local/bin trivy
 echo "✅ Trivy installed: $(trivy --version)"
 
-# The infrastructure and workflow linters lint-code runs: kubeconform, kube-linter,
-# pluto, and actionlint. tflint comes from the Terraform feature.
-echo "🧹 Installing infrastructure linters..."
-LINTERS_BIN=/usr/local/bin infrastructure/scripts/install-linters.sh
-echo "✅ Infrastructure linters installed"
-
 echo "🔎 Checking for .env file..."
 if [[ ! -f ".env" ]]; then
   if [[ -f ".env.default" ]]; then
@@ -63,6 +57,13 @@ echo "✅ node-gyp installed: $(node-gyp --version)"
 echo "📦 Installing dependencies with pnpm..."
 pnpm install --frozen-lockfile
 echo "✅ Dependencies installed"
+
+# The infrastructure and configuration projects' linters: kubeconform, kube-linter,
+# pluto, and actionlint, built with the Go toolchain into /usr/local/bin. Gitleaks and
+# Trivy, installed above, are skipped. tflint comes from the Terraform feature.
+echo "🧹 Installing infrastructure linters..."
+GOBIN=/usr/local/bin pnpm exec nx run installation:start:software -- infrastructure configuration
+echo "✅ Infrastructure linters installed"
 
 echo "🐍 Syncing Python dependencies with uv..."
 uv sync --frozen --project configuration/python
