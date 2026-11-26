@@ -5,5 +5,5 @@
 
 # AVD IDs for misconfigurations that are intentional
 # GIT-0001: the codebase repository is public on purpose, and
-# infrastructure/terraform/github declares it as such
+# infrastructure/terraform/organizzolini declares it as such
 GIT-0001
