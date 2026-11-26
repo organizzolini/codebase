@@ -49,6 +49,13 @@ hook:
   # The caelundas-migrate command ships in the CLI image from a later commit
   command:
     - caelundas-migrate
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
   env:
     - name: CAELUNDAS_POSTGRES_HOST
       value: postgres-rw.codebase.svc.cluster.local

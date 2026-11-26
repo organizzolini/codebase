@@ -51,3 +51,4 @@ hook:
     tag: ""
   command: []
   env: []
+  resources: {}
