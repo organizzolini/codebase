@@ -144,7 +144,7 @@
     },
     {
       "id": "claim_400660f9731a44439628f3ef0449e44f",
-      "statement": "lexico-api uses Relay cursor connections via nestjs-graphql-connection with opaque Base64 cursors (toCursor/fromCursor/fromCursorSafe) and offset cursors (encodeOffsetCursor/decodeOffsetCursor) from @codebase/interface.",
+      "statement": "lexico-api uses Relay cursor connections built with the Relay helpers in @codebase/interface, using opaque Base64 cursors (toCursor/fromCursor/fromCursorSafe) and offset cursors (encodeOffsetCursor/decodeOffsetCursor) from @codebase/interface.",
       "evidence": [
         {
           "resource": "repo://projects/common/interface/src/index.ts",

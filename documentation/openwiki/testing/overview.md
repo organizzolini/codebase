@@ -1,7 +1,7 @@
 ---
 type: "Reference"
 title: "Testing Strategy Overview"
-description: "High-level testing strategy: test targets (vitest:unit, vitest:integration, vitest:end-to-end), coverage gates, the testing-strategy skill, and CI test sharding. Explains persistence testing helpers (testcontainers Postgres) and MSW/GraphQL codegen for lexico-web."
+description: "High-level testing strategy: test targets (vitest:unit, vitest:integration, vitest:end-to-end), coverage gates, the write-tests skill, and CI test sharding. Explains persistence testing helpers (testcontainers Postgres) and MSW/GraphQL codegen for lexico-web."
 tags: ["testing", "strategy", "ci", "vitest", "coverage", "testcontainers", "graphql", "msw"]
 verified:
   - by: openwiki/0.9.0
@@ -10,9 +10,9 @@ sources:
   - id: openwiki-source-ab09db9d0408f67f5441bda9
     resource: repo://.agents/skills/test-driven-development/SKILL.md
   - id: openwiki-source-4cfef24d7967ddef88357d1c
-    resource: repo://.agents/skills/testing-mocks/SKILL.md
+    resource: repo://.agents/skills/write-tests/references/mocking.md
   - id: openwiki-source-db7eb71a3306403209a370a4
-    resource: repo://.agents/skills/testing-strategy/SKILL.md
+    resource: repo://.agents/skills/write-tests/SKILL.md
   - id: openwiki-source-6315af249215d8768fb68811
     resource: repo://.github/workflows/continuous-integration.yml
   - id: openwiki-source-8037e2358a2c4f9b2c722a11
@@ -113,8 +113,7 @@ Key practices:
 - Keep project Vitest configs thin and inherit shared defaults using `mergeConfig(...)` from `configuration/vitest.config.ts` so threshold changes stay centralized.
 - Before opening or updating a coverage-focused PR, run the CI-shaped command locally: `nx affected --target=vitest --configuration=coverage --base=main`.
 
-<!-- openwiki: broken internal link [.agents/skills/testing-strategy/SKILL.md] file ".agents/skills/testing-strategy/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-See the [testing-strategy skill](.agents/skills/testing-strategy/SKILL.md) for the full gate table and coverage practices.
+See the [validate-code skill](../../../.agents/skills/validate-code/SKILL.md#quality-gates) for the full gate table and the [raising-coverage reference](../../../.agents/skills/validate-code/references/raising-coverage.md) for coverage practices.
 
 ## Mocking Conventions
 
@@ -136,8 +135,7 @@ const mockService = createMock<MyService>();
 - Configure mock return values per test using `mockResolvedValue()`, `mockRejectedValue()`, `mockReturnValue()`.
 - Reset mocks with `mockClear()` if test contamination occurs.
 
-<!-- openwiki: broken internal link [.agents/skills/testing-mocks/SKILL.md] file ".agents/skills/testing-mocks/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-See the [testing-mocks skill](.agents/skills/testing-mocks/SKILL.md) for complete patterns, anti-patterns, and NestJS DI integration examples.
+See the [write-tests skill](../../../.agents/skills/write-tests/SKILL.md) and its [mocking](../../../.agents/skills/write-tests/references/mocking.md) and [NestJS](../../../.agents/skills/write-tests/references/nestjs.md) references for complete patterns, anti-patterns, and NestJS DI integration examples.
 
 ## Shared Test Helpers
 
@@ -277,9 +275,9 @@ Each leg runs `nx affected --target=vitest --configuration=coverage` with its ex
 
 ## References
 
-- Testing Strategy Skill (`.agents/skills/testing-strategy/SKILL.md`) — test types, naming, Nx commands, coverage gates, mocking patterns
+- Write Tests Skill (`.agents/skills/write-tests/SKILL.md`) — test kinds, naming, Nx commands, shared helpers, the mocking standard
 - Test-Driven Development Skill (`.agents/skills/test-driven-development/SKILL.md`) — TDD rules, red-green-refactor cycle, verification checklist, common rationalizations
-- Testing Mocks Skill (`.agents/skills/testing-mocks/SKILL.md`) — `createMock<T>()` patterns, NestJS DI integration, anti-patterns
+- Write Tests references (`.agents/skills/write-tests/references/`) — `createMock<T>()` patterns, NestJS DI integration, module mocks, anti-patterns
 - [Integration Testing Patterns](integration.md) — detailed Testcontainers and GraphQL mock server usage
 - [Affirmancy Testing](affirmancy.md)
 - [Caelundas Testing](caelundas.md)
