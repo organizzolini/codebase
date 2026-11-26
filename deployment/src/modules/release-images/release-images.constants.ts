@@ -7,7 +7,7 @@ import type { ImageTarget } from "./release-images.types";
 const API_VALUES =
   "infrastructure/helm/kubernetes-deployment/values/caelundas-api.yaml";
 
-/** What a release version looks like; it is spliced into a yq expression. */
+/** What a release version looks like; it is written into Helm values. */
 export const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[\w.\-]+)?$/v;
 
 /** What `nx show projects --json` prints: the project names. */
