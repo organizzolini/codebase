@@ -4,10 +4,8 @@
 
 Caelundas computes planetary positions minute by minute over a date range,
 detects the astronomical events in them — aspects, phases, eclipses,
-retrogrades, ingresses, solstices, twilights — stores them in Postgres, and
-renders an iCalendar file you can subscribe to in Google Calendar, Apple
-Calendar, or anything else that reads `.ics`, plus a JSON file of the same
-events.
+retrogrades, ingresses, solstices, twilights — and stores them in Postgres,
+where the API and web app read them.
 
 ## Quick Start
 
@@ -30,8 +28,8 @@ nx run caelundas-cli:start:night-sky --stars hygdata_v41.csv \
   --constellations constellations.json --lines constellations.lines.json
 ```
 
-The result lands in `output/caelundas_<start>_<end>.ics`, with a `.json` file
-beside it. Import the calendar, or point a subscription at it.
+The result lands in the `calendar_events` table. The CLI writes nothing to disk
+besides the downloaded ephemeris files.
 
 ## Configuration
 
@@ -42,7 +40,6 @@ LATITUDE="39.949309"          # Observer latitude, -90 to 90
 LONGITUDE="-75.17169"         # Observer longitude, -180 to 180
 START_DATE="2026-07-01"       # YYYY-MM-DD
 END_DATE="2026-07-31"         # YYYY-MM-DD
-OUTPUT_DIRECTORY="./output"
 ```
 
 Every field is optional. Location defaults to Philadelphia, and the date range
@@ -180,9 +177,7 @@ astronomical dawn.
 ## Stored events
 
 Each run upserts the events it detects into the `calendar_events` table, in the
-`caelundas` schema, then queries the table back for the requested range and
-location and renders the `.ics` and JSON files from those rows, so the files and
-the database never disagree.
+`caelundas` schema.
 
 | Column | Holds |
 | ------ | ----- |
@@ -199,8 +194,8 @@ An event is unique on `(summary, start, end, latitude, longitude)`:
   does not.
 - An overlapping range updates the overlap and adds only the new events.
 - A run for a second location adds rows of its own.
-- An event spanning a range edge, like a retrograde, is included in that
-  range's files.
+- An event spanning a range edge, like a retrograde, is stored once, by the
+  run whose range holds its start.
 
 An event's tags live in two more tables rather than a column:
 
@@ -237,9 +232,8 @@ as Mars's conjunction, is typed as `Martian Conjunction` so no event carries
 one name twice.
 
 An event links only to the deepest node of each branch it is classified
-under, and carries the nodes above through the closure table. The `.ics`
-output keeps the `CATEGORIES` property, and the JSON output a `tags` array,
-both holding the linked tags' names.
+under, and carries the nodes above through the closure table. The `tags`
+names of an event are those of its linked nodes.
 
 Coordinates are `numeric(9, 6)`: the driver returns them as strings, such as
 `"39.949309"`, and a number is written fixed to six decimals, so the natural key
@@ -299,7 +293,7 @@ IMAGE_TAG=local nx run caelundas-cli:docker:build   # loads the image into the l
 IMAGE_TAG=1.2.3 nx run caelundas-cli:docker:push    # one buildx build --push
 ```
 
-The image is `ghcr.io/organizzolini/caelundas-cli:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with the shared [application/Dockerfile](../../../infrastructure/docker/application/Dockerfile), which [infrastructure/image.env](infrastructure/image.env) configures. It runs as UID 10001 under `tini` and runs the ingest the way `nx run caelundas-cli:start` does, reading the environment and writing calendar files to `OUTPUT_DIRECTORY`, which defaults to `./output`, that is `/app/output`. The CLI applies the pending `caelundas-db` migrations when it starts, under a Postgres advisory lock, so a fresh database needs nothing first and a restart applies nothing. The Swiss Ephemeris files are baked in at build time, so a run never downloads them. The image declares no `HEALTHCHECK`: an ingestion Job runs to completion and serves nothing. Set `IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
+The image is `ghcr.io/organizzolini/caelundas-cli:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with the shared [application/Dockerfile](../../../infrastructure/docker/application/Dockerfile), which [infrastructure/image.env](infrastructure/image.env) configures. It runs as UID 10001 under `tini` and runs the ingest the way `nx run caelundas-cli:start` does, reading the environment and writing events to Postgres. It writes nothing to disk, so it runs with a read-only root filesystem. The CLI applies the pending `caelundas-db` migrations when it starts, under a Postgres advisory lock, so a fresh database needs nothing first and a restart applies nothing. The Swiss Ephemeris files are baked in at build time, so a run never downloads them. The image declares no `HEALTHCHECK`: an ingestion Job runs to completion and serves nothing. Set `IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
 
 Size: 506 MB (506,166,149 bytes) on `node:26.13.1-trixie-slim`, down from 2.12 GB (2,121,829,783 bytes). The build stage bundles the ingest and the ephemeris download with rolldown (`nx run caelundas-cli:bundle`, to `dist/<project>` at the workspace root), one file per module at its source path so the migrations stay files, and the image ships only that output, `tini`, the ephemeris files, and a `node_modules` of the production packages it imports, `sweph` included: no transpiler, TypeScript, or test tooling.
 
@@ -324,7 +318,7 @@ src/
     ├── night-sky/           # Stars and constellation figures for the web's night sky
     ├── calendar-events/     # Upserting and range queries over stored calendar events
     ├── tags/                # Resolving raw tag strings to nodes of the tag tree
-    └── calendar/            # iCalendar and JSON rendering and output
+    └── calendar/            # Building instant events
 ```
 
 ## Start

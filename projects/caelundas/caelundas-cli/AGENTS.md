@@ -1,6 +1,6 @@
 # caelundas-cli
 
-Generate astronomical event calendars using NASA's JPL Horizons API (Outputs: iCalendar `.ics` and JSON files)
+Generate astronomical event calendars with Swiss Ephemeris (Output: rows in the Postgres `calendar_events` table)
 
 - **Database**: Postgres via TypeORM and `caelundas-db`'s `CaelundasDatabaseModule`, which wraps `@codebase/persistence`'s `DatabaseModule` (the `calendar_events`, `tags`, `tags_closure`, and `calendar_event_tags` tables, and the night sky's)
 
@@ -12,9 +12,7 @@ src/caelundas-cli.main.ts
             ├─ Swiss Ephemeris             ← EphemerisService (via Perfective/Progressive)
             ├─ Perfective Event Detection  ← PerfectiveService.detect()
             ├─ Progressive Event Synthesis ← ProgressiveService.detect()
-            ├─ Store Events                ← CalendarEventsService.upsert()
-            ├─ Read Back Range + Location  ← CalendarEventsService.findInRange()
-            └─ iCal and JSON Output        ← CalendarService.write() / writeJson()
+            └─ Store Events                ← CalendarEventsService.upsert()
 ```
 
 **Project Domain Modules**:
@@ -22,7 +20,7 @@ src/caelundas-cli.main.ts
 ```text
 src/modules/
   input/                               # Zod environmentSchema and config parsing
-  calendar/                            # ICS and JSON file output formatting
+  calendar/                            # Instant-event builder shared by the detectors
   night-sky/                           # The night-sky command: HYG stars and d3-celestial figures
   calendar-events/                     # Upsert and range queries over the calendar_events table
   tags/                                # Resolving raw tag strings to nodes of the tag tree
@@ -39,7 +37,6 @@ src/modules/
 - **Event Storage** ([calendar-events/](src/modules/calendar-events/)): Upserts detected events into Postgres and reads them back by range and location
 - **Event Detection** ([perfective/](src/modules/perfective/) and domain modules): Aspects, phases, eclipses, retrogrades
 - **Progressive Synthesis** ([progressive/](src/modules/progressive/)): Pairs start/end moments into calendar events
-- **Output** ([calendar/](src/modules/calendar/)): iCal and JSON files, rendered from the stored rows
 
 ## Event Types
 
@@ -57,7 +54,7 @@ Astronomical concepts, event detection, and storage:
 - Swiss Ephemeris computes positions locally from JPL DE431 data files; there are no network calls or rate limits
 - Aspects, retrogrades, and phases are detected in two passes: perfective (the exact moment) and progressive (the span around it)
 - Detected events are stored in the `calendar_events` table, keyed by summary, start, latitude, and longitude, so a re-run updates rows in place and a second location adds its own
-- A range's files are rendered from the rows `findInRange` returns, using overlap semantics so an event spanning a range edge is included
+- The CLI's only output is the database: it writes no `.ics` or JSON files, and needs no writable directory
 
 1. **Implement the root command** — add logic to `caelundas.command.ts` `run()`, or delegate to injected services.
 2. **Add domain command modules** — create `src/modules/<domain>/` with a NestJS module, command, service, types, and constants.
@@ -75,8 +72,6 @@ Required:
 Optional:
 
 - `EVENT_TYPES`: Comma-separated list (defaults to all)
-- `OUTPUT_FORMAT`: `ical` or `json` (defaults to `ical`)
-- `OUTPUT_DIRECTORY`: Directory path (defaults to `./output`)
 
 Full schema: [src/modules/input/input.constants.ts](src/modules/input/input.constants.ts)
 
@@ -113,8 +108,7 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 ## Kubernetes Deployment
 
 Ingestion runs as an Indexed **Kubernetes Job**, one calendar year per pod
-(Kubernetes sets `JOB_COMPLETION_INDEX`; the Job's command turns it and `START_YEAR` into `START_DATE` and `END_DATE`), writing events to Postgres and
-calendar files to an `emptyDir` at `/app/output`. The Job's values are
+(Kubernetes sets `JOB_COMPLETION_INDEX`; the Job's command turns it and `START_YEAR` into `START_DATE` and `END_DATE`), writing events to Postgres and nothing else (no volume is mounted). The Job's values are
 [values/caelundas-cli.yaml](../../../infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml);
 the `.github/workflows/caelundas-ingestion.yml` workflow launches it. See
 [infrastructure/AGENTS.md](../../../infrastructure/AGENTS.md) for the cluster.
@@ -159,5 +153,5 @@ file's `runtimeDependencies`. Keep `--platform linux/amd64`.
 - `caelundas.command.ts` includes pipeline orchestration
 - `input.constants.ts` includes Zod validation
 - `ephemeris.service.ts` includes NASA API client
-- `calendar.service.ts` includes ICS/JSON generation
+- `calendar.service.ts` builds instant events
 - `infrastructure/image.env` configures the shared Dockerfile's container build
