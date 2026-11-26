@@ -1,4 +1,4 @@
-# Core profile: only the controller, repo server and Redis run, within about 350 MB.
+# Core profile: only the controller, repo server and Redis run, within about 560 MB.
 server:
   enabled: false
 dex:
@@ -14,17 +14,17 @@ controller:
   resources:
     requests:
       cpu: 100m
-      memory: 192Mi
+      memory: 256Mi
     limits:
-      memory: 192Mi
+      memory: 256Mi
 
 repoServer:
   resources:
     requests:
       cpu: 50m
-      memory: 96Mi
+      memory: 256Mi
     limits:
-      memory: 96Mi
+      memory: 256Mi
 
 redis:
   resources:

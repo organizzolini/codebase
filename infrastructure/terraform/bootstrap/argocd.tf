@@ -6,6 +6,7 @@ resource "helm_release" "argocd" {
   version          = "10.17.2"
   namespace        = "argocd"
   create_namespace = true
+  timeout          = 600
 
   values = [file("${path.module}/argocd-values.yaml")]
 }
@@ -17,6 +18,7 @@ resource "helm_release" "root_application" {
   chart      = "argocd-apps"
   version    = "2.0.7"
   namespace  = "argocd"
+  timeout    = 600
 
   values = [yamlencode({
     applications = {
@@ -27,6 +29,9 @@ resource "helm_release" "root_application" {
           repoURL        = "https://github.com/organizzolini/codebase.git"
           path           = "infrastructure/helm/argocd-applications"
           targetRevision = "main"
+          helm = {
+            valueFiles = ["values/base.yaml"]
+          }
         }
         destination = {
           server    = "https://kubernetes.default.svc"

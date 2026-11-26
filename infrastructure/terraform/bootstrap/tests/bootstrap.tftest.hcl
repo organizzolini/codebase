@@ -101,3 +101,12 @@ run "the_root_app_follows_the_applications_chart_on_main" {
     error_message = "The root app must follow main."
   }
 }
+
+run "the_root_app_loads_the_base_values" {
+  command = plan
+
+  assert {
+    condition     = contains(yamldecode(helm_release.root_application.values[0]).applications.root.source.helm.valueFiles, "values/base.yaml")
+    error_message = "The chart has no values.yaml, so the root app must load values/base.yaml."
+  }
+}
