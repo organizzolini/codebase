@@ -29,6 +29,7 @@ EXPECTED_PYTHON_MAJOR_MINOR="$(jq -r '.features["ghcr.io/devcontainers/features/
 EXPECTED_JQ_VERSION="$(jq -r '.features["ghcr.io/eitsupi/devcontainer-features/jq-likes:2"].jqVersion' "${LOCAL_DEVCONTAINER_JSON}")"
 EXPECTED_SQLITE_VERSION="$(jq -r '.features["ghcr.io/warrenbuckley/codespace-features/sqlite:1"].version' "${LOCAL_DEVCONTAINER_JSON}")"
 EXPECTED_GITLEAKS_VERSION="$(jq -r '.remoteEnv.GITLEAKS_VERSION' "${LOCAL_DEVCONTAINER_JSON}")"
+EXPECTED_HADOLINT_VERSION="$(jq -r '.remoteEnv.HADOLINT_VERSION' "${LOCAL_DEVCONTAINER_JSON}")"
 EXPECTED_TRIVY_VERSION="$(jq -r '.remoteEnv.TRIVY_VERSION' "${LOCAL_DEVCONTAINER_JSON}")"
 EXPECTED_UV_VERSION="$(jq -r '.remoteEnv.UV_VERSION' "${LOCAL_DEVCONTAINER_JSON}")"
 
@@ -127,6 +128,10 @@ assert_version_contains "sqlite3" "${EXPECTED_SQLITE_VERSION}" "sqlite3 --versio
 echo ""
 echo "🔑 Gitleaks — must be ${EXPECTED_GITLEAKS_VERSION}"
 assert_version_contains "gitleaks" "${EXPECTED_GITLEAKS_VERSION}" "gitleaks version"
+
+echo ""
+echo "🐳 Hadolint — must be ${EXPECTED_HADOLINT_VERSION}"
+assert_version_contains "hadolint" "${EXPECTED_HADOLINT_VERSION}" "hadolint --version"
 
 echo ""
 echo "🏗 Trivy — must be ${EXPECTED_TRIVY_VERSION}"

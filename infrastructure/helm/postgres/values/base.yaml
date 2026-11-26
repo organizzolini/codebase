@@ -32,7 +32,7 @@ cluster:
 
 backup:
   objectStoreName: postgres-backups
-  destinationPath: s3://organizzolini-codebase-postgres-backups/
+  destinationPath: s3://organizzolini-postgres-backups/
   endpointURL: https://us-iad-18.linodeobjects.com
   retentionPolicy: 30d
   credentialsSecretName: postgres-backups

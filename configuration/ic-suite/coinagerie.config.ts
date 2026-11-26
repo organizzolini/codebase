@@ -3199,6 +3199,7 @@ export const externalWordExclusions: string[] = [
   "zeroe",
   "zinc",
   "zip",
+  "zizmor",
   "zod",
   "zone",
   "zoom",

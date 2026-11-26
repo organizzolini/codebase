@@ -47,10 +47,11 @@ jobs:
       fail-fast: false
       matrix:
         target:
+          # Recent runs took 5 to 6 minutes, and building the Go linters adds about 3.
           - id: build-devcontainer
             name: Devcontainer
             emoji: 🧑‍🏭
-            timeout: 20
+            timeout: 15
           # Sized for a release of many packages: a 28-package release once outran a
           # 24-minute limit. A release takes 15 to 21 minutes, plus up to three Caelundas
           # image builds and pushes, and a timeout before the push leaves nothing behind.
@@ -60,11 +61,12 @@ jobs:
             timeout: 50
           # Applies the four Terraform roots in order on a push to main that
           # changes them: OpenRouter, Linode, Organizzolini, GitHub. State has no
-          # lock, so the never-cancelling concurrency group prevents overlap. The
-          # first run takes about 20 minutes, so 30 leaves room.
+          # lock, so the never-cancelling concurrency group prevents overlap.
           - id: apply-terraform
             name: Infrastructure
             emoji: 🏗️
+            # shortcut: 30 covers the first apply, which creates the cluster in about 20
+            # minutes. Once it exists an apply takes 18 to 31 seconds plus about 5 of setup.
             timeout: 30
 
     steps:
@@ -123,7 +125,7 @@ jobs:
 
       - name: 📥 Checkout Repository
         if: steps.check-skip.outputs.skip != 'true'
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -137,7 +139,7 @@ jobs:
           steps.check-skip.outputs.skip != 'true' &&
           matrix.target.id == 'apply-terraform' &&
           github.event_name == 'push'
-        uses: dorny/paths-filter@v4
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         with:
           filters: |
             terraform:
@@ -155,15 +157,14 @@ jobs:
           steps.terraform-changes.outputs.terraform == 'true')
         uses: ./.github/actions/setup-codebase
         with:
-          docker-buildx: ${{ matrix.target.id != 'apply-terraform' && 'true' || 'false' }}
-          ghcr-login: ${{ matrix.target.id != 'apply-terraform' && 'true' || 'false' }}
+          deployment: ${{ matrix.target.id != 'apply-terraform' && 'true' || 'false' }}
           install: ${{ matrix.target.id != 'build-devcontainer' && 'true' || 'false' }}
           nx-cache: ${{ matrix.target.id != 'build-devcontainer' && 'true' || 'false' }}
           nx-graph-cache: ${{ matrix.target.id != 'build-devcontainer' && 'true' || 'false' }}
           nx-shas: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
           nx-base: push-before
           python-dependencies: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
-          terraform: ${{ matrix.target.id == 'apply-terraform' && 'true' || 'false' }}
+          infrastructure: ${{ matrix.target.id == 'apply-terraform' && 'true' || 'false' }}
           uv: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
 
       # Devcontainer Build & Publish Steps
@@ -179,7 +180,7 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.target.id == 'build-devcontainer'
-        uses: devcontainers/ci@v0.3
+        uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca # v0.3.1900000450
         with:
           configFile: .devcontainer/cloud/devcontainer.json
           imageName: ghcr.io/organizzolini/codebase-devcontainer
@@ -200,7 +201,7 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.target.id == 'build-devcontainer'
-        uses: devcontainers/ci@v0.3
+        uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca # v0.3.1900000450
         with:
           configFile: .devcontainer/cloud/devcontainer.json
           imageName: ghcr.io/organizzolini/codebase-devcontainer
@@ -219,7 +220,7 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.target.id == 'push-releases'
-        uses: crazy-max/ghaction-import-gpg@v7
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
@@ -377,7 +378,7 @@ jobs:
         if: >-
           !cancelled() &&
           steps.link-packages.outputs.attest == 'true'
-        uses: actions/attest@v4
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
         with:
           subject-checksums: ${{ runner.temp }}/attestation-subjects.txt
           create-storage-record: false
@@ -399,8 +400,8 @@ jobs:
           TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
           TF_VAR_linode_token: ${{ secrets.LINODE_TOKEN }}
           TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_VAR_cloudflare_account_id: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          TF_VAR_cloudflare_zone_id: ${{ vars.CLOUDFLARE_ZONE_ID }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         # Each root reads the outputs of the roots before it, so this order is the
         # dependency order: OpenRouter, Linode, Organizzolini, then GitHub. The
         # organizzolini root's readiness wait runs kubectl, which the GitHub-hosted

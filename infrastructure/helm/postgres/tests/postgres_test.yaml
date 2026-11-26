@@ -77,7 +77,7 @@ tests:
     asserts:
       - equal:
           path: spec.configuration.destinationPath
-          value: s3://organizzolini-codebase-postgres-backups/
+          value: s3://organizzolini-postgres-backups/
       - equal:
           path: spec.configuration.endpointURL
           value: https://us-iad-18.linodeobjects.com

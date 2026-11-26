@@ -53,6 +53,18 @@ export const RELEASE_ARCHIVE_TOOLS: readonly ReleaseArchiveTool[] = [
     version: "8.30.1",
   },
   {
+    architectures: { arm64: "arm64", x64: "x86_64" },
+    archiveName: "hadolint-linux-{architecture}",
+    checksumUrl:
+      "https://github.com/hadolint/hadolint/releases/download/v{version}/hadolint-linux-{architecture}.sha256",
+    downloadUrl:
+      "https://github.com/hadolint/hadolint/releases/download/v{version}/hadolint-linux-{architecture}",
+    format: "binary",
+    members: ["hadolint-linux-{architecture}"],
+    name: "hadolint",
+    version: "2.14.0",
+  },
+  {
     architectures: { arm64: "ARM64", x64: "64bit" },
     archiveName: "trivy_{version}_Linux-{architecture}.tar.gz",
     checksumUrl:

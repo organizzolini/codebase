@@ -22,6 +22,7 @@ import { SoftwareDockerService } from "./modules/runtimes/software-docker.servic
 import { SoftwareOllamaService } from "./modules/runtimes/software-ollama.service";
 import { SoftwarePythonService } from "./modules/runtimes/software-python.service";
 import { SoftwareDatabaseService } from "./modules/tooling/software-database.service";
+import { SoftwareGoToolsService } from "./modules/tooling/software-go-tools.service";
 import { SoftwareGpgService } from "./modules/tooling/software-gpg.service";
 import { SoftwareInfraService } from "./modules/tooling/software-infra.service";
 import { SoftwareNamedService } from "./modules/tooling/software-named.service";
@@ -86,6 +87,7 @@ describe(SoftwareCommand, () => {
         SoftwareCommand,
         SoftwareDatabaseService,
         SoftwareDockerService,
+        SoftwareGoToolsService,
         SoftwareGpgService,
         SoftwareInfraService,
         SoftwareLinuxService,
@@ -495,6 +497,20 @@ describe(SoftwareCommand, () => {
       expect(
         commands.filter((line) => /^(brew|pnpm add|uv )/u.test(line)),
       ).toStrictEqual([]);
+    });
+
+    it("builds a named Go linter with go install, from its pinned tag", async () => {
+      expect.hasAssertions();
+
+      const { command: subject, commands } = await createCommand({
+        platform: "linux",
+      });
+
+      await subject.run(["kubeconform"]);
+
+      expect(commands).toContain(
+        "go install github.com/yannh/kubeconform/cmd/kubeconform@v0.8.0",
+      );
     });
 
     it("fails on a name that is not software", async () => {

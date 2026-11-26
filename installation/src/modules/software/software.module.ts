@@ -13,6 +13,7 @@ import { SoftwareDockerService } from "./modules/runtimes/software-docker.servic
 import { SoftwareOllamaService } from "./modules/runtimes/software-ollama.service";
 import { SoftwarePythonService } from "./modules/runtimes/software-python.service";
 import { SoftwareDatabaseService } from "./modules/tooling/software-database.service";
+import { SoftwareGoToolsService } from "./modules/tooling/software-go-tools.service";
 import { SoftwareGpgService } from "./modules/tooling/software-gpg.service";
 import { SoftwareInfraService } from "./modules/tooling/software-infra.service";
 import { SoftwareNamedService } from "./modules/tooling/software-named.service";
@@ -35,6 +36,7 @@ import { SoftwareService } from "./software.service";
     SoftwareCommand,
     SoftwareDatabaseService,
     SoftwareDockerService,
+    SoftwareGoToolsService,
     SoftwareGpgService,
     SoftwareInfraService,
     SoftwareLinuxService,

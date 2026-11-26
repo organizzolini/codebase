@@ -61,25 +61,24 @@ runs:
 
     - name: ♻️ Sync pnpm Cache
       id: pnpm-cache
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ~/setup-pnpm
         key: pnpm-${{ runner.os }}-${{ steps.pnpm-version.outputs.version }}
 
     - name: 📦 Setup pnpm
       if: steps.pnpm-cache.outputs.cache-hit != 'true'
-      uses: pnpm/action-setup@v6
+      uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
 
-    # `pnpm/action-setup` puts pnpm on PATH itself, so a cache hit must make the same
-    # three environment changes by hand. pnpm v10 and v11 disagree about whether
-    # `PNPM_HOME` or its `bin` subdirectory holds the shims, so both go on PATH.
+    # `pnpm/action-setup` puts pnpm on PATH itself, so a cache hit repeats that by hand,
+    # with literal paths in the hosted runner's home. pnpm v10 and v11 disagree on
+    # whether `PNPM_HOME` or its `bin` holds the shims, so both go on PATH.
     - name: 🛤️ Restore Cached pnpm PATH
       if: steps.pnpm-cache.outputs.cache-hit == 'true'
       run: |
-        pnpm_home="${HOME}/setup-pnpm/node_modules/.bin"
-        echo "PNPM_HOME=${pnpm_home}" >>"$GITHUB_ENV"
-        echo "${pnpm_home}" >>"$GITHUB_PATH"
-        echo "${pnpm_home}/bin" >>"$GITHUB_PATH"
+        echo "PNPM_HOME=/home/runner/setup-pnpm/node_modules/.bin" >>"$GITHUB_ENV"
+        echo "/home/runner/setup-pnpm/node_modules/.bin" >>"$GITHUB_PATH"
+        echo "/home/runner/setup-pnpm/node_modules/.bin/bin" >>"$GITHUB_PATH"
       shell: bash
 
     # A cache entry is immutable, so a damaged one would break every job until the
@@ -106,4 +105,4 @@ runs:
       if: |
         steps.pnpm-cache.outputs.cache-hit == 'true'
         && steps.pnpm-verify.outputs.usable != 'true'
-      uses: pnpm/action-setup@v6
+      uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1

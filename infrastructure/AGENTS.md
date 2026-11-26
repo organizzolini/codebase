@@ -159,7 +159,7 @@ See [README.md](README.md) for the Helm deploy commands and the `nx run infrastr
 
 ## Linters
 
-`scripts/helm-releases.sh` is the one table of Helm releases: each chart with the values files its Argo CD Application or workflow passes. `helm-lint` runs `helm lint --strict` over it, and `helm-render` templates it into `dist/infrastructure/helm-render/`, which `kubeconform`, `kube-linter`, `pluto`, and `trivy-config` read. Add a release or values file there, never in a tool.
+The `helm-releases` command of the `deployment` project (`deployment/src/modules/helm-releases/helm-releases.constants.ts`) is the one table of Helm releases: each chart with the values files its Argo CD Application or workflow passes. `helm-lint` runs `helm lint --strict` over it, and `helm-render` templates it into `dist/infrastructure/helm-render/`, which `kubeconform`, `kube-linter`, `pluto`, and `trivy-config` read. Add a release or values file there, never in a tool.
 
 - **kubeconform**: strict schemas for Kubernetes 1.35.0 plus the datreeio CRDs catalog for Argo CD, CloudNativePG, Barman Cloud, and cert-manager. A kind with no schema fails, so nothing is skipped. It reads schemas from raw.githubusercontent.com.
 - **kube-linter**: `configuration/kube-linter.yaml` adds the hardening checks to the defaults, with no exclusions. Fix the chart, not the config.

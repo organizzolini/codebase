@@ -1,17 +1,7 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:da102e919707da8bdad20c7a7374be2fcff5d2854d6f05d08e461568d4a49b7c",
+  "pageVersion": "sha256:9c5a7110768f572c75af3992a5dbc312f3f206f2e0ba9a253ded377735f2051e",
   "claims": [
-    {
-      "id": "claim_356fc8a2a59d41c4a391947e95843215",
-      "statement": "The codebase maintains four shared packages under projects/common/ (persistence, interface, presentation, observability) that application domains depend on via workspace protocol imports like @codebase/persistence.",
-      "evidence": [
-        {
-          "resource": "repo://README.md#L229-L236",
-          "version": "repo-lines-v1:sha256:f95648a8be0917cfa27759a6e41d9c2a8b93dac6a32ca006f3077ff67187736a:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODc4Y2M3NGVhYjQ5Y2VlNGUwYjhiMzIwMWI1OWFkZTRjZGU4YmFiYWY0MTU2Y2JmMmRhMWY3M2I1YzBkYjUxZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODA0ODJiZmY0NmYxYTg5ZWZhODAzY2ZiYjc3ZTI3MWZlYTA4Y2JkYWRiMGRlNjcxZGI0M2NjMmUxODRlNDk3ZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNDQxN2Y2MmEyZjFhM2U5MWNhYTg1OGI4MThlZmQ0NzY5MzA0MmQ0MjRhMDYzNmFiYjhjMDY1ZTNhYjhmYjI3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDQyNjQ2MGIyYWNiNGU4N2E1YWI2NzAyMDM1ZGEwODlkY2M2NmIwNWUwZDY0NGMxMDg3OTA0M2QwODI1ZTI2ZCJ9"
-        }
-      ]
-    },
     {
       "id": "claim_555d9e10539441148d9d2a93bab1f470",
       "statement": "The persistence package enforces a database/schema/role naming convention where local Docker uses <project>_development database with <project> schema and <project>_username role, while Testcontainers uses <project>_testing database with the same schema and role; the schema carries no environment suffix so migrations apply unchanged.",
@@ -51,8 +41,8 @@
       "statement": "The interface package splits GraphQL server and client into separate entry points: @codebase/interface exports server-side types and utilities (PageInfo, Paginated, createEdgeType, Relay connection/edge/cursor helpers, relation mapping, entity-to-GraphQL type contracts), while @codebase/interface/client exports createGraphqlCodegenConfig for client code generation.",
       "evidence": [
         {
-          "resource": "repo://projects/common/interface/README.md#L3-L26",
-          "version": "repo-lines-v1:sha256:02d4c3c20f2ac69a093861b354558274fb25d764ea0179892b61cb3f8cab18c5:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzMjg0MzVhOWFlZTQxNzVjNTQ0MjdmODE2YjQ0NTlkYmQzMWY0MWUwN2M2NzAzODExYTE5ZDhkYWI3ZWU3M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2ZmY0NTQwY2U5NDdiOTM0ZTYyODgyNmQzMGZiNjk1ZmVlNzJlNTEyYjk3ZDFjNTdjNGI4NjA0MTZkY2QxYmEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2NTJjN2NlMzY0ZWY2MjQwMjIwMDMyODkzN2Q3Njk2NzlmZGVmYjYwZGQ5ZGZhMjA0NTZhOWUyN2Y5YjA3NWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlZGFiN2Y5MzY4MjE4NTJkMjIwNjYzZjE1NzAxMjJjYjhiNDQ3MTI4OTM2OWY2OWI3MDYyNDViMTQ4OTMyMzEifQ"
+          "resource": "repo://projects/common/interface/README.md#L3-L27",
+          "version": "repo-lines-v1:sha256:0053f095aae2719dc42bfe4f4b4f8b3b7fa2caa4086b23e878860cead321feb2:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzMjg0MzVhOWFlZTQxNzVjNTQ0MjdmODE2YjQ0NTlkYmQzMWY0MWUwN2M2NzAzODExYTE5ZDhkYWI3ZWU3M2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlNTgzNDYwNzVjMjA5MTY0ZDkzM2E3ZWMyZDljODgxZDAwN2IwMjU2Y2MxODZkZGQ2YTA4MGE2YTUyNGI0MTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU2NTJjN2NlMzY0ZWY2MjQwMjIwMDMyODkzN2Q3Njk2NzlmZGVmYjYwZGQ5ZGZhMjA0NTZhOWUyN2Y5YjA3NWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlZGFiN2Y5MzY4MjE4NTJkMjIwNjYzZjE1NzAxMjJjYjhiNDQ3MTI4OTM2OWY2OWI3MDYyNDViMTQ4OTMyMzEifQ"
         },
         {
           "resource": "repo://projects/common/interface/src/index.ts#L1-L34",
@@ -79,7 +69,7 @@
           "version": "repo-lines-v1:sha256:1f3aebfe5fbe6e032d4fa0bb02ee8c7f2003edfbb3551e470b405644058a3278:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWM0ZDEyNGI0YzUwMmUxZDc3NzcwNzVjN2IxYmY0NGIzZWEzZDRhMDM4NzUxM2U5NDg1N2I5N2NlODY2NjhmNiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjlhN2ViMmU0YWVmMmUxMjA5NjNmNDA1MzYxMGJiZmNiMzlhNDdjYTAxZWRlNDkwNjAyMzQ3MTY5MzE5ZTdkMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiM2E1NzBkYTMxZGZjNzEzNjA1NWE4Y2VkMGRlZDZmMGE1YWJmZGVjZjZjYzcyNTkxNWZkMGJjMzY3NWViMmI4NyJ9"
         },
         {
-          "resource": "repo://projects/common/presentation/src/index.ts#L44-L103",
+          "resource": "repo://projects/common/presentation/src/index.ts#L54-L113",
           "version": "repo-lines-v1:sha256:50774f6f46872869c4eee4ca52db8141885beda45a1bc97d88b4f04ad519eb71:eyJzZWxlY3RlZExpbmVDb3VudCI6NjAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc0MzQ1YjhjNGMzYWQ3YzJlNmYxOGI3MDk0ZmEyZjAyYWEwNzk5YWM2NDIxZGNkM2UxNmE4MTRiODQwY2EyODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNGNjMjljZTBlYjhmNzE1YjhkYzY0ODhkZjQ4YjhmMWRlNDM3MGRjY2FmZTU1OWViOTU0YTJjODBjNGIzNGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
@@ -130,19 +120,15 @@
     },
     {
       "id": "claim_d7ac85a2ce1b4600940a3495c0edc7fd",
-      "statement": "The persistence package is Postgres-only: it exports postgresEnvironmentSchema, postgresConnection, postgresDataSourceOptions, PostgresqlModule.forRoot, createDataSource, the four Postgresql base entities (Identifiable, Creatable, Updatable, Deletable), and, from the testing subpath, startPostgresContainer and startDatabaseTestingModule. No SQLite exports remain.",
+      "statement": "The persistence package is Postgres-only: it exports postgresEnvironmentSchema, postgresConnection, postgresDataSourceOptions, PostgresqlModule.forRoot (also as DatabaseModule), createDataSource, the four Postgresql base entities (Identifiable, Creatable, Updatable, Deletable), PostgresqlService (also as DatabaseService), and from the testing subpath startPostgresContainer and startDatabaseTestingModule. It also exports PostgresqlErdModule/PostgresqlErdService for ER diagrams, Graph/DirectedAcyclicGraph/RenderMermaidModule for Mermaid flowcharts, and graph edge utilities. No SQLite exports remain.",
       "evidence": [
         {
           "resource": "repo://projects/common/persistence/README.md#L1-L38",
-          "version": "repo-lines-v1:sha256:02c18ccd428fd2e2d7ef0554c23eda85dac6e9efed45928752b12d32c2a2281d:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2NzMyZjM5YzEzOGVlNzI5ODhhODljODdiZTljMjJhNTg3MTY3ZDc0ODkxMTE4ZDk4ZTQwNTlmZWM5NjMyYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmYmRmNzZiODQ5ZTY0OTMxYTViNTMwMDYzODA4NTYyYTEyNGZhN2Q1YzEyNzhiMjU1NGZlMTI2MDU3NGQyZDAifQ"
+          "version": "repo-lines-v1:sha256:6fba047ff58fb7102ef40b06252890370579927d67beafc702a9948b184e5b63:eyJzZWxlY3RlZExpbmVDb3VudCI6MzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ2NzMyZjM5YzEzOGVlNzI5ODhhODljODdiZTljMjJhNTg3MTY3ZDc0ODkxMTE4ZDk4ZTQwNTlmZWM5NjMyYWUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVmYmRmNzZiODQ5ZTY0OTMxYTViNTMwMDYzODA4NTYyYTEyNGZhN2Q1YzEyNzhiMjU1NGZlMTI2MDU3NGQyZDAifQ"
         },
         {
           "resource": "repo://projects/common/persistence/src/index.ts",
-          "version": "repo-file-v1:sha256:0a262ee22885046d4b64b702fc57865850064605c5f326e85609a661cc164ffb"
-        },
-        {
-          "resource": "repo://projects/common/persistence/testing/index.ts",
-          "version": "repo-file-v1:sha256:5c6c097b031c1427118dcab18aac4e67d6726e5daa999ff85d3ee8c566dfa44b"
+          "version": "repo-file-v1:sha256:b3f5ef97a1418a9a424c1cd5e2bdfc6a8e76d5a51c76e3e753b06f39eb14c58d"
         }
       ]
     },
@@ -151,8 +137,8 @@
       "statement": "The interface package provides GraphQL server utilities (Relay connection types, pagination cursors, relation mapping) via @codebase/interface, GraphQL client codegen config via @codebase/interface/client, and testing helpers (MSW mock server for clients, pagination oracle for servers) via @codebase/interface/testing.",
       "evidence": [
         {
-          "resource": "repo://projects/common/interface/README.md#L8-L37",
-          "version": "repo-lines-v1:sha256:52ca86df2c9c1ddcb2f3d0e8608f109691870469bd5b1e82d4dc383fd1b01073:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MDQyZTU2Yjc2NDg1NWU2MjA3Yjc1NjIzMTFlYzk0OWQyNWIxYzU4MTFlM2Y2ZjdkNzdlNzYwODBmZTQxZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0NjE5YzMxNDFhZmRiNGE4NmRmYzkxMzc1MmQ5YWFmOWE0MDQwNDgxM2I1ZjNlYWJiYjlhN2MxZDJjZjI2ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkYTU4ZTMxYzgxMTIyZTNmMDUyZDNlYzg4OGUzNzc3NzFkYzAzZDg2ODJhMjJkNjljZDE4ZjE0YTlmNDNjOGYifQ"
+          "resource": "repo://projects/common/interface/README.md#L8-L38",
+          "version": "repo-lines-v1:sha256:87e1950888949b101486a1c8f3088b033814dcbaa2004b368cd9197b0354f2c9:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk2MDQyZTU2Yjc2NDg1NWU2MjA3Yjc1NjIzMTFlYzk0OWQyNWIxYzU4MTFlM2Y2ZjdkNzdlNzYwODBmZTQxZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE0NjE5YzMxNDFhZmRiNGE4NmRmYzkxMzc1MmQ5YWFmOWE0MDQwNDgxM2I1ZjNlYWJiYjlhN2MxZDJjZjI2ZTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVkYTU4ZTMxYzgxMTIyZTNmMDUyZDNlYzg4OGUzNzc3NzFkYzAzZDg2ODJhMjJkNjljZDE4ZjE0YTlmNDNjOGYifQ"
         },
         {
           "resource": "repo://projects/common/interface/src/index.ts#L1-L34",
@@ -166,15 +152,11 @@
     },
     {
       "id": "claim_075d1f8d7eb246f68fd9652897863d7f",
-      "statement": "The presentation package exports 50+ React components built on shadcn/ui and Base UI primitives, organized into layout (Accordion, Card, Sidebar, etc.), form controls (Input, Select, Checkbox, etc.), buttons/navigation (Button, NavigationMenu, Command, etc.), feedback (Alert, Toast, Dialog, etc.), ReUI advanced components (Cascader, EventCalendar, Gantt, Filters), hooks (useMediaQuery, useMobile, etc.), and utilities (cn).",
+      "statement": "The presentation package exports 50+ React components built on shadcn/ui and Base UI primitives, organized into layout (Accordion, Card, Sidebar, Resizable, AspectRatio, ScrollArea, Collapsible, Separator, Tabs), form controls (Input, Textarea, Select, Checkbox, RadioGroup, Switch, Slider, Label, InputGroup, InputOTP, Field, Calendar), buttons/navigation (Button, ButtonGroup, NavigationMenu, Breadcrumb, DropdownMenu, Command, ContextMenu, Menubar, Pagination), feedback (Badge, Spinner, Skeleton, Progress, Alert, Toast/Sonner, AlertDialog, HoverCard, Tooltip, Popover, Drawer, Sheet, Dialog, Empty, Avatar, Carousel), ReUI advanced components (Cascader, CascaderEmpty, CascaderList, CascaderPanel, CascaderStatus, CascaderFooter, CascaderBreadcrumb, CascaderInput, CascaderNav, CascaderVirtualItems, CascaderColumns, EventCalendar, EventCalendarContent, Filters, Gantt, GanttColumn, GanttProps, GanttRenderEventProps, useGanttNavigation, GanttView, ColorPicker, ColorPickerContent, ColorPickerTrigger, PillBadge, Marker, Sortable), hooks (useMediaQuery, useMobile/useBreakpoint, useCopyToClipboard, useFileUpload, useScrollPosition, useSliderInput, useIsMobile, useCascaderState), and utilities (cn).",
       "evidence": [
         {
-          "resource": "repo://projects/common/presentation/README.md#L16-L108",
-          "version": "repo-lines-v1:sha256:d367ca6a5b8e7b1a6a702941848ef72c389e1edfd2d1eaabf87a713758ac68ca:eyJzZWxlY3RlZExpbmVDb3VudCI6OTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg5ZmVkNzRkOThiMGI5ZDFkMDIwOWU3YmYzYmM1M2MzNzI2YjUzMmQ1ZjFkOWJmMzAzZTkwNmJmMjFhZGE5ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmNGY5ODBhOGY1MzhmYzM1OGM0NmE2NWFlNWZjYzExNWY3ODk1MGJlMWM2ODkyYzhkYjcyNTBjZDE2YTA2MjkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjI4OTRkOTc3MGQ5NWU2MzNhY2M3ZmQ4NTk5ZTBkOGVmYzU4OTU2YzI1NzNkMjY3NzJmZDEwNGVhMGIzZTYwZDEifQ"
-        },
-        {
-          "resource": "repo://projects/common/presentation/src/index.ts#L1-L103",
-          "version": "repo-lines-v1:sha256:df064bf6e7e09dc1106ad60db08dfaaf2ca5ab7421fab964501015731e66b253:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlMmNiM2IxYWNlNzRkY2ZkMzQyNGE1MWFiZGQ0NzRkOTk2MWIyNjIwZTZkZjRiYjY3MTgyZjdkYzBkZTlhOGZlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwZjRjYzI5Y2UwZWI4ZjcxNWI4ZGM2NDg4ZGY0OGI4ZjFkZTQzNzBkY2NhZmU1NTllYjk1NGEyYzgwYzRiMzRiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+          "resource": "repo://projects/common/presentation/src/index.ts#L1-L113",
+          "version": "repo-lines-v1:sha256:714363b92aad754ea55b558a610d3a195768b808ebd03f35ef58341aca9f8c09:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEzLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJlMmNiM2IxYWNlNzRkY2ZkMzQyNGE1MWFiZGQ0NzRkOTk2MWIyNjIwZTZkZjRiYjY3MTgyZjdkYzBkZTlhOGZlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwZjRjYzI5Y2UwZWI4ZjcxNWI4ZGM2NDg4ZGY0OGI4ZjFkZTQzNzBkY2NhZmU1NTllYjk1NGEyYzgwYzRiMzRiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -204,11 +186,23 @@
     },
     {
       "id": "claim_b26d64383a6348008da9544cb1e997ab",
-      "statement": "Persistence is a dependency of the lexico, caelundas and meanderaw database-backed projects (lexico-api/cli/db, caelundas-api/cli/db, meanderaw-cli); interface is used by lexico-api, lexico-web and caelundas-web; presentation by lexico-web and caelundas-web; affirmancy, a Python project, uses none.",
+      "statement": "Persistence is a dependency of lexico-api, lexico-cli, lexico-db, caelundas-api, caelundas-cli, caelundas-db, meanderaw-cli, and meanderaw-db. Interface is used by lexico-api, lexico-web, caelundas-web, and meanderaw-web (dev dependency). Presentation is used by lexico-web, caelundas-web, and meanderaw-web. Observability is used by lexico-api, lexico-cli, caelundas-api, caelundas-cli, meanderaw-cli, and the persistence package itself. Testing is used by all lexico/caelundas/meanderaw projects and the interface, observability, and persistence packages. Affirmancy is a Python project using none of these.",
       "evidence": [
         {
           "resource": "repo://projects/affirmancy/pyproject.toml",
           "version": "repo-file-v1:sha256:3603edb4b7893def484da5256c1a0cd71a51475a4a7eb34668bad43f88f0fe92"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-api/package.json",
+          "version": "repo-file-v1:sha256:5a50bb82b37fc5f1ae9221b17ea8b332a489d1812d153cbb45e2aeaaa3faf467"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-cli/package.json",
+          "version": "repo-file-v1:sha256:e039ff184d84c8f46e9c5ac9dddeaf67606981c1ce1a8aecdbe18a7c12f15d82"
+        },
+        {
+          "resource": "repo://projects/caelundas/caelundas-db/package.json",
+          "version": "repo-file-v1:sha256:2ea09f7b7b21bbfd2d7741b6efa165849e62b868525db16156fbd2adbea43f77"
         },
         {
           "resource": "repo://projects/caelundas/caelundas-web/package.json",
@@ -219,14 +213,26 @@
           "version": "repo-file-v1:sha256:93dcac6a7fa033b237c4e0901ecb4622e3b4812e3dd28cd8f449aafc6f07a137"
         },
         {
+          "resource": "repo://projects/lexico/lexico-cli/package.json",
+          "version": "repo-file-v1:sha256:a8a0b2dbec99a720553bc87c295c9853e780d3912783ab800d2cdb1b6e8ae653"
+        },
+        {
           "resource": "repo://projects/meanderaw/meanderaw-cli/package.json",
-          "version": "repo-file-v1:sha256:018c475218af4846739cdfa9d0fb78be1858f1d9e1e3cf3c3ada468f1a7382a7"
+          "version": "repo-file-v1:sha256:baf40000053c2169aeadb72d92700e0ed9c48a161c1bbc99ad33beb733eaf5b8"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-db/package.json",
+          "version": "repo-file-v1:sha256:dbc95df680fcc934dcd34cbac354db2e226f2711da45d5d6587ca866fde6437b"
+        },
+        {
+          "resource": "repo://projects/meanderaw/meanderaw-web/package.json",
+          "version": "repo-file-v1:sha256:f359e1c3590f320050f6a3a5aea6bed5e4ffbca59197a7e5a50bcca9634dde9d"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

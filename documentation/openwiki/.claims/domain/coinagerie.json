@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:d1d7ecb450b5cb9efd7163b22f2694504782c252c2ad3e2badacabe5465b603e",
+  "pageVersion": "sha256:d707689715838df09c22737cc6ea2529393231eb30887ec4653574f529c76c41",
   "claims": [
     {
       "id": "claim_fd8cff15fa27471499a5a49b694cf1fb",
@@ -105,8 +105,12 @@
       "statement": "The Nx plugin (@coinagerie/nx) infers a coinagerie-check target onto every project with a configuration, groups tasks by mode and command for batch execution via coinagerie batch, and supports nx affected for incremental checks.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L276-L285",
-          "version": "repo-lines-v1:sha256:91337ef45591a37870c98cdf97aed398c30dddac58222dcc752e406be29ad6dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NmI2ZDM2ZjU5ZDdmMTgwMGQ0OTEyYTMzNDQxY2NmMWUzYjU5N2YyNDA3MTQ1ZDY5ZWEzY2Q4NzA5NzUwNjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzMzAzNGYwZGFkZDRhMGVlZDkyNjQwNGYxY2U2ZDZlYjc1MDEwOGMzMTQ2MGFiMGFmZDFiYjI0ODU0YjZhYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYTY0NDQ1OGFmNDUxZDFkMmUyMDQyODQ5YTE0YzQ5MzM2Y2VkMzFkYTVmMmYzMWU4ZTg4MzQxZTYxNmQwZmUifQ"
+          "resource": "repo://nx.json#L112-L118",
+          "version": "repo-lines-v1:sha256:78d2d1544f3a48663c2b481c837794c2026da9b354aa0e4914540edcde40a28c:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTRjNTZjZDlhZDAzMjNhZmUwZjY1MDgwN2FlZTBkYTJlZmE5MjQwOTM4ZjlkMjI2MDI5Nzc3ZTA5MDUyMDkxZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDg5M2Y0MGUzNzgxZWI4OTZjODJkMDQ2YTA4MDY3YTExZTM1Y2RmMmYxZGZhZjI2ZmVhOTBiOGRiNjY3NjQxMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNmI5MjIxZGZmMzY0NzUwZTEwNThhNTVjYThmZDc3YTk4MTdjYTEzZGJlNTMwMTkyN2EyNDRjZjIxYmFiOThjYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTU0Njc1NjQ3NDQyZTVlODJmNDY3NjI1ZDI4NGE5OGM3YTY2YjkxZmFiY2I2YWUwZThkMDEzMTU5ZWQwYjZlOCJ9"
+        },
+        {
+          "resource": "repo://nx.json#L258-L267",
+          "version": "repo-lines-v1:sha256:cab24d7ce5aab2e829814bc37ae9eb015aa34ce37f521ac21f6fc527e03a8333:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1NTU4MTRlNmRkMmQ3M2Q2Njc2MWVmY2U1MGZiNDRmMjU4ZTZlNmI5YzcwZTZlMjZmYjBiMGNlY2VjNGM5YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4NDBiYWI1MmNhMmQ1MDUwZmE3ZWQ0N2RlNGVhNDQ2NTdlMTk2ODViNmQ1YjQxNTkxOGM3MWI4ZDNlM2M3OTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ5MjdkYjVmODQwOWZhNzAyNDExMmEwMmJlNGNmYTUxY2QxNjk2MWYxMWY5MjcwNDI3OGQyMGIyZTFkY2EyNGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIzNTUyYTRlMDVhZjNiNDlkZmM1M2NmNjM2MjAxNjk5YTc1M2EwNDA2NjE4YjFiYTYwNDgzZWRhNmQ2Nzk2YWQifQ"
         },
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-nx/src/executors/check/batch-executor.ts",
@@ -141,8 +145,8 @@
       "statement": "A coinagerie glossary is kept in step with the code: a word the code uses with no glossary entry, and an entry for a word the code no longer uses, both fail --check; --write rewrites every glossary while keeping existing definitions.",
       "evidence": [
         {
-          "resource": "repo://nx.json#L276-L285",
-          "version": "repo-lines-v1:sha256:91337ef45591a37870c98cdf97aed398c30dddac58222dcc752e406be29ad6dc:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2NmI2ZDM2ZjU5ZDdmMTgwMGQ0OTEyYTMzNDQxY2NmMWUzYjU5N2YyNDA3MTQ1ZDY5ZWEzY2Q4NzA5NzUwNjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIzMzAzNGYwZGFkZDRhMGVlZDkyNjQwNGYxY2U2ZDZlYjc1MDEwOGMzMTQ2MGFiMGFmZDFiYjI0ODU0YjZhYmIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNhYTY0NDQ1OGFmNDUxZDFkMmUyMDQyODQ5YTE0YzQ5MzM2Y2VkMzFkYTVmMmYzMWU4ZTg4MzQxZTYxNmQwZmUifQ"
+          "resource": "repo://nx.json#L258-L267",
+          "version": "repo-lines-v1:sha256:cab24d7ce5aab2e829814bc37ae9eb015aa34ce37f521ac21f6fc527e03a8333:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc1NTU4MTRlNmRkMmQ3M2Q2Njc2MWVmY2U1MGZiNDRmMjU4ZTZlNmI5YzcwZTZlMjZmYjBiMGNlY2VjNGM5YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM4NDBiYWI1MmNhMmQ1MDUwZmE3ZWQ0N2RlNGVhNDQ2NTdlMTk2ODViNmQ1YjQxNTkxOGM3MWI4ZDNlM2M3OTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ5MjdkYjVmODQwOWZhNzAyNDExMmEwMmJlNGNmYTUxY2QxNjk2MWYxMWY5MjcwNDI3OGQyMGIyZTFkY2EyNGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIzNTUyYTRlMDVhZjNiNDlkZmM1M2NmNjM2MjAxNjk5YTc1M2EwNDA2NjE4YjFiYTYwNDgzZWRhNmQ2Nzk2YWQifQ"
         },
         {
           "resource": "repo://projects/ic-suite/coinagerie/coinagerie-cli/README.md#L1-L40",
@@ -153,6 +157,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

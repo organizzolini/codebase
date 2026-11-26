@@ -28,11 +28,18 @@ curl -sSfL \
   | tar -xzC /usr/local/bin trivy
 echo "✅ Trivy installed: $(trivy --version)"
 
-# The infrastructure and workflow linters lint-code runs: kubeconform, kube-linter,
-# pluto, actionlint, and hadolint. tflint comes from the Terraform feature.
-echo "🧹 Installing infrastructure linters..."
-LINTERS_BIN=/usr/local/bin infrastructure/scripts/install-linters.sh
-echo "✅ Infrastructure linters installed"
+# Hadolint backs `nx run infrastructure:hadolint`, which lints every Dockerfile.
+: "${HADOLINT_VERSION:?set by remoteEnv in devcontainer.json}"
+echo "🐳 Installing Hadolint v${HADOLINT_VERSION}..."
+case "$(uname -m)" in
+  x86_64 | amd64) hadolint_architecture="x86_64" ;;
+  aarch64 | arm64) hadolint_architecture="arm64" ;;
+  *) echo "Hadolint has no Linux build for $(uname -m)" >&2; exit 1 ;;
+esac
+curl -sSfL -o /usr/local/bin/hadolint \
+  "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-linux-${hadolint_architecture}"
+chmod 0755 /usr/local/bin/hadolint
+echo "✅ Hadolint installed: $(hadolint --version)"
 
 echo "🔎 Checking for .env file..."
 if [[ ! -f ".env" ]]; then
@@ -63,6 +70,13 @@ echo "✅ node-gyp installed: $(node-gyp --version)"
 echo "📦 Installing dependencies with pnpm..."
 pnpm install --frozen-lockfile
 echo "✅ Dependencies installed"
+
+# The infrastructure and configuration projects' linters: kubeconform, kube-linter,
+# pluto, and actionlint, built with the Go toolchain into /usr/local/bin. Gitleaks,
+# Trivy, and Hadolint, installed above, are skipped. tflint comes from the Terraform feature.
+echo "🧹 Installing infrastructure linters..."
+GOBIN=/usr/local/bin pnpm exec nx run installation:start:software -- infrastructure configuration
+echo "✅ Infrastructure linters installed"
 
 echo "🐍 Syncing Python dependencies with uv..."
 uv sync --frozen --project configuration/python

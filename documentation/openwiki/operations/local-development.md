@@ -3,11 +3,18 @@ type: operations-guide
 title: Local Development Setup
 description: Complete local development environment including dev container, Docker Compose services, Nx targets, environment files, dependency installation, and project-specific quickstarts.
 tags: [devcontainer, docker-compose, nx, environment, quickstart]
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-25T18:55:00.444Z
 sources:
+  - id: openwiki-source-7ce83b1fa051a437b5baffc6
+    resource: repo://.devcontainer/cloud/devcontainer.json
   - id: openwiki-source-36b751a4c96b6d4e9193da92
     resource: repo://.devcontainer/local/devcontainer.json
   - id: openwiki-source-9bdedb6b4cae230293bf415c
     resource: repo://.devcontainer/README.md
+  - id: openwiki-source-4df2ef2c03e83df67e2fd009
+    resource: repo://.devcontainer/scripts/post-create-command.sh
   - id: openwiki-source-2fe644645addbb5d683744e9
     resource: repo://.env.default
   - id: openwiki-source-6f998d83c145b9379bd4ec08
@@ -36,10 +43,7 @@ sources:
     resource: repo://projects/meanderaw/meanderaw-cli/configuration/.env.default
   - id: openwiki-source-a6e80b612169ffb94413f377
     resource: repo://projects/meanderaw/meanderaw-cli/README.md
-generated: { by: "openwiki/0.9.0", at: "2026-11-22T17:40:37.367Z" }
-verified:
-  - by: openwiki/0.9.0
-    at: 2026-11-22T17:40:37.367Z
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Local Development Setup
@@ -74,21 +78,32 @@ The container uses [Dev Container Features](https://containers.dev/features) for
 
 | Feature | Version | Purpose | Config |
 |---------|---------|---------|--------|
-| `typescript-node:26` | Base | Node.js 26 with TypeScript support | Both |
+| `node:26` | 26.x (LTS) | Node.js 26 with TypeScript support | Both |
+| `pnpm:2` | 11.2.2 | pnpm package manager | Both |
 | `docker-in-docker` | 2 | Isolated Docker daemon inside container (DinD) | Cloud only |
 | `docker-outside-of-docker` | 1 | Mounts host Docker socket (DooD) | Local only |
-| `github-cli` | 1 | `gh` command for GitHub operations | Both |
-| `kubectl-helm-minikube` | 1 | kubectl and Helm (minikube disabled) | Both |
-| `terraform` | 1 | Terraform CLI + tflint for infrastructure | Both |
+| `github-cli:1` | 2.87.3 | `gh` command for GitHub operations | Both |
+| `kubectl-helm-minikube:1` | kubectl 1.35.1, Helm 4.1.1 | kubectl and Helm (minikube disabled) | Both |
+| `terraform:1` | 1.14.5 + tflint 0.61.0 | Terraform CLI + tflint for infrastructure | Both |
+| `python:1` | 3.14 | Python with JupyterLab and tools | Both |
+| `nx-npm:1` | 22.7.3 | Nx CLI globally | Both |
+| `uv:1` | latest | Fast Python package installer | Both |
+| `jq-likes:2` | jq 1.8.1 | JSON/YAML processors | Both |
+| `sqlite:1` | 3.40.1 | SQLite CLI for database querying (caelundas ephemeris caching) | Both |
 
-**Custom installations:**
-- **SQLite**: Installed via `apt-get` in `postCreateCommand` for database querying and management (caelundas ephemeris caching)
+**Custom installations (via `postCreateCommand`):**
+- **PostgreSQL 18 Client** (`pg_dump`, `psql`) — installed via apt from PGDG repository
+- **Gitleaks** — version from `GITLEAKS_VERSION` remoteEnv (8.30.1)
+- **Trivy** — version from `TRIVY_VERSION` remoteEnv (0.74.0)
+- **uv** — version from `UV_VERSION` remoteEnv (0.12.3)
+- **node-gyp** — latest via npm global install
 
 ### Lifecycle Scripts
 
 | Hook | Tasks |
 |------|-------|
-| `postCreateCommand` | Enable pnpm via Corepack, install dependencies, sync VS Code Machine settings |
+| `initializeCommand` | Creates `.kube/config` directory for kubeconfig |
+| `postCreateCommand` | Enable pnpm via Corepack, install dependencies, sync VS Code Machine settings, generate Nx graph |
 | `postAttachCommand` | Verify tool versions (node, pnpm, gh, helm) |
 
 ### Port Forwarding
@@ -98,6 +113,9 @@ Ports are automatically forwarded to your host machine:
 | Port | Service | Auto-Forward | Notes |
 |------|---------|--------------|-------|
 | 3000 | Lexico Dev Server | Notify | TanStack Start dev server |
+| 3001 | Open WebUI | Notify | |
+| 8889 | SearxNG | Notify | |
+| 11434 | Ollama API | Silent | Proxied via `host.docker.internal` |
 
 ### Quick Start
 
@@ -118,8 +136,8 @@ After building the container, verify the setup:
 
 ```bash
 # 1. Check tool versions
-node --version          # Should output v26.13.1 (per .nvmrc and engines.node in package.json)
-pnpm --version          # Should output 12.21.0 (per packageManager in package.json)
+node --version          # Should output v26.x (per .nvmrc and engines.node in package.json)
+pnpm --version          # Should output 11.2.2 (per devcontainer feature)
 gh --version            # Should output gh version X.Y.Z
 helm version --short    # Should output vX.Y.Z
 kubectl version --client # Should output client version
@@ -158,6 +176,7 @@ For each project in the list, the init script creates:
 nx run infrastructure:postgres:up
 docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh
 ```
+<!-- openwiki: broken internal link [../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md] file "../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md" does not exist. Fix the href or restore the target, then delete this comment. -->
 The script stops at the first object that already exists, so name only the projects the volume lacks. Never use `infrastructure:postgres:recreate` for this — it deletes the volume and every row in it. See [ADR 0022](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md) for meanderaw's one exception.
 
 #### SearxNG
@@ -178,6 +197,11 @@ The `infrastructure` project defines Nx targets for managing local services:
 | `searxng` | `up`, `down`, `open` | Manage the SearxNG Docker service (up, down, open in browser) |
 | `open-webui` | `up`, `down`, `open` | Manage the Open WebUI Docker service (up, down, open in browser) |
 | `terraform` | `plan` (default), `import` | Terraform operations against the Linode LKE cluster |
+| `terraform-plan` | `openrouter`, `github`, `linode` | Plan a Terraform root and write plan.tfplan |
+| `terraform-apply` | `openrouter`, `github`, `linode` | Apply a Terraform root (CI does this on main) |
+| `terraform-init` | `openrouter`, `github`, `linode` | Initialize a Terraform root against its Linode Object Storage backend |
+| `terraform-format` | - | Check that Terraform code is formatted (part of lint-code) |
+| `terraform-validate` | - | Validate Terraform without a backend (part of lint-code) |
 | `trivy-config` | - | Trivy misconfiguration scan of the Terraform code |
 | `helm-lint` | - | Lint the `kubernetes-job` chart against its base values |
 | `compose-config` | - | Validate the Docker Compose file |
@@ -203,7 +227,7 @@ nx run infrastructure:open-webui:open # http://localhost:3001
 
 ### CI Integration
 
-`helm-lint` and `compose-config` also run in CI: `lint-code` depends on both, so the Lint leg of continuous-integration.yml runs them. They need `helm` and `docker compose`; `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
+`helm-lint`, `terraform-format`, `terraform-validate`, and `compose-config` run in CI: `lint-code` depends on them, so the Lint leg of continuous-integration.yml runs them. They need `helm`, `terraform`, and `docker compose`; `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
 
 ## Environment Files
 
@@ -240,6 +264,16 @@ cp projects/meanderaw/meanderaw-cli/configuration/.env.default projects/meandera
 
 Project `.env` files contain project-prefixed database variables (e.g., `CAELUNDAS_POSTGRES_*`, `LEXICO_POSTGRES_*`, `MEANDERAW_POSTGRES_*`) that default to the local container's per-project role, database, and schema. The `MEANDERAW_` prefix keeps them apart from the unprefixed `POSTGRES_*` variables the workspace root's `.env` sets as the container's admin login, which Nx also loads into every task and which meanderaw never reads.
 
+Example `meanderaw-cli/configuration/.env.default`:
+```
+MEANDERAW_POSTGRES_DATABASE="meanderaw_development"
+MEANDERAW_POSTGRES_HOST="localhost"
+MEANDERAW_POSTGRES_PASSWORD="meanderaw_password"
+MEANDERAW_POSTGRES_PORT=5432
+MEANDERAW_POSTGRES_SCHEMA="meanderaw"
+MEANDERAW_POSTGRES_USERNAME="meanderaw_username"
+```
+
 ## Dependency Installation
 
 ### Node.js / TypeScript (pnpm)
@@ -251,6 +285,8 @@ pnpm install
 ```
 
 This installs dependencies for all projects in the pnpm workspace (defined in `pnpm-workspace.yaml`), including the root `package.json`, `configuration/`, `infrastructure/`, and all projects under `projects/*`.
+
+The workspace uses `pnpm@12.21.0` (per `packageManager` in `package.json`); the dev container installs `pnpm@11.2.2` via feature, and Corepack upgrades to the lockfile version on first `pnpm install`.
 
 ### Python (uv)
 
@@ -299,122 +335,60 @@ Astronomical calendar generation using Swiss Ephemeris, storing events in Postgr
 
 **Quick Start:**
 ```bash
-# 1. Download the Swiss Ephemeris data files (one-time, about 2 MB)
-nx run caelundas-cli:download-ephemeris
+# 1. Start Postgres
+nx run infrastructure:postgres:up
 
-# 2. Configure your observer location and date range
+# 2. Copy project .env
 cp projects/caelundas/caelundas-cli/configuration/.env.default projects/caelundas/caelundas-cli/configuration/.env
 
-# 3. Create the calendar_events table (needs the local Postgres container running)
-nx run caelundas-cli:migration:run
+# 3. Run migrations
+nx run caelundas-db:migration:run
 
-# 4. Generate the calendar
+# 4. Generate calendar (and fill night sky for web app)
 nx run caelundas-cli:start
 ```
 
-The result lands in `output/caelundas_<start>_<end>.ics`, with a `.json` file beside it.
+### Lexico
 
-### Lexico Ingestion
-
-NestJS CLI application that scrapes, parses, and loads dictionary sources into PostgreSQL.
+Dictionary and language tooling with dictionary, library, literature, and wiktionary ingestion stages.
 
 **Quick Start:**
 ```bash
-cp projects/lexico/lexico-cli/configuration/.env.default projects/lexico/lexico-cli/configuration/.env      # Database connection
-nx run lexico-cli:start
-```
+# 1. Start Postgres
+nx run infrastructure:postgres:up
 
-The default command is the root pipeline, which prompts for any stage flags it was not given and then runs the selected stages in order.
+# 2. Copy project .env
+cp projects/lexico/lexico-cli/configuration/.env.default projects/lexico/lexico-cli/configuration/.env
 
-```bash
-# Run specific stages
-nx run lexico-cli:start -- --dictionary --literature
-```
-
-**Individual stages** (each addressable as a `start` configuration):
-```bash
-nx run lexico-cli:start:dictionary -- --startLemma=a --endLemma=c
-nx run lexico-cli:start:wiktionary
-nx run lexico-cli:start:clear
-```
-
-**Run tests:**
-```bash
-nx run lexico-cli:vitest
+# 3. Run CLI (with optional stage flags)
+nx run lexico-cli:start --stage=dictionary
+nx run lexico-cli:start --stage=library
+nx run lexico-cli:start --stage=literature
+nx run lexico-cli:start --stage=wiktionary
 ```
 
 ### Meanderaw
 
-Procedural meander pattern generation, storing results in PostgreSQL and rendering HTML pages.
+Procedural meander generation stored in PostgreSQL, with draw and single-drawing modes.
 
 **Quick Start:**
 ```bash
+# 1. Start Postgres
 nx run infrastructure:postgres:up
-nx run meanderaw-cli:migration:run
+
+# 2. Run migrations
+nx run meanderaw-db:migration:run
+
+# 3. Run CLI (draw mode is default)
 nx run meanderaw-cli:start
-```
 
-Meanderaw follows the workspace's shared Postgres convention: the `meanderaw_development` database holds a `meanderaw` schema, both owned by the `meanderaw_username` role. The local Postgres container creates all three the first time its volume starts empty.
-
-**Migrations:**
-```bash
-nx run meanderaw-cli:migration:run        # Build or update the meanders table
-nx run meanderaw-cli:migration:generate   # After editing the Meander entity, write the next migration
-```
-
-**Single drawing mode:**
-```bash
+# Single-drawing mode (requires all three flags together)
 nx run meanderaw-cli:start --args="--rows <n> --columns <n> --code <code>"
 ```
+
+Meanderaw follows the workspace's shared Postgres convention: the `meanderaw_development` database holds a `meanderaw` schema, both owned by the `meanderaw_username` role. The local Postgres container creates all three the first time its volume starts empty; on a volume that predates that, the [infrastructure README](../../../infrastructure/README.md) describes how to add them without discarding what the volume holds.
 
 **Run tests:**
 ```bash
 nx run meanderaw-cli:vitest
 ```
-
-## Troubleshooting
-
-### Container fails to build
-1. Ensure Docker Desktop is running
-2. Try `Dev Containers: Rebuild Container` from command palette
-3. Check Docker has sufficient resources (8GB RAM recommended)
-
-### Docker commands fail inside container
-The container uses Docker-in-Docker (DinD) with an isolated Docker daemon:
-1. Verify the DinD daemon is running: `docker info`
-2. If daemon not running, rebuild the container: `Dev Containers: Rebuild Container`
-3. Container user (`root`) should have docker group membership automatically
-
-### pnpm version mismatch
-Corepack should handle this automatically. If issues persist:
-```bash
-corepack enable
-corepack prepare pnpm@12.21.0 --activate
-```
-
-### Node.js version mismatch
-The dev container installs Node.js 26 via the typescript-node feature. If you need a different version:
-```bash
-nvm install 26.13.1
-nvm use 26.13.1
-```
-
-### Port already in use
-If host already uses a forwarded port:
-1. Stop the conflicting service on host
-2. Or modify `forwardPorts` in `devcontainer.json` to use different ports
-
-### Adding a project to existing PostgreSQL volume
-See [PostgreSQL service](#postgresql) above for the correct procedure — never use `recreate` for this.
-
-## Related Documentation
-
-- [Architecture / Infrastructure](../architecture/infrastructure.md) — Complete infrastructure architecture, Helm chart config, Terraform setup
-- [Quickstart](../quickstart.md) — High-level getting started guide
-- [Domain: Affirmancy](../domain/affirmancy.md) — Affirmancy architecture and internals
-- [Domain: Caelundas](../domain/caelundas.md) — Caelundas architecture and internals
-- [Domain: Lexico](../domain/lexico.md) — Lexico architecture and internals
-- [Domain: Meanderaw](../domain/meanderaw.md) — Meanderaw architecture and internals
-- [ADR 0020: Store Meanders in Postgres](../../documentation/adr/0020-store-meanders-in-postgres.md)
-- [ADR 0021: Stop Committing the Meander Pages](../../documentation/adr/0021-stop-committing-the-meander-pages.md)
-- [ADR 0022: Give Every Database Project Its Own Database Schema and Role](../../documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md)

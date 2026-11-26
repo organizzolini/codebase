@@ -6,8 +6,8 @@ resource "kubernetes_secret_v1" "postgres_backups" {
   }
 
   data = {
-    ACCESS_KEY_ID     = try(data.terraform_remote_state.linode.outputs.organizzolini_codebase_postgres_backups_access_key, "")
-    ACCESS_SECRET_KEY = try(data.terraform_remote_state.linode.outputs.organizzolini_codebase_postgres_backups_secret_key, "")
+    ACCESS_KEY_ID     = try(data.terraform_remote_state.linode.outputs.organizzolini_postgres_backups_access_key, "")
+    ACCESS_SECRET_KEY = try(data.terraform_remote_state.linode.outputs.organizzolini_postgres_backups_secret_key, "")
   }
 }
 
@@ -18,6 +18,6 @@ resource "kubernetes_secret_v1" "cloudflared_token" {
   }
 
   data = {
-    token = data.cloudflare_zero_trust_tunnel_cloudflared_token.organizzolini_codebase.token
+    token = data.cloudflare_zero_trust_tunnel_cloudflared_token.organizzolini.token
   }
 }

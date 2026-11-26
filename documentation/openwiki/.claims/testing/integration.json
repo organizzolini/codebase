@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:b3dedac7446d3ba89367277043deb9445663a789cf703c4d2aba7bed95c61840",
+  "pageVersion": "sha256:970a7c9fd15f0633acd577bd51aa18240591bdc8e63dde7ed02981626dc6a74b",
   "claims": [
     {
       "id": "claim_6773f21309e348839765c8af3241484e",
@@ -59,8 +59,12 @@
       "statement": "Nx affected testing (nx affected --target=vitest --base=main) runs the vitest configurations for changed projects and their dependents, and is the standard command in CI, pre-push hooks and the validate-code skill.",
       "evidence": [
         {
-          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L28-L45",
-          "version": "repo-lines-v1:sha256:0edda7eb6cb4409327e75da8122c593becdf896a4f051696d897b1a18c27cbdb:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNmOTYxNTU4MDE3OTc2YzgzZjU3ZTk1NDIyN2MyNWYxMjY2OGRjMGEwNTJjZTI0YTMwMWRjMmQzYmVmNTEzMTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVlMTIwZGM5MDAzYjJmMDMxNTc1OTkyM2FmNDI0N2MwYjBlOTY3MmIyYzFlNjgwODE3YzBmMGIwNGMxZTVjMjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijk2MjdjNmRjYjgyZmRlYTdjMTMwMTllZDdkMTU4NDYzMTkwYjA1MGMyM2MzNjAxMmY1MTM0NmExMDc4YTZlM2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2MTZiZWI4MjZlMzY4YmIyNjQ2ZTQ0MjUyZmFmZjFiMDQ4OTI1OThhOWMzYzE0NGJiOWZjYTc5Yzc0Njc2MTgifQ"
+          "resource": "repo://.agents/skills/validate-code/SKILL.md#L41-L57",
+          "version": "repo-lines-v1:sha256:930bca41638a57e72cba27a60dcc4a5055a9598b26bcac9d3a0e093d6aa34ca4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM3OGRjODNiMWNmM2YzMjYzNTE4ODFiMTNmZjY4Njc2ZjgxNWExM2RmZTYwYTM4YWVkMWQ3NjVlYmMzYWI2MmQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5Mzg2Zjg5MzI5NWM1NGZkNzk4ZmNhNDk1MzY1YzkxNTNhZThiZGQwNGU2NmMwNDc5NGQ4NTNiZWM2ODdkZTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdhYjdiNTdkZDUyN2Y3OWNkMmE5M2FkZDkwOGVhMDc1ODJhNzE3YzkzZDMzNDkwNjc2MTU2NGY0NjEyZDVlZjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlMDM3NmJlMmE4NzlhOTk2NWZjMDExYTZkOTM0MTc5NGY3ZGRmYWJiMTIxYjIwMThiODI1YTVmYzYzZDQyMWQifQ"
+        },
+        {
+          "resource": "repo://.agents/skills/validate-code/references/raising-coverage.md#L16-L16",
+          "version": "repo-lines-v1:sha256:df1909e56271d9ada5c04958d4c54d56704d66b555931f2b5aed1b8efce1179a:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGYxOTA5ZTU2MjcxZDlhZGE1YzA0OTU4ZDRjNTRkNTY3MDRkNjZiNTU1OTMxZjJiNWFlZDFiOGVmY2UxMTc5YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGYxOTA5ZTU2MjcxZDlhZGE1YzA0OTU4ZDRjNTRkNTY3MDRkNjZiNTU1OTMxZjJiNWFlZDFiOGVmY2UxMTc5YSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZGNjMTAzMzAzZjY3Mjk5ZWM4ODU4NWMyNjk0ZWQyNDkwMTdlYzZlOGM3YWM5ZDczN2VkZDQ1YzFkOGMzZDFmNyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
         }
       ]
     },
@@ -69,7 +73,7 @@
       "statement": "CI splits the test-code target into parallel legs per project group (Test Codebase, Test Common, Test Affirmancy, Test Caelundas, Test IC Suite, Test Lexico, Test Meanderaw) with different exclude and shard configurations so slow projects don't block faster ones.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L83-L130",
+          "resource": "repo://.github/workflows/continuous-integration.yml#L91-L138",
           "version": "repo-lines-v1:sha256:e03034e1d97e600612b87ec2a61dfec78694bf0f545bfd7527fc5066ae786cfa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMjU4MjJhMDk0YzQ5M2Y1YTA0YTdjZjRhNDdhODJlOTA1MWQyYTdhZDMyNGUzODRiMGRhZjEyMDVkZWVhNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMmY5MmExN2FiOWIyMTcwOTM3NDcwMWI0NWRkZjA0ZGQ5ZWIyODVhMTk2NTE1ODJmNDFjYmQ4Y2Y1MDU1NGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4YzMzMmRlZGRlNzBlYzM1MjA2Y2MxMzU0OTc4Mzc4YjgzYmY5YzdhZGM0ZGU3NTVhYzYxZGE1OWY3YjU0NzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwNzZiOTZkMmEzMDIzZGVjNTcxNzc1MGRjNzQ3NTY3NDAxN2U2MDM4NDI2ZWI4MTM5MjUyODg3YTE1MDU5YTMifQ"
         }
       ]
@@ -79,22 +83,18 @@
       "statement": "Integration tests combine a real Postgres via Testcontainers with selective mocking of external services using @golevelup/ts-vitest's createMock, mocking filesystem and HTTP while keeping the database real.",
       "evidence": [
         {
-          "resource": "repo://.agents/skills/testing-strategy/SKILL.md#L80-L130",
-          "version": "repo-lines-v1:sha256:993140118019ddb8424a3f521008305b0dfa3164b5710ae8b464eff9072932fa:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI5N2UzMTFhYjFjMmYzOTJlZmI5NDE3OGVkYzg5YWY2YjRiMWFiNzExOTUwYWNiNDEzZjhkN2QxZmI4ZmFhNWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliZmI3ZDQ4ZjE2YTcwZjhmZTk0MTc5ODI0YWY3MGJhOTJhYmEyMDI3NzcxZmZjYTlmNTMzZTNiZDNiY2UzNjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjZTdiMzI2NDhkODY2YmQyMmZhNGU2OTRkNDA3NTY3MTFiODllYjE1MWY3YzUzYTEwNjRiNzhiMDNkMzAxMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzMWE2OTA1NTYwMzc2ZDIxODkyNGZkNzIxNTc2ZThjOGMyMDA0NTI2MTJmMjJhYmNjOWM1MWEwODUzY2MwM2UifQ"
-        },
-        {
           "resource": "repo://projects/meanderaw/meanderaw-cli/src/modules/draw/draw-run.command.integration.test.ts#L1-L146",
-          "version": "repo-lines-v1:sha256:b5d1a7426c03eda89b295259ea5bee001d82c3793360864965dc68b0441844b8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyMGI0OTFhZDdmM2RkNzRmOTdmMmM2ZjJiY2E0NTM3MjVkMmI3N2YyNTZjZDk4OTRmOTYwM2Y0YmVlZmNhZjVjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+          "version": "repo-lines-v1:sha256:ae9a19096cc8383958d6660850680bb54a364ef1c6698fb13de9c904535f85fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ2LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIyMGI0OTFhZDdmM2RkNzRmOTdmMmM2ZjJiY2E0NTM3MjVkMmI3N2YyNTZjZDk4OTRmOTYwM2Y0YmVlZmNhZjVjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzMmRmODFmNDc3ZGQ1OWIxNDlkODI4Y2RiNDA2YzU3YWU2YmZlYmY0MTdkMzVjYjgwYjhlNGViZWY0YTE1N2UwIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzODIxYzRhMGFmNzZkYjlhYzU0ZWQxMTNmZDRjNmUxNDQzNDkwM2JlYTNjMzJkMGZlZGVmNGFkNzY5MGIzMDY2In0"
         }
       ]
     },
     {
       "id": "claim_48e45d3fa8994d01903178d81ced8eb1",
-      "statement": "The integration project itself has an end-to-end test that spawns the real CLI entrypoint and verifies the NestJS command container boots and all 12 CI commands are registered.",
+      "statement": "The integration project itself has an end-to-end test that spawns the real CLI entrypoint and verifies the NestJS command container boots and all 23 CI commands are registered.",
       "evidence": [
         {
-          "resource": "repo://integration/src/integration.main.end-to-end.test.ts#L1-L107",
-          "version": "repo-lines-v1:sha256:040e23852f4f5b4d5001f09fbd36e6b7ad9056bfb60c3d7b818e3b5114b3b6b5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYjBhOGNiMjk2ZGM4NTVjOGY0M2VmNGM3YjE1Zjg3ZDljODU2Y2E0MmYyOGNjZmIxYzA3YjEyMWY0OGViZWQ0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+          "resource": "repo://integration/src/integration.main.end-to-end.test.ts#L1-L119",
+          "version": "repo-lines-v1:sha256:014d6cc0726ed360b142c88805d073a959b232f21ed70a682cf0b0b72baa1aa5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTE5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYjBhOGNiMjk2ZGM4NTVjOGY0M2VmNGM3YjE1Zjg3ZDljODU2Y2E0MmYyOGNjZmIxYzA3YjEyMWY0OGViZWQ0IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJmNmY1YjQwYjE1ODQ1N2QxNzg2NGYyMTc5MDc4NmRkNWEyZWNkYjY0YjY2YTY1MWY3ODhkNGUyNWNkMzMwM2QyIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -103,14 +103,14 @@
       "statement": "The triage-integration skill provides step-by-step procedures for diagnosing CI integration failures locally (lint-staged, husky hooks) and remotely (GitHub Actions), with fix guidance for each failing target type.",
       "evidence": [
         {
-          "resource": "repo://.agents/skills/triage-integration/SKILL.md#L100-L400",
-          "version": "repo-lines-v1:sha256:4b0f9884bc81baf8cd5176078d81b2a7d942e35a49de0f860dbee66cfe710955:eyJzZWxlY3RlZExpbmVDb3VudCI6MzAxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkYjA3ZDljZmY0NmI2M2MzMmZhM2IzODg1NTg5ZWZkZTc3ZjlhMDM0MjI1NTgwNDVmMjM3NGJlNDMxNTQyNzAxIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIxMmJiMzRkMDRmZmM4ZjEyZmQ3ZDNhNjk4ODhmNDU5NzE3ZDA4YzU5MTRlMjlkNTA1MTEyOTc2MzY1NmNkZmE1IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJmNmRlYWFiNTZlOTI2ZDMyMjA1NTIzNjE4MzFhY2I3ZTBhNTUzZDQ4OTVmNzc1YmMwMmIyMGMxYjYyZjgxMjU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIwZDBjMzdiZTNiOThjMzQyZDJiYmE3Mzc5YjgzNzdjODI3ZWFiY2UwYWUwZDk5NjVmODg1NTViOTY1ODY5YWY4In0"
+          "resource": "repo://.agents/skills/triage-integration/SKILL.md#L1-L71",
+          "version": "repo-lines-v1:sha256:a855ccade7b9f8b6bb139fb9494d315385758ad549cb39733a03a21db8bdee76:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1MmQ3MTExMDNkNTBhNDM3ODMwYzZmYmNkMDRmYjRiYWI0OWEwZjgyZjZkMjZkMWM3OTFjNmU4NDg4ZGQwOTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJjODJhMjU1YWRmMWRmOTMxYmMyYzc0ZmEwMTMyNjg0NDFiOWExMzYzYjY5N2Q0ODgzYWJlNjdmMzY5NGMxN2MiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

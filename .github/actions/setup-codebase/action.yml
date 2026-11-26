@@ -4,12 +4,18 @@ description: |
   (requires checkout first)
 
   Every optional step is gated by an input so a job pays only for what it
-  uses. The tool installs exist for the security gate and the database
-  tests, so only they should ask for them.
+  uses. A tool install is named after the project whose Nx targets need
+  it (`configuration`, `infrastructure`, `persistence`), and installs all of
+  that project's tools; `deployment` likewise sets up what building and
+  publishing images needs (Buildx and the ghcr.io login). The cache and
+  workspace toggles are named for what they do.
 
 inputs:
-  gitleaks:
-    description: Install gitleaks (secret scanning)
+  configuration:
+    description: |
+      Install what the configuration project's targets need: gitleaks
+      (`gitleaks`, `secure-code-ci`), Trivy (the security gate's
+      `trivy-config`), and actionlint (`actionlint`).
     default: "false"
   install:
     description: Install node dependencies with pnpm
@@ -48,31 +54,23 @@ inputs:
       and those run on every TypeScript project — not only the Python ones.
       Turn it off for a job that runs no Python-backed tool at all.
     default: "true"
-  postgres-client:
+  persistence:
     description: |
       Install the PostgreSQL 18 client tools (pg_dump, pg_restore) from the
-      PGDG apt repository, which the database package's export and import
+      PGDG apt repository, which the persistence project's export and import
       integration tests run for real. The runner's own package is older than
       the server.
     default: "false"
-  trivy:
-    description: Install trivy (infrastructure scanning)
-    default: "false"
-  terraform:
-    description: Install terraform (infrastructure lint, plan, and apply)
-    default: "false"
-  linters:
+  infrastructure:
     description: |
-      Install the infrastructure and workflow linters lint-code runs: tflint,
-      kubeconform, kube-linter, pluto, actionlint, and hadolint. Needs the runner's Go
-      and curl.
+      Install the infrastructure toolchain the infrastructure project's
+      targets need: Terraform, tflint, kubeconform, kube-linter, pluto, and
+      hadolint. Needs the runner's Go.
     default: "false"
-  docker-buildx:
-    description: Set up Docker Buildx (image builds)
-    default: "false"
-  ghcr-login:
+  deployment:
     description: |
-      Sign in to ghcr.io as the workflow's actor with its `GITHUB_TOKEN`, so
+      Prepare the deployment project's image builds: set up Docker Buildx and
+      sign in to ghcr.io as the workflow's actor with its `GITHUB_TOKEN`, so
       the job needs `packages: read` to pull a cache and `packages: write` to
       push.
     default: "false"
@@ -108,13 +106,13 @@ runs:
       uses: ./.github/actions/setup-pnpm
 
     - name: 🟢 Setup node
-      uses: actions/setup-node@v7
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version-file: .nvmrc
 
     - name: 🎯 Set Nx SHAs
       if: inputs.nx-shas == 'true'
-      uses: nrwl/nx-set-shas@v5
+      uses: nrwl/nx-set-shas@e602fada7ad5987b0f7b1905e7a99ea1c661514c # v5.1.0
 
     - name: 🗃️ Configure Nx Cache
       run: |
@@ -128,7 +126,7 @@ runs:
     # the key is shared by every job; the `v3` key retires tarballs that once held it.
     - name: 🕸️ Sync Nx Graph
       if: inputs.nx-graph-cache == 'true'
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
           .nx/workspace-data/*
@@ -150,7 +148,7 @@ runs:
     - name: ♻️ Restore Nx Cache
       if: inputs.nx-cache == 'true'
       id: nx-cache
-      uses: actions/cache/restore@v6
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
           .nx/cache
@@ -165,7 +163,7 @@ runs:
 
     - name: 🌌 Setup uv
       if: inputs.uv == 'true'
-      uses: astral-sh/setup-uv@v10.4.0
+      uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
       with:
         # The version the devcontainers pin and the `software` command
         # installs, so a runner, a devcontainer, and a laptop run one uv. A
@@ -188,50 +186,29 @@ runs:
     # the version that last wrote it. 1.14.5 is the version the OpenRouter module was
     # validated with. The wrapper is off so the plan comment reads Terraform's own output.
     - name: 🏗️ Setup Terraform
-      if: inputs.terraform == 'true'
-      uses: hashicorp/setup-terraform@v4
+      if: inputs.infrastructure == 'true'
+      uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
       with:
         terraform_version: 1.14.5
         terraform_wrapper: false
 
     # The terraform ruleset ships inside tflint, so no plugin download follows.
     - name: 🧹 Setup tflint
-      if: inputs.linters == 'true'
-      uses: terraform-linters/setup-tflint@v6
+      if: inputs.infrastructure == 'true'
+      uses: terraform-linters/setup-tflint@6ffdbaa3be476b3431f7275c26966ef32ff60337 # v6.3.2
       with:
         tflint_version: v0.66.0
         tflint_wrapper: false
 
-    # The script builds each tool from its pinned tag, which the Go checksum database
-    # verifies, so the key is the script itself: a changed pin rebuilds them.
-    - name: ♻️ Sync Linters Cache
-      if: inputs.linters == 'true'
-      id: linters-cache
-      uses: actions/cache@v6
-      with:
-        path: |
-          ~/.local/bin/actionlint
-          ~/.local/bin/hadolint
-          ~/.local/bin/kube-linter
-          ~/.local/bin/kubeconform
-          ~/.local/bin/pluto
-        key: linters-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('infrastructure/scripts/install-linters.sh') }}
-
-    # ~/.local/bin is already on the hosted runners' PATH.
-    - name: 🧰 Install Linters
-      if: inputs.linters == 'true' && steps.linters-cache.outputs.cache-hit != 'true'
-      shell: bash
-      run: infrastructure/scripts/install-linters.sh
-
     - name: 🔧 Setup Docker Buildx
-      if: inputs.docker-buildx == 'true'
-      uses: docker/setup-buildx-action@v4
+      if: inputs.deployment == 'true'
+      uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
     # The token is the workflow's own, read from the `github` context rather
     # than passed in, so a caller never handles it.
     - name: 🔐 Login to GitHub Container Registry
-      if: inputs.ghcr-login == 'true'
-      uses: docker/login-action@v4
+      if: inputs.deployment == 'true'
+      uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
@@ -249,7 +226,7 @@ runs:
 
     - name: ♻️ Sync ESLint Cache
       if: inputs.eslint-cache == 'true'
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: .eslintcache
         key: eslint-cache-${{ runner.os }}-${{ github.sha }}
@@ -280,7 +257,7 @@ runs:
 
     - name: ♻️ Sync pnpm Store
       if: inputs.install == 'true'
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ steps.pnpm-store.outputs.path }}
         key: pnpm-store-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
@@ -315,35 +292,47 @@ runs:
       shell: bash
 
     # gitleaks and Trivy are single binaries the `software` command downloads into
-    # `~/.local/bin`. The key names the pinned versions, so a hit skips the download.
+    # `~/.local/bin`, and it builds actionlint, kubeconform, kube-linter, and pluto
+    # there from pinned tags. The key names the pinned versions, so a hit skips both.
     # Pull requests cannot read each other's caches, so `main`'s is what they restore.
-    - name: ♻️ Sync Release Archive Tools Cache
-      if: inputs.gitleaks == 'true' || inputs.trivy == 'true'
-      uses: actions/cache@v6
+    - name: ♻️ Sync Software Cache
+      if: inputs.configuration == 'true' || inputs.infrastructure == 'true'
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
+          ~/.local/bin/actionlint
           ~/.local/bin/gitleaks
+          ~/.local/bin/hadolint
+          ~/.local/bin/kube-linter
+          ~/.local/bin/kubeconform
+          ~/.local/bin/pluto
           ~/.local/bin/trivy
         key: |
-          release-archive-tools-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles(
-          'installation/src/modules/release-archives/release-archives.constants.ts')
-          }}-gitleaks-${{ inputs.gitleaks }}-trivy-${{ inputs.trivy }}
+          software-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles(
+          'installation/src/modules/release-archives/release-archives.constants.ts',
+          'installation/src/modules/software/software.constants.ts')
+          }}-configuration-${{ inputs.configuration }}-infrastructure-${{ inputs.infrastructure }}
 
-    # The `software` command of the `installation` project installs only the software
-    # named here, from the pinned release archives and apt repository a developer's
-    # Linux machine uses, and adds it to `PATH` for later steps.
+    # The `software` command of the `installation` project installs the tools of each
+    # project group asked for, from the pinned release archives, Go tags, and apt
+    # repository a developer's Linux machine uses, and adds them to `PATH` for later steps.
     - name: 🧰 Software
       if: |
-        (inputs.gitleaks == 'true' || inputs.trivy == 'true'
-        || inputs.postgres-client == 'true')
+        (inputs.configuration == 'true' || inputs.infrastructure == 'true'
+        || inputs.persistence == 'true')
         && hashFiles('node_modules/.modules.yaml') != ''
+      env:
+        CONFIGURATION: ${{ inputs.configuration }}
+        INFRASTRUCTURE: ${{ inputs.infrastructure }}
+        PERSISTENCE: ${{ inputs.persistence }}
       shell: bash
       run: |
+        groups=()
+        [[ "${CONFIGURATION}" == "true" ]] && groups+=(configuration)
+        [[ "${INFRASTRUCTURE}" == "true" ]] && groups+=(infrastructure)
+        [[ "${PERSISTENCE}" == "true" ]] && groups+=(persistence)
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          installation/src/installation.main.ts software \
-          ${{ inputs.gitleaks == 'true' && 'gitleaks' || '' }} \
-          ${{ inputs.trivy == 'true' && 'trivy' || '' }} \
-          ${{ inputs.postgres-client == 'true' && 'postgres-client' || '' }}
+          installation/src/installation.main.ts software "${groups[@]}"
 
     # The `setup-codebase` command of the `integration` project runs the Nx cache steps:
     # bounds a push's base, imports a pull request's cache into a merge group, discards

@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:5cf40125ec1cc31b322cfa9a7a0e0158cb3f0cbd660a443e37b5ed792fb24ab7",
+  "pageVersion": "sha256:944e970b460fdddb439aad384a1b7c718de99699b0c57edd5fbce22a8dee9fb8",
   "claims": [
     {
       "id": "claim_2a3ca15c9b8e4701adcf0fe8cf0f57ba",
       "statement": "Caelundas uses the Swiss Ephemeris library (sweph npm package) to compute planetary positions locally from JPL DE431 data files with no network calls, API keys, or rate limits.",
       "evidence": [
         {
-          "resource": "repo://projects/caelundas/caelundas-cli/AGENTS.md#L107-L107",
+          "resource": "repo://projects/caelundas/caelundas-cli/AGENTS.md#L57-L57",
           "version": "repo-lines-v1:sha256:72e3f3cbb57bcff12e05af8137fbb8eb104e54ef5a87338f60e62beb0bb911be:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNzJlM2YzY2JiNTdiY2ZmMTJlMDVhZjgxMzdmYmI4ZWIxMDRlNTRlZjVhODczMzhmNjBlNjJiZWIwYmI5MTFiZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNzJlM2YzY2JiNTdiY2ZmMTJlMDVhZjgxMzdmYmI4ZWIxMDRlNTRlZjVhODczMzhmNjBlNjJiZWIwYmI5MTFiZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjhjYjMwZTFkNDVjZGRkOTI1YWZjZWQzYjYzYzg2MDI4NWEwZDU0ZDUxYWRmMDEzZmRiMmQyMjZlMTMxYzYwOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTU1ZjEzZjI0ODU5MjQyNjdjZWYxN2M4MDU5NTM0MjU5ZjU2OTcwODVjMDk1YzQ3Mjc1ZTFmMmU2YWZiZDc2NyJ9"
         },
         {
@@ -137,6 +137,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

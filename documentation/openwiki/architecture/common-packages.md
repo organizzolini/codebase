@@ -5,10 +5,16 @@ description: "Documents the five shared packages under projects/common/ (persist
 tags: ["architecture", "shared-packages", "persistence", "interface", "presentation", "observability", "testing", "nestjs", "graphql", "react", "typescript"]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
   - id: openwiki-source-f361a9dd9b028b78e5690b6b
     resource: repo://projects/affirmancy/pyproject.toml
+  - id: openwiki-source-a9231b3f14bbb51e16884760
+    resource: repo://projects/caelundas/caelundas-api/package.json
+  - id: openwiki-source-039291aeeab1bbae104c97a2
+    resource: repo://projects/caelundas/caelundas-cli/package.json
+  - id: openwiki-source-9d54f069f5e71cdb54296d41
+    resource: repo://projects/caelundas/caelundas-db/package.json
   - id: openwiki-source-36479a80e22b61585b1d9433
     resource: repo://projects/caelundas/caelundas-web/package.json
   - id: openwiki-source-cffe8ea3d9a4c39bbbf89d4a
@@ -27,8 +33,6 @@ sources:
     resource: repo://projects/common/persistence/README.md
   - id: openwiki-source-c3821f4c6ec468f6b0393856
     resource: repo://projects/common/persistence/src/index.ts
-  - id: openwiki-source-1d84a8d1eed884bcb7450dd0
-    resource: repo://projects/common/persistence/testing/index.ts
   - id: openwiki-source-c18a7ce09889bd3ec62f1758
     resource: repo://projects/common/presentation/README.md
   - id: openwiki-source-7b85ba904058735d68cb0e02
@@ -37,23 +41,27 @@ sources:
     resource: repo://projects/common/testing/README.md
   - id: openwiki-source-affc5fef12f3dc4e6cf9d982
     resource: repo://projects/lexico/lexico-api/package.json
+  - id: openwiki-source-a0800ececfc8abaee3e70bb3
+    resource: repo://projects/lexico/lexico-cli/package.json
   - id: openwiki-source-fe3ba70f2fede89429666c72
     resource: repo://projects/meanderaw/meanderaw-cli/package.json
-  - id: openwiki-source-23775c3de52f3ab95a13cb8b
-    resource: repo://README.md
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+  - id: openwiki-source-a8f0b3f2425e1cdb34ab6b6c
+    resource: repo://projects/meanderaw/meanderaw-db/package.json
+  - id: openwiki-source-d1956b52e88745ef9c2e676f
+    resource: repo://projects/meanderaw/meanderaw-web/package.json
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Shared Common Packages
 
-The codebase maintains five shared packages under `projects/common/` that the TypeScript application domains (Lexico, Caelundas, Meanderaw) depend on. Each package exports a focused set of utilities, types, and modules, and applications consume them via workspace protocol imports (e.g., `@codebase/persistence`). Affirmancy is a Python project and uses none of them.
+The codebase maintains **five** shared packages under `projects/common/` that the TypeScript application domains (Lexico, Caelundas, Meanderaw) depend on. Each package exports a focused set of utilities, types, and modules, and applications consume them via workspace protocol imports (e.g., `@codebase/persistence`). Affirmancy is a Python project and uses none of them.
 
 ---
 
 ## Persistence (`@codebase/persistence`)
 
 **Path:** `projects/common/persistence`  
-**Purpose:** The single Postgres integration every database-backed project uses (Lexico, Meanderaw, and Caelundas all keep their tables in Postgres). It provides the environment variable schema, TypeORM connection options and NestJS module, base entities, a Testcontainers harness, the `migration` Nx target, and a `database` CLI for moving tables between Postgres databases.
+**Purpose:** The single Postgres integration every database-backed project uses (Lexico, Meanderaw, and Caelundas all keep their tables in Postgres). It provides the environment variable schema, TypeORM connection options and NestJS module, base entities, a Testcontainers harness, the `migration` Nx target, a `database` CLI for moving tables between Postgres databases, a `postgresql-erd` command for entity relationship diagrams, and graph rendering utilities for Mermaid flowcharts.
 
 ### Primary Exports (PostgreSQL)
 
@@ -61,11 +69,14 @@ The codebase maintains five shared packages under `projects/common/` that the Ty
 |--------|---------|
 | `postgresEnvironmentSchema` | Zod fragment for a project's six `<PROJECT>_POSTGRES_*` variables with defaults |
 | `postgresConnection` / `postgresDataSourceOptions` | Connection object and TypeORM options (snake case, schema as search path, `synchronize: false`, `migrationsRun: false`) |
-| `PostgresqlModule.forRoot` | NestJS module wiring TypeORM through `ConfigService` |
+| `PostgresqlModule.forRoot` / `PostgresqlModule` | NestJS module wiring TypeORM through `ConfigService` (also exported as `DatabaseModule`) |
 | `createDataSource` | `DataSource` a project's CLI entry exports, with migrations attached |
 | `PostgresqlIdentifiableEntity` / `PostgresqlCreatableEntity` / `PostgresqlUpdatableEntity` / `PostgresqlDeletableEntity` | Base entities: uuidv7 id, created/updated/deleted timestamps, soft delete |
 | `startPostgresContainer` | Testcontainers Postgres 18 container laid out like local Docker |
 | `startDatabaseTestingModule` | Nest testing module connected to a migrated container |
+| `PostgresqlErdModule` / `PostgresqlErdService` | Entity relationship diagram generation (Mermaid ER, JSON) |
+| `GraphEdges`, `Graph`, `DirectedAcyclicGraph`, `RenderMermaidModule` | Graph rendering utilities for Mermaid flowcharts |
+| `PostgresqlService` / `PostgresqlService` | Database service (also exported as `DatabaseService`) |
 
 ### Database / Schema / Role Naming Convention (PostgreSQL)
 
@@ -193,7 +204,7 @@ For an API built on `@nestjs/graphql`:
 | `toDeletableFields` | Maps an entity's soft-delete columns onto its GraphQL object |
 | `toCursor`, `fromCursor`, `fromCursorSafe`, `encodeOffsetCursor`, `decodeOffsetCursor` | Opaque and offset cursors |
 | `mapRelation`, `mapRelations`, `mapRelationConnection`, `mapNullable*` | Map an entity's relations, keeping `null` and unjoined relations |
-| `Connection`, `Edge`, `GraphQLFields`, `GraphQLObjectOf`, `MappedFields`, `RelationKey`, ... | Types, including the entity-to-GraphQL-object contract |
+| `Connection`, `Edge`, `GraphQLFields`, `GraphQLObjectOf`, `MappedFields`, `RelationKey`, `ClassConstructor`, `DeletableEntityFields`, `DeletableFields`, `GraphQLObjectViolations`, `Related` | Types, including the entity-to-GraphQL-object contract |
 
 ### GraphQL Client (`@codebase/interface/client`)
 
@@ -201,14 +212,14 @@ For a web client of such an API:
 
 | Export | Purpose |
 |--------|---------|
-| `createGraphqlCodegenConfig` | GraphQL Code Generator configuration every client shares. A client's `codegen.ts` passes only the schema its API emits and gets typed operations, Zod validators, and MSW handlers. |
+| `createGraphqlCodegenConfig` | GraphQL Code Generator configuration every client shares. A client's `codegen.ts` passes only the schema its API emits and gets typed operations, Zod validators, and MSW handlers. Pass `validators: false` to skip validators. |
 
 ### Testing (`@codebase/interface/testing`)
 
 | Context | Exports |
 |---------|---------|
 | Client | `graphqlMockServer`, `startGraphqlMockServer`, `resetGraphqlMockServer`, `stopGraphqlMockServer` — MSW server tests answer GraphQL requests with |
-| Server | `paginateArray`, `paginationMatrix`, `expectedPage`, `summarize` — oracle a SQL-backed page is checked against |
+| Server | `paginateArray`, `paginationMatrix`, `expectedPage`, `summarize` — oracle a SQL-backed page is checked against. Types: `MatrixOptions`, `PageRequest`, `PageSummary` |
 
 ### How Applications Consume It
 
@@ -242,13 +253,15 @@ The package's `src/index.ts` re-exports only server-side symbols. The client ent
 - `Badge`, `Spinner`, `Skeleton`, `Progress`, `Alert`, `Toast` (via Sonner), `AlertDialog`, `HoverCard`, `Tooltip`, `Popover`, `Drawer`, `Sheet`, `Dialog`, `Empty`, `Avatar`, `Carousel`
 
 **ReUI Components (Advanced):**
-- `Cascader`, `CascaderEmpty`, `CascaderList`, `CascaderPanel`, `CascaderStatus`, `CascaderFooter`, `CascaderBreadcrumb`, `CascaderInput`, `CascaderNav`, `CascaderVirtualItems`
+- `Cascader`, `CascaderEmpty`, `CascaderList`, `CascaderPanel`, `CascaderStatus`, `CascaderFooter`, `CascaderBreadcrumb`, `CascaderInput`, `CascaderNav`, `CascaderVirtualItems`, `CascaderColumns`, `useCascaderState`
 - `EventCalendar`, `EventCalendarContent`
 - `Filters`
 - `Gantt`, `GanttColumn`, `GanttProps`, `GanttRenderEventProps`, `useGanttNavigation`, `GanttView`
+- `ColorPicker`, `ColorPickerContent`, `ColorPickerTrigger`, `ColorPickerProps`
+- `Badge` (as `PillBadge`), `Marker`, `Sortable`
 
 **Hooks:**
-- `useMediaQuery`, `useMobile` / `useBreakpoint`, `useCopyToClipboard`, `useFileUpload`, `useScrollPosition`, `useSliderInput`, `useIsMobile`
+- `useMediaQuery`, `useMobile` / `useBreakpoint`, `useCopyToClipboard`, `useFileUpload`, `useScrollPosition`, `useSliderInput`, `useIsMobile`, `useCascaderState`
 
 **Utilities:**
 - `cn` (classname merge helper from `lib/utils`)
@@ -375,7 +388,7 @@ graph LR
   subgraph "Application Domains"
     Lexico[Lexico API / Web / CLI / DB]
     Caelundas[Caelundas API / Web / CLI / DB]
-    Meanderaw[Meanderaw CLI / Web]
+    Meanderaw[Meanderaw CLI / Web / Core / DB]
   end
 
   subgraph "Common Packages"
@@ -397,6 +410,7 @@ graph LR
   Caelundas --> Observability
 
   Meanderaw --> Persistence
+  Meanderaw --> Presentation
   Meanderaw --> Observability
 
   Persistence --> Observability
@@ -405,9 +419,9 @@ graph LR
 
 Which project in each domain depends on which package (from each `package.json`):
 
-- **Persistence:** `lexico-api`, `lexico-cli`, `lexico-db`, `caelundas-api`, `caelundas-cli`, `caelundas-db`, `meanderaw-cli`
-- **Interface:** `lexico-api`, `lexico-web`, `caelundas-web`
-- **Presentation:** `lexico-web`, `caelundas-web`
+- **Persistence:** `lexico-api`, `lexico-cli`, `lexico-db`, `caelundas-api`, `caelundas-cli`, `caelundas-db`, `meanderaw-cli`, `meanderaw-db`
+- **Interface:** `lexico-api`, `lexico-web`, `caelundas-web`, `meanderaw-web` (dev dependency)
+- **Presentation:** `lexico-web`, `caelundas-web`, `meanderaw-web`
 - **Observability:** `lexico-api`, `lexico-cli`, `caelundas-api`, `caelundas-cli`, `meanderaw-cli`, and `persistence` itself
-- **Testing:** `lexico-*`, `caelundas-*`, `meanderaw-cli`, `meanderaw-web`, and the `interface`, `observability`, and `persistence` packages
+- **Testing:** `lexico-*`, `caelundas-*`, `meanderaw-cli`, `meanderaw-web`, `meanderaw-db`, and the `interface`, `observability`, and `persistence` packages
 - **Affirmancy:** Python, with none of these

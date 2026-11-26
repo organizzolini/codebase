@@ -33,7 +33,7 @@ allowBuilds:
   ssh2: true
   sweph: true
   unrs-resolver: true
-minimumReleaseAge: 1440
+minimumReleaseAge: 10080
 catalogMode: strict
 cleanupUnusedCatalogs: true
 overrides:

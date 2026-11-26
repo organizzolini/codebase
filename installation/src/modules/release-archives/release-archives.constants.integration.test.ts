@@ -24,6 +24,7 @@ const SETUP_CODEBASE_ACTION = readFileSync(
 /** Where the cloud devcontainer pins each tool, by option or variable. */
 const PINS: Record<string, RegExp> = {
   gitleaks: /"GITLEAKS_VERSION":\s*"([^"]+)"/u,
+  hadolint: /"HADOLINT_VERSION":\s*"([^"]+)"/u,
   helm: /kubectl-helm-minikube:1"\s*:\s*\{[^}]*?"helm":\s*"([^"]+)"/u,
   kubectl: /kubectl-helm-minikube:1"\s*:\s*\{[^}]*?"version":\s*"([^"]+)"/u,
   terraform: /features\/terraform:1"\s*:\s*\{[^}]*?"version":\s*"([^"]+)"/u,

@@ -5,20 +5,18 @@ description: "Domain model documentation for the codometer repository measuremen
 tags: ["codometer", "measurement", "limits", "code-quality", "ci", "configuration"]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-25T18:55:00.444Z
 sources:
   - id: openwiki-source-50b667bfcf0ee4b4daed851d
     resource: repo://configuration/ic-suite/codometer.config.ts
-  - id: openwiki-source-508eb0c2c694b607008ce871
-    resource: repo://documentation/adr/0001-absorb-size-limit-into-codometer.md
-  - id: openwiki-source-a43934029d64432deb809f9c
-    resource: repo://documentation/adr/0003-fold-bundle-reporting-into-codometer.md
   - id: openwiki-source-d0a636aedee2b4cb64837599
     resource: repo://projects/ic-suite/codometer/codometer-agents/package.json
   - id: openwiki-source-db23a103a1f76612490ef860
     resource: repo://projects/ic-suite/codometer/codometer-cli/configuration/codometer.config.ts
   - id: openwiki-source-3ae2ebeca3adb1785fa98c4c
     resource: repo://projects/ic-suite/codometer/codometer-cli/package.json
+  - id: openwiki-source-73c4d5730be053cf507ec32f
+    resource: repo://projects/ic-suite/codometer/codometer-cli/src/modules/changes/changes.command.ts
   - id: openwiki-source-3acbc037bdf283d32774e477
     resource: repo://projects/ic-suite/codometer/codometer-configuration/configuration/codometer.config.ts
   - id: openwiki-source-dd32d7d11876d0f208356c5a
@@ -49,11 +47,15 @@ sources:
     resource: repo://projects/ic-suite/codometer/codometer-measurement/package.json
   - id: openwiki-source-1d1d3c69ab10e9efd7e6383d
     resource: repo://projects/ic-suite/codometer/codometer-measurement/src/modules/limits/limits.service.ts
+  - id: openwiki-source-bb47a1750a44b70524b0719a
+    resource: repo://projects/ic-suite/codometer/codometer-nx/package.json
   - id: openwiki-source-640bb5f7eb4cfb5c80eb728d
     resource: repo://projects/ic-suite/codometer/codometer-output/configuration/codometer.config.ts
   - id: openwiki-source-82d3b97a35b04159ad303f8f
     resource: repo://projects/ic-suite/codometer/codometer-output/package.json
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+  - id: openwiki-source-ade9a500a21a2472b02f6799
+    resource: repo://projects/ic-suite/codometer/codometer-output/src/modules/changes/changes.service.ts
+generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
 ---
 
 # Codometer — Repository Measurement & Limits
@@ -150,20 +152,21 @@ flowchart TD
     Measure --> Custom[CustomizationService]
 ```
 
-## Package Architecture (8 Packages)
+## Package Architecture (9 Packages)
 
-Codemeter factors its concerns into **eight** independently publishable npm packages under `projects/ic-suite/codometer/`:
+Codemeter factors its concerns into **nine** independently versioned npm packages under `projects/ic-suite/codometer/`:
 
-| Package | Responsibility |
-|---------|----------------|
-| **codometer-agents** | Agent skills for writing and editing `codometer.config.ts` |
-| **codometer-cli** | Command-line host: `measure`, `changes`, `configuration` commands; writes README badges, JSON reports, or both |
-| **codometer-configuration** | Reads `codometer.config.ts` for exclusion globs, output destinations with render/write callbacks, Python interpreter, and the command line; resolves limits and inputs |
-| **codometer-core** | Contracts leaf: statistics and report vocabulary a measurement produces, and the errors a configuration is refused with |
-| **codometer-examples** | A sample corpus with known contents and one runnable example per thing codometer does, with tests that assert every number the guides quote |
-| **codometer-languages** | Every input language analyzer, behind one `analyze()` call (see above) |
-| **codometer-measurement** | Finds the files a run measures, counts their size and whatever a configuration declares its own counters for, and holds every metric to its declared limit |
-| **codometer-output** | Every codometer output format — JSON reports, README badges, pull request change reports — plus the destinations a run writes them to |
+| Package | Responsibility | Published |
+|---------|----------------|-----------|
+| **codometer-agents** | Agent skills for writing and editing `codometer.config.ts` | No (private) |
+| **codometer-cli** | Command-line host: `measure`, `changes`, `configuration` commands; writes README badges, JSON reports, or both | Yes |
+| **codometer-configuration** | Reads `codometer.config.ts` for exclusion globs, output destinations with render/write callbacks, Python interpreter, and the command line; resolves limits and inputs | Yes |
+| **codometer-core** | Contracts leaf: statistics and report vocabulary a measurement produces, and the errors a configuration is refused with | Yes |
+| **codometer-examples** | A sample corpus with known contents and one runnable example per thing codometer does, with tests that assert every number the guides quote | No (private) |
+| **codometer-languages** | Every input language analyzer, behind one `analyze()` call (see above) | Yes |
+| **codometer-measurement** | Finds the files a run measures, counts their size and whatever a configuration declares its own counters for, and holds every metric to its declared limit | Yes |
+| **codometer-output** | Every codometer output format — JSON reports, README badges, pull request change reports — plus the destinations a run writes them to | Yes |
+| **codometer-nx** | Nx plugin that infers a `codometer-limit` and a `codometer-weigh` target for every project with a codometer configuration | Yes |
 
 Each package follows the IC-Suite five-layer spine (`layer:core`, `layer:configuration`, `layer:analysis`, `layer:output`, `layer:cli`) and versions independently via Nx Release.
 
@@ -208,8 +211,10 @@ flowchart LR
 
 ## ADR References
 
-- **ADR 0001** — [Absorb size-limit into codometer](repo://documentation/adr/0001-absorb-size-limit-into-codometer.md): Folded `size-limit`'s job into codometer as a general capability — any metric may carry a limit, and a build artifact is just another target.
-- **ADR 0003** — [Fold bundle-size reporting into codometer as a general change report](repo://documentation/adr/0003-fold-bundle-reporting-into-codometer.md): Deleted `tools/reporting` and moved diffing onto `codometer-changes`, rendering onto `codometer-markdown` (shared with CLI badge output), and composed both in `codometer-cli`'s `changes` command.
+The wiki references two Architecture Decision Records that are not present in the repository at the expected paths (`documentation/adr/0001-absorb-size-limit-into-codometer.md`, `documentation/adr/0003-fold-bundle-reporting-into-codometer.md`). Their substance is reflected in the current codebase:
+
+- **Absorb size-limit into codometer** — The `size-limit` tool's job was folded into codometer as a general capability: any metric may carry a limit, and a build artifact is just another target (the `Compiled JavaScript` target with `size` analysis).
+- **Fold bundle-size reporting into codometer** — The `tools/reporting` directory was deleted; diffing moved to `codometer-output`'s `ChangesService`, rendering to the shared markdown badge renderer, and both composed in `codometer-cli`'s `changes` command.
 
 ## Configuration
 
@@ -261,6 +266,41 @@ export const codometerConfiguration = {
     { custom: selectAllLabels(customStatistics), path: "README.md", type: "markdown" },
   ],
   python: { command: "uv run python" },
+} satisfies CodometerConfiguration;
+```
+
+### Compiled JavaScript Target
+
+Each publishable project declares a `Compiled JavaScript` input target measuring its `dist/` output:
+
+```typescript
+export const compiledJavaScriptTarget = {
+  analyses: ["size"],
+  compression: "gzip",
+  name: "Compiled JavaScript",
+} satisfies Omit<CodometerInput, "include">;
+```
+
+Projects spread this and add their own `include: ["dist/**/*.js"]`.
+
+### Per-Project Configuration Example
+
+A project's `codometer.config.ts` typically spreads the shared configuration and adds its compiled output target:
+
+```typescript
+import { codometerConfiguration, compiledJavaScriptTarget } from "configuration/ic-suite/codometer.config";
+
+export default {
+  ...codometerConfiguration,
+  inputs: [
+    ...(codometerConfiguration.inputs ?? []),
+    { ...compiledJavaScriptTarget, include: ["dist/**/*.js"] },
+  ],
+  // Project-specific limits on compiled size, following the round-size convention
+  limits: [
+    ...(codometerConfiguration.limits ?? []),
+    { metric: "Compiled JavaScript.size", value: "64 KB" },
+  ],
 } satisfies CodometerConfiguration;
 ```
 
@@ -335,6 +375,21 @@ The `changes` command (`codometer-cli`) diffs the current run against a baseline
 - Breach icons (❌ fail, ❗ warn, 🗑️ removed, ⁉️ empty, 🆕 new)
 - Failures (⚠️ could not measure) above the table
 - Baseline comparison URL for traceability
+
+The diffing logic lives in `codometer-output`'s `ChangesService`, which joins every metric (not only size) by its dotted name. Metrics the run did not rebuild keep their baseline value, flagged unmeasured. A baseline metric is removed only if this run rebuilt the project.
+
+```mermaid
+flowchart TD
+    Collect[ChangesService.collect] --> ForEachProj[For each project report]
+    ForEachProj --> ReadBaseline[Read baseline JSON from main]
+    ForEachProj --> ReadCurrent[Read current report]
+    ReadCurrent --> MeasuredRows[buildMeasuredRow: join metric to baseline by name]
+    ReadBaseline --> BaselineRows[buildBaselineRow: metrics only in baseline]
+    MeasuredRows --> Merge[Merge rows, dedupe by name]
+    BaselineRows --> Merge
+    Merge --> Render[RenderService.renderSection]
+    Render --> Emit[DocumentsService.emit: write markdown section]
+```
 
 ## Statistics Vocabulary
 
@@ -424,14 +479,14 @@ flowchart TD
     Limits[LimitsService.evaluate] --> ForEach[For each limit in configuration]
     ForEach --> Resolve[Resolve metric path]
     Resolve --> Bind{Bind to exactly<br/>one measured metric?}
-    Bind -->|No| Fail[UnboundMetricError → failure]
-    Bind -->|Empty target| Empty[EmptyTargetError → failure]
-    Bind -->|Yes| Compare[measured > limit.value]
+    Bind -->|No| Fail[UnboundMetricError failure]
+    Bind -->|Empty target| Empty[EmptyTargetError failure]
+    Bind -->|Yes| Compare[measured greater than limit.value]
     Compare --> Breach{Breached?}
-    Breach -->|Yes| Record[Record breach + severity]
+    Breach -->|Yes| Record[Record breach plus severity]
     Breach -->|No| Record[Record pass]
     Record --> Next[Next limit]
-    Next --> Done[Return all evaluated limits + failures]
+    Next --> Done[Return all evaluated limits plus failures]
 ```
 
 ## Comment Budgets
@@ -455,18 +510,35 @@ const shellCommentBudget = {
 };
 ```
 
+JSDoc budgets are declared per declaration `kind` (class, interface, method, etc.) with different word/line allowances.
+
+## Nx Plugin: Inferred Targets
+
+The `codometer-nx` plugin infers two targets for every project with a `codometer.config.ts`:
+
+| Target | Command | Depends On | Outputs |
+|--------|---------|------------|---------|
+| `codometer-limit` | `measure --check limits` | (nothing) | (nothing) |
+| `codometer-weigh` | `measure --check weigh` | `build` | `codometer-report.json`, badges (with `-c write`) |
+
+- **`codometer-limit`** gates the limits written against the source tree (comment budgets, directory ceilings). It runs first and fast, with no build behind it. Every project file is a cache input.
+- **`codometer-weigh`** gates the `Compiled JavaScript.size` limit on the built output. It depends on `build` so the artifacts exist. Its dependencies' `codometer-weigh` targets are also depended on, so a change in a dependency's output size is caught.
+
+The target names are configurable via `limitTargetName` and `weighTargetName` in the plugin options.
+
 ## CI Integration
 
-Codemeter is integrated into the repository's Continuous Integration pipeline:
+Codemeter is integrated into the repository's Continuous Integration and Deployment pipelines:
 
 | Workflow | Job | Command |
 |----------|-----|---------|
-| **Continuous Integration** | `build-projects` (👷 Build) | `build`, then the per-project `codometer` target in its `check` configuration |
-| **Continuous Deployment** | `push-releases` | `nx run-many --target=codometer --configuration=write --exclude=configuration` then `nx run configuration:codometer:write` |
-
-The `build-projects` job depends on codometer because every publishable package declares a `size` limit on its compiled JavaScript output (`Compiled JavaScript.size`). A breach fails the Build job and names the project.
+| **Continuous Integration** | `codometer-limit` (⏲️ Codometer Limit) | `nx affected --target=codometer-limit --configuration=check` |
+| **Continuous Integration** | `build-projects` (👷 Build) | `nx affected --target=build-projects` (depends on `codometer-weigh` via each project's `build-projects` aggregator) |
+| **Continuous Deployment** | `push-releases` (🦸 Releases) | `nx run-many --target=codometer-weigh --configuration=write --exclude=configuration` then `nx run configuration:codometer:write` |
 
 On pull requests, the `report-integration` action collects the codometer baseline on `main`, runs the affected projects' `codometer` targets, diffs the results, and posts the change report as a PR comment.
+
+The `build-projects` aggregator target exists in the `configuration` project so that the 👷 Build job reaches the repository itself — the workflows under `.github` belong to no project, so without this nothing gates their comment budgets.
 
 ## Extending Codemeter
 
@@ -477,5 +549,4 @@ On pull requests, the `report-integration` action collects the codometer baselin
 ## Related Pages
 
 - [IC-Suite Architecture](../architecture/ic-suite.md) — five-layer spine and package organization
-- [Testing Strategy Overview](../testing/overview.md) — test patterns, coverage gates, integration suites
 - [Code Quality Workflows](../workflows/code-quality.md) — how codometer integrates with CI, pre-commit, and release

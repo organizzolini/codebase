@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:67e0351aee3a63b050047ca5cc0f6e6d5f4e4d0c215cd77ee3db15da57623bf6",
+  "pageVersion": "sha256:aa827de8fe32a1b9a5e2486c083a4778453333324ddc9cffbfc00fded8921cdf",
   "claims": [
     {
       "id": "claim_ff5540c9dcf54d78959182fda4d52e17",
@@ -12,11 +12,11 @@
         },
         {
           "resource": "repo://infrastructure/project.json",
-          "version": "repo-file-v1:sha256:6813a66490da2e79c7269cdbf39e8ec3ed5e802554a1bdcf3a000fd52a32c5d9"
+          "version": "repo-file-v1:sha256:bc3b9c0bf977b73fe23a8e193786f51159b9bc40c72061061da470cdc018cf4d"
         },
         {
           "resource": "repo://infrastructure/terraform/github/main.tf",
-          "version": "repo-file-v1:sha256:5515e6d7615a343cba1397c04a125af167bacbba122fc1a85f110e7fd47d1bb2"
+          "version": "repo-file-v1:sha256:42fc0d312f7cf2c82ac5758ed9945920b10be9a26b0d04980d8ff247f51c149f"
         },
         {
           "resource": "repo://infrastructure/terraform/linode/main.tf",
@@ -24,7 +24,7 @@
         },
         {
           "resource": "repo://infrastructure/terraform/main.tf",
-          "version": "repo-file-v1:sha256:ef575fe619ad29efb668b1eafc7896db0e1e019b52e428605c7f69b15094084d"
+          "version": "repo-file-v1:sha256:310534af2407a0383651b7c3756bd56ee0984b0ae59865d421dd2c70c6fb0df2"
         },
         {
           "resource": "repo://infrastructure/terraform/openrouter/main.tf",
@@ -37,7 +37,7 @@
       "statement": "Three local services are managed via Nx targets: postgres (up/down/recreate), searxng (up/down/open), and open-webui (up/down/open), all using docker-compose.yml at infrastructure/docker/docker-compose.yml.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L99-L106",
+          "resource": "repo://infrastructure/README.md#L97-L104",
           "version": "repo-lines-v1:sha256:1f1f186b2a8b77b735f3a0a486675e157431bf74f7023cd2a82c73e3e2d57381:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2JiNDQyZjU5N2QyOGZhZDI0ZjFlNTk1NDIzMzljYWMyMDFlNzcxZTY2MTI0ZjAyZmUwODMyODA2OTA3MzM1NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTM0MDBjYTU2NjVjZDBkNzE3MzU5YTgyM2E3OWZkNzIwZjcyMjY5NWZjODc0ODY5OTQ4ZTU1NjUzY2YwYzkzNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOWJkZDc5YjE1OTVmNGUxYzc2NjljNDNmMTUzODU0MmE0MDZlNzM2Zjg3MDQ2YmU3M2ZkNjJhZTRkZWJiYWJmZiJ9"
         },
         {
@@ -51,26 +51,12 @@
       "statement": "The PostgreSQL Compose service uses a Compose config (postgres-databases) that installs an executable init script at /docker-entrypoint-initdb.d/databases.sh, which runs only on an empty volume and creates a role, database, and schema for each project listed in POSTGRES_PROJECTS (currently caelundas, lexico, meanderaw).",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L55-L80",
-          "version": "repo-lines-v1:sha256:4e9921c955905f44a3bf0c094b0c9c54e4473559f1badb52a50723eb2f584c2b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MDdiNGU5NDI4ODdmODkxZDhiNGFkZGUxOThjMjNlYmEwZDllMTVmNmJjNzAxNDk1YjJjMDMyYmY0MzU1NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNWFlOGI4NDNlMmMyMWEyY2I4ZjMwODI5OWViMzEwMmY3ZWZmOTE4Y2ZiNGU2ZjAxNzlkMWMyMmIyNzFkMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
+          "resource": "repo://infrastructure/README.md#L55-L78",
+          "version": "repo-lines-v1:sha256:5202172d19bf22227654a9145681c19fde7c951d7e5b193f3a0e1d1f08b55b3f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU5ZWNlOTVlYjk2MGI2Yzg5N2Q3MGFiN2Q5MDFlNjBjMWEzZWZkZGE2ZTcxZjJkNmYzYjgzYThmYzJmZmUwOTIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzNWFlOGI4NDNlMmMyMWEyY2I4ZjMwODI5OWViMzEwMmY3ZWZmOTE4Y2ZiNGU2ZjAxNzlkMWMyMmIyNzFkMGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
         },
         {
           "resource": "repo://infrastructure/docker/docker-compose.yml#L26-L96",
           "version": "repo-lines-v1:sha256:cc9be38bbd96875f59599b6d6153317faa528adff3f1a8de4bc14c2f18eb04bf:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgwZjhkYzgzYTlkMTA3NzQxZTUzNjRhZTBjZjZmNDg1OTU3MDIyMDkwMzExMjIwYWFmOTAxOGI4NzcwZmUxNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4NTFlNzA4MjkyNjFjOWNkYmRmMWM3YTBiZGViOTM1NzBmZjljNmY1MmU4YmFmMGMxZDA4OWMxNDExOWYzMTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNmNjgwNjVjN2IzOGFlOWNlMmJiNGNhNWEzZDY2ZDliZjJhOTY2MTQxOWU1YTY1YjM0ZmFhODRhYjBhNWNkODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        }
-      ]
-    },
-    {
-      "id": "claim_dd0ef5967e46494b9da91300cb00705c",
-      "statement": "To add a project to an existing PostgreSQL volume without data loss, add the project to POSTGRES_PROJECTS, run nx run infrastructure:postgres:up to recreate the container keeping the volume, then execute the init script for only the missing project via docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L37-L57",
-          "version": "repo-lines-v1:sha256:b7307d63c162366b9efd4523159615432abe03e03f4788e190e865a5962a3eef:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUyNzhlYWU4N2JkYjU2NDYzZDk2ZmQzMjE0MTJiNTdiYjg4M2ZkOGYzYTFlMmVjY2ZhZmY3YjhhMDY3ZDdkYTUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MWE0ZjlmYTQ5ZjY4ODBiMWQyMTU0OTVlNTg1NzE1ODRlNjFkNjdmMTcxMjkyZDM2Y2Q1MzY2MjlmZDMwMWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRkMDZhN2E5NTliYWU5NWQyZDRkZjQxY2QyMzIyZTJiZWMwMzBlYjBlMTEyYzVkNzUwNjFiZDgyM2YxZDBmY2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlZmExMTdjNzZlYjkwYWJjZGU4NWJkYzEzMTM0Mjk0ZDgxMTA3OWY3NjhhNDM1NjNhNGQ2MTI2YWVkYzdlMjQifQ"
-        },
-        {
-          "resource": "repo://infrastructure/README.md#L56-L80",
-          "version": "repo-lines-v1:sha256:3bf84dfa8b46896200cadf46eb5568c7ee5a22b3639736dc3224e49bba80eba8:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MDdiNGU5NDI4ODdmODkxZDhiNGFkZGUxOThjMjNlYmEwZDllMTVmNmJjNzAxNDk1YjJjMDMyYmY0MzU1NDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRhYzMzOTIxZmQ2NWZmZDZjN2Q4ZDI5OGMzNTk1NzU0ODJhMmJiYzVhYjU0Mzg1NWFkNzM4NGRmNDBjZjVmYTMifQ"
         }
       ]
     },
@@ -137,30 +123,16 @@
       "statement": "Nx targets helm-lint and compose-config run in CI as part of lint-code (the Lint leg of .github/workflows/continuous-integration.yml); helm-lint validates the kubernetes-job chart against base.yaml, compose-config validates docker-compose.yml and creates .env from .env.default if missing.",
       "evidence": [
         {
-          "resource": "repo://infrastructure/README.md#L103-L104",
+          "resource": "repo://infrastructure/README.md#L101-L102",
           "version": "repo-lines-v1:sha256:1aa3023e2227a68144bf07355a6ff4ff7bdb28b3c7fc5b1100b42e1257ddc434:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWUxNWYyNTQ2MDJkNWZlOTUwNTRmMWJiNTRmMWRhNmIwOThlMDFjNzZmMTg3NzBlNTFkZGRjNDZlN2MwODllMiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDhhYWMzNmNiOWEzYjZiZmVmMGEyOTZjNTgxYTA1N2FkYjc0ZWJhNTk5NjdkODMxNjkzM2IyZmJjOGNkYmE2MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDE2NjU4NzEyMmNkMTU2YzQ1MmVlNjYwOGJkZTM3YTljM2MyMzYwMmU2OTFiMzcxYzhhYWRjMTM1MjEyYzU1MyJ9"
         },
         {
-          "resource": "repo://infrastructure/project.json#L20-L34",
+          "resource": "repo://infrastructure/project.json#L19-L33",
           "version": "repo-lines-v1:sha256:7d4432a24b986e431f7f66c3b314e39ad5e087caf0ee0267caf8f9920cc4bf87:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljMzc2YjA5MmNkNmViZTUxNTNmYjNmMGRkYzExNzNkMGExM2M1ODcyMDgxN2U5OGEzYTcyZWJmMTM5YTQwYzYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFmMGNkYjk3MmE3YmZiN2VkMjQ2ZjlmZjY3MjM4NWU1NWY0OTY4ZmMxMTA0M2RjNWI2ODRkNTFkZmEzMWRiY2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU3ZjZmZjQ4NTlhNDE0MDQ3NDE3NTAzYzUyN2Y4ZWI4YzdlZTE1N2FiNzAyYzM5MDBjMjE5MWY4Mjg5OTAwNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJlNDMzOTU2MzI3ZjU5ZWY4MTkxZDgyYzZiOTM3OWQ4Zjg0ZjhmZGZiYjcwOGNhOTRlYmQyM2UxNGQ4ZmE2Y2EifQ"
         },
         {
-          "resource": "repo://infrastructure/project.json#L10-L17",
+          "resource": "repo://infrastructure/project.json#L9-L16",
           "version": "repo-lines-v1:sha256:90718eb1b0a462b4de38fed740a020f08fe2e310e5285dedc3e0587162104979:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNDgyZDBmYzAyZWVhMzM1YTkzNTI1ODExNzBkMDQ4ZGJjYzhkZmU4ZGM1MTkyOWQxMmRiOTczZGRiNzgxZmU2NSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWYwY2RiOTcyYTdiZmI3ZWQyNDZmOWZmNjcyMzg1ZTU1ZjQ5NjhmYzExMDQzZGM1YjY4NGQ1MWRmYTMxZGJjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiODBlNTkzODBkYzJlMjdkZjQyYTVmYmJjMGUwNjU4ZDdmYmUxYTgyM2E0NTFjYjg5N2I4ZDAyYmFmMTdiYzBjNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYWM5YTY3MDdhNDUwNjBhMzU0NWRlMGExOTMxMTUxM2U3NzU5ZGZjMmVkMmVlNjZiZTIwMjIwOTk4NjA0MjNhMSJ9"
-        }
-      ]
-    },
-    {
-      "id": "claim_6b6c53377a3f449c944df68c9e347bb0",
-      "statement": "ADR 0022 establishes the convention of one database, one schema, and one role per domain (project), with the local Compose postgres service creating these on first start via the POSTGRES_PROJECTS list, and documents the procedure for adding projects to existing volumes without data loss.",
-      "evidence": [
-        {
-          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L17-L38",
-          "version": "repo-lines-v1:sha256:7955e7115a34409878f5671ca6fe1d43216e6c0d1e491f5aa203d36f45eecf87:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFkMDRkODA3M2NhOGNkM2QzNGM1MTJlZTc1Y2YwYzg1ZTBmNGE5ZDlhMWVhMzAwYTUxNmRmNDc1ZDZjMmM3NTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNiMTU3YTZkMjc2N2ZmN2Y0MTMzZWUyNzY1MTM2N2M2ZmRmZjdhYjRmZDliYTNjYjQyNjJlMmFhNDQ5MGNjYTMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI2ODRiMmJjNWQ4YmIwNTk1MWUwZjZkNTU3NWYxMTRjZThlYzIyMTJlYjcwZmI4NzAzMzA4MzlmMTJmNDFlZTUifQ"
-        },
-        {
-          "resource": "repo://documentation/adr/0022-give-every-database-project-its-own-database-schema-and-role.md#L41-L57",
-          "version": "repo-lines-v1:sha256:391dd373395ecdbd7cc840ac25c290a92612a9cceb595e8bce57a6f7925b3374:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0NWQ0ZjY4NWUxNTBjZWRkMmE3MzgyMDlmYmUyZTU0OWZmN2ZmMTFhYTQ3MzY5NzQ3NDhmNGZjNmMxMjE3YzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE2MWE0ZjlmYTQ5ZjY4ODBiMWQyMTU0OTVlNTg1NzE1ODRlNjFkNjdmMTcxMjkyZDM2Y2Q1MzY2MjlmZDMwMWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVmNzMyODlkZTFiYjVlM2E4NDM0Y2ZmMzYxNjczOGY4NWU3ZDQzMmM5MTM2Y2E4MDk0MGI0NTk4MGE4YWViOGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlZmExMTdjNzZlYjkwYWJjZGU4NWJkYzEzMTM0Mjk0ZDgxMTA3OWY3NjhhNDM1NjNhNGQ2MTI2YWVkYzdlMjQifQ"
         }
       ]
     },
@@ -217,22 +189,36 @@
       "statement": "CI runs helm-lint and compose-config as dependencies of lint-code, and a plan-terraform leg for changes under infrastructure/terraform/**. Continuous Deployment applies the Terraform roots in the order openrouter, linode, github, using GitHub secrets for sensitive values.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L395-L420",
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L394-L419",
           "version": "repo-lines-v1:sha256:fe1e19659fc123f39f2e9d9c44a64dbbb87e14350cedb489445914ad6c19500d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5MzM3OWQ4ZDlkOTM3MWY2NmNkNmRhNGJiNWUwZDhkMzQ0ZDAxY2YwNGVkN2RjZTY5M2I3ZDRlNTkxN2VmODEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhM2RmNThmZDQ4ZDI5ODk4ZTUzYjk2MDRjZjA2ZGE5MDYxOTM4NTZhZjBkNzdmYTA0ZDcyYzYzZDI5NzRkZTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRjZDdkNDNiYTM3NDQ1NzU4YzY0ODc1Njc0OTkxZDkyYmIzMmVjNmIwMTMwNjAyZWVmZGI2OWJiNzZiNjc2M2YifQ"
         },
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L125-L150",
+          "resource": "repo://.github/workflows/continuous-integration.yml#L133-L158",
           "version": "repo-lines-v1:sha256:5cfb3beedad3a49c7fa358e7bbe033a86536e569e3aa370b7ef6265b8f40dc09:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3OWU5YzI0OWQzNDQ3NmJmOGE5MjA2YzI3NGUzMzhmNTY4ZTBlYjRlYjI2OTM2ODFmMWQyMjJkZTZjM2Y4MmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg2MDc1YzUwYzNkMTA3MTc5M2NmYTA4YjViMDliYjYwOWZjZDAxNDA1NGVjY2UxYzBmYzQ2YWU2ZTM1N2Q4NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmZmI4MjljYTkwMDM0ZTRjNjVlMzlkMjZmY2YzZjQzZmQxY2M3YTMzMDQwN2M2YTUxOTU1NGE1MGY3ODdlODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkNDU2ZjhiMDBiNTJhMmQyNDYwZTkzNzQ5MDZlNzQ4YjhiZTNlNWFkZWM3OGIwYjFmYWI0ZmY4YWYyZjdlNDcifQ"
         },
         {
-          "resource": "repo://infrastructure/README.md#L85-L110",
+          "resource": "repo://infrastructure/README.md#L83-L108",
           "version": "repo-lines-v1:sha256:826e816a1b857d34898f63e0eecaa1411434de0fb1eb3669eeada227a4464a53:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc5ZjA1NTg1Nzg3ZDEyM2Y1YjU0YTUyNmFjNmYyZTI4MzI2ZGY1YTVlZjQwOGE3OWFlYTc3M2NhZDcyNDE1YzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRmNDQ4YzdhNmQwMzFjMzNmMTdjMzRjMTIyNjYyOTgyMjM2Y2UyYjgxYTUwZWMxMzdiZGQ0MzVlNjU5ODc1ZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEzODYxZWNjYjFlZmZlODNkOTBjNjY3ZmNhYTlhMTY3ODY0MDdlY2MzN2E5N2IxZTMxMjU2YTBjZTNjOTAxYTIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e01932465dc74aaca411545e8d1ef171",
+      "statement": "To add a project to an existing PostgreSQL volume without data loss, add the project to POSTGRES_PROJECTS, run nx run infrastructure:postgres:up to recreate the container keeping the volume, then execute the init script for only the missing project via docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh.",
+      "evidence": [
+        {
+          "resource": "repo://infrastructure/AGENTS.md#L48-L65",
+          "version": "repo-lines-v1:sha256:9b8c039db22bb993fa87c4437f64e20c9c91b54b2c7426d0012a21e0ea111cae:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNmN2NlMTI0ODdmNDM2YjlhNmUzMjlkYmFhNTQxNzg0ZDBkOWI3NTE5ODhiNDIxMWRjN2MyM2JhNDNmOTJkYzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzZTE2YWUyMzZmNzI5NzgyNzI0ZDMzODY0NDhjYjllMTUwOTk2NWQ3Yzg2N2UwZWE2YTdjZjJhOTFmNWY4MTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhhNzdkOGU1YmIxNzlkNjQ5NzQ5MDM1MDk5MTEwZTM5NDI0MTIzZDIyMGEyYzFkMjE2YzE2MzljYjk4MTk0ZmUifQ"
+        },
+        {
+          "resource": "repo://infrastructure/README.md#L56-L80",
+          "version": "repo-lines-v1:sha256:90652667bdfa9076c5567b99d3a3668eef0f984cd9aaea78d12a13ffeb5487d0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwZDg5NDk2NTU3NTgxOGNlM2YyNDg0ZjZlNGI5Njc5MWE5YTEyOWZjMjE1NmM0ODYxZWQ0NTlmNjE5ODAxNjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjMwZjNkYTVhMGY5NGZlZDU2MmM5OGY5ZjgzNDViZWM3NDNmMDJhZjQ1ZmJlOGU3OTk5YTdjMjcxNmE2NWIzZjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE1ZTg2M2Q1Y2UwNzlkMDE5N2UzNjhlZTU0OTM1YjNhMjc1MGQwYjRlMWZhOTkyMzJlMzE3YjVjMDA3OWVkYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNmNGIxMzlkNGY0OTBlNzQyOWZmYjg2OWRmYjk0NjFiY2JiYTEzYWYwODYwY2JiNzczYjZhYzA0NWE5ZDk4N2EifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T17:40:37.367Z"
+    "at": "2026-11-25T18:55:00.444Z"
   }
 }

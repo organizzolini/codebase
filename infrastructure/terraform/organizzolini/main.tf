@@ -61,7 +61,7 @@ provider "github" {
 # creates, so the first plan shows only the cluster, and replacing it needs the
 # Kubernetes and Helm resources gone from state first (see the README).
 locals {
-  kubeconfig = base64decode(linode_lke_cluster.organizzolini_codebase.kubeconfig)
+  kubeconfig = base64decode(linode_lke_cluster.organizzolini.kubeconfig)
   cluster    = yamldecode(local.kubeconfig)
   server     = local.cluster.clusters[0].cluster.server
   token      = local.cluster.users[0].user.token

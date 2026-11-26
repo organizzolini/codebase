@@ -54,24 +54,24 @@ output "terraform_state_secret_key" {
   sensitive   = true
 }
 
-output "organizzolini_codebase_postgres_backups_bucket" {
+output "organizzolini_postgres_backups_bucket" {
   description = "Value for the CloudNativePG backup destination: the bucket Postgres backups are archived to."
-  value       = linode_object_storage_bucket.organizzolini_codebase_postgres_backups.label
+  value       = linode_object_storage_bucket.organizzolini_postgres_backups.label
 }
 
-output "organizzolini_codebase_postgres_backups_endpoint" {
+output "organizzolini_postgres_backups_endpoint" {
   description = "Value for the CloudNativePG backup endpoint: the bucket's S3 endpoint."
-  value       = "https://${linode_object_storage_bucket.organizzolini_codebase_postgres_backups.s3_endpoint}"
+  value       = "https://${linode_object_storage_bucket.organizzolini_postgres_backups.s3_endpoint}"
 }
 
-output "organizzolini_codebase_postgres_backups_access_key" {
+output "organizzolini_postgres_backups_access_key" {
   description = "Access key of the key that can read and write the backups bucket only."
-  value       = linode_object_storage_key.organizzolini_codebase_postgres_backups.access_key
+  value       = linode_object_storage_key.organizzolini_postgres_backups.access_key
   sensitive   = true
 }
 
-output "organizzolini_codebase_postgres_backups_secret_key" {
+output "organizzolini_postgres_backups_secret_key" {
   description = "Secret key of the key that can read and write the backups bucket only."
-  value       = linode_object_storage_key.organizzolini_codebase_postgres_backups.secret_key
+  value       = linode_object_storage_key.organizzolini_postgres_backups.secret_key
   sensitive   = true
 }
