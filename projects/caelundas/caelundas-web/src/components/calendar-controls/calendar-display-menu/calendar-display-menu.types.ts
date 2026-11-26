@@ -9,12 +9,15 @@ import type { CalendarSymbols } from "../../calendar-events/event-glyphs/calenda
  * Every choice the Display list reflects: what is ticked in it.
  */
 export interface DisplayChoices {
-  clusters: boolean;
   colors: boolean;
   /**
    * Whether the metric layouts compare with the period before.
    */
   compare: boolean;
+  /**
+   * Whether groups with no events are left out.
+   */
+  hideEmpty: boolean;
   /**
    * The constellations the sky can draw.
    */

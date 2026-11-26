@@ -31,6 +31,12 @@ const AT = "2026-03-20T12:00:00Z";
 const BASE = ["Astronomy", "Astrology"];
 const ROOTS = new Set<string>(Object.values(TAG_ROOT));
 const VISIBILITY = ["Evening Visibility", "Morning Visibility"];
+const HALVES = [
+  "Evening Closing",
+  "Evening Widening",
+  "Morning Closing",
+  "Morning Widening",
+];
 
 /** The paths an instant with these raw tags is classified under. */
 function classify(tags: readonly string[]): TagPath[] {
@@ -41,10 +47,19 @@ function classify(tags: readonly string[]): TagPath[] {
   });
 }
 
+/** Each planet's phases and the spans its apparition makes. */
 const PLANETARY_PHASES = [
-  ["Venusian", Object.keys(symbolByVenusianPhase)],
-  ["Mercurian", Object.keys(symbolByMercurianPhase)],
-  ["Martian", Object.keys(symbolByMartianPhase)],
+  ["Venusian", Object.keys(symbolByVenusianPhase), [...VISIBILITY, ...HALVES]],
+  [
+    "Mercurian",
+    Object.keys(symbolByMercurianPhase),
+    [...VISIBILITY, ...HALVES],
+  ],
+  [
+    "Martian",
+    Object.keys(symbolByMartianPhase),
+    ["Evening Closing", "Morning Widening"],
+  ],
 ] as const;
 
 const COMPOUND_PATTERNS = [
@@ -64,10 +79,12 @@ const SIGNS = signs.map((sign) => _.startCase(sign));
 
 /** Raw tags for each event kind a detector emits. */
 const DETECTOR_TAG_SETS: readonly (readonly string[])[] = [
-  ...PLANETARY_PHASES.flatMap(([marker, phases]) =>
-    [...phases.map((phase) => _.startCase(phase)), ...VISIBILITY].map(
-      (phase) => ["Planetary Phase", marker, phase],
-    ),
+  ...PLANETARY_PHASES.flatMap(([marker, phases, spans]) =>
+    [...phases.map((phase) => _.startCase(phase)), ...spans].map((phase) => [
+      "Planetary Phase",
+      marker,
+      phase,
+    ]),
   ),
   ...lunarPhases.map((phase) => [
     "Monthly Lunar Cycle",

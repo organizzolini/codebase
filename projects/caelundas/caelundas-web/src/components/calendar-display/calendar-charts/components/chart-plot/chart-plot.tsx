@@ -25,7 +25,7 @@ import {
 } from "../../calendar-charts.utilities";
 import { ChartBarTooltip } from "../chart-bar-tooltip/chart-bar-tooltip";
 
-import type { EventMetric } from "../../../../../graphql/generated/operations";
+import type { MetricDescriptor } from "../../../calendar-metrics/calendar-metrics.types";
 import type { ChartBar } from "../../calendar-charts.types";
 import type { ChartConfig } from "@codebase/presentation";
 import type { ReactNode } from "react";
@@ -38,7 +38,7 @@ import type { BarShapeProps } from "recharts";
  */
 export interface ChartPlotProperties {
   bars: readonly ChartBar[];
-  metric: EventMetric;
+  metric: MetricDescriptor;
   /**
    * Opens a piece's group, with the bar's group above it, in the piece's color.
    */

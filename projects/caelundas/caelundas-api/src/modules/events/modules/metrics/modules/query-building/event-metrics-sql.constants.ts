@@ -1,22 +1,13 @@
-import { TAG_INFO_SQL } from "../../../filtering/modules/query-building/event-filter-sql.constants";
-import { EventMetric } from "../inputs/event-metric.entities";
+import {
+  EVENTS_LOCAL_SQL,
+  PROGRESSIVE_TAG_PATH,
+  TAG_INFO_SQL,
+} from "../../../filtering/modules/query-building/event-filter-sql.constants";
 
 // ♟️ Constants
 
-/** Tag path of the events that last. */
-export const PROGRESSIVE_TAG_PATH = "Temporality / Progressive";
-
-/** Minutes from an event's start to its end, 0 for an instant. */
-const DURATION_MINUTES_SQL = `(extract(epoch from (e."end" - e."start")) / 60)`;
-
-/** Only the events that last, which the duration metrics read. */
-const SPAN_SQL = `filter (where e."end" > e."start")`;
-
-/** Minutes of the period; a period of none reads null. */
-const PERIOD_MINUTES_SQL = `nullif(extract(epoch from (min(e.period_end) - min(e.period_start))) / 60, 0)`;
-
-/** Narrows an aggregate to the events carrying the progressive tag. */
-const PROGRESSIVE_ONLY_SQL = `filter (where exists (
+/** Whether the raw event `e` carries the progressive tag. */
+const PROGRESSIVE_SQL = `exists (
     select 1
     from calendar_event_tags pet
     join tags_closure pc on pc.descendant_id = pet.tag_id
@@ -26,52 +17,32 @@ const PROGRESSIVE_ONLY_SQL = `filter (where exists (
         from tag_info p
         where p.tag_path = '${PROGRESSIVE_TAG_PATH}'
       )
-  ))`;
+  )`;
 
-/** Percent of the period the clipped intervals add up to. */
-const COUNTED_PERCENT_SQL = `coalesce(sum(extract(epoch from least(e."end", e.period_end) - greatest(e."start", e.period_start)) / 60) {scope}, 0) * 100 / ${PERIOD_MINUTES_SQL}`;
+/** An event's whole minutes. */
+const MINUTES_SQL = `floor(extract(epoch from e."end" - e."start") / 60)::integer`;
 
-/** Percent of the period the union of the clipped intervals covers. */
-const COVERED_PERCENT_SQL = `(
-    select coalesce(sum(extract(epoch from upper(r) - lower(r))), 0) / 60
-    from unnest(range_agg(tstzrange(greatest(e."start", e.period_start), least(e."end", e.period_end))) {scope}) r
-  ) * 100 / ${PERIOD_MINUTES_SQL}`;
-
-/** Each metric's aggregate over a group's events `e`. */
-export const EVENT_METRIC_SQL: Readonly<Record<EventMetric, string>> = {
-  [EventMetric.AVERAGE_DURATION_MINUTES]: `avg(${DURATION_MINUTES_SQL}) ${SPAN_SQL}`,
-  [EventMetric.COVERED_MINUTES]: `(
-    select coalesce(sum(extract(epoch from upper(r) - lower(r))), 0) / 60
-    from unnest(range_agg(tstzrange(e."start", e."end"))) r
-  )`,
-  [EventMetric.COVERED_PERCENT]: COVERED_PERCENT_SQL.replace("{scope}", ""),
-  [EventMetric.DAYS_WITH_EVENTS]: `count(distinct e.start_local_day)`,
-  [EventMetric.EVENTS]: `count(distinct e.id)`,
-  [EventMetric.FIRST_START]: `extract(epoch from min(e."start")) * 1000`,
-  [EventMetric.INSTANTS]: `count(distinct e.id) filter (where e."end" = e."start")`,
-  [EventMetric.LAST_START]: `extract(epoch from max(e."start")) * 1000`,
-  [EventMetric.LONGEST_DURATION_MINUTES]: `max(${DURATION_MINUTES_SQL}) ${SPAN_SQL}`,
-  [EventMetric.MEDIAN_DURATION_MINUTES]: `percentile_cont(0.5) within group (order by ${DURATION_MINUTES_SQL}) ${SPAN_SQL}`,
-  [EventMetric.PROGRESSIVE_COVERED_PERCENT]: COVERED_PERCENT_SQL.replace(
-    "{scope}",
-    PROGRESSIVE_ONLY_SQL,
-  ),
-  [EventMetric.PROGRESSIVE_HOURS]: `coalesce(sum(${DURATION_MINUTES_SQL} / 60) ${PROGRESSIVE_ONLY_SQL}, 0)`,
-  [EventMetric.PROGRESSIVE_TOTAL_PERCENT]: COUNTED_PERCENT_SQL.replace(
-    "{scope}",
-    PROGRESSIVE_ONLY_SQL,
-  ),
-  [EventMetric.SHORTEST_DURATION_MINUTES]: `min(${DURATION_MINUTES_SQL}) ${SPAN_SQL}`,
-  [EventMetric.SPANS]: `count(distinct e.id) filter (where e."end" > e."start")`,
-  [EventMetric.TOTAL_DURATION_MINUTES]: `coalesce(sum(${DURATION_MINUTES_SQL}), 0)`,
-  [EventMetric.TOTAL_TIME_PERCENT]: COUNTED_PERCENT_SQL.replace("{scope}", ""),
-  [EventMetric.UNIQUE_NAMES]: `count(distinct e."summary")`,
-  [EventMetric.UNIQUE_TAGS]: `(
-    select count(distinct t.tag_id)
-    from calendar_event_tags t
-    where t.calendar_event_id = any(array_agg(e.id)){tagRoot}
-  )`,
+// Computed from the raw event `e` and its tags, so the raw statements read what
+// the facts hold.
+/** The columns of a facts event row, from the base tables. */
+export const RAW_EVENT_COLUMN_SQL: Readonly<Record<string, string>> = {
+  ancestor_tag_ids: `array(select distinct c.ancestor_id from calendar_event_tags t join tags_closure c on c.descendant_id = t.tag_id and c.ancestor_id <> c.descendant_id where t.calendar_event_id = e.id order by c.ancestor_id)`,
+  covered_range: `tstzmultirange(tstzrange(e."start", e."end"))`,
+  day: `e.start_local_day::date`,
+  duration_minutes: MINUTES_SQL,
+  events: `1`,
+  first_start: `e."start"`,
+  is_progressive: PROGRESSIVE_SQL,
+  last_start: `e."start"`,
+  perfective_events: `(e."start" = e."end")::int`,
+  progressive_events: `(e."start" < e."end")::int`,
+  tag_ids: `array(select t.tag_id from calendar_event_tags t where t.calendar_event_id = e.id order by t.tag_id)`,
 };
+
+/** The columns the raw events already hold. */
+export const RAW_CARRIED_COLUMNS: ReadonlySet<string> = new Set([
+  "duration_minutes",
+]);
 
 /** Limits tags to those beneath `{root}`. */
 export const TAG_ROOT_SQL = ` and t.tag_id <> {root}::uuid and exists (
@@ -87,8 +58,8 @@ export const EVENT_METRICS_SQL = `
     values {periods}
   ),
   events_in_periods as (
-    select p.period, p.period_start, p.period_end, e.*
-    from calendar_event_derived_times e
+    select p.period, p.period_start, p.period_end, e.*{extra}
+    from ${EVENTS_LOCAL_SQL} e
     join periods p on e."start" < p.period_end and e."end" >= p.period_start
     where {scope}
     {filter}

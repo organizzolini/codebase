@@ -1,5 +1,6 @@
 // ♟️ Constants
 
+import { SOLAR_INTERVAL_NAMES } from "../../../perfective/modules/annual-solar-cycle/annual-solar-cycle.constants";
 import {
   ELEMENT_BY_SIGN,
   MODALITY_BY_SIGN,
@@ -122,17 +123,25 @@ const BODY_NOTES: Readonly<Record<string, string>> = {
 const PHASE_NOTES: Readonly<Record<string, string>> = {
   "Eastern Brightest": "The planet shines brightest in the evening sky.",
   "Eastern Elongation": "The planet stands farthest east of the Sun.",
+  "Evening Closing":
+    "The span from greatest elongation, or Mars's opposition, to set, as the planet closes on the Sun.",
   "Evening Rise": "The planet rises in the evening.",
   "Evening Set": "The planet sets in the evening.",
   "Evening Star": "The planet shows in the evening sky.",
   "Evening Station": "The planet stops against the stars in the evening sky.",
   "Evening Visibility": "The span the planet is seen in the evening.",
+  "Evening Widening":
+    "The span from rise to greatest elongation, as the planet widens from the Sun.",
   "Inferior Conjunction": "The planet passes between the Earth and the Sun.",
+  "Morning Closing":
+    "The span from greatest elongation to set, as the planet closes on the Sun.",
   "Morning Rise": "The planet rises in the morning.",
   "Morning Set": "The planet sets in the morning.",
   "Morning Star": "The planet shows in the morning sky.",
   "Morning Station": "The planet stops against the stars in the morning sky.",
   "Morning Visibility": "The span the planet is seen in the morning.",
+  "Morning Widening":
+    "The span from rise to greatest elongation, or Mars's opposition, as the planet widens from the Sun.",
   Opposition: "The planet is opposite the Sun and at its nearest.",
   "Superior Conjunction": "The planet passes behind the Sun.",
   "Western Brightest": "The planet shines brightest in the morning sky.",
@@ -183,6 +192,8 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
     "The Moon is too far to cover the Sun, leaving a ring.",
   "Eclipse / Solar / Partial": "The Moon covers only part of the Sun.",
   "Eclipse / Solar / Total": "The Moon covers the whole Sun.",
+  "Lunar / Apsides / Advancing": "The Moon is drawing nearer the Earth.",
+  "Lunar / Apsides / Retreating": "The Moon is drawing farther from the Earth.",
   "Lunar / Monthly Cycle / First Quarter": "Half the Moon is lit, waxing.",
   "Lunar / Monthly Cycle / Full": "The whole face of the Moon is lit.",
   "Lunar / Monthly Cycle / Last Quarter": "Half the Moon is lit, waning.",
@@ -202,6 +213,8 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
   "Planetary / Phase / Venusian": "Venus's cycle of visibility with the Sun.",
   "Planetary / Synodic Stage / Brightest":
     "The planet shines at its brightest.",
+  "Planetary / Synodic Stage / Closing":
+    "The span the planet closes on the Sun, from greatest elongation or opposition to set.",
   "Planetary / Synodic Stage / Conjunction":
     "The planet lines up with the Sun.",
   "Planetary / Synodic Stage / Elongation":
@@ -212,6 +225,8 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
   "Planetary / Synodic Stage / Station": "The planet stops against the stars.",
   "Planetary / Synodic Stage / Visibility":
     "The span the planet is seen at one end of the day.",
+  "Planetary / Synodic Stage / Widening":
+    "The span the planet widens from the Sun, from rise to greatest elongation or opposition.",
   "Solar / Annual Cycle / Advancing": "The Sun's days are growing longer.",
   "Solar / Annual Cycle / Aphelion": "The Earth is farthest from the Sun.",
   "Solar / Annual Cycle / Cross-Quarter Day / Beltane":
@@ -253,7 +268,10 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
   "Zodiac / Dignity / Peregrine":
     "The planet holds no dignity or debility in the sign.",
   "Zodiac / Ingress / Decan Ingress": "A body enters a new decan of a sign.",
+  "Zodiac / Ingress / Decan Transit": "A body's stay in one decan, a span.",
   "Zodiac / Ingress / Peak Ingress": "A body reaches the midpoint of a sign.",
+  "Zodiac / Ingress / Peak Transit":
+    "A body's stay on one side of a sign's peak, a span.",
   "Zodiac / Ingress / Sign Ingress": "A body enters a new sign, an instant.",
   "Zodiac / Ingress / Sign Transit": "A body's stay in one sign, a span.",
   "Zodiac / Modality / Cardinal":
@@ -262,13 +280,13 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
     "Signs in the middle of a season: Taurus, Leo, Scorpio, Aquarius.",
   "Zodiac / Modality / Mutable":
     "Signs that end a season: Gemini, Virgo, Sagittarius, Pisces.",
+  "Zodiac / Peak / After Peak": "The last fifteen degrees of a sign.",
+  "Zodiac / Peak / Before Peak": "The first fifteen degrees of a sign.",
   "Zodiac / Polarity / Negative": "Earth and water signs: receptive.",
   "Zodiac / Polarity / Positive": "Fire and air signs: outward.",
 };
 
-/**
- * The note of each leaf with no metadata entry, by path joined with ` / `.
- */
+/** A leaf's note when it has no metadata entry, by path. */
 export const TAG_NOTES: Readonly<Record<string, string>> = {
   ...PATH_NOTES,
   ...Object.fromEntries(
@@ -291,6 +309,17 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
         [
           `Solar / Annual Cycle / Hexadecan / ${name} Hexadecan`,
           `The point ${String(sixteenths)}/16 of the way round the year.`,
+        ] as const,
+    ),
+  ),
+  ...Object.fromEntries(
+    SOLAR_INTERVAL_NAMES.map(
+      (name) =>
+        [
+          `Solar / Annual Cycle / Interval / ${name}`,
+          name.startsWith("Post-")
+            ? `From ${name.slice(5)} to the hexadecan after it.`
+            : `From the hexadecan before ${name.slice(4)} to it.`,
         ] as const,
     ),
   ),

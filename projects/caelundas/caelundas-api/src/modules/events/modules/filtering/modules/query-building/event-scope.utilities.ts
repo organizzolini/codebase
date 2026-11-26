@@ -1,4 +1,7 @@
-import { NOT_PHASE_BOUNDARY_SQL } from "./event-filter-sql.constants";
+import {
+  NOT_PHASE_BOUNDARY_FACTS_SQL,
+  NOT_PHASE_BOUNDARY_SQL,
+} from "./event-filter-sql.constants";
 
 import type { EventScope } from "../../event-filter.types";
 
@@ -15,11 +18,10 @@ export function compileEventScope(scope: EventScope, event: string): string {
 }
 
 /**
- * The condition, with its leading `and`, keeping the facts rows `alias` names
- * in scope: empty when the scope leaves none out.
+ * The condition, with its leading `and`, keeping the `event` grain rows `alias` names in scope; empty when none leave.
  */
 export function compileFactsScope(scope: EventScope, alias: string): string {
   return scope.includePhaseBoundaries
     ? ""
-    : ` and ${alias}.is_phase_boundary = false`;
+    : ` and ${NOT_PHASE_BOUNDARY_FACTS_SQL.replaceAll("{alias}", () => alias)}`;
 }

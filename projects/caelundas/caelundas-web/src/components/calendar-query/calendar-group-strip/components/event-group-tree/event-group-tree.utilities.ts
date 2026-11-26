@@ -6,6 +6,7 @@ import { formatDerivedKey } from "../event-group-model/event-group-labels.utilit
 import { compareNatural } from "../event-group-model/event-group-order.utilities";
 import { DERIVED_GROUP_IDS } from "../event-group-model/event-groups.constants";
 
+import { measureGroup, sortGroupEvents } from "./event-group-sort.utilities";
 import {
   DURATION_RANKS,
   NO_GROUP_RANK,
@@ -99,6 +100,11 @@ export function sortEventGroups(
   for (let node = pending.pop(); node !== undefined; node = pending.pop()) {
     node.children = node.children.toSorted(compare);
     pending.push(...node.children);
+
+    // Only the groups with no subgroup list their events, so only theirs are ordered.
+    if (node.children.length === 0) {
+      node.events = sortGroupEvents(node.events, sorts, ranks);
+    }
   }
 
   return sorted;
@@ -170,15 +176,7 @@ function compareBy(
   }
 
   // A metric orders the metric layouts' groups; events have none to measure.
-  const measure = (node: EventGroupNode): number => {
-    if (sort.key === "count") {
-      return node.count;
-    }
-
-    return sort.key === "first" ? (node.events[0]?.start.getTime() ?? 0) : 0;
-  };
-
-  return sign * (measure(left) - measure(right));
+  return sign * (measureGroup(sort.key, left) - measureGroup(sort.key, right));
 }
 
 /**

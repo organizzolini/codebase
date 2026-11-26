@@ -56,7 +56,6 @@ export {
   postgresEnvironmentSchema,
 } from "./modules/postgresql/postgresql.utilities";
 export {
-  GraphEdges,
   GraphIncomingEdges,
   GraphOutgoingEdges,
   withGeneratedEdges,

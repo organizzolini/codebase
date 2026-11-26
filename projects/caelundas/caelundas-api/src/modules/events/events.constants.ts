@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-import { TAG_INFO_SQL } from "./modules/filtering/modules/query-building/event-filter-sql.constants";
+import {
+  EVENTS_LOCAL_SQL,
+  TAG_INFO_SQL,
+} from "./modules/filtering/modules/query-building/event-filter-sql.constants";
 
 // ♟️ Constants
 
@@ -42,15 +45,13 @@ export const EVENTS_IN_PERIOD_SQL = `
   with ${TAG_INFO_SQL}
   select
     e.id,
-    e.color,
-    e.description,
     e.duration_minutes,
     e."end",
-    e."location",
+    e."name",
+    e.note,
     e."start",
     e.start_local_day,
     e.start_local_hour,
-    e."summary",
     e.timezone,
     coalesce(
       (
@@ -59,21 +60,23 @@ export const EVENTS_IN_PERIOD_SQL = `
             'depth', t.tag_depth,
             'id', t.tag_id,
             'name', t.tag_name,
-            'path', t.tag_path
+            'path', t.tag_path,
+            'slug', et_tag.slug
           )
           order by t.tag_path collate "C"
         )
         from calendar_event_tags et
         join tag_info t on t.tag_id = et.tag_id
+        join tags et_tag on et_tag.id = et.tag_id
         where et.calendar_event_id = e.id
       ),
       '[]'::json
     ) as tags {groups}
-  from calendar_event_derived_times e
+  from ${EVENTS_LOCAL_SQL} e
   where e."start" < $1::timestamptz and e."end" >= $2::timestamptz
     and {scope}
     {filter}
-  order by e."start", e."summary" collate "C", e.id
+  order by e."start", e."name" collate "C", e.id
 `;
 
 /** A tag an event carries, as {@link EVENTS_IN_PERIOD_SQL} gathers it. */
@@ -82,6 +85,7 @@ export const tagSchema = z.object({
   id: z.string(),
   name: z.string(),
   path: z.string(),
+  slug: z.string(),
 });
 
 /** The group keys of one level, gathered into a `group_<level>` column. */
@@ -96,16 +100,14 @@ export const groupKeysSchema = z.array(
 
 /** One row of the events query; grouping columns are read apart. */
 export const eventRowSchema = z.looseObject({
-  color: z.string().nullable(),
-  description: z.string(),
   duration_minutes: z.number(),
   end: z.date(),
   id: z.string(),
-  location: z.string().nullable(),
+  name: z.string(),
+  note: z.string(),
   start: z.date(),
   start_local_day: z.string(),
   start_local_hour: z.number(),
-  summary: z.string(),
   tags: z.array(tagSchema),
   timezone: z.string(),
 });
@@ -115,7 +117,7 @@ export const FACETS_SQL = `
   with ${TAG_INFO_SQL},
   in_period as (
     select e.id
-    from calendar_event_derived_times e
+    from ${EVENTS_LOCAL_SQL} e
     where e."start" < coalesce($1::timestamptz, 'infinity')
       and e."end" >= coalesce($2::timestamptz, '-infinity')
       {filter}
@@ -140,6 +142,7 @@ export const FACETS_SQL = `
     t.icon,
     t.note,
     t.rank,
+    t.slug,
     t.parent_id
   from tag_info n
   join tags t on t.id = n.tag_id
@@ -160,10 +163,8 @@ export const facetRowSchema = z.object({
   path_below_root: z.string(),
   rank: z.coerce.number().default(0),
   root_id: z.string(),
+  slug: z.string(),
 });
-
-/** Turns JIT off and widens sort memory for a transaction. */
-export const TUNING_SQL = `select set_config('jit', 'off', true), set_config('work_mem', '64MB', true)`;
 
 /** Compares text counting digits as numbers: "Harmonic 2" precedes "Harmonic 10". */
 export const NATURAL_COLLATOR = new Intl.Collator("en-US", { numeric: true });

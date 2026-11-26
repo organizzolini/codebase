@@ -8,8 +8,10 @@ import {
 
 import { CalendarGroupStrip } from "./calendar-group-strip";
 
+import type { TableGroupsValue } from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { EventGroupLevel } from "./components/event-group-model/event-groups.types";
+import type { StripFold } from "./components/strip-fold-button/strip-fold-button.types";
 
 const FACETS = [
   {
@@ -127,12 +129,13 @@ describe(CalendarGroupStrip, () => {
     expect(group.textContent).toBe("GroupType");
   });
 
-  it("labels a level that groups by a tag's children with the tag", () => {
+  it("labels a level that groups by a tag's children with the tag's own name", () => {
     renderStrip([{ field: "tag:type", parent: "aspect" }]);
 
     expect(screen.getByRole("group", { name: "Group" }).textContent).toBe(
-      "GroupType › Aspect",
+      "GroupAspect",
     );
+    expect(screen.getByTitle("Type › Aspect")).toBeDefined();
   });
 
   it("takes a level out from its ellipsis menu", async () => {
@@ -166,13 +169,23 @@ describe(CalendarGroupStrip, () => {
     expect(onGroupingChange).toHaveBeenLastCalledWith([other, TYPE]);
   });
 
-  it("adds a level from the searchable list", async () => {
+  it("returns to the default when the list ticks every tag root, here the only one", async () => {
     const { onGroupingChange } = renderStrip();
 
     fireEvent.click(screen.getByRole("button", { name: "Group" }));
     fireEvent.click(await screen.findByText("Type"));
 
-    expect(onGroupingChange).toHaveBeenCalledWith([TYPE]);
+    expect(onGroupingChange).toHaveBeenCalledWith([]);
+  });
+
+  it("holds the tag roots under a Tag row, open from the start, whose tick is the default", async () => {
+    const { onGroupingChange } = renderStrip([{ field: "day" }]);
+
+    fireEvent.click(screen.getByRole("button", { name: "Group" }));
+    fireEvent.click(await screen.findByText("Tag"));
+
+    expect(screen.getByText("Type")).toBeDefined();
+    expect(onGroupingChange).toHaveBeenCalledWith([]);
   });
 
   it.each(["month", "week", "day"] as const)(
@@ -308,5 +321,111 @@ describe(CalendarGroupStrip, () => {
     await screen.findByRole("menuitem", { name: "Remove" });
 
     expect(screen.queryByRole("menuitem", { name: "Collapse all" })).toBeNull();
+  });
+
+  describe("folding", () => {
+    const YEAR: EventGroupLevel = { field: "year" };
+
+    function renderFolded(
+      isFolded: boolean,
+      grouping: EventGroupLevel[] = [TYPE, YEAR],
+      isDefaultGrouping = false,
+    ): StripFold {
+      const fold: StripFold = {
+        isFolded,
+        onFold: vi.fn<() => void>(),
+        onUnfold: vi.fn<() => void>(),
+      };
+
+      render(
+        <CalendarGroupStrip
+          facets={FACETS}
+          fold={fold}
+          grouping={grouping}
+          isDefaultGrouping={isDefaultGrouping}
+          onGroupingChange={() => {}}
+          view="timeline"
+        />,
+      );
+
+      return fold;
+    }
+
+    it("shows the Group button and a count of its chips, and unfolds when it is pressed", () => {
+      const fold = renderFolded(true);
+      const strip = screen.getByRole("group", { name: "Group" });
+
+      expect(strip.querySelectorAll("button")).toHaveLength(2);
+      expect(screen.queryByRole("button", { name: "Type options" })).toBeNull();
+
+      const count = screen.getByRole("button", { name: /2 Facets/u });
+
+      expect(count.title).toBe("Type, Year");
+
+      fireEvent.click(count);
+
+      expect(fold.onUnfold).toHaveBeenCalledTimes(1);
+    });
+
+    it("counts the one Tags chip of the default grouping, and the groups picked in the layout", () => {
+      renderFolded(true, [], true);
+
+      expect(screen.getByRole("button", { name: /1 Facet,/u }).title).toBe(
+        "Tags",
+      );
+    });
+
+    it("counts the groups picked in the layout among the chips", () => {
+      render(
+        <TableGroupsContext
+          value={{
+            canCollapse: () => false,
+            canExpand: () => false,
+            collapseAll: () => {},
+            dispatch: vi.fn<TableGroupsValue["dispatch"]>(),
+            expandAll: () => {},
+            provided: true,
+            state: {
+              ...INITIAL_TABLE_GROUPS,
+              groupIds: ["/0:alpha"],
+              picked: [{ color: "red", id: "/0:alpha", label: "Alpha" }],
+            },
+          }}
+        >
+          <CalendarGroupStrip
+            facets={FACETS}
+            fold={{
+              isFolded: true,
+              onFold: () => {},
+              onUnfold: () => {},
+            }}
+            grouping={[TYPE]}
+            onGroupingChange={() => {}}
+            view="charts"
+          />
+        </TableGroupsContext>,
+      );
+
+      expect(screen.getByRole("button", { name: /2 Facets/u }).title).toBe(
+        "Type, Alpha",
+      );
+    });
+
+    it("folds from a chip's menu while it is unfolded", async () => {
+      const fold = renderFolded(false);
+
+      expect(screen.queryByTestId("strip-fold-button")).toBeNull();
+
+      fireEvent.click(screen.getByRole("button", { name: "Year options" }));
+      fireEvent.click(await screen.findByRole("menuitem", { name: "Fold" }));
+
+      expect(fold.onFold).toHaveBeenCalledTimes(1);
+    });
+
+    it("never folds without a fold", () => {
+      renderStrip([TYPE, YEAR]);
+
+      expect(screen.queryByTestId("strip-fold-button")).toBeNull();
+    });
   });
 });

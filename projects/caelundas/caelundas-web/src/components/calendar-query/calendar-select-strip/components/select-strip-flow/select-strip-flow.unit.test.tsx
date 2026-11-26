@@ -1,15 +1,16 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { SelectStripFlow } from "./select-strip-flow";
 import { SELECT_FLOW_CLASS_NAME } from "./select-strip-flow.constants";
 
+import type { StripFold } from "../../../calendar-group-strip/components/strip-fold-button/strip-fold-button.types";
 import type { SelectStripChip } from "./select-strip-flow.types";
 
 const CHIPS: readonly SelectStripChip[] = [
-  { content: <button type="button">One</button>, id: "one" },
-  { content: <button type="button">Two</button>, id: "two" },
-  { content: <button type="button">Three</button>, id: "three" },
+  { content: <button type="button">One</button>, id: "one", name: "One" },
+  { content: <button type="button">Two</button>, id: "two", name: "Two" },
+  { content: <button type="button">Three</button>, id: "three", name: "Three" },
 ];
 
 function renderFlow(chips: readonly SelectStripChip[]): void {
@@ -75,5 +76,60 @@ describe(SelectStripFlow, () => {
       "Base",
     );
     expect(document.querySelector("[data-strip-chip]")).toBeNull();
+  });
+
+  describe("folded", () => {
+    function renderFolded(isFolded: boolean, chips = CHIPS): StripFold {
+      const fold: StripFold = {
+        isFolded,
+        onFold: vi.fn<() => void>(),
+        onUnfold: vi.fn<() => void>(),
+      };
+
+      render(
+        <SelectStripFlow
+          chips={chips}
+          fold={fold}
+          label="Select"
+          trigger={<button type="button">Base</button>}
+        />,
+      );
+
+      return fold;
+    }
+
+    it("shows the base button and a count of the chips, and no chip", () => {
+      renderFolded(true);
+
+      const base = screen.getByRole("group", { name: "Select" });
+
+      expect(base.querySelectorAll("button")).toHaveLength(2);
+      expect(base.textContent).toBe("Base3 Facets");
+      expect(screen.getByTestId("strip-fold-button").title).toBe(
+        "One, Two, Three",
+      );
+      expect(document.querySelector("[data-strip-chip]")).toBeNull();
+    });
+
+    it("unfolds when the count is pressed", () => {
+      const fold = renderFolded(true);
+
+      fireEvent.click(screen.getByTestId("strip-fold-button"));
+
+      expect(fold.onUnfold).toHaveBeenCalledTimes(1);
+    });
+
+    it("shows every chip while unfolded", () => {
+      renderFolded(false);
+
+      expect(screen.queryByTestId("strip-fold-button")).toBeNull();
+      expect(document.querySelectorAll("[data-strip-chip]")).toHaveLength(2);
+    });
+
+    it("stays plain with no chip to fold", () => {
+      renderFolded(true, []);
+
+      expect(screen.queryByTestId("strip-fold-button")).toBeNull();
+    });
   });
 });

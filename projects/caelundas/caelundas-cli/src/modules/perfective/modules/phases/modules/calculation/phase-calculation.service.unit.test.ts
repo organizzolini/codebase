@@ -72,6 +72,25 @@ describe(PhaseCalculationService, () => {
     ).toBe(true);
   });
 
+  it("finds opposition where the planet's gap from the Sun falls through 180°", () => {
+    mathService.normalizeDegrees.mockImplementation(
+      (degrees) => ((degrees % 360) + 360) % 360,
+    );
+    const at = (previous: number, current: number): boolean =>
+      service.isOpposition({
+        currentLongitudePlanet: current,
+        currentLongitudeSun: 0,
+        previousLongitudePlanet: previous,
+        previousLongitudeSun: 0,
+      });
+
+    expect(at(180.01, 179.99)).toBe(true);
+    expect(at(181, 182)).toBe(false);
+    expect(at(179, 178)).toBe(false);
+    expect(at(0.01, 359.99)).toBe(false);
+    expect(at(359.99, 0.01)).toBe(false);
+  });
+
   it("evaluates elongation maxima from previous/current/next angular separations", () => {
     mathService.getAngularSeparation
       .mockReturnValueOnce(11)

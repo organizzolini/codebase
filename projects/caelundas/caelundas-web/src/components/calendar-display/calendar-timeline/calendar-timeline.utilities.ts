@@ -1,6 +1,7 @@
 import { createElement } from "react";
 
 import { getEventLabel } from "../../calendar-events/event-glyphs/components/calendar-glyphs/calendar-glyphs.utilities";
+import { pruneEmptyEventGroups } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-prune.utilities";
 import {
   buildEventGroups,
   sortEventGroups,
@@ -105,6 +106,10 @@ export function toTimelineRows(
   grouping: EventGrouping,
   options: Readonly<{
     fields: readonly EventGroupField[];
+    /**
+     * Leaves out groups with no events; shown when absent.
+     */
+    hideEmpty?: boolean | undefined;
     ranks?: TagRanks | undefined;
     sort?: readonly GroupSort[] | undefined;
     /**
@@ -113,21 +118,24 @@ export function toTimelineRows(
     tagColors?: ReadonlyMap<string, string> | undefined;
   }>,
 ): TimelineRows {
-  const { fields, ranks, sort, tagColors } = options;
+  const { fields, hideEmpty = false, ranks, sort, tagColors } = options;
 
   if (grouping.length === 0) {
     return toUngroupedRows(events);
   }
 
-  const roots = sortEventGroups(
+  const sorted = sortEventGroups(
     buildEventGroups(events, grouping, fields),
     sort,
     ranks,
   );
+  // Colored before any group is left out, so the ones that stay keep theirs.
+  const roots = hideEmpty ? pruneEmptyEventGroups(sorted) : sorted;
   const layout: RowLayout = {
     children: new Map(),
     colors:
-      tagColors === undefined ? undefined : createNodeColors(roots, tagColors),
+      tagColors === undefined ? undefined : createNodeColors(sorted, tagColors),
+    counts: new Map(),
     groups: new Map(),
     members: new Map(),
   };
@@ -147,7 +155,7 @@ export function toTimelineRows(
   }
 
   return {
-    counts: countMembers(layout.members),
+    counts: layout.counts,
     events: bars,
     groups: layout.groups,
     resources,
@@ -225,17 +233,6 @@ function addEventsRow(row: PendingGroup["parent"]): { id: string } {
 }
 
 /**
- * How many events each row holds.
- */
-function countMembers(
-  members: ReadonlyMap<string, ReadonlySet<string>>,
-): Map<string, number> {
-  return new Map(
-    [...members.entries()].map(([id, ids]) => [id, ids.size] as const),
-  );
-}
-
-/**
  * Finds or adds one group's path rows under its parent, noting the group's events; a row with nothing nested stays a plain row.
  */
 function placeGroupRows(
@@ -247,11 +244,10 @@ function placeGroupRows(
 
   for (const [index, name] of node.path.entries()) {
     const id = `${parent.id}/${String(node.level)}:${node.path.slice(0, index + 1).join(" / ")}`;
-    let children = layout.children.get(id);
+    const children = layout.children.get(id) ?? [];
     const ids = layout.members.get(id) ?? new Set<string>();
 
-    if (children === undefined) {
-      children = [];
+    if (!layout.children.has(id)) {
       row.children.push({ children, id, title: name });
       layout.children.set(id, children);
     }
@@ -261,6 +257,7 @@ function placeGroupRows(
     }
 
     layout.members.set(id, ids);
+    layout.counts.set(id, ids.size);
     layout.groups.set(id, toTimelineGroup(node, index, layout.colors));
     row = { children, id };
   }

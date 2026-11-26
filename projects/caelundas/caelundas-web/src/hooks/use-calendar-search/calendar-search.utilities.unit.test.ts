@@ -38,12 +38,11 @@ describe(validateCalendarSearch, () => {
     }
   });
 
-  it("reads merging turned off, and leaves it on for anything else", () => {
-    expect(validateCalendarSearch({ clusters: false }).clusters).toBe(false);
-    expect(validateCalendarSearch({ clusters: "false" }).clusters).toBe(false);
-
-    for (const clusters of [undefined, true, "true", 0, null]) {
-      expect(validateCalendarSearch({ clusters }).clusters).toBeUndefined();
+  it("ignores the retired clusters parameter of an old link", () => {
+    for (const clusters of [false, "false", true, "true", 0, null]) {
+      expect(validateCalendarSearch({ clusters })).not.toHaveProperty(
+        "clusters",
+      );
     }
   });
 
@@ -146,18 +145,31 @@ describe(validateCalendarSearch, () => {
     );
   });
 
-  it("reads the metrics as a list or one name, dropping names it does not know", () => {
+  it("reads the metrics as a list or one slug, dropping what is no slug", () => {
     expect(
-      validateCalendarSearch({ metrics: ["SPANS", "STALE", "EVENTS"] }).metrics,
-    ).toStrictEqual(["SPANS", "EVENTS"]);
-    expect(validateCalendarSearch({ metrics: "EVENTS" }).metrics).toStrictEqual(
-      ["EVENTS"],
+      validateCalendarSearch({
+        metrics: ["progressive-events", "STALE", "events"],
+      }).metrics,
+    ).toStrictEqual(["progressive-events", "events"]);
+    expect(validateCalendarSearch({ metrics: "events" }).metrics).toStrictEqual(
+      ["events"],
     );
     expect(
       validateCalendarSearch({ metrics: ["STALE"] }).metrics,
     ).toBeUndefined();
     expect(validateCalendarSearch({ metrics: [] }).metrics).toBeUndefined();
     expect(validateCalendarSearch({}).metrics).toBeUndefined();
+  });
+
+  it("reads an old metric name in a link as its slug, once", () => {
+    expect(
+      validateCalendarSearch({
+        metrics: ["TOTAL_DURATION_MINUTES", "duration", "PROGRESSIVE_HOURS"],
+      }).metrics,
+    ).toStrictEqual(["duration"]);
+    expect(
+      validateCalendarSearch({ metrics: "TOTAL_DURATION_MINUTES" }).metrics,
+    ).toStrictEqual(["duration"]);
   });
 
   it("reads the comparison turned on, and leaves it off for anything else", () => {
@@ -169,12 +181,32 @@ describe(validateCalendarSearch, () => {
     }
   });
 
-  it("reads a sort by a metric, and forgets a metric that is not a name", () => {
+  it("reads hiding empty groups turned on, and leaves it off for anything else", () => {
+    expect(validateCalendarSearch({ hideEmpty: true }).hideEmpty).toBe(true);
+    expect(validateCalendarSearch({ hideEmpty: "true" }).hideEmpty).toBe(true);
+
+    for (const hideEmpty of [undefined, false, "false", 1, null, "yes"]) {
+      expect(validateCalendarSearch({ hideEmpty }).hideEmpty).toBeUndefined();
+    }
+  });
+
+  it("reads a sort by a metric, an old name as its slug, and forgets a metric that is no slug", () => {
+    expect(
+      validateCalendarSearch({
+        sort: [
+          { direction: "desc", key: "metric", metric: "progressive-events" },
+        ],
+      }).sort,
+    ).toStrictEqual([
+      { direction: "desc", key: "metric", metric: "progressive-events" },
+    ]);
     expect(
       validateCalendarSearch({
         sort: [{ direction: "desc", key: "metric", metric: "SPANS" }],
       }).sort,
-    ).toStrictEqual([{ direction: "desc", key: "metric", metric: "SPANS" }]);
+    ).toStrictEqual([
+      { direction: "desc", key: "metric", metric: "progressive-events" },
+    ]);
     expect(
       validateCalendarSearch({
         sort: [{ direction: "asc", key: "metric", metric: 3 }],
@@ -182,9 +214,24 @@ describe(validateCalendarSearch, () => {
     ).toBeUndefined();
   });
 
-  it("keeps the metrics and the comparison out of what decides a reload", () => {
-    expect(getCalendarReloadKey({ compare: true, metrics: ["SPANS"] })).toBe(
-      getCalendarReloadKey({ metrics: ["EVENTS"] }),
+  it("keeps the metrics, comparison, hidden groups and folded strips out of what decides a reload", () => {
+    expect(
+      getCalendarReloadKey({
+        compare: true,
+        fold: "select",
+        hideEmpty: true,
+        metrics: ["SPANS"],
+      }),
+    ).toBe(getCalendarReloadKey({ metrics: ["EVENTS"] }));
+  });
+
+  it("reads the folded strips in the strips' order, ignoring what it does not know", () => {
+    expect(validateCalendarSearch({ fold: "sort,select" }).fold).toBe(
+      "select,sort",
     );
+    expect(validateCalendarSearch({ fold: "group,nope" }).fold).toBe("group");
+    expect(validateCalendarSearch({ fold: "nope" }).fold).toBeUndefined();
+    expect(validateCalendarSearch({ fold: 3 }).fold).toBeUndefined();
+    expect(validateCalendarSearch({}).fold).toBeUndefined();
   });
 });

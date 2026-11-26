@@ -13,14 +13,13 @@ function event(id: string, minute: number, path = SQUARE): CalendarEventRecord {
 
   return {
     color: null,
-    description: id,
     durationMinutes: 0,
     end: at,
     groups: [],
     id,
-    location: null,
+    name: id,
+    note: id,
     start: at,
-    summary: id,
     tags: [{ depth: 4, id: `tag-${id}`, name: "Square", path }],
     timezone: "UTC",
   };
@@ -31,12 +30,11 @@ const EVENTS = [event("a", 0), event("b", 5), event("c", 10)];
 
 function shown(
   view: CalendarViewName,
-  overrides: { compact?: boolean; enabled?: boolean } = {},
+  overrides: { compact?: boolean } = {},
 ): string[] {
   const { result } = renderHook(() =>
     useCalendarClusters({
       anchor: new Date(Date.UTC(2026, 2, 4)),
-      enabled: true,
       events: EVENTS,
       timeZone: "UTC",
       view,
@@ -52,7 +50,6 @@ describe(useCalendarClusters, () => {
     const { result } = renderHook(() =>
       useCalendarClusters({
         anchor: new Date(Date.UTC(2026, 2, 4)),
-        enabled: true,
         events: [],
         timeZone: "UTC",
         view: "week",
@@ -78,8 +75,7 @@ describe(useCalendarClusters, () => {
     expect(shown("day", { compact: true })).toStrictEqual(["cluster:a"]);
   });
 
-  it("merges nothing when merging is off or the view has its own overflow", () => {
-    expect(shown("week", { enabled: false })).toStrictEqual(["a", "b", "c"]);
+  it("merges nothing in a view that has its own overflow", () => {
     expect(shown("month")).toStrictEqual(["a", "b", "c"]);
   });
 
@@ -87,7 +83,6 @@ describe(useCalendarClusters, () => {
     const { result } = renderHook(() =>
       useCalendarClusters({
         anchor: new Date(Date.UTC(2026, 2, 4)),
-        enabled: true,
         events: EVENTS,
         timeZone: "UTC",
         view: "week",

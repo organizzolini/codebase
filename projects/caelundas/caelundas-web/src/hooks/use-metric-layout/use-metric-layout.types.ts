@@ -3,6 +3,7 @@
 import type { CalendarNavigation } from "../../components/calendar-controls/calendar-navigation-group/calendar-navigation-group.types";
 import type {
   EventMetricsData,
+  MetricGroup,
   MetricNode,
 } from "../../components/calendar-display/calendar-metrics/calendar-metrics.types";
 import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
@@ -12,6 +13,10 @@ import type { UseEventMetricsOptions } from "./hooks/use-event-metrics/use-event
  * The metrics' options, the sorts, and what the toolbar and date move.
  */
 export interface UseMetricLayoutOptions extends UseEventMetricsOptions {
+  /**
+   * Leaves out groups with no events; shown when absent.
+   */
+  hideEmpty?: boolean | undefined;
   onDateChange: (date: Date) => void;
   onNavigationChange: (navigation: CalendarNavigation) => void;
   /**
@@ -25,6 +30,10 @@ export interface UseMetricLayoutOptions extends UseEventMetricsOptions {
  * What a layout draws: the data, its groups, how to open one.
  */
 export interface UseMetricLayoutResult {
+  /**
+   * Every group, empty ones too, which colors are shaped from.
+   */
+  colorGroups: readonly MetricGroup[];
   /**
    * The metrics read, the last answer kept while the next loads; its groups are sorted.
    */

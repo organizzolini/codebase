@@ -74,25 +74,25 @@ describe(NightSkyService, () => {
 
     await expect(
       database.dataSource.query(
-        `select hip, magnitude from stars order by hip`,
+        `select hipparcos_number, magnitude from stars order by hipparcos_number`,
       ),
     ).resolves.toStrictEqual([
-      { hip: "53910", magnitude: 2.3 },
-      { hip: "54061", magnitude: 1.8 },
+      { hipparcos_number: "53910", magnitude: 2.3 },
+      { hipparcos_number: "54061", magnitude: 1.8 },
     ]);
     await expect(
       database.dataSource.query(
-        `select designation, name, zodiac from constellations`,
+        `select designation, name, is_zodiac from constellations`,
       ),
     ).resolves.toStrictEqual([
-      { designation: "UMa", name: "Ursa Major", zodiac: false },
+      { designation: "UMa", is_zodiac: false, name: "Ursa Major" },
     ]);
     await expect(
       database.dataSource.query(
-        `select constellation_designation, from_hip, to_hip from constellation_edges`,
+        `select constellation_id, source_node, target_node from constellation_edges`,
       ),
     ).resolves.toStrictEqual([
-      { constellation_designation: "UMa", from_hip: "54061", to_hip: "53910" },
+      { constellation_id: "UMa", source_node: "54061", target_node: "53910" },
     ]);
   });
 

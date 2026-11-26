@@ -12,15 +12,6 @@ import { CalendarEventTagEntity } from "./calendar-event-tag.entities";
  */
 @ObjectType("CalendarEvent")
 export class CalendarEventEntity {
-  @Field(() => String, {
-    description: "The event's color, when it has one.",
-    nullable: true,
-  })
-  color!: null | string;
-
-  @Field(() => String, { description: "What the event is, in full." })
-  description!: string;
-
   @Field(() => Int, {
     description: "Whole minutes from start to end, 0 for an instant.",
   })
@@ -39,10 +30,12 @@ export class CalendarEventEntity {
   id!: string;
 
   @Field(() => String, {
-    description: "Where the event is observed from, when it says.",
-    nullable: true,
+    description: "What the event is, such as Mars Retrograde.",
   })
-  location!: null | string;
+  name!: string;
+
+  @Field(() => String, { description: "A sentence or so of detail about it." })
+  note!: string;
 
   @Field(() => Date, { description: "When the event starts, as an instant." })
   start!: Date | string;
@@ -57,9 +50,6 @@ export class CalendarEventEntity {
     description: "The hour from 0 to 23 the event starts in in its own zone.",
   })
   startLocalHour!: number;
-
-  @Field(() => String, { description: "A short title for the event." })
-  summary!: string;
 
   @Field(() => [CalendarEventTagEntity], {
     description: "The tags the event was given, in path order.",

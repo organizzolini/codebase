@@ -12,14 +12,13 @@ describe(CalendarEventRow, () => {
         className="calendar-event-row"
         record={{
           color: null,
-          description: "Mars and Venus meet",
           durationMinutes: 0,
           end: new Date("2026-03-04T15:20:00.000Z"),
           groups: [],
           id: "event-mars-conjunct-venus",
-          location: null,
+          name: "Mars Conjunct Venus",
+          note: "Mars and Venus meet",
           start: new Date("2026-03-04T15:20:00.000Z"),
-          summary: "Mars Conjunct Venus",
           tags: [],
           timezone: "America/New_York",
         }}
@@ -34,14 +33,13 @@ describe(CalendarEventRow, () => {
 
   const symbolic = {
     color: null,
-    description: "Mars Conjunct Venus",
     durationMinutes: 0,
     end: new Date("2026-03-04T15:20:00.000Z"),
     groups: [],
     id: "event-mars-conjunct-venus",
-    location: null,
+    name: "♂️☌♀️ Mars Conjunct Venus",
+    note: "Mars Conjunct Venus",
     start: new Date("2026-03-04T15:20:00.000Z"),
-    summary: "♂️☌♀️ Mars Conjunct Venus",
     tags: [],
     timezone: "America/New_York",
   };

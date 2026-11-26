@@ -20,9 +20,9 @@ const LISTING = [
   { name: "Orion", zodiac: false },
 ];
 const CHOICES: DisplayChoices = {
-  clusters: true,
   colors: true,
   compare: false,
+  hideEmpty: false,
   listing: LISTING,
   sky: readNightSkyOverrides({}),
   symbols: "glyphs",
@@ -52,9 +52,9 @@ function apply(
  */
 function createHandlers(): UseCalendarDisplayResult["handlers"] {
   return {
-    handleClustersChange: vi.fn<(enabled: boolean) => void>(),
     handleColorsChange: vi.fn<(enabled: boolean) => void>(),
     handleCompareChange: vi.fn<(enabled: boolean) => void>(),
+    handleHideEmptyChange: vi.fn<(enabled: boolean) => void>(),
     handleScaleChange: vi.fn<() => void>(),
     handleSymbolsChange: vi.fn<() => void>(),
     handleViewChange: vi.fn<() => void>(),
@@ -90,10 +90,10 @@ describe("calendar-display-menu utilities", () => {
       ).toStrictEqual([]);
     });
 
-    it("offers Symbols, Colors, Crowded days and Skyfield, with no Layout", () => {
+    it("offers Symbols, Colors and Skyfield, with no Layout and no Crowded days", () => {
       expect(
         createDisplayItems({ listing: LISTING }).map((item) => item.label),
-      ).toStrictEqual(["Symbols", "Colors", "Crowded days", "Skyfield"]);
+      ).toStrictEqual(["Symbols", "Colors", "Skyfield"]);
     });
 
     it("offers Compare to previous period only for the metric layouts", () => {
@@ -131,7 +131,30 @@ describe("calendar-display-menu utilities", () => {
       const values = items.map((item) => item.value);
 
       expect(values).toContain("colors");
-      expect(values).toContain("clusters");
+      expect(values).not.toContain("clusters");
+    });
+
+    it("offers Hide empty groups, described, on the layouts that group", () => {
+      for (const view of ["table", "timeline", "charts", "totals"] as const) {
+        const option = createDisplayItems({ listing: LISTING, view }).find(
+          (item) => item.value === "hideEmpty",
+        );
+
+        expect(option?.label).toBe("Hide empty groups");
+        expect(option?.description).toContain("no events");
+      }
+
+      for (const view of ["month", "week", "day"] as const) {
+        const values = createDisplayItems({ listing: LISTING, view }).map(
+          (item) => item.value,
+        );
+
+        expect(values).not.toContain("hideEmpty");
+      }
+
+      expect(
+        createDisplayItems({ listing: LISTING }).map((item) => item.value),
+      ).not.toContain("hideEmpty");
     });
 
     it("nests the sky's settings and figures under Skyfield", () => {
@@ -168,7 +191,6 @@ describe("calendar-display-menu utilities", () => {
 
       for (const leaf of [
         "symbols:glyphs",
-        "clusters",
         "colors",
         "constellations:all",
         "sky:visible",
@@ -190,10 +212,27 @@ describe("calendar-display-menu utilities", () => {
       ).not.toContain("compare");
     });
 
+    it("ticks hiding empty groups only on the layouts that group", () => {
+      for (const view of ["table", "timeline", "charts", "totals"] as const) {
+        expect(toDisplayValue({ ...CHOICES, hideEmpty: true, view })).toContain(
+          "hideEmpty",
+        );
+      }
+
+      for (const view of ["month", "week", "day"] as const) {
+        expect(
+          toDisplayValue({ ...CHOICES, hideEmpty: true, view }),
+        ).not.toContain("hideEmpty");
+      }
+
+      expect(toDisplayValue({ ...CHOICES, view: "table" })).not.toContain(
+        "hideEmpty",
+      );
+    });
+
     it("leaves out what is off", () => {
       const value = toDisplayValue({
         ...CHOICES,
-        clusters: false,
         colors: false,
         sky: readNightSkyOverrides({
           skyfield: "off",
@@ -202,7 +241,6 @@ describe("calendar-display-menu utilities", () => {
         view: "week",
       });
 
-      expect(value).not.toContain("clusters");
       expect(value).not.toContain("colors");
       expect(value).not.toContain("sky:visible");
       expect(value).not.toContain("sky:ecliptic");
@@ -245,12 +283,6 @@ describe("calendar-display-menu utilities", () => {
       ).not.toHaveBeenCalled();
     });
 
-    it("flips a switch from what it is now", () => {
-      expect(
-        apply("clusters").handlers.handleClustersChange,
-      ).toHaveBeenCalledWith(false);
-    });
-
     it("flips colors from what they are now", () => {
       expect(apply("colors").handlers.handleColorsChange).toHaveBeenCalledWith(
         false,
@@ -259,6 +291,16 @@ describe("calendar-display-menu utilities", () => {
         apply("colors", { ...CHOICES, colors: false }).handlers
           .handleColorsChange,
       ).toHaveBeenCalledWith(true);
+    });
+
+    it("flips hiding empty groups from what it is now", () => {
+      expect(
+        apply("hideEmpty").handlers.handleHideEmptyChange,
+      ).toHaveBeenCalledWith(true);
+      expect(
+        apply("hideEmpty", { ...CHOICES, hideEmpty: true }).handlers
+          .handleHideEmptyChange,
+      ).toHaveBeenCalledWith(false);
     });
 
     it("flips the comparison from what it is now", () => {

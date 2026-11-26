@@ -6,6 +6,7 @@ import {
   flattenGroupRuns,
   iconGroupRun,
   labelGroupRun,
+  pathGroupRun,
 } from "../../calendar-group-strip-runs.utilities";
 import { getCollapseHandlers } from "../../calendar-group-strip.utilities";
 import { moveListItem } from "../chip-menu/chip-menu.utilities";
@@ -104,11 +105,19 @@ export function GroupRunChips(
                   );
                 }
           }
+          onOnly={
+            runs.length === 1
+              ? undefined
+              : () => {
+                  onGroupingChange(flattenGroupRuns([run]));
+                }
+          }
           onRemove={() => {
             onGroupingChange(
               flattenGroupRuns(runs.filter((_other, at) => at !== index)),
             );
           }}
+          title={pathGroupRun(run, fields)}
         />
       ))}
     </Fragment>

@@ -1,5 +1,7 @@
 // ♟️ Constants
 
+import { SOLAR_INTERVAL_NAMES } from "../../../perfective/modules/annual-solar-cycle/annual-solar-cycle.constants";
+
 /**
  * Each node's children in rank order, by parent path; roots under "".
  */
@@ -63,7 +65,7 @@ export const TAG_CHILD_RANKS: Readonly<Record<string, readonly string[]>> = {
     "Lunar Perigee",
   ],
   Daily: ["Solar Cycle", "Lunar Cycle", "Twilight", "Time of Day"],
-  "Daily / Lunar Cycle": ["Rise", "Zenith", "Set", "Nadir"],
+  "Daily / Lunar Cycle": ["Rise", "Zenith", "Set", "Nadir", "Moon Up"],
   "Daily / Solar Cycle": ["Rise", "Zenith", "Set", "Nadir"],
   "Daily / Time of Day": ["Morning", "Evening"],
   "Daily / Twilight": [
@@ -84,7 +86,7 @@ export const TAG_CHILD_RANKS: Readonly<Record<string, readonly string[]>> = {
   "Eclipse / Phase": ["Beginning", "Maximum", "Ending"],
   "Eclipse / Solar": ["Total", "Annular", "Partial"],
   Lunar: ["Monthly Cycle", "Apsides"],
-  "Lunar / Apsides": ["Perigee", "Apogee"],
+  "Lunar / Apsides": ["Perigee", "Apogee", "Advancing", "Retreating"],
   "Lunar / Monthly Cycle": [
     "New",
     "Waxing Crescent",
@@ -100,6 +102,7 @@ export const TAG_CHILD_RANKS: Readonly<Record<string, readonly string[]>> = {
     "Station Retrograde",
     "Station Direct",
     "Retrograde Period",
+    "Direct Period",
   ],
   "Planetary / Phase": ["Mercurian", "Venusian", "Martian"],
   Solar: ["Annual Cycle", "Season"],
@@ -108,11 +111,13 @@ export const TAG_CHILD_RANKS: Readonly<Record<string, readonly string[]>> = {
     "Equinox",
     "Cross-Quarter Day",
     "Hexadecan",
+    "Interval",
     "Perihelion",
     "Aphelion",
     "Advancing",
     "Retreating",
   ],
+  "Solar / Annual Cycle / Interval": SOLAR_INTERVAL_NAMES,
   "Solar / Season": ["Spring", "Summer", "Autumn", "Winter"],
   Temporality: ["Perfective", "Progressive"],
   Zodiac: [
@@ -121,6 +126,7 @@ export const TAG_CHILD_RANKS: Readonly<Record<string, readonly string[]>> = {
     "Modality",
     "Polarity",
     "Decan",
+    "Peak",
     "Dignity",
     "Ingress",
   ],
@@ -137,9 +143,12 @@ export const TAG_CHILD_RANKS: Readonly<Record<string, readonly string[]>> = {
     "Sign Ingress",
     "Sign Transit",
     "Decan Ingress",
+    "Decan Transit",
     "Peak Ingress",
+    "Peak Transit",
   ],
   "Zodiac / Modality": ["Cardinal", "Fixed", "Mutable"],
+  "Zodiac / Peak": ["Before Peak", "After Peak"],
   "Zodiac / Polarity": ["Positive", "Negative"],
   "Zodiac / Sign": [
     "Aries",

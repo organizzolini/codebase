@@ -1,15 +1,12 @@
-import { METRIC_CATALOG } from "../calendar-metrics/calendar-metrics.constants";
-
 import {
   DURATION_UNITS,
-  HOUR_MINUTES,
   PERCENT_SCALE,
   SMALLEST_UNIT,
   TICK_FORMAT,
   TICK_GAPS,
 } from "./calendar-charts.constants";
 
-import type { EventMetric } from "../../../graphql/generated/operations";
+import type { MetricDescriptor } from "../calendar-metrics/calendar-metrics.types";
 import type {
   ChartAxis,
   ChartBar,
@@ -22,26 +19,22 @@ import type {
  * A value axis: a share's whole; for a duration, whole ticks in the unit its biggest value calls for; else to the biggest value.
  */
 export function buildChartAxis(
-  metric: EventMetric,
+  metric: Readonly<MetricDescriptor>,
   maximum: number,
 ): ChartAxis {
-  const { format } = METRIC_CATALOG[metric];
-
-  if (format === "percent") {
+  if (metric.unit === "NONE") {
     return { domain: [0, PERCENT_SCALE], ticks: undefined, unit: undefined };
   }
 
-  if (format !== "duration" && format !== "hours") {
+  if (metric.unit !== "DURATION") {
     return { domain: [0, "auto"], ticks: undefined, unit: undefined };
   }
 
-  const scale = findMinutesPerValue(metric);
-  const peak = maximum * scale;
-  const unit = pickDurationUnit(peak);
-  const count = peak / unit.minutes;
+  const unit = pickDurationUnit(maximum);
+  const count = maximum / unit.minutes;
   const step = pickTickStep(count / TICK_GAPS);
   const gaps = Math.max(1, Math.ceil(count / step));
-  const spacing = (step * unit.minutes) / scale;
+  const spacing = step * unit.minutes;
   const ticks = Array.from(
     { length: gaps + 1 },
     (_value, index) => index * spacing,
@@ -73,27 +66,20 @@ export function findChartMaximum(bars: readonly ChartBar[]): number {
  * A tick of the value axis kept short: counts compact, durations in the axis's unit, shares as percents.
  */
 export function formatChartTick(
-  metric: EventMetric,
+  metric: Readonly<MetricDescriptor>,
   value: number,
   unit?: DurationUnit,
 ): string {
   if (unit !== undefined) {
-    return `${TICK_FORMAT.format((value * findMinutesPerValue(metric)) / unit.minutes)} ${unit.label}`;
+    return `${TICK_FORMAT.format(value / unit.minutes)} ${unit.label}`;
   }
 
-  return METRIC_CATALOG[metric].format === "percent"
+  return metric.unit === "NONE"
     ? `${TICK_FORMAT.format(value)}%`
     : TICK_FORMAT.format(value);
 }
 
 // 🌎 Public Functions
-
-/**
- * How many minutes one of a metric's values is: an hour's worth for hours, else one.
- */
-function findMinutesPerValue(metric: EventMetric): number {
-  return METRIC_CATALOG[metric].format === "hours" ? HOUR_MINUTES : 1;
-}
 
 /**
  * The largest unit the value holds at least twice over, else the smallest.

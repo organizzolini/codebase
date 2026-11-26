@@ -1,8 +1,6 @@
 // ♟️ Constants
 
-/**
- * A node's lucide icon slug and note, by its path joined with ` / `.
- */
+/** A node's icon slug and note, by path. */
 export const TAG_METADATA: Readonly<
   Record<string, readonly [icon: string, note: string]>
 > = {
@@ -57,6 +55,10 @@ export const TAG_METADATA: Readonly<
   "Daily / Lunar Cycle": [
     "moon",
     "The Moon's day: rise, zenith, set and nadir.",
+  ],
+  "Daily / Lunar Cycle / Moon Up": [
+    "moon",
+    "The Moon is above the horizon, from moonrise to moonset.",
   ],
   "Daily / Lunar Cycle / Nadir": [
     "arrow-down-to-line",
@@ -125,6 +127,10 @@ export const TAG_METADATA: Readonly<
     "compass",
     "A planet's apparent direction against the stars.",
   ],
+  "Planetary / Direction / Direct Period": [
+    "rotate-cw",
+    "The span a planet moves forward.",
+  ],
   "Planetary / Direction / Retrograde Period": [
     "rotate-ccw",
     "The span a planet moves backward.",
@@ -162,6 +168,10 @@ export const TAG_METADATA: Readonly<
     "grid-2x2",
     "The sixteen divisions of the year.",
   ],
+  "Solar / Annual Cycle / Interval": [
+    "ruler",
+    "The sixteen spans between the year's points, each after a named point or before the next.",
+  ],
   "Solar / Annual Cycle / Solstice": [
     "sun-medium",
     "The longest and shortest days.",
@@ -187,10 +197,17 @@ export const TAG_METADATA: Readonly<
   "Zodiac / Element / Earth": ["mountain", "Taurus, Virgo and Capricorn."],
   "Zodiac / Element / Fire": ["flame", "Aries, Leo and Sagittarius."],
   "Zodiac / Element / Water": ["droplets", "Cancer, Scorpio and Pisces."],
-  "Zodiac / Ingress": ["log-in", "A body enters a sign, or a decan of one."],
+  "Zodiac / Ingress": [
+    "log-in",
+    "A body enters a sign, or a decan of one, and its stay there.",
+  ],
   "Zodiac / Modality": [
     "repeat",
     "The modality of a sign: cardinal, fixed or mutable.",
+  ],
+  "Zodiac / Peak": [
+    "split",
+    "Which side of a sign's peak, at 15°, a body is on.",
   ],
   "Zodiac / Polarity": [
     "plus",
@@ -199,14 +216,13 @@ export const TAG_METADATA: Readonly<
   "Zodiac / Sign": ["star", "The zodiac sign a body is in."],
 };
 
-/**
- * An icon by a node's last name, where its family's says too little.
- */
+/** An icon by a node's last name, when its family's is vague. */
 export const TAG_ICON_BY_NAME: Readonly<Record<string, string>> = {
   Advancing: "arrow-right",
   Aphelion: "arrow-up-right",
   Autumn: "leaf",
   Beginning: "circle-play",
+  Closing: "fold-horizontal",
   Dawn: "sunrise",
   Daylight: "sun",
   Detriment: "trending-down",
@@ -233,5 +249,6 @@ export const TAG_ICON_BY_NAME: Readonly<Record<string, string>> = {
   Summer: "sun",
   Sun: "sun",
   Total: "circle",
+  Widening: "unfold-horizontal",
   Winter: "snowflake",
 };

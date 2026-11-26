@@ -7,27 +7,58 @@ import {
   TableGroupsContext,
   UNPROVIDED_TABLE_GROUPS,
 } from "../../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.constants";
+import { buildEventGroups } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.utilities";
 
 import { useTableRows } from "./use-table-rows";
 
 import type { TableGroupsAction } from "../../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.types";
 import type { CalendarEventRecord } from "../../components/calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
+import type { EventGroupNode } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { UseTableRowsOptions } from "./use-table-rows.types";
 import type { ReactNode } from "react";
+
+// Events can only build groups that hold some, so a group with none is handed the table by the tree builder.
+vi.mock(
+  import("../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.utilities"),
+  async (importOriginal) => {
+    const original = await importOriginal();
+
+    return { ...original, buildEventGroups: vi.fn(original.buildEventGroups) };
+  },
+);
+
+/**
+ * A group of the tree, with the events it holds and its subgroups.
+ */
+function node(
+  id: string,
+  events: CalendarEventRecord[],
+  children: EventGroupNode[] = [],
+): EventGroupNode {
+  return {
+    children,
+    count: events.length,
+    events,
+    id,
+    key: id,
+    label: id,
+    level: 0,
+    path: [id],
+  };
+}
 
 function record(index: number): CalendarEventRecord {
   const at = new Date(Date.UTC(2026, 2, 4, 0, index));
 
   return {
     color: null,
-    description: "",
     durationMinutes: 0,
     end: at,
     groups: [],
     id: `event-${String(index)}`,
-    location: null,
+    name: `Event ${String(index)}`,
+    note: "",
     start: at,
-    summary: `Event ${String(index)}`,
     tags: [],
     timezone: "UTC",
   };
@@ -173,5 +204,39 @@ describe(useTableRows, () => {
     expect(
       result.current.rows.filter((row) => row.kind === "event"),
     ).toHaveLength(20);
+  });
+
+  describe("hiding empty groups", () => {
+    const grouped: UseTableRowsOptions = {
+      ...OPTIONS,
+      grouping: [{ field: "year" }],
+    };
+
+    /**
+     * The ids of the group rows, in order.
+     */
+    function listGroupRows(options: UseTableRowsOptions): string[] {
+      vi.mocked(buildEventGroups).mockReturnValueOnce([
+        node("full", [record(0), record(1)]),
+        node("empty", []),
+        node("hollow", [], [node("hollow-a", []), node("hollow-b", [])]),
+      ]);
+
+      const { result } = renderHook(() => useTableRows(options));
+
+      return result.current.rows.flatMap((row) =>
+        row.kind === "group" ? [row.id] : [],
+      );
+    }
+
+    it("shows every group, empty ones too, until asked", () => {
+      expect(listGroupRows(grouped)).toStrictEqual(["full", "empty", "hollow"]);
+    });
+
+    it("leaves out the groups with no events, and those with only empty subgroups", () => {
+      expect(listGroupRows({ ...grouped, hideEmpty: true })).toStrictEqual([
+        "full",
+      ]);
+    });
   });
 });

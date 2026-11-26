@@ -7,10 +7,10 @@ export const CALENDAR_VIEWS = [
   "month",
   "week",
   "day",
+  "timeline",
   "table",
   "charts",
   "totals",
-  "timeline",
 ] as const;
 
 /**

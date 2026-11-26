@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createChartBar } from "../../../../../../testing/chart-bars";
 import { stubChartSize } from "../../../../../../testing/chart-size";
+import { getMetric } from "../../../../../../testing/metrics/metric-catalog";
 
 import { MetricChart } from "./metric-chart";
 
@@ -19,7 +20,7 @@ function createProperties(
 ): MetricChartProperties {
   return {
     bars: [createChartBar()],
-    metric: "EVENTS",
+    metric: getMetric("events"),
     onOpen: vi.fn<(parent: string, id: string, color?: string) => void>(),
     onToggle: vi.fn<(id: string, color?: string) => void>(),
     ...overrides,
@@ -42,6 +43,14 @@ describe(MetricChart, () => {
 
     expect(within(heading).getByTestId("tag-icon")).toBeDefined();
     expect(screen.queryByText(/Total/)).toBeNull();
+  });
+
+  it("describes the metric under its name with the catalog's note", () => {
+    render(<MetricChart {...createProperties()} />);
+
+    expect(screen.getByTestId("metric-chart-note").textContent).toBe(
+      getMetric("events").note,
+    );
   });
 
   it("has no sort button without a way to sort", () => {

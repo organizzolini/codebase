@@ -22,8 +22,12 @@ import {
   symbolByTripleAspect,
   symbolByVenusianPhase,
 } from "../caelundas/symbol-caelundas.constants";
+import { SOLAR_INTERVAL_NAMES } from "../perfective/modules/annual-solar-cycle/annual-solar-cycle.constants";
 import { eclipseTypeLabelByType } from "../perfective/modules/eclipses/eclipses.constants";
-import { DECAN_TAG_BY_DECAN } from "../perfective/modules/ingresses/ingresses.constants";
+import {
+  DECAN_TAG_BY_DECAN,
+  HALF_TAG_BY_HALF,
+} from "../perfective/modules/ingresses/ingresses.constants";
 
 import {
   BODY_CLASS_BY_BODY,
@@ -116,6 +120,7 @@ const DAILY_CYCLES = [
       ["Moonset", "Set"],
       ["Lunar Zenith", "Zenith"],
       ["Lunar Nadir", "Nadir"],
+      ["Moon Up", "Moon Up"],
     ],
   ],
   [
@@ -147,6 +152,11 @@ export const SHARED_TAG_MAP: TagMap = {
   ...mapEach(Object.values(DECAN_TAG_BY_DECAN), (name) => [
     TAG_ROOT.zodiac,
     "Decan",
+    name,
+  ]),
+  ...mapEach(Object.values(HALF_TAG_BY_HALF), (name) => [
+    TAG_ROOT.zodiac,
+    "Peak",
     name,
   ]),
   ...mapEach(
@@ -198,22 +208,41 @@ const COMPOUND_ASPECT_TAG_MAP: TagMap = mergeTagMaps(
 /** The visibility spans every planet's paired rise and set events make. */
 const VISIBILITY_PHASES = ["evening visibility", "morning visibility"];
 
+/** The halves of an apparition Mercury and Venus make: widening, then closing. */
+const ELONGATION_PHASES = [
+  "evening closing",
+  "evening widening",
+  "morning closing",
+  "morning widening",
+];
+
+/** The halves of Mars's apparition: widening to opposition, then closing. */
+const MARTIAN_SPAN_PHASES = ["evening closing", "morning widening"];
+
 /** Mercury, Venus, and Mars synodic events, by planet and phase. */
 const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   Martian: mapPlanetaryPhases({
     marker: "Martian",
-    phases: [...Object.keys(symbolByMartianPhase), ...VISIBILITY_PHASES],
+    phases: [...Object.keys(symbolByMartianPhase), ...MARTIAN_SPAN_PHASES],
     planetPaths: SHARED_TAG_MAP["Mars"] ?? [],
     stageByPhase: MARTIAN_SYNODIC_STAGE_BY_PHASE,
   }),
   Mercurian: mapPlanetaryPhases({
     marker: "Mercurian",
-    phases: [...Object.keys(symbolByMercurianPhase), ...VISIBILITY_PHASES],
+    phases: [
+      ...Object.keys(symbolByMercurianPhase),
+      ...VISIBILITY_PHASES,
+      ...ELONGATION_PHASES,
+    ],
     planetPaths: SHARED_TAG_MAP["Mercury"] ?? [],
   }),
   Venusian: mapPlanetaryPhases({
     marker: "Venusian",
-    phases: [...Object.keys(symbolByVenusianPhase), ...VISIBILITY_PHASES],
+    phases: [
+      ...Object.keys(symbolByVenusianPhase),
+      ...VISIBILITY_PHASES,
+      ...ELONGATION_PHASES,
+    ],
     planetPaths: SHARED_TAG_MAP["Venus"] ?? [],
   }),
 };
@@ -226,6 +255,9 @@ export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
     Direct: one([...DIRECTION, "Station Direct"]),
     Direction: one(DIRECTION),
     Retrograde: one([...DIRECTION, "Station Retrograde"]),
+  },
+  Directs: {
+    Directs: one([...DIRECTION, "Direct Period"]),
   },
   Eclipse: {
     ...mapNone(["Eclipse", "Lunar", "Solar", ...ECLIPSE_TYPE_NAMES]),
@@ -281,6 +313,16 @@ export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
       ["Advancing", "Aphelion", "Perihelion", "Retreating"],
       (name) => [...ANNUAL_CYCLE, name],
     ),
+    ...mapEach(["Autumn", "Spring", "Summer", "Winter"], (name) => [
+      TAG_ROOT.solar,
+      "Season",
+      name,
+    ]),
+    ...mapEach(SOLAR_INTERVAL_NAMES, (name) => [
+      ...ANNUAL_CYCLE,
+      "Interval",
+      name,
+    ]),
     ...Object.fromEntries(
       Object.entries(KIND_AND_SEASON_BY_SOLAR_CYCLE_POINT).map(
         ([name, [kind, season]]): [string, readonly TagPath[]] => [
@@ -295,7 +337,7 @@ export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   },
   "Lunar Apsides": {
     "Lunar Apsides": one([TAG_ROOT.lunar, "Apsides"]),
-    ...mapEach(["Apogee", "Perigee"], (name) => [
+    ...mapEach(["Advancing", "Apogee", "Perigee", "Retreating"], (name) => [
       TAG_ROOT.lunar,
       "Apsides",
       name,

@@ -177,10 +177,12 @@ function addCellValues(
   }
 
   values.add(
-    formatCellTime(
-      column.kind === "start" ? record.start : record.end,
-      timeZone,
-    ),
+    column.kind === "duration"
+      ? String(record.durationMinutes)
+      : formatCellTime(
+          column.kind === "start" ? record.start : record.end,
+          timeZone,
+        ),
   );
 }
 

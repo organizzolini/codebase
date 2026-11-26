@@ -36,7 +36,7 @@ See [documentation/entity-relationship-diagram.md](documentation/entity-relation
 - [src/modules/database/database.module.ts](src/modules/database/database.module.ts): NestJS database module
 - [src/modules/database/database.service.ts](src/modules/database/database.service.ts): Database service
 - [documentation/entity-relationship-diagram.md](documentation/entity-relationship-diagram.md): Generated entity relationship diagram
-- [documentation/metrics-facts.md](documentation/metrics-facts.md): The metrics views: grain, columns, indexes, and the SQL for each metric
+- [documentation/metrics-facts.md](documentation/metrics-facts.md): The metrics facts, filters and groups, and the SQL for each metric
 
 ## 🌌 Caelundas Database
 
@@ -81,55 +81,84 @@ application's `ConfigModule` must be global, and spreads
 
 ## The schema
 
-| Entity                     | Table                          | Holds                                                                                          |
-| -------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------- |
-| `CalendarEvent`            | `calendar_events`              | One detected event for one observer location                                                   |
-| `Tag`                      | `tags`, `tags_closure`         | The tag tree, a closure table TypeORM keeps in step                                            |
-| `CalendarEventTag`         | `calendar_event_tags`          | An event carrying a tag                                                                        |
-| `Star`                     | `stars`                        | A star of the HYG catalog, keyed by its Hipparcos number                                       |
-| `Constellation`            | `constellations`               | One of the 88 IAU constellations                                                               |
-| `ConstellationEdge`        | `constellation_edges`          | Generated: a segment of a constellation's figure                                               |
-| `CalendarEventDerivedTime` | `calendar_event_derived_times` | Derived view: an event's UTC and local year, day, hour, and so on                              |
-| `CalendarEventFact`        | `calendar_event_facts`         | Materialized view: the metrics' one table, a row per grain (event, day, day-tag, day-tag-name) |
+| Entity                | Table                                              | Holds                                                                                    |
+| --------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `CalendarEvent`       | `calendar_events`                                  | One detected event for one observer location                                             |
+| `Tag`                 | `tags`, `tags_closure`                             | The tag tree, a closure table TypeORM keeps in step                                      |
+| `CalendarEventTag`    | `calendar_event_tags`                              | An event carrying a tag                                                                  |
+| `Star`                | `stars`                                            | A star of the HYG catalog, keyed by its Hipparcos number (`hipparcos_number`)            |
+| `Constellation`       | `constellations`                                   | One of the 88 IAU constellations                                                         |
+| `ConstellationEdge`   | `constellation_edges`                              | A segment of a constellation's figure (`constellation_id`, `source_node`, `target_node`) |
+| `Measure`             | `measures`                                         | Seeded catalog: a thing measured about a group of events                                 |
+| `Metric`              | `metrics`                                          | Seeded catalog: a number shown, and the root of its expression tree                      |
+| `MetricExpression`    | `metric_expressions`, `metric_expressions_closure` | Seeded closure-table tree: how a metric is composed                                      |
+| `CalendarEventFact`   | `calendar_event_facts`                             | One measure at one filter a row: `filter_id`, `measure_id`, `measurement`                |
+| `Dimension`           | `dimensions`                                       | Seeded catalog: a way events are sliced (name, day, week, month, quarter, year, tag)     |
+| `DimensionEdge`       | `dimension_edges`                                  | Seeded `@Graph` edges: a time dimension and the coarser one it rolls up into             |
+| `Group`               | `groups`                                           | Seeded catalog: a set of dimensions (day, tag, day and tag, ...)                         |
+| `GroupDimension`      | `group_dimensions`                                 | The dimensions of a group                                                                |
+| `Filter`              | `filters`                                          | A group instantiated: a day, or a tag on a day, each pinning its values                  |
+| `CalendarEventTagSet` | `calendar_event_tag_sets`                          | Materialized view: an event's tags as two sorted arrays                                  |
 
 Entities are named by class: the shared naming strategy makes the tables
 plural and the columns snake case, so no entity names a table or a schema.
 
 - **Ids are `uuidv7`s the database assigns,** through
-  `@codebase/persistence`'s `PostgresqlUpdatableEntity`, for `calendar_events`
-  and `tags`. The tag closure, the join table, the star catalog, and the
-  derived tables keep their natural keys.
-- **`calendar_events` upserts on its natural key,** `(summary, start, end,
-  latitude, longitude)`, so a re-run updates the row it wrote and a second
-  place adds rows of its own.
+  `@codebase/persistence`'s `PostgresqlUpdatableEntity`, for `calendar_events`,
+  `tags` and the catalog tables. The closure tables, the join table, the star
+  and constellation catalogs, and the edge table keep their natural
+  keys.
+- **`calendar_events` upserts on its natural key,** `(name, start, end,
+latitude, longitude)`, so a re-run updates the row it wrote and a second
+  place adds rows of its own. It also holds a `note` and the `timezone`.
+- **`tags.slug` is the machine-readable name:** `name` lowercased, each run of
+  characters outside a-z and 0-9 replaced by one `-`, leading and trailing `-`
+  trimmed. It is unique among siblings, by two partial unique indexes beside the
+  name's two.
 - **`start` and `end` are `timestamptz`,** carried as `Moment`s in UTC by
   `createMomentTransformer`. **Latitude and longitude are `numeric(9,6)`,**
   carried as the text the driver returns, so the key compares exactly.
 - **Whole numbers are `bigint`,** read back as numbers.
 
-## The read model
+### Schema decisions
 
-The derived times are a plain view, so there is nothing to refresh: Postgres
-computes them from the event on every read, and the local day and hour,
-`start_local_day` and `start_local_hour`, are `start AT TIME ZONE timezone`.
+- **`location` and `color` are not columns.** Every one of the 50,113 development events had
+  both null: no detector sets them, the CLI only copied `event.location ?? null` and
+  `event.color ?? null` through, the web falls back on its tag and type colors when an event
+  has none, and a location is already its `latitude` and `longitude`. The iCalendar writer
+  emitted `LOCATION` and `COLOR` only when set.
+- **The local time is stored.** `start` and `end` stay absolute `timestamptz`, and the zone is
+  `timezone`. `start_local_day`, `end_local_day` (`date`) and `start_local_hour` (`smallint`) are
+  generated columns, `(start at time zone timezone)::date` and `extract(hour from ...)`, which
+  Postgres 18 accepts because `timezone(text, timestamptz)` is immutable (only a `::text` cast is
+  refused); the entity marks them `insert: false, update: false`, so nothing writes them. The
+  duration minutes, temporality and weekday are computed inline; the expressions are in
+  [documentation/metrics-facts.md](documentation/metrics-facts.md).
+
+## The read model
 
 There are no derived tag tables: a tag's depth, root, path and rank are read from
 `tags` and `tags_closure`, and an event's tags from `calendar_event_tags`, inside the
-metrics view at refresh and through joins at query time.
+facts at refresh and through joins at query time.
 
-### The metrics view
+### The metrics facts
 
-Charts, Totals, the Table and the Timeline read one materialized view,
-`calendar_event_facts`, built with `GROUPING SETS` over the event, day, tag and
-name grains. Its `filter` column names the grain of each row (`event`, `day`,
-`day-tag` or `day-tag-name`) and every read pins it; `is_phase_boundary` is in
-every grain's key, so the Forming and Dissolving boundary instants are kept and
-left out by a query-time default. `CaelundasDatabaseService.refreshMetrics(manager)`
-refreshes it concurrently, in the caller's transaction when it has one: a command
-line ingest ends with it, and `nx run caelundas-cli:start:refresh-metrics` does so
-from a shell. Its grains, columns, indexes, the exclusion default, the SQL for every
-metric and a before and after benchmark are in
-[documentation/metrics-facts.md](documentation/metrics-facts.md).
+Charts, Totals, the Table and the Timeline read two things. `calendar_event_facts`
+holds **one measure at one filter a row** (a `filter_id`, a `measure_id` and a
+`measurement` in the measure's unit) for the measures that merge across days, in the
+default scope by definition, which leaves the Forming and Dissolving phase boundaries out. A
+`filters` row is a `groups` row (a set of `dimensions`) instantiated: it pins a
+`period`, a `tag_id` or an `event_name`, so a local day, or a tag on a day, the
+tag tree mirrored on each day. The materialized
+view `calendar_event_tag_sets` holds each event's tags as `tag_ids` (given directly)
+and `ancestor_tag_ids`, so a tag filter matches `tag_ids || ancestor_tag_ids`.
+`CaelundasDatabaseService.refreshMetrics(manager)` refreshes the view concurrently
+and brings the filters and facts up to date, in the caller's transaction when it
+has one: a command line ingest ends with it, and
+`nx run caelundas-cli:start:refresh-metrics` does so from a shell. The design, the
+sizes, the inline local-time expressions, the measures, metrics and expression trees
+are in [documentation/metrics-facts.md](documentation/metrics-facts.md), and the
+rows of the catalog tables in [documentation/catalog-tables.md](documentation/catalog-tables.md).
 
 ## Migrations
 
@@ -143,12 +172,14 @@ nx run caelundas-db:migration:show               # List applied and pending
 The `migration` target is the shared one from the root `nx.json` target
 defaults, declared here as
 `"migration": { "options": { "module": "src/modules/database" } }`.
-Each migration has its `-up.sql` and `-down.sql` beside it, linted by
-`sqlfluff` and checked by `squawk`. The second replaces `constellation_lines`
-with `constellation_edges`, the table `Constellation`'s `@Graph` generates,
-carrying its rows over, since `squawk` refuses a table rename. The first
-carries two hand edits after `generate`: it creates `typeorm_metadata` for the view's row, and its SQL
-files open with the lock and statement timeouts the other projects' carry.
+The one migration, `1795709495833`, creates the whole schema and has its `-up.sql` and
+`-down.sql` beside it, linted by `sqlfluff` and checked by `squawk`. Nothing is deployed
+yet, so a schema change regenerates it rather than adding another. It carries hand edits
+after `generate`: it creates `typeorm_metadata` for the generated columns' and the view's rows (the
+generated columns' use `current_database()`), and its files open with the lock and statement timeouts
+the other projects' carry. The seed (the measures, the metrics, their expression trees with the
+closure rows, then each metric's `expression_id`) and the two functions `expand_keys` and `expand_tags`
+and the seed of the dimensions, their edges, the `groups` and the table comment are further additions, placed before the view.
 
 ## Drawing the tag tree
 
@@ -191,18 +222,21 @@ line as `--source-uri`, as it is for `postgresql-export` and
 
 ```bash
 nx run caelundas-db:render-constellation-graph --args="--limit 31"
-nx run caelundas-db:render-constellation-graph --args="--filter constellationDesignation=UMa"
+nx run caelundas-db:render-constellation-graph --args="--filter constellationId=UMa"
 ```
 
-`Constellation` is a `@Graph({ directed: false, edge: "ConstellationEdge",
-nodes: () => Star })`: the decorator generates the `ConstellationEdge` entity,
-so no class is written for it, and each of its rows joins two stars by
-Hipparcos number. Callers never name it; they save a `Constellation` with its
-`edges`, and read `Constellation.edges` with `relations`. A star reaches its
-edges through `Star.outgoingEdges` and `Star.incomingEdges`, and their `graph`.
-`@GraphLabel()` on `Constellation.name` titles each figure's box, and on
-`Star.hip` labels each star's node. The `render-constellation-graph` target
-runs the `persistence` `render-graph-data` command over `Constellation`, with
+`ConstellationEdge` is a hand-written `@Graph({ directed: false })` edge: each row
+joins two stars by Hipparcos number (`source_node`, `target_node`, from
+`@GraphSource()` and `@GraphTarget()`) and belongs to a constellation through its
+own `constellation_id`, marked `@GraphLabel()`. The generated edge form has no owner
+column, since not every graph has subgraphs, so the constellation's figure uses
+this form. Callers save a `Constellation` with its `edges`, and read
+`Constellation.edges` with `relations`. A star reaches its edges through
+`Star.outgoingEdges` and `Star.incomingEdges`. `@GraphLabel()` on
+`Constellation.name` titles each figure's box through the relation of
+`constellation_id`, and on `Star.hipparcosNumber` labels each star's node through
+the relation of `source_node`. The `render-constellation-graph` target
+runs the `persistence` `render-graph-data` command over `ConstellationEdge`, with
 the same connection variables and `--args` as the tag tree above. Each
 connected group of stars is a neighborhood, drawn as its own Mermaid subgraph
 titled with its constellation's name, and its lines are drawn without the
@@ -213,7 +247,7 @@ with no subgraph.
 Mermaid draws at most 500 edges and all constellation lines exceed it, so
 page with `--limit 31`, which draws every 31 neighborhoods as a diagram of its
 own, or add `--page 1`, repeating `--page` for several, to draw only those. Or pick one constellation with
-`--filter constellationDesignation=UMa`.
+`--filter constellationId=UMa`.
 
 ## Committed diagrams
 
@@ -230,6 +264,25 @@ nx run caelundas-db:render-tag-tree --args="--diagram filetree --output-markdown
 nx run caelundas-db:render-constellation-graph --args="--limit 31 --output-markdown projects/caelundas/caelundas-db/documentation/constellation-graph-data.md --overwrite"
 ```
 
+## Drawing the metric expressions
+
+```bash
+nx run caelundas-db:metric-expressions         # rewrite the block from the local database
+nx run caelundas-db:metric-expressions:check   # fail when the file differs
+```
+
+The `metric-expressions` target runs the `caelundas-cli` `metric-expressions`
+command, which reads `metrics` and `metric_expressions` through
+`CAELUNDAS_POSTGRES_*` (export them as for the diagrams above) and rewrites the
+marker block of
+[`metric-expressions.md`](documentation/metric-expressions.md): a table of every
+metric's slug, name, unit and expression in infix form, then one Mermaid
+flowchart per metric. Operators are hexagons, measures rectangles named with
+their slug, and metrics read by another metric stadiums; each
+edge to an operand carries its position. The prose around the markers is yours.
+The `check` configuration compares without writing, and like the rest of the
+render targets it needs the local database, so it is not a CI gate.
+
 ## Test
 
 ```bash
@@ -238,8 +291,9 @@ nx run caelundas-db:vitest:integration   # needs Docker
 ```
 
 The integration suites start a throwaway Postgres 18, run the real migrations,
-insert base rows, refresh, and assert the derived tables, the view, and that
-every metrics rollup answers each metric as the raw events do.
+insert base rows, refresh, and assert the view's grains, hash, tag columns and
+event names, the seeded catalog and trees, and that every metrics rollup answers
+each metric as the raw events do.
 
 ## Conformetry
 

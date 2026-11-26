@@ -3,8 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 
 import { readServedApi } from "../../../../testing/calendar-api";
 import { BUILDER_WAIT } from "../../../../testing/calendar-page";
+import { CATALOG } from "../../../../testing/metrics/metric-catalog";
 import { renderCalendarRoute } from "../../../../testing/render-route";
-import { DEFAULT_METRICS } from "../calendar-metrics/calendar-metrics.constants";
 
 // Each test renders the whole route, which a loaded continuous integration
 // runner needs seconds for.
@@ -18,7 +18,7 @@ describe("totals layout", () => {
 
     await waitFor(() => {
       expect(screen.getAllByTestId("totals-card")).toHaveLength(
-        DEFAULT_METRICS.totals.length,
+        CATALOG.defaults.totals.length,
       );
     }, BUILDER_WAIT);
 

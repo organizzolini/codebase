@@ -128,15 +128,13 @@ export function getGraphEdgeDeclaration(
  * @throws RenderEntitiesEdgeError on bad decorators.
  */
 export function getGraphEdgeMetadata(source: GraphEntity): GraphEdgeMetadata {
-  const generated = generatedEdgeOf(source);
-  const entity = generated?.edge ?? source;
+  const entity = generatedEdgeOf(source)?.edge ?? source;
   const declaration = getGraphEdgeDeclaration(entity);
   const labelColumn = singleEdgeProperty(entity, "GraphLabel");
   const weightColumn = singleEdgeProperty(entity, "GraphWeight");
 
   return {
     directed: declaration.directed,
-    ...(generated === undefined ? {} : { generated }),
     kind: declaration.kind,
     sourceColumn: requiredEdgeProperty(entity, "GraphSource"),
     targetColumn: requiredEdgeProperty(entity, "GraphTarget"),

@@ -42,7 +42,7 @@ export function ChartsNotice(
 
   // 🏁 Early Returns
   if (kind === "loading") {
-    return <SkeletonBars className="flex h-72 items-end gap-3 p-4" />;
+    return <SkeletonBars />;
   }
 
   if (kind === "error") {

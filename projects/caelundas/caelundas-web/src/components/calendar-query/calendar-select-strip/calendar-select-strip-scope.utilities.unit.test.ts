@@ -4,6 +4,7 @@ import { createEventFilterFields } from "../calendar-filters/components/event-fi
 import { createEventGroupFields } from "../calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 
 import {
+  dropHiddenSorts,
   getSelectedColumnIds,
   isTagSelected,
   restrictFilterFields,
@@ -37,6 +38,72 @@ const FACETS = [
 ];
 
 describe("column scope utilities", () => {
+  describe(dropHiddenSorts, () => {
+    const fields = createEventGroupFields(FACETS);
+    const NAME = { direction: "asc", key: "name" } as const;
+    const DURATION = { direction: "desc", key: "duration" } as const;
+    const FIRST = { direction: "asc", key: "first" } as const;
+    const ORDER = { direction: "asc", key: "order" } as const;
+    const COUNT = { direction: "desc", key: "count" } as const;
+    const METRIC = {
+      direction: "desc",
+      key: "metric",
+      metric: "progressive-events",
+    } as const;
+
+    it("takes the sorts of an unselected column away, whichever it is", () => {
+      const sorts = [
+        NAME,
+        DURATION,
+        { direction: "asc", key: "start" } as const,
+      ];
+
+      expect(dropHiddenSorts(sorts, ["name"], fields)).toStrictEqual([NAME]);
+      expect(dropHiddenSorts(sorts, ["duration"], fields)).toStrictEqual([
+        DURATION,
+      ]);
+      expect(dropHiddenSorts([FIRST], ["start"], fields)).toStrictEqual([
+        FIRST,
+      ]);
+      expect(dropHiddenSorts([FIRST], ["name"], fields)).toBeUndefined();
+    });
+
+    it("keeps Tags, Event count and metrics, which depend on no column", () => {
+      const sorts = [ORDER, COUNT, METRIC];
+
+      expect(dropHiddenSorts(sorts, ["name"], fields)).toBe(sorts);
+    });
+
+    it("takes a tag sort away with its root's column, and keeps it with the root or the tag", () => {
+      const root = { direction: "asc", key: "tag", tag: "tag:body" } as const;
+      const tag = { direction: "asc", key: "tag", tag: "planet" } as const;
+
+      expect(dropHiddenSorts([root, tag], ["name"], fields)).toBeUndefined();
+      expect(dropHiddenSorts([root, tag], ["tag:body"], fields)).toStrictEqual([
+        root,
+        tag,
+      ]);
+      expect(dropHiddenSorts([root, tag], ["planet"], fields)).toStrictEqual([
+        root,
+        tag,
+      ]);
+      expect(
+        dropHiddenSorts([root, tag], ["tag:zodiac"], fields),
+      ).toBeUndefined();
+    });
+
+    it("is none for the default sort and when every sort goes", () => {
+      expect(dropHiddenSorts(undefined, ["name"], fields)).toBeUndefined();
+      expect(dropHiddenSorts([DURATION], ["name"], fields)).toBeUndefined();
+    });
+
+    it("hands back the sorts themselves when none goes", () => {
+      const sorts = [NAME, ORDER];
+
+      expect(dropHiddenSorts(sorts, ["name", "start"], fields)).toBe(sorts);
+    });
+  });
+
   describe(getSelectedColumnIds, () => {
     it("is the columns the link names, else the defaults", () => {
       expect(getSelectedColumnIds(["end"])).toStrictEqual(["end"]);
@@ -109,12 +176,20 @@ describe("column scope utilities", () => {
       expect(restrictSortKeys([])).toStrictEqual(["order", "count"]);
     });
 
-    it("adds Name with the Name column, and First event with Start or End", () => {
+    it("adds each of Name, Start, End and Duration with its column, and First event with Start or End", () => {
       expect(restrictSortKeys(["name", "end"])).toStrictEqual([
         "order",
         "name",
         "count",
         "first",
+        "end",
+      ]);
+      expect(restrictSortKeys(["duration", "start"])).toStrictEqual([
+        "order",
+        "count",
+        "first",
+        "start",
+        "duration",
       ]);
     });
   });

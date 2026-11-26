@@ -1,7 +1,11 @@
 import { TableCell, TableRow } from "@codebase/presentation";
 
 import { PILL_CLASS_NAME } from "../../calendar-table.constants";
-import { getCellText, isPositionColumn } from "../../calendar-table.utilities";
+import {
+  getCellText,
+  isPositionColumn,
+  isTimeColumn,
+} from "../../calendar-table.utilities";
 import { TableNameCell } from "../table-name-cell/table-name-cell";
 import { TableTagCell } from "../table-tag-cell/table-tag-cell";
 
@@ -70,7 +74,7 @@ export function TableEventRow(
               record={row.record}
             />
           ) : null}
-          {column.kind === "start" || column.kind === "end" ? (
+          {isTimeColumn(column) ? (
             <span
               className={PILL_CLASS_NAME}
               data-testid="table-time-pill"

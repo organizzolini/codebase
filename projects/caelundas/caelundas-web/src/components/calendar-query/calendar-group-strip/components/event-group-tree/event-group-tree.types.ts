@@ -58,13 +58,16 @@ export interface GroupSort {
   tag?: string | undefined;
 }
 
-/** What groups are ordered by: tag order, name, count, time, metric. */
+/** What groups are ordered by: tag order, name, count, time, duration, metric. */
 export type GroupSortKey =
   | "count"
+  | "duration"
+  | "end"
   | "first"
   | "metric"
   | "name"
   | "order"
+  | "start"
   | "tag";
 
 /**
@@ -85,6 +88,13 @@ export interface LevelContext {
    * The names of a tag's path, from beneath the root, that the level's parent already holds.
    */
   skip: number;
+}
+
+/**
+ * A group that may hold subgroups, whatever it measures.
+ */
+export interface NestedGroup<Group> {
+  children?: readonly Group[] | undefined;
 }
 
 /**

@@ -1,4 +1,5 @@
-import type { EventMetric } from "../../../graphql/generated/operations";
+import type { EventMetricCatalogQuery } from "../../../graphql/generated/operations";
+import type { MetricViewName } from "../events-calendar/components/calendar-views/calendar-views.types";
 
 // 🏷️ Types
 
@@ -9,6 +10,22 @@ export interface EventMetricsData {
   groups: readonly MetricGroup[];
   timezone: string;
   total: readonly MetricValue[];
+}
+
+/**
+ * The loaded catalog: metrics by position and slug, and layout defaults.
+ */
+export interface MetricCatalog {
+  bySlug: ReadonlyMap<string, MetricDescriptor>;
+  /**
+   * The slugs each metric layout opens with, in order.
+   */
+  defaults: Readonly<Record<MetricViewName, readonly string[]>>;
+  measures: readonly MetricMeasure[];
+  /**
+   * Every metric, in the order the picker lists it.
+   */
+  metrics: readonly MetricDescriptor[];
 }
 
 /**
@@ -31,44 +48,15 @@ export interface MetricChange {
 }
 
 /**
- * What a metric is called, drawn, and how it adds up.
+ * A metric as the API catalog describes it.
  */
-export interface MetricDescriptor {
-  /**
-   * Whether a group's value is the sum of its subgroups' values.
-   */
-  additive: boolean;
-  /**
-   * What the metric counts, in a sentence.
-   */
-  description: string;
-  format: MetricFormat;
-  /**
-   * A lucide icon's slug.
-   */
-  icon: string;
-  label: string;
-  shortLabel: string;
-  /**
-   * What a count is of, plural, for a change such as `+12 events`.
-   */
-  unit: string;
-}
+export type MetricDescriptor =
+  EventMetricCatalogQuery["eventMetricCatalog"]["metrics"][number];
 
 /**
  * Which way a metric moved against the previous period.
  */
 export type MetricDirection = "down" | "flat" | "up";
-
-/**
- * How a metric's number is written.
- */
-export type MetricFormat =
-  | "count"
-  | "duration"
-  | "hours"
-  | "instant"
-  | "percent";
 
 /**
  * A group of the metrics tree: its values and its subgroups.
@@ -86,6 +74,12 @@ export interface MetricGroup {
   rank: null | string;
   values: readonly MetricValue[];
 }
+
+/**
+ * A measure the API stores, which metrics draw on.
+ */
+export type MetricMeasure =
+  EventMetricCatalogQuery["eventMetricCatalog"]["measures"][number];
 
 /**
  * A group the tree shows now: one no open group replaces.
@@ -115,7 +109,10 @@ export interface MetricTreeIds {
  * A metric and a group's number for it, and the previous period's.
  */
 export interface MetricValue {
-  metric: EventMetric;
+  /**
+   * The metric's slug in the catalog.
+   */
+  metric: string;
   previous: null | number;
   value: null | number;
 }

@@ -8,9 +8,9 @@ import type { UseNightSkySettingsResult } from "../use-night-sky/hooks/use-night
 
 /** The link's look settings, every default filled in. */
 export interface CalendarDisplayState {
-  clusters: boolean;
   colors: boolean;
   compare: boolean;
+  hideEmpty: boolean;
   scale: TimelineScale;
   symbols: CalendarSymbols;
 }
@@ -27,9 +27,9 @@ export interface UseCalendarDisplayResult {
   constellations: UseNightSkySettingsResult["constellations"];
   handlers: Pick<
     UseCalendarSearchResult,
-    | "handleClustersChange"
     | "handleColorsChange"
     | "handleCompareChange"
+    | "handleHideEmptyChange"
     | "handleScaleChange"
     | "handleSymbolsChange"
     | "handleViewChange"

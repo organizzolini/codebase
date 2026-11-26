@@ -8,10 +8,10 @@ import type { EventLabel } from "./calendar-glyphs.types";
 // 🌎 Public Functions
 
 /**
- * Splits an event's summary into symbols and English name, the name starting where its description says; a cluster is all name.
+ * Splits an event's name into symbols and English words, starting where its note says; a cluster is all words.
  */
 export function getEventLabel(event: CalendarEventRecord): EventLabel {
-  const { description, id, summary } = event;
+  const { id, name: summary, note: description } = event;
 
   if (id.startsWith(CLUSTER_ID_PREFIX)) {
     return { details: undefined, glyphs: summary, name: summary };

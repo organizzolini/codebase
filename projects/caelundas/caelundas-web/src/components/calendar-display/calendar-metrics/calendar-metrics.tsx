@@ -1,9 +1,10 @@
+import { useMetricCatalog } from "../../../hooks/use-metric-layout/hooks/use-metric-catalog/use-metric-catalog";
 import { CalendarCharts } from "../calendar-charts/calendar-charts";
 import { CalendarTotals } from "../calendar-totals/calendar-totals";
 
-import { DEFAULT_METRICS } from "./calendar-metrics.constants";
+import { resolveMetrics } from "./calendar-metrics.utilities";
+import { MetricsPending } from "./components/metrics-pending/metrics-pending";
 
-import type { EventMetric } from "../../../graphql/generated/operations";
 import type { MetricViewName } from "../events-calendar/components/calendar-views/calendar-views.types";
 import type { MetricLayoutProperties } from "./calendar-metrics-layout.types";
 import type { ReactNode } from "react";
@@ -23,16 +24,16 @@ export interface CalendarMetricsProperties extends Omit<
    */
   compare?: boolean | undefined;
   /**
-   * The metrics to measure, first first; the layout's defaults when absent.
+   * The metric slugs to measure, first first; the layout's defaults when absent.
    */
-  metrics?: readonly EventMetric[] | undefined;
+  metrics?: readonly string[] | undefined;
   view: MetricViewName;
 }
 
 // 🧩 Component
 
 /**
- * Renders the Charts or the Totals, the one the view names, over the same days, filter, grouping and metrics.
+ * Renders the Charts or the Totals, the one the view names, over the same days, filter, grouping and metrics, once the catalog is read.
  */
 export function CalendarMetrics(
   properties: Readonly<CalendarMetricsProperties>,
@@ -40,13 +41,14 @@ export function CalendarMetrics(
   const { className, compare = false, metrics, view, ...layout } = properties;
 
   // 🪝 Hooks
+  const { catalog, error, retry, status } = useMetricCatalog();
 
   // 🏗 Setup
   const shared = {
     ...layout,
     className: "h-full",
     compare,
-    metrics: metrics ?? DEFAULT_METRICS[view],
+    metrics: resolveMetrics(catalog, view, metrics),
   };
 
   // 💪 Handlers
@@ -54,6 +56,17 @@ export function CalendarMetrics(
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
+  if (status !== "ready") {
+    return (
+      <MetricsPending
+        className={className}
+        error={error}
+        isLoading={status === "loading"}
+        onRetry={retry}
+        view={view}
+      />
+    );
+  }
 
   // 🎨 Markup
   return (

@@ -146,30 +146,6 @@ describe("main end-to-end suite", () => {
         expect(calendar).toContain("BEGIN:STANDARD");
         expect(calendar).toContain("END:STANDARD");
       });
-
-      it("handles events with all optional fields", () => {
-        const events = [
-          {
-            color: "red",
-            description: "Total Solar Eclipse visible from North America",
-            end: moment.utc("2025-04-08T20:00:00Z"),
-            location: "Dallas, Texas, USA",
-            start: moment.utc("2025-04-08T18:00:00Z"),
-            summary: "Total Solar Eclipse",
-            tags: ["Astronomy", "Eclipse", "Solar"],
-          },
-        ];
-
-        const calendar = calendarService.buildFileContent({
-          description: "E2E optional fields test calendar",
-          events,
-          name: "Eclipse Calendar",
-          timezone: "America/New_York",
-        });
-
-        expect(calendar).toContain("LOCATION:Dallas, Texas, USA");
-        expect(calendar).toContain("COLOR:red");
-      });
     });
 
     describe("input validation e2e", () => {
@@ -374,7 +350,7 @@ describe("main end-to-end suite", () => {
         detected,
       );
     const summaries = (rows: CalendarEvent[]): string[] =>
-      rows.map((row) => row.summary).toSorted();
+      rows.map((row) => row.name).toSorted();
 
     beforeAll(async () => {
       database = await startCaelundasDatabase();
@@ -391,12 +367,12 @@ describe("main end-to-end suite", () => {
 
       // A row no detector reports can only reach the files through the table.
       await calendarEvents.insert({
-        description: "stored directly",
         end: moment.utc("2026-03-05T00:00:00Z"),
         latitude: "39.949309",
         longitude: "-75.171690",
+        name: "Planted",
+        note: "stored directly",
         start: moment.utc("2026-03-05T00:00:00Z"),
-        summary: "Planted",
         timezone: "America/New_York",
       });
       const { ics, json } = await run(philadelphia, marchFirstHalf);
@@ -418,12 +394,12 @@ describe("main end-to-end suite", () => {
     it("is idempotent when a range repeats", async () => {
       expect.hasAssertions();
 
-      const before = await calendarEvents.find({ order: { summary: "ASC" } });
+      const before = await calendarEvents.find({ order: { name: "ASC" } });
       const links = await database.dataSource.query<{ count: string }[]>(
         "select count(*) as count from calendar_event_tags",
       );
       await run(philadelphia, marchFirstHalf);
-      const after = await calendarEvents.find({ order: { summary: "ASC" } });
+      const after = await calendarEvents.find({ order: { name: "ASC" } });
 
       expect(after.map((row) => row.id)).toStrictEqual(
         before.map((row) => row.id),
@@ -440,9 +416,9 @@ describe("main end-to-end suite", () => {
 
       await expect(
         database.dataSource.query(
-          `select summary, count(*) as count
+          `select name, count(*) as count
             from calendar_events
-            group by summary, "start", "end", latitude, longitude
+            group by name, "start", "end", latitude, longitude
             having count(*) > 1`,
         ),
       ).resolves.toStrictEqual([]);
@@ -453,7 +429,7 @@ describe("main end-to-end suite", () => {
 
       const [early] = await calendarEvents.findBy({
         latitude: "39.949309",
-        summary: "Early",
+        name: "Early",
       });
 
       expect(early?.id).toMatch(
@@ -467,9 +443,9 @@ describe("main end-to-end suite", () => {
     it("updates an overlapping range in place and adds only new events", async () => {
       expect.hasAssertions();
 
-      const [before] = await calendarEvents.findBy({ summary: "Overlap" });
+      const [before] = await calendarEvents.findBy({ name: "Overlap" });
       const { json } = await run(philadelphia, marchSecondHalf);
-      const overlap = await calendarEvents.findBy({ summary: "Overlap" });
+      const overlap = await calendarEvents.findBy({ name: "Overlap" });
 
       expect(overlap).toHaveLength(1);
       expect(overlap[0]?.id).toBe(before?.id);
@@ -477,9 +453,7 @@ describe("main end-to-end suite", () => {
       expect(overlap[0]?.updatedAt.getTime()).toBeGreaterThan(
         before?.updatedAt.getTime() ?? Number.POSITIVE_INFINITY,
       );
-      await expect(calendarEvents.countBy({ summary: "Late" })).resolves.toBe(
-        1,
-      );
+      await expect(calendarEvents.countBy({ name: "Late" })).resolves.toBe(1);
       expect(json.map((event) => event.summary)).toStrictEqual([
         "Overlap",
         "Late",
@@ -523,7 +497,7 @@ describe("main end-to-end suite", () => {
       expect(ics).toContain("SUMMARY:Retrograde");
     });
 
-    it("leaves the metrics view current after a run", async () => {
+    it("leaves the read model current after a run", async () => {
       expect.hasAssertions();
 
       await run(
@@ -533,25 +507,24 @@ describe("main end-to-end suite", () => {
       );
       const { dataSource } = database;
       const [counts] = await dataSource.query<
-        { derived: string; events: string; facts: string }[]
+        { events: string; facts: string }[]
       >(
         `select
-          (select count(*) from calendar_event_derived_times) as derived,
           (select count(*) from calendar_events) as events,
-          (select count(*) from calendar_event_facts where "filter" = 'event') as facts`,
+          (select count(*) from calendar_event_tag_sets) as facts`,
       );
       const fresh = await dataSource.query<
         { is_direct: boolean; tag_name: string }[]
       >(
-        `select t.name as tag_name, t.id = any(f.direct_tag_ids) as is_direct
-          from calendar_event_facts as f
-          inner join tags as t on t.id = any(f.tag_ids)
-          where f."filter" = 'event' and f.name = 'Fresh'
+        `select t.name as tag_name, t.id = any(f.tag_ids) as is_direct
+          from calendar_event_tag_sets as f
+          inner join calendar_events as e on e.id = f.calendar_event_id
+          inner join tags as t on t.id = any(f.tag_ids || f.ancestor_tag_ids)
+          where e.name = 'Fresh'
           order by t.name`,
       );
 
       expect(counts?.facts).toBe(counts?.events);
-      expect(counts?.derived).toBe(counts?.events);
       // The tag the event was given, and the node above it, are in the facts
       // refreshed in the transaction that wrote the event.
       expect(fresh).toStrictEqual(

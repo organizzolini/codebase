@@ -1,5 +1,4 @@
 import { TagIcon } from "../../../../calendar-query/tag-icon/tag-icon";
-import { METRIC_CATALOG } from "../../../calendar-metrics/calendar-metrics.constants";
 import { formatMetricValue } from "../../../calendar-metrics/calendar-metrics.utilities";
 import { FULL_PERCENT } from "../../calendar-totals.constants";
 import { getSharePercent } from "../../calendar-totals.utilities";
@@ -7,6 +6,7 @@ import { TotalsChange } from "../totals-change/totals-change";
 import { TotalsGroupList } from "../totals-group-list/totals-group-list";
 
 import type {
+  MetricDescriptor,
   MetricGroup,
   MetricValue,
 } from "../../../calendar-metrics/calendar-metrics.types";
@@ -25,6 +25,7 @@ export interface TotalsCardProperties {
   expanded: ReadonlySet<string>;
   groupColors?: ReadonlyMap<string, string> | undefined;
   groups: readonly MetricGroup[];
+  metric: MetricDescriptor;
   onToggle: (id: string) => void;
   timeZone?: string | undefined;
   total: MetricValue;
@@ -38,18 +39,23 @@ export interface TotalsCardProperties {
 export function TotalsCard(
   properties: Readonly<TotalsCardProperties>,
 ): ReactNode {
-  const { compare, expanded, groupColors, groups, onToggle, timeZone, total } =
-    properties;
-  const { metric, previous, value } = total;
+  const {
+    compare,
+    expanded,
+    groupColors,
+    groups,
+    metric,
+    onToggle,
+    timeZone,
+    total,
+  } = properties;
+  const { previous, value } = total;
 
   // 🪝 Hooks
 
   // 🏗 Setup
-  const descriptor = METRIC_CATALOG[metric];
   const meter =
-    descriptor.format === "percent"
-      ? getSharePercent(value, FULL_PERCENT)
-      : null;
+    metric.unit === "NONE" ? getSharePercent(value, FULL_PERCENT) : null;
 
   // 💪 Handlers
 
@@ -60,17 +66,17 @@ export function TotalsCard(
   // 🎨 Markup
   return (
     <article
-      aria-label={descriptor.label}
+      aria-label={metric.name}
       className="bg-card flex flex-col gap-3 rounded-lg border p-4"
-      data-metric={metric}
+      data-metric={metric.slug}
       data-testid="totals-card"
     >
       <header
         className="text-muted-foreground flex items-center gap-2 text-sm"
-        title={descriptor.description}
+        title={metric.note}
       >
-        <TagIcon name={descriptor.icon} />
-        <h3 className="font-medium">{descriptor.label}</h3>
+        <TagIcon name={metric.icon} />
+        <h3 className="font-medium">{metric.name}</h3>
       </header>
       <p
         className="text-3xl font-semibold tabular-nums"
@@ -78,9 +84,7 @@ export function TotalsCard(
       >
         {formatMetricValue(metric, value, timeZone)}
       </p>
-      <p className="text-muted-foreground -mt-2 text-xs">
-        {descriptor.description}
-      </p>
+      <p className="text-muted-foreground -mt-2 text-xs">{metric.note}</p>
       {compare ? (
         <TotalsChange
           metric={metric}
@@ -92,7 +96,7 @@ export function TotalsCard(
       ) : null}
       {meter === null ? null : (
         <div
-          aria-label={descriptor.label}
+          aria-label={metric.name}
           aria-valuemax={FULL_PERCENT}
           aria-valuemin={0}
           aria-valuenow={meter}

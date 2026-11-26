@@ -82,12 +82,10 @@ export class PerfectiveService {
     const events: DetectedCalendarEvent[] = [];
     let previousAspectBodies = args.previousAspectBodies ?? [];
     if (families.has("aspects") && args.previousAspectBodies === undefined) {
-      const seeded = this.aspectsService.seed({
+      previousAspectBodies = this.aspectsService.seed({
         coordinateEphemerisByBody: ephemerides.coordinateEphemerisByBody,
         minute: startOfDay,
       });
-      previousAspectBodies = seeded.aspectBodies;
-      events.push(...seeded.events);
     }
     for (const minute of this.datetimeService.generateMinutes(
       startOfDay,

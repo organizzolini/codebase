@@ -5,6 +5,7 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { AspectsService } from "../aspects/aspects.service";
 import { AnnualSolarCycleService } from "../perfective/modules/annual-solar-cycle/annual-solar-cycle.service";
+import { DailyCyclesService } from "../perfective/modules/daily-cycles/daily-cycles.service";
 import { EclipsesService } from "../perfective/modules/eclipses/eclipses.service";
 import { IngressesService } from "../perfective/modules/ingresses/ingresses.service";
 import { MonthlyLunarCycleService } from "../perfective/modules/monthly-lunar-cycle/monthly-lunar-cycle.service";
@@ -13,9 +14,11 @@ import { RetrogradesService } from "../perfective/modules/retrogrades/retrograde
 import { TwilightsService } from "../perfective/modules/twilights/twilights.service";
 
 import { ProgressiveUtilitiesService } from "./progressive-utilities.service";
+import { EDGE_EVENTS_FINDERS_TOKEN } from "./progressive.constants";
 import { ProgressiveService } from "./progressive.service";
 
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
+import type { EdgeEventsFinder } from "../ephemeris/modules/boundary-search/boundary-search.types";
 import type { BuiltTestingModule } from "@codebase/testing/nestjs";
 function makeEvent(summary: string): DetectedCalendarEvent {
   return {
@@ -37,6 +40,9 @@ describe(ProgressiveService, () => {
   };
   const aspectsMock = {
     detectProgressive: vi.fn<AspectsService["detectProgressive"]>(),
+  };
+  const dailyCyclesMock = {
+    detectProgressive: vi.fn<DailyCyclesService["detectProgressive"]>(),
   };
   const eclipsesMock = {
     detectProgressive: vi.fn<EclipsesService["detectProgressive"]>(),
@@ -61,12 +67,14 @@ describe(ProgressiveService, () => {
     providers: [
       { provide: AnnualSolarCycleService, useValue: annualSolarCycleMock },
       { provide: AspectsService, useValue: aspectsMock },
+      { provide: DailyCyclesService, useValue: dailyCyclesMock },
       { provide: EclipsesService, useValue: eclipsesMock },
       { provide: IngressesService, useValue: ingressesMock },
       { provide: MonthlyLunarCycleService, useValue: monthlyLunarCycleMock },
       { provide: PhasesService, useValue: phasesMock },
       { provide: RetrogradesService, useValue: retrogradesMock },
       { provide: TwilightsService, useValue: twilightsMock },
+      { provide: EDGE_EVENTS_FINDERS_TOKEN, useValue: [] },
       ProgressiveUtilitiesService,
     ],
   };
@@ -92,6 +100,7 @@ describe(ProgressiveService, () => {
       for (const subMock of [
         annualSolarCycleMock,
         aspectsMock,
+        dailyCyclesMock,
         eclipsesMock,
         ingressesMock,
         monthlyLunarCycleMock,
@@ -135,6 +144,7 @@ describe(ProgressiveService, () => {
       for (const subMock of [
         annualSolarCycleMock,
         aspectsMock,
+        dailyCyclesMock,
         eclipsesMock,
         ingressesMock,
         monthlyLunarCycleMock,
@@ -149,7 +159,31 @@ describe(ProgressiveService, () => {
 
       for (const subMock of [
         annualSolarCycleMock,
+        dailyCyclesMock,
+        eclipsesMock,
+        monthlyLunarCycleMock,
+        phasesMock,
+        twilightsMock,
+      ]) {
+        expect(subMock.detectProgressive).toHaveBeenCalledWith(
+          perfectiveEvents,
+        );
+      }
+
+      for (const subMock of [aspectsMock, ingressesMock, retrogradesMock]) {
+        expect(subMock.detectProgressive).toHaveBeenCalledWith(
+          perfectiveEvents,
+          undefined,
+        );
+      }
+    });
+
+    it("hands the aspects, ingresses and retrogrades the whole local days the sweep covered", () => {
+      const perfectiveEvents = [makeEvent("perfective")];
+      for (const subMock of [
+        annualSolarCycleMock,
         aspectsMock,
+        dailyCyclesMock,
         eclipsesMock,
         ingressesMock,
         monthlyLunarCycleMock,
@@ -157,10 +191,77 @@ describe(ProgressiveService, () => {
         retrogradesMock,
         twilightsMock,
       ]) {
-        expect(subMock.detectProgressive).toHaveBeenCalledWith(
-          perfectiveEvents,
-        );
+        subMock.detectProgressive.mockReturnValue([]);
       }
+
+      service.detect(perfectiveEvents, {
+        end: moment.tz("2026-03-21", "America/New_York"),
+        latitude: 39.949_309,
+        longitude: -75.171_69,
+        start: moment.tz("2026-03-20", "America/New_York"),
+        timezone: "America/New_York",
+      });
+
+      for (const subMock of [aspectsMock, ingressesMock, retrogradesMock]) {
+        const [, window] = subMock.detectProgressive.mock.calls.at(-1) ?? [];
+
+        expect(window?.start.toISOString()).toBe("2026-03-20T04:00:00.000Z");
+        expect(window?.end.toISOString()).toBe("2026-03-22T03:59:00.000Z");
+      }
+    });
+
+    it("gives the span builders the edge events the finders add, without repeating one the sweep found", async () => {
+      const detected = makeEvent("detected");
+      const edge = { ...makeEvent("edge"), tags: ["Edge"] };
+      const finder = {
+        findEdgeEvents: vi
+          .fn<EdgeEventsFinder["findEdgeEvents"]>()
+          .mockReturnValue([edge, detected]),
+      };
+      const { instance: withFinders } = await buildTestingModule(
+        ProgressiveService,
+        {
+          providers: [
+            ...testingModuleOptions.providers,
+            { provide: EDGE_EVENTS_FINDERS_TOKEN, useValue: [finder] },
+          ],
+        },
+      );
+      for (const subMock of [
+        annualSolarCycleMock,
+        aspectsMock,
+        dailyCyclesMock,
+        eclipsesMock,
+        ingressesMock,
+        monthlyLunarCycleMock,
+        phasesMock,
+        retrogradesMock,
+        twilightsMock,
+      ]) {
+        subMock.detectProgressive.mockReturnValue([]);
+      }
+      const input = {
+        end: moment.tz("2026-03-21", "America/New_York"),
+        latitude: 39.949_309,
+        longitude: -75.171_69,
+        start: moment.tz("2026-03-20", "America/New_York"),
+        timezone: "America/New_York",
+      };
+
+      withFinders.detect([detected], input);
+
+      expect(finder.findEdgeEvents).toHaveBeenCalledWith(
+        expect.objectContaining({ start: expect.anything() }),
+        input,
+      );
+      expect(monthlyLunarCycleMock.detectProgressive).toHaveBeenCalledWith([
+        detected,
+        edge,
+      ]);
+      expect(aspectsMock.detectProgressive).toHaveBeenCalledWith(
+        [detected],
+        expect.anything(),
+      );
     });
   });
 

@@ -13,6 +13,12 @@ export interface ClassifiedCalendarEvent {
   paths: readonly TagPath[];
 }
 
+/** Stored tags: ids by parent and name, names by parent and slug. */
+export interface KnownTags {
+  ids: Map<string, string>;
+  slugs: Map<string, string>;
+}
+
 /**
  * Raw tag strings and the paths each stands for.
  */

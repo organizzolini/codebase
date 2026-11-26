@@ -20,9 +20,9 @@ function apply(
   view: CalendarViewName = "timeline",
 ): UseCalendarDisplayResult["handlers"] {
   const handlers: UseCalendarDisplayResult["handlers"] = {
-    handleClustersChange: vi.fn<(enabled: boolean) => void>(),
     handleColorsChange: vi.fn<(enabled: boolean) => void>(),
     handleCompareChange: vi.fn<(enabled: boolean) => void>(),
+    handleHideEmptyChange: vi.fn<(enabled: boolean) => void>(),
     handleScaleChange: vi.fn<() => void>(),
     handleSymbolsChange: vi.fn<() => void>(),
     handleViewChange: vi.fn<() => void>(),
@@ -35,7 +35,7 @@ function apply(
 
 describe("calendar-layout-menu utilities", () => {
   describe(createLayoutItems, () => {
-    it("lists the layouts as radios, Charts and Totals after Table", () => {
+    it("lists the layouts as radios, Timeline after Day, Charts and Totals after Table", () => {
       const items = createLayoutItems();
 
       expect(items.every((item) => item.radio)).toBe(true);
@@ -43,19 +43,19 @@ describe("calendar-layout-menu utilities", () => {
         "Month",
         "Week",
         "Day",
+        "Timeline",
         "Table",
         "Charts",
         "Totals",
-        "Timeline",
       ]);
       expect(items.map((item) => item.value)).toStrictEqual([
         "calendar:month",
         "calendar:week",
         "calendar:day",
+        "calendar:timeline",
         "calendar:table",
         "calendar:charts",
         "calendar:totals",
-        "calendar:timeline",
       ]);
     });
 

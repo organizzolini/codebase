@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { StripFoldContext } from "../strip-fold-button/strip-fold-button.constants";
+
 import { ChipMenu } from "./chip-menu";
 
 describe(ChipMenu, () => {
@@ -58,6 +60,20 @@ describe(ChipMenu, () => {
     await screen.findByRole("menuitem", { name: "Remove" });
 
     expect(screen.queryByRole("menuitem", { name: "Reverse" })).toBeNull();
+  });
+
+  it("ends with a destructive Remove after a separator", async () => {
+    render(<ChipMenu label="Type" />);
+    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+
+    const items = await screen.findAllByRole("menuitem");
+    const last = items.at(-1);
+
+    expect(last?.textContent).toBe("Remove");
+    expect(last?.dataset["variant"]).toBe("destructive");
+    expect(last?.previousElementSibling?.getAttribute("role")).toBe(
+      "separator",
+    );
   });
 
   it("disables removing when it is not given a way to", async () => {
@@ -139,5 +155,50 @@ describe(ChipMenu, () => {
 
     expect(screen.queryByRole("menuitem", { name: "Collapse all" })).toBeNull();
     expect(screen.queryByRole("menuitem", { name: "Expand all" })).toBeNull();
+  });
+
+  it("keeps only the chip when it is given a way to, and disables Only otherwise", async () => {
+    const onOnly = vi.fn();
+    const { unmount } = render(
+      <ChipMenu
+        label="Type"
+        onOnly={onOnly}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Only" }));
+
+    expect(onOnly).toHaveBeenCalledTimes(1);
+
+    unmount();
+    render(<ChipMenu label="Type" />);
+    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+
+    const only = await screen.findByRole("menuitem", { name: "Only" });
+
+    expect(only.getAttribute("aria-disabled")).toBe("true");
+  });
+
+  it("folds the strip when it sits in one that folds, and disables Fold otherwise", async () => {
+    const onFold = vi.fn<() => void>();
+    const { unmount } = render(
+      <StripFoldContext value={onFold}>
+        <ChipMenu label="Type" />
+      </StripFoldContext>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Fold" }));
+
+    expect(onFold).toHaveBeenCalledTimes(1);
+
+    unmount();
+    render(<ChipMenu label="Type" />);
+    fireEvent.click(screen.getByRole("button", { name: "Type options" }));
+
+    const fold = await screen.findByRole("menuitem", { name: "Fold" });
+
+    expect(fold.getAttribute("aria-disabled")).toBe("true");
   });
 });

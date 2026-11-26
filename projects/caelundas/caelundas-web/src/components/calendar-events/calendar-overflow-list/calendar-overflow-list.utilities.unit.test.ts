@@ -6,20 +6,19 @@ import type { CalendarEventRecord } from "../../calendar-display/events-calendar
 
 function event(
   id: string,
-  summary: string,
+  name: string,
   start: string,
   end = start,
 ): CalendarEventRecord {
   return {
     color: null,
-    description: "",
     durationMinutes: 0,
     end: new Date(end),
     groups: [],
     id,
-    location: null,
+    name,
+    note: "",
     start: new Date(start),
-    summary,
     tags: [],
     timezone: "UTC",
   };

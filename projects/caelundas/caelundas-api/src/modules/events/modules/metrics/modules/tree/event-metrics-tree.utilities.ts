@@ -1,9 +1,6 @@
 import { NATURAL_COLLATOR } from "../../../../events.constants";
 import { TAG_FIELD_PREFIX } from "../../../filtering/modules/query-building/event-filter-fields.constants";
-import {
-  MAXIMUM_METRIC_GROUPS,
-  ZERO_METRICS,
-} from "../../event-metrics.constants";
+import { MAXIMUM_METRIC_GROUPS } from "../../event-metrics.constants";
 
 import { DURATION_RANKS, RANK_SEPARATOR } from "./event-metrics-tree.constants";
 
@@ -12,7 +9,7 @@ import type {
   EventMetricsRow,
   EventMetricsTreeSource,
 } from "../../event-metrics.types";
-import type { EventMetric } from "../inputs/event-metric.entities";
+import type { CatalogMetric } from "../catalog/event-metrics-catalog.types";
 import type { EventMetricGroupEntity } from "../results/event-metric-group.entities";
 import type { EventMetricValueEntity } from "../results/event-metric-value.entities";
 
@@ -49,7 +46,7 @@ export function buildMetricTree(
  * period with no row reads as no events.
  */
 export function toMetricValues(
-  metrics: readonly EventMetric[],
+  metrics: readonly CatalogMetric[],
   periods: Readonly<{
     compare: boolean;
     current: readonly (null | number)[] | undefined;
@@ -64,7 +61,7 @@ export function toMetricValues(
     const before = previous === undefined ? empty : (previous[index] ?? null);
 
     values.push({
-      metric,
+      metric: metric.slug,
       previous: compare ? before : null,
       value: current === undefined ? empty : (current[index] ?? null),
     });
@@ -142,8 +139,8 @@ function compareRanks(left: string, right: string): number {
 /**
  * What a metric reads over no events: 0 for a count or a sum, else nothing.
  */
-function emptyValue(metric: EventMetric): null | number {
-  return ZERO_METRICS.has(metric) ? 0 : null;
+function emptyValue(metric: CatalogMetric): null | number {
+  return metric.zeroIfEmpty ? 0 : null;
 }
 
 /**

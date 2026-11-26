@@ -19,7 +19,7 @@ function createOptions(
     compare: false,
     filter: undefined,
     grouping: [{ field: "tag:body" }, { field: "tag:zodiac" }],
-    metrics: ["EVENTS"],
+    metrics: ["events"],
     onDateChange: vi.fn<(date: Date) => void>(),
     onNavigationChange: vi.fn<() => void>(),
     sort: undefined,
@@ -42,6 +42,7 @@ describe(useMetricLayout, () => {
     const { result } = renderHook(() => useMetricLayout(options), { wrapper });
 
     expect(result.current).toStrictEqual({
+      colorGroups: [],
       data: undefined,
       error: undefined,
       expanded: new Set<string>(),
@@ -335,5 +336,144 @@ describe(useMetricLayout, () => {
     expect(options.onNavigationChange).toHaveBeenCalledWith(
       expect.objectContaining({ title: "2026-03-01 – 2026-03-30" }),
     );
+  });
+
+  it("orders the groups by a metric that is not shown, reading it without totalling it", async () => {
+    expect.hasAssertions();
+
+    const api = serveCalendarApi();
+    const options = createOptions({
+      metrics: ["unique-names"],
+      rootsUntilTouched: true,
+      sort: [{ direction: "asc", key: "count" }],
+    });
+    const { result } = renderHook(() => useMetricLayout(options), { wrapper });
+
+    await waitFor(() => {
+      expect(result.current.status).toBe("ready");
+    });
+
+    expect(api.requests.metrics.at(-1)?.metrics).toStrictEqual([
+      "unique-names",
+      "events",
+    ]);
+    expect(
+      result.current.data?.total.map((value) => value.metric),
+    ).toStrictEqual(["unique-names"]);
+    expect(result.current.rows.map((row) => row.group.id)).toStrictEqual([
+      "/0:beta",
+      "/0:alpha",
+    ]);
+  });
+
+  describe("hiding empty groups", () => {
+    it("shows every group, empty ones too, until asked", async () => {
+      expect.hasAssertions();
+
+      serveCalendarApi({ emptyGroups: true });
+
+      const options = createOptions({ rootsUntilTouched: true });
+      const { result } = renderHook(() => useMetricLayout(options), {
+        wrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.current.status).toBe("ready");
+      });
+
+      expect(result.current.rows.map((row) => row.group.id)).toStrictEqual([
+        "/0:alpha",
+        "/0:beta",
+        "/0:zero",
+        "/0:hollow",
+      ]);
+    });
+
+    it("leaves out the groups with no events, and those with only empty subgroups", async () => {
+      expect.hasAssertions();
+
+      serveCalendarApi({ emptyGroups: true });
+
+      const options = createOptions({
+        hideEmpty: true,
+        rootsUntilTouched: true,
+      });
+      const { result } = renderHook(() => useMetricLayout(options), {
+        wrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.current.status).toBe("ready");
+      });
+
+      expect(result.current.rows.map((row) => row.group.id)).toStrictEqual([
+        "/0:alpha",
+        "/0:beta",
+      ]);
+
+      act(() => {
+        result.current.toggle("/0:alpha");
+      });
+
+      // Void, the empty subgroup, is gone, and the total is the API's.
+      expect(result.current.rows.map((row) => row.group.id)).toStrictEqual([
+        "/0:alpha/1:one",
+        "/0:alpha/1:two",
+        "/0:beta",
+      ]);
+      expect(result.current.data?.total[0]?.value).toBe(10);
+    });
+
+    it("keeps the empty groups among the ones colors are shaped from", async () => {
+      expect.hasAssertions();
+
+      serveCalendarApi({ emptyGroups: true });
+
+      const options = createOptions({ hideEmpty: true });
+      const { result } = renderHook(() => useMetricLayout(options), {
+        wrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.current.status).toBe("ready");
+      });
+
+      expect(result.current.colorGroups.map((group) => group.id)).toStrictEqual(
+        ["/0:alpha", "/0:beta", "/0:zero", "/0:hollow"],
+      );
+      expect(
+        result.current.data?.groups.map((group) => group.id),
+      ).toStrictEqual(["/0:alpha", "/0:beta"]);
+    });
+
+    it("reads the event count to tell, without totalling it, when events are not shown", async () => {
+      expect.hasAssertions();
+
+      const api = serveCalendarApi({ emptyGroups: true });
+      const options = createOptions({
+        hideEmpty: true,
+        metrics: ["duration"],
+        rootsUntilTouched: true,
+      });
+      const { result } = renderHook(() => useMetricLayout(options), {
+        wrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.current.status).toBe("ready");
+      });
+
+      expect(api.requests.metrics.at(-1)?.metrics).toStrictEqual([
+        "duration",
+        "events",
+      ]);
+      expect(
+        result.current.data?.total.map((value) => value.metric),
+      ).toStrictEqual(["duration"]);
+      expect(result.current.rows.map((row) => row.group.id)).toStrictEqual([
+        "/0:alpha",
+        "/0:beta",
+      ]);
+    });
   });
 });

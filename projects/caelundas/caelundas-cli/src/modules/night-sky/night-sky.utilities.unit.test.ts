@@ -24,7 +24,7 @@ function createCatalog(...rows: string[]): string {
 const DUBHE: CatalogStar = {
   colorIndex: 1.06,
   declinationDegrees: 61.751,
-  hip: 54_061,
+  hipparcosNumber: 54_061,
   magnitude: 1.8,
   rightAscensionHours: 11.0621,
 };
@@ -32,7 +32,7 @@ const DUBHE: CatalogStar = {
 const MERAK: CatalogStar = {
   colorIndex: 0.03,
   declinationDegrees: 56.382,
-  hip: 53_910,
+  hipparcosNumber: 53_910,
   magnitude: 2.3,
   rightAscensionHours: 11.0307,
 };
@@ -40,7 +40,7 @@ const MERAK: CatalogStar = {
 const FAINT: CatalogStar = {
   colorIndex: 0.5,
   declinationDegrees: 10,
-  hip: 1,
+  hipparcosNumber: 1,
   magnitude: 7.2,
   rightAscensionHours: 1,
 };
@@ -63,7 +63,7 @@ describe("night-sky utilities", () => {
         {
           colorIndex: 0.6,
           declinationDegrees: -44.9,
-          hip: 4,
+          hipparcosNumber: 4,
           magnitude: 5,
           rightAscensionHours: 4,
         },
@@ -101,7 +101,7 @@ describe("night-sky utilities", () => {
       });
 
       expect(parseConstellations(file)).toStrictEqual([
-        { designation: "Ser", name: "Serpens", zodiac: false },
+        { designation: "Ser", isZodiac: false, name: "Serpens" },
       ]);
     });
 
@@ -114,8 +114,8 @@ describe("night-sky utilities", () => {
       });
 
       expect(parseConstellations(file)).toStrictEqual([
-        { designation: "UMa", name: "Ursa Major", zodiac: false },
-        { designation: "Sco", name: "Scorpius", zodiac: true },
+        { designation: "UMa", isZodiac: false, name: "Ursa Major" },
+        { designation: "Sco", isZodiac: true, name: "Scorpius" },
       ]);
     });
   });
@@ -146,7 +146,7 @@ describe("night-sky utilities", () => {
       });
 
       expect([...traceConstellationEdges(file, index)]).toStrictEqual([
-        ["UMa", [{ fromHip: 54_061, toHip: 53_910 }]],
+        ["UMa", [{ sourceNode: 54_061, targetNode: 53_910 }]],
       ]);
     });
   });
@@ -183,9 +183,9 @@ describe("night-sky utilities", () => {
         constellations: [
           {
             designation: "UMa",
-            edges: [{ fromHip: 54_061, toHip: 1 }],
+            edges: [{ sourceNode: 54_061, targetNode: 1 }],
+            isZodiac: false,
             name: "Ursa Major",
-            zodiac: false,
           },
         ],
         stars: [DUBHE, FAINT],

@@ -28,6 +28,11 @@ export class EventFacetEntity {
   })
   note!: null | string;
 
+  @Field(() => String, {
+    description: "The root tag's name as a slug, unique among the roots.",
+  })
+  slug!: string;
+
   @Field(() => [EventFacetValueEntity], {
     description: "The tags beneath the root, depth first.",
   })

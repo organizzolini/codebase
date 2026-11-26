@@ -28,14 +28,13 @@ function event(
 
   return {
     color: "#f43f5e",
-    description: id,
     durationMinutes: Math.round((to.getTime() - from.getTime()) / 60_000),
     end: to,
     groups: [],
     id,
-    location: null,
+    name: id,
+    note: id,
     start: from,
-    summary: id,
     tags: [{ depth: 4, id: `tag-${id}`, name: "Square", path }],
     timezone: ZONE,
   };
@@ -67,7 +66,7 @@ describe(clusterEvents, () => {
     expect(clustered.events[0]).toMatchObject({
       color: "#f43f5e",
       id: `${CLUSTER_ID_PREFIX}a`,
-      summary: "3 major aspects",
+      name: "3 major aspects",
     });
     expect(
       clustered.members
@@ -141,8 +140,8 @@ describe(clusterEvents, () => {
     expect(clustered.events).toHaveLength(1);
     expect(clustered.events[0]).toMatchObject({
       end: new Date("2026-03-07T00:00:00Z"),
+      name: "3 major aspects",
       start: new Date("2026-03-02T06:00:00Z"),
-      summary: "3 major aspects",
     });
   });
 
@@ -209,7 +208,7 @@ describe(clusterEvents, () => {
     );
 
     expect(clustered.events).toHaveLength(1);
-    expect(clustered.events[0]?.summary).toContain(kind.split(" ")[0] ?? "");
+    expect(clustered.events[0]?.name).toContain(kind.split(" ")[0] ?? "");
   });
 
   it.each([

@@ -48,7 +48,7 @@ describe(RefreshMetricsCommand, () => {
     await expectLoggerContext(RefreshMetricsCommand, testingModuleOptions);
   });
 
-  it("refreshes the metrics views through the data source's manager", async () => {
+  it("refreshes the metrics facts through the data source's manager", async () => {
     await command.run();
 
     expect(databaseService.refreshMetrics).toHaveBeenCalledExactlyOnceWith(
@@ -60,7 +60,7 @@ describe(RefreshMetricsCommand, () => {
     await command.run();
 
     expect(logger.info).toHaveBeenCalledWith(
-      "🔄 Refreshed the metrics views",
+      "🔄 Refreshed the metrics facts",
       undefined,
       { milliseconds: expect.any(Number) },
     );

@@ -7,14 +7,13 @@ import type { CalendarEventRecord } from "../../calendar-display/events-calendar
 
 const EVENT: CalendarEventRecord = {
   color: null,
-  description: "",
   durationMinutes: 0,
   end: new Date("2026-03-04T10:00:00Z"),
   groups: [],
   id: "event",
-  location: null,
+  name: "Mars Retrograde",
+  note: "",
   start: new Date("2026-03-04T10:00:00Z"),
-  summary: "Mars Retrograde",
   tags: [
     {
       depth: 1,

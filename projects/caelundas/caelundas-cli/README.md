@@ -80,19 +80,126 @@ perfects, a planet stations, or a body crosses a sign boundary.
 moments into the periods a reader actually wants on a calendar: the days an
 aspect is in orb, the weeks a planet is retrograde.
 
-| Family | Events |
-| ------ | ------ |
-| Aspects | Major (conjunct, opposite, sextile, square, trine), minor, and harmonic aspects between the Sun, Moon, planets, Chiron, Lilith, four asteroids, the north lunar node, and the lunar apogee; forming, exact, and dissolving moments, and the span between them |
-| Compound aspects | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of three or more bodies |
-| Monthly lunar cycle | The eight Moon phases, each as an instant and as the span until the next |
-| Planetary phases | Mercury, Venus, and Mars: conjunctions, Mars's opposition, the greatest elongations of Mercury and Venus, brightest, rise and set, and morning- and evening-star visibility spans |
-| Eclipses | Solar and lunar: begin, maximum, and end |
-| Retrogrades | Stations and retrograde periods |
-| Ingresses | Sign, decan, and peak ingresses, and the span in each sign |
-| Annual solar cycle | Solstices, equinoxes, cross-quarter days, hexadecans, perihelion and aphelion |
-| Lunar apsides | Lunar apogee and perigee, where the Moon's radial speed changes sign |
-| Daily cycles | Sunrise, sunset, solar zenith and nadir, moonrise, moonset, lunar zenith and nadir |
-| Twilights | Civil, nautical, and astronomical dawn and dusk, with the Daylight, twilight, and Night spans |
+| Family              | Events                                                                                                                                                                                                                                                                                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Aspects             | Major (conjunct, opposite, sextile, square, trine), minor, and harmonic aspects between the Sun, Moon, planets, Chiron, Lilith, four asteroids, the north lunar node, and the lunar apogee; forming, exact, and dissolving moments, and the span between them, through both edges of the window                            |
+| Compound aspects    | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of three or more bodies, each beginning when the last of its aspects forms and ending when the first dissolves, through both edges of the window |
+| Monthly lunar cycle | The eight Moon phases, each as an instant and as the span until the next                                                                                                                                                                                                                                                   |
+| Planetary phases    | Mercury, Venus, and Mars: rise and set, for Mercury and Venus the greatest elongation and brightest, and for Mars its opposition, with each apparition split into a widening half and a closing half                                                                                                                       |
+| Eclipses            | Solar and lunar: begin, maximum, and end                                                                                                                                                                                                                                                                                   |
+| Retrogrades         | Stations, and the retrograde and direct periods between them, through both edges of the window                                                                                                                                                                                                                             |
+| Ingresses           | Sign, decan, and peak ingresses, and each body's stay in a sign, in a decan, and in a half of a sign, through both edges of the window                                                                                                                                                                                     |
+| Annual solar cycle  | Solstices, equinoxes, cross-quarter days, hexadecans, perihelion and aphelion, the four seasons, and the sixteen pre- and post- intervals between the points                                                                                                                                                               |
+| Lunar apsides       | Lunar apogee and perigee, where the Moon's radial speed changes sign, and the Moon's advancing and retreating between them                                                                                                                                                                                                 |
+| Daily cycles        | Sunrise, sunset, solar zenith and nadir, moonrise, moonset, lunar zenith and nadir, and the span the Moon is up                                                                                                                                                                                                            |
+| Twilights           | Civil, nautical, and astronomical dawn and dusk, with the Daylight, twilight, and Night spans                                                                                                                                                                                                                              |
+
+### Which events have a span
+
+A perfective event is an instant: a boundary that starts or ends something, or
+a point inside it. A progressive event is the span between a start boundary and
+an end boundary. It classifies as `Temporality / Progressive`, and an instant as
+`Temporality / Perfective`.
+
+| Span                                             | From                                    | To                                 | Window edges |
+| ------------------------------------------------ | --------------------------------------- | ---------------------------------- | ------------ |
+| Simple aspect in orb                             | Forming                                 | Dissolving                         | Completed    |
+| Compound aspect (triple through stellium)        | Latest forming of its aspects           | Earliest dissolving of its aspects | Completed    |
+| Moon phase                                       | A phase                                 | The next phase                     | Completed    |
+| Lunar advancing and retreating                   | Apogee or perigee                       | The other                          | Completed    |
+| Mercury and Venus morning and evening visibility | Morning or evening rise                 | The matching set                   | Completed    |
+| Mercury and Venus widening                       | Rise                                    | Greatest elongation                | Completed    |
+| Mercury and Venus closing                        | Greatest elongation                     | Set                                | Completed    |
+| Mars widening                                    | Morning rise                            | Opposition                         | Completed    |
+| Mars closing                                     | Opposition                              | Evening set                        | Completed    |
+| Eclipse, in each frame                           | Begins                                  | Ends                               | Completed    |
+| Retrograde period                                | Retrograde station                      | Direct station                     | Completed    |
+| Direct period                                    | Direct station                          | Retrograde station                 | Completed    |
+| Stay in a sign                                   | A sign ingress                          | The next sign ingress              | Completed    |
+| Stay in a decan                                  | A sign or decan ingress                 | The next one                       | Completed    |
+| Stay on one side of a sign's peak                | A sign or peak ingress                  | The next one                       | Completed    |
+| Season                                           | An equinox or solstice                  | The next one                       | Completed    |
+| Pre- and post- interval of the year              | A named point or the hexadecan after it | The next point                     | Completed    |
+| Solar advancing and retreating                   | Aphelion or perihelion                  | The other                          | Completed    |
+| Twilight, Daylight, and Night                    | Dawn or dusk                            | The next boundary                  | Completed    |
+| Moon up                                          | Moonrise                                | Moonset                            | Completed    |
+
+These are perfective events with no duration, because nothing of them lasts: exact
+aspects, stations, peak ingresses, brightest, lunar apogee and perigee, eclipse
+maximum, solar zenith and nadir, sunrise and sunset, moonrise and moonset,
+cross-quarter days, and hexadecans.
+
+Mars has no greatest elongation, because it reaches 180° from the Sun. Its
+apparition runs from its rise in the morning sky, widening from the Sun to
+opposition, then closing on it in the evening sky to its set. Opposition is the
+minute its longitude gap from the Sun falls through 180°. Mars's rise and set
+never pair with each other, since it reaches opposition before it can set into
+the Sun's glare, so each half pairs with opposition.
+
+#### Window edges
+
+A run detects only the boundaries inside its window, so a span that began
+before the window or ends after it has one boundary missing, and pairing would
+drop it. Every row of the table above says Completed: the run finds the missing
+boundary and builds the span with its true start or end, even when that lies
+outside the window, so two windows that see the same span store the same row.
+Each search walks the ephemeris away from the edge a probe at a time, while a
+cheap test of the state at each probe holds (the Moon's phase, the Sun's band
+of twilight, how far a planet is from the Sun), then bisects the probe step
+that held the change down to the minute. It then runs the same detector the
+sweep uses on the minutes around that change, so both name the same minute:
+
+- **Aspects**: a quarter-day probe, or a day when both bodies are slow
+  (Chiron, Jupiter through Pluto, the north lunar node). It finds the last
+  minute the pair is in orb, then asks the aspect detectors for the forming or
+  dissolving event they would have given there. An aspect in orb through the
+  whole window, such as a slow sextile, gets both: a span from its true
+  forming to its true dissolving, however far outside the window they lie.
+- **Compound aspects**: no search of their own. The window's simple aspects,
+  with the edges just found, are replayed in order, and the compound detectors
+  run at each change outside the window. A compound therefore begins at the
+  latest forming of its aspects and ends at the earliest dissolving, and the
+  sweep no longer stamps one already in orb with the window's start.
+- **Retrograde and direct periods**: a day-long probe for the direction to
+  change, then a minute-by-minute scan with the station detection. The search
+  gives up after 1,100 days. Lilith, the mean apogee, never stations and is not
+  among the bodies that retrograde.
+- **Stays in a sign, a decan, and on a side of the peak**, **seasons**, and the
+  **pre- and post- intervals**: a day-long probe for the slice of the zodiac or
+  of the Sun's longitude (30°, 10°, 15°, 90°, 22.5°) to change.
+- **Moon phases and lunar apsides**: a six-hour probe for the octant of the
+  Moon's elongation, or the sign of its radial speed, to change.
+- **Solar apsides**: a day-long probe for the sign of the Sun's radial speed.
+- **Twilights, daylight, and night**: a ten-minute probe for the Sun's band
+  (below -18°, -18° to -12°, -12° to -6°, above -6°) to change.
+- **Moon up**: a half-hour probe for the Moon's upper limb to clear the
+  horizon or not.
+- **Mercury and Venus**: a twelve-hour probe for the planet to leave or enter
+  6° of the Sun, on either side; and for the greatest elongation, the search
+  narrows by thirds to where its separation from the Sun peaks between the
+  apparition's rise and set.
+- **Mars**: the same probe, which also changes at opposition, where the planet
+  passes from west of the Sun to east of it; the rise, opposition and set are
+  all found by it.
+- **Eclipses**: when an eclipse is underway at an edge, the eight hours around
+  it are detected again, minute by minute, so its beginning and ending carry
+  the type and the minute a window around the whole eclipse would have given.
+
+The searches add about three seconds to a run, whatever its length.
+
+#### Limits
+
+Every span is kept at 1900-01-01 and 2100-12-31. When a search reaches one of
+those limits before finding the true boundary, the span is clipped at the
+limit's minute (`1900-01-01T00:00Z`, `2100-12-31T23:59Z`), for every family in
+the table above, never dropped and never left at the window's edge. The boundary
+search does it in one place: where a state of the sky still holds at a limit it
+walks on, up to 800 days past it, to name the boundary event, then pulls that
+event back to the limit. Aspects, whose orbs can outlast any walk, clip with
+the detectors as if the aspect changed at the limit, and the stays and the
+retrograde and direct periods, whose kind the state gives, use the limit's
+minute directly. A window that reaches past a limit, as one in a timezone ahead
+of UTC can, keeps its own edge.
 
 ## Conventions
 
@@ -106,15 +213,15 @@ Every Moon phase is timed by the Moon's apparent geocentric ecliptic longitude
 minus the Sun's, E, normalized to [0°, 360°). Positions are Swiss Ephemeris
 apparent geocentric values. Illumination is not used:
 
-| Phase | E |
-| ----- | - |
-| New Moon | 0° |
-| Waxing Crescent | 45° |
-| First Quarter | 90° |
-| Waxing Gibbous | 135° |
-| Full Moon | 180° |
-| Waning Gibbous | 225° |
-| Last Quarter | 270° |
+| Phase           | E    |
+| --------------- | ---- |
+| New Moon        | 0°   |
+| Waxing Crescent | 45°  |
+| First Quarter   | 90°  |
+| Waxing Gibbous  | 135° |
+| Full Moon       | 180° |
+| Waning Gibbous  | 225° |
+| Last Quarter    | 270° |
 | Waning Crescent | 315° |
 
 The four primary phases follow the definition the US Naval Observatory and
@@ -155,6 +262,24 @@ pairwise conjunct bodies with three or more members.
 - **Peak ingress** is the moment a body's longitude within its sign reaches
   15°, the midpoint of the sign, in either forward or retrograde direction.
   A retrograde re-entry across a sign boundary does not fire a peak ingress.
+- **Sign transit** is a body's stay in one sign, from its sign ingress to the
+  next one, named like `Moon in Taurus`. It carries the ingress, sign, and body
+  tags, and classifies as `Zodiac / Ingress / Sign Transit` and `Temporality /
+Progressive`, so filtering by body, sign, or progressive finds it. A
+  retrograde re-entry starts a new stay in the sign it left. Every body that has
+  sign ingresses gets one, so a body is always in a sign.
+- **Decan transit** is a body's stay in one decan, named like `Mars in decan 2
+Aries`, and **peak transit** its stay in the first or second 15° of a sign,
+  before or after the peak, named like `Sun in first half of Aries`. A decan
+  transit runs between sign and decan ingresses, a peak transit between sign
+  and peak ingresses, and each classifies as `Zodiac / Ingress / Decan Transit`
+  or `Peak Transit`, with the decan or `Zodiac / Peak / Before Peak` or `After
+Peak` beneath it. Each slice is read from the ephemeris at
+  the change, not from the tags, since a retrograde body leaving a sign enters
+  its last decan, and the second half, not the first.
+- **Window edges.** See Window edges above: the stay in progress at the window
+  start and the last stay both get their true entry and exit minute, or the
+  limit when that lies beyond it (see Limits).
 
 ### Daily cycles
 
@@ -184,16 +309,15 @@ Each run upserts the events it detects into the `calendar_events` table, in the
 location and renders the `.ics` and JSON files from those rows, so the files and
 the database never disagree.
 
-| Column | Holds |
-| ------ | ----- |
-| `summary`, `description` | The event's title and detail |
-| `start`, `end` | `timestamptz`; equal for an instant |
-| `color`, `location` | Nullable display hints |
-| `latitude`, `longitude` | The `numeric` observer location the event was computed for |
-| `timezone` | The IANA zone derived from that location, such as `America/New_York`, to render local time in |
-| `id`, `created_at`, `updated_at`, … | `uuidv7()` id and audit columns |
+| Column                              | Holds                                                                                         |
+| ----------------------------------- | --------------------------------------------------------------------------------------------- |
+| `name`, `note`                      | The event's title and detail, which the files call `SUMMARY` and `DESCRIPTION`                |
+| `start`, `end`                      | `timestamptz`; equal for an instant                                                           |
+| `latitude`, `longitude`             | The `numeric` observer location the event was computed for                                    |
+| `timezone`                          | The IANA zone derived from that location, such as `America/New_York`, to render local time in |
+| `id`, `created_at`, `updated_at`, … | `uuidv7()` id and audit columns                                                               |
 
-An event is unique on `(summary, start, end, latitude, longitude)`:
+An event is unique on `(name, start, end, latitude, longitude)`:
 
 - Re-running a range updates rows in place. `updated_at` advances; `created_at`
   does not.
@@ -204,11 +328,11 @@ An event is unique on `(summary, start, end, latitude, longitude)`:
 
 An event's tags live in two more tables rather than a column:
 
-| Table | Holds |
-| ----- | ----- |
-| `tags` | A tree of labels with many roots: a `name`, unique among its siblings, and a nullable `parent_id` |
-| `tags_closure` | One `(ancestor_id, descendant_id)` row per pair in the tree, each tag paired with itself included, so ancestors, descendants, and depth are plain joins |
-| `calendar_event_tags` | The links between events and tags, keyed on `(calendar_event_id, tag_id)`, with a second index leading with the tag |
+| Table                 | Holds                                                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tags`                | A tree of labels with many roots: a `name`, unique among its siblings, and a nullable `parent_id`                                                       |
+| `tags_closure`        | One `(ancestor_id, descendant_id)` row per pair in the tree, each tag paired with itself included, so ancestors, descendants, and depth are plain joins |
+| `calendar_event_tags` | The links between events and tags, keyed on `(calendar_event_id, tag_id)`, with a second index leading with the tag                                     |
 
 The upsert classifies each event's raw tags into paths of the tree, inserting
 any node that is missing, and replaces the event's links, so a re-run that
@@ -222,17 +346,17 @@ the event, not as a node with two parents, so an Aries event carries
 `Zodiac / Sign / Aries`, `Zodiac / Element / Fire`, `Zodiac / Modality /
 Cardinal` and `Zodiac / Polarity / Positive` side by side:
 
-| Root | Its nodes |
-| ---- | --------- |
-| `Aspect` | `Simple` (`Major`, `Minor` and `Specialty`) and `Compound` (`Triple`, `Quadruple`, `Quintuple`, `Sextuple` and `Stellium`) aspects by name, with their `Nature`, `Harmonic` (`Harmonic 1` to `Harmonic 12`), `Phase` (`Forming`, `Exact` and `Dissolving`) and `Focal Body` |
-| `Body` | Every body under its class: `Luminary`, `Planet` (holding `Personal`, `Social` and `Outer`), `Asteroid` or `Point` |
-| `Zodiac` | `Sign`, `Element`, `Modality`, `Polarity`, `Decan`, a traditional planet's `Dignity` in the sign it enters, and the `Ingress` kinds |
-| `Solar` | The `Annual Cycle` (solstices, equinoxes, cross-quarter days, hexadecans, apsides) and its `Season` |
-| `Lunar` | The `Monthly Cycle`, with the Moon's phases, and its `Apsides` |
-| `Daily` | The `Solar Cycle` and `Lunar Cycle` of a day, each with its `Rise`, `Set`, `Zenith` and `Nadir`, its `Twilight` events and spans, and `Time of Day` |
-| `Planetary` | `Direction` (stations and retrograde periods), `Phase` (`Mercurian`, `Venusian` and `Martian`) and `Synodic Stage` |
-| `Eclipse` | `Solar` and `Lunar` by type (`Total`, `Partial`, `Annular`), with their `Frame` (`Geocentric` or `Topocentric`) and `Phase` |
-| `Temporality` | `Perfective`, an instant in time, or `Progressive`, progressing over a duration of time |
+| Root          | Its nodes                                                                                                                                                                                                                                                                   |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Aspect`      | `Simple` (`Major`, `Minor` and `Specialty`) and `Compound` (`Triple`, `Quadruple`, `Quintuple`, `Sextuple` and `Stellium`) aspects by name, with their `Nature`, `Harmonic` (`Harmonic 1` to `Harmonic 12`), `Phase` (`Forming`, `Exact` and `Dissolving`) and `Focal Body` |
+| `Body`        | Every body under its class: `Luminary`, `Planet` (holding `Personal`, `Social` and `Outer`), `Asteroid` or `Point`                                                                                                                                                          |
+| `Zodiac`      | `Sign`, `Element`, `Modality`, `Polarity`, `Decan`, a traditional planet's `Dignity` in the sign it enters, and the `Ingress` kinds                                                                                                                                         |
+| `Solar`       | The `Annual Cycle` (solstices, equinoxes, cross-quarter days, hexadecans, apsides, and the sixteen `Interval`s) and its `Season`                                                                                                                                            |
+| `Lunar`       | The `Monthly Cycle`, with the Moon's phases, and its `Apsides`, with `Advancing` and `Retreating`                                                                                                                                                                           |
+| `Daily`       | The `Solar Cycle` and `Lunar Cycle` of a day, each with its `Rise`, `Set`, `Zenith` and `Nadir` (and the Moon's `Moon Up` span), its `Twilight` events and spans, and `Time of Day`                                                                                         |
+| `Planetary`   | `Direction` (stations and retrograde periods), `Phase` (`Mercurian`, `Venusian` and `Martian`) and `Synodic Stage` (including `Widening` and `Closing`)                                                                                                                     |
+| `Eclipse`     | `Solar` and `Lunar` by type (`Total`, `Partial`, `Annular`), with their `Frame` (`Geocentric` or `Topocentric`) and `Phase`                                                                                                                                                 |
+| `Temporality` | `Perfective`, an instant in time, or `Progressive`, progressing over a duration of time                                                                                                                                                                                     |
 
 Mars is full at opposition rather than at a superior conjunction, so its full
 and opposition events take an `Opposition` synodic stage of their own; a phase
@@ -257,35 +381,43 @@ compares them exactly. `start` and `end` are `timestamptz`, read back in UTC.
 Ids are `uuidv7()` values the database assigns, so a run never derives one.
 
 A run adds to the database, and the same event for the same place updates its
-row, through `INSERT … ON CONFLICT (summary, start, end, latitude, longitude)
+row, through `INSERT … ON CONFLICT (name, start, end, latitude, longitude)
 DO UPDATE`, so re-running an ingest never duplicates it. Rows go in batches
 sized by their columns to stay under Postgres's 65,535 bind parameters per
 statement. The entities, the one migration, and the read model come from the
 `caelundas-db` library: apply the migration with
 `nx run caelundas-db:migration:run` before the first run (`migration:generate`
-creates the next one). Every run ends by refreshing the metrics view
-(`calendar_event_facts`, which the API queries beside the plain
-`calendar_event_derived_times` view) with `CaelundasDatabaseService.refreshMetrics`, in the
+creates the next one). Every run ends by refreshing the read model
+(`calendar_event_tag_sets`, then the `filters` and `calendar_event_facts` the
+API queries) with `CaelundasDatabaseService.refreshMetrics`, in the
 same transaction that wrote the events, so a failed refresh stores nothing and
 there is no separate build step.
 
 Postgres takes concurrent writers, but two runs that insert the same missing
 tag at once make the second fail on the tag's unique name; run it again.
 
-## Metrics views
+## Metrics facts
 
-An ingest refreshes the one materialized view the Charts and Totals layouts read
-(`calendar_event_facts`), inside the same transaction, so nothing else is needed
-after a run. To refresh it alone, after editing events or tags by hand:
+An ingest refreshes the tag sets and rebuilds the facts the Charts and Totals
+layouts read (`calendar_event_facts`, one measure at one filter a row), inside
+the same transaction, so nothing else is needed after a run. To refresh them
+alone, after editing events or tags by hand:
 
 ```bash
 nx run caelundas-cli:start:refresh-metrics
 ```
 
-It refreshes it concurrently, so readers are never blocked, and logs the time
-it took (about 8.6 seconds for 50,000 events). The view and the SQL that reads
-it are in
+It refreshes without blocking readers, and logs the time it took (about 4.5
+seconds for 50,000 events). The facts, the filters they hang from and the SQL
+that reads them are in
 [`caelundas-db`'s `metrics-facts.md`](../caelundas-db/documentation/metrics-facts.md).
+
+The `metric-expressions` command, a child module of `refresh-metrics`, draws each
+metric's expression tree from the database as a Mermaid flowchart in the marker block of a
+Markdown file, with a table of the expressions in infix form. Run it through
+`nx run caelundas-db:metric-expressions` (add `:check` to compare without writing), which
+writes
+[`caelundas-db`'s `metric-expressions.md`](../caelundas-db/documentation/metric-expressions.md).
 
 ## Night sky
 
@@ -306,7 +438,7 @@ nx run caelundas-cli:start:night-sky --stars hygdata_v41.csv \
 
 It stores the stars to magnitude 6.5 at declination -45 degrees or north,
 keyed by Hipparcos number, plus any fainter star a figure joins; the 88 IAU
-constellations, the twelve of the zodiac flagged; and each figure's segments
+constellations, the twelve of the zodiac flagged (`is_zodiac`); and each figure's segments
 between two stored stars. d3-celestial draws its figures by position, so each
 vertex is matched to the catalog star within 0.05 degrees of it, and a segment
 south of the stored sky is left out.

@@ -1,6 +1,14 @@
 import _ from "lodash";
 import moment from "moment";
-import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
@@ -10,10 +18,13 @@ import {
   ingressBodies as signIngressBodies,
 } from "../../../caelundas/caelundas.constants";
 import { EphemerisModule } from "../../../ephemeris/ephemeris.module";
+import { BoundarySearchModule } from "../../../ephemeris/modules/boundary-search/boundary-search.module";
 import { MathService } from "../../../ephemeris/modules/math/math.service";
 
+import { IngressStaysService } from "./ingress-stays.service";
 import { IngressesComposerService } from "./ingresses-composer.service";
 import { IngressesService } from "./ingresses.service";
+import { SignTransitsService } from "./sign-transits.service";
 
 import type { Body } from "../../../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
@@ -38,11 +49,18 @@ interface ServicePrivate {
 describe(IngressesService, () => {
   let service: IngressesService;
   let helperService: IngressesComposerService;
+  let signTransitsService: SignTransitsService;
+  let ingressStaysService: IngressStaysService;
   let s: ServicePrivate;
 
   const testingModuleOptions = {
-    imports: [EphemerisModule],
-    providers: [IngressesComposerService, MathService],
+    imports: [BoundarySearchModule, EphemerisModule],
+    providers: [
+      IngressesComposerService,
+      IngressStaysService,
+      MathService,
+      SignTransitsService,
+    ],
   };
 
   beforeAll(async () => {
@@ -52,6 +70,8 @@ describe(IngressesService, () => {
     );
     service = instance;
     helperService = await module.resolve(IngressesComposerService);
+    signTransitsService = await module.resolve(SignTransitsService);
+    ingressStaysService = await module.resolve(IngressStaysService);
     s = helperService;
   });
 
@@ -190,7 +210,7 @@ describe(IngressesService, () => {
         longitude: 10.5,
       });
 
-      expect(event.summary).toBe("♀️♈2️⃣ Venus ingress decan 2 Aries");
+      expect(event.summary).toBe("♀️2️⃣♈ Venus ingress decan 2 Aries");
     });
   });
 
@@ -281,7 +301,7 @@ describe(IngressesService, () => {
         longitude: 135,
       });
 
-      expect(event.summary).toBe("♂️♌︎⛰️ Mars peak ingress Leo");
+      expect(event.summary).toBe("♂️⛰️♌︎ Mars peak ingress Leo");
     });
   });
 
@@ -482,6 +502,179 @@ describe(IngressesService, () => {
       groupedByBodySpy.mockRestore();
       filterSignIngressEventsSpy.mockRestore();
       buildProgressiveSpansForBodySpy.mockRestore();
+    });
+  });
+
+  describe("detectProgressive over a sweep window", () => {
+    const window = {
+      end: moment.utc("2026-03-31T23:59:00.000Z"),
+      start: moment.utc("2026-03-01T00:00:00.000Z"),
+    };
+    const entryStart = moment.utc("2026-02-10T08:00:00.000Z");
+    const exitStart = moment.utc("2026-04-12T16:30:00.000Z");
+
+    const ingress = (
+      body: Body,
+      longitude: number,
+      iso: string,
+    ): DetectedCalendarEvent =>
+      service.buildSignIngressEvent({
+        body,
+        date: moment.utc(iso),
+        longitude,
+      });
+    const staysOf = (
+      events: DetectedCalendarEvent[],
+      bodyName: string,
+    ): [string, string, string][] =>
+      events
+        .filter((event) => event.tags.includes(bodyName))
+        .map((event) => [
+          event.description,
+          event.start.toISOString(),
+          event.end.toISOString(),
+        ]);
+
+    beforeEach(() => {
+      vi.spyOn(signTransitsService, "getEntry").mockReturnValue({
+        sign: "pisces",
+        start: entryStart,
+      });
+      vi.spyOn(signTransitsService, "getExit").mockReturnValue(exitStart);
+      vi.spyOn(ingressStaysService, "detect").mockReturnValue([]);
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it("gives a body that never changes sign one stay from its true entry to its true exit", () => {
+      const events = service.detectProgressive([], window);
+
+      expect(staysOf(events, "Pluto")).toStrictEqual([
+        [
+          "Pluto in Pisces",
+          "2026-02-10T08:00:00.000Z",
+          "2026-04-12T16:30:00.000Z",
+        ],
+      ]);
+    });
+
+    it("gives every ingress body a stay, whether or not it crossed a sign", () => {
+      const events = service.detectProgressive(
+        [ingress("sun", 0, "2026-03-20T14:46:00.000Z")],
+        window,
+      );
+
+      for (const body of signIngressBodies) {
+        expect(
+          events.some((event) => event.tags.includes(_.startCase(body))),
+        ).toBe(true);
+      }
+    });
+
+    it("splits a window with one ingress into the stay underway and the stay it begins", () => {
+      const events = service.detectProgressive(
+        [ingress("sun", 0, "2026-03-20T14:46:00.000Z")],
+        window,
+      );
+
+      expect(staysOf(events, "Sun")).toStrictEqual([
+        [
+          "Sun in Pisces",
+          "2026-02-10T08:00:00.000Z",
+          "2026-03-20T14:46:00.000Z",
+        ],
+        [
+          "Sun in Aries",
+          "2026-03-20T14:46:00.000Z",
+          "2026-04-12T16:30:00.000Z",
+        ],
+      ]);
+    });
+
+    it("chains consecutive ingresses end to start", () => {
+      const events = service.detectProgressive(
+        [
+          ingress("moon", 30, "2026-03-05T01:00:00.000Z"),
+          ingress("moon", 60, "2026-03-07T11:00:00.000Z"),
+          ingress("moon", 90, "2026-03-09T20:00:00.000Z"),
+        ],
+        window,
+      );
+
+      expect(staysOf(events, "Moon")).toStrictEqual([
+        [
+          "Moon in Pisces",
+          "2026-02-10T08:00:00.000Z",
+          "2026-03-05T01:00:00.000Z",
+        ],
+        [
+          "Moon in Taurus",
+          "2026-03-05T01:00:00.000Z",
+          "2026-03-07T11:00:00.000Z",
+        ],
+        [
+          "Moon in Gemini",
+          "2026-03-07T11:00:00.000Z",
+          "2026-03-09T20:00:00.000Z",
+        ],
+        [
+          "Moon in Cancer",
+          "2026-03-09T20:00:00.000Z",
+          "2026-04-12T16:30:00.000Z",
+        ],
+      ]);
+    });
+
+    it("gives a retrograde re-entry its own stay in the sign it left", () => {
+      const events = service.detectProgressive(
+        [
+          ingress("mars", 30, "2026-03-05T00:00:00.000Z"),
+          ingress("mars", 29.9, "2026-03-15T00:00:00.000Z"),
+          ingress("mars", 30, "2026-03-25T00:00:00.000Z"),
+        ],
+        window,
+      );
+
+      expect(
+        staysOf(events, "Mars").map(([description]) => description),
+      ).toStrictEqual([
+        "Mars in Pisces",
+        "Mars in Taurus",
+        "Mars in Aries",
+        "Mars in Taurus",
+      ]);
+    });
+
+    it("starts a stay on the window's first minute when an ingress lands there", () => {
+      const events = service.detectProgressive(
+        [ingress("venus", 30, "2026-03-01T00:00:00.000Z")],
+        window,
+      );
+
+      expect(staysOf(events, "Venus")[1]).toStrictEqual([
+        "Venus in Taurus",
+        "2026-03-01T00:00:00.000Z",
+        "2026-04-12T16:30:00.000Z",
+      ]);
+    });
+
+    it("adds the decan and half stays of the window to the sign stays", () => {
+      const stay = service.buildSignIngressEvent({
+        body: "sun",
+        date: moment.utc("2026-03-02T00:00:00.000Z"),
+        longitude: 30,
+      });
+      vi.spyOn(ingressStaysService, "detect").mockReturnValue([stay]);
+
+      const events = service.detectProgressive([], window);
+
+      expect(events).toContain(stay);
+    });
+
+    it("leaves bodies without ingresses out when no window is given", () => {
+      expect(service.detectProgressive([])).toStrictEqual([]);
     });
   });
 

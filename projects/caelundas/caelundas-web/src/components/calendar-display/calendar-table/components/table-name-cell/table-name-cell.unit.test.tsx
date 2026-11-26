@@ -10,14 +10,13 @@ import type { CalendarEventRecord } from "../../../events-calendar/components/ca
 const AT = new Date("2026-03-04T15:20:00.000Z");
 const SYMBOLIC: CalendarEventRecord = {
   color: null,
-  description: "Mars Conjunct Venus",
   durationMinutes: 0,
   end: AT,
   groups: [],
   id: "event-mars-conjunct-venus",
-  location: null,
+  name: "♂️☌♀️ Mars Conjunct Venus",
+  note: "Mars Conjunct Venus",
   start: AT,
-  summary: "♂️☌♀️ Mars Conjunct Venus",
   tags: [],
   timezone: "UTC",
 };
@@ -82,11 +81,7 @@ describe(TableNameCell, () => {
   });
 
   it("shows only the name when the event has no symbols", () => {
-    render(
-      <TableNameCell
-        record={{ ...SYMBOLIC, description: "", summary: "Plain" }}
-      />,
-    );
+    render(<TableNameCell record={{ ...SYMBOLIC, name: "Plain", note: "" }} />);
 
     expect(screen.queryByTestId("event-glyphs")).toBeNull();
     expect(screen.getByTestId("table-name-cell").textContent).toBe("Plain");

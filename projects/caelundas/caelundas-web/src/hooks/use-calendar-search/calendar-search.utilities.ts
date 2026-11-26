@@ -6,6 +6,10 @@ import {
 import { parseCalendarSymbols } from "../../components/calendar-events/event-glyphs/calendar-symbols.utilities";
 import { normalizeEventFilter } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.utilities";
 import { MAXIMUM_GROUP_LEVELS } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.constants";
+import {
+  parseFoldedStrips,
+  toFoldSearch,
+} from "../../components/calendar-query/calendar-group-strip/components/strip-fold-button/strip-fold-button.utilities";
 
 import {
   agendaDaysSchema,
@@ -23,7 +27,7 @@ import type { GroupSort } from "../../components/calendar-query/calendar-group-s
 import type { CalendarSearch, SkySearchValue } from "./calendar-search.types";
 
 /**
- * The route reloads for a calendar's search change, not a sky or metrics one, which the layouts read themselves.
+ * The route reloads for a calendar's search change, not a sky, metrics, hidden-groups or folded-strips one, which the layouts and strips read themselves.
  */
 export function getCalendarReloadKey(
   search: Readonly<Record<string, unknown>>,
@@ -31,6 +35,8 @@ export function getCalendarReloadKey(
   return JSON.stringify({
     ...readCalendarSearch(search),
     compare: undefined,
+    fold: undefined,
+    hideEmpty: undefined,
     metrics: undefined,
   });
 }
@@ -44,15 +50,7 @@ export function readCalendarSearch(
   const filter = filterGroupSchema.safeParse(search["filter"]).data;
 
   return {
-    clusters:
-      search["clusters"] === false || search["clusters"] === "false"
-        ? false
-        : undefined,
-    colors:
-      search["colors"] === false || search["colors"] === "false"
-        ? false
-        : undefined,
-    columns: parseColumns(search["columns"]),
+    ...readDisplaySearch(search),
     compare:
       search["compare"] === true || search["compare"] === "true"
         ? true
@@ -61,11 +59,12 @@ export function readCalendarSearch(
     days: agendaDaysSchema.safeParse(search["days"]).data,
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),
     group: parseGrouping(search["group"]),
+    hideEmpty:
+      search["hideEmpty"] === true || search["hideEmpty"] === "true"
+        ? true
+        : undefined,
     metrics: parseMetrics(search["metrics"]),
-    scale: parseTimelineScale(search["scale"]),
     sort: parseSorts(search["sort"]),
-    symbols: parseCalendarSymbols(search["symbols"]),
-    view: parseCalendarView(search["view"]),
   };
 }
 
@@ -145,6 +144,28 @@ function parseSorts(value: unknown): GroupSort[] | undefined {
   ).data;
 
   return sorts === undefined || sorts.length === 0 ? undefined : sorts;
+}
+
+/**
+ * Reads how the calendar looks: its colors, columns, folded strips, timeline scale, symbols and view.
+ */
+function readDisplaySearch(
+  search: Readonly<Record<string, unknown>>,
+): Pick<
+  CalendarSearch,
+  "colors" | "columns" | "fold" | "scale" | "symbols" | "view"
+> {
+  return {
+    colors:
+      search["colors"] === false || search["colors"] === "false"
+        ? false
+        : undefined,
+    columns: parseColumns(search["columns"]),
+    fold: toFoldSearch(parseFoldedStrips(search["fold"])),
+    scale: parseTimelineScale(search["scale"]),
+    symbols: parseCalendarSymbols(search["symbols"]),
+    view: parseCalendarView(search["view"]),
+  };
 }
 
 /**

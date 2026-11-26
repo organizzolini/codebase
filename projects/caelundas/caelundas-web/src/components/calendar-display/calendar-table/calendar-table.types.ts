@@ -40,8 +40,12 @@ export interface TableColumn {
    */
   icon?: string;
   id: string;
-  kind: "end" | "group" | "name" | "number" | "start" | "tag";
+  kind: "duration" | "end" | "group" | "name" | "number" | "start" | "tag";
   label: string;
+  /**
+   * For a deep tag column, the tag's own name.
+   */
+  name?: string;
   /**
    * For a tag column, the path whose tags the cells name, a root's name or a tag's whole path.
    */

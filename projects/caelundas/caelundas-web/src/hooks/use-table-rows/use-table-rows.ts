@@ -23,7 +23,11 @@ import {
   toListStats,
   toResetKey,
 } from "../../components/calendar-display/calendar-table/table-groups.utilities";
-import { createTagRanks } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-sort.utilities";
+import { pruneEmptyEventGroups } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-prune.utilities";
+import {
+  createTagRanks,
+  sortListedEvents,
+} from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-sort.utilities";
 import {
   buildEventGroups,
   sortEventGroups,
@@ -44,8 +48,17 @@ import type {
 export function useTableRows(
   options: Readonly<UseTableRowsOptions>,
 ): UseTableRowsResult {
-  const { anchor, dayCount, events, facets, fields, grouping, sort, timeZone } =
-    options;
+  const {
+    anchor,
+    dayCount,
+    events,
+    facets,
+    fields,
+    grouping,
+    hideEmpty = false,
+    sort,
+    timeZone,
+  } = options;
 
   // 🪝 Hooks
   const shared = use(TableGroupsContext);
@@ -56,16 +69,28 @@ export function useTableRows(
   );
   const { groups, listed } = useMemo(() => {
     const inRange = listTableEvents({ anchor, dayCount, events, timeZone });
+    const ranks = createTagRanks(facets);
+    const sorted = sortEventGroups(
+      buildEventGroups(inRange, grouping, fields),
+      sort,
+      ranks,
+    );
 
     return {
-      groups: sortEventGroups(
-        buildEventGroups(inRange, grouping, fields),
-        sort,
-        createTagRanks(facets),
-      ),
-      listed: inRange,
+      groups: hideEmpty ? pruneEmptyEventGroups(sorted) : sorted,
+      listed: sortListedEvents(inRange, sort, ranks),
     };
-  }, [anchor, dayCount, events, facets, fields, grouping, sort, timeZone]);
+  }, [
+    anchor,
+    dayCount,
+    events,
+    facets,
+    fields,
+    grouping,
+    hideEmpty,
+    sort,
+    timeZone,
+  ]);
   const { idsKey, levelsKey, pathKey, resetKey, tiersKey } = useMemo(() => {
     const ids = listGroupIds(groups).join(ID_SEPARATOR);
 
@@ -105,6 +130,7 @@ export function useTableRows(
     () =>
       toTableRows(groups, listed, {
         expanded: state.expanded,
+        isOrdered: true,
         limit: state.limit,
         limits: state.limits,
         pages: state.pages,

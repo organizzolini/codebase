@@ -41,12 +41,10 @@ function detectedEvent(summary: string, start: string): DetectedCalendarEvent {
 function storedEvent(summary: string, start: string): StoredCalendarEvent {
   return {
     ...detectedEvent(summary, start),
-    createdAt: new Date(start),
     id: "0192f0c4-5b1e-7c66-8a3d-2f4e6b8c9d10",
     latitude: "40.712800",
     longitude: "-74.006000",
     timezone: "America/New_York",
-    updatedAt: new Date(start),
   };
 }
 

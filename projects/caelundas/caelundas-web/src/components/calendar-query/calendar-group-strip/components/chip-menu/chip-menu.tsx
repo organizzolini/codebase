@@ -4,17 +4,23 @@ import {
   ArrowUpDown,
   ChevronsDownUp,
   ChevronsUpDown,
+  Crosshair,
   EllipsisVertical,
+  FoldHorizontal,
   Trash2,
 } from "lucide-react";
+import { use } from "react";
 
 import {
   Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@codebase/presentation";
+
+import { StripFoldContext } from "../strip-fold-button/strip-fold-button.constants";
 
 import type { ReactNode } from "react";
 
@@ -28,6 +34,8 @@ export interface ChipMenuProperties {
   onExpandAll?: (() => void) | undefined;
   onMoveLeft?: (() => void) | undefined;
   onMoveRight?: (() => void) | undefined;
+  /** Keeps this chip and removes the strip's others. */
+  onOnly?: (() => void) | undefined;
   onRemove?: (() => void) | undefined;
   onReverse?: (() => void) | undefined;
 }
@@ -35,7 +43,7 @@ export interface ChipMenuProperties {
 // 🧩 Component
 
 /**
- * Renders an ellipsis button opening a menu to reverse, move or remove a chip, and collapse or expand all groups.
+ * Renders an ellipsis button opening a menu to reverse, move, keep only, fold or remove a chip, and collapse or expand all groups.
  */
 export function ChipMenu(properties: Readonly<ChipMenuProperties>): ReactNode {
   const {
@@ -45,11 +53,14 @@ export function ChipMenu(properties: Readonly<ChipMenuProperties>): ReactNode {
     onExpandAll,
     onMoveLeft,
     onMoveRight,
+    onOnly,
     onRemove,
     onReverse,
   } = properties;
 
   // 🪝 Hooks
+  // The strip's, so every chip's menu folds it.
+  const onFold = use(StripFoldContext);
 
   // 🏗 Setup
 
@@ -125,10 +136,30 @@ export function ChipMenu(properties: Readonly<ChipMenuProperties>): ReactNode {
           Move right
         </DropdownMenuItem>
         <DropdownMenuItem
+          disabled={onOnly === undefined}
+          onClick={() => {
+            onOnly?.();
+          }}
+        >
+          <Crosshair aria-hidden="true" />
+          Only
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          disabled={onFold === undefined}
+          onClick={() => {
+            onFold?.();
+          }}
+        >
+          <FoldHorizontal aria-hidden="true" />
+          Fold
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
           disabled={onRemove === undefined}
           onClick={() => {
             onRemove?.();
           }}
+          variant="destructive"
         >
           <Trash2 aria-hidden="true" />
           Remove

@@ -16,6 +16,20 @@ describe(ChartsNotice, () => {
     expect(screen.getByTestId("skeleton-bars")).toBeDefined();
   });
 
+  it("hands its skeleton no layout classes, which a skeleton that holds no box ignores", () => {
+    render(
+      <ChartsNotice
+        error={undefined}
+        kind="loading"
+        onRetry={vi.fn<() => void>()}
+      />,
+    );
+
+    expect(screen.getByTestId("skeleton-bars").hasAttribute("class")).toBe(
+      false,
+    );
+  });
+
   it("says why the metrics could not be read, and offers a retry", () => {
     const onRetry = vi.fn<() => void>();
 

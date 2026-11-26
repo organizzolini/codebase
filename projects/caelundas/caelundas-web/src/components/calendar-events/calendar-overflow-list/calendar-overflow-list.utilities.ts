@@ -59,6 +59,6 @@ function compareStarts(
 ): number {
   return (
     left.start.getTime() - right.start.getTime() ||
-    compareNatural(left.summary, right.summary)
+    compareNatural(left.name, right.name)
   );
 }

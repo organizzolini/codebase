@@ -10,7 +10,6 @@ import {
   facetRowSchema,
   FACETS_SQL,
   groupKeysSchema,
-  TUNING_SQL,
 } from "./events.constants";
 import { DEFAULT_EVENT_SCOPE } from "./modules/filtering/event-filter.constants";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
@@ -74,6 +73,7 @@ export class EventsService {
           id: row.id,
           name: row.name,
           note: row.note,
+          slug: row.slug,
           values: [],
         });
         continue;
@@ -100,6 +100,7 @@ export class EventsService {
         name: row.name,
         note: row.note,
         path: row.path_below_root,
+        slug: row.slug,
       });
     }
 
@@ -167,19 +168,17 @@ export class EventsService {
     );
 
     return rows.map((row) => ({
-      color: row.color,
-      description: row.description,
       durationMinutes: row.duration_minutes,
       end: row.end,
       groups: grouping.map((_, level) =>
         groupKeysSchema.parse(row[`group_${String(level)}`]),
       ),
       id: row.id,
-      location: row.location,
+      name: row.name,
+      note: row.note,
       start: row.start,
       startLocalDay: row.start_local_day,
       startLocalHour: row.start_local_hour,
-      summary: row.summary,
       tags: row.tags,
       timezone: row.timezone,
     }));
@@ -236,24 +235,6 @@ export class EventsService {
     schema: z.ZodType<Row>,
   ): Promise<Row[]> {
     const rows = await this.manager.query<unknown[]>(sql, [...parameters]);
-
-    return rows.map((row) => schema.parse(row));
-  }
-
-  /**
-   * Runs one statement as `select` does, in a transaction with JIT off and
-   * room to sort in memory.
-   */
-  public async selectTuned<Row>(
-    sql: string,
-    parameters: readonly unknown[],
-    schema: z.ZodType<Row>,
-  ): Promise<Row[]> {
-    const rows = await this.manager.transaction(async (transaction) => {
-      await transaction.query(TUNING_SQL);
-
-      return transaction.query<unknown[]>(sql, [...parameters]);
-    });
 
     return rows.map((row) => schema.parse(row));
   }

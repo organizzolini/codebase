@@ -1,5 +1,5 @@
 import { ListTree } from "lucide-react";
-import { useMemo } from "react";
+import { use, useMemo } from "react";
 
 import {
   Button,
@@ -11,10 +11,12 @@ import {
 
 import { useStripLines } from "../../../hooks/use-strip-lines/use-strip-lines";
 import { BUTTON_STRIP_CLASS_NAME } from "../../../hooks/use-strip-lines/use-strip-lines.constants";
+import { TableGroupsContext } from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.constants";
 import { QueryCascader } from "../query-cascader/query-cascader";
 import { PICK_EVERY_ROW } from "../query-cascader/query-cascader.constants";
 
 import {
+  listGroupChipNames,
   toGroupRuns,
   toRunLevels,
 } from "./calendar-group-strip-runs.utilities";
@@ -22,9 +24,10 @@ import { TITLE } from "./calendar-group-strip.constants";
 import {
   createGroupItems,
   getGroupHint,
-  toGrouping,
+  toGroupingChange,
   toGroupValue,
 } from "./calendar-group-strip.utilities";
+import { ALL_TAGS_FIELD } from "./components/event-group-model/event-group-fields.constants";
 import {
   createEventGroupFields,
   getDefaultGrouping,
@@ -32,10 +35,12 @@ import {
 } from "./components/event-group-model/event-group-fields.utilities";
 import { GroupRunChips } from "./components/group-run-chips/group-run-chips";
 import { PickedGroupChips } from "./components/picked-group-chips/picked-group-chips";
+import { StripFoldSection } from "./components/strip-fold-button/strip-fold-section";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { EventGroupLevel } from "./components/event-group-model/event-groups.types";
+import type { StripFold } from "./components/strip-fold-button/strip-fold-button.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -46,6 +51,8 @@ import type { ReactNode } from "react";
 export interface CalendarGroupStripProperties {
   className?: string;
   facets: readonly EventFacet[];
+  /** How the strip folds; it does not when absent. */
+  fold?: StripFold | undefined;
   grouping: readonly EventGroupLevel[];
   /** Whether the link names no grouping, so one "Tags" chip, which stays, stands for every root. */
   isDefaultGrouping?: boolean | undefined;
@@ -62,6 +69,7 @@ export function CalendarGroupStrip(
   const {
     className,
     facets,
+    fold,
     grouping: linked,
     isDefaultGrouping = false,
     onGroupingChange,
@@ -70,6 +78,7 @@ export function CalendarGroupStrip(
 
   // 🪝 Hooks
   const { reference } = useStripLines();
+  const { state } = use(TableGroupsContext);
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
   // The default's menu ticks every tag root, so a change edits that list; its chip opens the levels it draws.
   const { defaultLevels, grouping } = useMemo(
@@ -87,6 +96,11 @@ export function CalendarGroupStrip(
 
     return { runLevels: toRunLevels(grouped), runs: grouped };
   }, [grouping]);
+
+  const names = useMemo(
+    () => listGroupChipNames({ fields, isDefaultGrouping, runs, state, view }),
+    [fields, isDefaultGrouping, runs, state, view],
+  );
 
   // 💪 Handlers
 
@@ -129,28 +143,41 @@ export function CalendarGroupStrip(
           >
             <QueryCascader
               cascade={false}
+              defaultExpanded={[ALL_TAGS_FIELD]}
               items={items}
               mode="tree"
               onValueChange={(next) => {
-                onGroupingChange(toGrouping(next, grouping, fields));
+                onGroupingChange(
+                  toGroupingChange(next, {
+                    fields,
+                    grouping,
+                    isDefaultGrouping,
+                  }),
+                );
               }}
               placeholder="Group by"
               selectable={PICK_EVERY_ROW}
-              value={toGroupValue(grouping)}
+              value={toGroupValue(grouping, isDefaultGrouping)}
               multiple
             />
           </PopoverContent>
         </Popover>
-        <GroupRunChips
-          defaultLevels={defaultLevels}
-          fields={fields}
-          isDefaultGrouping={isDefaultGrouping}
-          onGroupingChange={onGroupingChange}
-          runLevels={runLevels}
-          runs={runs}
-          view={view}
-        />
-        <PickedGroupChips view={view} />
+        <StripFoldSection
+          fold={fold}
+          names={names}
+          title={TITLE}
+        >
+          <GroupRunChips
+            defaultLevels={defaultLevels}
+            fields={fields}
+            isDefaultGrouping={isDefaultGrouping}
+            onGroupingChange={onGroupingChange}
+            runLevels={runLevels}
+            runs={runs}
+            view={view}
+          />
+          <PickedGroupChips view={view} />
+        </StripFoldSection>
       </ButtonGroup>
     </div>
   );

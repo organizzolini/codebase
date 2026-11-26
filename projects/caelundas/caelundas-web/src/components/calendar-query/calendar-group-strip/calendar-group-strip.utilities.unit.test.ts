@@ -7,6 +7,7 @@ import {
   getCollapseHandlers,
   labelGroupLevel,
   toGrouping,
+  toGroupingChange,
   toGroupValue,
 } from "./calendar-group-strip.utilities";
 import { createEventGroupFields } from "./components/event-group-model/event-group-fields.utilities";
@@ -54,7 +55,9 @@ describe("calendar-group-strip utilities", () => {
   describe(createGroupItems, () => {
     it("nests only the tags with tags beneath them, and leaves a derived field a leaf", () => {
       const items = createGroupItems(FIELDS);
-      const type = items.find((item) => item.value === "tag:type");
+      const type = items[0]?.children?.find(
+        (item) => item.value === "tag:type",
+      );
       const day = items.find((item) => item.value === "day");
 
       expect(type?.children?.map((child) => child.value)).toStrictEqual([
@@ -68,7 +71,7 @@ describe("calendar-group-strip utilities", () => {
     });
 
     it("describes a tag by its note and event count, and a bare one by its count", () => {
-      const [item] = createGroupItems(FIELDS);
+      const [item] = createGroupItems(FIELDS)[0]?.children ?? [];
       const [aspect] = item?.children ?? [];
 
       expect(aspect?.description).toBe("Two bodies · 2 events");
@@ -100,7 +103,7 @@ describe("calendar-group-strip utilities", () => {
           ],
         },
       ]);
-      const [item] = createGroupItems(fields);
+      const [item] = createGroupItems(fields)[0]?.children ?? [];
 
       expect(item?.icon).toBeDefined();
       expect(item?.children?.[0]?.icon).toBeDefined();
@@ -114,13 +117,71 @@ describe("calendar-group-strip utilities", () => {
           values: [{ count: 1, depth: 1, id: "sun", name: "Sun", path: "Sun" }],
         },
       ]);
-      const [item] = createGroupItems(fields);
+      const [item] = createGroupItems(fields)[0]?.children ?? [];
 
       expect(item?.children).toBeUndefined();
+    });
+
+    it("holds every tag root under a Tag row first, before the derived fields", () => {
+      const items = createGroupItems(FIELDS);
+
+      expect(items[0]?.label).toBe("Tag");
+      expect(items[0]?.value).toBe("tag:*");
+      expect(items[0]?.icon).toBeDefined();
+      expect(items[0]?.children?.map((child) => child.value)).toStrictEqual([
+        "tag:type",
+      ]);
+      expect(
+        items.slice(1).every((item) => !item.value.startsWith("tag:")),
+      ).toBe(true);
+    });
+
+    it("has no Tag row where there are no tag roots", () => {
+      expect(
+        createGroupItems(
+          FIELDS.filter((field) => !field.id.startsWith("tag:")),
+        ).some((item) => item.value === "tag:*"),
+      ).toBe(false);
+    });
+  });
+
+  describe(toGroupingChange, () => {
+    it("is the default, no levels, when the Tag row is ticked anew", () => {
+      expect(
+        toGroupingChange(["tag:*", "day"], {
+          fields: FIELDS,
+          grouping: [DAY],
+          isDefaultGrouping: false,
+        }),
+      ).toStrictEqual([]);
+    });
+
+    it("is the default again when every tag root, and nothing else, is ticked", () => {
+      expect(
+        toGroupingChange(["tag:type"], {
+          fields: FIELDS,
+          grouping: [DAY],
+          isDefaultGrouping: false,
+        }),
+      ).toStrictEqual([]);
+    });
+
+    it("leaves the Tag row out when it stays ticked with the default", () => {
+      expect(
+        toGroupingChange(["tag:*", "tag:type", "day"], {
+          fields: FIELDS,
+          grouping: [TYPE],
+          isDefaultGrouping: true,
+        }),
+      ).toStrictEqual([TYPE, DAY]);
     });
   });
 
   describe(toGroupValue, () => {
+    it("also ticks the Tag row for the default", () => {
+      expect(toGroupValue([TYPE], true)).toStrictEqual(["tag:*", "tag:type"]);
+    });
+
     it("ticks each level's tag, or its field when it groups by the root's own", () => {
       expect(toGroupValue([DAY, TYPE, IN_ASPECT])).toStrictEqual([
         "day",

@@ -19,8 +19,10 @@ export interface CalendarEventGroupKey {
  * An astronomical event; equal start and end mark an instant.
  */
 export interface CalendarEventRecord {
+  /**
+   * The color views paint it in, set by `colorEvents`; none for a view's default.
+   */
   color: null | string;
-  description: string;
   /**
    * Whole minutes from start to end, 0 for an instant.
    */
@@ -31,9 +33,9 @@ export interface CalendarEventRecord {
    */
   groups: CalendarEventGroupKey[][];
   id: string;
-  location: null | string;
+  name: string;
+  note: string;
   start: Date;
-  summary: string;
   tags: CalendarEventTag[];
   timezone: string;
 }

@@ -265,6 +265,42 @@ describe("event group tree", () => {
       node("Moon", 2, "2026-02-01"),
     ];
 
+    it("orders the events inside each group that lists them, and the groups by the same sort", () => {
+      const event = (
+        name: string,
+        start: string,
+        minutes: number,
+      ): EventGroupNode["events"][number] =>
+        ({
+          durationMinutes: minutes,
+          end: new Date(new Date(start).getTime() + minutes * 60_000),
+          name,
+          start: new Date(start),
+          tags: [],
+        }) as unknown as EventGroupNode["events"][number];
+      const long = event("long", "2026-03-01T10:00:00.000Z", 300);
+      const short = event("short", "2026-03-02T10:00:00.000Z", 30);
+      const parent = {
+        ...node("Parent", 2, "2026-03-01"),
+        children: [{ ...node("Leaf", 2, "2026-03-01"), events: [long, short] }],
+        events: [long, short],
+      };
+      const [sorted] = sortEventGroups(
+        [parent],
+        [{ direction: "asc", key: "duration" }],
+      );
+
+      expect(sorted?.children[0]?.events.map((one) => one.name)).toStrictEqual([
+        "short",
+        "long",
+      ]);
+      // Only the groups with no subgroup list events, so a parent keeps its own order.
+      expect(sorted?.events.map((one) => one.name)).toStrictEqual([
+        "long",
+        "short",
+      ]);
+    });
+
     it("leaves the groups as built when there is no sort", () => {
       expect(labels(sortEventGroups(nodes(), undefined))).toStrictEqual([
         "Mars",
@@ -328,7 +364,7 @@ describe("event group tree", () => {
       expect(
         labels(
           sortEventGroups(nodes(), [
-            { direction: "desc", key: "metric", metric: "EVENTS" },
+            { direction: "desc", key: "metric", metric: "events" },
           ]),
         ),
       ).toStrictEqual(["Mars", "Venus", "Moon"]);

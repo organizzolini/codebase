@@ -2,19 +2,17 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { DEFAULT_EVENT_SCOPE } from "../../../filtering/event-filter.constants";
+import { createRequest as request } from "../../../../../../../testing/metric-catalog";
 import { EventFilterService } from "../../../filtering/event-filter.service";
 import { EventFilterCalendarFieldsService } from "../../../filtering/modules/query-building/event-filter-calendar-fields.service";
 import { EventFilterParametersService } from "../../../filtering/modules/query-building/event-filter-parameters.service";
 import { EventFilterNumbersService } from "../../../filtering/modules/values/event-filter-numbers.service";
 import { EventFilterValuesService } from "../../../filtering/modules/values/event-filter-values.service";
 import { EventGroupingService } from "../../../grouping/event-grouping.service";
-import { EventMetric } from "../inputs/event-metric.entities";
 
 import { EventMetricsQueryService } from "./event-metrics-query.service";
 
 import type { EventGroupLevel } from "../../../grouping/event-grouping.types";
-import type { EventMetricsQueryRequest } from "../../event-metrics.types";
 
 const ROOT = "0199b1a0-0000-7000-8000-000000000002";
 const MARS = "0199b1a0-0000-7000-8000-000000000001";
@@ -33,22 +31,6 @@ function level(
   rest: Partial<EventGroupLevel> = {},
 ): EventGroupLevel {
   return { field, tags: [], ...rest };
-}
-
-/** A request for the whole set, with the parts given changed. */
-function request(
-  rest: Partial<EventMetricsQueryRequest> = {},
-): EventMetricsQueryRequest {
-  return {
-    filter: null,
-    grouping: [],
-    metrics: [EventMetric.EVENTS],
-    period: PERIOD,
-    previous: null,
-    scope: DEFAULT_EVENT_SCOPE,
-    tagRoot: null,
-    ...rest,
-  };
 }
 
 describe(EventMetricsQueryService, () => {
@@ -83,7 +65,7 @@ describe(EventMetricsQueryService, () => {
       expect.hasAssertions();
 
       const compiled = service.compile(
-        request({ metrics: [EventMetric.EVENTS, EventMetric.SPANS] }),
+        request({ metrics: ["events", "progressive-events"] }),
       );
 
       expect(compiled.parameters).toStrictEqual([PERIOD.start, PERIOD.end]);
@@ -152,7 +134,7 @@ describe(EventMetricsQueryService, () => {
     it("binds a tag root only for the unique tags it limits", () => {
       expect.hasAssertions();
 
-      const unique = [EventMetric.UNIQUE_TAGS];
+      const unique = ["unique-tags"];
       const rooted = service.compile(
         request({ metrics: unique, tagRoot: ROOT }),
       );
@@ -178,35 +160,36 @@ describe(EventMetricsQueryService, () => {
 
   describe("compile the percent metrics", () => {
     /** The statement for one metric. */
-    function compileMetric(metric: EventMetric): string {
+    function compileMetric(metric: string): string {
       return service.compile(request({ metrics: [metric] })).sql;
     }
 
     it("hands each period's bounds to the events, to clip them", () => {
       expect.hasAssertions();
 
-      expect(compileMetric(EventMetric.EVENTS)).toContain(
+      expect(compileMetric("events")).toContain(
         "select p.period, p.period_start, p.period_end, e.*",
       );
+      expect(compileMetric("events")).toContain(`e.*, 1 as "events"`);
     });
 
     it("clips the union of the intervals to the period and divides by its minutes", () => {
       expect.hasAssertions();
 
-      const sql = compileMetric(EventMetric.COVERED_PERCENT);
+      const sql = compileMetric("covered-percent");
 
       expect(sql).toContain("range_agg(tstzrange(");
       expect(sql).toContain('greatest(e."start", e.period_start)');
       expect(sql).toContain('least(e."end", e.period_end)');
-      expect(sql).toContain("* 100 / nullif(");
-      expect(sql).toContain("min(e.period_end) - min(e.period_start)");
+      expect(sql).toContain("(100.0 * ((select coalesce(sum(");
+      expect(sql).toContain("/ nullif((extract(epoch from (min(e.period_end)");
       expect(sql).not.toContain("tag_path = 'Temporality / Progressive'");
     });
 
     it("sums the clipped intervals, overlaps once per event", () => {
       expect.hasAssertions();
 
-      const sql = compileMetric(EventMetric.TOTAL_TIME_PERCENT);
+      const sql = compileMetric("total-time-percent");
 
       expect(sql).toContain(
         'sum(extract(epoch from least(e."end", e.period_end) - greatest(e."start", e.period_start)) / 60)',
@@ -218,13 +201,14 @@ describe(EventMetricsQueryService, () => {
     it("narrows the progressive percents to the progressive tag", () => {
       expect.hasAssertions();
 
-      const covered = compileMetric(EventMetric.PROGRESSIVE_COVERED_PERCENT);
-      const counted = compileMetric(EventMetric.PROGRESSIVE_TOTAL_PERCENT);
+      const covered = compileMetric("progressive-covered-percent");
+      const counted = compileMetric("progressive-total-percent");
 
       expect(covered).toContain("range_agg(");
-      expect(covered).toContain("filter (where exists (");
+      expect(covered).toContain('filter (where e."is_progressive")');
       expect(covered).toContain("tag_path = 'Temporality / Progressive'");
       expect(counted).not.toContain("range_agg");
+      expect(counted).toContain('filter (where e."is_progressive")');
       expect(counted).toContain("tag_path = 'Temporality / Progressive'");
     });
 
@@ -235,7 +219,7 @@ describe(EventMetricsQueryService, () => {
         request({
           grouping: [level("year")],
           level: 0,
-          metrics: [EventMetric.COVERED_PERCENT],
+          metrics: ["covered-percent"],
           previous: PREVIOUS,
         }),
       );

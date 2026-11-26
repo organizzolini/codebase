@@ -112,4 +112,44 @@ describe(GroupRunChips, () => {
       { field: "month" },
     ]);
   });
+
+  it("keeps only a run from its chip's menu, and offers it none when it is alone", async () => {
+    const onGroupingChange = vi.fn<(grouping: unknown[]) => void>();
+    const { unmount } = render(
+      <GroupRunChips
+        defaultLevels={[]}
+        fields={[]}
+        isDefaultGrouping={false}
+        onGroupingChange={onGroupingChange}
+        runLevels={[[0], [1]]}
+        runs={RUNS}
+        view="table"
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "year options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Only" }));
+
+    expect(onGroupingChange).toHaveBeenCalledExactlyOnceWith([
+      { field: "year" },
+    ]);
+
+    unmount();
+    render(
+      <GroupRunChips
+        defaultLevels={[]}
+        fields={[]}
+        isDefaultGrouping={false}
+        onGroupingChange={onGroupingChange}
+        runLevels={[[0]]}
+        runs={RUNS.slice(0, 1)}
+        view="table"
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "month options" }));
+
+    const only = await screen.findByRole("menuitem", { name: "Only" });
+
+    expect(only.getAttribute("aria-disabled")).toBe("true");
+  });
 });

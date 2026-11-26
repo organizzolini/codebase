@@ -67,16 +67,15 @@ describe("events resolver end-to-end suite", () => {
     const EVENTS = `
       query Events($period: PeriodInput!) {
         events(period: $period) {
-          summary
+          name
+          note
           start
           end
           durationMinutes
           timezone
           startLocalDay
           startLocalHour
-          color
-          location
-          tags { depth name path }
+          tags { depth name path slug }
         }
       }
     `;
@@ -93,33 +92,39 @@ describe("events resolver end-to-end suite", () => {
 
       expect(events).toStrictEqual([
         {
-          color: null,
           durationMinutes: 90,
           end: "2026-03-05T05:00:00.000Z",
-          location: null,
+          name: "Mars Retrograde",
+          note: "Mars Retrograde description",
           start: "2026-03-05T03:30:00.000Z",
           startLocalDay: "2026-03-04",
           startLocalHour: 22,
-          summary: "Mars Retrograde",
           tags: [
             {
               depth: 2,
               name: "Retrograde",
               path: "Planet / Mars / Retrograde",
+              slug: "retrograde",
             },
           ],
           timezone: "America/New_York",
         },
         {
-          color: null,
           durationMinutes: 0,
           end: "2026-03-10T12:00:00.000Z",
-          location: null,
+          name: "Moon Conjunct Mars",
+          note: "Moon Conjunct Mars description",
           start: "2026-03-10T12:00:00.000Z",
           startLocalDay: "2026-03-10",
           startLocalHour: 8,
-          summary: "Moon Conjunct Mars",
-          tags: [{ depth: 1, name: "Conjunct", path: "Aspect / Conjunct" }],
+          tags: [
+            {
+              depth: 1,
+              name: "Conjunct",
+              path: "Aspect / Conjunct",
+              slug: "conjunct",
+            },
+          ],
           timezone: "America/New_York",
         },
       ]);
@@ -136,7 +141,7 @@ describe("events resolver end-to-end suite", () => {
       });
 
       expect(
-        (events as { summary: string }[]).map(({ summary }) => summary),
+        (events as { name: string }[]).map(({ name }) => name),
       ).toStrictEqual(["Moon Conjunct Mars"]);
     });
 
@@ -151,7 +156,7 @@ describe("events resolver end-to-end suite", () => {
       });
 
       expect(
-        (events as { summary: string }[]).map(({ summary }) => summary),
+        (events as { name: string }[]).map(({ name }) => name),
       ).not.toContain("Moon Conjunct Mars Forming");
     });
 

@@ -66,8 +66,8 @@ export type GraphqlResponse = z.infer<typeof graphqlResponseSchema>;
 /** One event of the fixture, as the entities take it. */
 interface SeedEvent {
   readonly end: string;
+  readonly name: string;
   readonly start: string;
-  readonly summary: string;
   readonly tags: readonly Tag[];
   readonly timezone: string;
 }
@@ -80,52 +80,60 @@ export async function seedEvents(
   database: DatabaseTestingModule,
 ): Promise<Record<string, Tag>> {
   const tags = database.dataSource.getTreeRepository(Tag);
-  const planet = await tags.save(tags.create({ name: "Planet" }));
-  const mars = await tags.save(tags.create({ name: "Mars", parent: planet }));
+  const planet = await tags.save(
+    tags.create({ name: "Planet", slug: "planet" }),
+  );
+  const mars = await tags.save(
+    tags.create({ name: "Mars", parent: planet, slug: "mars" }),
+  );
   const retrograde = await tags.save(
-    tags.create({ name: "Retrograde", parent: mars }),
+    tags.create({ name: "Retrograde", parent: mars, slug: "retrograde" }),
   );
-  const aspect = await tags.save(tags.create({ name: "Aspect" }));
+  const aspect = await tags.save(
+    tags.create({ name: "Aspect", slug: "aspect" }),
+  );
   const conjunct = await tags.save(
-    tags.create({ name: "Conjunct", parent: aspect }),
+    tags.create({ name: "Conjunct", parent: aspect, slug: "conjunct" }),
   );
-  const phase = await tags.save(tags.create({ name: "Phase", parent: aspect }));
+  const phase = await tags.save(
+    tags.create({ name: "Phase", parent: aspect, slug: "phase" }),
+  );
   const forming = await tags.save(
-    tags.create({ name: "Forming", parent: phase }),
+    tags.create({ name: "Forming", parent: phase, slug: "forming" }),
   );
   const events: SeedEvent[] = [
     {
       end: "2026-03-05T05:00:00.000Z",
+      name: "Mars Retrograde",
       start: "2026-03-05T03:30:00.000Z",
-      summary: "Mars Retrograde",
       tags: [retrograde],
       timezone: "America/New_York",
     },
     {
       end: "2026-03-10T12:00:00.000Z",
+      name: "Moon Conjunct Mars",
       start: "2026-03-10T12:00:00.000Z",
-      summary: "Moon Conjunct Mars",
       tags: [conjunct],
       timezone: "America/New_York",
     },
     {
       end: "2026-03-10T12:00:00.000Z",
+      name: "Moon Conjunct Mars Forming",
       start: "2026-03-10T12:00:00.000Z",
-      summary: "Moon Conjunct Mars Forming",
       tags: [conjunct, forming],
       timezone: "America/New_York",
     },
     {
       end: "2026-03-20T09:00:00.000Z",
+      name: "Sun Enters Aries",
       start: "2026-03-20T09:00:00.000Z",
-      summary: "Sun Enters Aries",
       tags: [],
       timezone: "America/New_York",
     },
     {
       end: "2026-03-21T00:00:00.000Z",
+      name: "Equinox Watch",
       start: "2026-03-20T22:00:00.000Z",
-      summary: "Equinox Watch",
       tags: [],
       timezone: "Europe/London",
     },
@@ -134,12 +142,12 @@ export async function seedEvents(
   for (const seed of events) {
     const [event] = await database.dataSource.query<[{ id: string }]>(
       `insert into calendar_events
-         (summary, description, "start", "end", latitude, longitude, timezone)
+         (name, note, "start", "end", latitude, longitude, timezone)
        values ($1, $2, $3, $4, 40.7128, -74.006, $5)
        returning id`,
       [
-        seed.summary,
-        `${seed.summary} description`,
+        seed.name,
+        `${seed.name} description`,
         seed.start,
         seed.end,
         seed.timezone,
@@ -170,40 +178,52 @@ export async function seedFilterTags(
   const tags = database.dataSource.getTreeRepository(Tag);
   const planet = await tags.findOneByOrFail({ name: "Planet" });
   const aspect = await tags.findOneByOrFail({ name: "Aspect" });
-  const moon = await tags.save(tags.create({ name: "Moon", parent: planet }));
-  const body = await tags.save(tags.create({ name: "Body" }));
+  const moon = await tags.save(
+    tags.create({ name: "Moon", parent: planet, slug: "moon" }),
+  );
+  const body = await tags.save(tags.create({ name: "Body", slug: "body" }));
   const luminary = await tags.save(
-    tags.create({ name: "Luminary", parent: body }),
+    tags.create({ name: "Luminary", parent: body, slug: "luminary" }),
   );
   const luminaryMoon = await tags.save(
-    tags.create({ name: "Moon", parent: luminary }),
+    tags.create({ name: "Moon", parent: luminary, slug: "moon" }),
   );
   const simple = await tags.save(
-    tags.create({ name: "Simple", parent: aspect }),
+    tags.create({ name: "Simple", parent: aspect, slug: "simple" }),
   );
-  const major = await tags.save(tags.create({ name: "Major", parent: simple }));
-  const zodiac = await tags.save(tags.create({ name: "Zodiac" }));
+  const major = await tags.save(
+    tags.create({ name: "Major", parent: simple, slug: "major" }),
+  );
+  const zodiac = await tags.save(
+    tags.create({ name: "Zodiac", slug: "zodiac" }),
+  );
   const ingress = await tags.save(
-    tags.create({ name: "Ingress", parent: zodiac }),
+    tags.create({ name: "Ingress", parent: zodiac, slug: "ingress" }),
   );
   const signIngress = await tags.save(
-    tags.create({ name: "Sign Ingress", parent: ingress }),
+    tags.create({
+      name: "Sign Ingress",
+      parent: ingress,
+      slug: "sign-ingress",
+    }),
   );
-  const planetary = await tags.save(tags.create({ name: "Planetary" }));
+  const planetary = await tags.save(
+    tags.create({ name: "Planetary", slug: "planetary" }),
+  );
   const direction = await tags.save(
-    tags.create({ name: "Direction", parent: planetary }),
+    tags.create({ name: "Direction", parent: planetary, slug: "direction" }),
   );
   const harmonic = await tags.save(
-    tags.create({ name: "Harmonic", parent: aspect }),
+    tags.create({ name: "Harmonic", parent: aspect, slug: "harmonic" }),
   );
   const harmonic2 = await tags.save(
-    tags.create({ name: "Harmonic 2", parent: harmonic }),
+    tags.create({ name: "Harmonic 2", parent: harmonic, slug: "harmonic-2" }),
   );
   const harmonic6 = await tags.save(
-    tags.create({ name: "Harmonic 6", parent: harmonic }),
+    tags.create({ name: "Harmonic 6", parent: harmonic, slug: "harmonic-6" }),
   );
   const harmonic12 = await tags.save(
-    tags.create({ name: "Harmonic 12", parent: harmonic }),
+    tags.create({ name: "Harmonic 12", parent: harmonic, slug: "harmonic-12" }),
   );
   const given: [string, Tag[]][] = [
     ["Moon Conjunct Mars", [major, moon, luminaryMoon, harmonic2]],
@@ -212,10 +232,10 @@ export async function seedFilterTags(
     ["Equinox Watch", [harmonic6]],
   ];
 
-  for (const [summary, eventTags] of given) {
+  for (const [name, eventTags] of given) {
     const [event] = await database.dataSource.query<[{ id: string }]>(
-      `select id from calendar_events where "summary" = $1`,
-      [summary],
+      `select id from calendar_events where "name" = $1`,
+      [name],
     );
 
     for (const tag of eventTags) {

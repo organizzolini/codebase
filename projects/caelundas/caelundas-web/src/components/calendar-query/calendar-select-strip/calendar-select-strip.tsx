@@ -1,11 +1,6 @@
 import { useMemo } from "react";
 
-import {
-  Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@codebase/presentation";
+import { Button } from "@codebase/presentation";
 
 import {
   DEFAULT_COLUMN_IDS,
@@ -16,18 +11,18 @@ import { TagLead } from "../../calendar-events/tag-lead/tag-lead";
 import { ChipMenu } from "../calendar-group-strip/components/chip-menu/chip-menu";
 import { moveListItem } from "../calendar-group-strip/components/chip-menu/chip-menu.utilities";
 import { createEventGroupFields } from "../calendar-group-strip/components/event-group-model/event-group-fields.utilities";
-import { QueryCascader } from "../query-cascader/query-cascader";
-import { PICK_EVERY_ROW } from "../query-cascader/query-cascader.constants";
 
-import { SelectIcon, TITLE } from "./calendar-select-strip.constants";
+import { TITLE } from "./calendar-select-strip.constants";
 import {
   createColumnItems,
   toColumnIds,
 } from "./calendar-select-strip.utilities";
+import { ColumnPicker } from "./components/column-picker/column-picker";
 import { SelectStripFlow } from "./components/select-strip-flow/select-strip-flow";
 
 import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
+import type { StripFold } from "../calendar-group-strip/components/strip-fold-button/strip-fold-button.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -37,6 +32,8 @@ export interface CalendarSelectStripProperties {
   className?: string;
   columns: readonly string[] | undefined;
   facets?: readonly EventFacet[] | undefined;
+  /** How the strip folds; it does not when absent. */
+  fold?: StripFold | undefined;
   onColumnsChange: (columns: readonly string[] | undefined) => void;
   view: CalendarViewName;
 }
@@ -51,6 +48,7 @@ export function CalendarSelectStrip(
     className,
     columns = NO_COLUMNS,
     facets = [],
+    fold,
     onColumnsChange,
     view,
   } = properties;
@@ -86,6 +84,7 @@ export function CalendarSelectStrip(
               <Button
                 className="bg-background dark:bg-input/30"
                 size="sm"
+                title={column.label}
                 variant="outline"
               >
                 <TagLead
@@ -93,7 +92,7 @@ export function CalendarSelectStrip(
                   id={column.id}
                   label={column.label}
                 />
-                {column.label}
+                {column.name ?? column.label}
               </Button>
               <ChipMenu
                 label={column.label}
@@ -111,6 +110,13 @@ export function CalendarSelectStrip(
                         onColumnsChange(moveListItem(order, index, 1));
                       }
                 }
+                onOnly={
+                  shown.length === 1
+                    ? undefined
+                    : () => {
+                        onColumnsChange(toColumnIds([column.id], ids));
+                      }
+                }
                 onRemove={() => {
                   onColumnsChange(
                     toColumnIds(
@@ -123,40 +129,16 @@ export function CalendarSelectStrip(
             </>
           ),
           id: column.id,
+          name: column.name ?? column.label,
         }))}
+        fold={fold}
         label={TITLE}
         trigger={
-          <Popover>
-            <PopoverTrigger
-              render={
-                <Button
-                  size="sm"
-                  variant="outline"
-                >
-                  <SelectIcon aria-hidden="true" />
-                  {TITLE}
-                </Button>
-              }
-            />
-            <PopoverContent
-              align="start"
-              aria-label="Select columns"
-              className="w-80 max-w-[90vw] p-0"
-            >
-              <QueryCascader
-                cascade={false}
-                items={items}
-                mode="tree"
-                onValueChange={(next) => {
-                  onColumnsChange(toColumnIds(next, ids));
-                }}
-                placeholder="Select columns"
-                selectable={PICK_EVERY_ROW}
-                value={[...ids]}
-                multiple
-              />
-            </PopoverContent>
-          </Popover>
+          <ColumnPicker
+            ids={ids}
+            items={items}
+            onColumnsChange={onColumnsChange}
+          />
         }
       />
     </div>

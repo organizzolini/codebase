@@ -19,7 +19,6 @@ import { DEFAULT_TIMELINE_SCALE } from "./components/calendar-views/calendar-vie
 import { isMetricView } from "./components/calendar-views/calendar-views.utilities";
 import { createDatePicker } from "./events-calendar.utilities";
 
-import type { EventMetric } from "../../../graphql/generated/operations";
 import type { DateRangeValue } from "../../calendar-controls/calendar-date-picker/calendar-date-picker.types";
 import type { EventFilterQuery } from "../../calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
@@ -46,11 +45,6 @@ export interface EventsCalendarProperties {
   agendaDays?: number | undefined;
   anchor: Date;
   className?: string;
-  /**
-   * Whether the views of hours merge events of one kind that run together
-   * into a single one with a count; they do when absent.
-   */
-  clusters?: boolean;
   /**
    * Whether events are drawn in color; they are when absent.
    */
@@ -86,9 +80,13 @@ export interface EventsCalendarProperties {
    */
   grouping: readonly EventGroupLevel[];
   /**
+   * Whether groups with no events are left out; shown when absent.
+   */
+  hideEmpty?: boolean | undefined;
+  /**
    * The metrics the metric layouts measure, first first; the Charts defaults when absent.
    */
-  metrics?: readonly EventMetric[] | undefined;
+  metrics?: readonly string[] | undefined;
   /**
    * Called with the table's new columns.
    */
@@ -173,6 +171,7 @@ export function EventsCalendar(
   );
 
   // 🏗 Setup
+  const groups = { grouping, hideEmpty: properties.hideEmpty };
   // What every layout but the month's grid and the week's is handed alike.
   const shared = {
     anchor,
@@ -211,7 +210,7 @@ export function EventsCalendar(
             events={events}
             facets={facets}
             groupColors={groupColors}
-            grouping={grouping}
+            {...groups}
             onColumnsChange={onColumnsChange}
             onSortChange={onSortChange}
             sort={sort}
@@ -224,7 +223,7 @@ export function EventsCalendar(
             events={events}
             facets={facets}
             groupColors={groupColors}
-            grouping={grouping}
+            {...groups}
             scale={scale}
             sort={sort}
           />
@@ -236,7 +235,7 @@ export function EventsCalendar(
             compare={properties.compare}
             filter={properties.eventFilter}
             groupColors={groupColors}
-            grouping={grouping}
+            {...groups}
             metrics={properties.metrics}
             onSortChange={onSortChange}
             sort={sort}
@@ -245,7 +244,6 @@ export function EventsCalendar(
         ) : (
           <CalendarGrid
             {...shared}
-            clusters={properties.clusters}
             compact={compact}
             events={events}
             view={view}

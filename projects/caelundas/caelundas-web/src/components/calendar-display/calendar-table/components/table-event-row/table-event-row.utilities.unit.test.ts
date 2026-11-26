@@ -7,14 +7,13 @@ import type { EventRowComparison } from "./table-event-row.types";
 const AT = new Date("2026-03-04T10:00:00.000Z");
 const RECORD = {
   color: null,
-  description: "",
   durationMinutes: 0,
   end: AT,
   groups: [],
   id: "a",
-  location: null,
+  name: "A",
+  note: "",
   start: AT,
-  summary: "A",
   tags: [],
   timezone: "UTC",
 };

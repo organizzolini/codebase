@@ -1,27 +1,30 @@
-import { Skeleton } from "@codebase/presentation";
-
-import { CARD_KEYS } from "./calendar-skeleton.constants";
+import { CARD_KEYS, REDUCED_MOTION } from "./calendar-skeleton.constants";
+import { SkeletonTotalCard } from "./components/skeleton-total-card/skeleton-total-card";
 
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The classes that lay out the stand-in.
+ * The wrapper's classes and the id of its announcement.
  */
 export interface SkeletonCardsProperties {
   className?: string;
+  /**
+   * The id of the announcement, for a container to name itself by.
+   */
+  labelId?: string | undefined;
 }
 
 // 🧩 Component
 
 /**
- * Draws a grid of cards, standing in for the Totals.
+ * Draws the Totals' grid of cards, in as many columns as the page is wide enough for.
  */
 export function SkeletonCards(
   properties: Readonly<SkeletonCardsProperties>,
 ): ReactNode {
-  const { className } = properties;
+  const { className, labelId } = properties;
 
   // 🪝 Hooks
 
@@ -38,13 +41,22 @@ export function SkeletonCards(
     <div
       className={className}
       data-testid="skeleton-cards"
+      style={{ display: "contents" }}
     >
-      {CARD_KEYS.map((key) => (
-        <Skeleton
-          key={key}
-          className="h-28"
-        />
-      ))}
+      <div
+        aria-hidden="true"
+        className={`grid grid-cols-1 gap-4 overflow-hidden p-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 ${REDUCED_MOTION}`}
+      >
+        {CARD_KEYS.map((key) => (
+          <SkeletonTotalCard key={key} />
+        ))}
+      </div>
+      <span
+        className="sr-only"
+        id={labelId}
+      >
+        Loading totals
+      </span>
     </div>
   );
 }

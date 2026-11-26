@@ -6,6 +6,7 @@ import {
   createChartSegment,
 } from "../../../../../../testing/chart-bars";
 import { stubChartSize } from "../../../../../../testing/chart-size";
+import { getMetric } from "../../../../../../testing/metrics/metric-catalog";
 
 import { ChartPlot } from "./chart-plot";
 
@@ -33,7 +34,7 @@ function renderPlot(bars: readonly ChartBar[]): {
   render(
     <ChartPlot
       bars={bars}
-      metric="EVENTS"
+      metric={getMetric("events")}
       onOpen={onOpen}
       onToggle={onToggle}
     />,

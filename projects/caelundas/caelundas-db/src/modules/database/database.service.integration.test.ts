@@ -9,7 +9,6 @@ import {
 } from "./data-source.constants";
 import { DatabaseModule } from "./database.module";
 import { DatabaseService } from "./database.service";
-import { CalendarEventDerivedTime } from "./modules/calendar-events/calendar-event-derived-time.entity";
 import { CalendarEventTag } from "./modules/calendar-events/calendar-event-tag.entity";
 import { CalendarEvent } from "./modules/calendar-events/calendar-event.entity";
 import { Tag } from "./modules/tags/tag.entity";
@@ -25,7 +24,8 @@ const CONTAINER_TIMEOUT_MILLISECONDS = 120_000;
 /**
  * Rebuilds the read model on a throwaway Postgres container migrated by the
  * project's real migration: base rows go in through the entities, the refresh
- * runs, and the facts view and the derived-times view are asserted.
+ * runs, and the filters, the facts, the tag sets and the inline local-time
+ * expressions are asserted.
  */
 describe(DatabaseService, () => {
   let database: DatabaseTestingModule;
@@ -51,19 +51,21 @@ describe(DatabaseService, () => {
     await database.dataSource.query(
       "truncate calendar_event_tags, calendar_events, tags, tags_closure cascade",
     );
-    planet = await tags.save(tags.create({ name: "Planet" }));
-    mars = await tags.save(tags.create({ name: "Mars", parent: planet }));
+    planet = await tags.save(tags.create({ name: "Planet", slug: "planet" }));
+    mars = await tags.save(
+      tags.create({ name: "Mars", parent: planet, slug: "mars" }),
+    );
     retrograde = await tags.save(
-      tags.create({ name: "Retrograde", parent: mars }),
+      tags.create({ name: "Retrograde", parent: mars, slug: "retrograde" }),
     );
     event = await database.repository(CalendarEvent).save(
       database.repository(CalendarEvent).create({
-        description: "Mars stations retrograde",
         end: moment.utc("2026-03-05T05:00:00.000Z"),
         latitude: "40.712800",
         longitude: "-74.006000",
+        name: "Mars Retrograde",
+        note: "Mars stations retrograde",
         start: moment.utc("2026-03-05T03:30:00.000Z"),
-        summary: "Mars Retrograde",
         timezone: "America/New_York",
       }),
     );
@@ -76,85 +78,223 @@ describe(DatabaseService, () => {
     await database.close();
   });
 
-  /** The day-tag rows of the facts: each tag the event carries, with its depth, root, path and rank. */
-  async function readTagRows(): Promise<
-    {
-      tag_depth: string;
-      tag_name: string;
-      tag_path: string;
-      tag_rank: string;
-      tag_root_id: string;
-    }[]
-  > {
-    return database.dataSource.query(
-      `select tag_name, tag_depth, tag_root_id, tag_path, tag_rank from calendar_event_facts where "filter" = 'day-tag' order by tag_depth`,
-    );
+  /** Refreshes the read model. */
+  async function refresh(): Promise<void> {
+    await service.refreshMetrics(database.dataSource.manager);
   }
 
-  it("fills each tag's depth, root, path and rank into the day-tag rows", async () => {
+  /** The tags that have a day-and-tag filter, sorted. */
+  async function readTagFilters(): Promise<string[]> {
+    const rows = await database.dataSource.query<{ tag_id: string }[]>(
+      `select distinct f.tag_id from filters f join "groups" g on g.id = f.group_id where g.slug = 'tag' order by f.tag_id`,
+    );
+
+    return rows.map(({ tag_id }) => tag_id);
+  }
+
+  /** How many day-and-tag filters there are. */
+  async function countTagDays(): Promise<number> {
+    const [row] = await database.dataSource.query<{ count: string }[]>(
+      `select count(*) from filters f join "groups" g on g.id = f.group_id where g.slug = 'tag'`,
+    );
+
+    return Number(row?.count);
+  }
+
+  /** The measurement of one measure on 4 March for the whole set, or for the tag given. */
+  async function readMeasurement(
+    measure: string,
+    tagId: null | string,
+  ): Promise<null | number> {
+    const rows = await database.dataSource.query<{ measurement: number }[]>(
+      `select r.measurement
+      from calendar_event_facts r
+      join measures m on m.id = r.measure_id
+      join filters f on f.id = r.filter_id
+      where m.slug = $1 and f.period = '2026-03-04' and f.tag_id is not distinct from $2::uuid`,
+      [measure, tagId],
+    );
+
+    return rows[0]?.measurement ?? null;
+  }
+
+  it("gives each day a filter, pinned by its period", async () => {
     expect.hasAssertions();
 
-    await service.refreshMetrics(database.dataSource.manager);
+    await refresh();
 
-    await expect(readTagRows()).resolves.toStrictEqual([
-      {
-        tag_depth: "0",
-        tag_name: "Planet",
-        tag_path: "Planet",
-        tag_rank: "00000:Planet",
-        tag_root_id: planet.id,
-      },
-      {
-        tag_depth: "1",
-        tag_name: "Mars",
-        tag_path: "Planet / Mars",
-        tag_rank: "00000:Planet / 00000:Mars",
-        tag_root_id: planet.id,
-      },
-      {
-        tag_depth: "2",
-        tag_name: "Retrograde",
-        tag_path: "Planet / Mars / Retrograde",
-        tag_rank: "00000:Planet / 00000:Mars / 00000:Retrograde",
-        tag_root_id: planet.id,
-      },
+    const rows = await database.dataSource.query<
+      { group: string; parent_id: null | string; period: string }[]
+    >(
+      `select g.slug as "group", f.parent_id, f.period::text
+      from filters f join "groups" g on g.id = f.group_id
+      where g.slug = 'day'`,
+    );
+
+    expect(rows).toStrictEqual([
+      { group: "day", parent_id: null, period: "2026-03-04" },
     ]);
   });
 
-  it("gives the event row every tag it carries and every ancestor, and the one it was given", async () => {
+  it("gives each tag a filter on the day that mirrors the tag tree and copies nothing from it", async () => {
     expect.hasAssertions();
 
-    await service.refreshMetrics(database.dataSource.manager);
+    await refresh();
+
+    await expect(readTagFilters()).resolves.toStrictEqual(
+      [planet.id, mars.id, retrograde.id].toSorted(),
+    );
+
+    const rows = await database.dataSource.query<
+      {
+        name: null | string;
+        parent_group: string;
+        parent_tag: null | string;
+        tag_id: string;
+      }[]
+    >(
+      `select f.tag_id, f.name, g.slug as parent_group, p.tag_id as parent_tag
+      from filters f
+      join filters p on p.id = f.parent_id
+      join "groups" g on g.id = p.group_id
+      where f.tag_id is not null`,
+    );
+    const parents = new Map(rows.map((row) => [row.tag_id, row]));
+
+    expect(parents.get(planet.id)).toMatchObject({
+      parent_group: "day",
+      parent_tag: null,
+    });
+    expect(parents.get(mars.id)?.parent_tag).toBe(planet.id);
+    expect(parents.get(retrograde.id)?.parent_tag).toBe(mars.id);
+    expect(rows.every(({ name }) => name === null)).toBe(true);
+  });
+
+  it("gives each tag with an event one filter a day", async () => {
+    expect.hasAssertions();
+
+    await refresh();
+
+    await expect(countTagDays()).resolves.toBe(3);
+  });
+
+  it("measures an ancestor tag with every event beneath it", async () => {
+    expect.hasAssertions();
+
+    await refresh();
+
+    await expect(readMeasurement("events", null)).resolves.toBe(1);
+    await expect(readMeasurement("events", planet.id)).resolves.toBe(1);
+    await expect(readMeasurement("duration", planet.id)).resolves.toBe(90);
+  });
+
+  it("writes no row for a measure that is zero, and none for a measure that does not merge", async () => {
+    expect.hasAssertions();
+
+    await refresh();
+
+    await expect(
+      readMeasurement("perfective-events", null),
+    ).resolves.toBeNull();
+    await expect(readMeasurement("progressive-events", null)).resolves.toBe(1);
+
+    const rows = await database.dataSource.query<{ slug: string }[]>(
+      `select distinct m.slug
+      from calendar_event_facts r join measures m on m.id = r.measure_id
+      order by m.slug`,
+    );
+
+    expect(rows.map(({ slug }) => slug)).toStrictEqual([
+      "duration",
+      "events",
+      "first-start",
+      "last-start",
+      "progressive-events",
+    ]);
+  });
+
+  it("keeps an instant as epoch milliseconds", async () => {
+    expect.hasAssertions();
+
+    await refresh();
+
+    await expect(readMeasurement("first-start", null)).resolves.toBe(
+      Date.parse("2026-03-05T03:30:00.000Z"),
+    );
+  });
+
+  it("gives the tag sets the tag the event was given, and apart from it every ancestor of that tag", async () => {
+    expect.hasAssertions();
+
+    await refresh();
 
     const [row] = await database.dataSource.query<
-      { direct_tag_ids: string[]; tag_ids: string[] }[]
+      { ancestor_tag_ids: string[]; tag_ids: string[] }[]
     >(
-      `select tag_ids, direct_tag_ids from calendar_event_facts where "filter" = 'event' and calendar_event_id = $1`,
+      `select tag_ids, ancestor_tag_ids from calendar_event_tag_sets where calendar_event_id = $1`,
       [event.id],
     );
 
-    expect(row?.tag_ids.toSorted()).toStrictEqual(
-      [planet.id, mars.id, retrograde.id].toSorted(),
+    expect(row?.tag_ids).toStrictEqual([retrograde.id]);
+    expect(row?.ancestor_tag_ids.toSorted()).toStrictEqual(
+      [planet.id, mars.id].toSorted(),
     );
-    expect(row?.direct_tag_ids).toStrictEqual([retrograde.id]);
   });
 
-  it("replaces what it built before, so a removed tag leaves no stale row", async () => {
+  it("matches an event by a tag it carries or any ancestor of one, with tag_ids || ancestor_tag_ids", async () => {
     expect.hasAssertions();
 
-    await service.refreshMetrics(database.dataSource.manager);
+    await refresh();
+
+    const matching = async (tagId: string): Promise<number> => {
+      const rows = await database.dataSource.query<unknown[]>(
+        `select 1 from calendar_event_tag_sets where (tag_ids || ancestor_tag_ids) @> array[$1::uuid]`,
+        [tagId],
+      );
+
+      return rows.length;
+    };
+
+    await expect(matching(planet.id)).resolves.toBe(1);
+    await expect(matching(mars.id)).resolves.toBe(1);
+    await expect(matching(retrograde.id)).resolves.toBe(1);
+  });
+
+  it("replaces what it built before, so a removed tag leaves no stale day filter or fact", async () => {
+    expect.hasAssertions();
+
+    await refresh();
     await database
       .repository(CalendarEventTag)
       .delete({ calendarEventId: event.id });
-    await service.refreshMetrics(database.dataSource.manager);
+    await refresh();
 
-    await expect(readTagRows()).resolves.toHaveLength(0);
+    await expect(countTagDays()).resolves.toBe(0);
+    await expect(readMeasurement("events", null)).resolves.toBe(1);
+    await expect(readMeasurement("events", retrograde.id)).resolves.toBeNull();
   });
 
-  it("runs inside the caller's transaction, so a rollback keeps the earlier view", async () => {
+  it("drops a day that lost its events, with the tags and facts beneath it", async () => {
     expect.hasAssertions();
 
-    await service.refreshMetrics(database.dataSource.manager);
+    await refresh();
+    await database.repository(CalendarEvent).delete({ id: event.id });
+    await refresh();
+
+    const [counts] = await database.dataSource.query<
+      { facts: string; filters: string }[]
+    >(
+      `select (select count(*) from calendar_event_facts) as facts,
+        (select count(*) from filters) as filters`,
+    );
+
+    expect(counts).toStrictEqual({ facts: "0", filters: "0" });
+  });
+
+  it("runs inside the caller's transaction, so a rollback keeps the earlier facts", async () => {
+    expect.hasAssertions();
+
+    await refresh();
     await database
       .repository(CalendarEventTag)
       .delete({ calendarEventId: event.id });
@@ -167,10 +307,29 @@ describe(DatabaseService, () => {
       })
       .catch(() => {});
 
-    await expect(readTagRows()).resolves.toHaveLength(3);
+    await expect(countTagDays()).resolves.toBe(3);
   });
 
-  it("keeps a phase boundary, flagged, and refreshes twice with nothing changed", async () => {
+  it("keeps the filters, and their ids, when a refresh finds nothing changed", async () => {
+    expect.hasAssertions();
+
+    const ids = async (): Promise<string[]> => {
+      const rows = await database.dataSource.query<{ id: string }[]>(
+        `select id from filters order by id`,
+      );
+
+      return rows.map(({ id }) => id);
+    };
+
+    await refresh();
+    const before = await ids();
+    await refresh();
+
+    await expect(ids()).resolves.toStrictEqual(before);
+    expect(before).toHaveLength(4);
+  });
+
+  it("leaves a phase boundary event out of the facts, the default scope's way", async () => {
     expect.hasAssertions();
 
     const forming = await tags.save(
@@ -179,74 +338,74 @@ describe(DatabaseService, () => {
         parent: await tags.save(
           tags.create({
             name: "Phase",
-            parent: await tags.save(tags.create({ name: "Aspect" })),
+            parent: await tags.save(
+              tags.create({ name: "Aspect", slug: "aspect" }),
+            ),
+            slug: "phase",
           }),
         ),
+        slug: "forming",
       }),
     );
     await database
       .repository(CalendarEventTag)
       .insert({ calendarEventId: event.id, tagId: forming.id });
-    await service.refreshMetrics(database.dataSource.manager);
-    await service.refreshMetrics(database.dataSource.manager);
+    await refresh();
 
-    const rows = await database.dataSource.query<
-      { filter: string; is_phase_boundary: boolean }[]
-    >(
-      `select distinct "filter", is_phase_boundary from calendar_event_facts where "filter" in ('event', 'day') order by 1`,
-    );
-
-    expect(rows).toStrictEqual([
-      { filter: "day", is_phase_boundary: true },
-      { filter: "event", is_phase_boundary: true },
-    ]);
+    await expect(countTagDays()).resolves.toBe(0);
+    await expect(readMeasurement("events", null)).resolves.toBeNull();
   });
 
-  it("derives an event's UTC and local times in the view, in the zone the event names", async () => {
+  it("computes an event's local day, hour, minutes and temporality inline, in the zone it names", async () => {
     expect.hasAssertions();
 
-    const [row] = await database
-      .repository(CalendarEventDerivedTime)
-      .findBy({ id: event.id });
+    const [row] = await database.dataSource.query<Record<string, unknown>[]>(
+      `select
+        (e."start" at time zone e.timezone)::date::text as local_day,
+        extract(hour from e."start" at time zone e.timezone)::int as local_hour,
+        extract(dow from e."start" at time zone e.timezone)::int as local_weekday,
+        floor(extract(epoch from e."end" - e."start") / 60)::int as duration_minutes,
+        case when e."start" = e."end" then 'Instant' else 'Duration' end as temporality
+      from calendar_events as e where e.id = $1`,
+      [event.id],
+    );
 
-    expect(row).toMatchObject({
-      durationMinutes: 90,
-      startDay: "2026-03-05",
-      startHour: 3,
-      startLocalDay: "2026-03-04",
-      startLocalHour: 22,
-      startMonth: 3,
-      startQuarter: 1,
-      startWeek: 9,
-      startWeekday: 4,
-      startYear: 2026,
+    expect(row).toStrictEqual({
+      duration_minutes: 90,
+      local_day: "2026-03-04",
+      local_hour: 22,
+      local_weekday: 3,
       temporality: "Duration",
     });
   });
 
-  it("follows daylight saving in the local hour, and reports an instant as one", async () => {
+  it("follows daylight saving in the inline local hour, and reports an instant as one", async () => {
     expect.hasAssertions();
 
     const saved = await database.repository(CalendarEvent).save(
       database.repository(CalendarEvent).create({
-        description: "Moon crosses the node",
         end: moment.utc("2026-07-01T04:00:00.000Z"),
         latitude: "40.712800",
         longitude: "-74.006000",
+        name: "Lunar Node",
+        note: "Moon crosses the node",
         start: moment.utc("2026-07-01T04:00:00.000Z"),
-        summary: "Lunar Node",
         timezone: "America/New_York",
       }),
     );
 
-    const [row] = await database
-      .repository(CalendarEventDerivedTime)
-      .findBy({ id: saved.id });
+    const [row] = await database.dataSource.query<Record<string, unknown>[]>(
+      `select
+        (e."start" at time zone e.timezone)::date::text as local_day,
+        extract(hour from e."start" at time zone e.timezone)::int as local_hour,
+        case when e."start" = e."end" then 'Instant' else 'Duration' end as temporality
+      from calendar_events as e where e.id = $1`,
+      [saved.id],
+    );
 
-    expect(row).toMatchObject({
-      durationMinutes: 0,
-      startLocalDay: "2026-07-01",
-      startLocalHour: 0,
+    expect(row).toStrictEqual({
+      local_day: "2026-07-01",
+      local_hour: 0,
       temporality: "Instant",
     });
   });

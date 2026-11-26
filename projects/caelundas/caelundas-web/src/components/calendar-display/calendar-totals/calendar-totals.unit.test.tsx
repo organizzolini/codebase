@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { serveCalendarApi } from "../../../../testing/calendar-api";
+import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 
 import { CalendarTotals } from "./calendar-totals";
 
@@ -23,7 +24,7 @@ function createProperties(
     compare: false,
     filter: undefined,
     grouping: [{ field: "tag:body" }, { field: "tag:body" }],
-    metrics: ["EVENTS", "UNIQUE_NAMES"],
+    metrics: ["events", "unique-names"],
     onDateChange: vi.fn<(date: Date) => void>(),
     onNavigationChange: vi.fn<() => void>(),
     sort: undefined,
@@ -49,16 +50,35 @@ describe(CalendarTotals, () => {
 
   it("shows a skeleton while loading", () => {
     serveCalendarApi();
-    render(<CalendarTotals {...createProperties()} />);
+    renderWithCatalog(<CalendarTotals {...createProperties()} />);
 
     expect(screen.getByTestId("skeleton-cards")).toBeDefined();
+  });
+
+  it("names its container by what the skeleton announces while loading, and no longer once it has cards", async () => {
+    serveCalendarApi();
+    renderWithCatalog(<CalendarTotals {...createProperties()} />);
+
+    expect(screen.getByRole("region", { name: "Loading totals" })).toBe(
+      screen.getByTestId("calendar-totals"),
+    );
+    expect(screen.getAllByText("Loading totals")).toHaveLength(1);
+
+    await waitFor(() => {
+      expect(screen.getAllByTestId("totals-card")).toHaveLength(2);
+    });
+
+    expect(screen.queryByRole("region", { name: "Loading totals" })).toBeNull();
+    expect(
+      screen.getByTestId("calendar-totals").hasAttribute("aria-labelledby"),
+    ).toBe(false);
   });
 
   it("shows a card for each metric with its total", async () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarTotals {...createProperties()} />);
+    renderWithCatalog(<CalendarTotals {...createProperties()} />);
 
     await waitFor(() => {
       expect(screen.getAllByTestId("totals-card")).toHaveLength(2);
@@ -75,7 +95,9 @@ describe(CalendarTotals, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarTotals {...createProperties({ compare: true })} />);
+    renderWithCatalog(
+      <CalendarTotals {...createProperties({ compare: true })} />,
+    );
 
     await waitFor(() => {
       expect(screen.getAllByTestId("totals-change").length).toBeGreaterThan(0);
@@ -86,7 +108,7 @@ describe(CalendarTotals, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(
+    renderWithCatalog(
       <CalendarTotals
         {...createProperties({
           groupColors: new Map([["alpha", "rgb(1, 2, 3)"]]),
@@ -105,7 +127,7 @@ describe(CalendarTotals, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarTotals {...createProperties()} />);
+    renderWithCatalog(<CalendarTotals {...createProperties()} />);
 
     await waitFor(() => {
       expect(screen.getAllByRole("button", { name: /Alpha/ })).toHaveLength(2);
@@ -124,7 +146,7 @@ describe(CalendarTotals, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarTotals {...createProperties()} />);
+    renderWithCatalog(<CalendarTotals {...createProperties()} />);
 
     await waitFor(() => {
       expect(screen.getAllByRole("button", { name: /Alpha/ })).toHaveLength(2);
@@ -154,7 +176,7 @@ describe(CalendarTotals, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarTotals {...createProperties()} />);
+    renderWithCatalog(<CalendarTotals {...createProperties()} />);
 
     await waitFor(() => {
       expect(screen.getAllByTestId("totals-subtotal")).toHaveLength(4);
@@ -168,7 +190,9 @@ describe(CalendarTotals, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarTotals {...createProperties({ metrics: [] })} />);
+    renderWithCatalog(
+      <CalendarTotals {...createProperties({ metrics: [] })} />,
+    );
 
     await expect(
       screen.findByText("There are no totals to show for these days."),
@@ -180,7 +204,7 @@ describe(CalendarTotals, () => {
 
     const api = serveCalendarApi({ metricsError: "The metrics are down" });
 
-    render(<CalendarTotals {...createProperties()} />);
+    renderWithCatalog(<CalendarTotals {...createProperties()} />);
 
     const alert = await screen.findByRole("alert");
 

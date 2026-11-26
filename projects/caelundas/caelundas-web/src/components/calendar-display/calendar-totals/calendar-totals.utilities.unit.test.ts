@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 
+import { CATALOG } from "../../../../testing/metrics/metric-catalog";
+
 import {
   findGroupColor,
   findGroupValue,
   getSharePercent,
+  toTotalsCards,
 } from "./calendar-totals.utilities";
 
 import type {
@@ -77,11 +80,28 @@ describe("calendar totals utilities", () => {
     it("gives a group's value for a metric, or none when it lacks it", () => {
       const group: MetricGroup = {
         ...createGroup("a"),
-        values: [{ metric: "EVENTS", previous: null, value: 7 }],
+        values: [{ metric: "events", previous: null, value: 7 }],
       };
 
-      expect(findGroupValue(group, "EVENTS")).toBe(7);
-      expect(findGroupValue(group, "SPANS")).toBeNull();
+      expect(findGroupValue(group, "events")).toBe(7);
+      expect(findGroupValue(group, "progressive-events")).toBeNull();
+    });
+  });
+
+  describe(toTotalsCards, () => {
+    it("pairs each total with its metric, in order, leaving out one the catalog lacks", () => {
+      const totals = [
+        { metric: "progressive-events", previous: null, value: 2 },
+        { metric: "unknown-slug", previous: null, value: 9 },
+        { metric: "events", previous: 4, value: 5 },
+      ];
+      const cards = toTotalsCards(totals, CATALOG.bySlug);
+
+      expect(cards.map((card) => card.metric.slug)).toStrictEqual([
+        "progressive-events",
+        "events",
+      ]);
+      expect(cards.map((card) => card.total.value)).toStrictEqual([2, 5]);
     });
   });
 });

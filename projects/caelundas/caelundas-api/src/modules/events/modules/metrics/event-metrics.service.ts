@@ -14,6 +14,8 @@ import {
   TAG_NAMES_SQL,
   tagNameRowSchema,
 } from "./event-metrics.constants";
+import { EventMetricsCatalogService } from "./modules/catalog/event-metrics-catalog.service";
+import { resolveMetrics } from "./modules/catalog/event-metrics-catalog.utilities";
 import { factsRowSchema } from "./modules/facts/event-metrics-facts.constants";
 import { EventMetricsFactsService } from "./modules/facts/event-metrics-facts.service";
 import { toMeasuredRows } from "./modules/facts/event-metrics-facts.utilities";
@@ -59,6 +61,8 @@ export class EventMetricsService {
     private readonly filterService: EventFilterService,
     @Inject(EventGroupingService)
     private readonly groupingService: EventGroupingService,
+    @Inject(EventMetricsCatalogService)
+    private readonly catalogService: EventMetricsCatalogService,
     @Inject(EventMetricsFactsService)
     private readonly factsService: EventMetricsFactsService,
     @Inject(EventMetricsQueryService)
@@ -116,13 +120,16 @@ export class EventMetricsService {
     const facts = this.compileFacts(request, zone);
 
     if (facts !== null) {
-      const rows = await this.eventsService.selectTuned(
+      const rows = await this.eventsService.select(
         facts.sql,
         facts.parameters,
         factsRowSchema,
       );
 
-      return toMeasuredRows(rows, { ...facts, metrics: request.metrics });
+      return toMeasuredRows(rows, {
+        levels: facts.levels,
+        metrics: request.metrics.length,
+      });
     }
 
     const [total, levels] = await Promise.all([
@@ -180,7 +187,7 @@ export class EventMetricsService {
   ): Promise<EventMetricsRow[]> {
     const rollup = zone === null ? null : compileRollupRead(request, zone);
     const { parameters, sql } = rollup ?? this.queryService.compile(request);
-    const rows = await this.eventsService.selectTuned(
+    const rows = await this.eventsService.select(
       sql,
       parameters,
       metricRowSchema,
@@ -229,12 +236,14 @@ export class EventMetricsService {
     scope: EventScope = DEFAULT_EVENT_SCOPE,
   ): Promise<EventMetricsResultEntity> {
     const compare = input.compareToPrevious === true;
-    const metrics = [...new Set(input.metrics)];
+    const catalog = await this.catalogService.getCatalog();
+    const metrics = resolveMetrics(catalog, input.metrics);
     const grouping = this.groupingService.parse({
       levels: input.grouping ?? [],
     });
     const { current, previous } = this.toPeriods(input.period, compare);
     const base: EventMetricsQueryRequest = {
+      catalog,
       filter: this.filterService.parse(input.filter),
       grouping,
       metrics,

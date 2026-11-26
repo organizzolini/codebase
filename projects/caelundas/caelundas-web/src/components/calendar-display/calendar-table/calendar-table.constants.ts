@@ -9,6 +9,7 @@ export const BASE_COLUMNS: readonly TableColumn[] = [
   { icon: "text", id: "name", kind: "name", label: "Name" },
   { icon: "calendar-arrow-down", id: "start", kind: "start", label: "Start" },
   { icon: "calendar-arrow-up", id: "end", kind: "end", label: "End" },
+  { icon: "timer", id: "duration", kind: "duration", label: "Duration" },
 ];
 
 /**
@@ -73,6 +74,7 @@ export const NO_LIMITS: ReadonlyMap<string, number> = new Map();
  * Each kind of column's width in rem.
  */
 export const COLUMN_WIDTH_REM: Readonly<Record<TableColumn["kind"], number>> = {
+  duration: 10,
   end: 13,
   group: 18,
   name: 20,

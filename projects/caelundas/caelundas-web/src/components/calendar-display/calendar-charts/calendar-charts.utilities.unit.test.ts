@@ -4,6 +4,7 @@ import {
   createChartBar,
   createChartSegment,
 } from "../../../../testing/chart-bars";
+import { getMetric } from "../../../../testing/metrics/metric-catalog";
 import { EMPTY_VALUE } from "../calendar-metrics/calendar-metrics.constants";
 import { formatMetricValueCompact } from "../calendar-metrics/components/calendar-metrics-compact/calendar-metrics-compact.utilities";
 
@@ -22,17 +23,21 @@ import {
   truncateChartLabel,
 } from "./calendar-charts.utilities";
 
-import type { EventMetric } from "../../../graphql/generated/operations";
 import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type {
+  MetricDescriptor,
   MetricGroup,
   MetricNode,
 } from "../calendar-metrics/calendar-metrics.types";
 
+const EVENTS = getMetric("events");
+const TOTAL_DURATION = getMetric("duration");
+const UNIQUE_NAMES = getMetric("unique-names");
+
 const OPTIONS = {
   colors: undefined,
   compare: false,
-  format: (metric: EventMetric, value: null | number) =>
+  format: (metric: MetricDescriptor, value: null | number) =>
     formatMetricValueCompact(metric, value, "UTC"),
 };
 
@@ -50,27 +55,27 @@ function createGroup(
     path: null,
     rank: null,
     values: Object.entries(values).map(([metric, [value, previous]]) => ({
-      metric: metric as MetricGroup["values"][number]["metric"],
+      metric,
       previous,
       value,
     })),
   };
 }
 
-const CHILD_ONE = createGroup("/0:a/1:one", { EVENTS: [4, 2], SPANS: [3, 3] });
-const CHILD_TWO = createGroup("/0:a/1:two", { EVENTS: [2, 2], SPANS: [1, 1] });
+const CHILD_ONE = createGroup("/0:a/1:one", { events: [4, 2], spans: [3, 3] });
+const CHILD_TWO = createGroup("/0:a/1:two", { events: [2, 2], spans: [1, 1] });
 const PARENT = createGroup(
   "/0:a",
   {
-    COVERED_PERCENT: [50, 25],
-    EVENTS: [6, 4],
-    UNIQUE_NAMES: [5, null],
+    "covered-percent": [50, 25],
+    events: [6, 4],
+    "unique-names": [5, null],
   },
   [CHILD_ONE, CHILD_TWO],
 );
 const OTHER = createGroup("/0:b", {
-  EVENTS: [null, null],
-  UNIQUE_NAMES: [8, 8],
+  events: [null, null],
+  "unique-names": [8, 8],
 });
 
 function toNode(
@@ -89,13 +94,13 @@ describe("calendar charts utilities", () => {
     const ascending: GroupSort = {
       direction: "asc",
       key: "metric",
-      metric: "EVENTS",
+      metric: "events",
     };
 
     it("appends an ascending sort by the metric", () => {
-      expect(cycleMetricSort(undefined, "EVENTS")).toStrictEqual([ascending]);
+      expect(cycleMetricSort(undefined, "events")).toStrictEqual([ascending]);
       expect(
-        cycleMetricSort([{ direction: "asc", key: "name" }], "EVENTS"),
+        cycleMetricSort([{ direction: "asc", key: "name" }], "events"),
       ).toStrictEqual([{ direction: "asc", key: "name" }, ascending]);
     });
 
@@ -103,10 +108,10 @@ describe("calendar charts utilities", () => {
       const other: GroupSort = {
         direction: "asc",
         key: "metric",
-        metric: "SPANS",
+        metric: "progressive-events",
       };
 
-      expect(cycleMetricSort([other, ascending], "EVENTS")).toStrictEqual([
+      expect(cycleMetricSort([other, ascending], "events")).toStrictEqual([
         other,
         { ...ascending, direction: "desc" },
       ]);
@@ -118,10 +123,10 @@ describe("calendar charts utilities", () => {
       expect(
         cycleMetricSort(
           [{ direction: "asc", key: "name" }, descending],
-          "EVENTS",
+          "events",
         ),
       ).toStrictEqual([{ direction: "asc", key: "name" }]);
-      expect(cycleMetricSort([descending], "EVENTS")).toBeUndefined();
+      expect(cycleMetricSort([descending], "events")).toBeUndefined();
     });
   });
 
@@ -129,12 +134,14 @@ describe("calendar charts utilities", () => {
     it("is the way the metric's sort goes, or nothing without one", () => {
       const sorts: GroupSort[] = [
         { direction: "asc", key: "name" },
-        { direction: "desc", key: "metric", metric: "EVENTS" },
+        { direction: "desc", key: "metric", metric: "events" },
       ];
 
-      expect(findMetricSortDirection(sorts, "EVENTS")).toBe("desc");
-      expect(findMetricSortDirection(sorts, "SPANS")).toBeUndefined();
-      expect(findMetricSortDirection(undefined, "EVENTS")).toBeUndefined();
+      expect(findMetricSortDirection(sorts, "events")).toBe("desc");
+      expect(
+        findMetricSortDirection(sorts, "progressive-events"),
+      ).toBeUndefined();
+      expect(findMetricSortDirection(undefined, "events")).toBeUndefined();
     });
   });
 
@@ -251,7 +258,7 @@ describe("calendar charts utilities", () => {
 
   describe(buildChartBars, () => {
     it("stacks a group's bar by its subgroups for an additive metric", () => {
-      const [bar] = buildChartBars([toNode(PARENT)], "EVENTS", OPTIONS);
+      const [bar] = buildChartBars([toNode(PARENT)], EVENTS, OPTIONS);
 
       expect(bar?.segments.map((segment) => segment.id)).toStrictEqual([
         CHILD_ONE.id,
@@ -273,7 +280,7 @@ describe("calendar charts utilities", () => {
     it("takes a segment's share of every bar shown", () => {
       const bars = buildChartBars(
         [toNode(CHILD_ONE, [PARENT]), toNode(CHILD_TWO, [PARENT])],
-        "EVENTS",
+        EVENTS,
         OPTIONS,
       );
 
@@ -284,7 +291,7 @@ describe("calendar charts utilities", () => {
     });
 
     it("draws one bar for a metric that does not add up, with no share", () => {
-      const [bar] = buildChartBars([toNode(PARENT)], "UNIQUE_NAMES", OPTIONS);
+      const [bar] = buildChartBars([toNode(PARENT)], UNIQUE_NAMES, OPTIONS);
 
       expect(bar?.segments).toHaveLength(1);
       expect(bar?.segments[0]?.id).toBe("/0:a");
@@ -294,7 +301,7 @@ describe("calendar charts utilities", () => {
 
     it("colors each segment by its group", () => {
       const colors = new Map([[CHILD_ONE.id, "red"]]);
-      const [bar] = buildChartBars([toNode(PARENT)], "EVENTS", {
+      const [bar] = buildChartBars([toNode(PARENT)], EVENTS, {
         ...OPTIONS,
         colors,
       });
@@ -307,7 +314,7 @@ describe("calendar charts utilities", () => {
 
     it("colors a bar by its group and marks the pieces that have subgroups", () => {
       const colors = new Map([[PARENT.id, "blue"]]);
-      const [bar] = buildChartBars([toNode(PARENT)], "EVENTS", {
+      const [bar] = buildChartBars([toNode(PARENT)], EVENTS, {
         ...OPTIONS,
         colors,
       });
@@ -324,7 +331,7 @@ describe("calendar charts utilities", () => {
             children: [{ ...CHILD_ONE, children: [OTHER] }],
           }),
         ],
-        "EVENTS",
+        EVENTS,
         OPTIONS,
       );
 
@@ -332,12 +339,12 @@ describe("calendar charts utilities", () => {
         stacked?.segments.map((segment) => segment.isExpandable),
       ).toStrictEqual([true]);
       expect(
-        buildChartBars([toNode(PARENT)], "EVENTS", OPTIONS)[0]?.color,
+        buildChartBars([toNode(PARENT)], EVENTS, OPTIONS)[0]?.color,
       ).toBeUndefined();
     });
 
     it("shows the previous period and the change when compared", () => {
-      const [bar] = buildChartBars([toNode(PARENT)], "EVENTS", {
+      const [bar] = buildChartBars([toNode(PARENT)], EVENTS, {
         ...OPTIONS,
         compare: true,
       });
@@ -348,7 +355,7 @@ describe("calendar charts utilities", () => {
     });
 
     it("shows no change for a group with no previous value", () => {
-      const [bar] = buildChartBars([toNode(PARENT)], "UNIQUE_NAMES", {
+      const [bar] = buildChartBars([toNode(PARENT)], UNIQUE_NAMES, {
         ...OPTIONS,
         compare: true,
       });
@@ -358,7 +365,7 @@ describe("calendar charts utilities", () => {
     });
 
     it("writes a missing value as a dash with no height", () => {
-      const [bar] = buildChartBars([toNode(OTHER)], "EVENTS", OPTIONS);
+      const [bar] = buildChartBars([toNode(OTHER)], EVENTS, OPTIONS);
 
       expect(bar?.text).toBe(EMPTY_VALUE);
       expect(bar?.segments[0]?.value).toBe(0);
@@ -369,7 +376,7 @@ describe("calendar charts utilities", () => {
     it("closes the open group above a subgroup", () => {
       const [bar] = buildChartBars(
         [toNode(CHILD_ONE, [PARENT])],
-        "EVENTS",
+        EVENTS,
         OPTIONS,
       );
 
@@ -381,9 +388,9 @@ describe("calendar charts utilities", () => {
   describe("compact durations", () => {
     it("writes a bar's duration with the compact span, the segment's and the previous's too", () => {
       const group = createGroup("/0:d", {
-        TOTAL_DURATION_MINUTES: [525_600 + 43_200 + 4320 + 720, 1440],
+        duration: [525_600 + 43_200 + 4320 + 720, 1440],
       });
-      const [bar] = buildChartBars([toNode(group)], "TOTAL_DURATION_MINUTES", {
+      const [bar] = buildChartBars([toNode(group)], TOTAL_DURATION, {
         ...OPTIONS,
         compare: true,
       });

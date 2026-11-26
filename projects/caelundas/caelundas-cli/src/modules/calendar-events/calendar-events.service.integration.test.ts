@@ -21,6 +21,7 @@ import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startCaelundasDatabase,
 } from "../../../testing/support/database";
+import { tagSlug } from "../tags/tags.utilities";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";
@@ -97,13 +98,48 @@ describe("calendar events service integration", () => {
       [event("Stored", "2026-01-10T00:00:00Z")],
       philadelphia,
     );
-    const [row] = await repository.findBy({ summary: "Stored" });
+    const [row] = await repository.findBy({ name: "Stored" });
 
     expect(row?.latitude).toBe("39.949309");
     expect(row?.longitude).toBe("-75.171690");
   });
 
-  it("refreshes the facts view caelundas-web queries after every upsert", async () => {
+  it("fills the generated local day and hour in the observer's zone on insert and upsert", async () => {
+    expect.hasAssertions();
+
+    const written = event(
+      "Generated",
+      "2026-01-10T03:30:00Z",
+      "2026-01-10T05:00:00Z",
+    );
+    const read = async (): Promise<
+      {
+        end_local_day: string;
+        start_local_day: string;
+        start_local_hour: number;
+      }[]
+    > =>
+      repository.manager.query(
+        `select start_local_day::text, end_local_day::text, start_local_hour
+         from calendar_events where name = 'Generated'`,
+      );
+
+    await service.upsert([written], philadelphia);
+    await service.upsert(
+      [{ ...written, description: "changed" }],
+      philadelphia,
+    );
+
+    await expect(read()).resolves.toStrictEqual([
+      {
+        end_local_day: "2026-01-10",
+        start_local_day: "2026-01-09",
+        start_local_hour: 22,
+      },
+    ]);
+  });
+
+  it("refreshes the tag sets and the facts caelundas-web queries after every upsert", async () => {
     expect.hasAssertions();
 
     await service.upsert(
@@ -114,24 +150,24 @@ describe("calendar events service integration", () => {
       { direct: string[]; tags: string[] }[]
     >(
       `select
-        (select array_agg(t.name order by t.name) from tags t where t.id = any(f.tag_ids)) as tags,
-        (select array_agg(t.name order by t.name) from tags t where t.id = any(f.direct_tag_ids)) as direct
-      from calendar_event_facts f
-      where f."filter" = 'event' and f.name = 'Read model'`,
+        (select array_agg(t.name order by t.name) from tags t where t.id = any(f.tag_ids || f.ancestor_tag_ids)) as tags,
+        (select array_agg(t.name order by t.name) from tags t where t.id = any(f.tag_ids)) as direct
+      from calendar_event_tag_sets f
+      inner join calendar_events e on e.id = f.calendar_event_id
+      where e.name = 'Read model'`,
     );
-    const [derived] = await repository.manager.query<{ temporality: string }[]>(
-      `select temporality from calendar_event_derived_times where summary = 'Read model'`,
-    );
-    const paths = await repository.manager.query<{ tag_path: string }[]>(
-      `select distinct tag_path from calendar_event_facts where "filter" = 'day-tag' and tag_name = 'Sun'`,
+    const rollups = await repository.manager.query<{ name: string }[]>(
+      `select distinct t.name
+        from calendar_event_facts r
+        inner join filters f on f.id = r.filter_id
+        inner join tags t on t.id = f.tag_id
+        inner join calendar_events e on e.start_local_day = f.period
+        where e.name = 'Read model'`,
     );
 
     expect(fact?.tags).toContain("Sun");
     expect(fact?.direct).toContain("Sun");
-    expect(derived?.temporality).toBe("Instant");
-    expect(paths.map(({ tag_path: path }) => path)).toContain(
-      "Body / Luminary / Sun",
-    );
+    expect(rollups.map(({ name }) => name)).toContain("Sun");
   });
 
   it(
@@ -148,7 +184,7 @@ describe("calendar events service integration", () => {
       refresh.mockImplementationOnce(async (manager) => {
         stored.push(
           await manager.getRepository(CalendarEvent).countBy({
-            summary: In(["Refresh first", `Refresh ${String(count - 1)}`]),
+            name: In(["Refresh first", `Refresh ${String(count - 1)}`]),
           }),
         );
         await rebuild(manager);
@@ -167,29 +203,37 @@ describe("calendar events service integration", () => {
       expect(refresh).toHaveBeenCalledTimes(1);
       expect(stored).toStrictEqual([2]);
 
-      await repository.delete({ summary: Like("Refresh %") });
-      await repository.delete({ summary: "Refresh first" });
+      await repository.delete({ name: Like("Refresh %") });
+      await repository.delete({ name: "Refresh first" });
     },
     BULK_UPSERT_TIMEOUT_MILLISECONDS,
   );
 
-  it("refreshes the metrics view, so the day row counts the new event", async () => {
+  it("refreshes the facts, so the day filter counts the new event", async () => {
     expect.hasAssertions();
 
     await service.upsert(
       [event("Metrics rollup", "2032-02-03T15:00:00Z", "2032-02-03T17:30:00Z")],
       philadelphia,
     );
-    const [day] = await repository.manager.query<
-      { duration_seconds: string; events: string }[]
+    const day = await repository.manager.query<
+      { measurement: number; slug: string }[]
     >(
-      `select events, duration_seconds from calendar_event_facts where "filter" = 'day' and local_day = '2032-02-03'`,
+      `select m.slug, r.measurement
+      from calendar_event_facts r
+      inner join measures m on m.id = r.measure_id
+      inner join filters f on f.id = r.filter_id
+      where f.period = '2032-02-03' and f.tag_id is null and m.slug in ('events', 'duration')
+      order by m.slug`,
     );
     const [tagRollups] = await repository.manager.query<{ count: string }[]>(
-      `select count(*) from calendar_event_facts where "filter" = 'day-tag' and local_day = '2032-02-03'`,
+      `select count(*) from filters where period = '2032-02-03' and tag_id is not null`,
     );
 
-    expect(day).toStrictEqual({ duration_seconds: "9000", events: "1" });
+    expect(day).toStrictEqual([
+      { measurement: 150, slug: "duration" },
+      { measurement: 1, slug: "events" },
+    ]);
     expect(Number(tagRollups?.count)).toBeGreaterThan(0);
   });
 
@@ -207,9 +251,7 @@ describe("calendar events service integration", () => {
         philadelphia,
       ),
     ).rejects.toThrow("refresh failed");
-    await expect(repository.countBy({ summary: "Rolled back" })).resolves.toBe(
-      0,
-    );
+    await expect(repository.countBy({ name: "Rolled back" })).resolves.toBe(0);
     await expect(tags.countBy({ name: "rolled back tag" })).resolves.toBe(0);
   });
 
@@ -221,9 +263,9 @@ describe("calendar events service integration", () => {
       philadelphia,
     );
     const [raw] = await repository.manager.query<{ end: Date; start: Date }[]>(
-      `select "start", "end" from calendar_events where summary = 'Instant text'`,
+      `select "start", "end" from calendar_events where name = 'Instant text'`,
     );
-    const [row] = await repository.findBy({ summary: "Instant text" });
+    const [row] = await repository.findBy({ name: "Instant text" });
 
     expect(raw?.start.toISOString()).toBe("2026-01-12T06:30:15.250Z");
     expect(raw?.end.toISOString()).toBe("2026-01-12T06:30:15.250Z");
@@ -238,7 +280,7 @@ describe("calendar events service integration", () => {
     await service.upsert([sunset], sydney);
     const rows = await repository.find({
       order: { latitude: "ASC" },
-      where: { summary: "Zoned" },
+      where: { name: "Zoned" },
     });
 
     expect(rows.map(({ timezone }) => timezone)).toStrictEqual([
@@ -254,7 +296,7 @@ describe("calendar events service integration", () => {
       [event("Repeated", "2026-02-10T00:00:00Z")],
       philadelphia,
     );
-    const [first] = await repository.findBy({ summary: "Repeated" });
+    const [first] = await repository.findBy({ name: "Repeated" });
     await service.upsert(
       [
         {
@@ -264,10 +306,10 @@ describe("calendar events service integration", () => {
       ],
       philadelphia,
     );
-    const rows = await repository.findBy({ summary: "Repeated" });
+    const rows = await repository.findBy({ name: "Repeated" });
 
     expect(rows).toHaveLength(1);
-    expect(rows[0]?.description).toBe("changed");
+    expect(rows[0]?.note).toBe("changed");
     expect(rows[0]?.id).toBe(first?.id);
     expect(rows[0]?.createdAt.getTime()).toBe(first?.createdAt.getTime());
     expect(rows[0]?.updatedAt.getTime()).toBeGreaterThan(
@@ -282,7 +324,7 @@ describe("calendar events service integration", () => {
     await service.upsert([sunrise], philadelphia);
     await service.upsert([sunrise], sydney);
 
-    await expect(repository.countBy({ summary: "Sunrise" })).resolves.toBe(2);
+    await expect(repository.countBy({ name: "Sunrise" })).resolves.toBe(2);
   });
 
   it("keeps one row when a batch repeats an event", async () => {
@@ -291,7 +333,7 @@ describe("calendar events service integration", () => {
     const twice = event("Twice", "2026-04-10T00:00:00Z");
     await service.upsert([twice, twice], philadelphia);
 
-    await expect(repository.countBy({ summary: "Twice" })).resolves.toBe(1);
+    await expect(repository.countBy({ name: "Twice" })).resolves.toBe(1);
   });
 
   it("stores a boundary and a span of the same title and start as two rows", async () => {
@@ -332,9 +374,7 @@ describe("calendar events service integration", () => {
       philadelphia,
     );
 
-    await expect(repository.countBy({ summary: "Spaced out" })).resolves.toBe(
-      1,
-    );
+    await expect(repository.countBy({ name: "Spaced out" })).resolves.toBe(1);
   });
 
   it(
@@ -355,12 +395,12 @@ describe("calendar events service integration", () => {
       await expect(
         repository
           .createQueryBuilder("event")
-          .where("event.summary LIKE 'Bulk %'")
+          .where("event.name LIKE 'Bulk %'")
           .getCount(),
       ).resolves.toBe(count);
 
-      // Later upserts refresh the metrics views, whose cost grows with the rows.
-      await repository.delete({ summary: Like("Bulk %") });
+      // Later upserts refresh the metrics facts, whose cost grows with the rows.
+      await repository.delete({ name: Like("Bulk %") });
     },
     BULK_UPSERT_TIMEOUT_MILLISECONDS,
   );
@@ -449,7 +489,7 @@ describe("calendar events service integration", () => {
 
   describe("tags", () => {
     async function tag(name: string, parent: null | Tag = null): Promise<Tag> {
-      return tags.save(tags.create({ name, parent }));
+      return tags.save(tags.create({ name, parent, slug: tagSlug(name) }));
     }
 
     /** The name of the root above the one node named `name`. */
@@ -681,8 +721,37 @@ describe("calendar events service integration", () => {
       await tag("Mars", planet);
       await tag("Mars", sign);
 
-      await expect(tag("Mars", planet)).rejects.toThrow(/tags_sibling_name/u);
-      await expect(tag("Unique planet")).rejects.toThrow(/tags_root_name/u);
+      await expect(tag("Mars", planet)).rejects.toThrow(
+        /tags_sibling_(name|slug)/u,
+      );
+      await expect(tag("Unique planet")).rejects.toThrow(
+        /tags_root_(name|slug)/u,
+      );
+    });
+
+    it("stores each written tag with its slug", async () => {
+      expect.hasAssertions();
+
+      await service.upsert(
+        [tagged("Slugged", "2026-05-14T00:00:00Z", ["Slug Me Please"])],
+        philadelphia,
+      );
+
+      await expect(
+        tags.findOneByOrFail({ name: "Slug Me Please" }),
+      ).resolves.toMatchObject({ slug: "slug-me-please" });
+    });
+
+    it("refuses two siblings whose names slug alike", async () => {
+      expect.hasAssertions();
+
+      await expect(
+        service.upsert(
+          [tagged("Clash", "2026-05-15T00:00:00Z", ["Clash Tag", "clash-tag"])],
+          philadelphia,
+        ),
+      ).rejects.toThrow('share the slug "clash-tag"');
+      await expect(tags.countBy({ slug: "clash-tag" })).resolves.toBe(0);
     });
   });
 });

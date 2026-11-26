@@ -12,6 +12,8 @@ import { PostgresqlUpdatableEntity } from "@codebase/persistence";
 
 /**
  * One node of the `tags` tree: a label an event can carry, nested under the label it refines, with ancestors kept in `tags_closure`.
+ *
+ * Its `slug` is `name` lowercased, each run of characters outside a-z and 0-9 replaced by one `-`, leading and trailing `-` trimmed.
  */
 @Entity()
 @Index("tags_sibling_name", ["parent", "name"], {
@@ -19,6 +21,14 @@ import { PostgresqlUpdatableEntity } from "@codebase/persistence";
   where: `"parent_id" IS NOT NULL`,
 })
 @Index("tags_root_name", ["name"], {
+  unique: true,
+  where: `"parent_id" IS NULL`,
+})
+@Index("tags_sibling_slug", ["parent", "slug"], {
+  unique: true,
+  where: `"parent_id" IS NOT NULL`,
+})
+@Index("tags_root_slug", ["slug"], {
   unique: true,
   where: `"parent_id" IS NULL`,
 })
@@ -53,4 +63,8 @@ export class Tag extends PostgresqlUpdatableEntity {
   /** Its place among siblings, lowest first. */
   @Column("smallint", { default: 0 })
   rank!: number;
+
+  /** The machine-readable `name`, such as `aspect`; unique among siblings. */
+  @Column("text")
+  slug!: string;
 }

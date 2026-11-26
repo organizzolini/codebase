@@ -13,14 +13,13 @@ function event(id: string, start: string, tags: string[]): CalendarEventRecord {
 
   return {
     color: null,
-    description: "",
     durationMinutes: 0,
     end: at,
     groups: [],
     id,
-    location: null,
+    name: `Event ${id}`,
+    note: "",
     start: at,
-    summary: `Event ${id}`,
     tags: tags.map((name) => ({
       depth: 1,
       id: name,

@@ -21,11 +21,6 @@ export const TICK_FORMAT = new Intl.NumberFormat("en-US", {
 });
 
 /**
- * The minutes in an hour, which hours are turned into.
- */
-export const HOUR_MINUTES = 60;
-
-/**
  * The smallest unit a duration's ticks fall on.
  */
 export const SMALLEST_UNIT: DurationUnit = { label: "min", minutes: 1 };
@@ -35,7 +30,7 @@ export const SMALLEST_UNIT: DurationUnit = { label: "min", minutes: 1 };
  */
 export const DURATION_UNITS: readonly DurationUnit[] = [
   SMALLEST_UNIT,
-  { label: "h", minutes: HOUR_MINUTES },
+  { label: "h", minutes: 60 },
   { label: "d", minutes: 1440 },
   { label: "wk", minutes: 10_080 },
   { label: "mo", minutes: 43_200 },

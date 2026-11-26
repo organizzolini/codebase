@@ -50,11 +50,11 @@ describe("events filtering end-to-end suite", () => {
   let application: EventsApplication;
   let tags: FilterTags;
 
-  /** The summaries of the events a filter keeps, earliest first. */
+  /** The names of the events a filter keeps, earliest first. */
   async function keep(filter: GroupVariable | null): Promise<string[]> {
     const body = await application.query(
       `query Events($period: PeriodInput!, $filter: EventFilterGroupInput) {
-        events(period: $period, filter: $filter) { summary }
+        events(period: $period, filter: $filter) { name }
       }`,
       {
         filter,
@@ -68,10 +68,10 @@ describe("events filtering end-to-end suite", () => {
     expect(body.errors).toBeUndefined();
 
     const { events } = (body.data ?? {}) as {
-      events: { summary: string }[];
+      events: { name: string }[];
     };
 
-    return events.map(({ summary }) => summary);
+    return events.map(({ name }) => name);
   }
 
   /** Keeps the events one rule holds for. */
@@ -389,7 +389,7 @@ describe("events filtering end-to-end suite", () => {
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS, SUN_ENTERS_ARIES]);
     });
 
-    it("searches the summary and the description, ignoring case, with wildcards taken literally", async () => {
+    it("searches the name and the note, ignoring case, with wildcards taken literally", async () => {
       expect.hasAssertions();
 
       await expect(
@@ -462,7 +462,7 @@ describe("events filtering end-to-end suite", () => {
 
       const body = await application.query(
         `query($period: PeriodInput!, $filter: EventFilterGroupInput) {
-          events(period: $period, filter: $filter) { summary }
+          events(period: $period, filter: $filter) { name }
         }`,
         {
           filter: { combinator: "XOR" },
@@ -481,7 +481,7 @@ describe("events filtering end-to-end suite", () => {
 
       const body = await application.query(
         `query($period: PeriodInput!, $filter: EventFilterGroupInput) {
-          events(period: $period, filter: $filter) { summary }
+          events(period: $period, filter: $filter) { name }
         }`,
         {
           filter: { combinator: "AND", rules: [{ path: ["text"] }] },

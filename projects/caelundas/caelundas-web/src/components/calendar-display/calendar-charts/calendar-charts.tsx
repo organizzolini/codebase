@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { useMetricCatalog } from "../../../hooks/use-metric-layout/hooks/use-metric-catalog/use-metric-catalog";
 import { useMetricLayout } from "../../../hooks/use-metric-layout/use-metric-layout";
 import { listChartMetrics } from "../calendar-metrics/calendar-metrics.utilities";
 import { formatMetricValueCompact } from "../calendar-metrics/components/calendar-metrics-compact/calendar-metrics-compact.utilities";
@@ -14,8 +15,8 @@ import {
 import { ChartsNotice } from "./components/charts-notice/charts-notice";
 import { MetricChart } from "./components/metric-chart/metric-chart";
 
-import type { EventMetric } from "../../../graphql/generated/operations";
 import type { MetricLayoutProperties } from "../calendar-metrics/calendar-metrics-layout.types";
+import type { MetricDescriptor } from "../calendar-metrics/calendar-metrics.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -36,50 +37,56 @@ export function CalendarCharts(
   properties: Readonly<CalendarChartsProperties>,
 ): ReactNode {
   const { className, compare, groupColors, onSortChange, sort } = properties;
-  // Dates cannot be charted, so a link that names them draws the rest.
-  const metrics = useMemo(
-    () => listChartMetrics(properties.metrics),
-    [properties.metrics],
-  );
 
   // 🪝 Hooks
+  const { catalog } = useMetricCatalog();
+  // Dates cannot be charted, so a link that names them draws the rest.
+  const metrics = useMemo(
+    () => listChartMetrics(catalog, properties.metrics),
+    [catalog, properties.metrics],
+  );
   const layout = useMetricLayout({
     ...properties,
     metrics,
     rootsUntilTouched: true,
   });
-  const { data, error, open, refetch, rows, status, toggle } = layout;
+  const { colorGroups, data, error, open, refetch, rows, status, toggle } =
+    layout;
   const colors = useMemo(
-    () => colorMetricGroups(data?.groups ?? [], groupColors),
-    [data, groupColors],
+    () => colorMetricGroups(colorGroups, groupColors),
+    [colorGroups, groupColors],
   );
 
   // 🏗 Setup
   const notice = findChartsNotice(layout);
   const timeZone = data?.timezone ?? properties.timeZone;
   const charts: ReactNode[] = [];
-  const format = (metric: EventMetric, value: null | number): string =>
+  const format = (metric: MetricDescriptor, value: null | number): string =>
     formatMetricValueCompact(metric, value, timeZone);
 
   // A loop rather than a map keeps the call stack shallow.
-  for (const metric of metrics) {
-    charts.push(
-      <MetricChart
-        key={metric}
-        bars={buildChartBars(rows, metric, { colors, compare, format })}
-        metric={metric}
-        onOpen={open}
-        onSort={
-          onSortChange === undefined
-            ? undefined
-            : () => {
-                onSortChange(cycleMetricSort(sort, metric));
-              }
-        }
-        onToggle={toggle}
-        sortDirection={findMetricSortDirection(sort, metric)}
-      />,
-    );
+  for (const slug of metrics) {
+    const metric = catalog.bySlug.get(slug);
+
+    if (metric !== undefined) {
+      charts.push(
+        <MetricChart
+          key={slug}
+          bars={buildChartBars(rows, metric, { colors, compare, format })}
+          metric={metric}
+          onOpen={open}
+          onSort={
+            onSortChange === undefined
+              ? undefined
+              : () => {
+                  onSortChange(cycleMetricSort(sort, slug));
+                }
+          }
+          onToggle={toggle}
+          sortDirection={findMetricSortDirection(sort, slug)}
+        />,
+      );
+    }
   }
 
   // 💪 Handlers

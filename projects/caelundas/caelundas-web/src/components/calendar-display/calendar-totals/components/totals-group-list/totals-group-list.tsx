@@ -4,8 +4,10 @@ import {
 } from "../../calendar-totals.utilities";
 import { TotalsSubtotal } from "../totals-subtotal/totals-subtotal";
 
-import type { EventMetric } from "../../../../../graphql/generated/operations";
-import type { MetricGroup } from "../../../calendar-metrics/calendar-metrics.types";
+import type {
+  MetricDescriptor,
+  MetricGroup,
+} from "../../../calendar-metrics/calendar-metrics.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -25,7 +27,7 @@ export interface TotalsGroupListProperties {
   expanded: ReadonlySet<string>;
   groupColors?: ReadonlyMap<string, string> | undefined;
   groups: readonly MetricGroup[];
-  metric: EventMetric;
+  metric: MetricDescriptor;
   onToggle: (id: string) => void;
   timeZone?: string | undefined;
   /**
@@ -86,7 +88,7 @@ export function TotalsGroupList(
                 {...properties}
                 ancestors={[...ancestors, group]}
                 groups={children}
-                whole={findGroupValue(group, metric)}
+                whole={findGroupValue(group, metric.slug)}
               />
             </div>
           ) : null}

@@ -20,7 +20,12 @@ export interface GroupLevelChipProperties {
   onExpandAll?: (() => void) | undefined;
   onMoveLeft?: (() => void) | undefined;
   onMoveRight?: (() => void) | undefined;
+  onOnly?: (() => void) | undefined;
   onRemove?: (() => void) | undefined;
+  /**
+   * The full tag path, for the tooltip and menu.
+   */
+  title?: string | undefined;
 }
 
 // 🧩 Component
@@ -38,7 +43,9 @@ export function GroupLevelChip(
     onExpandAll,
     onMoveLeft,
     onMoveRight,
+    onOnly,
     onRemove,
+    title,
   } = properties;
 
   // 🪝 Hooks
@@ -54,16 +61,20 @@ export function GroupLevelChip(
   // 🎨 Markup
   return (
     <Fragment>
-      <ButtonGroupText className={CHIP_CLASS_NAME}>
+      <ButtonGroupText
+        className={CHIP_CLASS_NAME}
+        title={title}
+      >
         {icon}
         {label}
       </ButtonGroupText>
       <ChipMenu
-        label={label}
+        label={title ?? label}
         onCollapseAll={onCollapseAll}
         onExpandAll={onExpandAll}
         onMoveLeft={onMoveLeft}
         onMoveRight={onMoveRight}
+        onOnly={onOnly}
         onRemove={onRemove}
       />
     </Fragment>

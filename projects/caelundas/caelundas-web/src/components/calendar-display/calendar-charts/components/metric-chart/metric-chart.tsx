@@ -1,11 +1,10 @@
 import { TagIcon } from "../../../../calendar-query/tag-icon/tag-icon";
-import { METRIC_CATALOG } from "../../../calendar-metrics/calendar-metrics.constants";
 import { ChartBarRow } from "../chart-bar-row/chart-bar-row";
 import { ChartPlot } from "../chart-plot/chart-plot";
 import { ChartSortButton } from "../chart-sort-button/chart-sort-button";
 
-import type { EventMetric } from "../../../../../graphql/generated/operations";
 import type { GroupSort } from "../../../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
+import type { MetricDescriptor } from "../../../calendar-metrics/calendar-metrics.types";
 import type { ChartBar } from "../../calendar-charts.types";
 import type { ReactNode } from "react";
 
@@ -16,7 +15,7 @@ import type { ReactNode } from "react";
  */
 export interface MetricChartProperties {
   bars: readonly ChartBar[];
-  metric: EventMetric;
+  metric: MetricDescriptor;
   onOpen: (parent: string, id: string, color?: string) => void;
   /**
    * Cycles the sort by the metric; the sort button is absent without it.
@@ -39,7 +38,7 @@ export function MetricChart(
   // 🪝 Hooks
 
   // 🏗 Setup
-  const { description, icon, label } = METRIC_CATALOG[metric];
+  const { icon, name: label, note: description } = metric;
 
   // 💪 Handlers
 
@@ -70,6 +69,12 @@ export function MetricChart(
           />
         )}
       </header>
+      <p
+        className="text-muted-foreground -mt-1 text-xs"
+        data-testid="metric-chart-note"
+      >
+        {description}
+      </p>
       <ChartPlot
         bars={bars}
         metric={metric}

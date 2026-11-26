@@ -19,16 +19,19 @@ vi.mock(import("@tanstack/react-router"), () => ({
 }));
 
 /**
- * The search the latest navigation wrote, over an empty one.
+ * The search the latest navigation wrote, over an empty one or the one given.
  */
-function readWritten(): { replace: boolean; search: CalendarSearch } {
+function readWritten(previous: CalendarSearch = {}): {
+  replace: boolean;
+  search: CalendarSearch;
+} {
   const [options] = navigate.mock.lastCall ?? [];
 
   if (options === undefined) {
     throw new Error("Expected a navigation");
   }
 
-  return { replace: options.replace, search: options.search({}) };
+  return { replace: options.replace, search: options.search(previous) };
 }
 
 describe(useCalendarSearch, () => {
@@ -36,13 +39,14 @@ describe(useCalendarSearch, () => {
     const { result } = renderHook(() => useCalendarSearch("UTC"));
 
     expect(result.current).toStrictEqual({
-      handleClustersChange: expect.any(Function),
       handleColorsChange: expect.any(Function),
       handleColumnsChange: expect.any(Function),
       handleCompareChange: expect.any(Function),
       handleDateChange: expect.any(Function),
       handleFilterChange: expect.any(Function),
+      handleFoldChange: expect.any(Function),
       handleGroupingChange: expect.any(Function),
+      handleHideEmptyChange: expect.any(Function),
       handleMetricsChange: expect.any(Function),
       handleRangeChange: expect.any(Function),
       handleScaleChange: expect.any(Function),
@@ -67,11 +71,11 @@ describe(useCalendarSearch, () => {
   it("writes a setting in place", () => {
     const { result } = renderHook(() => useCalendarSearch("UTC"));
 
-    result.current.handleClustersChange(false);
+    result.current.handleColorsChange(false);
 
     expect(readWritten()).toStrictEqual({
       replace: true,
-      search: { clusters: false },
+      search: { colors: false },
     });
   });
 
@@ -91,6 +95,59 @@ describe(useCalendarSearch, () => {
     expect(readWritten().search.group).toStrictEqual([{ field: "tag:type" }]);
   });
 
+  it("writes the folded strips in place, dropping them when none is folded", () => {
+    const { result } = renderHook(() => useCalendarSearch("UTC"));
+
+    result.current.handleFoldChange("select,group");
+
+    expect(readWritten()).toStrictEqual({
+      replace: true,
+      search: { fold: "select,group" },
+    });
+
+    result.current.handleFoldChange(undefined);
+
+    expect(readWritten().search.fold).toBeUndefined();
+  });
+
+  describe("columns", () => {
+    const SORTS = [
+      { direction: "asc", key: "name" },
+      { direction: "desc", key: "duration" },
+      { direction: "asc", key: "count" },
+    ] as const;
+
+    it("writes them as their own entry", () => {
+      const { result } = renderHook(() => useCalendarSearch("UTC"));
+
+      result.current.handleColumnsChange(["name", "start"]);
+
+      expect(readWritten()).toStrictEqual({
+        replace: false,
+        search: { columns: ["name", "start"], sort: undefined },
+      });
+    });
+
+    it("takes the sorts of a column no longer shown away in the same entry", () => {
+      const { result } = renderHook(() => useCalendarSearch("UTC"));
+
+      result.current.handleColumnsChange(["name", "start"]);
+
+      expect(readWritten({ sort: SORTS }).search).toStrictEqual({
+        columns: ["name", "start"],
+        sort: [SORTS[0], SORTS[2]],
+      });
+    });
+
+    it("keeps every sort while every column stays", () => {
+      const { result } = renderHook(() => useCalendarSearch("UTC"));
+
+      result.current.handleColumnsChange(["name", "duration"]);
+
+      expect(readWritten({ sort: SORTS }).search.sort).toStrictEqual(SORTS);
+    });
+  });
+
   it("writes the comparison in place, dropping it when off", () => {
     const { result } = renderHook(() => useCalendarSearch("UTC"));
 
@@ -106,14 +163,29 @@ describe(useCalendarSearch, () => {
     expect(readWritten().search.compare).toBeUndefined();
   });
 
+  it("writes hiding empty groups in place, dropping it when off", () => {
+    const { result } = renderHook(() => useCalendarSearch("UTC"));
+
+    result.current.handleHideEmptyChange(true);
+
+    expect(readWritten()).toStrictEqual({
+      replace: true,
+      search: { hideEmpty: true },
+    });
+
+    result.current.handleHideEmptyChange(false);
+
+    expect(readWritten().search.hideEmpty).toBeUndefined();
+  });
+
   it("writes the metrics, dropping an empty list for the layout's defaults", () => {
     const { result } = renderHook(() => useCalendarSearch("UTC"));
 
-    result.current.handleMetricsChange(["EVENTS", "SPANS"]);
+    result.current.handleMetricsChange(["events", "progressive-events"]);
 
     expect(readWritten()).toStrictEqual({
       replace: false,
-      search: { metrics: ["EVENTS", "SPANS"] },
+      search: { metrics: ["events", "progressive-events"] },
     });
 
     result.current.handleMetricsChange([]);

@@ -7,12 +7,12 @@ import { CaelundasDatabaseService } from "@codebase/caelundas-db";
 import { LoggerService } from "@codebase/observability";
 
 /**
- * Refreshes the metrics materialized view by hand, with no ingest. An
+ * Refreshes the metrics tag sets and facts by hand, with no ingest. An
  * ingest already does this, so run it after editing the tag tree or the events by other means.
  */
 @Command({
   description:
-    "Refresh the materialized view the metrics charts and totals read",
+    "Refresh the tag sets and facts the metrics charts and totals read",
   name: "refresh-metrics",
 })
 @Injectable()
@@ -37,13 +37,13 @@ export class RefreshMetricsCommand extends CommandRunner {
 
   // 🌎 Public Methods
 
-  /** Refreshes every view in one transaction and logs how long it took. */
+  /** Refreshes the tag sets and the facts, and logs how long it took. */
   async run(): Promise<void> {
     const started = Date.now();
 
     await this.databaseService.refreshMetrics(this.dataSource.manager);
 
-    this.logger.info("🔄 Refreshed the metrics views", undefined, {
+    this.logger.info("🔄 Refreshed the metrics facts", undefined, {
       milliseconds: Date.now() - started,
     });
   }

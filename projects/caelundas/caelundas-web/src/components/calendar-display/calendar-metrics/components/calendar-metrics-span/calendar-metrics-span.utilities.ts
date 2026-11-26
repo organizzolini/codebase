@@ -1,7 +1,6 @@
-import { COUNT_FORMAT, HOURS_FORMAT } from "../../calendar-metrics.constants";
+import { COUNT_FORMAT } from "../../calendar-metrics.constants";
 
 import {
-  DAY_HOURS,
   DAY_MINUTES,
   DEFAULT_MAX_UNITS,
   SPAN_SEPARATORS,
@@ -41,16 +40,4 @@ export function formatDurationSpan(
   return (
     parts.slice(0, limit).join(SPAN_SEPARATORS[`${abbreviated}`]) || ZERO_SPAN
   );
-}
-
-/**
- * A number of hours as text: one decimal below a day, a span from a day up.
- */
-export function formatHoursSpan(
-  hours: number,
-  options: Readonly<DurationSpanOptions> = {},
-): string {
-  return Math.abs(hours) < DAY_HOURS
-    ? `${HOURS_FORMAT.format(hours)} h`
-    : formatDurationSpan(hours * 60, options);
 }

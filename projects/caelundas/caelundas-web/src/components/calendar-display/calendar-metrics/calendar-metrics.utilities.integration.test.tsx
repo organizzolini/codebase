@@ -11,9 +11,8 @@ import {
   readCalendarView,
 } from "../../../../testing/calendar-page";
 import { filterGroup, tagRule } from "../../../../testing/event-filters";
+import { CATALOG } from "../../../../testing/metrics/metric-catalog";
 import { renderCalendarRoute } from "../../../../testing/render-route";
-
-import { DEFAULT_METRICS } from "./calendar-metrics.constants";
 
 // Each test renders the whole route, which a loaded continuous integration
 // runner needs seconds for.
@@ -46,7 +45,7 @@ describe("metric layouts", () => {
 
       const [request] = readServedApi().requests.metrics;
 
-      expect(request?.metrics).toStrictEqual([...DEFAULT_METRICS[view]]);
+      expect(request?.metrics).toStrictEqual([...CATALOG.defaults[view]]);
       expect(request?.period).toStrictEqual({
         end: "2026-04-03T04:00:00.000Z",
         start: "2026-03-04T05:00:00.000Z",
@@ -76,16 +75,14 @@ describe("metric layouts", () => {
 
     expect(screen.getByRole("button", { name: "Events" })).toBeDefined();
     expect(screen.getByRole("button", { name: "Unique names" })).toBeDefined();
-    expect(
-      screen.getByRole("button", { name: "Total duration" }),
-    ).toBeDefined();
+    expect(screen.getByRole("button", { name: "Duration" })).toBeDefined();
     expect(screen.queryByRole("group", { name: "Page" })).toBeNull();
     expect(screen.getByRole("group", { name: "Group" })).toBeDefined();
     expect(screen.getByRole("group", { name: "Sort" })).toBeDefined();
   });
 
   it("reads the metrics the link names, and drops the names it does not know", async () => {
-    const metrics = encodeURIComponent('["SPANS","STALE","EVENTS"]');
+    const metrics = encodeURIComponent('["SPANS","unknown-slug","events"]');
 
     await renderCalendarRoute(
       `/?view=totals&date=2026-03-04&metrics=${metrics}`,
@@ -94,9 +91,50 @@ describe("metric layouts", () => {
     await screen.findByTestId("calendar-totals");
 
     expect(readServedApi().requests.metrics[0]?.metrics).toStrictEqual([
-      "SPANS",
-      "EVENTS",
+      "progressive-events",
+      "events",
     ]);
+  });
+
+  it("still opens a link that names a metric by its old name", async () => {
+    await renderCalendarRoute(
+      "/?view=totals&date=2026-03-04&metrics=TOTAL_DURATION_MINUTES",
+    );
+
+    await screen.findByTestId("calendar-totals");
+
+    expect(readServedApi().requests.metrics[0]?.metrics).toStrictEqual([
+      "duration",
+    ]);
+    expect(screen.getByRole("button", { name: "Duration" })).toBeDefined();
+  });
+
+  it("reads the catalog once, and lists every metric with its note", async () => {
+    await renderCalendarRoute("/?view=charts&date=2026-03-04");
+    await screen.findAllByTestId("metric-chart");
+
+    expect(readServedApi().requests.catalog).toBe(1);
+    expect(
+      screen
+        .getAllByTestId("metric-chart")
+        .map((chart) => chart.getAttribute("aria-label")),
+    ).toStrictEqual(["Events", "Unique names", "Duration"]);
+  });
+
+  it("says why the catalog could not be read, and reads it again on retry", async () => {
+    await renderCalendarRoute("/?view=charts&date=2026-03-04", {
+      api: { catalogError: "The catalog is down" },
+    });
+
+    const alert = await screen.findByRole("alert");
+
+    expect(alert.textContent).toContain("The catalog is down");
+
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+
+    await waitFor(() => {
+      expect(readServedApi().requests.catalog).toBe(2);
+    }, BUILDER_WAIT);
   });
 
   it.each(["charts", "totals"] as const)(
@@ -127,8 +165,8 @@ describe("metric layouts", () => {
 
     await waitFor(() => {
       expect(readServedApi().requests.metrics.at(-1)?.metrics).toStrictEqual([
-        "UNIQUE_NAMES",
-        "TOTAL_DURATION_MINUTES",
+        "unique-names",
+        "duration",
       ]);
     }, BUILDER_WAIT);
     await waitFor(() => {

@@ -1,10 +1,4 @@
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import {
@@ -17,6 +11,7 @@ import {
   findToolbar,
   pickCalendarView,
 } from "../../../../testing/calendar-page";
+import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 import { TableGroupsProvider } from "../calendar-table/components/table-groups-provider/table-groups-provider";
 
@@ -34,7 +29,7 @@ function createProperties(): MetricLayoutProperties {
     compare: false,
     filter: undefined,
     grouping: [{ field: "tag:body" }, { field: "tag:body" }],
-    metrics: ["EVENTS"],
+    metrics: ["events"],
     onDateChange: vi.fn<(date: Date) => void>(),
     onNavigationChange: vi.fn<() => void>(),
     sort: undefined,
@@ -78,7 +73,7 @@ describe("charts layout", () => {
         screen.findAllByTestId("metric-chart", {}, BUILDER_WAIT),
       ).resolves.toHaveLength(3);
       await expect(
-        screen.findByRole("heading", { name: "Total duration" }),
+        screen.findByRole("heading", { name: "Duration" }),
       ).resolves.toBeDefined();
     },
     BUILDER_TEST.timeout,
@@ -118,6 +113,31 @@ describe("charts layout", () => {
       await expect(
         screen.findByRole("button", { name: "Sort by Events: not sorted" }),
       ).resolves.toBeDefined();
+    },
+    BUILDER_TEST.timeout,
+  );
+
+  it(
+    "orders every chart by a sort, even one by a metric no chart shows, and reverses it",
+    async () => {
+      const sort = (direction: string): string =>
+        encodeURIComponent(JSON.stringify([{ direction, key: "count" }]));
+
+      await renderCalendarRoute(
+        `/?view=charts&date=2026-03-04&metrics=${encodeURIComponent('["unique-names"]')}&sort=${sort("asc")}`,
+      );
+
+      await screen.findAllByRole("button", { name: /Alpha:/u }, BUILDER_WAIT);
+
+      const order = (): (string | undefined)[] =>
+        screen
+          .getAllByRole("button", { name: /^(Alpha|Beta):/u })
+          .map((bar) => bar.getAttribute("aria-label")?.split(":")[0]);
+
+      expect(order()).toStrictEqual(["Beta", "Alpha"]);
+      expect(readServedApi().requests.metrics.at(-1)?.metrics).toContain(
+        "events",
+      );
     },
     BUILDER_TEST.timeout,
   );
@@ -280,7 +300,7 @@ describe("charts layout", () => {
     "shares which groups are open with every layout under one provider",
     async () => {
       serveCalendarApi();
-      render(
+      renderWithCatalog(
         <TableGroupsProvider>
           <CalendarCharts {...createProperties()} />
           <CalendarCharts {...createProperties()} />

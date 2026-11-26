@@ -435,16 +435,14 @@ describe("index", () => {
     expect(within(toolbar).queryByRole("toolbar")).toBeNull();
   });
 
-  it("turns the colors off and on again, and the grouping of crowded days off and on, from the Display menu", async () => {
+  it("turns the colors off and on again from the Display menu", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await screen.findByRole("grid", { name: "March 2026" });
 
-    // Both switches start on; each click turns one the other way.
+    // The switch starts on; each click turns it the other way.
     const steps = [
       ["Colors", false],
       ["Colors", true],
-      ["Crowded days", false],
-      ["Crowded days", true],
     ] as const;
 
     for (const [label, isSelected] of steps) {

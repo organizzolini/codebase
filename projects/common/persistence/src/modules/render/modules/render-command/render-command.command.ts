@@ -170,9 +170,9 @@ export abstract class RenderCommand extends CommandRunner {
             truncateDepth: plan.truncateDepth,
           },
         );
-        return edge?.generated === undefined
+        return edge === undefined
           ? graph
-          : this.renderNodes.relabel(dataSource, graph, edge.generated);
+          : this.renderNodes.relabel(dataSource, graph, { edge, picked });
       },
     });
     for (const line of written) {

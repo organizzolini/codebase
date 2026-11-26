@@ -36,7 +36,7 @@ import type { EntityManager } from "typeorm";
 
 /**
  * Persists detected events and reads them back for rendering. An event is
- * keyed by summary, start, and location, and links to the tag tree nodes its
+ * keyed by name, start, and location, and links to the tag tree nodes its
  * tags classify under.
  */
 @Injectable()
@@ -138,14 +138,12 @@ export class CalendarEventsService {
     observer: Observer,
   ): CalendarEventRow {
     return {
-      color: event.color ?? null,
-      description: event.description,
       end: event.end,
       latitude: this.formatCoordinate(observer.latitude),
-      location: event.location ?? null,
       longitude: this.formatCoordinate(observer.longitude),
+      name: event.summary,
+      note: event.description,
       start: event.start,
-      summary: event.summary,
       timezone: observer.timezone,
     };
   }
@@ -167,7 +165,7 @@ export class CalendarEventsService {
         [...CALENDAR_EVENT_UPDATE_COLUMNS],
         [...CALENDAR_EVENT_CONFLICT_COLUMNS],
       )
-      .returning(["id", "summary", "start", "end"])
+      .returning(["id", "name", "start", "end"])
       .execute();
 
     // `RETURNING` rows are the driver's raw answer, which TypeORM types as `any`.
@@ -176,8 +174,8 @@ export class CalendarEventsService {
     return this.mapWrittenIds(
       raw,
       new Set(
-        rows.map(({ end, start, summary }) =>
-          this.calendarEventKey(summary, start, end),
+        rows.map(({ end, name, start }) =>
+          this.calendarEventKey(name, start, end),
         ),
       ),
     );
@@ -220,7 +218,7 @@ export class CalendarEventsService {
         { start: parameters.start.toISOString() },
       )
       .orderBy("calendarEvent.start", "ASC")
-      .addOrderBy("calendarEvent.summary", "ASC")
+      .addOrderBy("calendarEvent.name", "ASC")
       .getMany();
 
     if (events.length === 0) {
@@ -229,9 +227,17 @@ export class CalendarEventsService {
 
     const tagNames = await this.findTagNames(events.map(({ id }) => id));
 
-    return events.map((event) =>
-      Object.assign(event, { tags: tagNames.get(event.id) ?? [] }),
-    );
+    return events.map((event) => ({
+      description: event.note,
+      end: event.end,
+      id: event.id,
+      latitude: event.latitude,
+      longitude: event.longitude,
+      start: event.start,
+      summary: event.name,
+      tags: tagNames.get(event.id) ?? [],
+      timezone: event.timezone,
+    }));
   }
 
   /**
@@ -252,8 +258,8 @@ export class CalendarEventsService {
   ): Map<string, string> {
     const ids = new Map<string, string>();
 
-    for (const { end, id, start, summary } of stored) {
-      const key = this.calendarEventKey(summary, start, end);
+    for (const { end, id, name, start } of stored) {
+      const key = this.calendarEventKey(name, start, end);
 
       if (wanted.has(key)) {
         ids.set(key, id);

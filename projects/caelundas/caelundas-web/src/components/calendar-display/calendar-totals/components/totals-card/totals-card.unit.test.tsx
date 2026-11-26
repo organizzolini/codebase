@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { getMetric } from "../../../../../../testing/metrics/metric-catalog";
+
 import { TotalsCard } from "./totals-card";
 
 import type { MetricGroup } from "../../../calendar-metrics/calendar-metrics.types";
@@ -14,7 +16,7 @@ function createGroups(count: number): MetricGroup[] {
     level: 0,
     path: null,
     rank: null,
-    values: [{ metric: "EVENTS", previous: null, value: index + 1 }],
+    values: [{ metric: "events", previous: null, value: index + 1 }],
   }));
 }
 
@@ -25,8 +27,9 @@ function createProperties(
     compare: false,
     expanded: new Set<string>(),
     groups: createGroups(2),
+    metric: getMetric("events"),
     onToggle: vi.fn<(id: string) => void>(),
-    total: { metric: "EVENTS", previous: null, value: 10 },
+    total: { metric: "events", previous: null, value: 10 },
     ...overrides,
   };
 }
@@ -47,7 +50,7 @@ describe(TotalsCard, () => {
       <TotalsCard
         {...createProperties({
           compare: true,
-          total: { metric: "EVENTS", previous: 8, value: 10 },
+          total: { metric: "events", previous: 8, value: 10 },
         })}
       />,
     );
@@ -62,8 +65,9 @@ describe(TotalsCard, () => {
       <TotalsCard
         {...createProperties({
           groups: [],
+          metric: getMetric("covered-percent"),
           timeZone: "UTC",
-          total: { metric: "COVERED_PERCENT", previous: null, value: 42.5 },
+          total: { metric: "covered-percent", previous: null, value: 42.5 },
         })}
       />,
     );

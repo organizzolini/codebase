@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { createEventFilterFields } from "../event-filter-model/event-filter-fields.utilities";
 
+import { TAG_PARENT_VALUE } from "./filter-cascader.constants";
 import {
   createFilterItems,
   isValue,
@@ -45,9 +46,11 @@ const TEXT_RULE = {
 describe("filter-cascader utilities", () => {
   describe(isValue, () => {
     it("takes a value as one to tick, and an attribute as one that only opens", () => {
-      const [type] = createFilterItems(FIELDS);
+      const [tag] = createFilterItems(FIELDS);
+      const type = tag?.children?.[0];
 
       expect(type === undefined ? true : isValue(type)).toBe(false);
+      expect(tag === undefined ? true : isValue(tag)).toBe(false);
       expect(isValue({ label: "Aspect", value: "tag:type|aspect" })).toBe(true);
     });
   });
@@ -56,9 +59,15 @@ describe("filter-cascader utilities", () => {
     it("lists the attributes that pick among values, with tags nested beneath their root", () => {
       const items = createFilterItems(FIELDS);
       const labels = items.map((item) => item.label);
-      const type = items.find((item) => item.label === "Type");
+      const tag = items[0];
+      const type = tag?.children?.find((item) => item.label === "Type");
 
-      expect(labels).toContain("Type");
+      expect(tag?.label).toBe("Tag");
+      expect(tag?.value).toBe(TAG_PARENT_VALUE);
+      expect(tag?.children?.map((child) => child.label)).toStrictEqual([
+        "Type",
+      ]);
+      expect(labels).not.toContain("Type");
       expect(labels).toContain("Weekday");
       expect(labels).not.toContain("Text");
       expect(labels).not.toContain("Date");
@@ -71,7 +80,11 @@ describe("filter-cascader utilities", () => {
 
     it("keeps one attribute's values apart from another's by naming their field", () => {
       const items = createFilterItems(FIELDS);
-      const values = items.flatMap((item) => item.children ?? []);
+      const values = items.flatMap((item) =>
+        (item.children ?? []).flatMap((child) =>
+          child.value.startsWith("field|") ? (child.children ?? []) : [child],
+        ),
+      );
 
       expect(new Set(values.map((value) => value.value)).size).toBe(
         values.length,

@@ -3,7 +3,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUp,
-  EyeOff,
+  Trash2,
   X,
 } from "lucide-react";
 
@@ -152,14 +152,16 @@ export function TableHeaderCell(
             <ArrowRight aria-hidden="true" />
             Move right
           </ContextMenuItem>
+          <ContextMenuSeparator />
           <ContextMenuItem
             disabled={onRemove === undefined}
             onClick={() => {
               onRemove?.();
             }}
+            variant="destructive"
           >
-            <EyeOff aria-hidden="true" />
-            Deselect column
+            <Trash2 aria-hidden="true" />
+            Remove
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>

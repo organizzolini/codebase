@@ -1,14 +1,9 @@
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { serveCalendarApi } from "../../../../testing/calendar-api";
 import { stubChartSize } from "../../../../testing/chart-size";
+import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 import { CalendarGroupStrip } from "../../calendar-query/calendar-group-strip/calendar-group-strip";
 import { TableGroupsProvider } from "../calendar-table/components/table-groups-provider/table-groups-provider";
 
@@ -51,7 +46,7 @@ function readBars(): string[] {
 
 function renderChartWithStrip(): void {
   serveCalendarApi();
-  render(
+  renderWithCatalog(
     <TableGroupsProvider>
       <CalendarGroupStrip
         facets={[]}
@@ -64,7 +59,7 @@ function renderChartWithStrip(): void {
         compare={false}
         filter={undefined}
         grouping={GROUPING}
-        metrics={["EVENTS"]}
+        metrics={["events"]}
         onDateChange={vi.fn<(date: Date) => void>()}
         onNavigationChange={vi.fn<() => void>()}
         sort={undefined}

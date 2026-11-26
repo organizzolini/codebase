@@ -34,38 +34,43 @@ describe(CalendarSkeleton, () => {
   });
 
   it.each([
-    ["month", "grid"],
-    ["week", "columns"],
-    ["day", "columns"],
-    ["table", "list"],
-    ["charts", "bars"],
-    ["totals", "cards"],
-    ["timeline", "timeline"],
-  ] as const)("takes the %s view's layout when it is named", (view, layout) => {
-    render(<CalendarSkeleton view={view} />);
+    ["month", "grid", "skeleton-month"],
+    ["week", "columns", "skeleton-columns"],
+    ["day", "columns", "skeleton-columns"],
+    ["table", "list", "skeleton-table"],
+    ["charts", "bars", "skeleton-bars"],
+    ["totals", "cards", "skeleton-cards"],
+    ["timeline", "timeline", "skeleton-timeline"],
+  ] as const)(
+    "takes the %s view's layout when it is named",
+    (view, layout, testId) => {
+      render(<CalendarSkeleton view={view} />);
 
-    expect(screen.getByRole("status").dataset["layout"]).toBe(layout);
-    expect(screen.getByRole("status").dataset["view"]).toBe(view);
-  });
+      expect(screen.getByRole("status").dataset["layout"]).toBe(layout);
+      expect(screen.getByRole("status").dataset["view"]).toBe(view);
+      expect(screen.getByTestId(testId)).toBeDefined();
+      expect(screen.getByTestId("skeleton-toolbar")).toBeDefined();
+    },
+  );
 
-  it("draws bars for the Charts and cards for the Totals", () => {
-    const { container, rerender } = render(<CalendarSkeleton view="charts" />);
+  it("draws a chart for the Charts and a card for each Totals metric", () => {
+    const { rerender } = render(<CalendarSkeleton view="charts" />);
 
-    expect(container.querySelectorAll("[class*=' w-full']")).toHaveLength(10);
+    expect(screen.getAllByTestId("skeleton-chart-card")).toHaveLength(4);
 
     rerender(<CalendarSkeleton view="totals" />);
 
-    expect(container.querySelectorAll("[class*='h-28']")).toHaveLength(8);
+    expect(screen.getAllByTestId("skeleton-total-card")).toHaveLength(6);
   });
 
   it("draws a column for each day a view shows", () => {
-    const { container, rerender } = render(<CalendarSkeleton view="week" />);
+    const { rerender } = render(<CalendarSkeleton view="week" />);
 
-    expect(container.querySelectorAll("[style*='repeat(7']")).toHaveLength(1);
+    expect(screen.getAllByTestId("skeleton-column")).toHaveLength(7);
 
     rerender(<CalendarSkeleton view="day" />);
 
-    expect(container.querySelectorAll("[style*='repeat(1']")).toHaveLength(1);
+    expect(screen.getAllByTestId("skeleton-column")).toHaveLength(1);
   });
 
   it("keeps the view the link names whatever the width", () => {
@@ -73,5 +78,27 @@ describe(CalendarSkeleton, () => {
     render(<CalendarSkeleton view="week" />);
 
     expect(screen.getByRole("status").dataset["view"]).toBe("week");
+  });
+
+  it("is a busy status with a hidden label and nothing to press", () => {
+    render(<CalendarSkeleton view="table" />);
+
+    const status = screen.getByRole("status", { name: "Loading events" });
+
+    expect(status.getAttribute("aria-busy")).toBe("true");
+    expect(status.querySelector(".sr-only")?.textContent).toBe(
+      "Loading events",
+    );
+    expect(
+      status.querySelectorAll("button, a, input, [tabindex]"),
+    ).toHaveLength(0);
+  });
+
+  it("stills its pulse for a reader who wants less motion", () => {
+    render(<CalendarSkeleton view="table" />);
+
+    expect(screen.getByRole("status").className).toContain(
+      "motion-reduce:[&_[data-slot=skeleton]]:animate-none",
+    );
   });
 });

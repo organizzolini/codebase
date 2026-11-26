@@ -54,14 +54,13 @@ function record(id: string, start: string): CalendarEventRecord {
 
   return {
     color: null,
-    description: "",
     durationMinutes: 0,
     end: new Date(at.getTime() + 3_600_000),
     groups: [],
     id,
-    location: null,
+    name: `Event ${id}`,
+    note: "",
     start: at,
-    summary: `Event ${id}`,
     tags: [
       { depth: 0, id: "aspect", name: "Aspect", path: "Aspect" },
       { depth: 1, id: "simple", name: "Simple", path: "Aspect / Simple" },
@@ -110,6 +109,24 @@ describe("calendar-table utilities", () => {
       expect(
         getCellText(event, { id: "name", kind: "name", label: "Name" }, "UTC"),
       ).toBe("Event a");
+    });
+
+    it("writes the duration in its largest units, or Instant when it lasts no time", () => {
+      const duration = {
+        id: "duration",
+        kind: "duration",
+        label: "Duration",
+      } as const;
+
+      expect(
+        getCellText({ ...event, durationMinutes: 60 }, duration, "UTC"),
+      ).toBe("1 h");
+      expect(
+        getCellText({ ...event, durationMinutes: 200 }, duration, "UTC"),
+      ).toBe("3 h 20 min");
+      expect(
+        getCellText({ ...event, durationMinutes: 0 }, duration, "UTC"),
+      ).toBe("Instant");
     });
 
     it("writes the start and end in the data's zone", () => {
@@ -168,6 +185,7 @@ describe("calendar-table utilities", () => {
           id: "simple",
           kind: "tag",
           label: "Aspect › Simple",
+          name: "Simple",
           prefix: "Aspect / Simple",
         },
         TAG_COLUMN,

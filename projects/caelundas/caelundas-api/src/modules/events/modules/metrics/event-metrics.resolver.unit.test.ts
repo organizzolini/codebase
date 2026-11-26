@@ -4,8 +4,9 @@ import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EventMetricsResolver } from "./event-metrics.resolver";
 import { EventMetricsService } from "./event-metrics.service";
-import { EventMetric } from "./modules/inputs/event-metric.entities";
+import { EventMetricsCatalogService } from "./modules/catalog/event-metrics-catalog.service";
 
+import type { EventMetricCatalogEntity } from "./modules/catalog/event-metrics-catalog.entities";
 import type { EventMetricsInputEntity } from "./modules/inputs/event-metrics-input.entities";
 import type { EventMetricsResultEntity } from "./modules/results/event-metrics-result.entities";
 
@@ -13,13 +14,20 @@ const findMetrics =
   vi.fn<
     (input: EventMetricsInputEntity) => Promise<EventMetricsResultEntity>
   >();
+const describeCatalog = vi.fn<() => Promise<EventMetricCatalogEntity>>();
 
 describe(EventMetricsResolver, () => {
   let resolver: EventMetricsResolver;
 
   beforeAll(async () => {
     ({ instance: resolver } = await buildTestingModule(EventMetricsResolver, {
-      providers: [{ provide: EventMetricsService, useValue: { findMetrics } }],
+      providers: [
+        { provide: EventMetricsService, useValue: { findMetrics } },
+        {
+          provide: EventMetricsCatalogService,
+          useValue: { describe: describeCatalog },
+        },
+      ],
     }));
   });
 
@@ -31,7 +39,7 @@ describe(EventMetricsResolver, () => {
     expect.hasAssertions();
 
     const input: EventMetricsInputEntity = {
-      metrics: [EventMetric.EVENTS],
+      metrics: ["events"],
       period: { end: "2026-04-01", start: "2026-03-01" },
     };
     const result: EventMetricsResultEntity = {
@@ -44,5 +52,15 @@ describe(EventMetricsResolver, () => {
 
     await expect(resolver.eventMetrics(input)).resolves.toBe(result);
     expect(findMetrics).toHaveBeenCalledWith(input);
+  });
+
+  it("answers the catalog the catalog service describes", async () => {
+    expect.hasAssertions();
+
+    const catalog: EventMetricCatalogEntity = { measures: [], metrics: [] };
+
+    describeCatalog.mockResolvedValue(catalog);
+
+    await expect(resolver.eventMetricCatalog()).resolves.toBe(catalog);
   });
 });

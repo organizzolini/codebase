@@ -12,8 +12,7 @@ import {
   seedFilterTags,
   startEventsApplication,
 } from "../../../../../testing/events-application";
-
-import { EventMetric } from "./modules/inputs/event-metric.entities";
+import { SEEDED_METRIC_SLUGS } from "../../../../../testing/metric-catalog";
 
 import type {
   EventsApplication,
@@ -37,7 +36,7 @@ interface InputVariable {
   compareToPrevious?: boolean;
   filter?: unknown;
   grouping?: { depth?: number; field: string; parent?: string }[];
-  metrics: EventMetric[];
+  metrics: string[];
   period?: { end: string; start: string };
   tagRoot?: string;
 }
@@ -51,7 +50,7 @@ interface MetricsResponse {
 
 /** One metric's value in a response. */
 interface ValueResponse {
-  metric: EventMetric;
+  metric: string;
   previous: null | number;
   value: null | number;
 }
@@ -61,7 +60,7 @@ const MARCH = {
   start: "2026-03-01T00:00:00.000Z",
 };
 
-const EVERY_METRIC = Object.values(EventMetric);
+const EVERY_METRIC = SEEDED_METRIC_SLUGS;
 
 /** Percent of a 31-day period one minute makes. */
 const MARCH_PERCENT = 100 / (31 * 24 * 60);
@@ -111,18 +110,18 @@ describe("events metrics end-to-end suite", () => {
   /** Inserts an event, tagged, and returns nothing. */
   async function insertEvent(seed: {
     end: string;
+    name: string;
     start: string;
-    summary: string;
     tags: Tag[];
   }): Promise<void> {
     const [event] = await application.database.dataSource.query<
       [{ id: string }]
     >(
       `insert into calendar_events
-         (summary, description, "start", "end", latitude, longitude, timezone)
+         (name, note, "start", "end", latitude, longitude, timezone)
        values ($1, $1, $2, $3, 40.7128, -74.006, 'America/New_York')
        returning id`,
-      [seed.summary, seed.start, seed.end],
+      [seed.name, seed.start, seed.end],
     );
 
     for (const tag of seed.tags) {
@@ -132,11 +131,11 @@ describe("events metrics end-to-end suite", () => {
     }
   }
 
-  /** Links tags to an event the fixture seeded, by its summary. */
-  async function tagEvent(summary: string, tags: Tag[]): Promise<void> {
+  /** Links tags to an event the fixture seeded, by its name. */
+  async function tagEvent(name: string, tags: Tag[]): Promise<void> {
     const [event] = await application.database.dataSource.query<
       [{ id: string }]
-    >(`select id from calendar_events where "summary" = $1`, [summary]);
+    >(`select id from calendar_events where "name" = $1`, [name]);
 
     for (const tag of tags) {
       await application.database
@@ -157,14 +156,14 @@ describe("events metrics end-to-end suite", () => {
   }
 
   /** The value of one metric among a list. */
-  function read(values: ValueResponse[], metric: EventMetric): null | number {
+  function read(values: ValueResponse[], metric: string): null | number {
     return values.find((value) => value.metric === metric)?.value ?? null;
   }
 
   /** The previous value of one metric among a list. */
   function readPrevious(
     values: ValueResponse[],
-    metric: EventMetric,
+    metric: string,
   ): null | number {
     return values.find((value) => value.metric === metric)?.previous ?? null;
   }
@@ -207,14 +206,26 @@ describe("events metrics end-to-end suite", () => {
     filterTags = await seedFilterTags(application.database);
 
     const tags = application.database.dataSource.getTreeRepository(Tag);
-    temporality = await tags.save(tags.create({ name: "Temporality" }));
+    temporality = await tags.save(
+      tags.create({ name: "Temporality", slug: "temporality" }),
+    );
 
     progressive = await tags.save(
-      tags.create({ name: "Progressive", parent: temporality }),
+      tags.create({
+        name: "Progressive",
+        parent: temporality,
+        slug: "progressive",
+      }),
     );
-    await tags.save(tags.create({ name: "Perfective", parent: temporality }));
+    await tags.save(
+      tags.create({
+        name: "Perfective",
+        parent: temporality,
+        slug: "perfective",
+      }),
+    );
     venus = await tags.save(
-      tags.create({ name: "Venus", parent: filterTags.planet }),
+      tags.create({ name: "Venus", parent: filterTags.planet, slug: "venus" }),
     );
 
     // Moon Conjunct Mars is under two planets, so it falls in two groups.
@@ -223,20 +234,20 @@ describe("events metrics end-to-end suite", () => {
     await tagEvent("Equinox Watch", [progressive]);
     await insertEvent({
       end: "2026-03-05T06:00:00.000Z",
+      name: "Mars Station",
       start: "2026-03-05T04:00:00.000Z",
-      summary: "Mars Station",
       tags: [tagOf("retrograde"), progressive],
     });
     await insertEvent({
       end: "2026-02-10T02:00:00.000Z",
+      name: "February Mars",
       start: "2026-02-10T00:00:00.000Z",
-      summary: "February Mars",
       tags: [tagOf("retrograde"), progressive],
     });
     await insertEvent({
       end: "2026-02-15T00:00:00.000Z",
+      name: "February Venus",
       start: "2026-02-15T00:00:00.000Z",
-      summary: "February Venus",
       tags: [venus],
     });
     await application.database.module
@@ -252,26 +263,25 @@ describe("events metrics end-to-end suite", () => {
     expect.hasAssertions();
 
     const { timezone, total } = await measure({ metrics: EVERY_METRIC });
-    const expected: Record<EventMetric, unknown> = {
-      AVERAGE_DURATION_MINUTES: 110,
-      COVERED_MINUTES: 270,
-      COVERED_PERCENT: minutesPercent(270),
-      DAYS_WITH_EVENTS: 3,
-      EVENTS: 5,
-      FIRST_START: Date.parse("2026-03-05T03:30:00.000Z"),
-      INSTANTS: 2,
-      LAST_START: Date.parse("2026-03-20T22:00:00.000Z"),
-      LONGEST_DURATION_MINUTES: 120,
-      MEDIAN_DURATION_MINUTES: 120,
-      PROGRESSIVE_COVERED_PERCENT: minutesPercent(270),
-      PROGRESSIVE_HOURS: 5.5,
-      PROGRESSIVE_TOTAL_PERCENT: minutesPercent(330),
-      SHORTEST_DURATION_MINUTES: 90,
-      SPANS: 3,
-      TOTAL_DURATION_MINUTES: 330,
-      TOTAL_TIME_PERCENT: minutesPercent(330),
-      UNIQUE_NAMES: 5,
-      UNIQUE_TAGS: 12,
+    const expected: Record<string, unknown> = {
+      "average-duration": 110,
+      "covered-duration": 270,
+      "covered-percent": minutesPercent(270),
+      "days-with-events": 3,
+      duration: 330,
+      events: 5,
+      "first-start": Date.parse("2026-03-05T03:30:00.000Z"),
+      "last-start": Date.parse("2026-03-20T22:00:00.000Z"),
+      "longest-duration": 120,
+      "median-duration": 120,
+      "perfective-events": 2,
+      "progressive-covered-percent": minutesPercent(270),
+      "progressive-events": 3,
+      "progressive-total-percent": minutesPercent(330),
+      "shortest-duration": 90,
+      "total-time-percent": minutesPercent(330),
+      "unique-names": 5,
+      "unique-tags": 12,
     };
 
     expect(timezone).toBe("America/New_York");
@@ -282,16 +292,83 @@ describe("events metrics end-to-end suite", () => {
     expect(total.every(({ previous }) => previous === null)).toBe(true);
   });
 
+  it("lists the catalog of metrics and measures, from the tables", async () => {
+    expect.hasAssertions();
+
+    const body = await application.query(`
+      query {
+        eventMetricCatalog {
+          measures { slug name icon note unit }
+          metrics { slug name icon note unit additive measures }
+        }
+      }
+    `);
+
+    expect(body.errors).toBeUndefined();
+
+    const { measures, metrics } = (
+      body.data as {
+        eventMetricCatalog: {
+          measures: { slug: string; unit: string }[];
+          metrics: {
+            additive: boolean;
+            icon: string;
+            measures: string[];
+            note: string;
+            slug: string;
+            unit: string;
+          }[];
+        };
+      }
+    ).eventMetricCatalog;
+    const metric = (slug: string): (typeof metrics)[number] | undefined =>
+      metrics.find((candidate) => candidate.slug === slug);
+
+    expect(metrics.map(({ slug }) => slug)).toStrictEqual(EVERY_METRIC);
+    expect(measures).toHaveLength(18);
+    expect(
+      measures.find(({ slug }) => slug === "median-progressive-duration")?.unit,
+    ).toBe("DURATION");
+    expect(metric("events")).toMatchObject({
+      additive: true,
+      icon: "hash",
+      measures: ["events"],
+      unit: "COUNT",
+    });
+    expect(metric("duration")?.unit).toBe("DURATION");
+    expect(metric("covered-percent")?.unit).toBe("NONE");
+    expect(metric("first-start")?.unit).toBe("INSTANT");
+    expect(metric("average-duration")).toMatchObject({
+      additive: false,
+      measures: ["duration", "progressive-events"],
+    });
+    expect(metrics.every(({ icon, note }) => icon !== "" && note !== "")).toBe(
+      true,
+    );
+  });
+
+  it("refuses a metric that is not in the catalog, naming the ones that are", async () => {
+    expect.hasAssertions();
+
+    const body = await application.query(QUERY, {
+      input: { metrics: ["TOTAL_DURATION_MINUTES"], period: MARCH },
+    });
+
+    expect(body.errors?.[0]?.message).toMatch(
+      /Unknown metric "TOTAL_DURATION_MINUTES"; the metrics are events, unique-names/u,
+    );
+  });
+
   it("answers only the metrics asked for, each once", async () => {
     expect.hasAssertions();
 
     const { total } = await measure({
-      metrics: [EventMetric.SPANS, EventMetric.EVENTS, EventMetric.SPANS],
+      metrics: ["progressive-events", "events", "progressive-events"],
     });
 
     expect(total.map(({ metric }) => metric)).toStrictEqual([
-      "SPANS",
-      "EVENTS",
+      "progressive-events",
+      "events",
     ]);
   });
 
@@ -308,18 +385,17 @@ describe("events metrics end-to-end suite", () => {
     });
 
     expect(groups).toStrictEqual([]);
-    expect(read(total, EventMetric.EVENTS)).toBe(0);
-    expect(read(total, EventMetric.TOTAL_DURATION_MINUTES)).toBe(0);
-    expect(read(total, EventMetric.PROGRESSIVE_HOURS)).toBe(0);
-    expect(read(total, EventMetric.MEDIAN_DURATION_MINUTES)).toBeNull();
-    expect(read(total, EventMetric.FIRST_START)).toBeNull();
+    expect(read(total, "events")).toBe(0);
+    expect(read(total, "duration")).toBe(0);
+    expect(read(total, "median-duration")).toBeNull();
+    expect(read(total, "first-start")).toBeNull();
   });
 
   it("includes an event ending at the period's start and leaves out one starting at its end", async () => {
     expect.hasAssertions();
 
     const { total } = await measure({
-      metrics: [EventMetric.EVENTS, EventMetric.SPANS],
+      metrics: ["events", "progressive-events"],
       period: {
         end: "2026-03-10T12:00:00.000Z",
         start: "2026-03-05T05:00:00.000Z",
@@ -328,8 +404,8 @@ describe("events metrics end-to-end suite", () => {
 
     // Mars Retrograde ends at 05:00 and Mars Station at 06:00; Moon Conjunct
     // Mars starts at the period's end.
-    expect(read(total, EventMetric.EVENTS)).toBe(2);
-    expect(read(total, EventMetric.SPANS)).toBe(2);
+    expect(read(total, "events")).toBe(2);
+    expect(read(total, "progressive-events")).toBe(2);
   });
 
   it("groups by a tag root, counting an event in each group it falls in and the keyless events last", async () => {
@@ -338,13 +414,12 @@ describe("events metrics end-to-end suite", () => {
     const { groups } = await measure({
       grouping: [{ field: `tag:${filterTags.planet.id}` }],
       metrics: [
-        EventMetric.EVENTS,
-        EventMetric.TOTAL_DURATION_MINUTES,
-        EventMetric.COVERED_MINUTES,
-        EventMetric.PROGRESSIVE_HOURS,
-        EventMetric.INSTANTS,
-        EventMetric.AVERAGE_DURATION_MINUTES,
-        EventMetric.DAYS_WITH_EVENTS,
+        "events",
+        "duration",
+        "covered-duration",
+        "perfective-events",
+        "average-duration",
+        "days-with-events",
       ],
     });
     const mars = find(groups, "Mars");
@@ -359,11 +434,10 @@ describe("events metrics end-to-end suite", () => {
     });
     expect(none).toMatchObject({ key: null, rank: null });
     expect(mars.values.map(({ value }) => value)).toStrictEqual([
-      3, 210, 150, 3.5, 1, 105, 2,
+      3, 210, 150, 1, 105, 2,
     ]);
     expect(moon.values.map(({ value }) => value)).toStrictEqual([
       1,
-      0,
       0,
       0,
       1,
@@ -371,7 +445,7 @@ describe("events metrics end-to-end suite", () => {
       1,
     ]);
     expect(none.values.map(({ value }) => value)).toStrictEqual([
-      2, 120, 120, 2, 1, 120, 1,
+      2, 120, 120, 1, 120, 1,
     ]);
   });
 
@@ -380,7 +454,7 @@ describe("events metrics end-to-end suite", () => {
 
     const { groups } = await measure({
       grouping: [{ field: `tag:${filterTags.planet.id}` }, { field: "day" }],
-      metrics: [EventMetric.EVENTS],
+      metrics: ["events"],
     });
     const mars = find(groups, "Mars");
 
@@ -389,7 +463,7 @@ describe("events metrics end-to-end suite", () => {
       ["2026-03-10", 1],
     ]);
     expect(
-      mars.children.map(({ values }) => read(values, EventMetric.EVENTS)),
+      mars.children.map(({ values }) => read(values, "events")),
     ).toStrictEqual([2, 1]);
     expect(find(groups, "Moon").children.map(({ key }) => key)).toStrictEqual([
       "2026-03-10",
@@ -403,7 +477,7 @@ describe("events metrics end-to-end suite", () => {
     const field = `tag:${filterTags.planet.id}`;
     const { groups } = await measure({
       grouping: [{ field }, { field, parent: idOf("mars") }, { field: "day" }],
-      metrics: [EventMetric.EVENTS],
+      metrics: ["events"],
     });
     const mars = find(groups, "Mars");
     const moon = find(groups, "Moon");
@@ -412,7 +486,7 @@ describe("events metrics end-to-end suite", () => {
     expect(labels(mars.children)).toStrictEqual(["Retrograde", "No Mars"]);
     expect(mars.children.map(({ level }) => level)).toStrictEqual([1, 1]);
     expect(
-      mars.children.map(({ values }) => read(values, EventMetric.EVENTS)),
+      mars.children.map(({ values }) => read(values, "events")),
     ).toStrictEqual([2, 1]);
     expect(
       find(mars.children, "Retrograde").children.map(({ level }) => level),
@@ -438,19 +512,19 @@ describe("events metrics end-to-end suite", () => {
         ],
       },
       grouping: [{ field: `tag:${filterTags.planet.id}` }],
-      metrics: [EventMetric.EVENTS, EventMetric.PROGRESSIVE_HOURS],
+      metrics: ["events", "duration"],
     });
 
-    expect(read(total, EventMetric.EVENTS)).toBe(3);
+    expect(read(total, "events")).toBe(3);
     expect(labels(groups)).toStrictEqual(["Mars", "No Planet"]);
-    expect(read(find(groups, "Mars").values, EventMetric.EVENTS)).toBe(2);
-    expect(read(find(groups, "No Planet").values, EventMetric.EVENTS)).toBe(1);
+    expect(read(find(groups, "Mars").values, "events")).toBe(2);
+    expect(read(find(groups, "No Planet").values, "events")).toBe(1);
   });
 
   it("counts the tags beneath a root only", async () => {
     expect.hasAssertions();
 
-    const unique = [EventMetric.UNIQUE_TAGS];
+    const unique = ["unique-tags"];
     const { groups, total } = await measure({
       grouping: [{ field: `tag:${filterTags.planet.id}` }],
       metrics: unique,
@@ -459,12 +533,10 @@ describe("events metrics end-to-end suite", () => {
     const none = await measure({ metrics: unique, tagRoot: "not-a-tag" });
 
     // Retrograde, the Moon and Mars, none of them the root itself.
-    expect(read(total, EventMetric.UNIQUE_TAGS)).toBe(3);
-    expect(read(find(groups, "Mars").values, EventMetric.UNIQUE_TAGS)).toBe(3);
-    expect(
-      read(find(groups, "No Planet").values, EventMetric.UNIQUE_TAGS),
-    ).toBe(0);
-    expect(read(none.total, EventMetric.UNIQUE_TAGS)).toBe(0);
+    expect(read(total, "unique-tags")).toBe(3);
+    expect(read(find(groups, "Mars").values, "unique-tags")).toBe(3);
+    expect(read(find(groups, "No Planet").values, "unique-tags")).toBe(0);
+    expect(read(none.total, "unique-tags")).toBe(0);
   });
 
   it("compares every metric to the previous period of equal length", async () => {
@@ -480,38 +552,35 @@ describe("events metrics end-to-end suite", () => {
     expect(
       Object.fromEntries(total.map((v) => [v.metric, v.previous])),
     ).toStrictEqual({
-      AVERAGE_DURATION_MINUTES: 120,
-      COVERED_MINUTES: 120,
-      COVERED_PERCENT: minutesPercent(120),
-      DAYS_WITH_EVENTS: 2,
-      EVENTS: 2,
-      FIRST_START: Date.parse("2026-02-10T00:00:00.000Z"),
-      INSTANTS: 1,
-      LAST_START: Date.parse("2026-02-15T00:00:00.000Z"),
-      LONGEST_DURATION_MINUTES: 120,
-      MEDIAN_DURATION_MINUTES: 120,
-      PROGRESSIVE_COVERED_PERCENT: minutesPercent(120),
-      PROGRESSIVE_HOURS: 2,
-      PROGRESSIVE_TOTAL_PERCENT: minutesPercent(120),
-      SHORTEST_DURATION_MINUTES: 120,
-      SPANS: 1,
-      TOTAL_DURATION_MINUTES: 120,
-      TOTAL_TIME_PERCENT: minutesPercent(120),
-      UNIQUE_NAMES: 2,
-      UNIQUE_TAGS: 3,
+      "average-duration": 120,
+      "covered-duration": 120,
+      "covered-percent": minutesPercent(120),
+      "days-with-events": 2,
+      duration: 120,
+      events: 2,
+      "first-start": Date.parse("2026-02-10T00:00:00.000Z"),
+      "last-start": Date.parse("2026-02-15T00:00:00.000Z"),
+      "longest-duration": 120,
+      "median-duration": 120,
+      "perfective-events": 1,
+      "progressive-covered-percent": minutesPercent(120),
+      "progressive-events": 1,
+      "progressive-total-percent": minutesPercent(120),
+      "shortest-duration": 120,
+      "total-time-percent": minutesPercent(120),
+      "unique-names": 2,
+      "unique-tags": 3,
     });
 
     const mars = find(groups, "Mars");
     const moon = find(groups, "Moon");
 
-    expect(readPrevious(mars.values, EventMetric.EVENTS)).toBe(1);
-    expect(readPrevious(mars.values, EventMetric.PROGRESSIVE_HOURS)).toBe(2);
-    expect(read(mars.values, EventMetric.EVENTS)).toBe(3);
+    expect(readPrevious(mars.values, "events")).toBe(1);
+    expect(readPrevious(mars.values, "duration")).toBe(120);
+    expect(read(mars.values, "events")).toBe(3);
     // The Moon had nothing before: counts read 0 and the rest nothing.
-    expect(readPrevious(moon.values, EventMetric.EVENTS)).toBe(0);
-    expect(
-      readPrevious(moon.values, EventMetric.MEDIAN_DURATION_MINUTES),
-    ).toBeNull();
+    expect(readPrevious(moon.values, "events")).toBe(0);
+    expect(readPrevious(moon.values, "median-duration")).toBeNull();
   });
 
   it("returns a group only the previous period had, with empty values", async () => {
@@ -520,14 +589,14 @@ describe("events metrics end-to-end suite", () => {
     const { groups } = await measure({
       compareToPrevious: true,
       grouping: [{ field: `tag:${filterTags.planet.id}` }],
-      metrics: [EventMetric.EVENTS, EventMetric.AVERAGE_DURATION_MINUTES],
+      metrics: ["events", "average-duration"],
     });
     const gone = find(groups, "Venus");
 
     expect(gone.key).toBe(venus.id);
     expect(gone.values).toStrictEqual([
-      { metric: "EVENTS", previous: 1, value: 0 },
-      { metric: "AVERAGE_DURATION_MINUTES", previous: null, value: null },
+      { metric: "events", previous: 1, value: 0 },
+      { metric: "average-duration", previous: null, value: null },
     ]);
   });
 
@@ -537,7 +606,7 @@ describe("events metrics end-to-end suite", () => {
     const { groups } = await measure({
       compareToPrevious: true,
       grouping: [{ field: `tag:${filterTags.planet.id}` }, { field: "month" }],
-      metrics: [EventMetric.EVENTS],
+      metrics: ["events"],
     });
     const mars = find(groups, "Mars");
 
@@ -547,8 +616,8 @@ describe("events metrics end-to-end suite", () => {
     ]);
     expect(
       mars.children.map(({ values }) => [
-        read(values, EventMetric.EVENTS),
-        readPrevious(values, EventMetric.EVENTS),
+        read(values, "events"),
+        readPrevious(values, "events"),
       ]),
     ).toStrictEqual([
       [0, 1],

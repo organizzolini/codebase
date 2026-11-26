@@ -41,9 +41,6 @@ export interface GraphEdgeMetadata {
   /** Whether edges run from source to target. */
   readonly directed: boolean;
 
-  /** The graph and nodes, when `@Graph({ edge, nodes })` generated the edge entity. */
-  readonly generated?: GraphGeneratedEdge;
-
   /** Whether the entity is a directed acyclic graph or a graph. */
   readonly kind: GraphEdgeKind;
 
@@ -103,15 +100,11 @@ export type GraphEdgeRole =
   | "GraphTarget"
   | "GraphWeight";
 
-/** A generated edge row's relations, plus `Columns`. */
+/** A generated edge row's node relations, plus `Columns`. */
 export type GraphEdgeRow<
-  GraphRow extends object,
   NodeRow extends object,
   Columns extends object = object,
 > = Columns & {
-  /** The graph the edge belongs to. */
-  graph?: Relation<GraphRow>;
-
   /** The node the edge starts at. */
   source?: Relation<NodeRow>;
 
@@ -140,7 +133,7 @@ export interface GraphGeneratedContext {
   readonly edge: string;
 }
 
-/** The entity `@Graph({ edge, nodes })` generated, and the entities it joins. */
+/** The edge `@Graph({ edge, nodes })` generated, and the entities it joins. */
 export interface GraphGeneratedEdge {
   /** The generated entity class, which has no source file. */
   readonly edge: GraphEntity;
@@ -160,10 +153,10 @@ export interface GraphGeneratedEndpoint {
   /** The primary column the generated one copies its type from. */
   readonly key: GraphColumnArguments;
 
-  /** The column's property, such as `fromHip`. */
+  /** The column's property, such as `sourceNode`. */
   readonly property: string;
 
-  /** The relation's property: `graph`, `source`, or `target`. */
+  /** The relation's property: `source` or `target`. */
   readonly relation: string;
 
   /** The entity the column references. */
@@ -178,22 +171,30 @@ export interface GraphGeneratedNames {
   /** The entity whose rows the edges join. */
   readonly nodes: () => GraphEntity;
 
+  /** The source node's key property; defaults to `sourceNode`. */
+  readonly sourceColumn?: string;
+
   /** The generated table's name, in place of the one `edge` maps to. */
   readonly table?: string;
+
+  /** The target node's key property; defaults to `targetNode`. */
+  readonly targetColumn?: string;
 }
+
+/** The names of a generated edge that need not be set. */
+export type GraphGeneratedOptionalName =
+  | "sourceColumn"
+  | "table"
+  | "targetColumn";
 
 /** The options `@Graph()` takes to generate its edge entity. */
 export interface GraphGeneratedOptions
   extends GraphEdgeOptions, GraphGeneratedNames {}
 
-/** What a generated edge needs registered: its three columns, and its table. */
+/** What a generated edge needs registered: its two columns, and its table. */
 export interface GraphGeneratedPlan {
-  /** The graph's, source's, and target's columns, in that order. */
-  readonly endpoints: readonly [
-    GraphGeneratedEndpoint,
-    GraphGeneratedEndpoint,
-    GraphGeneratedEndpoint,
-  ];
+  /** The source's and target's columns, in that order. */
+  readonly endpoints: readonly [GraphGeneratedEndpoint, GraphGeneratedEndpoint];
 
   /** The table the data source will map the edge to. */
   readonly table: string;

@@ -44,6 +44,10 @@ to the gitignored `caelundas-api/src/schema.gql` each time it boots. Boot the
 API once before generating. The build never needs it: it reads the committed
 files.
 
+The metrics the Charts and Totals measure are not listed here: their names,
+icons, notes, units and defaults are loaded from the API's `eventMetricCatalog`
+query when the page opens, and each metric is written by its unit.
+
 ```bash
 nx run caelundas-web:codegen          # Regenerate from the API's schema
 nx run caelundas-web:codegen:check    # Fail when a committed file is stale

@@ -80,7 +80,7 @@ describe("events api", () => {
     expect.hasAssertions();
 
     let received: unknown;
-    const values = [{ metric: "EVENTS" as const, previous: 4, value: 5 }];
+    const values = [{ metric: "events" as const, previous: 4, value: 5 }];
     const answer = {
       groups: [
         {
@@ -106,7 +106,7 @@ describe("events api", () => {
     const input = {
       compareToPrevious: true,
       grouping: [{ field: "year" }],
-      metrics: ["EVENTS" as const],
+      metrics: ["events" as const],
       period,
     };
 
@@ -224,17 +224,15 @@ describe("events api", () => {
           data: {
             events: [
               {
-                color: null,
-                description: "d",
                 durationMinutes: 0,
                 end: period.start,
                 groups: [[{ key: "k", label: "L", path: null, rank: null }]],
                 id: "e1",
-                location: null,
+                name: "s",
+                note: "d",
                 start: period.start,
                 startLocalDay: "2026-01-01",
                 startLocalHour: 0,
-                summary: "s",
                 tags: [{ depth: 1, id: "t", name: "T", path: "R / T" }],
                 timezone: "UTC",
               },

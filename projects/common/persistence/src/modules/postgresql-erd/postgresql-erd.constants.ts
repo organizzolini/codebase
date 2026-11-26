@@ -18,6 +18,10 @@ export const POSTGRESQL_ERD_RELATION_SYMBOLS: Record<
   "one-to-many": "||--o{",
   "one-to-one": "||--||",
 };
+export const POSTGRESQL_ERD_VIEW_TITLES: Partial<Record<string, string>> = {
+  "materialized-view": "materialized view",
+  view: "view",
+};
 export const POSTGRESQL_ERD_TYPE_MAP: Record<string, string> = {
   bigint: "int",
   bit: "string",
@@ -74,6 +78,9 @@ const postgresqlErdRelationSchema = z.object({
 
 const postgresqlErdEntityDetailsSchema = z.object({
   columns: z.array(postgresqlErdColumnSchema),
+  kind: z
+    .enum(["closure-table", "join-table", "materialized-view", "view"])
+    .optional(),
   name: z.string(),
   relations: z.array(postgresqlErdRelationSchema),
   tableName: z.string(),

@@ -10,6 +10,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **db**: A stray fragment for database; this package's code and docs use the full word, so the headword carries no local role.
 - **deletable**: The entity base layer that adds soft-delete support, last in the identifiable, creatable, updatable, deletable chain.
 - **department**: A fixture entity with a customized table name and nullable text column, defined by `ErdDepartment` in `department.entity.ts`.
+- **district**:
 - **employee**: A fixture entity with an inherited identifier and a many-to-one department relation, defined by `ErdEmployee` in `employee.entity.ts`.
 - **errand**: A root in the render tests' sample tree, the fixture label `--page` tests draw alone.
 - **filetree**:

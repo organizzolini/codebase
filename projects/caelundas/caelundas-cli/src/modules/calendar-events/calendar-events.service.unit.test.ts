@@ -106,13 +106,13 @@ describe(CalendarEventsService, () => {
       mars = service.calendarEventKey("Mars trine Venus", start, end);
     });
 
-    it("keys each id by the summary, start and end read back with it", () => {
+    it("keys each id by the name, start and end read back with it", () => {
       expect(
         service.mapWrittenIds(
           [
-            { end: start, id: "b", start, summary: "Sunset" },
-            { end: start, id: "a", start, summary: "Sunrise" },
-            { end, id: "c", start, summary: "Mars trine Venus" },
+            { end: start, id: "b", name: "Sunset", start },
+            { end: start, id: "a", name: "Sunrise", start },
+            { end, id: "c", name: "Mars trine Venus", start },
           ],
           new Set([mars, sunrise, sunset]),
         ),
@@ -129,8 +129,8 @@ describe(CalendarEventsService, () => {
       expect(
         service.mapWrittenIds(
           [
-            { end: start, id: "a", start, summary: "Sunrise" },
-            { end: start, id: "b", start, summary: "Sunset" },
+            { end: start, id: "a", name: "Sunrise", start },
+            { end: start, id: "b", name: "Sunset", start },
           ],
           new Set([sunrise]),
         ),

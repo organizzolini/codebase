@@ -117,7 +117,7 @@ export class NightSkyService implements OnModuleInit {
     ]);
 
     this.loaded = {
-      segments: constellations.flatMap(({ edges = [], name, zodiac }) =>
+      segments: constellations.flatMap(({ edges = [], isZodiac, name }) =>
         edges.flatMap(({ source, target }) =>
           source === undefined || target === undefined
             ? []
@@ -126,7 +126,7 @@ export class NightSkyService implements OnModuleInit {
                   from: [source.rightAscensionHours, source.declinationDegrees],
                   name,
                   to: [target.rightAscensionHours, target.declinationDegrees],
-                  zodiac,
+                  zodiac: isZodiac,
                 },
               ],
         ),

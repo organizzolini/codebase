@@ -7,13 +7,19 @@ import {
   ingressBodies as peakIngressBodies,
   ingressBodies as signIngressBodies,
 } from "../../../caelundas/caelundas.constants";
-import { objectEntries } from "../../../caelundas/caelundas.types";
+import {
+  bodyDisplayName,
+  objectEntries,
+} from "../../../caelundas/caelundas.types";
 
+import { IngressStaysService } from "./ingress-stays.service";
 import { IngressesComposerService } from "./ingresses-composer.service";
+import { SignTransitsService } from "./sign-transits.service";
 
 import type { Body, Sign } from "../../../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../../../ephemeris/ephemeris.types";
+import type { SweepWindow } from "../../../ephemeris/modules/boundary-search/boundary-search.types";
 import type { Moment } from "moment-timezone";
 
 /**
@@ -28,7 +34,9 @@ export class IngressesService {
 
   constructor(
     private readonly ingressesComposerService: IngressesComposerService,
+    private readonly ingressStaysService: IngressStaysService,
     private readonly logger: LoggerService,
+    private readonly signTransitsService: SignTransitsService,
   ) {
     this.logger.setContext(IngressesService.name);
   }
@@ -77,6 +85,31 @@ export class IngressesService {
   }
 
   // 🔏 Private Methods
+
+  /**
+   * One body's sign stays across a sweep window: its in-window ingresses,
+   * preceded by the stay already underway and closed by the stay's true exit.
+   */
+  private buildWindowSpansForBody(
+    body: Body,
+    ingresses: DetectedCalendarEvent[],
+    window: SweepWindow,
+  ): DetectedCalendarEvent[] {
+    const entry = this.signTransitsService.getEntry(body, window);
+
+    return this.ingressesComposerService.buildProgressiveSpansForBody(
+      bodyDisplayName(body),
+      [
+        this.ingressesComposerService.buildSignEntryEvent({
+          body,
+          date: entry.start,
+          sign: entry.sign,
+        }),
+        ...ingresses,
+      ],
+      this.signTransitsService.getExit(body, window),
+    );
+  }
 
   // 🌎 Public Methods
 
@@ -136,33 +169,38 @@ export class IngressesService {
   }
 
   /**
-   * Pairs consecutive sign ingresses per body into duration spans covering each
-   * full sign transit.
+   * Pairs consecutive ingresses per body into sign stays; given the sweep
+   * window, also its edge stays and its decan and half stays.
    */
-  detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
-    const progressiveEvents: DetectedCalendarEvent[] = [];
-
-    const signIngressEvents =
-      this.ingressesComposerService.filterSignIngressEvents(events);
+  detectProgressive(
+    events: DetectedCalendarEvent[],
+    window?: SweepWindow,
+  ): DetectedCalendarEvent[] {
     const groupedByBody =
       this.ingressesComposerService.groupSignIngressEventsByBody(
-        signIngressEvents,
+        this.ingressesComposerService.filterSignIngressEvents(events),
       );
-
-    for (const [bodyCapitalized, bodyIngresses] of Object.entries(
-      groupedByBody,
-    )) {
-      if (!bodyCapitalized) {
-        continue;
-      }
-
-      progressiveEvents.push(
-        ...this.ingressesComposerService.buildProgressiveSpansForBody(
-          bodyCapitalized,
-          bodyIngresses,
-        ),
-      );
-    }
+    const signStays =
+      window === undefined
+        ? Object.entries(groupedByBody)
+            .filter(([bodyCapitalized]) => bodyCapitalized !== "")
+            .flatMap(([bodyCapitalized, bodyIngresses]) =>
+              this.ingressesComposerService.buildProgressiveSpansForBody(
+                bodyCapitalized,
+                bodyIngresses,
+              ),
+            )
+        : signIngressBodies.flatMap((body) =>
+            this.buildWindowSpansForBody(
+              body,
+              groupedByBody[bodyDisplayName(body)] ?? [],
+              window,
+            ),
+          );
+    const progressiveEvents =
+      window === undefined
+        ? signStays
+        : [...signStays, ...this.ingressStaysService.detect(events, window)];
 
     this.logger.debug("🔍 Detected progressive ingress events", undefined, {
       count: progressiveEvents.length,

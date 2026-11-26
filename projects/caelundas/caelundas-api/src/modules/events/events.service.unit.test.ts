@@ -72,24 +72,6 @@ describe(EventsService, () => {
     expect(query).toHaveBeenCalledWith("select 1", [7]);
   });
 
-  it("tunes the transaction, then runs the statement and parses its rows", async () => {
-    expect.hasAssertions();
-
-    query.mockResolvedValueOnce([]).mockResolvedValueOnce([{ count: "5" }]);
-
-    await expect(
-      service.selectTuned(
-        "select 2",
-        [8],
-        z.object({ count: z.coerce.number() }),
-      ),
-    ).resolves.toStrictEqual([{ count: 5 }]);
-    expect(query.mock.calls.at(-2)?.[0]).toContain(
-      "set_config('jit', 'off', true)",
-    );
-    expect(query).toHaveBeenLastCalledWith("select 2", [8]);
-  });
-
   it("works out the windows a view and a timeline scale read", () => {
     expect.hasAssertions();
 
@@ -143,22 +125,21 @@ describe(EventsService, () => {
 
     query.mockResolvedValueOnce([
       {
-        color: null,
-        description: "Mars stations retrograde",
         duration_minutes: 90,
         end,
         id: "event-1",
-        location: null,
+        name: "Mars Retrograde",
+        note: "Mars stations retrograde",
         start,
         start_local_day: "2026-03-04",
         start_local_hour: 22,
-        summary: "Mars Retrograde",
         tags: [
           {
             depth: 2,
             id: "tag-1",
             name: "Retrograde",
             path: "Planet / Mars / Retrograde",
+            slug: "retrograde",
           },
         ],
         timezone: "America/New_York",
@@ -172,23 +153,22 @@ describe(EventsService, () => {
       }),
     ).resolves.toStrictEqual([
       {
-        color: null,
-        description: "Mars stations retrograde",
         durationMinutes: 90,
         end,
         groups: [],
         id: "event-1",
-        location: null,
+        name: "Mars Retrograde",
+        note: "Mars stations retrograde",
         start,
         startLocalDay: "2026-03-04",
         startLocalHour: 22,
-        summary: "Mars Retrograde",
         tags: [
           {
             depth: 2,
             id: "tag-1",
             name: "Retrograde",
             path: "Planet / Mars / Retrograde",
+            slug: "retrograde",
           },
         ],
         timezone: "America/New_York",
@@ -279,18 +259,16 @@ describe(EventsService, () => {
 
     query.mockResolvedValueOnce([
       {
-        color: null,
-        description: "Mars stations retrograde",
         duration_minutes: 90,
         end: day,
         group_0: [{ key: "2026", label: null, path: null }],
         group_1: [],
         id: "event-1",
-        location: null,
+        name: "Mars Retrograde",
+        note: "Mars stations retrograde",
         start: day,
         start_local_day: "2026-03-04",
         start_local_hour: 22,
-        summary: "Mars Retrograde",
         tags: [],
         timezone: "America/New_York",
       },
@@ -395,6 +373,7 @@ describe(EventsService, () => {
       name,
       path_below_root,
       root_id,
+      slug: name.toLowerCase(),
     });
 
     query.mockResolvedValueOnce([
@@ -426,6 +405,7 @@ describe(EventsService, () => {
         id: "planet",
         name: "Planet",
         note: null,
+        slug: "planet",
         values: [
           {
             count: 2,
@@ -435,6 +415,7 @@ describe(EventsService, () => {
             name: "Mars",
             note: null,
             path: "Mars",
+            slug: "mars",
           },
           {
             count: 1,
@@ -444,6 +425,7 @@ describe(EventsService, () => {
             name: "Retrograde",
             note: "Moving backward.",
             path: "Mars / Retrograde",
+            slug: "retrograde",
           },
         ],
       },
@@ -468,6 +450,7 @@ describe(EventsService, () => {
       name: path_below_root,
       path_below_root,
       root_id: "harmonic",
+      slug: path_below_root.toLowerCase().replaceAll(" ", "-"),
     });
 
     query.mockResolvedValueOnce([
@@ -504,6 +487,7 @@ describe(EventsService, () => {
       path_below_root: path,
       rank,
       root_id: "sign",
+      slug: name.toLowerCase(),
     });
 
     query.mockResolvedValueOnce([
@@ -514,6 +498,7 @@ describe(EventsService, () => {
         name: "Sign",
         path_below_root: "",
         root_id: "sign",
+        slug: "sign",
       },
       row("taurus", "Taurus", 2, "sign", "Taurus"),
       row("aries", "Aries", 1, "sign", "Aries"),
@@ -561,6 +546,7 @@ describe(EventsService, () => {
         name: "Planetary",
         path_below_root: "",
         root_id: "planetary",
+        slug: "planetary",
       },
       {
         count: "3",
@@ -569,6 +555,7 @@ describe(EventsService, () => {
         name: "Direction",
         path_below_root: "Direction",
         root_id: "planetary",
+        slug: "direction",
       },
     ]);
 

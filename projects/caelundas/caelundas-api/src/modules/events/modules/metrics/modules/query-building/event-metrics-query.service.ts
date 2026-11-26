@@ -5,14 +5,19 @@ import { EventFilterParametersService } from "../../../filtering/modules/query-b
 import { compileEventScope } from "../../../filtering/modules/query-building/event-scope.utilities";
 import { UUID_PATTERN } from "../../../filtering/modules/values/event-filter-values.constants";
 import { EventGroupingService } from "../../../grouping/event-grouping.service";
-import { METRIC_COLUMN_PREFIX } from "../../event-metrics.constants";
-import { EventMetric } from "../inputs/event-metric.entities";
+import { collectMeasures } from "../catalog/event-metrics-catalog.utilities";
+import {
+  compileEventAggregate,
+  compileMetricColumns,
+  listEventColumns,
+} from "../measures/event-metrics-measures.utilities";
 
 import {
-  EVENT_METRIC_SQL,
   EVENT_METRICS_SQL,
   METRIC_LEVEL_SQL,
   METRIC_REFINING_LEVEL_SQL,
+  RAW_CARRIED_COLUMNS,
+  RAW_EVENT_COLUMN_SQL,
   TAG_ROOT_SQL,
 } from "./event-metrics-sql.constants";
 
@@ -43,6 +48,23 @@ export class EventMetricsQueryService {
   ) {}
 
   // 🔏 Private Methods
+
+  /**
+   * The columns of a facts event row that the measures read, computed from
+   * the raw event, so the statement reads what the facts hold.
+   */
+  private compileColumns(request: EventMetricsQueryRequest): string {
+    const measures = collectMeasures(request.metrics, request.catalog);
+    const columns = listEventColumns(measures, RAW_CARRIED_COLUMNS);
+
+    return columns
+      .flatMap((column) => {
+        const sql = RAW_EVENT_COLUMN_SQL[column];
+
+        return sql === undefined ? [] : [`, ${sql} as "${column}"`];
+      })
+      .join("");
+  }
 
   /**
    * The lateral join of one level, refining the one before it where it names a parent.
@@ -97,19 +119,19 @@ export class EventMetricsQueryService {
   }
 
   /**
-   * One metric column per metric asked for, binding the tag root when counted.
+   * One metric column per metric asked for, binding the tag root when tags
+   * are counted.
    */
   private compileMetrics(
     request: EventMetricsQueryRequest,
     parameters: EventFilterParameters,
   ): string {
-    let sql = "";
+    const counted = collectMeasures(request.metrics, request.catalog).some(
+      (measure) => measure.aggregate === "distinct-tags",
+    );
     let root = "";
 
-    if (
-      request.tagRoot !== null &&
-      request.metrics.includes(EventMetric.UNIQUE_TAGS)
-    ) {
+    if (request.tagRoot !== null && counted) {
       // A root that is no tag id has no tags beneath it, as a null matches.
       const bound = this.parametersService.bind(
         parameters,
@@ -119,11 +141,11 @@ export class EventMetricsQueryService {
       root = TAG_ROOT_SQL.replaceAll("{root}", bound);
     }
 
-    for (const [index, metric] of request.metrics.entries()) {
-      sql += `,\n    (${EVENT_METRIC_SQL[metric].replace("{tagRoot}", () => root)})::float8 as ${METRIC_COLUMN_PREFIX}${String(index)}`;
-    }
-
-    return sql;
+    return compileMetricColumns(request.metrics, {
+      catalog: request.catalog,
+      resolve: (measure) =>
+        `(${compileEventAggregate(measure, "e", root)})::float8`,
+    });
   }
 
   /**
@@ -211,6 +233,7 @@ export class EventMetricsQueryService {
       sql: EVENT_METRICS_SQL.replace("{scope}", () =>
         compileEventScope(request.scope, "e.id"),
       )
+        .replace("{extra}", () => this.compileColumns(request))
         .replace("{periods}", () => periods)
         .replace("{filter}", () => (filter === null ? "" : `and ${filter.sql}`))
         .replace("{columns}", () => columns + metrics)

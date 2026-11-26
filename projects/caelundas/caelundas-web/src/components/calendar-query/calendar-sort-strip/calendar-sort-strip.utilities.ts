@@ -1,12 +1,12 @@
 import { createElement } from "react";
 
-import { METRIC_CATALOG } from "../../calendar-display/calendar-metrics/calendar-metrics.constants";
 import {
   parseMetrics,
   resolveMetrics,
 } from "../../calendar-display/calendar-metrics/calendar-metrics.utilities";
 import { isMetricView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
 import { createGroupItems } from "../calendar-group-strip/calendar-group-strip.utilities";
+import { moveListItem } from "../calendar-group-strip/components/chip-menu/chip-menu.utilities";
 import {
   getSelectedColumnIds,
   restrictGroupFields,
@@ -15,15 +15,21 @@ import {
 import { TagIcon } from "../tag-icon/tag-icon";
 
 import {
+  DEFAULT_SORT_LABEL,
   METRIC_SORT_PREFIX,
   SORT_OPTIONS,
+  TAG_SORT_PARENT,
   TAG_SORT_PREFIX,
 } from "./calendar-sort-strip.constants";
 
-import type { EventMetric } from "../../../graphql/generated/operations";
+import type {
+  MetricCatalog,
+  MetricDescriptor,
+} from "../../calendar-display/calendar-metrics/calendar-metrics.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { EventGroupField } from "../calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
+import type { SortChipProperties } from "./components/sort-chip/sort-chip";
 import type { CascaderNode } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
@@ -50,35 +56,109 @@ export function createKeyItems(
  * The choices the metric layouts offer: the tag order, the name, then each metric measured, which orders the groups by its value.
  */
 export function createMetricSortItems(
-  metrics: readonly EventMetric[],
+  slugs: readonly string[],
+  bySlug: ReadonlyMap<string, MetricDescriptor>,
 ): CascaderNode[] {
-  return [
-    ...createKeyItems(["order", "name"]),
-    ...metrics.map((metric) => ({
-      description: `By each group's ${METRIC_CATALOG[metric].label.toLowerCase()}.`,
-      icon: createElement(TagIcon, { name: METRIC_CATALOG[metric].icon }),
-      keywords: [METRIC_CATALOG[metric].label],
-      label: METRIC_CATALOG[metric].label,
-      value: `${METRIC_SORT_PREFIX}${metric}`,
-    })),
-  ];
+  const items = createKeyItems(["order", "name"]);
+
+  for (const slug of slugs) {
+    const metric = bySlug.get(slug);
+
+    if (metric !== undefined) {
+      items.push({
+        description: `By each group's ${metric.name.toLowerCase()}.`,
+        icon: createElement(TagIcon, { name: metric.icon }),
+        keywords: [metric.name],
+        label: metric.name,
+        value: `${METRIC_SORT_PREFIX}${slug}`,
+      });
+    }
+  }
+
+  return items;
 }
 
 /**
- * The nested choices: the keys groups are ordered by, all or those offered, then each tag root with its tags beneath.
+ * What a sort's chip does: flip, move left or right, keep only, or remove, where it can.
+ */
+export function createSortChipActions(
+  sorts: readonly GroupSort[],
+  index: number,
+  context: Readonly<{
+    isDefault: boolean;
+    onSortChange: (sort: GroupSort[] | undefined) => void;
+  }>,
+): Pick<
+  SortChipProperties,
+  "onFlip" | "onMoveLeft" | "onMoveRight" | "onOnly" | "onRemove"
+> {
+  const { isDefault, onSortChange } = context;
+  const current = sorts[index];
+
+  return {
+    onFlip: () => {
+      onSortChange(flipSortAt(sorts, index));
+    },
+    onMoveLeft:
+      index === 0
+        ? undefined
+        : () => {
+            onSortChange(moveListItem(sorts, index, -1));
+          },
+    onMoveRight:
+      index === sorts.length - 1
+        ? undefined
+        : () => {
+            onSortChange(moveListItem(sorts, index, 1));
+          },
+    onOnly:
+      sorts.length === 1 || current === undefined
+        ? undefined
+        : () => {
+            onSortChange([current]);
+          },
+    onRemove: isDefault
+      ? undefined
+      : () => {
+          onSortChange(
+            sorts.length === 1
+              ? undefined
+              : sorts.filter((_, position) => position !== index),
+          );
+        },
+  };
+}
+
+/**
+ * The nested choices: the keys groups are ordered by, the tag order holding each tag root with its tags beneath.
  */
 export function createSortItems(
   fields: readonly EventGroupField[],
   keysOffered?: readonly string[],
 ): CascaderNode[] {
   const items = createKeyItems(keysOffered);
-  const tags = createGroupItems(
+  const [parent] = createGroupItems(
     fields.filter((field) => field.levels.length > 0),
   );
 
+  if (parent === undefined) {
+    return items;
+  }
+
+  const roots: CascaderNode[] = [];
+  const order = items.find((item) => item.value === "order");
+
   // A loop rather than a mapping callback keeps the call stacks shallow.
-  for (const item of tags) {
-    items.push(prefixTagItem(item));
+  for (const root of parent.children ?? []) {
+    roots.push(prefixTagItem(root));
+  }
+
+  if (order === undefined) {
+    items.push({ ...parent, children: roots, value: TAG_SORT_PARENT });
+  } else {
+    order.children = roots;
+    order.icon = parent.icon;
+    order.label = parent.label;
   }
 
   return items;
@@ -92,11 +172,15 @@ export function createViewSortItems(
   context: Readonly<{
     columns: readonly string[] | undefined;
     fields: readonly EventGroupField[];
-    metrics: readonly EventMetric[] | undefined;
+    metrics: readonly string[] | undefined;
   }>,
+  catalog: Readonly<MetricCatalog>,
 ): CascaderNode[] {
   if (isMetricView(view)) {
-    return createMetricSortItems(resolveMetrics(view, context.metrics));
+    return createMetricSortItems(
+      resolveMetrics(catalog, view, context.metrics),
+      catalog.bySlug,
+    );
   }
 
   if (view !== "table") {
@@ -133,16 +217,17 @@ export function flipSortAt(
 export function getSortChipIcon(
   sort: GroupSort,
   fields: readonly EventGroupField[],
+  bySlug: ReadonlyMap<string, MetricDescriptor>,
 ): ReactNode {
   if (sort.key !== "metric") {
     return getSortIcon(sort, fields);
   }
 
-  const metric = parseMetrics(sort.metric)?.[0];
+  const metric = findSortMetric(sort, bySlug);
 
   return metric === undefined
     ? undefined
-    : createElement(TagIcon, { name: METRIC_CATALOG[metric].icon });
+    : createElement(TagIcon, { name: metric.icon });
 }
 
 /**
@@ -176,6 +261,13 @@ export function getSortIcon(
 }
 
 /**
+ * Whether a row can be ticked as a sort: any but the Tag row that only holds the roots.
+ */
+export function isSortChoice(node: Readonly<CascaderNode>): boolean {
+  return node.value !== TAG_SORT_PARENT;
+}
+
+/**
  * The name a sort's chip shows: its key's, or for a tag its root's, then the tag when it is not the root's own.
  */
 export function labelSort(
@@ -196,7 +288,7 @@ export function labelSort(
     const node = field.nodes.find((candidate) => candidate.id === sort.tag);
 
     if (node !== undefined) {
-      return `${field.label} › ${node.name}`;
+      return node.name;
     }
   }
 
@@ -209,14 +301,56 @@ export function labelSort(
 export function labelSortChip(
   sort: GroupSort,
   fields: readonly EventGroupField[],
+  bySlug: ReadonlyMap<string, MetricDescriptor>,
 ): string {
   if (sort.key !== "metric") {
     return labelSort(sort, fields);
   }
 
-  const metric = parseMetrics(sort.metric)?.[0];
+  return findSortMetric(sort, bySlug)?.name ?? "Metric";
+}
 
-  return metric === undefined ? "Metric" : METRIC_CATALOG[metric].label;
+/**
+ * The names the sorts' chips show, in order; the default sort's is its own.
+ */
+export function listSortNames(
+  sorts: readonly GroupSort[],
+  isDefault: boolean,
+  context: Readonly<{
+    bySlug: ReadonlyMap<string, MetricDescriptor>;
+    fields: readonly EventGroupField[];
+  }>,
+): string[] {
+  const names: string[] = [];
+
+  // A loop rather than a mapping callback keeps the call stacks shallow.
+  for (const sort of sorts) {
+    names.push(
+      isDefault
+        ? DEFAULT_SORT_LABEL
+        : labelSortChip(sort, context.fields, context.bySlug),
+    );
+  }
+
+  return names;
+}
+
+/**
+ * The whole name of a tag sort, for its tooltip: its root, then the tag; none for any other sort or a root's own.
+ */
+export function pathSort(
+  sort: GroupSort,
+  fields: readonly EventGroupField[],
+): string | undefined {
+  for (const field of sort.key === "tag" ? fields : []) {
+    const node = field.nodes.find((candidate) => candidate.id === sort.tag);
+
+    if (node !== undefined) {
+      return `${field.label} › ${node.name}`;
+    }
+  }
+
+  return undefined;
 }
 
 /** The sorts after a list click: sorts still ticked keep their place and direction, newly ticked ones follow, ascending; none means the default. */
@@ -246,6 +380,18 @@ export function toSorts(
  */
 export function toSortValue(sorts: readonly GroupSort[]): string[] {
   return sorts.map((sort) => toSortToken(sort));
+}
+
+/**
+ * The metric a metric sort orders by, or nothing when the catalog lacks it.
+ */
+function findSortMetric(
+  sort: GroupSort,
+  bySlug: ReadonlyMap<string, MetricDescriptor>,
+): MetricDescriptor | undefined {
+  const slug = parseMetrics(sort.metric)?.[0];
+
+  return slug === undefined ? undefined : bySlug.get(slug);
 }
 
 /**

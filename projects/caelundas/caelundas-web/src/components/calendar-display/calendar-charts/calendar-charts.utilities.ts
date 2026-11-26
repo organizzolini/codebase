@@ -1,7 +1,6 @@
 import {
   findMetricValue,
   formatMetricChange,
-  isAdditiveMetric,
 } from "../calendar-metrics/calendar-metrics.utilities";
 import {
   deriveChildColor,
@@ -18,10 +17,10 @@ import {
   TOOLTIP_ROWS,
 } from "./calendar-charts.constants";
 
-import type { EventMetric } from "../../../graphql/generated/operations";
 import type { UseMetricLayoutResult } from "../../../hooks/use-metric-layout/use-metric-layout.types";
 import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type {
+  MetricDescriptor,
   MetricGroup,
   MetricNode,
 } from "../calendar-metrics/calendar-metrics.types";
@@ -41,7 +40,7 @@ import type {
  */
 export function buildChartBars(
   rows: readonly MetricNode[],
-  metric: EventMetric,
+  metric: Readonly<MetricDescriptor>,
   options: Readonly<ChartBarOptions>,
 ): ChartBar[] {
   const whole = findWhole(rows, metric);
@@ -49,7 +48,7 @@ export function buildChartBars(
   const bars: ChartBar[] = [];
 
   for (const node of rows) {
-    const { value, ...found } = readGroupValue(node.group, metric);
+    const { value, ...found } = readGroupValue(node.group, metric.slug);
     const previous = options.compare ? found.previous : null;
     const text = options.format(metric, value);
 
@@ -135,7 +134,7 @@ export function colorMetricGroups(
  */
 export function cycleMetricSort(
   sorts: readonly GroupSort[] | undefined,
-  metric: EventMetric,
+  metric: string,
 ): GroupSort[] | undefined {
   const current = sorts ?? [];
   const direction = findMetricSortDirection(sorts, metric);
@@ -188,7 +187,7 @@ export function findChartsNotice(
  */
 export function findMetricSortDirection(
   sorts: readonly GroupSort[] | undefined,
-  metric: EventMetric,
+  metric: string,
 ): GroupSort["direction"] | undefined {
   return sorts?.find((sort) => isMetricSort(sort, metric))?.direction;
 }
@@ -268,14 +267,17 @@ export function truncateChartLabel(label = ""): string {
 /**
  * The whole the shares are taken of: the sum of the groups' values where the metric adds up, else none.
  */
-function findWhole(rows: readonly MetricNode[], metric: EventMetric): number {
+function findWhole(
+  rows: readonly MetricNode[],
+  metric: Readonly<MetricDescriptor>,
+): number {
   let sum = 0;
 
   for (const { group } of rows) {
-    sum += readGroupValue(group, metric).value ?? 0;
+    sum += readGroupValue(group, metric.slug).value ?? 0;
   }
 
-  return isAdditiveMetric(metric) ? sum : 0;
+  return metric.additive ? sum : 0;
 }
 
 // 🌎 Public Functions
@@ -290,7 +292,7 @@ function formatShare(ratio: number): string {
 /**
  * Whether a sort orders the groups by a metric.
  */
-function isMetricSort(sort: GroupSort, metric: EventMetric): boolean {
+function isMetricSort(sort: GroupSort, metric: string): boolean {
   return sort.key === "metric" && sort.metric === metric;
 }
 
@@ -299,13 +301,11 @@ function isMetricSort(sort: GroupSort, metric: EventMetric): boolean {
  */
 function listParts(
   node: MetricNode,
-  metric: EventMetric,
+  metric: Readonly<MetricDescriptor>,
 ): readonly MetricGroup[] {
   const children = node.group.children ?? [];
 
-  return children.length > 0 && isAdditiveMetric(metric)
-    ? children
-    : [node.group];
+  return children.length > 0 && metric.additive ? children : [node.group];
 }
 
 /**
@@ -313,9 +313,9 @@ function listParts(
  */
 function readGroupValue(
   group: MetricGroup,
-  metric: EventMetric,
+  slug: string,
 ): { previous: null | number; value: null | number } {
-  const found = findMetricValue(group.values, metric);
+  const found = findMetricValue(group.values, slug);
 
   return { previous: found?.previous ?? null, value: found?.value ?? null };
 }
@@ -325,7 +325,7 @@ function readGroupValue(
  */
 function toSegments(
   node: MetricNode,
-  metric: EventMetric,
+  metric: Readonly<MetricDescriptor>,
   context: Readonly<{ options: ChartBarOptions; whole: number }>,
 ): ChartSegment[] {
   const { options, whole } = context;
@@ -333,7 +333,7 @@ function toSegments(
 
   // A loop rather than a map, and no helper, keeps the call stack shallow.
   for (const part of listParts(node, metric)) {
-    const value = findMetricValue(part.values, metric)?.value ?? null;
+    const value = findMetricValue(part.values, metric.slug)?.value ?? null;
     const amount = value ?? 0;
 
     segments.push({

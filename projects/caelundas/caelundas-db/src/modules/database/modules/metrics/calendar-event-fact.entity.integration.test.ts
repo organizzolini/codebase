@@ -13,11 +13,7 @@ import { CalendarEventTag } from "../calendar-events/calendar-event-tag.entity";
 import { CalendarEvent } from "../calendar-events/calendar-event.entity";
 import { Tag } from "../tags/tag.entity";
 
-import {
-  RAW_METRICS_SQL,
-  ROLLUP_METRICS_SQL,
-  ROLLUP_TOTAL_METRICS_SQL,
-} from "./calendar-event-facts.constants";
+import { CalendarEventFact } from "./calendar-event-fact.entity";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { TreeRepository } from "typeorm";
@@ -27,7 +23,7 @@ import type { TreeRepository } from "typeorm";
 /** Starting Postgres and running the migrations takes longer than a test. */
 const CONTAINER_TIMEOUT_MILLISECONDS = 120_000;
 
-/** The windows each metric is checked over, as `[from, to)` local days. */
+/** The windows each measure is checked over, as `[from, to)` local days. */
 const WINDOWS: readonly (readonly [string, string])[] = [
   ["2026-03-01", "2026-04-01"],
   ["2026-03-10", "2026-03-12"],
@@ -35,24 +31,97 @@ const WINDOWS: readonly (readonly [string, string])[] = [
   ["2026-05-01", "2026-06-01"],
 ];
 
-type MetricRow = Record<string, null | number | string>;
+// Every measure the facts hold, per tag node and for the whole set under a
+// null tag, from the raw events and the tag tree: the reference. The phase
+// boundary events are left out, as the default scope leaves them.
+const RAW_SQL = `
+with events as (
+    select
+        e.id,
+        e."start",
+        e."end",
+        e.start_local_day as day,
+        floor(extract(epoch from e."end" - e."start") / 60) as minutes
+    from calendar_events as e
+    where e.start_local_day >= $1::date and e.start_local_day < $2::date
+        and not exists (
+            select 1
+            from calendar_event_tags as et
+            inner join tags_closure as c on et.tag_id = c.descendant_id
+            inner join tags as t on c.ancestor_id = t.id
+            where et.calendar_event_id = e.id and t."name" in ('Forming', 'Dissolving')
+        )
+),
+carried as (
+    select et.calendar_event_id, c.ancestor_id as tag_id
+    from calendar_event_tags as et
+    inner join tags_closure as c on et.tag_id = c.descendant_id
+    group by et.calendar_event_id, c.ancestor_id
+),
+pairs as (
+    select v.id, k.tag_id from events as v inner join carried as k on v.id = k.calendar_event_id
+    union all
+    select v.id, null from events as v
+)
+select
+    p.tag_id::text as tag_id,
+    count(*)::float8 as events,
+    count(*) filter (where v."end" = v."start")::float8 as perfective_events,
+    count(*) filter (where v."end" > v."start")::float8 as progressive_events,
+    coalesce(sum(v.minutes), 0)::float8 as minutes,
+    (extract(epoch from min(v."start")) * 1000)::float8 as first_start,
+    (extract(epoch from max(v."start")) * 1000)::float8 as last_start,
+    count(distinct v.day)::float8 as days
+from pairs as p
+inner join events as v on p.id = v.id
+group by p.tag_id
+order by p.tag_id::text collate "C" nulls first`;
 
-/** Rounds every number, so float aggregates compare equal to the microsecond. */
-function normalize(rows: readonly MetricRow[]): MetricRow[] {
-  return rows.map((row) =>
-    Object.fromEntries(
-      Object.entries(row).map(([key, value]) => [
-        key,
-        typeof value === "number" ? Math.round(value * 1e6) / 1e6 : value,
-      ]),
-    ),
-  );
-}
+// The same, from the facts alone: the day filters of the window, and the
+// day-and-tag filters.
+const FACTS_SQL = `
+with days as (
+    select df.id, df.period::text as day
+    from filters as df
+    inner join "groups" as dg on df.group_id = dg.id and dg.slug = 'day'
+    where df.period >= $1::date and df.period < $2::date
+),
+tag_days as (
+    select tf.id, tf.period::text as day, tf.tag_id::text as tag_id
+    from filters as tf
+    inner join "groups" as tg on tf.group_id = tg.id and tg.slug = 'tag'
+    where tf.period >= $1::date and tf.period < $2::date
+),
+cells as (
+    select null::text as tag_id, d.day, m.slug as measure, r.measurement
+    from days as d
+    inner join calendar_event_facts as r on r.filter_id = d.id
+    inner join measures as m on r.measure_id = m.id
+    union all
+    select d.tag_id, d.day, m.slug, r.measurement
+    from tag_days as d
+    inner join calendar_event_facts as r on r.filter_id = d.id
+    inner join measures as m on r.measure_id = m.id
+)
+select
+    c.tag_id,
+    coalesce(sum(c.measurement) filter (where c.measure = 'events'), 0)::float8 as events,
+    coalesce(sum(c.measurement) filter (where c.measure = 'perfective-events'), 0)::float8 as perfective_events,
+    coalesce(sum(c.measurement) filter (where c.measure = 'progressive-events'), 0)::float8 as progressive_events,
+    coalesce(sum(c.measurement) filter (where c.measure = 'duration'), 0)::float8 as minutes,
+    min(c.measurement) filter (where c.measure = 'first-start')::float8 as first_start,
+    max(c.measurement) filter (where c.measure = 'last-start')::float8 as last_start,
+    count(distinct c.day) filter (where c.measure = 'events')::float8 as days
+from cells as c
+group by c.tag_id
+order by c.tag_id collate "C" nulls first`;
+
+type MetricRow = Record<string, null | number | string>;
 
 /**
  * Seeds events across tags, zones and days on a throwaway Postgres migrated by
- * the real migrations, refreshes the metrics view, and asserts every grain
- * answers each metric exactly as the raw events do.
+ * the real migrations, refreshes the facts, and asserts they answer each
+ * measure they hold exactly as the raw events do.
  */
 describe("metrics facts", () => {
   let database: DatabaseTestingModule;
@@ -62,19 +131,19 @@ describe("metrics facts", () => {
 
   /** Saves one event and links it to the named tags. */
   async function addEvent(
-    summary: string,
+    name: string,
     start: string,
     end: string,
     names: readonly string[],
   ): Promise<CalendarEvent> {
     const event = await database.repository(CalendarEvent).save(
       database.repository(CalendarEvent).create({
-        description: summary,
         end: moment.utc(end),
         latitude: "40.712800",
         longitude: "-74.006000",
+        name,
+        note: name,
         start: moment.utc(start),
-        summary,
         timezone: "America/New_York",
       }),
     );
@@ -97,31 +166,30 @@ describe("metrics facts", () => {
       name,
       await tags.save(
         tags.create(
-          parentTag === undefined ? { name } : { name, parent: parentTag },
+          parentTag === undefined
+            ? { name, slug: name.toLowerCase() }
+            : { name, parent: parentTag, slug: name.toLowerCase() },
         ),
       ),
     );
   }
 
-  /** Refreshes the metrics view. */
+  /** Refreshes the read model. */
   async function refresh(): Promise<void> {
     await service.refreshMetrics(database.dataSource.manager);
   }
 
-  /** The raw and rollup rows for a window, whole set first. */
+  /** The raw and fact rows for a window, whole set first. */
   async function measure(
     from: string,
     to: string,
-  ): Promise<{ raw: MetricRow[]; rollup: MetricRow[] }> {
+  ): Promise<{ facts: MetricRow[]; raw: MetricRow[] }> {
     const query = database.dataSource.query.bind(database.dataSource);
-    const raw = await query<MetricRow[]>(RAW_METRICS_SQL, [from, to]);
-    const perTag = await query<MetricRow[]>(ROLLUP_METRICS_SQL, [from, to]);
-    const total = await query<MetricRow[]>(ROLLUP_TOTAL_METRICS_SQL, [
-      from,
-      to,
-    ]);
 
-    return { raw: normalize(raw), rollup: normalize([...total, ...perTag]) };
+    return {
+      facts: await query<MetricRow[]>(FACTS_SQL, [from, to]),
+      raw: await query<MetricRow[]>(RAW_SQL, [from, to]),
+    };
   }
 
   beforeAll(async () => {
@@ -211,13 +279,13 @@ describe("metrics facts", () => {
   });
 
   it.each(WINDOWS)(
-    "answers every metric from the rollups as the raw events do over %s to %s",
+    "answers every measure from the facts as the raw events do over %s to %s",
     async (from, to) => {
       expect.hasAssertions();
 
-      const { raw, rollup } = await measure(from, to);
+      const { facts, raw } = await measure(from, to);
 
-      expect(rollup).toStrictEqual(raw);
+      expect(facts).toStrictEqual(raw);
     },
   );
 
@@ -227,72 +295,244 @@ describe("metrics facts", () => {
     const { raw } = await measure("2026-03-01", "2026-04-01");
 
     expect(raw[0]).toMatchObject({
-      covered: 2970,
       days: 4,
       events: 7,
-      instants: 2,
-      names: 5,
-      spans: 5,
-      unique_tags: 4,
+      perfective_events: 2,
+      progressive_events: 5,
     });
+    expect(raw.length).toBeGreaterThan(5);
   });
 
-  it("keeps the events tagged as a phase forming or dissolving, flagged", async () => {
+  it("leaves out the events tagged as a phase forming or dissolving, as the default scope does", async () => {
+    expect.hasAssertions();
+
+    const [row] = await database.dataSource.query<{ events: number }[]>(
+      `select r.measurement as events
+      from calendar_event_facts r
+      join measures m on m.id = r.measure_id
+      join filters f on f.id = r.filter_id
+      where m.slug = 'events' and f.period = '2026-03-10' and f.tag_id is null`,
+    );
+
+    expect(row?.events).toBe(4);
+  });
+
+  it("seeds the dimensions, their roll-up graph and a group for each", async () => {
+    expect.hasAssertions();
+
+    const names = async (sql: string): Promise<string[]> => {
+      const rows = await database.dataSource.query<{ name: string }[]>(sql);
+
+      return rows.map(({ name }) => name);
+    };
+
+    await expect(
+      names(`select slug as name from dimensions order by slug`),
+    ).resolves.toStrictEqual([
+      "day",
+      "month",
+      "name",
+      "quarter",
+      "tag",
+      "week",
+      "year",
+    ]);
+    await expect(
+      names(
+        `select s.slug || '>' || t.slug as name
+        from dimension_edges e
+        join dimensions s on s.id = e.source_node
+        join dimensions t on t.id = e.target_node order by 1`,
+      ),
+    ).resolves.toStrictEqual([
+      "day>month",
+      "day>week",
+      "month>quarter",
+      "quarter>year",
+    ]);
+    await expect(
+      names(
+        `select g.slug || '=' || string_agg(d.slug, '+' order by d.slug) as name
+        from groups g
+        join group_dimensions gd on gd.group_id = g.id
+        join dimensions d on d.id = gd.dimension_id
+        group by g.slug order by g.slug`,
+      ),
+    ).resolves.toStrictEqual([
+      "day=day",
+      "month=month",
+      "name=name",
+      "quarter=quarter",
+      "tag=tag",
+      "week=week",
+      "year=year",
+    ]);
+  });
+
+  it("holds no scope filter: the facts are the default scope's by definition", async () => {
+    expect.hasAssertions();
+
+    const [row] = await database.dataSource.query<{ roots: string }[]>(
+      `select count(*) as roots from filters where slug is not null`,
+    );
+
+    expect(row?.roots).toBe("0");
+    expect(
+      database.dataSource.getMetadata(CalendarEventFact).comment,
+    ).toContain("Forming and Dissolving");
+  });
+
+  it("holds one measure at one filter a row, in the unit of its measure", async () => {
+    expect.hasAssertions();
+
+    const columns = await database.dataSource.query<
+      { name: string; type: string }[]
+    >(
+      `select column_name as name, data_type as type
+      from information_schema.columns
+      where table_name = 'calendar_event_facts' and table_schema = current_schema()
+      order by column_name`,
+    );
+    const [duplicates] = await database.dataSource.query<{ count: string }[]>(
+      `select count(*) from (
+        select filter_id, measure_id from calendar_event_facts group by 1, 2 having count(*) > 1
+      ) d`,
+    );
+
+    expect(columns).toStrictEqual([
+      { name: "filter_id", type: "uuid" },
+      { name: "measure_id", type: "uuid" },
+      { name: "measurement", type: "double precision" },
+    ]);
+    expect(duplicates?.count).toBe("0");
+  });
+
+  it("holds each event's tags as two sorted arrays, a row for every event", async () => {
+    expect.hasAssertions();
+
+    const [row] = await database.dataSource.query<
+      { events: string; rows: string }[]
+    >(
+      `select (select count(*) from calendar_events) as events,
+        (select count(*) from calendar_event_tag_sets) as rows`,
+    );
+    const names = await database.dataSource.query<{ name: string }[]>(
+      `select a.attname as name from pg_attribute a
+       where a.attrelid = 'calendar_event_tag_sets'::regclass and a.attnum > 0
+       order by a.attname`,
+    );
+
+    expect(row?.rows).toBe(row?.events);
+    expect(names.map(({ name }) => name)).toStrictEqual([
+      "ancestor_tag_ids",
+      "calendar_event_id",
+      "tag_ids",
+    ]);
+  });
+
+  it("indexes the tag sets by event and by each array", async () => {
     expect.hasAssertions();
 
     const rows = await database.dataSource.query<
-      { is_phase_boundary: boolean }[]
+      { name: string; unique: boolean }[]
     >(
-      `select is_phase_boundary from calendar_event_facts where "filter" = 'event' and name = 'Forming Moon'`,
+      `select c.relname as name, x.indisunique as "unique"
+       from pg_index x
+       join pg_class c on c.oid = x.indexrelid
+       where x.indrelid = 'calendar_event_tag_sets'::regclass order by c.relname`,
     );
 
-    expect(rows).toStrictEqual([{ is_phase_boundary: true }]);
-  });
-
-  it("denormalizes an event's local periods and whole-second duration", async () => {
-    expect.hasAssertions();
-
-    const [row] = await database.dataSource.query<MetricRow[]>(
-      `select local_day::text, local_week::text, local_month::text, local_quarter::text,
-        local_year::int, local_weekday::int, local_hour::int, duration_seconds::int
-      from calendar_event_facts where "filter" = 'event' and name = 'Mars Retrograde' order by "start" limit 1`,
-    );
-
-    expect(row).toStrictEqual({
-      duration_seconds: 5400,
-      local_day: "2026-03-04",
-      local_hour: 22,
-      local_month: "2026-03-01",
-      local_quarter: "2026-01-01",
-      local_week: "2026-03-02",
-      local_weekday: 3,
-      local_year: 2026,
-    });
+    expect(rows).toStrictEqual([
+      { name: "calendar_event_tag_sets_ancestor_tag_ids", unique: false },
+      { name: "calendar_event_tag_sets_calendar_event_id", unique: true },
+      { name: "calendar_event_tag_sets_tag_ids", unique: false },
+    ]);
   });
 
   it("follows the events: a refresh drops a removed event and its stale rows", async () => {
     expect.hasAssertions();
 
     await database.dataSource.query(
-      "delete from calendar_events where summary = 'Later Event'",
+      "delete from calendar_events where name = 'Later Event'",
     );
     await refresh();
 
-    const { raw, rollup } = await measure("2026-01-01", "2027-01-01");
+    const { facts, raw } = await measure("2026-01-01", "2027-01-01");
 
-    expect(rollup).toStrictEqual(raw);
+    expect(facts).toStrictEqual(raw);
     await expect(
       database.dataSource.query<unknown[]>(
-        `select 1 from calendar_event_facts where "filter" = 'day' and local_day = '2026-04-20'`,
+        `select 1 from filters where period = '2026-04-20'`,
       ),
     ).resolves.toHaveLength(0);
+  });
+
+  it("declares the row estimate of expand_keys as 2, expand_tags as 6 and window_events as 1500", async () => {
+    expect.hasAssertions();
+
+    const estimate = async (call: string): Promise<number> => {
+      const [row] = await database.dataSource.query<
+        { "QUERY PLAN": { Plan: Record<string, number> }[] }[]
+      >(`explain (format json) select * from ${call}`);
+
+      return row?.["QUERY PLAN"][0]?.Plan["Plan Rows"] ?? 0;
+    };
+
+    await expect(estimate("expand_keys(array['a'])")).resolves.toBe(2);
+    await expect(estimate("expand_tags(array[]::uuid[])")).resolves.toBe(6);
+    await expect(estimate("window_events(now(), now())")).resolves.toBe(1500);
+  });
+
+  it("lists the events that overlap a period with their tags, an event that ends at its start included", async () => {
+    expect.hasAssertions();
+
+    const rows = await database.dataSource.query<
+      { name: string; tag_ids: string[] }[]
+    >(
+      `select "name", tag_ids from window_events('2026-03-10T00:00:00Z', '2026-03-10T00:00:01Z') order by "name"`,
+    );
+
+    expect(rows.map(({ name }) => name)).toStrictEqual(["Venus Station"]);
+    expect(rows.every(({ tag_ids }) => tag_ids.length > 0)).toBe(true);
+  });
+
+  it("expands an empty key array to one null row and a filled one to a row per key", async () => {
+    expect.hasAssertions();
+
+    const keys = async (list: string): Promise<(null | string)[]> => {
+      const rows = await database.dataSource.query<{ key: null | string }[]>(
+        `select key from expand_keys(${list}) order by key`,
+      );
+
+      return rows.map(({ key }) => key);
+    };
+
+    await expect(keys("array[]::text[]")).resolves.toStrictEqual([null]);
+    await expect(keys("array['a', 'b']")).resolves.toStrictEqual(["a", "b"]);
+  });
+
+  it("expands a tag id array to a row per id and an empty one to none", async () => {
+    expect.hasAssertions();
+
+    const first = "00000000-0000-0000-0000-000000000001";
+    const second = "00000000-0000-0000-0000-000000000002";
+    const ids = async (list: string): Promise<string[]> => {
+      const rows = await database.dataSource.query<{ id: string }[]>(
+        `select id from expand_tags(${list}) order by id`,
+      );
+
+      return rows.map(({ id }) => id);
+    };
+
+    await expect(
+      ids(`array['${second}', '${first}']::uuid[]`),
+    ).resolves.toStrictEqual([first, second]);
+    await expect(ids("array[]::uuid[]")).resolves.toStrictEqual([]);
   });
 
   it("refreshes again with nothing changed", async () => {
     expect.hasAssertions();
 
-    await expect(
-      service.refreshMetrics(database.dataSource.manager),
-    ).resolves.toBeUndefined();
+    await expect(refresh()).resolves.toBeUndefined();
   });
 });

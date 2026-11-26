@@ -1,3 +1,4 @@
+import { createMock } from "@golevelup/ts-vitest";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -5,6 +6,7 @@ import { LoggerService } from "@codebase/observability";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
+import { BoundarySearchService } from "../ephemeris/modules/boundary-search/boundary-search.service";
 import { MathService } from "../ephemeris/modules/math/math.service";
 import { ProgressiveAspectService } from "../progressive/progressive-aspect.service";
 import { ProgressiveUtilitiesService } from "../progressive/progressive-utilities.service";
@@ -15,6 +17,7 @@ import {
   SIMPLE_ASPECT_DETECTORS_TOKEN,
 } from "./aspects.constants";
 import { AspectsService } from "./aspects.service";
+import { AspectEdgesService } from "./modules/calculation/aspect-edges.service";
 import { AspectEphemerisService } from "./modules/calculation/aspect-ephemeris.service";
 import { AspectGraphService } from "./modules/calculation/aspect-graph.service";
 import { CompoundPhaseService } from "./modules/compound-phases/compound-phase.service";
@@ -61,7 +64,9 @@ describe(AspectsService, () => {
   const testingModuleOptions = {
     imports: [EphemerisModule],
     providers: [
+      AspectEdgesService,
       AspectsUtilitiesService,
+      BoundarySearchService,
       AspectEphemerisService,
       AspectEventFormattingService,
       AspectGraphService,
@@ -490,6 +495,7 @@ describe(AspectsService, () => {
         [],
         [repeatingDetector, repeatingDetector],
         [],
+        createMock<AspectEdgesService>(),
         new LoggerService(),
       );
 
@@ -557,6 +563,7 @@ describe(AspectsService, () => {
         [mockSimpleAspectDetector],
         [mockCompositeAspectDetector],
         [mockProgressiveAspectDetector],
+        createMock<AspectEdgesService>(),
         new LoggerService(),
       );
       const coordinateEphemerisByBody = {} as Record<Body, CoordinateEphemeris>;
@@ -587,8 +594,235 @@ describe(AspectsService, () => {
     });
   });
 
+  describe("detectProgressive over a sweep window", () => {
+    const minute = moment.utc("2026-01-21T12:00:00Z");
+    const buildEvent = (summary: string): DetectedCalendarEvent => ({
+      description: summary,
+      end: minute,
+      start: minute,
+      summary,
+      tags: ["Astronomy", "Astrology"],
+    });
+    const window = {
+      end: moment.utc("2026-01-31T23:59:00Z"),
+      start: moment.utc("2026-01-01T00:00:00Z"),
+    };
+
+    it("hands the detectors the events the aspect edges add", () => {
+      const detected = buildEvent("detected");
+      const edge = buildEvent("edge");
+      const edges = createMock<AspectEdgesService>();
+      edges.complete.mockReturnValue([edge]);
+      const detector = {
+        detectProgressive: vi
+          .fn<ProgressiveAspectDetector["detectProgressive"]>()
+          .mockReturnValue([]),
+      };
+      const edgeService = new AspectsService(
+        [],
+        [],
+        [detector],
+        edges,
+        new LoggerService(),
+      );
+
+      edgeService.detectProgressive([detected], window);
+
+      expect(edges.complete).toHaveBeenCalledWith([detected], window);
+      expect(detector.detectProgressive).toHaveBeenCalledWith([detected, edge]);
+    });
+
+    describe("compound aspects", () => {
+      const boundary = (args: {
+        aspect: string;
+        bodies: [string, string];
+        iso: string;
+        phase: "Dissolving" | "Forming";
+      }): DetectedCalendarEvent => {
+        const date = moment.utc(args.iso);
+        return {
+          description: args.aspect,
+          end: date,
+          start: date,
+          summary: args.aspect,
+          tags: [
+            "Astronomy",
+            "Astrology",
+            "Simple Aspect",
+            ...args.bodies,
+            args.aspect,
+            args.phase,
+          ],
+        };
+      };
+      const trine = (
+        phase: "Dissolving" | "Forming",
+        iso: string,
+      ): DetectedCalendarEvent =>
+        boundary({ aspect: "Trine", bodies: ["Sun", "Moon"], iso, phase });
+      const sextile = (
+        phase: "Dissolving" | "Forming",
+        iso: string,
+      ): DetectedCalendarEvent =>
+        boundary({ aspect: "Sextile", bodies: ["Sun", "Mars"], iso, phase });
+      /** A compound existing while the trine and sextile hold. */
+      const compositeDetector: CompositeAspectDetector = {
+        detect: ({ currentAspectBodies, minute, previousAspectBodies }) => {
+          const holds = (registry: AspectBodies[]): boolean =>
+            ["trine", "sextile"].every((aspect) =>
+              registry.some((entry) => entry.aspect === aspect),
+            );
+          const phase =
+            (holds(currentAspectBodies) ? 1 : 0) -
+            (holds(previousAspectBodies) ? 1 : 0);
+
+          return phase === 0
+            ? []
+            : [
+                {
+                  description: "compound",
+                  end: minute,
+                  start: minute,
+                  summary: "compound",
+                  tags: [
+                    "Compound Aspect",
+                    phase > 0 ? "Forming" : "Dissolving",
+                  ],
+                },
+              ];
+        },
+      };
+      const detectCompounds = (
+        inWindow: DetectedCalendarEvent[],
+        edge: DetectedCalendarEvent[],
+        sweep = window,
+      ): [string, string][] => {
+        const edges = createMock<AspectEdgesService>();
+        edges.complete.mockReturnValue(edge);
+        const detector = {
+          detectProgressive: vi
+            .fn<ProgressiveAspectDetector["detectProgressive"]>()
+            .mockReturnValue([]),
+        };
+        const service = new AspectsService(
+          [],
+          [compositeDetector],
+          [detector],
+          edges,
+          new LoggerService(),
+        );
+
+        service.detectProgressive(inWindow, sweep);
+
+        return (detector.detectProgressive.mock.calls.at(0)?.[0] ?? [])
+          .filter((event) => event.tags.includes("Compound Aspect"))
+          .map((event) => [event.tags.at(-1) ?? "", event.start.toISOString()]);
+      };
+
+      it("starts a compound before the window at the latest forming of its aspects", () => {
+        expect(
+          detectCompounds(
+            [trine("Dissolving", "2026-01-10T00:00:00Z")],
+            [
+              trine("Forming", "2025-12-20T00:00:00Z"),
+              sextile("Forming", "2025-12-28T06:30:00Z"),
+              sextile("Dissolving", "2026-02-05T00:00:00Z"),
+            ],
+          ),
+        ).toStrictEqual([["Forming", "2025-12-28T06:30:00.000Z"]]);
+      });
+
+      it("ends a compound after the window at the earliest dissolving of its aspects", () => {
+        expect(
+          detectCompounds(
+            [trine("Forming", "2026-01-05T00:00:00Z")],
+            [
+              sextile("Forming", "2025-12-01T00:00:00Z"),
+              sextile("Dissolving", "2026-02-20T00:00:00Z"),
+              trine("Dissolving", "2026-02-10T12:00:00Z"),
+            ],
+          ),
+        ).toStrictEqual([["Dissolving", "2026-02-10T12:00:00.000Z"]]);
+      });
+
+      it("begins a compound at the range's first minute when its aspects were clipped there", () => {
+        const sweep = {
+          end: moment.utc("1900-01-31T23:59:00Z"),
+          start: moment.utc("1900-01-01T00:00:00Z"),
+        };
+
+        expect(
+          detectCompounds(
+            [trine("Dissolving", "1900-01-10T00:00:00Z")],
+            [
+              trine("Forming", "1900-01-01T00:00:00Z"),
+              sextile("Forming", "1900-01-01T00:00:00Z"),
+            ],
+            sweep,
+          ),
+        ).toStrictEqual([["Forming", "1900-01-01T00:00:00.000Z"]]);
+      });
+
+      it("ends a compound at the range's last minute when its aspects were clipped there", () => {
+        const sweep = {
+          end: moment.utc("2100-12-31T23:59:00Z"),
+          start: moment.utc("2100-12-01T00:00:00Z"),
+        };
+
+        expect(
+          detectCompounds(
+            [
+              trine("Forming", "2100-12-05T00:00:00Z"),
+              sextile("Forming", "2100-12-06T00:00:00Z"),
+            ],
+            [
+              trine("Dissolving", "2100-12-31T23:59:00Z"),
+              sextile("Dissolving", "2100-12-31T23:59:00Z"),
+            ],
+            sweep,
+          ),
+        ).toStrictEqual([["Dissolving", "2100-12-31T23:59:00.000Z"]]);
+      });
+
+      it("leaves the compound boundaries inside the window to the sweep", () => {
+        expect(
+          detectCompounds(
+            [
+              trine("Forming", "2026-01-05T00:00:00Z"),
+              sextile("Forming", "2026-01-06T00:00:00Z"),
+              trine("Dissolving", "2026-01-20T00:00:00Z"),
+            ],
+            [],
+          ),
+        ).toStrictEqual([]);
+      });
+    });
+
+    it("adds no edges without a window", () => {
+      const detected = buildEvent("detected");
+      const edges = createMock<AspectEdgesService>();
+      const detector = {
+        detectProgressive: vi
+          .fn<ProgressiveAspectDetector["detectProgressive"]>()
+          .mockReturnValue([]),
+      };
+      const plainService = new AspectsService(
+        [],
+        [],
+        [detector],
+        edges,
+        new LoggerService(),
+      );
+
+      plainService.detectProgressive([detected]);
+
+      expect(edges.complete).not.toHaveBeenCalled();
+      expect(detector.detectProgressive).toHaveBeenCalledWith([detected]);
+    });
+  });
+
   describe("seed", () => {
-    it("returns every aspect already in orb and composes compounds from an empty past", () => {
+    it("returns every aspect already in orb and detects no compound at the start", () => {
       const minute = moment.utc("2026-10-01T04:00:00Z");
       const compositeEvent = {
         description: "T-Square",
@@ -625,6 +859,7 @@ describe(AspectsService, () => {
         [mockMajorDetector, mockMinorDetector],
         [mockCompositeAspectDetector],
         [],
+        createMock<AspectEdgesService>(),
         new LoggerService(),
       );
       const coordinateEphemerisByBody = {} as Record<Body, CoordinateEphemeris>;
@@ -635,16 +870,8 @@ describe(AspectsService, () => {
         coordinateEphemerisByBody,
         minute,
       });
-      expect(seeded.aspectBodies).toStrictEqual([
-        ...majorActive,
-        ...minorActive,
-      ]);
-      expect(mockCompositeAspectDetector.detect).toHaveBeenCalledWith({
-        currentAspectBodies: [...majorActive, ...minorActive],
-        minute,
-        previousAspectBodies: [],
-      });
-      expect(seeded.events).toStrictEqual([compositeEvent]);
+      expect(seeded).toStrictEqual([...majorActive, ...minorActive]);
+      expect(mockCompositeAspectDetector.detect).not.toHaveBeenCalled();
     });
 
     it("emits no simple-aspect events", () => {
@@ -659,6 +886,7 @@ describe(AspectsService, () => {
         [mockSimpleAspectDetector],
         [],
         [],
+        createMock<AspectEdgesService>(),
         new LoggerService(),
       );
 
@@ -668,7 +896,9 @@ describe(AspectsService, () => {
       });
 
       expect(mockSimpleAspectDetector.detect).not.toHaveBeenCalled();
-      expect(seeded.events).toStrictEqual([]);
+      expect(seeded).toStrictEqual([
+        { aspect: "trine", bodies: ["sun", "moon"] },
+      ]);
     });
   });
 });

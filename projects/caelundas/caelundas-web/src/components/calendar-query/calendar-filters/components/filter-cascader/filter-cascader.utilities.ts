@@ -1,10 +1,13 @@
 import { flattenFilterRules } from "@codebase/presentation";
 
+import { createTagParent } from "../../../calendar-group-strip/calendar-group-strip.utilities";
 import { describeTagOption } from "../event-filter-model/event-filter-fields.utilities";
+import { TAG_FIELD_PREFIX } from "../event-filter-model/event-filters.constants";
 
 import {
   COMBINATOR,
   OPTION_DEPTH,
+  TAG_PARENT_VALUE,
   VALUE_SEPARATOR,
 } from "./filter-cascader.constants";
 
@@ -18,16 +21,17 @@ import type { CascaderNode, FilterOption } from "@codebase/presentation";
 // 🔏 Private Functions
 
 /**
- * The attributes to filter by, each with the values it takes beneath it.
+ * The attributes to filter by, each with the values it takes beneath it; the tag roots sit under a Tag row.
  */
 export function createFilterItems(
   fields: readonly EventFilterField[],
 ): CascaderNode[] {
-  const items: CascaderNode[] = [];
+  const roots: CascaderNode[] = [];
+  const others: CascaderNode[] = [];
 
   // Loops rather than mapping callbacks keep the call stacks shallow.
   for (const field of listPickFields(fields)) {
-    items.push({
+    (field.id.startsWith(TAG_FIELD_PREFIX) ? roots : others).push({
       children: nestOptions(field, field.options ?? []),
       ...(field.description === undefined
         ? {}
@@ -39,7 +43,9 @@ export function createFilterItems(
     });
   }
 
-  return items;
+  return roots.length === 0
+    ? others
+    : [{ ...createTagParent(roots), value: TAG_PARENT_VALUE }, ...others];
 }
 
 /**

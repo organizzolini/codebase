@@ -5,6 +5,7 @@ import {
 } from "@codebase/presentation";
 
 import { TITLE } from "../../calendar-filters.constants";
+import { isRequiredFilterRule } from "../../calendar-filters.utilities";
 
 import type { EventFilterValue } from "../event-filter-model/event-filters.types";
 import type { ReactNode } from "react";
@@ -12,10 +13,11 @@ import type { ReactNode } from "react";
 // 🔖 Type
 
 /**
- * Takes no props: its rules come from the surrounding `Filters`.
+ * Folded, it draws only the required chips.
  */
 export interface FilterChipRowProperties {
   className?: string;
+  isFolded?: boolean;
 }
 
 // 🧩 Component
@@ -26,13 +28,15 @@ export interface FilterChipRowProperties {
 export function FilterChipRow(
   properties: Readonly<FilterChipRowProperties>,
 ): ReactNode {
-  const { className } = properties;
+  const { className, isFolded = false } = properties;
 
   // 🪝 Hooks
   const { query } = useFilterState<EventFilterValue>();
 
   // 🏗 Setup
-  const rules = flattenFilterRules(query);
+  const rules = isFolded
+    ? flattenFilterRules(query).filter((rule) => isRequiredFilterRule(rule))
+    : flattenFilterRules(query);
 
   // 💪 Handlers
 
@@ -56,6 +60,7 @@ export function FilterChipRow(
         <FilterChip
           key={rule.id}
           index={index}
+          required={isRequiredFilterRule(rule)}
           rule={rule}
         />
       ))}

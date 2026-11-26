@@ -29,12 +29,19 @@ describe("table column heads utilities", () => {
   describe(getColumnSort, () => {
     it("maps columns to the sorts that order by them", () => {
       expect(getColumnSort(NAME)).toStrictEqual({ key: "name" });
-      expect(getColumnSort(START)).toStrictEqual({ key: "first" });
+      expect(getColumnSort(START)).toStrictEqual({ key: "start" });
       expect(getColumnSort({ ...START, id: "end", kind: "end" })).toStrictEqual(
         {
-          key: "first",
+          key: "end",
         },
       );
+      expect(
+        getColumnSort({
+          id: "duration",
+          kind: "duration",
+          label: "Duration",
+        }),
+      ).toStrictEqual({ key: "duration" });
       expect(getColumnSort(VENUS)).toStrictEqual({ key: "tag", tag: "venus" });
       expect(getColumnSort(NUMBER)).toBeUndefined();
     });

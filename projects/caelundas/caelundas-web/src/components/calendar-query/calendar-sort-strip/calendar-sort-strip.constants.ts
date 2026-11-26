@@ -33,10 +33,31 @@ export const SORT_OPTIONS = [
     key: "first",
     label: "First event",
   },
+  {
+    description: "By when the event, or the group's first, starts.",
+    icon: "calendar-arrow-down",
+    key: "start",
+    label: "Start",
+  },
+  {
+    description: "By when the event, or the group's first, ends.",
+    icon: "calendar-arrow-up",
+    key: "end",
+    label: "End",
+  },
+  {
+    description: "By how long the event, or the group's events, last.",
+    icon: "timer",
+    key: "duration",
+    label: "Duration",
+  },
 ] as const;
 
 /** Marks a tag sort in the list. */
 export const TAG_SORT_PREFIX = "by:";
+
+/** The row holding the tag roots without a tag order. */
+export const TAG_SORT_PARENT = `${TAG_SORT_PREFIX}tag:*`;
 
 /** Marks a metric sort in the list. */
 export const METRIC_SORT_PREFIX = "metric:";

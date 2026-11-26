@@ -39,18 +39,11 @@ export class CalendarService {
 
   // 🔏 Private Methods
 
-  /** Builds VEVENT property lines, including the optional location and color. */
+  /** Builds VEVENT property lines. */
   private buildEventProperties(event: DetectedCalendarEvent): string {
-    let properties = `SUMMARY:${event.summary}\nDESCRIPTION:${event.description}\nSTATUS:CONFIRMED\nCLASS:PUBLIC\nTRANSP:TRANSPARENT\nCATEGORIES:${event.tags.join(
+    return `SUMMARY:${event.summary}\nDESCRIPTION:${event.description}\nSTATUS:CONFIRMED\nCLASS:PUBLIC\nTRANSP:TRANSPARENT\nCATEGORIES:${event.tags.join(
       ",",
     )}`;
-    if (event.location) {
-      properties += `\nLOCATION:${event.location}`;
-    }
-    if (event.color) {
-      properties += `\nCOLOR:${event.color}`;
-    }
-    return properties;
   }
 
   /** Builds one STANDARD or DAYLIGHT observance of a VTIMEZONE. */
@@ -320,10 +313,8 @@ END:VCALENDAR
     const outputPath = path.join(outputDirectory, jsonFilename);
     const content = JSON.stringify(
       events.map((event) => ({
-        color: event.color ?? null,
         description: event.description,
         end: event.end.toISOString(),
-        location: event.location ?? null,
         start: event.start.toISOString(),
         summary: event.summary,
         tags: event.tags,

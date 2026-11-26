@@ -474,6 +474,10 @@ export interface FilterLabels {
   /** Chip kebab's route into the builder. Needs `onConvertToAdvanced`. */
   convertToAdvanced: string
   remove: string
+  /** Chip kebab: removes every other rule. */
+  only: string
+  /** Chip kebab: folds the chip row into a count. Needs `onFold`. */
+  fold: string
   /** Names a chip's menu button. The builder's row menu reads the same key. */
   chipMenu: (fieldLabel: string) => string
   filtersLabel: string

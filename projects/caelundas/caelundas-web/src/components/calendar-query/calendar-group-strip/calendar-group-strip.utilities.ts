@@ -1,8 +1,16 @@
+import { createElement } from "react";
+
 import { NONE_OPEN } from "../../../hooks/use-metric-layout/use-metric-layout.constants";
 import { isMetricView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
+import { TAG_FIELD_PREFIX } from "../calendar-filters/components/event-filter-model/event-filters.constants";
+import { TagIcon } from "../tag-icon/tag-icon";
 
 import { COLOR_HINT } from "./calendar-group-strip.constants";
-import { resolveEventGrouping } from "./components/event-group-model/event-group-fields.utilities";
+import { ALL_TAGS_FIELD } from "./components/event-group-model/event-group-fields.constants";
+import {
+  getRootGrouping,
+  resolveEventGrouping,
+} from "./components/event-group-model/event-group-fields.utilities";
 
 import type { TableGroupsValue } from "../../calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
@@ -16,18 +24,19 @@ import type { CascaderNode } from "@codebase/presentation";
 // 🔏 Private Functions
 
 /**
- * The nested choices: each field, with a tag root's tags that have tags beneath them.
+ * The nested choices: a Tag row holding each tag root, with its tags that have tags beneath them, then each derived field.
  */
 export function createGroupItems(
   fields: readonly EventGroupField[],
 ): CascaderNode[] {
-  const items: CascaderNode[] = [];
+  const roots: CascaderNode[] = [];
+  const derived: CascaderNode[] = [];
 
   // A loop rather than a mapping callback keeps the call stacks shallow.
   for (const field of fields) {
     const children = nestNodes(field.nodes);
 
-    items.push({
+    (field.id.startsWith(TAG_FIELD_PREFIX) ? roots : derived).push({
       ...(children.length === 0 ? {} : { children }),
       description: field.description,
       ...(field.icon === undefined ? {} : { icon: field.icon }),
@@ -37,7 +46,21 @@ export function createGroupItems(
     });
   }
 
-  return items;
+  return roots.length === 0 ? derived : [createTagParent(roots), ...derived];
+}
+
+/**
+ * The row above the tag roots: the tags as a whole, which picks the default.
+ */
+export function createTagParent(roots: CascaderNode[]): CascaderNode {
+  return {
+    children: roots,
+    description: "Every tag root, in order.",
+    icon: createElement(TagIcon, { name: "tags" }),
+    keywords: ["tags"],
+    label: "Tag",
+    value: ALL_TAGS_FIELD,
+  };
 }
 
 // 🌎 Public Functions
@@ -127,9 +150,43 @@ export function toGrouping(
   return resolveEventGrouping([...kept, ...added], fields);
 }
 
-/** The values ticked for a grouping: each level's tag, or its field when it groups by the root's own children. */
-export function toGroupValue(grouping: readonly EventGroupLevel[]): string[] {
-  const value: string[] = [];
+/** The grouping a list click means: none, the default, when the Tag row is newly ticked, else the levels ticked. */
+export function toGroupingChange(
+  next: readonly string[],
+  context: Readonly<{
+    fields: readonly EventGroupField[];
+    grouping: readonly EventGroupLevel[];
+    isDefaultGrouping: boolean;
+  }>,
+): EventGroupLevel[] {
+  const { fields, grouping, isDefaultGrouping } = context;
+
+  if (!isDefaultGrouping && next.includes(ALL_TAGS_FIELD)) {
+    return [];
+  }
+
+  const levels = toGrouping(
+    next.filter((value) => value !== ALL_TAGS_FIELD),
+    grouping,
+    fields,
+  );
+  const roots = getRootGrouping(fields);
+
+  // Every tag root and nothing else is the default, which the link leaves out.
+  return levels.length === roots.length &&
+    levels.every(
+      (level, at) => levelKey(level) === levelKey(roots[at] ?? level),
+    )
+    ? []
+    : levels;
+}
+
+/** The values ticked for a grouping: each level's tag or root, and the Tag row for the default. */
+export function toGroupValue(
+  grouping: readonly EventGroupLevel[],
+  isDefaultGrouping = false,
+): string[] {
+  const value: string[] = isDefaultGrouping ? [ALL_TAGS_FIELD] : [];
 
   // A loop rather than a mapping callback keeps the call stacks shallow.
   for (const level of grouping) {

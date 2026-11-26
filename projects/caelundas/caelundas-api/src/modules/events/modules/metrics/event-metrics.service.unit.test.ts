@@ -2,6 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { createSeedCatalog } from "../../../../../testing/metric-catalog";
 import { EventsService } from "../../events.service";
 import { EventFilterService } from "../filtering/event-filter.service";
 import { EventFilterCalendarFieldsService } from "../filtering/modules/query-building/event-filter-calendar-fields.service";
@@ -11,13 +12,15 @@ import { EventFilterValuesService } from "../filtering/modules/values/event-filt
 import { EventGroupingService } from "../grouping/event-grouping.service";
 
 import { EventMetricsService } from "./event-metrics.service";
+import { EventMetricsCatalogService } from "./modules/catalog/event-metrics-catalog.service";
 import { EventMetricsFactsService } from "./modules/facts/event-metrics-facts.service";
-import { EventMetric } from "./modules/inputs/event-metric.entities";
 import { EventMetricsQueryService } from "./modules/query-building/event-metrics-query.service";
 
+import type { MetricCatalog } from "./modules/catalog/event-metrics-catalog.types";
 import type { EventMetricsInputEntity } from "./modules/inputs/event-metrics-input.entities";
 
 const ROOT = "0199b1a0-0000-7000-8000-000000000002";
+const WITH_BOUNDARIES = { includePhaseBoundaries: true };
 const MARS = "0199b1a0-0000-7000-8000-000000000001";
 
 const select = vi.fn<(...parameters: unknown[]) => Promise<unknown[]>>();
@@ -29,7 +32,7 @@ function input(
   rest: Partial<EventMetricsInputEntity> = {},
 ): EventMetricsInputEntity {
   return {
-    metrics: [EventMetric.EVENTS, EventMetric.COVERED_PERCENT],
+    metrics: ["events", "covered-percent"],
     period: {
       end: "2026-04-01T00:00:00.000Z",
       start: "2026-03-01T00:00:00.000Z",
@@ -49,10 +52,18 @@ describe(EventMetricsService, () => {
     EventFilterValuesService,
     EventGroupingService,
     EventMetricsQueryService,
+    {
+      provide: EventMetricsCatalogService,
+      useValue: {
+        getCatalog: vi
+          .fn<() => Promise<MetricCatalog>>()
+          .mockResolvedValue(createSeedCatalog()),
+      },
+    },
     { provide: EventMetricsFactsService, useValue: { compile: compileFacts } },
     {
       provide: EventsService,
-      useValue: { describeDataset, select, selectTuned: select },
+      useValue: { describeDataset, select },
     },
   ];
 
@@ -91,8 +102,8 @@ describe(EventMetricsService, () => {
       groups: [],
       timezone: "Europe/London",
       total: [
-        { metric: "EVENTS", previous: null, value: 7 },
-        { metric: "COVERED_PERCENT", previous: null, value: null },
+        { metric: "events", previous: null, value: 7 },
+        { metric: "covered-percent", previous: null, value: null },
       ],
     });
   });
@@ -128,7 +139,7 @@ describe(EventMetricsService, () => {
       "2026-03-01T00:00:00.000Z",
     ]);
     expect(result.total[0]).toStrictEqual({
-      metric: "EVENTS",
+      metric: "events",
       previous: 5,
       value: 7,
     });
@@ -158,7 +169,7 @@ describe(EventMetricsService, () => {
     const result = await service.findMetrics(
       input({
         grouping: [{ field: `tag:${ROOT}` }],
-        metrics: [EventMetric.EVENTS, EventMetric.COVERED_PERCENT],
+        metrics: ["events", "covered-percent"],
         tagRoot: MARS,
       }),
     );
@@ -223,7 +234,7 @@ describe(EventMetricsService, () => {
     function grouped(
       grouping: NonNullable<EventMetricsInputEntity["grouping"]>,
     ): EventMetricsInputEntity {
-      return input({ grouping, metrics: [EventMetric.EVENTS] });
+      return input({ grouping, metrics: ["events"] });
     }
 
     /** The statements run, as text. */
@@ -238,8 +249,8 @@ describe(EventMetricsService, () => {
 
       await service.findMetrics(grouped([]));
 
-      expect(statements()).toContain(`r."filter" = 'day'`);
-      expect(statements()).not.toContain("calendar_event_derived_times");
+      expect(statements()).toContain("join calendar_event_facts r on");
+      expect(statements()).not.toContain("events_in_periods");
     });
 
     it("reads the events when the guard names no zone", async () => {
@@ -249,8 +260,8 @@ describe(EventMetricsService, () => {
 
       await service.findMetrics(grouped([]));
 
-      expect(statements()).toContain("calendar_event_derived_times");
-      expect(statements()).not.toContain(`r."filter" = 'day'`);
+      expect(statements()).toContain("events_in_periods");
+      expect(statements()).not.toContain("join calendar_event_facts r on");
     });
 
     it("asks no guard of a request the rollups cannot answer", async () => {
@@ -261,7 +272,19 @@ describe(EventMetricsService, () => {
       await service.findMetrics(input());
 
       expect(select).toHaveBeenCalledTimes(1);
-      expect(statements()).toContain("calendar_event_derived_times");
+      expect(statements()).toContain("events_in_periods");
+    });
+
+    it("asks no guard when the scope keeps the phase boundaries, which the facts leave out", async () => {
+      expect.hasAssertions();
+
+      answer([{ timezone: "UTC" }]);
+
+      await service.findMetrics(grouped([]), WITH_BOUNDARIES);
+
+      expect(select).toHaveBeenCalledTimes(1);
+      expect(statements()).toContain("events_in_periods");
+      expect(statements()).not.toContain("join calendar_event_facts r on");
     });
 
     it("reads the first level from the rollups, and the rest from the events", async () => {
@@ -273,8 +296,8 @@ describe(EventMetricsService, () => {
         grouped([{ field: `tag:${ROOT}` }, { field: "month" }]),
       );
 
-      expect(statements()).toContain(`r."filter" = 'day-tag'`);
-      expect(statements()).toContain("calendar_event_derived_times");
+      expect(statements()).toContain("join filters tf on");
+      expect(statements()).toContain("events_in_periods");
     });
   });
 
@@ -284,21 +307,21 @@ describe(EventMetricsService, () => {
 
       compileFacts.mockReturnValue({
         levels: 1,
-        measures: ["events"],
         parameters: [7],
         sql: "select facts",
       });
       select.mockResolvedValue([
-        { level: -1, m_events: 3, period: 0 },
-        { level: 0, m_events: 2, period: 0, t0: "2026" },
+        { level: -1, m0: 3, m1: null, period: 0 },
+        { level: 0, m0: 2, m1: null, period: 0, t0: "2026" },
       ]);
 
       const result = await service.findMetrics(
-        input({ grouping: [{ field: "year" }], metrics: [EventMetric.EVENTS] }),
+        input({ grouping: [{ field: "year" }], metrics: ["events"] }),
+        WITH_BOUNDARIES,
       );
 
-      // The rollups' guard asks first, and answers no zone.
-      expect(select).toHaveBeenCalledTimes(2);
+      // A scope that keeps the boundaries never asks the rollups' guard, so only the facts run.
+      expect(select).toHaveBeenCalledTimes(1);
       expect(select).toHaveBeenLastCalledWith(
         "select facts",
         [7],
@@ -331,9 +354,7 @@ describe(EventMetricsService, () => {
         return text.includes("from zone z") ? [{ timezone: "UTC" }] : [];
       });
 
-      await service.findMetrics(
-        input({ grouping: [], metrics: [EventMetric.EVENTS] }),
-      );
+      await service.findMetrics(input({ grouping: [], metrics: ["events"] }));
 
       expect(compileFacts).not.toHaveBeenCalled();
     });

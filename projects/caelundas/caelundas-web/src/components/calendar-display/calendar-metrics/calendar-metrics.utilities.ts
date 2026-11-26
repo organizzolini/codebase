@@ -4,31 +4,26 @@ import { TagIcon } from "../../calendar-query/tag-icon/tag-icon";
 import { isMetricView } from "../events-calendar/components/calendar-views/calendar-views.utilities";
 
 import {
-  ALL_METRICS,
   COUNT_FORMAT,
-  DEFAULT_METRICS,
   EMPTY_VALUE,
   INSTANT_FORMATS,
   METRIC_BRANCHES,
-  METRIC_CATALOG,
+  METRIC_SLUG_PATTERN,
   MINUTE_MILLISECONDS,
+  OLD_METRIC_ALIASES,
   PERCENT_FORMAT,
   SHARE_FORMAT,
 } from "./calendar-metrics.constants";
 import { COMPACT_SPAN } from "./components/calendar-metrics-span/calendar-metrics-span.constants";
-import {
-  formatDurationSpan,
-  formatHoursSpan,
-} from "./components/calendar-metrics-span/calendar-metrics-span.utilities";
+import { formatDurationSpan } from "./components/calendar-metrics-span/calendar-metrics-span.utilities";
 
-import type { EventMetric } from "../../../graphql/generated/operations";
 import type { CalendarViewName } from "../events-calendar/components/calendar-views/calendar-views.types";
 import type {
+  MetricCatalog,
   MetricChange,
   MetricDescriptor,
   MetricValue,
 } from "./calendar-metrics.types";
-import type { DurationSpanOptions } from "./components/calendar-metrics-span/calendar-metrics-span.types";
 import type { CascaderNode } from "@codebase/presentation";
 
 // 🔏 Private Functions
@@ -38,10 +33,10 @@ import type { CascaderNode } from "@codebase/presentation";
  */
 export function findMetricValue(
   values: readonly MetricValue[],
-  metric: EventMetric,
+  slug: string,
 ): MetricValue | undefined {
   for (const candidate of values) {
-    if (candidate.metric === metric) {
+    if (candidate.metric === slug) {
       return candidate;
     }
   }
@@ -50,20 +45,10 @@ export function findMetricValue(
 }
 
 /**
- * A duration in minutes: `3 h 20 min` under a day, from a day up its years, months, weeks, days, hours and minutes.
- */
-export function formatDuration(
-  minutes: number,
-  options?: Readonly<DurationSpanOptions>,
-): string {
-  return formatDurationSpan(minutes, options);
-}
-
-/**
  * How a metric moved from the previous period: the change in its units, its percent, and its direction; nothing without a previous value.
  */
 export function formatMetricChange(
-  metric: EventMetric,
+  metric: Readonly<MetricDescriptor>,
   value: null | number,
   previous: null | number,
 ): MetricChange {
@@ -87,15 +72,15 @@ export function formatMetricChange(
     direction: delta > 0 ? "up" : "down",
     percent,
     percentText: formatChangePercent(percent),
-    text: `${delta > 0 ? "+" : "-"}${formatDelta(METRIC_CATALOG[metric], Math.abs(delta))}`,
+    text: `${delta > 0 ? "+" : "-"}${formatDelta(metric, Math.abs(delta))}`,
   };
 }
 
 /**
- * A metric's number as text: separated counts, hours and minutes, percents, or a date and time in the zone.
+ * A metric's number as text, by its unit: separated counts, a span of time, a percent, or a date and time in the zone.
  */
 export function formatMetricValue(
-  metric: EventMetric,
+  metric: Readonly<MetricDescriptor>,
   value: null | number,
   timeZone = "UTC",
 ): string {
@@ -103,34 +88,32 @@ export function formatMetricValue(
     return EMPTY_VALUE;
   }
 
-  const { format } = METRIC_CATALOG[metric];
-
-  if (format === "duration") {
+  if (metric.unit === "DURATION") {
     return formatDurationSpan(value);
   }
 
-  if (format === "hours") {
-    return formatHoursSpan(value);
-  }
-
-  if (format === "percent") {
+  if (metric.unit === "NONE") {
     return `${SHARE_FORMAT.format(value)}%`;
   }
 
-  return format === "instant"
+  return metric.unit === "INSTANT"
     ? formatInstant(value, timeZone)
     : COUNT_FORMAT.format(value);
 }
 
 /**
- * The picker's nested choices: the metrics under Counts, Durations and Times, each with its icon and note.
+ * The picker's nested choices: the catalog's metrics under Counts, Durations, Share of time and Times, each with its icon and note.
  */
-export function getMetricOptions(view?: CalendarViewName): CascaderNode[] {
+export function getMetricOptions(
+  catalog: Readonly<MetricCatalog>,
+  view?: CalendarViewName,
+): CascaderNode[] {
   const options: CascaderNode[] = [];
 
   for (const branch of METRIC_BRANCHES) {
-    const metrics: readonly EventMetric[] = branch.metrics;
-    const offered = metrics.filter((metric) => isOffered(metric, view));
+    const offered = catalog.metrics.filter(
+      (metric) => metric.unit === branch.unit && isOffered(metric, view),
+    );
 
     if (offered.length > 0) {
       options.push({
@@ -148,69 +131,85 @@ export function getMetricOptions(view?: CalendarViewName): CascaderNode[] {
 // 🌎 Public Functions
 
 /**
- * Whether a group's value is the sum of its subgroups', so a stack of them adds up to the group's bar.
- */
-export function isAdditiveMetric(metric: EventMetric): boolean {
-  return METRIC_CATALOG[metric].additive;
-}
-
-/**
  * Whether a metric is a date, not a duration or a count, so a chart's axis cannot scale it.
  */
-export function isInstantMetric(metric: EventMetric): boolean {
-  return METRIC_CATALOG[metric].format === "instant";
+export function isInstantMetric(
+  metric: Readonly<MetricDescriptor> | undefined,
+): boolean {
+  return metric?.unit === "INSTANT";
 }
 
 /**
  * The metrics the Charts draw: those given without the dates, or the Charts' defaults when none is left.
  */
 export function listChartMetrics(
-  metrics: readonly EventMetric[],
-): readonly EventMetric[] {
-  const kept = metrics.filter(
-    (metric) => METRIC_CATALOG[metric].format !== "instant",
-  );
+  catalog: Readonly<MetricCatalog>,
+  slugs: readonly string[],
+): readonly string[] {
+  const kept: string[] = [];
 
-  if (kept.length === metrics.length) {
-    return metrics;
+  // A loop rather than a filter callback keeps the call stacks shallow.
+  for (const slug of slugs) {
+    if (catalog.bySlug.get(slug)?.unit !== "INSTANT") {
+      kept.push(slug);
+    }
   }
 
-  return kept.length === 0 ? DEFAULT_METRICS.charts : kept;
+  if (kept.length === slugs.length) {
+    return slugs;
+  }
+
+  return kept.length === 0 ? catalog.defaults.charts : kept;
 }
 
 /**
- * Reads a link's metrics, one name or a list: unknown names and repeats are dropped, and none left is nothing.
+ * Reads a link's metrics, a slug or a list: old names become slugs; non-slugs and repeats are dropped.
  */
-export function parseMetrics(value: unknown): EventMetric[] | undefined {
-  const metrics: EventMetric[] = [];
+export function parseMetrics(value: unknown): string[] | undefined {
+  const slugs: string[] = [];
 
   const items: unknown[] = Array.isArray(value) ? value : [value];
 
   for (const item of items) {
-    const known = ALL_METRICS.find((candidate) => candidate === item);
+    const slug = toMetricSlug(item);
 
-    if (known !== undefined && !metrics.includes(known)) {
-      metrics.push(known);
+    if (slug !== undefined && !slugs.includes(slug)) {
+      slugs.push(slug);
     }
   }
 
-  return metrics.length === 0 ? undefined : metrics;
+  return slugs.length === 0 ? undefined : slugs;
 }
 
 /**
- * The metrics a layout shows: the link's, else the layout's defaults.
+ * The metrics a layout shows: the link's that the catalog knows, else the layout's defaults; none until the catalog loads.
  */
 export function resolveMetrics(
+  catalog: Readonly<MetricCatalog>,
   view: CalendarViewName | undefined,
-  metrics?: readonly EventMetric[],
-): readonly EventMetric[] {
+  slugs?: readonly string[],
+): readonly string[] {
   const layout = isMetricView(view) ? view : "charts";
-  const chosen =
-    metrics !== undefined && metrics.length > 0
-      ? metrics
-      : DEFAULT_METRICS[layout];
+  const known = (slugs ?? []).filter((slug) => catalog.bySlug.has(slug));
+  const chosen = known.length > 0 ? known : catalog.defaults[layout];
 
-  return view === "charts" ? listChartMetrics(chosen) : chosen;
+  return view === "charts" ? listChartMetrics(catalog, chosen) : chosen;
+}
+
+/**
+ * A metric's slug as a link wrote it: a slug, or an old name taken for its slug; nothing for anything else.
+ */
+export function toMetricSlug(value: unknown): string | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const slug =
+    (Object.hasOwn(OLD_METRIC_ALIASES, value)
+      ? OLD_METRIC_ALIASES[value]
+      : undefined) ?? value;
+
+  return METRIC_SLUG_PATTERN.test(slug) ? slug : undefined;
 }
 
 /**
@@ -227,24 +226,27 @@ function formatChangePercent(percent: null | number): string {
 /**
  * A change in a metric's units, without its sign.
  */
-function formatDelta(descriptor: MetricDescriptor, amount: number): string {
-  if (descriptor.format === "duration") {
+function formatDelta(
+  metric: Readonly<MetricDescriptor>,
+  amount: number,
+): string {
+  if (metric.unit === "DURATION") {
     return formatDurationSpan(amount, COMPACT_SPAN);
   }
 
-  if (descriptor.format === "instant") {
+  if (metric.unit === "INSTANT") {
     return formatDurationSpan(amount / MINUTE_MILLISECONDS, COMPACT_SPAN);
   }
 
-  if (descriptor.format === "hours") {
-    return formatHoursSpan(amount, COMPACT_SPAN);
-  }
-
-  if (descriptor.format === "percent") {
+  if (metric.unit === "NONE") {
     return `${SHARE_FORMAT.format(amount)} pts`;
   }
 
-  return `${COUNT_FORMAT.format(amount)} ${amount === 1 ? descriptor.unit.slice(0, -1) : descriptor.unit}`;
+  const noun = metric.name.toLowerCase();
+  // A single one drops the trailing s of each word: `1 day with event`.
+  const named = amount === 1 ? noun.replaceAll(/s(?=\s|$)/gu, "") : noun;
+
+  return `${COUNT_FORMAT.format(amount)} ${named}`;
 }
 
 /**
@@ -268,7 +270,10 @@ function formatInstant(epochMilliseconds: number, timeZone: string): string {
 /**
  * Whether the picker offers a metric on a view: the Charts leave out the dates.
  */
-function isOffered(metric: EventMetric, view?: CalendarViewName): boolean {
+function isOffered(
+  metric: Readonly<MetricDescriptor>,
+  view?: CalendarViewName,
+): boolean {
   return view !== "charts" || !isInstantMetric(metric);
 }
 
@@ -284,14 +289,12 @@ function toChangePercent(delta: number, previous: number): null | number {
 /**
  * A metric as a row of the picker.
  */
-function toMetricItem(metric: EventMetric): CascaderNode {
-  const descriptor = METRIC_CATALOG[metric];
-
+function toMetricItem(metric: Readonly<MetricDescriptor>): CascaderNode {
   return {
-    description: descriptor.description,
-    icon: createElement(TagIcon, { name: descriptor.icon }),
-    keywords: [descriptor.label, descriptor.shortLabel],
-    label: descriptor.label,
-    value: metric,
+    description: metric.note,
+    icon: createElement(TagIcon, { name: metric.icon }),
+    keywords: [metric.name],
+    label: metric.name,
+    value: metric.slug,
   };
 }

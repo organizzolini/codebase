@@ -21,14 +21,13 @@ function event(
 ): CalendarEventRecord {
   return {
     color,
-    description: "",
     durationMinutes: 0,
     end: new Date("2026-03-01T00:00:00Z"),
     groups: [keys.map((key) => ({ key, label: key, path: null }))],
     id: "event",
-    location: null,
+    name: "Event",
+    note: "",
     start: new Date("2026-03-01T00:00:00Z"),
-    summary: "Event",
     tags: tagIds.map((id, depth) => ({
       depth,
       id,
@@ -161,7 +160,7 @@ describe(createColorScheme, () => {
     );
   });
 
-  it("keeps an event's kind color when it has no tag in the field colored by", () => {
+  it("keeps an event's kind color when it has no tag in the field colored by, and ignores any color it carries", () => {
     const scheme = createColorScheme(
       [{ depth: 1, field: "tag:tag-body" }],
       FIELDS,
@@ -174,7 +173,7 @@ describe(createColorScheme, () => {
     };
 
     expect(scheme.colorOf(ingress)).toBe("#10b981");
-    expect(scheme.colorOf(event([], [], "#123456"))).toBe("#123456");
+    expect(scheme.colorOf(event([], [], "#123456"))).toBeNull();
     expect(scheme.colorOf(event(["tag-other"]))).toBeNull();
   });
 

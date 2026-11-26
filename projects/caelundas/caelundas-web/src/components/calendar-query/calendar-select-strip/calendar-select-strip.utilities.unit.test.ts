@@ -8,6 +8,7 @@ import { createEventGroupFields } from "../calendar-group-strip/components/event
 
 import {
   createColumnItems,
+  isColumnChoice,
   toColumnIds,
 } from "./calendar-select-strip.utilities";
 
@@ -75,14 +76,13 @@ const TREE_FIELDS = createEventGroupFields([
 ]);
 const EVENT: CalendarEventRecord = {
   color: null,
-  description: "",
   durationMinutes: 60,
   end: new Date("2026-03-04T11:00:00.000Z"),
   groups: [],
   id: "e",
-  location: null,
+  name: "Venus square Mars",
+  note: "",
   start: new Date("2026-03-04T10:00:00.000Z"),
-  summary: "Venus square Mars",
   tags: [
     {
       depth: 3,
@@ -142,12 +142,20 @@ describe("calendar-select-strip utilities", () => {
     it("lists the name and times first, then each tag root with tags beneath it", () => {
       const items = createColumnItems(FIELDS);
 
-      expect(items.slice(0, 3).map((item) => item.value)).toStrictEqual([
+      expect(items.slice(0, 4).map((item) => item.value)).toStrictEqual([
         "name",
         "start",
         "end",
+        "duration",
       ]);
-      expect(items.some((item) => item.value === "tag:type")).toBe(true);
+      expect(items[3]?.description).toBe("How long the event lasts.");
+      expect(items[4]?.value).toBe("tag:*");
+      expect(items[4]?.label).toBe("Tag");
+      expect(
+        items[4]?.children?.some((item) => item.value === "tag:type"),
+      ).toBe(true);
+      expect(isColumnChoice({ label: "Tag", value: "tag:*" })).toBe(false);
+      expect(isColumnChoice({ label: "Name", value: "name" })).toBe(true);
     });
 
     it("leaves a derived field out, since it has no tags to show", () => {
@@ -241,7 +249,7 @@ describe("calendar-select-strip utilities", () => {
 
   describe("the tree of columns", () => {
     it("offers each root with its tags that have tags beneath, nested", () => {
-      const aspect = createColumnItems(TREE_FIELDS).find(
+      const aspect = createColumnItems(TREE_FIELDS)[4]?.children?.find(
         (item) => item.value === "tag:aspect",
       );
       const simple = aspect?.children?.[0];

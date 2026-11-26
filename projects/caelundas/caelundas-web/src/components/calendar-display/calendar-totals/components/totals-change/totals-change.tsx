@@ -6,7 +6,7 @@ import { formatMetricValueCompact } from "../../../calendar-metrics/components/c
 
 import { DIRECTION_ARROWS, DIRECTION_WORDS } from "./totals-change.constants";
 
-import type { EventMetric } from "../../../../../graphql/generated/operations";
+import type { MetricDescriptor } from "../../../calendar-metrics/calendar-metrics.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -16,7 +16,7 @@ import type { ReactNode } from "react";
  */
 export interface TotalsChangeProperties {
   className?: string;
-  metric: EventMetric;
+  metric: MetricDescriptor;
   previous: null | number;
   showPrevious?: boolean;
   timeZone?: string | undefined;

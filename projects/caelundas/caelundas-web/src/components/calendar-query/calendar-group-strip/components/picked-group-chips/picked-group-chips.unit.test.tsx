@@ -71,4 +71,16 @@ describe(PickedGroupChips, () => {
 
     expect(screen.queryByText("Alpha")).toBeNull();
   });
+
+  it("closes every other group from a chip's Only", async () => {
+    const dispatch = renderChips("table");
+
+    fireEvent.click(screen.getByRole("button", { name: "Alpha options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Only" }));
+
+    expect(dispatch).toHaveBeenCalledExactlyOnceWith({
+      id: "/0:alpha/1:one",
+      type: "toggle",
+    });
+  });
 });

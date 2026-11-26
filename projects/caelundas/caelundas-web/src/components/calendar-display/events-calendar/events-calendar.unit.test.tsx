@@ -5,6 +5,7 @@ import {
   readServedApi,
   serveCalendarApi,
 } from "../../../../testing/calendar-api";
+import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 
 import { EventsCalendar } from "./events-calendar";
 
@@ -37,7 +38,7 @@ describe(EventsCalendar, () => {
       onDateChange: () => {},
       timeZone: "America/New_York",
     };
-    const { rerender } = render(
+    const { rerender } = renderWithCatalog(
       <EventsCalendar
         {...properties}
         view="month"
@@ -75,13 +76,13 @@ describe(EventsCalendar, () => {
     "draws the %s layout, and keeps the toolbar, over the table's days",
     async (view, testId) => {
       serveCalendarApi();
-      render(
+      renderWithCatalog(
         <EventsCalendar
           anchor={new Date("2026-03-01T12:00:00.000Z")}
           events={[]}
           facets={[]}
           grouping={[{ field: "tag:body" }]}
-          metrics={["EVENTS"]}
+          metrics={["events"]}
           onDateChange={() => {}}
           timeZone="America/New_York"
           view={view}
@@ -95,7 +96,7 @@ describe(EventsCalendar, () => {
       await waitFor(() => {
         expect(readServedApi().requests.metrics[0]).toMatchObject({
           compareToPrevious: true,
-          metrics: ["EVENTS"],
+          metrics: ["events"],
         });
       });
     },
@@ -106,7 +107,7 @@ describe(EventsCalendar, () => {
     (view) => {
       const onDateChange = vi.fn<(date: Date) => void>();
 
-      render(
+      renderWithCatalog(
         <EventsCalendar
           anchor={new Date("2026-03-15T12:00:00.000Z")}
           events={[]}
@@ -130,14 +131,13 @@ describe(EventsCalendar, () => {
   describe("colors", () => {
     const INGRESS = {
       color: null,
-      description: "The Sun enters Aries",
       durationMinutes: 0,
       end: new Date("2026-03-20T14:46:00.000Z"),
       groups: [],
       id: "event-ingress",
-      location: null,
+      name: "Sun Ingress Aries",
+      note: "The Sun enters Aries",
       start: new Date("2026-03-20T14:46:00.000Z"),
-      summary: "Sun Ingress Aries",
       tags: [
         {
           depth: 2,
@@ -150,7 +150,7 @@ describe(EventsCalendar, () => {
     };
 
     function renderMonth(colors: boolean): void {
-      render(
+      renderWithCatalog(
         <EventsCalendar
           anchor={new Date("2026-03-20T12:00:00.000Z")}
           colors={colors}

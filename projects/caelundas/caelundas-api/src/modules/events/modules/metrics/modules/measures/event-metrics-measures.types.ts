@@ -1,48 +1,36 @@
-import type { EventMetric } from "../inputs/event-metric.entities";
+import type {
+  AggregateKind,
+  CatalogMeasure,
+  MetricUnit,
+} from "../catalog/event-metrics-catalog.types";
 
 // 🏷️ Types
 
-/** A measure counted apart: its distinct values multiply the rows. */
-export type EventDistinctMeasure = "tags";
+/** What a metric reads over no events: a number, or none. */
+export type EmptyValue = null | number;
 
-/** A figure a group's events add up to, before any metric. */
-export type EventMeasure =
-  | "clippedSeconds"
-  | "coveredClippedSeconds"
-  | "coveredSeconds"
-  | "days"
-  | "events"
-  | "firstStart"
-  | "instants"
-  | "lastStart"
-  | "longestSeconds"
-  | "medianSeconds"
-  | "names"
-  | "periodSeconds"
-  | "progressiveClippedSeconds"
-  | "progressiveCoveredClippedSeconds"
-  | "progressiveSeconds"
-  | "seconds"
-  | "shortestSeconds"
-  | "spans"
-  | "tags";
+/** Where a measure is read: the facts, by day, or the events. */
+export type MeasureGrain = "day" | "event";
 
-/** A group's measures; one the statement did not select is absent. */
-export type EventMeasureValues = Readonly<
-  Partial<Record<EventMeasure, null | number>>
->;
+/** Answers the SQL a statement reads a measure with. */
+export type MeasureResolver = (measure: CatalogMeasure) => string;
 
-/** A metric as a calculation over measures and other metrics. */
-export interface EventMetricDefinition {
-  compute: (
-    measures: EventMeasureValues,
-    metric: EventMetricReader,
-  ) => null | number;
-  /** The measures the calculation reads. */
-  measures: readonly EventMeasure[];
-  /** The metrics the calculation reads. */
-  metrics: readonly EventMetric[];
+/** How a measure is computed from the facts, keyed by its slug. */
+export interface MeasureSpec {
+  aggregate: AggregateKind;
+  /** The percentile of a progressive-percentile, 0 to 1. */
+  argument?: number | undefined;
+  /** The facts column it reads; none for the period. */
+  column: null | string;
+  /** The boolean facts column that narrows it to events where true. */
+  condition?: string | undefined;
+  /** The grains that carry it; the rollups read day. */
+  grains: readonly MeasureGrain[];
+  /** What it is measured in, checked against its row. */
+  unit: MetricUnit;
 }
 
-/** Reads another metric's value, computing it first. */
-export type EventMetricReader = (metric: EventMetric) => null | number;
+/** A measure over the rollup rows. */
+export interface RolledMeasure {
+  sql: string;
+}

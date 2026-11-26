@@ -66,8 +66,10 @@ export class CaelundasCommand extends CommandRunner {
       count: perfectiveEvents.length,
     });
 
-    const progressiveEvents =
-      this.progressiveEventsService.detect(perfectiveEvents);
+    const progressiveEvents = this.progressiveEventsService.detect(
+      perfectiveEvents,
+      input,
+    );
     this.logger.info("🔎 Detected progressive events", undefined, {
       count: progressiveEvents.length,
     });

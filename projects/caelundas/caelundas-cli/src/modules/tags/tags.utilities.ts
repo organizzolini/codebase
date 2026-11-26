@@ -55,6 +55,25 @@ export function tagRank(path: readonly string[]): number {
 }
 
 /**
+ * A tag name as its `tags.slug` column holds it: lowercase, runs of other
+ * characters as one `-`, trimmed. Throws when nothing is left.
+ */
+export function tagSlug(name: string): string {
+  const slug = name
+    .toLowerCase()
+    .replaceAll(/[^a-z\d]+/gu, "-")
+    .replaceAll(/^-|-$/gu, "");
+
+  if (slug === "") {
+    throw new Error(
+      `🚫 The tag name "${name}" has no letters or digits to slug.`,
+    );
+  }
+
+  return slug;
+}
+
+/**
  * The dignity of a traditional planet in the sign an ingress names: the strongest listing dignity, or peregrine.
  */
 function dignityPaths(rawTags: ReadonlySet<string>): TagPath[] {
@@ -103,16 +122,16 @@ function findRawTag(
   return names.find((name) => rawTags.has(name));
 }
 
-/** The kind of ingress an ingress event is. */
+/** The kind of ingress an ingress event is, or of stay when it is a span. */
 function ingressKind(
   event: ClassifiableEvent,
   rawTags: ReadonlySet<string>,
 ): string {
   if (rawTags.has("Decan")) {
-    return "Decan Ingress";
+    return isInstant(event) ? "Decan Ingress" : "Decan Transit";
   }
   if (rawTags.has("Peak")) {
-    return "Peak Ingress";
+    return isInstant(event) ? "Peak Ingress" : "Peak Transit";
   }
   return isInstant(event) ? "Sign Ingress" : "Sign Transit";
 }

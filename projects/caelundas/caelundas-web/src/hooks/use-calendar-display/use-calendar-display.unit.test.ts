@@ -37,9 +37,9 @@ describe(useCalendarDisplay, () => {
     const { result } = renderHook(() => useCalendarDisplay("UTC"));
 
     expect(result.current.state).toStrictEqual({
-      clusters: true,
       colors: true,
       compare: false,
+      hideEmpty: false,
       scale: "month",
       symbols: "glyphs",
     });
@@ -48,9 +48,9 @@ describe(useCalendarDisplay, () => {
 
   it("reads what the link sets", () => {
     router.search = {
-      clusters: false,
       colors: false,
       compare: true,
+      hideEmpty: true,
       scale: "week",
       symbols: "emojis",
     };
@@ -58,9 +58,9 @@ describe(useCalendarDisplay, () => {
     const { result } = renderHook(() => useCalendarDisplay("UTC"));
 
     expect(result.current.state).toStrictEqual({
-      clusters: false,
       colors: false,
       compare: true,
+      hideEmpty: true,
       scale: "week",
       symbols: "emojis",
     });
@@ -73,18 +73,18 @@ describe(useCalendarDisplay, () => {
       change: expect.any(Function),
       constellations: expect.any(Array),
       handlers: {
-        handleClustersChange: expect.any(Function),
         handleColorsChange: expect.any(Function),
         handleCompareChange: expect.any(Function),
+        handleHideEmptyChange: expect.any(Function),
         handleScaleChange: expect.any(Function),
         handleSymbolsChange: expect.any(Function),
         handleViewChange: expect.any(Function),
       },
       sky: expect.objectContaining({ off: false }),
       state: {
-        clusters: true,
         colors: true,
         compare: false,
+        hideEmpty: false,
         scale: "month",
         symbols: "glyphs",
       },

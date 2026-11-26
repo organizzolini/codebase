@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import {
+  createSeedCatalog,
+  seedMetrics,
+} from "../../../../../../../testing/metric-catalog";
 import { MAXIMUM_METRIC_GROUPS } from "../../event-metrics.constants";
-import { EventMetric } from "../inputs/event-metric.entities";
 
 import {
   buildMetricTree,
@@ -15,7 +18,7 @@ import type {
 
 const ROOT = "0199b1a0-0000-7000-8000-000000000002";
 const MARS = "0199b1a0-0000-7000-8000-000000000001";
-const METRICS = [EventMetric.EVENTS, EventMetric.MEDIAN_DURATION_MINUTES];
+const METRICS = seedMetrics(createSeedCatalog(), "events", "median-duration");
 
 /** A row for a tag group, the optional parts defaulted. */
 function row(
@@ -60,8 +63,8 @@ describe("event metrics utilities", () => {
           previous: [1, 2],
         }),
       ).toStrictEqual([
-        { metric: "EVENTS", previous: null, value: 3 },
-        { metric: "MEDIAN_DURATION_MINUTES", previous: null, value: null },
+        { metric: "events", previous: null, value: 3 },
+        { metric: "median-duration", previous: null, value: null },
       ]);
     });
 
@@ -75,8 +78,8 @@ describe("event metrics utilities", () => {
           previous: undefined,
         }),
       ).toStrictEqual([
-        { metric: "EVENTS", previous: 0, value: 0 },
-        { metric: "MEDIAN_DURATION_MINUTES", previous: null, value: null },
+        { metric: "events", previous: 0, value: 0 },
+        { metric: "median-duration", previous: null, value: null },
       ]);
     });
 
@@ -90,8 +93,8 @@ describe("event metrics utilities", () => {
           previous: [1, 90],
         }),
       ).toStrictEqual([
-        { metric: "EVENTS", previous: 1, value: 3 },
-        { metric: "MEDIAN_DURATION_MINUTES", previous: 90, value: null },
+        { metric: "events", previous: 1, value: 3 },
+        { metric: "median-duration", previous: 90, value: null },
       ]);
     });
   });
@@ -311,12 +314,12 @@ describe("event metrics utilities", () => {
       );
 
       expect(tree[0]?.values).toStrictEqual([
-        { metric: "EVENTS", previous: 4, value: 1 },
-        { metric: "MEDIAN_DURATION_MINUTES", previous: 30, value: 60 },
+        { metric: "events", previous: 4, value: 1 },
+        { metric: "median-duration", previous: 30, value: 60 },
       ]);
       expect(tree[1]?.values).toStrictEqual([
-        { metric: "EVENTS", previous: 2, value: 0 },
-        { metric: "MEDIAN_DURATION_MINUTES", previous: 10, value: null },
+        { metric: "events", previous: 2, value: 0 },
+        { metric: "median-duration", previous: 10, value: null },
       ]);
     });
 

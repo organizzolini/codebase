@@ -1,6 +1,6 @@
-import type { EventMetric } from "../../../graphql/generated/operations";
 import type {
   MetricChange,
+  MetricDescriptor,
   MetricGroup,
 } from "../calendar-metrics/calendar-metrics.types";
 
@@ -53,7 +53,7 @@ export interface ChartBarOptions {
   /**
    * Writes a metric's value as text, as the chart's bars and tooltip show it.
    */
-  format: (metric: EventMetric, value: null | number) => string;
+  format: (metric: MetricDescriptor, value: null | number) => string;
 }
 
 /**

@@ -6,15 +6,12 @@ import { EventFilterParametersService } from "../../../filtering/modules/query-b
 import { compileFactsScope } from "../../../filtering/modules/query-building/event-scope.utilities";
 import { UUID_PATTERN } from "../../../filtering/modules/values/event-filter-values.constants";
 import { EventGroupingService } from "../../../grouping/event-grouping.service";
-import { pinGrain } from "../../event-metrics.utilities";
-import { EventMetric } from "../inputs/event-metric.entities";
+import { collectMeasures } from "../catalog/event-metrics-catalog.utilities";
 import {
-  DISTINCT_MEASURE_SQL,
-  MEASURE_SQL,
-} from "../measures/event-metrics-measures.constants";
-import {
-  findMeasures,
-  isDistinctMeasure,
+  compileEventAggregate,
+  compileMetricColumns,
+  isSideMeasure,
+  listEventColumns,
 } from "../measures/event-metrics-measures.utilities";
 
 import {
@@ -25,17 +22,16 @@ import {
   FACTS_EVENTS_SQL,
   FACTS_LEVEL_SQL,
   FACTS_PICKED_KEYS_SQL,
+  FACTS_SIDE_SQL,
   FACTS_TAG_ROOT_SQL,
   FACTS_TAGS_MATCHING_SQL,
 } from "./event-metrics-facts.constants";
+import { readEventColumn } from "./event-metrics-facts.utilities";
 
 import type { EventFilterParameters } from "../../../filtering/event-filter.types";
 import type { EventGroupLevel } from "../../../grouping/event-grouping.types";
 import type { EventMetricsQueryRequest } from "../../event-metrics.types";
-import type {
-  EventDistinctMeasure,
-  EventMeasure,
-} from "../measures/event-metrics-measures.types";
+import type { CatalogMeasure } from "../catalog/event-metrics-catalog.types";
 import type {
   CompiledFactsQuery,
   FactsLevel,
@@ -66,10 +62,11 @@ export class EventMetricsFactsService {
    */
   private compileAggregates(
     levels: readonly FactsLevel[],
-    measures: readonly EventMeasure[],
+    measures: readonly CatalogMeasure[],
     tagsWhere: string,
   ): string {
     const columns = this.compileMeasures(measures);
+    const sides = measures.filter((measure) => isSideMeasure(measure));
     let sql = "";
 
     for (let level = -1; level < levels.length; level++) {
@@ -79,6 +76,7 @@ export class EventMetricsFactsService {
 
       sql += FACTS_AGGREGATE_SQL.replace("{suffix}", suffix)
         .replace("{level}", String(level))
+        .replace("{gk}", () => this.compileGroupKey(level, "x"))
         .replace("{keys}", () => keys.select)
         .replace("{leaf}", level < 0 ? "null::text" : `x.t${String(level)}`)
         .replace("{measures}", () => columns)
@@ -87,15 +85,16 @@ export class EventMetricsFactsService {
 
       const own = this.listKeys(level + 1, level).groupBy;
 
-      for (const name of measures.filter((measure) =>
-        isDistinctMeasure(measure),
-      )) {
-        const { column, join } = DISTINCT_MEASURE_SQL[name];
+      for (const [index] of sides.entries()) {
+        const { column, join } = FACTS_SIDE_SQL;
 
-        sql += FACTS_DISTINCT_SQL.replaceAll("{name}", name)
-          .replace("{suffix}", suffix)
+        sql += FACTS_DISTINCT_SQL.replace(
+          "{name}",
+          `side${String(index)}_${suffix}`,
+        )
           .replace("{keys}", () => own)
           .replace("{column}", column)
+          .replace("{zgk}", () => this.compileGroupKey(level, "z"))
           .replace("{source}", source)
           .replace("{join}", join)
           .replace("{where}", () => tagsWhere)
@@ -104,6 +103,29 @@ export class EventMetricsFactsService {
     }
 
     return sql;
+  }
+
+  /**
+   * The period and key path of a level's groups as one text; a missing key
+   * reads `~null~`.
+   */
+  private compileGroupKey(level: number, alias: string): string {
+    const keys = [`${alias}.period::text`];
+
+    for (let index = 0; index <= level; index++) {
+      keys.push(`coalesce(${alias}.t${String(index)}, '~null~')`);
+    }
+
+    return keys.join(` || '|' || `);
+  }
+
+  /**
+   * The columns that hold each level's keys, `k0`, `k1`.
+   */
+  private compileKeys(levels: readonly FactsLevel[]): string {
+    return levels
+      .map((level, index) => `, ${level.keys} as k${String(index)}`)
+      .join("");
   }
 
   /**
@@ -168,14 +190,14 @@ export class EventMetricsFactsService {
   }
 
   /**
-   * One column per measure, named `m_<measure>`.
+   * One column per measure counted in the group, named `m_<slug>`.
    */
-  private compileMeasures(measures: readonly EventMeasure[]): string {
+  private compileMeasures(measures: readonly CatalogMeasure[]): string {
     let sql = "";
 
     for (const measure of measures) {
-      if (!isDistinctMeasure(measure)) {
-        sql += `,\n      (${MEASURE_SQL[measure]})::float8 as "m_${measure}"`;
+      if (!isSideMeasure(measure)) {
+        sql += `,\n      (${compileEventAggregate(measure, "x")})::float8 as "m_${measure.slug}"`;
       }
     }
 
@@ -230,11 +252,12 @@ export class EventMetricsFactsService {
    */
   private compileTagsWhere(
     request: EventMetricsQueryRequest,
+    measures: readonly CatalogMeasure[],
     parameters: EventFilterParameters,
   ): string {
     if (
       request.tagRoot === null ||
-      !request.metrics.includes(EventMetric.UNIQUE_TAGS)
+      !measures.some((measure) => isSideMeasure(measure))
     ) {
       return "";
     }
@@ -276,10 +299,7 @@ export class EventMetricsFactsService {
   /**
    * The union of every level's rows, each joined to the distinct counts.
    */
-  private listUnions(
-    count: number,
-    distinct: readonly EventDistinctMeasure[],
-  ): string {
+  private listUnions(count: number, sides: readonly CatalogMeasure[]): string {
     const parts: string[] = [];
 
     for (let level = -1; level < count; level++) {
@@ -287,16 +307,11 @@ export class EventMetricsFactsService {
       let columns = "";
       let joins = "";
 
-      for (const name of distinct) {
-        const alias = `d_${name}`;
+      for (const [side, measure] of sides.entries()) {
+        const alias = `d${String(side)}`;
 
-        columns += `, coalesce(${alias}.${name}, 0)::float8 as ${name}`;
-        joins += ` left join ${name}${suffix} ${alias} on ${alias}.period = a.period`;
-
-        for (let index = 0; index <= level; index++) {
-          // A plain equality, which Postgres hashes; no key is "~null~".
-          joins += ` and coalesce(${alias}.t${String(index)}, '~null~') = coalesce(a.t${String(index)}, '~null~')`;
-        }
+        columns += `, coalesce(${alias}.v, 0)::float8 as "m_${measure.slug}"`;
+        joins += ` left join side${String(side)}_${suffix} ${alias} on ${alias}.gk = a.gk`;
       }
 
       parts.push(`select a.*${columns} from a${suffix} a${joins}`);
@@ -328,8 +343,8 @@ export class EventMetricsFactsService {
 
     parameters.values.push(...(filter?.parameters ?? []));
 
-    const measures = findMeasures(request.metrics);
-    const tagsWhere = this.compileTagsWhere(request, parameters);
+    const measures = collectMeasures(request.metrics, request.catalog);
+    const tagsWhere = this.compileTagsWhere(request, measures, parameters);
     const picked = levels.flatMap((level) => level.picked);
     const named = picked.length > 0;
     const dimension = named
@@ -337,23 +352,26 @@ export class EventMetricsFactsService {
           this.parametersService.bind(parameters, picked),
         )
       : "";
-    let keys = "";
-
-    for (const [index, level] of levels.entries()) {
-      keys += `, ${level.keys} as k${String(index)}`;
-    }
 
     return {
       levels: levels.length,
-      measures,
       parameters: parameters.values,
       sql: FACTS_EVENTS_SQL.replace(
         "{eventRows}",
-        () =>
-          `${pinGrain("f", "event")}${compileFactsScope(request.scope, "f")}`,
+        () => `true${compileFactsScope(request.scope, "f")}`,
       )
+        .replace("{extra}", () =>
+          listEventColumns(measures)
+            .map((column) => `, ${readEventColumn(column)} as "${column}"`)
+            .join(""),
+        )
+        .replace("{eventColumns}", () =>
+          listEventColumns(measures)
+            .map((column) => `, e."${column}"`)
+            .join(""),
+        )
         .replace("{periods}", () => periods)
-        .replace("{keys}", () => keys)
+        .replace("{keys}", () => this.compileKeys(levels))
         .replace("{where}", () =>
           filter === null ? "" : `where ${filter.sql}`,
         )
@@ -367,10 +385,19 @@ export class EventMetricsFactsService {
             ? `, d.tag_name as label, d.tag_path as path, d."rank" as "rank"`
             : `, null::text as label, null::text as path, null::text as "rank"`,
         )
+        .replace("{keyColumns}", () =>
+          levels.map((_, index) => `, r.t${String(index)}`).join(""),
+        )
+        .replace("{metrics}", () =>
+          compileMetricColumns(request.metrics, {
+            catalog: request.catalog,
+            resolve: (measure) => `r."m_${measure.slug}"`,
+          }),
+        )
         .replace("{union}", () =>
           this.listUnions(
             levels.length,
-            measures.filter((measure) => isDistinctMeasure(measure)),
+            measures.filter((measure) => isSideMeasure(measure)),
           ),
         )
         .replace("{dimension}", () =>

@@ -4,8 +4,41 @@ import { SORT_OPTIONS } from "../calendar-sort-strip/calendar-sort-strip.constan
 
 import type { EventFilterField } from "../calendar-filters/components/event-filter-model/event-filters.types";
 import type { EventGroupField } from "../calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 
 // 🔏 Private Functions
+
+/**
+ * The sorts left once columns are unselected: Tags, Event count and metrics stay, the rest only with their column; none for the default.
+ */
+export function dropHiddenSorts(
+  sorts: readonly GroupSort[] | undefined,
+  selected: readonly string[],
+  fields: readonly EventGroupField[],
+): readonly GroupSort[] | undefined {
+  if (sorts === undefined) {
+    return undefined;
+  }
+
+  const keys = restrictSortKeys(selected);
+  const roots = restrictGroupFields(fields, selected);
+  const kept: GroupSort[] = [];
+
+  // A loop rather than a mapping callback keeps the call stacks shallow.
+  for (const sort of sorts) {
+    if (isSortOfColumn(sort, keys, roots)) {
+      kept.push(sort);
+    }
+  }
+
+  if (kept.length === sorts.length) {
+    return sorts;
+  }
+
+  return kept.length === 0 ? undefined : kept;
+}
+
+// 🌎 Public Functions
 
 /**
  * The ids of the columns the table shows: the link's, else the defaults.
@@ -17,8 +50,6 @@ export function getSelectedColumnIds(
     ? DEFAULT_COLUMN_IDS
     : columns;
 }
-
-// 🌎 Public Functions
 
 /**
  * Whether a tag root or a tag of it is among the selected columns.
@@ -89,16 +120,19 @@ export function restrictGroupFields(
 }
 
 /**
- * The sort keys for the selected columns: Tags and Event count, Name with Name, First event with Start or End.
+ * The sort keys for the selected columns: Tags and Event count, then each of Name, Start, End and Duration with its column.
  */
 export function restrictSortKeys(
   selected: readonly string[],
 ): readonly string[] {
   const offered: Readonly<Record<string, boolean>> = {
     count: true,
+    duration: selected.includes("duration"),
+    end: selected.includes("end"),
     first: selected.includes("start") || selected.includes("end"),
     name: selected.includes("name"),
     order: true,
+    start: selected.includes("start"),
   };
   const keys: string[] = [];
 
@@ -133,4 +167,26 @@ function isDerivedFieldSelected(
   }
 
   return start || end;
+}
+
+/**
+ * Whether a sort needs no column, or the one it orders by is among those offered.
+ */
+function isSortOfColumn(
+  sort: GroupSort,
+  keys: readonly string[],
+  roots: readonly EventGroupField[],
+): boolean {
+  if (sort.key === "metric") {
+    return true;
+  }
+
+  if (sort.key !== "tag") {
+    return keys.includes(sort.key);
+  }
+
+  return roots.some(
+    (root) =>
+      root.id === sort.tag || root.nodes.some((node) => node.id === sort.tag),
+  );
 }

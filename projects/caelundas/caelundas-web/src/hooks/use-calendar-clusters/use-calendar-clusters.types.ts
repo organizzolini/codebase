@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 // 🏷️ Types
 
 /**
- * The events a view draws, and how and whether it merges them.
+ * The events a view draws, and how it merges them.
  */
 export interface UseCalendarClustersProperties {
   anchor: Date;
@@ -14,7 +14,6 @@ export interface UseCalendarClustersProperties {
    * Whether the view is one narrow column, which merges as a week does.
    */
   compact?: boolean | undefined;
-  enabled: boolean;
   events: readonly CalendarEventRecord[];
   timeZone: string;
   view: CalendarViewName;

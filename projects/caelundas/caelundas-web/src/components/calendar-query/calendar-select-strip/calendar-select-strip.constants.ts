@@ -31,4 +31,10 @@ export const COLUMN_OPTIONS = [
     id: "end",
     label: "End",
   },
+  {
+    description: "How long the event lasts.",
+    icon: "timer",
+    id: "duration",
+    label: "Duration",
+  },
 ] as const;

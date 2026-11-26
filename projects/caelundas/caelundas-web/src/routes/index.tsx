@@ -9,7 +9,7 @@ import { CalendarDisplayMenu } from "../components/calendar-controls/calendar-di
 import { CalendarLayoutMenu } from "../components/calendar-controls/calendar-layout-menu/calendar-layout-menu";
 import { CalendarEmpty } from "../components/calendar-display/calendar-empty/calendar-empty";
 import { CalendarError } from "../components/calendar-display/calendar-error/calendar-error";
-import { resolveMetrics } from "../components/calendar-display/calendar-metrics/calendar-metrics.utilities";
+import { MetricCatalogProvider } from "../components/calendar-display/calendar-metrics/components/metric-catalog-provider/metric-catalog-provider";
 import { CalendarSkeleton } from "../components/calendar-display/calendar-skeleton/calendar-skeleton";
 import { TableGroupsProvider } from "../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider";
 import { loadedKeys } from "../components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.constants";
@@ -120,7 +120,6 @@ function IndexPage(): ReactNode {
   // 🏗 Setup
   const view = search.view ?? getDefaultCalendarView(isWide);
   const timeZone = readTimeZone(dataset);
-  const metrics = resolveMetrics(view, search.metrics);
   const menu = { className: "contents", timeZone, view };
 
   // 💪 Handlers
@@ -128,11 +127,12 @@ function IndexPage(): ReactNode {
     handleColumnsChange,
     handleDateChange,
     handleFilterChange,
+    handleFoldChange,
     handleGroupingChange,
     handleMetricsChange,
     handleRangeChange,
     handleSortChange,
-  } = useCalendarSearch(timeZone);
+  } = useCalendarSearch(timeZone, facets);
   const agendaDays = search.days ?? AGENDA_DAY_COUNT;
 
   // ♻️ Lifecycle
@@ -149,59 +149,63 @@ function IndexPage(): ReactNode {
       <CalendarSymbolsContext
         value={search.symbols ?? DEFAULT_CALENDAR_SYMBOLS}
       >
-        <TagIconsProvider
-          className="contents"
-          facets={facets}
-        >
-          <TableGroupsProvider className="contents">
-            <EventsCalendar
-              agendaDays={agendaDays}
-              anchor={anchor}
-              className="min-h-0 flex-1"
-              clusters={search.clusters !== false}
-              colors={search.colors !== false}
-              columns={search.columns}
-              compact={!isWide}
-              compare={search.compare === true}
-              eventFilter={filter}
-              events={events}
-              facets={facets}
-              filters={
-                <CalendarQueryControls
-                  className="contents"
-                  columns={search.columns}
-                  display={<CalendarDisplayMenu {...menu} />}
-                  facets={facets}
-                  filter={search.filter}
-                  grouping={grouping}
-                  isDefaultGrouping={search.group === undefined}
-                  layout={<CalendarLayoutMenu {...menu} />}
-                  metrics={metrics}
-                  onColumnsChange={handleColumnsChange}
-                  onFilterChange={handleFilterChange}
-                  onGroupingChange={handleGroupingChange}
-                  onMetricsChange={handleMetricsChange}
-                  onSortChange={handleSortChange}
-                  presets={presets}
-                  sort={search.sort}
-                  view={view}
-                />
-              }
-              grouping={grouping}
-              metrics={metrics}
-              onColumnsChange={handleColumnsChange}
-              onDateChange={handleDateChange}
-              onRangeChange={(range) => {
-                handleRangeChange(view, range);
-              }}
-              onSortChange={handleSortChange}
-              scale={search.scale}
-              sort={search.sort}
-              timeZone={timeZone}
-              view={view}
-            />
-          </TableGroupsProvider>
-        </TagIconsProvider>
+        <MetricCatalogProvider className="contents">
+          <TagIconsProvider
+            className="contents"
+            facets={facets}
+          >
+            <TableGroupsProvider className="contents">
+              <EventsCalendar
+                agendaDays={agendaDays}
+                anchor={anchor}
+                className="min-h-0 flex-1"
+                colors={search.colors !== false}
+                columns={search.columns}
+                compact={!isWide}
+                compare={search.compare === true}
+                eventFilter={filter}
+                events={events}
+                facets={facets}
+                filters={
+                  <CalendarQueryControls
+                    className="contents"
+                    columns={search.columns}
+                    display={<CalendarDisplayMenu {...menu} />}
+                    facets={facets}
+                    filter={search.filter}
+                    fold={search.fold}
+                    grouping={grouping}
+                    isDefaultGrouping={search.group === undefined}
+                    layout={<CalendarLayoutMenu {...menu} />}
+                    metrics={search.metrics}
+                    onColumnsChange={handleColumnsChange}
+                    onFilterChange={handleFilterChange}
+                    onFoldChange={handleFoldChange}
+                    onGroupingChange={handleGroupingChange}
+                    onMetricsChange={handleMetricsChange}
+                    onSortChange={handleSortChange}
+                    presets={presets}
+                    sort={search.sort}
+                    view={view}
+                  />
+                }
+                grouping={grouping}
+                hideEmpty={search.hideEmpty === true}
+                metrics={search.metrics}
+                onColumnsChange={handleColumnsChange}
+                onDateChange={handleDateChange}
+                onRangeChange={(range) => {
+                  handleRangeChange(view, range);
+                }}
+                onSortChange={handleSortChange}
+                scale={search.scale}
+                sort={search.sort}
+                timeZone={timeZone}
+                view={view}
+              />
+            </TableGroupsProvider>
+          </TagIconsProvider>
+        </MetricCatalogProvider>
       </CalendarSymbolsContext>
       {emptiness === null || isReloading ? null : (
         <CalendarEmpty

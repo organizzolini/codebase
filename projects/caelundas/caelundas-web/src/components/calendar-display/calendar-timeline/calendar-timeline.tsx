@@ -73,6 +73,10 @@ export interface CalendarTimelineProperties {
    */
   grouping: readonly EventGroupLevel[];
   /**
+   * Whether groups with no events are left out; shown when absent.
+   */
+  hideEmpty?: boolean | undefined;
+  /**
    * Called with the new day when the toolbar moves the timeline.
    */
   onDateChange: (date: Date) => void;
@@ -109,6 +113,7 @@ export function CalendarTimeline(
     facets,
     groupColors,
     grouping,
+    hideEmpty,
     onDateChange,
     onNavigationChange,
     scale = "month",
@@ -132,11 +137,12 @@ export function CalendarTimeline(
     () =>
       toTimelineRows(events, grouping, {
         fields: createEventGroupFields(facets),
+        hideEmpty,
         ranks: createTagRanks(facets),
         sort: sort ?? DEFAULT_SORTS,
         tagColors: groupColors,
       }),
-    [events, facets, groupColors, grouping, sort],
+    [events, facets, groupColors, grouping, hideEmpty, sort],
   );
   const groups = useTimelineGroups(rows, grouping);
   // Overlapping bars are moved into lanes, so nothing is drawn over anything.

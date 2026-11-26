@@ -1,15 +1,14 @@
 import { useSyncExternalStore } from "react";
 
-import { Skeleton } from "@codebase/presentation";
-
 import { getDefaultCalendarView } from "../events-calendar/components/calendar-views/calendar-views.utilities";
 import {
   isWideViewport,
   subscribeToViewport,
 } from "../events-calendar/components/calendar-window/calendar-viewport.utilities";
 
-import { LAYOUTS } from "./calendar-skeleton.constants";
+import { LAYOUTS, REDUCED_MOTION } from "./calendar-skeleton.constants";
 import { isWideOnServer } from "./calendar-skeleton.utilities";
+import { SkeletonToolbar } from "./components/skeleton-toolbar/skeleton-toolbar";
 import { SkeletonBody } from "./skeleton-body";
 
 import type { CalendarViewName } from "../events-calendar/components/calendar-views/calendar-views.types";
@@ -63,23 +62,13 @@ export function CalendarSkeleton(
       <div
         aria-busy="true"
         aria-label="Loading events"
-        className="flex h-dvh flex-col gap-2 overflow-hidden p-2"
+        className={`flex h-dvh flex-col overflow-hidden ${REDUCED_MOTION}`}
         data-layout={LAYOUTS[shown]}
         data-view={shown}
         role="status"
       >
-        <div className="flex flex-wrap items-start gap-2">
-          <Skeleton className="h-7 w-48 max-w-full" />
-          <Skeleton className="h-7 w-28" />
-          <Skeleton className="h-7 w-72 max-w-full" />
-          <Skeleton className="h-7 w-36" />
-        </div>
-        <div className="flex flex-wrap items-start gap-2">
-          <Skeleton className="h-7 w-24" />
-          <Skeleton className="h-7 w-56 max-w-full" />
-          <Skeleton className="h-7 w-40 max-w-full" />
-          <Skeleton className="h-7 w-32" />
-        </div>
+        <span className="sr-only">Loading events</span>
+        <SkeletonToolbar view={shown} />
         <SkeletonBody view={shown} />
       </div>
     </div>

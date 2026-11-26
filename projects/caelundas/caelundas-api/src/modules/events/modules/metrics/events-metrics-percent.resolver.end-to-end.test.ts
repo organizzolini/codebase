@@ -11,8 +11,6 @@ import {
   startEventsApplication,
 } from "../../../../../testing/events-application";
 
-import { EventMetric } from "./modules/inputs/event-metric.entities";
-
 import type { EventsApplication } from "../../../../../testing/events-application";
 
 /** One group of a response. */
@@ -29,16 +27,16 @@ interface MetricsResponse {
 
 /** One metric's value in a response. */
 interface ValueResponse {
-  metric: EventMetric;
+  metric: string;
   previous: null | number;
   value: null | number;
 }
 
 const PERCENTS = [
-  EventMetric.COVERED_PERCENT,
-  EventMetric.TOTAL_TIME_PERCENT,
-  EventMetric.PROGRESSIVE_COVERED_PERCENT,
-  EventMetric.PROGRESSIVE_TOTAL_PERCENT,
+  "covered-percent",
+  "total-time-percent",
+  "progressive-covered-percent",
+  "progressive-total-percent",
 ];
 
 /** Ten days, 14400 minutes. */
@@ -72,18 +70,18 @@ describe("events metrics percent end-to-end suite", () => {
   /** Inserts an event with its tags. */
   async function insertEvent(seed: {
     end: string;
+    name: string;
     start: string;
-    summary: string;
     tags: Tag[];
   }): Promise<void> {
     const [event] = await application.database.dataSource.query<
       [{ id: string }]
     >(
       `insert into calendar_events
-         (summary, description, "start", "end", latitude, longitude, timezone)
+         (name, note, "start", "end", latitude, longitude, timezone)
        values ($1, $1, $2, $3, 40.7128, -74.006, 'UTC')
        returning id`,
-      [seed.summary, seed.start, seed.end],
+      [seed.name, seed.start, seed.end],
     );
 
     for (const tag of seed.tags) {
@@ -140,64 +138,70 @@ describe("events metrics percent end-to-end suite", () => {
 
     const repository = application.database.dataSource.getTreeRepository(Tag);
     const temporality = await repository.save(
-      repository.create({ name: "Temporality" }),
+      repository.create({ name: "Temporality", slug: "temporality" }),
     );
 
     progressive = await repository.save(
-      repository.create({ name: "Progressive", parent: temporality }),
+      repository.create({
+        name: "Progressive",
+        parent: temporality,
+        slug: "progressive",
+      }),
     );
-    kind = await repository.save(repository.create({ name: "Kind" }));
+    kind = await repository.save(
+      repository.create({ name: "Kind", slug: "kind" }),
+    );
 
     const alpha = await repository.save(
-      repository.create({ name: "Alpha", parent: kind }),
+      repository.create({ name: "Alpha", parent: kind, slug: "alpha" }),
     );
     const beta = await repository.save(
-      repository.create({ name: "Beta", parent: kind }),
+      repository.create({ name: "Beta", parent: kind, slug: "beta" }),
     );
     const gamma = await repository.save(
-      repository.create({ name: "Gamma", parent: kind }),
+      repository.create({ name: "Gamma", parent: kind, slug: "gamma" }),
     );
 
     await insertEvent({
       end: "2026-05-02T12:00:00.000Z",
+      name: "Alpha One",
       start: "2026-05-02T00:00:00.000Z",
-      summary: "Alpha One",
       tags: [alpha, progressive],
     });
     await insertEvent({
       end: "2026-05-02T18:00:00.000Z",
+      name: "Alpha Two",
       start: "2026-05-02T06:00:00.000Z",
-      summary: "Alpha Two",
       tags: [alpha, progressive],
     });
     await insertEvent({
       end: "2026-05-03T06:00:00.000Z",
+      name: "Alpha Plain",
       start: "2026-05-03T00:00:00.000Z",
-      summary: "Alpha Plain",
       tags: [alpha],
     });
     await insertEvent({
       end: "2026-05-04T00:00:00.000Z",
+      name: "Alpha Instant",
       start: "2026-05-04T00:00:00.000Z",
-      summary: "Alpha Instant",
       tags: [alpha, progressive],
     });
     await insertEvent({
       end: "2026-05-01T12:00:00.000Z",
+      name: "Beta Entering",
       start: "2026-04-30T12:00:00.000Z",
-      summary: "Beta Entering",
       tags: [beta, progressive],
     });
     await insertEvent({
       end: "2026-05-11T12:00:00.000Z",
+      name: "Beta Leaving",
       start: "2026-05-10T12:00:00.000Z",
-      summary: "Beta Leaving",
       tags: [beta],
     });
     await insertEvent({
       end: "2026-04-25T06:00:00.000Z",
+      name: "Gamma Before",
       start: "2026-04-25T00:00:00.000Z",
-      summary: "Gamma Before",
       tags: [gamma, progressive],
     });
     await application.database.module

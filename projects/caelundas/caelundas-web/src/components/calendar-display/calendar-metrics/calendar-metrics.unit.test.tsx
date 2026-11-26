@@ -1,14 +1,30 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import {
   readServedApi,
   serveCalendarApi,
 } from "../../../../testing/calendar-api";
+import {
+  CATALOG,
+  MetricCatalogFixture,
+} from "../../../../testing/metrics/metric-catalog";
 
 import { CalendarMetrics } from "./calendar-metrics";
+import {
+  EMPTY_CATALOG,
+  MetricCatalogContext,
+} from "./components/metric-catalog-provider/metric-catalog-provider.constants";
 
+import type { UseMetricCatalogResult } from "../../../hooks/use-metric-layout/hooks/use-metric-catalog/use-metric-catalog.types";
 import type { CalendarMetricsProperties } from "./calendar-metrics";
+import type { ReactNode } from "react";
 
 function createProperties(
   view: "charts" | "totals",
@@ -28,17 +44,43 @@ function createProperties(
   };
 }
 
+function renderBefore(
+  status: UseMetricCatalogResult["status"],
+  retry = vi.fn<() => void>(),
+  view: "charts" | "totals" = "charts",
+): void {
+  render(
+    <MetricCatalogContext
+      value={{
+        catalog: EMPTY_CATALOG,
+        error:
+          status === "error" ? new Error("The catalog is down") : undefined,
+        retry,
+        status,
+      }}
+    >
+      <CalendarMetrics {...createProperties(view)} />
+    </MetricCatalogContext>,
+  );
+}
+
+function renderMetrics(properties: CalendarMetricsProperties): ReactNode {
+  return (
+    <MetricCatalogFixture>
+      <CalendarMetrics {...properties} />
+    </MetricCatalogFixture>
+  );
+}
+
 describe(CalendarMetrics, () => {
   it("draws the Charts for the charts view, and the Totals for the totals", () => {
     serveCalendarApi();
 
-    const { rerender } = render(
-      <CalendarMetrics {...createProperties("charts")} />,
-    );
+    const { rerender } = render(renderMetrics(createProperties("charts")));
 
     expect(screen.getByTestId("calendar-charts")).toBeDefined();
 
-    rerender(<CalendarMetrics {...createProperties("totals")} />);
+    rerender(renderMetrics(createProperties("totals")));
 
     expect(screen.getByTestId("calendar-totals")).toBeDefined();
   });
@@ -61,7 +103,7 @@ describe(CalendarMetrics, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarMetrics {...createProperties("totals")} />);
+    render(renderMetrics(createProperties("totals")));
 
     await waitFor(() => {
       expect(readServedApi().requests.metrics).toHaveLength(1);
@@ -69,7 +111,8 @@ describe(CalendarMetrics, () => {
 
     const [request] = readServedApi().requests.metrics;
 
-    expect(request?.metrics).toContain("PROGRESSIVE_HOURS");
+    expect(request?.metrics).toStrictEqual([...CATALOG.defaults.totals]);
+    expect(request?.metrics).toContain("average-duration");
     expect(request?.compareToPrevious).toBe(false);
   });
 
@@ -78,9 +121,12 @@ describe(CalendarMetrics, () => {
 
     serveCalendarApi();
     render(
-      <CalendarMetrics
-        {...createProperties("charts", { compare: true, metrics: ["SPANS"] })}
-      />,
+      renderMetrics(
+        createProperties("charts", {
+          compare: true,
+          metrics: ["progressive-events"],
+        }),
+      ),
     );
 
     await waitFor(() => {
@@ -89,7 +135,66 @@ describe(CalendarMetrics, () => {
 
     expect(readServedApi().requests.metrics[0]).toMatchObject({
       compareToPrevious: true,
-      metrics: ["SPANS"],
+      metrics: ["progressive-events"],
     });
+  });
+
+  it("asks for no metrics, and shows a skeleton, until the catalog is read", () => {
+    serveCalendarApi();
+    renderBefore("loading");
+
+    expect(
+      screen.getByTestId("calendar-metrics").getAttribute("aria-busy"),
+    ).toBe("true");
+    expect(screen.queryByTestId("calendar-charts")).toBeNull();
+    expect(readServedApi().requests.metrics).toHaveLength(0);
+  });
+
+  it("draws the Charts' skeleton in the charts view and the Totals' in the totals view, until the catalog is read", () => {
+    serveCalendarApi();
+    renderBefore("loading");
+
+    expect(screen.getByTestId("skeleton-bars")).toBeDefined();
+    expect(screen.queryByTestId("skeleton-cards")).toBeNull();
+
+    cleanup();
+    renderBefore("loading", undefined, "totals");
+
+    expect(screen.getByTestId("skeleton-cards")).toBeDefined();
+    expect(screen.queryByTestId("skeleton-bars")).toBeNull();
+  });
+
+  it("names the loading container by what the skeleton announces, once", () => {
+    serveCalendarApi();
+    renderBefore("loading");
+
+    const region = screen.getByRole("region", { name: "Loading charts" });
+
+    expect(region).toBe(screen.getByTestId("calendar-metrics"));
+    expect(screen.getAllByText("Loading charts")).toHaveLength(1);
+    expect(region.hasAttribute("aria-label")).toBe(false);
+  });
+
+  it("leaves a catalog that failed unnamed as a region", () => {
+    serveCalendarApi();
+    renderBefore("error");
+
+    expect(screen.queryByRole("region")).toBeNull();
+  });
+
+  it("says why the catalog could not be read, and offers a retry", () => {
+    const retry = vi.fn<() => void>();
+
+    serveCalendarApi();
+    renderBefore("error", retry);
+
+    expect(screen.getByRole("alert").textContent).toContain(
+      "The catalog is down",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+
+    expect(retry).toHaveBeenCalledTimes(1);
+    expect(screen.queryByTestId("calendar-charts")).toBeNull();
   });
 });

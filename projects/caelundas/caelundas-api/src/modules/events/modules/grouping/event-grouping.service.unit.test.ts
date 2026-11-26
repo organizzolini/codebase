@@ -125,7 +125,9 @@ describe(EventGroupingService, () => {
       expect(sql).toContain(
         "when e.duration_minutes between 60 and 1439 then 'hours'",
       );
-      expect(sql).toContain(`extract(dow from e."start" at time zone`);
+      expect(sql).toContain(
+        "(e.start_local_day::date - extract(dow from e.start_local_day::date)::integer)::text",
+      );
       expect(sql).toContain('e.start_local_day as "key"');
     });
 

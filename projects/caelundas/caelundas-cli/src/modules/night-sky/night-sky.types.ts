@@ -4,15 +4,15 @@
 export interface CatalogStar {
   colorIndex: number;
   declinationDegrees: number;
-  hip: number;
+  hipparcosNumber: number;
   magnitude: number;
   rightAscensionHours: number;
 }
 
 /** Figure segment between two stars, saved with its constellation's `edges`. */
 export interface ConstellationEdgeRow {
-  fromHip: number;
-  toHip: number;
+  sourceNode: number;
+  targetNode: number;
 }
 
 /** A constellation with its figure's segments. */
@@ -28,8 +28,8 @@ export interface ConstellationRow {
   /** The IAU designation, such as `UMa`. */
   designation: string;
   /** The Latin name, such as `Ursa Major`. */
+  isZodiac: boolean;
   name: string;
-  zodiac: boolean;
 }
 
 /**

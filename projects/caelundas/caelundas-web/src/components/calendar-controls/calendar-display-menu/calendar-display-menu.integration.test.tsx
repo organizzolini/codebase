@@ -189,6 +189,39 @@ describe("display menu's sky options", () => {
     });
   });
 
+  it("hides empty groups and shows them again on a layout that groups, writing the link", async () => {
+    await renderCalendarRoute("/?view=table&date=2026-03-01");
+    await openBranches();
+    fireEvent.click(await findOption("Hide empty groups"));
+
+    await waitFor(() => {
+      expect(readSearch()).toMatchObject({ hideEmpty: true });
+    });
+
+    const ticked = await findOption("Hide empty groups");
+
+    expect(ticked.getAttribute("aria-selected")).toBe("true");
+
+    fireEvent.click(await findOption("Hide empty groups"));
+
+    await waitFor(() => {
+      expect(readSearch()).not.toHaveProperty("hideEmpty");
+    });
+  });
+
+  it("offers no option to hide empty groups on a layout with none", async () => {
+    await renderCalendarRoute("/?view=week&date=2026-03-01&hideEmpty=true");
+    await openBranches();
+    await findOption("Colors");
+
+    expect(
+      screen.queryByRole("option", { name: /^Hide empty groups/u }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("treeitem", { name: /^Hide empty groups/u }),
+    ).toBeNull();
+  });
+
   it("ticks what the link sets, and puts the sky back to its default", async () => {
     await renderCalendarRoute(
       "/?date=2026-03-01&skyfield.constellations=zodiac&skyfield.opacity=0.5",

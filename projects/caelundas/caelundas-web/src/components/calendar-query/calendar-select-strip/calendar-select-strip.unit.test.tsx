@@ -3,12 +3,21 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { CalendarSelectStrip } from "./calendar-select-strip";
 
+import type { StripFold } from "../calendar-group-strip/components/strip-fold-button/strip-fold-button.types";
+
 const FACETS = [
   {
     id: "type",
     name: "Type",
     values: [
       { count: 1, depth: 1, id: "aspect", name: "Aspect", path: "Aspect" },
+      {
+        count: 1,
+        depth: 2,
+        id: "major",
+        name: "Major",
+        path: "Aspect / Major",
+      },
     ],
   },
 ];
@@ -127,5 +136,78 @@ describe(CalendarSelectStrip, () => {
     fireEvent.click(await screen.findByRole("menuitem", { name: "Move left" }));
 
     expect(onColumnsChange).toHaveBeenLastCalledWith(["start", "name"]);
+  });
+
+  it("keeps only a column from its ellipsis menu, and offers none for the last", async () => {
+    const { onColumnsChange } = renderStrip(["name", "start"]);
+
+    fireEvent.click(screen.getByRole("button", { name: "Start options" }));
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Only" }));
+
+    expect(onColumnsChange).toHaveBeenCalledWith(["start"]);
+  });
+
+  it("names a deep tag column by its own name, its path as the tooltip", () => {
+    renderStrip(["aspect"]);
+
+    expect(screen.getByRole("button", { name: "Aspect" })).toBeDefined();
+    expect(screen.getByTitle("Type › Aspect")).toBeDefined();
+  });
+
+  it("holds the tag roots under a Tag row open from the start", async () => {
+    renderStrip(["name"]);
+    fireEvent.click(screen.getByRole("button", { name: "Select" }));
+
+    await expect(screen.findByText("Tag")).resolves.toBeDefined();
+    expect(screen.getByText("Type")).toBeDefined();
+  });
+
+  describe("folding", () => {
+    function renderFolded(isFolded: boolean): StripFold {
+      const fold: StripFold = {
+        isFolded,
+        onFold: vi.fn<() => void>(),
+        onUnfold: vi.fn<() => void>(),
+      };
+
+      render(
+        <CalendarSelectStrip
+          columns={["name", "start"]}
+          facets={FACETS}
+          fold={fold}
+          onColumnsChange={() => {}}
+          view="table"
+        />,
+      );
+
+      return fold;
+    }
+
+    it("shows the Select button and a count of its chips, and unfolds when it is pressed", () => {
+      const fold = renderFolded(true);
+      const strip = screen.getByRole("group", { name: "Select" });
+
+      expect(strip.querySelectorAll("button")).toHaveLength(2);
+      expect(
+        screen.queryByRole("button", { name: "Start options" }),
+      ).toBeNull();
+
+      const count = screen.getByRole("button", { name: /2 Facets/u });
+
+      expect(count.title).toBe("Name, Start");
+
+      fireEvent.click(count);
+
+      expect(fold.onUnfold).toHaveBeenCalledTimes(1);
+    });
+
+    it("folds from a chip's menu while it is unfolded", async () => {
+      const fold = renderFolded(false);
+
+      fireEvent.click(screen.getByRole("button", { name: "Start options" }));
+      fireEvent.click(await screen.findByRole("menuitem", { name: "Fold" }));
+
+      expect(fold.onFold).toHaveBeenCalledTimes(1);
+    });
   });
 });

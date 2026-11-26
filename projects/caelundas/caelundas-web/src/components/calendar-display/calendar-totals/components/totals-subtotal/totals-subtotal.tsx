@@ -9,8 +9,10 @@ import { TotalsShareBar } from "./totals-share-bar";
 import { NEUTRAL_COLOR } from "./totals-subtotal.constants";
 import { readRowFigures } from "./totals-subtotal.utilities";
 
-import type { EventMetric } from "../../../../../graphql/generated/operations";
-import type { MetricNode } from "../../../calendar-metrics/calendar-metrics.types";
+import type {
+  MetricDescriptor,
+  MetricNode,
+} from "../../../calendar-metrics/calendar-metrics.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -25,7 +27,7 @@ export interface TotalsSubtotalProperties {
   children?: ReactNode;
   color?: string | undefined;
   compare: boolean;
-  metric: EventMetric;
+  metric: MetricDescriptor;
   node: MetricNode;
   onToggle: (id: string) => void;
   open: boolean;

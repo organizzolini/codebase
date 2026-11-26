@@ -25,30 +25,32 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ecliptic**: The Sun's yearly path across the sky, which the night sky draws as a line on request.
 - **epoch**: The Unix epoch, whose Julian day converts a timestamp for the sidereal-time calculation.
 - **equinox**: The moment the Sun crosses the celestial equator, used as a sample event and tag in filter tests.
-- **family**:
 - **gamma**:
 - **grain**:
 - **greenwich**: The prime meridian; Greenwich sidereal time plus the observer's longitude gives the sky's rotation.
 - **harmonic**: A numbered aspect family, such as Harmonic 6, whose trailing number filters can compare.
-- **hip**: A star's Hipparcos catalog number, which keys each star and each end of a constellation line.
+- **hipparco**:
 - **horizon**: The line where the sky meets the ground; also the `astronomy-engine` function a unit test checks positions with.
 - **ingress**: A body's entry into a zodiac sign, a tag that filter tests select events by.
 - **instant**: An event whose start and end are equal, the `Instant` value of the temporality field.
 - **j2000**: The standard astronomical epoch of 1 January 2000, whose Julian day the sidereal-time calculation counts from.
 - **julian**: The Julian day, a continuous count of days that the sidereal-time calculation converts timestamps into.
 - **july**: A test name for the windows computed for July 2026.
+- **lack**:
 - **latitude**: The observer's north-south position in degrees, which sets how high the pole sits in the night sky.
 - **longitude**: The observer's east-west position in degrees, which with sidereal time sets the sky's rotation.
 - **luminary**:
 - **lyra**: A constellation used as a fixture when no database is present.
 - **magnitude**: A star's brightness, where a lower number is brighter; `faintestMagnitude` limits which stars are drawn.
 - **median**:
+- **mergeable**:
 - **midday**:
 - **moon**: The Moon, as a body named in sample events and tag paths.
 - **narrower**:
 - **north**: The direction of positive declination, as in the ecliptic's northernmost point.
 - **obliquity**: The tilt of Earth's axis, about 23.4 degrees, used to convert ecliptic longitude into right ascension and declination.
 - **observer**: The viewer on Earth, whose time zone and position decide which events and which sky are shown.
+- **percentile**:
 - **phase**: The tag root holding `Forming` and `Dissolving`, the stages of an aspect that event queries leave out.
 - **planet**: The tag root whose paths name a body, as in `Planet / Mars / Retrograde`.
 - **planetary**:
@@ -63,6 +65,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **scorpius**: A constellation used as a fixture in the night-sky input tests.
 - **sidereal**: Sidereal time, the angle of the stars overhead, from which the night sky's starting rotation is computed.
 - **sky**: The night sky the API renders as an SVG of stars, constellation figures, and the ecliptic.
+- **slugify**:
 - **south**: The direction of negative declination or latitude; see `southern`.
 - **southern**: Test name for a request from a southern latitude, which the night sky refuses.
 - **star**: A catalog star the night sky draws, sized and colored by its magnitude and color.

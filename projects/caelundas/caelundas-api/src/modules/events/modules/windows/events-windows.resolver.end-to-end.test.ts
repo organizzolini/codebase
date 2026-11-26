@@ -43,7 +43,7 @@ describe("events windows end-to-end suite", () => {
     return (body.data as { windows: Windows }).windows;
   }
 
-  /** The summaries of the events in the period a timeline scale reads. */
+  /** The names of the events in the period a timeline scale reads. */
   async function readTimeline(
     anchor: string,
     scale: string,
@@ -51,15 +51,15 @@ describe("events windows end-to-end suite", () => {
     const { read } = await windowsOf({ anchor, scale, window: "TIMELINE" });
     const body = await application.query(
       `query Events($period: PeriodInput!) {
-        events(period: $period) { summary }
+        events(period: $period) { name }
       }`,
       { period: read },
     );
 
     expect(body.errors).toBeUndefined();
 
-    return (body.data as { events: { summary: string }[] }).events.map(
-      ({ summary }) => summary,
+    return (body.data as { events: { name: string }[] }).events.map(
+      ({ name }) => name,
     );
   }
 

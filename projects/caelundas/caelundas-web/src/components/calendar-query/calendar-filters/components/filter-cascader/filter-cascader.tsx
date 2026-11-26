@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { QueryCascader } from "../../../query-cascader/query-cascader";
 import { keepHiddenValues } from "../../../query-cascader/query-cascader.utilities";
 
+import { TAG_PARENT_VALUE } from "./filter-cascader.constants";
 import {
   createFilterItems,
   isValue,
@@ -93,6 +94,7 @@ export function FilterCascader(
       <QueryCascader
         actions={actions}
         cascade={false}
+        defaultExpanded={[TAG_PARENT_VALUE]}
         items={items}
         mode="tree"
         onValueChange={(next) => {

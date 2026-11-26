@@ -23,12 +23,15 @@ import {
 } from "./calendar-filters.constants";
 import {
   createDateOpener,
+  deriveFilterStrip,
   renderFiltersButton,
+  renderFoldButton,
 } from "./calendar-filters.utilities";
 import { countActiveEventFilterRules } from "./components/event-filter-model/event-filter-tree.utilities";
 import { FilterCascader } from "./components/filter-cascader/filter-cascader";
 import { FilterChipRow } from "./components/filter-chip-row/filter-chip-row";
 
+import type { StripFold } from "../calendar-group-strip/components/strip-fold-button/strip-fold-button.types";
 import type {
   EventFilterField,
   EventFilterQuery,
@@ -44,6 +47,8 @@ export interface CalendarFiltersProperties {
   className?: string;
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
+  /** How the strip folds; it does not when absent. */
+  fold?: StripFold | undefined;
   /**
    * The fields the Filters list offers, when fewer than `fields`; filters already on the others stay.
    */
@@ -72,6 +77,7 @@ export function CalendarFilters(
     className,
     fields,
     filter,
+    fold,
     offeredFields,
     onFilterChange,
     presets = [],
@@ -92,7 +98,15 @@ export function CalendarFilters(
   const activeCount = countActiveEventFilterRules(query);
 
   // 🏗 Setup
-  const isAttached = navigation !== null || (isTablet && activeCount > 0);
+  // The chips are left out below a tablet, so nothing is folded there.
+  const { folded, hasChipsAfter, names } = deriveFilterStrip(query, {
+    activeCount,
+    fields,
+    fold,
+    isTablet,
+  });
+  const isAttached =
+    navigation !== null || folded !== undefined || hasChipsAfter;
 
   // 💪 Handlers
 
@@ -140,16 +154,18 @@ export function CalendarFilters(
             </Popover>
           </ButtonGroup>
           {navigation}
+          {renderFoldButton(folded, names, hasChipsAfter)}
         </div>
         {isTablet ? (
           <Filters<EventFilterValue>
             editors={EDITORS}
             fields={[...fields]}
+            onFold={fold?.onFold}
             onQueryChange={handleQueryChange}
             query={query}
             size="sm"
           >
-            <FilterChipRow />
+            <FilterChipRow isFolded={folded !== undefined} />
           </Filters>
         ) : null}
       </div>

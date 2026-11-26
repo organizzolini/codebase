@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import _ from "lodash";
 
 import { LoggerService } from "@codebase/observability";
 
@@ -146,6 +147,34 @@ export class DailyCyclesService {
       count: events.length,
     });
     return events;
+  }
+
+  /**
+   * Pairs each moonrise with the moonset after it into the span the Moon is up.
+   */
+  detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
+    const crossings = _.sortBy(
+      events.filter(
+        (event) =>
+          event.tags.includes("Moonrise") || event.tags.includes("Moonset"),
+      ),
+      (event) => event.start.valueOf(),
+    );
+
+    return crossings.slice(0, -1).flatMap((beginning, index) => {
+      const ending = crossings[index + 1];
+
+      return ending !== undefined &&
+        beginning.tags.includes("Moonrise") &&
+        ending.tags.includes("Moonset")
+        ? [
+            this.dailyCyclesBuilderService.getMoonUpDurationEvent(
+              beginning,
+              ending,
+            ),
+          ]
+        : [];
+    });
   }
 
   /**

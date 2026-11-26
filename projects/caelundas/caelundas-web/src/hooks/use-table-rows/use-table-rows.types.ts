@@ -21,6 +21,10 @@ export interface UseTableRowsOptions {
   facets: readonly EventFacet[];
   fields: readonly EventGroupField[];
   grouping: readonly EventGroupLevel[];
+  /**
+   * Leaves out groups with no events; shown when absent.
+   */
+  hideEmpty?: boolean | undefined;
   sort: readonly GroupSort[] | undefined;
   timeZone: string;
 }

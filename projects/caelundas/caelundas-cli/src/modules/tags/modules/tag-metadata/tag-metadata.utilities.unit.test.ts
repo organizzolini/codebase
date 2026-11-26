@@ -27,7 +27,9 @@ function generatedPaths(): string[][] {
     add(["Zodiac", "Ingress", `${kind} Ingress`]);
   }
 
-  add(["Zodiac", "Ingress", "Sign Transit"]);
+  for (const kind of ["Decan", "Peak", "Sign"]) {
+    add(["Zodiac", "Ingress", `${kind} Transit`]);
+  }
 
   for (const dignity of [
     "Detriment",

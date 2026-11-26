@@ -8,6 +8,7 @@ import { getViewWindows } from "../src/components/calendar-display/events-calend
 import { DURATION_BUCKETS } from "../src/components/calendar-query/calendar-filters/components/event-filter-model/event-filters.constants";
 import {
   mockDatasetQuery,
+  mockEventMetricCatalogQuery,
   mockEventMetricsQuery,
   mockEventsQuery,
   mockFacetsQuery,
@@ -17,8 +18,9 @@ import {
 } from "../src/graphql/generated/mocks";
 
 import { FIXTURE_EVENTS, FIXTURE_TAGS } from "./calendar-fixture";
-import { findMetrics } from "./calendar-metrics";
 import { serveGraphqlApi } from "./graphql-api";
+import { findMetrics } from "./metrics/calendar-metrics";
+import { METRIC_CATALOG_FIXTURE } from "./metrics/metric-catalog-fixture";
 
 import type {
   EventFilterGroupInput,
@@ -46,6 +48,7 @@ export interface CalendarApi {
   fail: (message: string) => void;
   recover: () => void;
   requests: {
+    catalog: number;
     events: EventsQueryVariables[];
     facets: FacetsQueryVariables[];
     metrics: EventMetricsInput[];
@@ -59,12 +62,22 @@ export interface CalendarApi {
  * What a test may change about the API it serves.
  */
 export interface CalendarApiOptions {
+  /**
+   * Fails only the metric catalog's read with this message, the calendar's
+   * reads answering as usual.
+   */
+  catalogError?: string;
   defaultId?: string;
   /**
    * How long every events read after the first takes, as a slow connection
    * would.
    */
   delay?: number;
+  /**
+   * Adds groups holding no events to the metrics' answers, as the previous
+   * period's groups are when compared.
+   */
+  emptyGroups?: boolean;
   events?: readonly FixtureEvent[];
   /**
    * Answers no read at all, like an API that is never reached.
@@ -140,6 +153,7 @@ export function serveCalendarApi(
       failure = undefined;
     },
     requests: {
+      catalog: 0,
       events: [],
       facets: [],
       metrics: [],
@@ -176,6 +190,17 @@ export function serveCalendarApi(
         events: findEvents(events, tree, variables),
       }));
     }),
+    mockEventMetricCatalogQuery(async () => {
+      api.requests.catalog += 1;
+
+      if (options.catalogError !== undefined) {
+        return HttpResponse.json({
+          errors: [{ message: options.catalogError }],
+        });
+      }
+
+      return answer(() => ({ eventMetricCatalog: METRIC_CATALOG_FIXTURE }));
+    }),
     mockEventMetricsQuery(async ({ variables }) => {
       api.requests.metrics.push(variables.input);
 
@@ -185,7 +210,9 @@ export function serveCalendarApi(
         });
       }
 
-      return answer(() => ({ eventMetrics: findMetrics(variables.input) }));
+      return answer(() => ({
+        eventMetrics: findMetrics(variables.input, options.emptyGroups),
+      }));
     }),
     mockFacetsQuery(async ({ variables }) => {
       api.requests.facets.push(variables);
@@ -301,7 +328,7 @@ function findEvents(
     .toSorted(
       (left, right) =>
         left.start.localeCompare(right.start) ||
-        left.summary.localeCompare(right.summary),
+        left.name.localeCompare(right.name),
     )
     .map((event) => {
       const minutes = Math.round(
@@ -310,17 +337,15 @@ function findEvents(
       );
 
       return {
-        color: event.color,
-        description: event.description,
         durationMinutes: minutes,
         end: event.end,
         groups: levels.map((level) => findGroupKeys(event, tree, level)),
         id: event.id,
-        location: event.location,
+        name: event.name,
+        note: event.note,
         start: event.start,
         startLocalDay: readLocalDay(event),
         startLocalHour: Number(readLocalHour(event)),
-        summary: event.summary,
         tags: event.tagIds
           .map((id) => ({
             depth: tree.depth(id),
@@ -561,9 +586,7 @@ function matchesRule(
     held = rule.operator === "not_between" ? !overlapsRange : overlapsRange;
   } else if (field === "text") {
     const needle = (values[0] ?? "").toLowerCase();
-    const found = `${event.summary} ${event.description}`
-      .toLowerCase()
-      .includes(needle);
+    const found = `${event.name} ${event.note}`.toLowerCase().includes(needle);
 
     held = rule.operator === "not_contains" ? !found : found;
   }

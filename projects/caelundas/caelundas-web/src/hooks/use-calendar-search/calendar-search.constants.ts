@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { toMetricSlug } from "../../components/calendar-display/calendar-metrics/calendar-metrics.utilities";
 import { MAXIMUM_AGENDA_DAYS } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { MAXIMUM_GROUP_DEPTH } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.constants";
 
@@ -71,11 +72,21 @@ export const skySearchValueSchema = z.union([
 
 export const groupSortSchema = z.object({
   direction: z.enum(["asc", "desc"]),
-  key: z.enum(["count", "first", "metric", "name", "order", "tag"]),
-  // The metric a `metric` sort orders by; anything but a name is forgotten.
+  key: z.enum([
+    "count",
+    "duration",
+    "end",
+    "first",
+    "metric",
+    "name",
+    "order",
+    "start",
+    "tag",
+  ]),
+  // The metric a `metric` sort orders by, an old name read as its slug; anything but a slug is forgotten.
   metric: z
     .unknown()
-    .transform((metric) => z.string().min(1).safeParse(metric).data)
+    .transform((metric) => toMetricSlug(metric))
     .optional(),
   // The tag a `tag` sort ranks by; anything but an id is forgotten.
   tag: z

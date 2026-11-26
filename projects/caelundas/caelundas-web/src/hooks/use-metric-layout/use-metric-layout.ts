@@ -1,15 +1,17 @@
 import { useEffect, useMemo } from "react";
 
-import {
-  describeMetricGroups,
-  sortMetricGroups,
-} from "../../components/calendar-display/calendar-metrics/components/calendar-metrics-tree/calendar-metrics-tree.utilities";
+import { sortMetricGroups } from "../../components/calendar-display/calendar-metrics/components/calendar-metrics-tree/calendar-metrics-tree.utilities";
 import { createTableNavigation } from "../../components/calendar-display/calendar-table/calendar-table.utilities";
 import { AGENDA_DAY_COUNT } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 
 import { useEventMetrics } from "./hooks/use-event-metrics/use-event-metrics";
 import { useMetricExpansion } from "./hooks/use-metric-expansion/use-metric-expansion";
 import { useMetricGroupRows } from "./hooks/use-metric-group-rows/use-metric-group-rows";
+import {
+  hideEmptyMetricGroups,
+  keepShownTotals,
+  listReadMetrics,
+} from "./use-metric-layout.utilities";
 
 import type {
   UseMetricLayoutOptions,
@@ -25,6 +27,7 @@ export function useMetricLayout(
   options: Readonly<UseMetricLayoutOptions>,
 ): UseMetricLayoutResult {
   const {
+    hideEmpty = false,
     onDateChange,
     onNavigationChange,
     rootsUntilTouched = false,
@@ -34,20 +37,31 @@ export function useMetricLayout(
   const { agendaDays = AGENDA_DAY_COUNT, anchor, timeZone } = query;
 
   // 🪝 Hooks
-  const metrics = useEventMetrics(query);
+  // A sort by a metric not shown still needs its numbers, so they are read too, and so does telling which groups are empty.
+  const read = useMemo(
+    () => listReadMetrics(query.metrics, { hideEmpty, sort }),
+    [hideEmpty, query.metrics, sort],
+  );
+  const metrics = useEventMetrics({ ...query, metrics: read });
+  // Every group, empty ones too: colors are shaped from these, so hiding some changes none.
+  const colorGroups = useMemo(
+    () => sortMetricGroups(metrics.data?.groups ?? [], sort),
+    [metrics.data, sort],
+  );
   const data = useMemo(
     () =>
       metrics.data === undefined
         ? undefined
         : {
-            ...metrics.data,
-            groups: sortMetricGroups(metrics.data.groups, sort),
+            ...keepShownTotals(metrics.data, query.metrics),
+            groups: hideEmpty
+              ? hideEmptyMetricGroups(colorGroups)
+              : colorGroups,
           },
-    [metrics.data, sort],
+    [colorGroups, hideEmpty, metrics.data, query.metrics],
   );
-  const ids = useMemo(() => describeMetricGroups(data?.groups ?? []), [data]);
 
-  const { dispatch, expanded, open, toggle } = useMetricExpansion(
+  const { expanded, open, toggle } = useMetricExpansion(
     data,
     rootsUntilTouched,
   );
@@ -58,12 +72,6 @@ export function useMetricLayout(
   // 💪 Handlers
 
   // ♻️ Lifecycle
-  useEffect(() => {
-    // Only the table's groups are known to it until a tree arrives; one on the same ids leaves what is open as it is.
-    if (data !== undefined) {
-      dispatch({ ...ids, type: "register" });
-    }
-  }, [data, dispatch, ids]);
   useEffect(() => {
     onNavigationChange(
       createTableNavigation({
@@ -77,6 +85,7 @@ export function useMetricLayout(
 
   // 🎁 Result
   return {
+    colorGroups,
     data,
     error: metrics.error,
     expanded,

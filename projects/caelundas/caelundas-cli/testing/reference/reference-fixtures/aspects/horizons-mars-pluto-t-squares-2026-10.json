@@ -1,8 +1,8 @@
 {
   "events": [
     {
-      "note": "Query: COMMAND 199, 299, 499 and 999 over 2026-10-01 03:59-04:00. In effect before the window opens, so it is reported at the first minute, 00:00 EDT. Horizons at 2026-10-01 04:00 UT: Mercury 210.900, Mars 121.785, Pluto 303.121, so Mercury squares Mars (89.1) and Pluto (92.2) while Mars opposes Pluto (181.3). Jessica Davidson's October 2026 forecast describes the same Mars-Pluto T-square.",
-      "start": "2026-10-01T04:00:00Z",
+      "note": "Query: COMMAND 199, 299, 499 and 999 over 2026-10-01 03:59-04:00. In effect when the window opens, so it began before it. Horizons at 2026-10-01 04:00 UT: Mercury 210.900, Mars 121.785, Pluto 303.121, so Mercury squares Mars (89.1) and Pluto (92.2) while Mars opposes Pluto (181.3). Jessica Davidson's October 2026 forecast describes the same Mars-Pluto T-square. The minute it formed at, before the window opened, is the latest forming of its legs by Swiss Ephemeris; Horizons was not queried at it.",
+      "start": "2026-09-28T09:10:00Z",
       "summary": "⊤♂️♇☿ Mars, Mercury, Pluto t-square (Mercury focal)"
     },
     {

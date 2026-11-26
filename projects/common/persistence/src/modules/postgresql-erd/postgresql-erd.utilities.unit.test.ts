@@ -107,6 +107,7 @@ describe("postgresql ERD utilities", () => {
               type: "Object",
             },
           ],
+          kind: "view",
           name: "ErdReflectedView",
           relations: [],
           tableName: "reflected_view",
@@ -399,6 +400,109 @@ describe("postgresql ERD utilities", () => {
       "NetworkLine",
       "Station",
     ]);
+  });
+
+  it("includes the closure table of a tree and the join table of a many-to-many, as TypeORM creates them", async () => {
+    const model = await readPostgresqlErdModel([
+      "testing/fixtures/postgresql-erd/article.entity.ts",
+      "testing/fixtures/postgresql-erd/category.entity.ts",
+    ]);
+    const derived = model.entities.filter(
+      (entity) => "kind" in entity && entity.kind !== undefined,
+    );
+
+    expect(derived).toStrictEqual([
+      {
+        columns: [
+          {
+            name: "erd_articles_id",
+            nullable: false,
+            primaryKey: true,
+            type: "uuid",
+          },
+          {
+            name: "erd_categories_id",
+            nullable: false,
+            primaryKey: true,
+            type: "uuid",
+          },
+        ],
+        kind: "join-table",
+        name: "erd_articles_erd_categories",
+        relations: [
+          {
+            cardinality: "many-to-one",
+            name: "erd_articles_id",
+            target: "erd_articles",
+          },
+          {
+            cardinality: "many-to-one",
+            name: "erd_categories_id",
+            target: "erd_categories",
+          },
+        ],
+        tableName: "erd_articles_erd_categories",
+      },
+      {
+        columns: [
+          {
+            name: "id_ancestor",
+            nullable: false,
+            primaryKey: true,
+            type: "uuid",
+          },
+          {
+            name: "id_descendant",
+            nullable: false,
+            primaryKey: true,
+            type: "uuid",
+          },
+        ],
+        kind: "closure-table",
+        name: "erd_categories_closure",
+        relations: [
+          {
+            cardinality: "many-to-one",
+            name: "id_ancestor",
+            target: "erd_categories",
+          },
+          {
+            cardinality: "many-to-one",
+            name: "id_descendant",
+            target: "erd_categories",
+          },
+        ],
+        tableName: "erd_categories_closure",
+      },
+    ]);
+  });
+
+  it("draws a derived table with its foreign keys to the entity's name", async () => {
+    const rendered = renderPostgresqlErdModel(
+      await readPostgresqlErdModel([
+        "testing/fixtures/postgresql-erd/category.entity.ts",
+      ]),
+    );
+
+    expect(rendered).toContain(
+      "erd_categories_closure }o--|| erd_categories : id_ancestor",
+    );
+    expect(rendered).toContain(
+      '  erd_categories_closure {\n    string id_ancestor PK "not nullable"',
+    );
+  });
+
+  it("marks a view as one, in the model and in its drawn title", async () => {
+    const model = await readPostgresqlErdModel([
+      "testing/fixtures/postgresql-erd/reflected-view.entity.ts",
+    ]);
+
+    expect(model.entities).toMatchObject([
+      { kind: "view", tableName: "reflected_view" },
+    ]);
+    expect(renderPostgresqlErdModel(model)).toContain(
+      '  reflected_view["reflected_view (view)"] {',
+    );
   });
 
   it("includes columns inherited from the Postgresql identifiable entity", async () => {

@@ -3,7 +3,10 @@ import type {
   EventScope,
 } from "../filtering/event-filter.types";
 import type { EventGroupLevel } from "../grouping/event-grouping.types";
-import type { EventMetric } from "./modules/inputs/event-metric.entities";
+import type {
+  CatalogMetric,
+  MetricCatalog,
+} from "./modules/catalog/event-metrics-catalog.types";
 import type { EventMetricGroupEntity } from "./modules/results/event-metric-group.entities";
 
 // 🏷️ Types
@@ -24,10 +27,11 @@ export interface EventMetricsDraft {
 
 /** What one metrics statement measures; no level means the whole set. */
 export interface EventMetricsQueryRequest {
+  catalog: MetricCatalog;
   filter: EventFilterGroup | null;
   grouping: readonly EventGroupLevel[];
   level?: number;
-  metrics: readonly EventMetric[];
+  metrics: readonly CatalogMetric[];
   period: MetricsPeriod;
   previous: MetricsPeriod | null;
   scope: EventScope;
@@ -50,13 +54,10 @@ export interface EventMetricsRow {
 export interface EventMetricsTreeSource {
   compare: boolean;
   levels: readonly EventGroupLevel[];
-  metrics: readonly EventMetric[];
+  metrics: readonly CatalogMetric[];
   names: ReadonlyMap<string, string>;
   rows: readonly (readonly EventMetricsRow[])[];
 }
-
-/** A grain of `calendar_event_facts`, by its key in `FACTS_GRAINS`. */
-export type FactsGrain = "day" | "dayTag" | "dayTagName" | "event";
 
 /** A level's lateral join: its grouping, place and key source. */
 export interface LevelJoin {

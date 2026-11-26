@@ -1,13 +1,10 @@
 import { compareNatural } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-order.utilities";
 import { SORT_SIGNS } from "../../../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.constants";
-import {
-  findMetricValue,
-  parseMetrics,
-} from "../../calendar-metrics.utilities";
+import { METRIC_SLUG_PATTERN } from "../../calendar-metrics.constants";
+import { findMetricValue } from "../../calendar-metrics.utilities";
 
 import { NO_RANK } from "./calendar-metrics-tree.constants";
 
-import type { EventMetric } from "../../../../../graphql/generated/operations";
 import type { GroupSort } from "../../../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type {
   MetricGroup,
@@ -79,6 +76,29 @@ export function flattenMetricGroups(
 }
 
 /**
+ * The metric a sort measures: its own, or the event count or first start; none for a name or order.
+ */
+export function getSortMetric(sort: GroupSort): string | undefined {
+  if (sort.key === "count") {
+    return "events";
+  }
+
+  if (sort.key === "first" || sort.key === "start") {
+    return "first-start";
+  }
+
+  if (sort.key === "duration") {
+    return "duration";
+  }
+
+  if (sort.key !== "metric" || sort.metric === undefined) {
+    return undefined;
+  }
+
+  return METRIC_SLUG_PATTERN.test(sort.metric) ? sort.metric : undefined;
+}
+
+/**
  * The tree with every level ordered by the sorts, the first sort first; the same tree when there are none.
  */
 export function sortMetricGroups(
@@ -139,23 +159,8 @@ function compareMetricGroups(
 }
 
 /**
- * The metric a sort measures: its own, or the event count or first start; none for a name or order.
- */
-function getSortMetric(sort: GroupSort): EventMetric | undefined {
-  if (sort.key === "count") {
-    return "EVENTS";
-  }
-
-  if (sort.key === "first") {
-    return "FIRST_START";
-  }
-
-  return sort.key === "metric" ? parseMetrics(sort.metric)?.[0] : undefined;
-}
-
-/**
  * A group's number for a metric, zero when it has none.
  */
-function readValue(group: MetricGroup, metric: EventMetric): number {
+function readValue(group: MetricGroup, metric: string): number {
   return findMetricValue(group.values, metric)?.value ?? 0;
 }

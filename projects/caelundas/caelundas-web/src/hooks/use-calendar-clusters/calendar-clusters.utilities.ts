@@ -87,14 +87,13 @@ function createStandIn(
 
   return {
     color: first.color,
-    description: `${String(cluster.length)} events run together here.`,
     durationMinutes: Math.round((endTime - startTime) / MINUTE_MILLISECONDS),
     end: new Date(endTime),
     groups: [],
     id: `${CLUSTER_ID_PREFIX}${first.id}`,
-    location: null,
+    name: `${String(cluster.length)} ${kindName}`,
+    note: `${String(cluster.length)} events run together here.`,
     start: new Date(startTime),
-    summary: `${String(cluster.length)} ${kindName}`,
     tags: [],
     timezone: first.timezone,
   };

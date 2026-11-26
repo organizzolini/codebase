@@ -55,7 +55,7 @@ server in `testing/setup.ts`, with fixtures from `testing/calendar-api.ts`.
 
 The web app reads the `caelundas-api` schema through typed operations, as
 `lexico-web` does. `codegen.ts` reads the documents in `src/graphql/operations/` (one per query:
-dataset, events with filter and grouping, facets, presets, windows, night sky) and writes `operations.ts` (types and typed documents) and
+dataset, events with filter and grouping, facets, presets, windows, night sky, event metrics and the metric catalog) and writes `operations.ts` (types and typed documents) and
 `mocks.ts` (MSW handlers) to `src/graphql/generated/`. The generated files are
 committed and never edited. It does not use `@codebase/interface/client`'s
 shared configuration, which also emits the schema's own types and Zod
@@ -281,13 +281,48 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   `useMetricLayout` adds the sorts, navigation by days and the table's shared
   open groups (`TableGroupsContext`, which both layouts register their group ids
   in, so open groups carry across Table, Charts and Totals), and
-  `useMetricGroupRows` flattens the tree to the groups shown now. The `metrics`
-  search parameter lists `EventMetric` names (unknown ones dropped; each layout's
-  `DEFAULT_METRICS` when absent) and `compare` asks for the period before. The
-  catalog of labels, notes, icons, formats and `formatMetricValue` and
-  `formatMetricChange` is in `src/components/calendar-display/calendar-metrics/`.
-  Their Select strip lists metrics, there is no Page strip, and Sort may order
-  by a metric (`key: "metric"`).
+  `useMetricGroupRows` flattens the tree to the groups shown now. The metric
+  catalog is not in this app: `MetricCatalogProvider` (mounted on the page beside
+  the other providers) reads the API's `eventMetricCatalog` query once, keeps it in
+  memory, and `useMetricCatalog()` hands every consumer `{ catalog, error, retry,
+  status }`, where `catalog` holds `metrics` in the order the API returns them (the picker's order), `bySlug`, the
+  `measures` and each layout's `defaults`, the web's `DEFAULT_METRICS` kept to those the catalog has. Until it is `ready` the metric layouts
+  show a skeleton, or the error with Retry, and ask for nothing. The `metrics`
+  search parameter lists metric slugs (`total-duration`), and so does a `metric`
+  sort; `parseMetrics` maps an old enum name through `OLD_METRIC_ALIASES`
+  (`TOTAL_DURATION_MINUTES`) and drops what is no slug, and `resolveMetrics` drops
+  the slugs the loaded catalog lacks, falling back to the layout's defaults.
+  `compare` asks for the period before. `hideEmpty=true` (the Display menu's
+  Hide empty groups, offered on the table, timeline, Charts and Totals only; the
+  month, week and day have no groups and ignore it) leaves out every group with
+  no events in the days shown, and every parent all of whose subgroups are left
+  out and which has none of its own; a group with events but zero of a shown
+  metric stays. `pruneEmptyGroups`
+  (`src/components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-prune.utilities.ts`)
+  does it for every layout: the table's and the timeline's event trees (which
+  events can only build with some, so it changes nothing there), and the metric
+  layouts' API tree in `useMetricLayout`, which counts the `events` metric and
+  reads it too when it is not shown (the totals drop it again). Colors are shaped
+  from the tree before any group is left out, so the groups that stay keep theirs
+  (`colorGroups`); a total is the API's, never the visible groups' sum. The
+  clustering of crowded hours in the day and week views is always on (the retired
+  `clusters` parameter is ignored and dropped from a rewritten link). A metric's unit drives its formatting in
+  `formatMetricValue`, `formatMetricValueCompact` and `formatMetricChange`
+  (`src/components/calendar-display/calendar-metrics/`): `DURATION` is minutes
+  written as years down to minutes, `COUNT` a separated number (a change names the
+  metric's lowercased name, singular for one), `NONE` a percent on a 0 to 100 scale (a change in points) and
+  `INSTANT` epoch milliseconds as a date and time in the dataset's zone. The picker
+  groups metrics by unit (Counts, Durations, Share of time, Times); the Charts hide
+  the `INSTANT` ones; `additive` says a stack adds up to its bar. Their Select strip
+  lists metrics, there is no Page strip, and Sort may order by a metric (`key:
+  "metric"`).
+- The Select, Group, Sort and Filter strips fold: the Fold item in any chip's
+  menu leaves the strip's title button and a `<N> Facets` button that unfolds
+  it. `fold=select,group` in the link lists the folded strips (unknown names
+  are ignored, `getCalendarReloadKey` leaves it out, so folding never reloads).
+  A strip with no chip to fold, below a tablet for Filter, stays plain; the
+  link keeps its entry for when chips return. Unselecting a table column also
+  drops the sorts that need it (`dropHiddenSorts`).
 - Three widths are told apart, in `src/components/calendar-display/events-calendar/components/calendar-window/calendar-viewport.utilities.ts`: a
   phone below 768 pixels, a tablet from 768, and a desktop from 1024. Below a
   desktop the view selector is a menu, as five buttons do not fit beside the
@@ -344,8 +379,8 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   them into colors, handing out the palette in the tree's order, from the
   weekdays, hours and durations known ahead, or from a key's own text for a
   period. An event with several values, such as an aspect between two planets,
-  takes the first in the legend's order; one with none keeps the color the
-  data gave it. With no `color`, events are colored by type, kind by kind
+  takes the first in the legend's order; one with none keeps the color of its
+  kind, the API storing no color of its own. With no `color`, events are colored by type, kind by kind
   (`EVENT_COLOR_RULES`); `colors=false` draws none.
 - The timeline is the vendored ReUI Gantt, composed in `CalendarTimeline`:
   a row per group, nested and collapsible, a tag group grouped below its

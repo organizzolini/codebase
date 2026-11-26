@@ -23,8 +23,8 @@ content between the PostgreSQL entity relationship diagram markers.
 
 **Type**: NestJS library (`type:package`), published to no registry
 
-**Purpose**: The Postgres schema Caelundas shares: entities, the migrations,
-the derived-times view, and the refresh service for the metrics view.
+**Purpose**: The Postgres schema Caelundas shares: entities, the migration, the metrics
+catalog tables, and the refresh service for the metrics facts.
 `caelundas-cli` writes through it and `caelundas-api` reads through it.
 
 ## Architecture Overview
@@ -44,43 +44,88 @@ src/
   modules/database/                      # The database module
     database.module.ts                   # CaelundasDatabaseModule
     database.service.ts                  # isConnected, refreshMetrics
-    database.constants.ts                # Project, coordinate scale, metrics view refresh
+    database.constants.ts                # Project and coordinate scale
     database.utilities.ts                # Value transformers
     data-source.constants.ts             # Entities, migrations, databaseDataSource
     modules/                             # One *.entity.ts per table or view, by domain
-      metrics/                           # The one materialized view the metrics read
+      metrics/                           # Facts, filters, groups, dimensions and the tag sets
+      metric-catalog/                    # Measures, metrics and their expression trees
 migrations/                              # The migrations, each with its .sql pair
 ```
 
 ## Rules
 
-- **Every table's id is a database-assigned `uuidv7`,** except the tag closure, the join
-  table, the star catalog and the derived tables, which keep natural keys.
-- **`calendar_events` upserts on its natural key** `(summary, start, end, latitude,
-  longitude)`; never insert an event without it.
+- **Every table's id is a database-assigned `uuidv7`,** except the closure tables, the join
+  table, the star and constellation catalogs and the edge table, which keep
+  natural keys.
+- **`calendar_events` upserts on its natural key** `(name, start, end, latitude,
+longitude)`; never insert an event without it. Its columns are `name`, `note`, `start`,
+  `end`, `timezone`, `latitude`, `longitude`; `location` and `color` were dropped (no
+  producer set them and nothing needs them), and `start`/`end` are absolute instants whose
+  zone is `timezone`.
+- **`tags.slug` is the machine-readable name,** `name` lowercased, each run of characters
+  outside a-z and 0-9 replaced by one `-`, leading and trailing `-` trimmed (`Forming` is
+  `forming`, `Cross-Quarter Day` is `cross-quarter-day`), unique among siblings like the
+  name: one partial unique index on the root slugs, one on `(parent_id, slug)`.
+- **Renames to know:** `stars.hip` is `hipparcos_number`; `constellations.zodiac` is
+  `is_zodiac`; `constellation_edges` has `constellation_id` (its owner), and `source_node` and
+  `target_node`, the `@Graph` decorator's defaults; it is a hand-written edge entity because the
+  generated form has no owner column.
 - **Instants are `timestamptz`, coordinates `numeric(9,6)`, whole numbers `bigint`.** Each
-  has a transformer in `database.utilities.ts`; `squawk` rejects `integer`.
-- **The derived-times view needs no refresh;** the one metrics materialized view is refreshed
-  concurrently by `refreshMetrics(manager)`, in the caller's transaction when it has one. A
-  view's name is not pluralized into sense: `calendar_event_derived_times` is already plural.
-  There are no `tag_nodes` or `calendar_event_tag_nodes` tables: read a tag's depth, root, path
-  and rank from `tags` and `tags_closure`, and an event's tags from `calendar_event_tags`.
-- **`calendar_event_facts` is the one table Charts and Totals read,** a
-  `@ViewEntity({ materialized: true })` built with `GROUPING SETS`. Its `filter` column names the
-  grain of each row (`event`, `day`, `day-tag`, `day-tag-name`), every query must pin it
-  (`filter = 'day-tag'`), and every index leads with it. `is_phase_boundary` is in every grain's
-  key. The unique key a concurrent refresh needs is the not-null `row_key` (a hash of the grain's
-  keys): a unique index over nullable key columns, even `NULLS NOT DISTINCT`, makes the refresh
-  delete and reinsert every row. The grains, columns, indexes and the SQL for every metric are in
-  [documentation/metrics-facts.md](documentation/metrics-facts.md); keep it current when the
-  view changes. A view's `@Index` is created by the migration like a table's, and TypeORM compares
-  only an index's name, so the `where` of a partial index lives in the migration too.
-- **Migration `1795568633626` creates the view,** and `1795631900000` drops the two derived tag
-  tables the baseline created (its `down` recreates them empty).
-- **The first migration is the baseline,** and the second replaces
-  `constellation_lines` with the generated `constellation_edges`. Regenerate the first with `nx run caelundas-db:migration:generate` against
-  an empty local Postgres (schema-unqualified), then apply the two hand edits the README
-  lists. Never edit the generated SQL otherwise.
+  has a transformer in `database.utilities.ts`; `squawk` rejects `integer` in a table.
+- **`calendar_events` stores its local time.** `start_local_day` and `end_local_day` (`date`) and
+  `start_local_hour` (`smallint`) are `GENERATED ALWAYS AS (...) STORED` from `start`/`end` `at time zone
+timezone` (Postgres 18 treats `timezone(text, timestamptz)` as immutable), declared on the entity with
+  `generatedType: "STORED"`, `asExpression`, `insert: false` and `update: false`, so no insert, upsert or
+  update ever writes them (the CLI's upsert names its columns). `start_local_day` is indexed. The weekday is
+  `extract(dow from start_local_day)`; duration minutes and temporality are computed inline (see
+  [documentation/metrics-facts.md](documentation/metrics-facts.md)). TypeORM keeps each generated column's
+  expression in `typeorm_metadata`, which the migration fills with `current_database()` so the rows match
+  whatever database it runs in. There are no `tag_nodes` or `calendar_event_tag_nodes` tables: read a tag's
+  depth, root, path and rank from `tags` and `tags_closure`.
+- **`calendar_event_facts` is one measure at one filter a row,** `(filter_id, measure_id, measurement)`, in the
+  unit of the measure, a plain table `refreshMetrics(manager)` brings up to date (upsert the new or changed,
+  delete the gone; a refresh that changes nothing writes nothing). Only the measures that merge across days are
+  stored (`events`, `perfective-events`, `progressive-events`, `duration`, `first-start`,
+  `last-start`; a zero has no row), for the default scope by definition (every event except the Forming and
+  Dissolving phase boundaries, in the table's comment and the refresh), and never the six that do not
+  (`unique-names`, `unique-tags`, `covered-duration`, the longest, shortest and median progressive duration),
+  which the API reads from the events. A perfective event lasts no minutes and every other event is
+  progressive, so the old `progressive-duration` equalled `duration` and was merged into it. `dimensions` are
+  the ways events are sliced (`name`, `day`, `week`, `month`, `quarter`, `year`, `tag`); the time ones are a
+  graph in `dimension_edges` (a `@Graph` edge: day to week and month, month to quarter, quarter to year), and
+  `tag` is flat, its values the rows of `tags`. `groups` are sets of dimensions (`group_dimensions`), one
+  dimension each for now, and stay a table for the dimensions that will not mirror a group. `filters`
+  instantiate a group by pinning a `period`, a `tag_id` or an `event_name` (never a copied name): a day
+  filter has no parent, and a tag filter sits beneath its parent tag's filter on the same day, or the day's,
+  and carries the day's `period` so a window is an index range.
+- **`calendar_event_tag_sets` is the materialized view the event path reads,** an event's `tag_ids` and
+  `ancestor_tag_ids` as sorted GIN-indexed arrays, refreshed concurrently first. Filtering by a tag matches
+  `tag_ids || ancestor_tag_ids`. Everything else an event row needs comes from `calendar_events`. The groups,
+  filters, columns, sizes and the catalog are in [documentation/metrics-facts.md](documentation/metrics-facts.md)
+  and [documentation/catalog-tables.md](documentation/catalog-tables.md); keep them current when they change.
+  A view's `@Index` is created by the migration like a table's.
+- **Two plpgsql functions give the planner honest row counts.** `expand_keys(text[])` (`ROWS 2`) expands the
+  keys of a level into one row, or one null row for none, and `expand_tags(uuid[])` (`ROWS 6`) expands an
+  array of tags. The API's metrics statements call them in place of `unnest` over a computed array, whose
+  estimate of ten rows each multiplied level by level into millions and sent the planner to disk sorts, merge
+  joins and JIT. They are plpgsql so Postgres does not inline them and lose the estimate; they live in the
+  migration beside the view.
+- **`measures`, `metrics` and `metric_expressions` are seeded reference data.** `measures` and
+  `metrics` are catalogs (`slug`, `name`, `icon`, `note`, `unit`), a metric's `expression_id`
+  roots its closure-table expression tree (no owner column, a `metric` node reads another metric
+  through `metric_id`), and which facts column or aggregate a measure uses lives in the API's
+  registry keyed by `slug`.
+- **One migration, `1795709495833`, creates the whole schema,** the functions, the tag sets view and the seed included. Nothing is
+  deployed yet, so a schema change regenerates it: empty the migrations, run
+  `nx run caelundas-db:migration:generate` against an empty local Postgres
+  (schema-unqualified), then apply the hand edits the README lists. Never edit the
+  generated SQL otherwise.
+
+- **`documentation/metric-expressions.md` is generated** between its markers by
+  `nx run caelundas-db:metric-expressions` (the `caelundas-cli` `metric-expressions` command, kept
+  there because this project's callidescope limits leave no room for it) from the local database
+  (`:check` compares); do not edit the block, and rewrite it when a metric or its expression changes.
 
 ## Commands
 

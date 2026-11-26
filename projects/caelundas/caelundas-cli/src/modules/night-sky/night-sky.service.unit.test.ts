@@ -106,9 +106,9 @@ describe(NightSkyService, () => {
       [
         {
           designation: "UMa",
-          edges: [{ fromHip: 54_061, toHip: 53_910 }],
+          edges: [{ sourceNode: 54_061, targetNode: 53_910 }],
+          isZodiac: false,
           name: "Ursa Major",
-          zodiac: false,
         },
       ],
       { chunk: CONSTELLATION_SAVE_CHUNK_SIZE },

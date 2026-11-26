@@ -1,28 +1,23 @@
-import type { FactsGrain } from "../../event-metrics.types";
-
 // 🏷️ Types
 
 /** A calendar field's rollup column and the key SQL it makes. */
 export interface RollupCalendarKey {
   column: string;
   key: string;
+  /** The column's SQL over a row `{r}`, which carries its day. */
+  source: string;
 }
-
-/** A side statement of metrics that read more than the totals. */
-export type RollupFamily = "directs" | "durations" | "names";
 
 /** What a rollup statement groups by and reads. */
 export interface RollupTarget {
+  /** The facts of each day, or of each day and tag node, as rows. */
+  cells: string;
   columns: string;
   crossingExtra: string;
   crossingJoin: string;
-  /** The grain of `calendar_event_facts` the groups are read from. */
-  grain: FactsGrain;
   /** The rollup column the groups are of, or none for the whole set. */
   group: null | string;
   join: string;
-  names: string;
-  restrict: string;
   rollupExtra: string;
   /** The tag whose children are the groups, when a tag level. */
   root: null | string;

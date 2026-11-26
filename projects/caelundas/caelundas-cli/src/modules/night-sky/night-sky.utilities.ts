@@ -43,8 +43,8 @@ export function buildNightSkyRows(sources: NightSkySources): NightSkyRows {
   for (const constellation of parseConstellations(sources.constellations)) {
     const figure = edges.get(constellation.designation) ?? [];
 
-    for (const { fromHip, toHip } of figure) {
-      joined.add(fromHip).add(toHip);
+    for (const { sourceNode, targetNode } of figure) {
+      joined.add(sourceNode).add(targetNode);
     }
     constellations.push({ ...constellation, edges: figure });
   }
@@ -52,7 +52,8 @@ export function buildNightSkyRows(sources: NightSkySources): NightSkyRows {
   return {
     constellations,
     stars: catalog.filter(
-      (star) => star.magnitude <= MAXIMUM_MAGNITUDE || joined.has(star.hip),
+      (star) =>
+        star.magnitude <= MAXIMUM_MAGNITUDE || joined.has(star.hipparcosNumber),
     ),
   };
 }
@@ -108,9 +109,9 @@ export function parseConstellations(text: string): ConstellationRow[] {
     .features) {
     rows.set(feature.id, {
       designation: feature.id,
+      isZodiac: ZODIAC_DESIGNATIONS.has(feature.id),
       name:
         SPLIT_CONSTELLATION_NAMES.get(feature.id) ?? feature.properties.name,
-      zodiac: ZODIAC_DESIGNATIONS.has(feature.id),
     });
   }
 
@@ -166,14 +167,19 @@ export function traceConstellationEdges(
         if (from !== undefined && to !== undefined && from !== to) {
           const key = [
             feature.id,
-            ...[from.hip, to.hip].toSorted((first, second) => first - second),
+            ...[from.hipparcosNumber, to.hipparcosNumber].toSorted(
+              (first, second) => first - second,
+            ),
           ].join(":");
 
           segments.set(
             key,
             segments.get(key) ?? {
               designation: feature.id,
-              edge: { fromHip: from.hip, toHip: to.hip },
+              edge: {
+                sourceNode: from.hipparcosNumber,
+                targetNode: to.hipparcosNumber,
+              },
             },
           );
         }
@@ -224,11 +230,12 @@ function measureSeparation(
  * or an unreadable row.
  */
 function readCatalogStar(fields: readonly string[]): CatalogStar | undefined {
-  const [id, hip, ra, dec, mag, ci] = fields;
+  const [id, hipparcosNumber, ra, dec, mag, ci] = fields;
   const star = {
     colorIndex: ci === "" ? MISSING_COLOR_INDEX : Number(ci),
     declinationDegrees: Number(dec),
-    hip: hip === "" ? Number.NaN : Number(hip),
+    hipparcosNumber:
+      hipparcosNumber === "" ? Number.NaN : Number(hipparcosNumber),
     magnitude: Number(mag),
     rightAscensionHours: Number(ra),
   };
@@ -249,7 +256,7 @@ function roundStar(star: CatalogStar): CatalogStar {
   return {
     colorIndex: Number(star.colorIndex.toFixed(2)),
     declinationDegrees: Number(star.declinationDegrees.toFixed(3)),
-    hip: star.hip,
+    hipparcosNumber: star.hipparcosNumber,
     magnitude: Number(star.magnitude.toFixed(1)),
     rightAscensionHours: Number(star.rightAscensionHours.toFixed(4)),
   };

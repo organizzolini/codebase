@@ -1,211 +1,153 @@
 // ♟️ Constants
 
-// Every metric per tag node, and for the whole set under a null tag, computed
-// from the raw events and the tag tree: the reference the facts must equal.
-/** Reference metrics from the raw events. */
-export const RAW_METRICS_SQL = `
-with phase as (
-    select f.id
-    from tags as f
-    inner join tags as p on f.parent_id = p.id
-    inner join tags as a on p.parent_id = a.id and a.parent_id is null
-    where a."name" = 'Aspect' and p."name" = 'Phase' and f."name" in ('Forming', 'Dissolving')
-),
-progressive as (
-    select f.id
-    from tags as f
-    inner join tags as a on f.parent_id = a.id and a.parent_id is null
-    where a."name" = 'Temporality' and f."name" = 'Progressive'
-),
-carried as (
-    select et.calendar_event_id, c.ancestor_id as tag_id
-    from calendar_event_tags as et
-    inner join tags_closure as c on et.tag_id = c.descendant_id
-    group by et.calendar_event_id, c.ancestor_id
-),
-raw as (
+/** The id of the group `slug` names. */
+const group = (slug: string): string =>
+  `(select id from "groups" where slug = '${slug}')`;
+
+// A cell is a local day and a tag node, or a day alone. The facts are the default
+// scope's by definition: every event except the Forming and Dissolving phase
+// boundaries, which `phase` finds by tag path. A node counts its descendants.
+/** The cells: one local day and tag node, with their measures. */
+const CELLS_SQL = `
+  phase as (
+    select coalesce(array_agg(pc.descendant_id), '{}'::uuid[]) as ids
+    from tags as p
+    inner join tags as pa on p.parent_id = pa.id
+    inner join tags as ra on pa.parent_id = ra.id and ra.parent_id is null
+    inner join tags_closure as pc on p.id = pc.ancestor_id
+    where ra."name" = 'Aspect' and pa."name" = 'Phase' and p."name" in ('Forming', 'Dissolving')
+  ),
+  events as (
     select
-        e.id,
-        e.summary,
-        e."start",
-        e."end",
-        (e."start" at time zone e.timezone)::date as day,
-        extract(epoch from e."end" - e."start") as seconds
+      e."start",
+      e."end",
+      e.start_local_day as "day",
+      floor(extract(epoch from e."end" - e."start") / 60)::integer as minutes,
+      s.tag_ids || s.ancestor_tag_ids as carried
     from calendar_events as e
-    where (e."start" at time zone e.timezone)::date >= $1::date
-        and (e."start" at time zone e.timezone)::date < $2::date
-        and not exists (
-            select 1 from carried as x
-            where x.calendar_event_id = e.id and x.tag_id in (select id from phase)
-        )
-),
-pairs as (
-    select r.id, n.tag_id from raw as r inner join carried as n on r.id = n.calendar_event_id
+    inner join calendar_event_tag_sets as s on e.id = s.calendar_event_id
+    cross join phase
+    where not (s.tag_ids && phase.ids)
+  ),
+  expanded as (
+    select v."day", v."start", v."end", v.minutes, null::uuid as tag_id
+    from events as v
     union all
-    select r.id, null from raw as r
-)
-select
-    p.tag_id::text as tag_id,
-    (avg(r.seconds / 60) filter (where r."end" > r."start"))::float8 as average,
-    (select coalesce(sum(extract(epoch from upper(g) - lower(g))), 0) / 60
-        from unnest(range_agg(tstzrange(r."start", r."end"))) as g)::float8 as covered,
-    count(distinct r.day)::float8 as days,
-    count(*)::float8 as events,
-    (extract(epoch from min(r."start")) * 1000)::float8 as first_start,
-    (count(*) filter (where r."end" = r."start"))::float8 as instants,
-    (extract(epoch from max(r."start")) * 1000)::float8 as last_start,
-    (max(r.seconds / 60) filter (where r."end" > r."start"))::float8 as longest,
-    (percentile_cont(0.5) within group (order by r.seconds / 60) filter (where r."end" > r."start"))::float8 as median,
-    count(distinct r.summary)::float8 as names,
-    (coalesce(sum(r.seconds) filter (where exists (
-        select 1 from carried as g
-        where g.calendar_event_id = r.id and g.tag_id in (select id from progressive)
-    )), 0) / 3600)::float8 as progressive_hours,
-    (min(r.seconds / 60) filter (where r."end" > r."start"))::float8 as shortest,
-    (count(*) filter (where r."end" > r."start"))::float8 as spans,
-    (coalesce(sum(r.seconds), 0) / 60)::float8 as total_minutes,
-    (select count(distinct d.tag_id) from calendar_event_tags as d
-        where d.calendar_event_id = any(array_agg(r.id)))::float8 as unique_tags
-from pairs as p
-inner join raw as r on p.id = r.id
-group by p.tag_id
-order by p.tag_id::text collate "C" nulls first`;
+    select v."day", v."start", v."end", v.minutes, k.tag_id
+    from events as v
+    cross join lateral (select distinct u.id as tag_id from unnest(v.carried) as u (id)) as k
+  ),
+  cells as (
+    select
+      x."day",
+      x.tag_id,
+      count(*) as events,
+      count(*) filter (where x."start" = x."end") as perfective,
+      count(*) filter (where x."start" < x."end") as progressive,
+      sum(x.minutes) as minutes,
+      (extract(epoch from min(x."start")) * 1000)::float8 as first_start,
+      (extract(epoch from max(x."start")) * 1000)::float8 as last_start
+    from expanded as x
+    group by x."day", x.tag_id
+  )`;
 
-// Every metric per tag node, from the day-tag and day-tag-name grains of the
-// facts alone, over `[$1, $2)` local days.
-/** Per-tag metrics from the facts. */
-export const ROLLUP_METRICS_SQL = `
-with window_rows as not materialized (
-    select * from calendar_event_facts as r
-    where r."filter" = 'day-tag' and r.is_phase_boundary = false
-        and r.local_day >= $1::date and r.local_day < $2::date
-),
-totals as (
-    select
-        w.tag_id,
-        sum(w.events) as events,
-        sum(w.instants) as instants,
-        sum(w.spans) as spans,
-        sum(w.duration_seconds) as seconds,
-        sum(w.progressive_seconds) as progressive_seconds,
-        min(w.first_start) as first_start,
-        max(w.last_start) as last_start,
-        count(distinct w.local_day) as days,
-        range_agg(w.covered_range) as covered
-    from window_rows as w
-    group by w.tag_id
-),
-durations as (
-    select
-        w.tag_id,
-        avg(u.seconds / 60.0) as average,
-        max(u.seconds) / 60.0 as longest,
-        percentile_cont(0.5) within group (order by u.seconds / 60.0) as median,
-        min(u.seconds) / 60.0 as shortest
-    from window_rows as w
-    cross join lateral unnest(w.span_duration_seconds) as u (seconds)
-    group by w.tag_id
-),
-names as (
-    select z.tag_id, count(*) as names
-    from (
-        select distinct m.tag_id, m.name
-        from calendar_event_facts as m
-        where m."filter" = 'day-tag-name' and m.is_phase_boundary = false
-            and m.local_day >= $1::date and m.local_day < $2::date
-    ) as z
-    group by z.tag_id
-),
-directs as (
-    select z.tag_id, count(*) as unique_tags
-    from (
-        select distinct w.tag_id, k.id
-        from window_rows as w
-        cross join lateral unnest(w.direct_tag_ids) as k (id)
-    ) as z
-    group by z.tag_id
-)
-select
-    t.tag_id::text as tag_id,
-    d.average::float8 as average,
-    (select coalesce(sum(extract(epoch from upper(g) - lower(g))), 0) / 60 from unnest(t.covered) as g)::float8 as covered,
-    t.days::float8 as days,
-    t.events::float8 as events,
-    (extract(epoch from t.first_start) * 1000)::float8 as first_start,
-    t.instants::float8 as instants,
-    (extract(epoch from t.last_start) * 1000)::float8 as last_start,
-    d.longest::float8 as longest,
-    d.median::float8 as median,
-    coalesce(n.names, 0)::float8 as names,
-    (t.progressive_seconds / 3600.0)::float8 as progressive_hours,
-    d.shortest::float8 as shortest,
-    t.spans::float8 as spans,
-    (t.seconds / 60.0)::float8 as total_minutes,
-    coalesce(k.unique_tags, 0)::float8 as unique_tags
-from totals as t
-left join durations as d on t.tag_id = d.tag_id
-left join names as n on t.tag_id = n.tag_id
-left join directs as k on t.tag_id = k.tag_id
-order by t.tag_id::text collate "C"`;
+/** Adds the filter of each day with an event. */
+const INSERT_DAY_FILTERS_SQL = `
+  with ${CELLS_SQL}
+  insert into filters (group_id, period)
+  select ${group("day")}, d."day"
+  from (select distinct "day" from cells where tag_id is null) as d
+  on conflict do nothing`;
 
-// Every metric for the whole set under a null tag, from the day grain of the
-// facts alone, over `[$1, $2)` local days: no join and no tag.
-/** Whole-set metrics from the facts. */
-export const ROLLUP_TOTAL_METRICS_SQL = `
-with window_rows as not materialized (
-    select * from calendar_event_facts as r
-    where r."filter" = 'day' and r.is_phase_boundary = false
-        and r.local_day >= $1::date and r.local_day < $2::date
-),
-durations as (
-    select
-        avg(u.seconds / 60.0) as average,
-        max(u.seconds) / 60.0 as longest,
-        percentile_cont(0.5) within group (order by u.seconds / 60.0) as median,
-        min(u.seconds) / 60.0 as shortest
-    from window_rows as w
-    cross join lateral unnest(w.span_duration_seconds) as u (seconds)
-),
-names as (
-    select count(distinct u.name) as names
-    from window_rows as w cross join lateral unnest(w.event_names) as u (name)
-),
-directs as (
-    select count(distinct k.id) as unique_tags
-    from window_rows as w cross join lateral unnest(w.direct_tag_ids) as k (id)
-),
-totals as (
-    select
-        sum(w.events) as events,
-        sum(w.instants) as instants,
-        sum(w.spans) as spans,
-        sum(w.duration_seconds) as seconds,
-        sum(w.progressive_seconds) as progressive_seconds,
-        min(w.first_start) as first_start,
-        max(w.last_start) as last_start,
-        count(distinct w.local_day) as days,
-        range_agg(w.covered_range) as covered
-    from window_rows as w
-)
-select
-    null::text as tag_id,
-    d.average::float8 as average,
-    (select coalesce(sum(extract(epoch from upper(g) - lower(g))), 0) / 60 from unnest(t.covered) as g)::float8 as covered,
-    t.days::float8 as days,
-    t.events::float8 as events,
-    (extract(epoch from t.first_start) * 1000)::float8 as first_start,
-    t.instants::float8 as instants,
-    (extract(epoch from t.last_start) * 1000)::float8 as last_start,
-    d.longest::float8 as longest,
-    d.median::float8 as median,
-    n.names::float8 as names,
-    (t.progressive_seconds / 3600.0)::float8 as progressive_hours,
-    d.shortest::float8 as shortest,
-    t.spans::float8 as spans,
-    (t.seconds / 60.0)::float8 as total_minutes,
-    k.unique_tags::float8 as unique_tags
-from totals as t
-cross join durations as d
-cross join names as n
-cross join directs as k
-where t.events is not null`;
+/** Adds each tag's filters, one per day it has an event. */
+const INSERT_TAG_FILTERS_SQL = `
+  with ${CELLS_SQL}
+  insert into filters (group_id, period, tag_id)
+  select ${group("tag")}, c."day", c.tag_id
+  from cells as c
+  where c.tag_id is not null
+  on conflict do nothing`;
+
+/** Hangs each tag filter beneath its parent tag's, or the day's. */
+const PLACE_TAG_FILTERS_SQL = `
+  update filters as f
+  set parent_id = p.parent_id, updated_at = now()
+  from (
+    select f2.id, coalesce(pf.id, df.id) as parent_id
+    from filters as f2
+    inner join tags as t on f2.tag_id = t.id
+    left join filters as pf
+      on pf.group_id = f2.group_id and pf.period = f2.period and pf.tag_id = t.parent_id
+    inner join filters as df on df.group_id = ${group("day")} and df.period = f2.period
+    where f2.group_id = ${group("tag")}
+  ) as p
+  where f.id = p.id and f.parent_id is distinct from p.parent_id`;
+
+/** Drops the filters of days and tags that lost their events. */
+const DELETE_FILTERS_SQL = `
+  with ${CELLS_SQL}
+  delete from filters as f
+  where f.group_id in (${group("day")}, ${group("tag")})
+    and not exists (
+      select 1
+      from cells as c
+      where c."day" = f.period and c.tag_id is not distinct from f.tag_id
+    )`;
+
+// A zero reads as no row, and the measures that do not merge have none.
+/** Every cell's measures, as the rows the facts should hold. */
+const WANTED_SQL = `
+  located as (
+    select c.*, f.id as filter_id
+    from cells as c
+    inner join filters as f
+      on f.period = c."day" and f.tag_id is not distinct from c.tag_id
+      and f.group_id = case when c.tag_id is null then ${group("day")} else ${group("tag")} end
+  ),
+  wanted as (
+    select l.filter_id, m.id as measure_id, v.measurement
+    from located as l
+    cross join lateral (values
+      ('events', l.events::float8),
+      ('perfective-events', case when l.perfective > 0 then l.perfective::float8 end),
+      ('progressive-events', case when l.progressive > 0 then l.progressive::float8 end),
+      ('duration', case when l.minutes > 0 then l.minutes::float8 end),
+      ('first-start', l.first_start),
+      ('last-start', l.last_start)
+    ) as v (slug, measurement)
+    inner join measures as m on m.slug = v.slug
+    where v.measurement is not null
+  )`;
+
+/** Writes the new or changed measures, touching no other row. */
+const UPSERT_FACTS_SQL = `
+  with ${CELLS_SQL},
+  ${WANTED_SQL}
+  insert into calendar_event_facts (filter_id, measure_id, measurement)
+  select w.filter_id, w.measure_id, w.measurement
+  from wanted as w
+  on conflict (filter_id, measure_id)
+  do update set measurement = excluded.measurement
+  where calendar_event_facts.measurement is distinct from excluded.measurement`;
+
+/** Drops the measures that no cell holds any more. */
+const DELETE_FACTS_SQL = `
+  with ${CELLS_SQL},
+  ${WANTED_SQL}
+  delete from calendar_event_facts as r
+  where not exists (
+    select 1
+    from wanted as w
+    where w.filter_id = r.filter_id and w.measure_id = r.measure_id
+  )`;
+
+/** The refresh statements, in the order they must run. */
+export const METRICS_REFRESH_STATEMENTS: readonly string[] = [
+  "refresh materialized view concurrently calendar_event_tag_sets",
+  INSERT_DAY_FILTERS_SQL,
+  INSERT_TAG_FILTERS_SQL,
+  PLACE_TAG_FILTERS_SQL,
+  DELETE_FILTERS_SQL,
+  UPSERT_FACTS_SQL,
+  DELETE_FACTS_SQL,
+];

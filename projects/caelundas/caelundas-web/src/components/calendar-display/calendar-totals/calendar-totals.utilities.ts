@@ -2,11 +2,13 @@ import { findMetricValue } from "../calendar-metrics/calendar-metrics.utilities"
 
 import { FULL_PERCENT } from "./calendar-totals.constants";
 
-import type { EventMetric } from "../../../graphql/generated/operations";
 import type {
+  MetricDescriptor,
   MetricGroup,
   MetricNode,
+  MetricValue,
 } from "../calendar-metrics/calendar-metrics.types";
+import type { TotalsCardEntry } from "./calendar-totals.types";
 
 // 🔏 Private Functions
 
@@ -41,7 +43,7 @@ export function findGroupColor(
  */
 export function findGroupValue(
   group: MetricGroup,
-  metric: EventMetric,
+  metric: string,
 ): null | number {
   return findMetricValue(group.values, metric)?.value ?? null;
 }
@@ -58,4 +60,24 @@ export function getSharePercent(
   }
 
   return Math.min(FULL_PERCENT, Math.max(0, (value / total) * FULL_PERCENT));
+}
+
+/**
+ * Pairs each total with its metric, in order; a total the catalog lacks is left out.
+ */
+export function toTotalsCards(
+  totals: readonly MetricValue[],
+  bySlug: ReadonlyMap<string, MetricDescriptor>,
+): TotalsCardEntry[] {
+  const cards: TotalsCardEntry[] = [];
+
+  for (const total of totals) {
+    const metric = bySlug.get(total.metric);
+
+    if (metric !== undefined) {
+      cards.push({ metric, total });
+    }
+  }
+
+  return cards;
 }

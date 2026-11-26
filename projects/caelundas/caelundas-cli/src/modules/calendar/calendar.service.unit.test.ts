@@ -1,7 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
 import { ConfigService } from "@nestjs/config";
-import _ from "lodash";
 import moment from "moment-timezone";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -78,38 +77,6 @@ describe(CalendarService, () => {
       const vevent = service.buildEventContent(baseEvent);
 
       expect(vevent).not.toContain("TAGS:");
-    });
-
-    it("includes optional location when provided", () => {
-      const eventWithLocation: DetectedCalendarEvent = {
-        ...baseEvent,
-        location: "Philadelphia, PA",
-      };
-      const vevent = service.buildEventContent(eventWithLocation);
-
-      expect(vevent).toContain("LOCATION:Philadelphia, PA");
-    });
-
-    it("includes color when provided", () => {
-      const eventWithColor: DetectedCalendarEvent = {
-        ...baseEvent,
-        color: "red",
-      };
-      const vevent = service.buildEventContent(eventWithColor);
-
-      expect(vevent).toContain("COLOR:red");
-    });
-
-    it("leaves out a stored null location and color", () => {
-      const storedEvent: DetectedCalendarEvent = {
-        ...baseEvent,
-        color: null,
-        location: null,
-      };
-      const vevent = service.buildEventContent(storedEvent);
-
-      expect(vevent).not.toContain("LOCATION:");
-      expect(vevent).not.toContain("COLOR:");
     });
 
     it("generates unique UID based on event details", () => {
@@ -610,10 +577,8 @@ describe(CalendarService, () => {
     };
     const events: DetectedCalendarEvent[] = [
       {
-        color: "red",
         description: "Sample event",
         end: moment.utc("2025-03-20T10:00:00Z"),
-        location: "Philadelphia",
         start: moment.utc("2025-03-20T09:00:00Z"),
         summary: "Sample event",
         tags: ["Astronomy"],
@@ -632,10 +597,8 @@ describe(CalendarService, () => {
         JSON.parse(new TextDecoder().decode(content as Uint8Array)),
       ).toStrictEqual([
         {
-          color: "red",
           description: "Sample event",
           end: "2025-03-20T10:00:00.000Z",
-          location: "Philadelphia",
           start: "2025-03-20T09:00:00.000Z",
           summary: "Sample event",
           tags: ["Astronomy"],
@@ -655,22 +618,6 @@ describe(CalendarService, () => {
 
       expect(first).toHaveProperty("tags");
       expect(first).not.toHaveProperty("categories");
-    });
-
-    it("writes null for a missing color and location", async () => {
-      vi.spyOn(logger, "info").mockReturnValue(undefined);
-      const missing = events.map((event) =>
-        _.omit(event, ["color", "location"]),
-      );
-
-      await service.writeJson(missing, input);
-
-      const content = vi.mocked(writeFile).mock.calls.at(-1)?.[1];
-      const [written] = JSON.parse(
-        new TextDecoder().decode(content as Uint8Array),
-      ) as { color: null; location: null }[];
-
-      expect(written).toMatchObject({ color: null, location: null });
     });
 
     it("falls back to the default output directory", async () => {

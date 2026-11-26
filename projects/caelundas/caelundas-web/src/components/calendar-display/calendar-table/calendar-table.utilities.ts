@@ -1,3 +1,5 @@
+import { COMPACT_SPAN } from "../calendar-metrics/components/calendar-metrics-span/calendar-metrics-span.constants";
+import { formatDurationSpan } from "../calendar-metrics/components/calendar-metrics-span/calendar-metrics-span.utilities";
 import { AGENDA_DAY_COUNT } from "../events-calendar/components/calendar-views/calendar-views.constants";
 import {
   addCalendarDays,
@@ -86,6 +88,15 @@ export function formatCellTime(date: Date, timeZone: string): string {
 }
 
 /**
+ * How long an event lasts as its largest units, or "Instant" when it lasts no time.
+ */
+export function formatEventDuration(record: CalendarEventRecord): string {
+  return record.durationMinutes === 0
+    ? "Instant"
+    : formatDurationSpan(record.durationMinutes, COMPACT_SPAN);
+}
+
+/**
  * What a column's cell shows for an event: its name, a time, or the tags it has beneath the column's tag.
  */
 export function getCellText(
@@ -94,7 +105,7 @@ export function getCellText(
   timeZone: string,
 ): string {
   if (column.kind === "name") {
-    return record.summary;
+    return record.name;
   }
 
   if (column.kind === "group" || column.kind === "number") {
@@ -103,6 +114,10 @@ export function getCellText(
 
   if (column.kind === "tag") {
     return getTagCellText(record, column.prefix ?? "");
+  }
+
+  if (column.kind === "duration") {
+    return formatEventDuration(record);
   }
 
   return formatCellTime(
@@ -117,8 +132,6 @@ export function getCellText(
 export function getColumnWidth(column: TableColumn): string {
   return `${String(COLUMN_WIDTH_REM[column.kind])}rem`;
 }
-
-// 🌎 Public Functions
 
 /**
  * The day the table lists an event under, and whether it was already under way, or `null` if no day lists it.
@@ -138,6 +151,8 @@ export function getDayListing(
 
   return day >= from && day < through ? { day, ongoing } : null;
 }
+
+// 🌎 Public Functions
 
 /**
  * The range of days from the day it opens on.
@@ -189,6 +204,17 @@ export function getTagCellEntries(
  */
 export function isPositionColumn(column: TableColumn): boolean {
   return column.kind === "group" || column.kind === "number";
+}
+
+/**
+ * Whether a column shows a time or a length of time, which its cells draw as a pill.
+ */
+export function isTimeColumn(column: TableColumn): boolean {
+  return (
+    column.kind === "start" ||
+    column.kind === "end" ||
+    column.kind === "duration"
+  );
 }
 
 /**
@@ -263,7 +289,9 @@ export function toggleExpanded(
 export function toTableRows(
   groups: readonly EventGroupNode[],
   events: readonly CalendarEventRecord[],
-  view: Readonly<TablePaging & { expanded: ReadonlySet<string> }>,
+  view: Readonly<
+    TablePaging & { expanded: ReadonlySet<string>; isOrdered?: boolean }
+  >,
 ): TableRowModel[] {
   const { expanded: open } = view;
   const rows: TableRowModel[] = [];
@@ -271,9 +299,12 @@ export function toTableRows(
   if (groups.length === 0) {
     appendEvents(rows, {
       depth: 0,
-      events: events.toSorted(
-        (left, right) => left.start.getTime() - right.start.getTime(),
-      ),
+      events:
+        view.isOrdered === true
+          ? events
+          : events.toSorted(
+              (left, right) => left.start.getTime() - right.start.getTime(),
+            ),
       listId: FLAT_LIST_ID,
       paging: view,
     });
@@ -382,6 +413,7 @@ function findColumn(
         id,
         kind: "tag",
         label: [field.label, ...node.path.split(" / ")].join(" › "),
+        name: node.name,
         prefix: `${field.label} / ${node.path}`,
       };
     }

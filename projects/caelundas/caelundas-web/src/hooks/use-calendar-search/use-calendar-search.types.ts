@@ -7,7 +7,6 @@ import type { CalendarSymbols } from "../../components/calendar-events/event-gly
 import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 import type { EventGrouping } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
-import type { EventMetric } from "../../graphql/generated/operations";
 import type { CalendarSearch } from "./calendar-search.types";
 
 // 🏷️ Types
@@ -16,14 +15,15 @@ import type { CalendarSearch } from "./calendar-search.types";
  * The ways the page writes a change to the link.
  */
 export interface UseCalendarSearchResult {
-  handleClustersChange: (enabled: boolean) => void;
   handleColorsChange: (enabled: boolean) => void;
   handleColumnsChange: (columns: readonly string[] | undefined) => void;
   handleCompareChange: (enabled: boolean) => void;
   handleDateChange: (date: Date) => void;
   handleFilterChange: (filter: EventFilterQuery) => void;
+  handleFoldChange: (fold: string | undefined) => void;
   handleGroupingChange: (grouping: EventGrouping) => void;
-  handleMetricsChange: (metrics: readonly EventMetric[] | undefined) => void;
+  handleHideEmptyChange: (enabled: boolean) => void;
+  handleMetricsChange: (metrics: readonly string[] | undefined) => void;
   handleRangeChange: (view: CalendarViewName, range: DateRangeValue) => void;
   handleScaleChange: (scale: TimelineScale) => void;
   handleSortChange: (sort: readonly GroupSort[] | undefined) => void;

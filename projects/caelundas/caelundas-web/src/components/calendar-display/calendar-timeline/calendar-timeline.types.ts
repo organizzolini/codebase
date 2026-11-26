@@ -24,6 +24,10 @@ export interface RowLayout {
    * Each group node's color by node id; absent when colors are off.
    */
   colors?: ReadonlyMap<string, string> | undefined;
+  /**
+   * How many distinct events each row holds, by id.
+   */
+  counts: Map<string, number>;
   groups: Map<string, TimelineGroup>;
   members: Map<string, Set<string>>;
 }

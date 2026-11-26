@@ -5,17 +5,11 @@ import type {
 import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 import type { EventGrouping } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
-import type { EventMetric } from "../../graphql/generated/operations";
 
 /**
  * The calendar's URL search parameters.
  */
 export interface CalendarSearch {
-  /**
-   * `false` when the views of hours leave events unmerged; merged when
-   * absent.
-   */
-  clusters?: false | undefined;
   /**
    * `false` when events are drawn without their colors; colored when absent.
    */
@@ -42,14 +36,22 @@ export interface CalendarSearch {
    */
   filter?: EventFilterQuery | undefined;
   /**
+   * The folded query strips, comma-separated (`select,group`); none folded when absent.
+   */
+  fold?: string | undefined;
+  /**
    * The levels the table and the timeline group events by, outermost
    * first, empty for none; each view's default when absent.
    */
   group?: EventGrouping | undefined;
   /**
+   * `true` to leave out groups with no events; shown when absent.
+   */
+  hideEmpty?: true | undefined;
+  /**
    * The metrics the metric layouts measure, first first; each layout's defaults when absent.
    */
-  metrics?: readonly EventMetric[] | undefined;
+  metrics?: readonly string[] | undefined;
   /**
    * The span the timeline shows at once; a month when absent.
    */

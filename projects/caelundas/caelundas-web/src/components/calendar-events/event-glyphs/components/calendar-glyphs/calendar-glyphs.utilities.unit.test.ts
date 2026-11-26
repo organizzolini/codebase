@@ -4,17 +4,16 @@ import { getEventLabel } from "./calendar-glyphs.utilities";
 
 import type { CalendarEventRecord } from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 
-function event(summary: string, description = ""): CalendarEventRecord {
+function event(name: string, note = ""): CalendarEventRecord {
   return {
     color: null,
-    description,
     durationMinutes: 0,
     end: new Date("2026-03-01T00:00:00Z"),
     groups: [],
-    id: summary,
-    location: null,
+    id: name,
+    name,
+    note,
     start: new Date("2026-03-01T00:00:00Z"),
-    summary,
     tags: [],
     timezone: "UTC",
   };

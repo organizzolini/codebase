@@ -1,7 +1,5 @@
 import { Field, Float, ObjectType } from "@nestjs/graphql";
 
-import { EventMetric } from "../inputs/event-metric.entities";
-
 // 🧬 Entities
 
 /**
@@ -9,8 +7,8 @@ import { EventMetric } from "../inputs/event-metric.entities";
  */
 @ObjectType("EventMetricValue")
 export class EventMetricValueEntity {
-  @Field(() => EventMetric, { description: "Which metric this is." })
-  metric!: EventMetric;
+  @Field(() => String, { description: "The slug of the metric this is." })
+  metric!: string;
 
   @Field(() => Float, {
     description:

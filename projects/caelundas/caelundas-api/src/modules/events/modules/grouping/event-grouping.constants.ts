@@ -52,7 +52,7 @@ export const CALENDAR_GROUP_KEY_SQL: Readonly<
   quarter: `substr(e.start_local_day, 1, 4) || '-Q' || ((substr(e.start_local_day, 6, 2)::integer + 2) / 3)::text`,
   // The Sunday the week starts on, as the calendar draws weeks.
   week: "(e.start_local_day::date - extract(dow from e.start_local_day::date)::integer)::text",
-  weekday: `extract(dow from e."start" at time zone e.timezone)::integer::text`,
+  weekday: "extract(dow from e.start_local_day::date)::integer::text",
   year: "substr(e.start_local_day, 1, 4)",
 };
 

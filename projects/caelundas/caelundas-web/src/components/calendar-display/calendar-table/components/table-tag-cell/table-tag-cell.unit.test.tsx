@@ -11,14 +11,13 @@ import type { CalendarEventRecord } from "../../../events-calendar/components/ca
 const AT = new Date("2026-03-04T15:20:00.000Z");
 const RECORD: CalendarEventRecord = {
   color: null,
-  description: "",
   durationMinutes: 0,
   end: AT,
   groups: [],
   id: "event",
-  location: null,
+  name: "Event",
+  note: "",
   start: AT,
-  summary: "Event",
   tags: [
     { depth: 0, id: "body", name: "Body", path: "Body" },
     { depth: 1, id: "sun", name: "Sun", path: "Body / Sun" },

@@ -4,11 +4,6 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { symbolByMartianPhase } from "../../../../../caelundas/symbol-caelundas.constants";
-import { ProgressiveUtilitiesService } from "../../../../../progressive/progressive-utilities.service";
-import {
-  MARS_EVENING_VISIBILITY_DESCRIPTION,
-  MARS_MORNING_VISIBILITY_DESCRIPTION,
-} from "../../phases.constants";
 import { PhaseCalculationService } from "../calculation/phase-calculation.service";
 
 import { MartianPhaseService } from "./martian-phase.service";
@@ -57,15 +52,8 @@ const configurePhaseCalculationServiceMock = (
   vi.mocked(phaseCalculationService.isEveningRise).mockReturnValue(false);
   vi.mocked(phaseCalculationService.isEveningSet).mockReturnValue(false);
   vi.mocked(phaseCalculationService.isMorningRise).mockReturnValue(false);
+  vi.mocked(phaseCalculationService.isOpposition).mockReturnValue(false);
   vi.mocked(phaseCalculationService.isMorningSet).mockReturnValue(false);
-};
-
-const configureProgressiveUtilitiesMock = (
-  progressiveUtilities: ReturnType<
-    typeof createMock<ProgressiveUtilitiesService>
-  >,
-): void => {
-  vi.mocked(progressiveUtilities.pairProgressiveEvents).mockReturnValue([]);
 };
 
 describe(MartianPhaseService, () => {
@@ -73,12 +61,9 @@ describe(MartianPhaseService, () => {
   let phaseCalculationService: ReturnType<
     typeof createMock<PhaseCalculationService>
   >;
-  let progressiveUtilitiesService: ReturnType<
-    typeof createMock<ProgressiveUtilitiesService>
-  >;
 
   const testingModuleOptions = {
-    mocks: [PhaseCalculationService, ProgressiveUtilitiesService],
+    mocks: [PhaseCalculationService],
   };
 
   beforeAll(async () => {
@@ -89,12 +74,8 @@ describe(MartianPhaseService, () => {
 
     service = instance;
     phaseCalculationService = await module.resolve(PhaseCalculationService);
-    progressiveUtilitiesService = await module.resolve(
-      ProgressiveUtilitiesService,
-    );
 
     configurePhaseCalculationServiceMock(phaseCalculationService);
-    configureProgressiveUtilitiesMock(progressiveUtilitiesService);
   });
 
   beforeEach(() => {
@@ -233,6 +214,33 @@ describe(MartianPhaseService, () => {
       expect(events[0]?.description).toBe("Mars Evening Set");
     });
 
+    it("emits Mars's opposition, tagged like a phase of the planet", () => {
+      phaseCalculationService.isMorningRise.mockReturnValue(false);
+      phaseCalculationService.isMorningSet.mockReturnValue(false);
+      phaseCalculationService.isEveningRise.mockReturnValue(false);
+      phaseCalculationService.isEveningSet.mockReturnValue(false);
+      phaseCalculationService.isOpposition.mockReturnValueOnce(true);
+
+      const [event] = service.getMartianPhaseEvents({
+        marsCoordinateEphemeris: {},
+        marsIlluminationEphemeris: {},
+        minute: createTimestamp(),
+        sunCoordinateEphemeris: {},
+      });
+
+      expect(event?.description).toBe("Mars Opposition");
+      expect(event?.summary).toBe(
+        `♂️${symbolByMartianPhase.opposition} Mars Opposition`,
+      );
+      expect(event?.tags).toStrictEqual([
+        "Astronomy",
+        "Astrology",
+        "Planetary Phase",
+        "Martian",
+        "Opposition",
+      ]);
+    });
+
     it("emits no events when all visibility checks are false", () => {
       phaseCalculationService.isMorningRise.mockReturnValue(false);
       phaseCalculationService.isMorningSet.mockReturnValue(false);
@@ -291,68 +299,6 @@ describe(MartianPhaseService, () => {
       expect(events.map((event) => event.description)).toStrictEqual(
         expect.arrayContaining(["Mars Evening Rise", "Mars Evening Set"]),
       );
-    });
-  });
-
-  describe("getMartianPhaseProgressiveEvents", () => {
-    it("creates martian morning visibility duration events", () => {
-      const morningRise: DetectedCalendarEvent = {
-        description: "Mars Morning Rise",
-        end: moment.utc("2024-01-01T00:00:00.000Z"),
-        start: moment.utc("2024-01-01T00:00:00.000Z"),
-        summary: "Mars Morning Rise",
-        tags: ["Planetary Phase", "Martian", "Morning Rise"],
-      };
-      const morningSet: DetectedCalendarEvent = {
-        description: "Mars Morning Set",
-        end: moment.utc("2024-01-02T00:00:00.000Z"),
-        start: moment.utc("2024-01-02T00:00:00.000Z"),
-        summary: "Mars Morning Set",
-        tags: ["Planetary Phase", "Martian", "Morning Set"],
-      };
-      progressiveUtilitiesService.pairProgressiveEvents.mockReturnValue([
-        [morningRise, morningSet],
-      ]);
-
-      const events = service.getMartianMorningProgressiveEvents([
-        morningRise,
-        morningSet,
-      ]);
-
-      expect(events).toHaveLength(1);
-      expect(events[0]?.description).toBe(MARS_MORNING_VISIBILITY_DESCRIPTION);
-      expect(events[0]?.start).toStrictEqual(morningRise.start);
-      expect(events[0]?.end).toStrictEqual(morningSet.start);
-    });
-
-    it("creates martian evening visibility duration events", () => {
-      const eveningRise: DetectedCalendarEvent = {
-        description: "Mars Evening Rise",
-        end: moment.utc("2024-01-01T00:00:00.000Z"),
-        start: moment.utc("2024-01-01T00:00:00.000Z"),
-        summary: "Mars Evening Rise",
-        tags: ["Planetary Phase", "Martian", "Evening Rise"],
-      };
-      const eveningSet: DetectedCalendarEvent = {
-        description: "Mars Evening Set",
-        end: moment.utc("2024-01-02T00:00:00.000Z"),
-        start: moment.utc("2024-01-02T00:00:00.000Z"),
-        summary: "Mars Evening Set",
-        tags: ["Planetary Phase", "Martian", "Evening Set"],
-      };
-      progressiveUtilitiesService.pairProgressiveEvents.mockReturnValue([
-        [eveningRise, eveningSet],
-      ]);
-
-      const events = service.getMartianEveningProgressiveEvents([
-        eveningRise,
-        eveningSet,
-      ]);
-
-      expect(events).toHaveLength(1);
-      expect(events[0]?.description).toBe(MARS_EVENING_VISIBILITY_DESCRIPTION);
-      expect(events[0]?.start).toStrictEqual(eveningRise.start);
-      expect(events[0]?.end).toStrictEqual(eveningSet.start);
     });
   });
 });

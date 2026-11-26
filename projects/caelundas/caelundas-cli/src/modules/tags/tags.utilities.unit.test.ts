@@ -9,6 +9,7 @@ import {
   tagNodeKey,
   tagPathKey,
   tagRank,
+  tagSlug,
 } from "./tags.utilities";
 
 import type { TagPath } from "./tags.types";
@@ -243,7 +244,8 @@ describe("tags utilities", () => {
       ["Mercurian", "Mercury", "Eastern Brightest", "Brightest"],
       ["Mercurian", "Mercury", "Morning Rise", "Rise and set"],
       ["Martian", "Mars", "Evening Station", "Station"],
-      ["Martian", "Mars", "Morning Visibility", "Visibility"],
+      ["Martian", "Mars", "Morning Widening", "Widening"],
+      ["Martian", "Mars", "Evening Closing", "Closing"],
     ])(
       "files a %s %s event under Planetary Phase, with its planet and the %s stage",
       (marker, planet, phase, stage) => {
@@ -264,6 +266,15 @@ describe("tags utilities", () => {
         ]);
       },
     );
+
+    it("files Mars's opposition under the Opposition stage, its leaf named for the planet", () => {
+      const paths = classify(["Planetary Phase", "Martian", "Opposition"]);
+
+      expect(under(paths, "Planetary")).toStrictEqual([
+        ["Planetary", "Phase", "Martian", "Martian Opposition"],
+        ["Planetary", "Synodic Stage", "Opposition"],
+      ]);
+    });
 
     it("keeps a planetary phase named like a lunar phase out of the Moon's", () => {
       const paths = classify(["Planetary Phase", "Venusian", "Full"]);
@@ -296,6 +307,8 @@ describe("tags utilities", () => {
       [["Ingress", "Mars", "Aries"], AT, "Sign Ingress"],
       [["Ingress", "Mars", "Aries"], LATER, "Sign Transit"],
       [["Ingress", "Decan", "Mars", "Aries"], AT, "Decan Ingress"],
+      [["Ingress", "Decan", "Mars", "Aries"], LATER, "Decan Transit"],
+      [["Ingress", "Peak", "Mars", "Aries"], LATER, "Peak Transit"],
       [["Ingress", "Peak", "Mars", "Aries"], AT, "Peak Ingress"],
     ])("files %j ending at %s as a %s", (tags, end, kind) => {
       expect(under(classify(tags, end), "Zodiac")).toContainEqual([
@@ -328,6 +341,13 @@ describe("tags utilities", () => {
 
     it.each([
       [["Retrogrades"], ["Planetary", "Direction", "Retrograde Period"]],
+      [["Directs"], ["Planetary", "Direction", "Direct Period"]],
+      [["Before Peak"], ["Zodiac", "Peak", "Before Peak"]],
+      [["After Peak"], ["Zodiac", "Peak", "After Peak"]],
+      [
+        ["Annual Solar Cycle", "Spring"],
+        ["Solar", "Season", "Spring"],
+      ],
       [
         ["Direction", "Retrograde"],
         ["Planetary", "Direction", "Station Retrograde"],
@@ -383,6 +403,38 @@ describe("tags utilities", () => {
       [
         ["Lunar Apsides", "Lunar", "Apogee"],
         ["Lunar", "Apsides", "Apogee"],
+      ],
+      [
+        ["Lunar Apsides", "Lunar", "Advancing"],
+        ["Lunar", "Apsides", "Advancing"],
+      ],
+      [
+        ["Lunar Apsides", "Lunar", "Retreating"],
+        ["Lunar", "Apsides", "Retreating"],
+      ],
+      [
+        ["Daily Lunar Cycle", "Lunar", "Moon Up"],
+        ["Daily", "Lunar Cycle", "Moon Up"],
+      ],
+      [
+        ["Annual Solar Cycle", "Solar", "Post-Beltane", "Spring"],
+        ["Solar", "Annual Cycle", "Interval", "Post-Beltane"],
+      ],
+      [
+        ["Annual Solar Cycle", "Solar", "Pre-Vernal Equinox", "Winter"],
+        ["Solar", "Annual Cycle", "Interval", "Pre-Vernal Equinox"],
+      ],
+      [
+        ["Annual Solar Cycle", "Solar", "Post-Beltane", "Spring"],
+        ["Solar", "Season", "Spring"],
+      ],
+      [
+        ["Planetary Phase", "Venusian", "Evening Widening"],
+        ["Planetary", "Phase", "Venusian", "Evening Widening"],
+      ],
+      [
+        ["Planetary Phase", "Mercurian", "Morning Closing"],
+        ["Planetary", "Synodic Stage", "Closing"],
       ],
       [
         ["Annual Solar Cycle", "Solar", "Perihelion"],
@@ -502,6 +554,22 @@ describe("tags utilities", () => {
     it("gives a node its parent's list does not name 0", () => {
       expect(tagRank(["Aspect", "Harmonic", "Harmonic 4"])).toBe(0);
       expect(tagRank(["Unknown"])).toBe(0);
+    });
+  });
+
+  describe(tagSlug, () => {
+    it.each([
+      ["Aspect", "aspect"],
+      ["Sign Ingress", "sign-ingress"],
+      ["Zodiac / Sign", "zodiac-sign"],
+      ["  --Mars's  Retrograde!! ", "mars-s-retrograde"],
+      ["Decan 2", "decan-2"],
+    ])("slugs %s as %s", (name, slug) => {
+      expect(tagSlug(name)).toBe(slug);
+    });
+
+    it("refuses a name with no letters or digits", () => {
+      expect(() => tagSlug(" / ")).toThrow("no letters or digits");
     });
   });
 });

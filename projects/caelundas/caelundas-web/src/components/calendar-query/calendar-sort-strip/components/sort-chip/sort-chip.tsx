@@ -21,15 +21,29 @@ export interface SortChipProperties {
   onFlip: () => void;
   onMoveLeft?: (() => void) | undefined;
   onMoveRight?: (() => void) | undefined;
+  onOnly?: (() => void) | undefined;
   onRemove?: (() => void) | undefined;
+  /**
+   * The full tag path, for the tooltip.
+   */
+  title?: string | undefined;
 }
 
 // 🧩 Component
 
 /** Renders one sort as its name and direction, which flip when pressed, with an ellipsis menu to move or remove it. */
 export function SortChip(properties: Readonly<SortChipProperties>): ReactNode {
-  const { direction, icon, label, onFlip, onMoveLeft, onMoveRight, onRemove } =
-    properties;
+  const {
+    direction,
+    icon,
+    label,
+    onFlip,
+    onMoveLeft,
+    onMoveRight,
+    onOnly,
+    onRemove,
+    title,
+  } = properties;
 
   // 🪝 Hooks
 
@@ -52,6 +66,7 @@ export function SortChip(properties: Readonly<SortChipProperties>): ReactNode {
           onFlip();
         }}
         size="sm"
+        title={title}
         variant="outline"
       >
         {icon}
@@ -63,9 +78,10 @@ export function SortChip(properties: Readonly<SortChipProperties>): ReactNode {
         )}
       </Button>
       <ChipMenu
-        label={label}
+        label={title ?? label}
         onMoveLeft={onMoveLeft}
         onMoveRight={onMoveRight}
+        onOnly={onOnly}
         onRemove={onRemove}
         onReverse={onFlip}
       />

@@ -21,7 +21,7 @@ function toKey(days = 30): string {
     compareToPrevious: false,
     filter: null,
     grouping: null,
-    metrics: ["EVENTS", "UNIQUE_NAMES"],
+    metrics: ["events", "unique-names"],
     period: {
       end: new Date(Date.UTC(2026, 2, 1 + days)).toISOString(),
       start: "2026-03-01T05:00:00.000Z",
@@ -64,7 +64,7 @@ describe("use-event-metrics utilities", () => {
   describe(parseMetricsKey, () => {
     it("reads the input a key was written from", () => {
       expect(parseMetricsKey(toKey(1))).toMatchObject({
-        metrics: ["EVENTS", "UNIQUE_NAMES"],
+        metrics: ["events", "unique-names"],
       });
     });
   });

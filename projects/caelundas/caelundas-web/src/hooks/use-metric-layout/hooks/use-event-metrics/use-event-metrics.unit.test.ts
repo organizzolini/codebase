@@ -12,7 +12,7 @@ const OPTIONS: UseEventMetricsOptions = {
   compare: false,
   filter: undefined,
   grouping: [{ field: "tag:body" }, { field: "tag:zodiac" }],
-  metrics: ["EVENTS"],
+  metrics: ["events"],
   timeZone: "America/New_York",
 };
 
@@ -51,7 +51,7 @@ describe(useEventMetrics, () => {
     });
 
     expect(result.current.data?.total).toStrictEqual([
-      { metric: "EVENTS", previous: null, value: 10 },
+      { metric: "events", previous: null, value: 10 },
     ]);
     expect(result.current.data?.groups.map((group) => group.id)).toStrictEqual([
       "/0:alpha",
@@ -74,7 +74,7 @@ describe(useEventMetrics, () => {
       compareToPrevious: false,
       filter: null,
       grouping: [{ field: "tag:body" }, { field: "tag:zodiac" }],
-      metrics: ["EVENTS"],
+      metrics: ["events"],
       period: {
         end: "2026-03-31T04:00:00.000Z",
         start: "2026-03-01T05:00:00.000Z",

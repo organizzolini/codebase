@@ -117,6 +117,15 @@ describe(CalendarLayoutMenu, () => {
     expect(display.handlers.handleScaleChange).toHaveBeenCalledWith("quarter");
   });
 
+  it("indents the nested timeline scales beneath their parent row", () => {
+    render(<CalendarLayoutMenu {...PROPERTIES} />);
+    fireEvent.click(screen.getByRole("button", { name: "Layout" }));
+
+    expect(screen.getByTestId("query-cascader").className).toContain(
+      "--cascader-indent,0px)*2",
+    );
+  });
+
   it("finds a layout by searching for it", async () => {
     render(<CalendarLayoutMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Layout" }));

@@ -1,6 +1,7 @@
 import { createElement } from "react";
 
 import { createGroupItems } from "../calendar-group-strip/calendar-group-strip.utilities";
+import { ALL_TAGS_FIELD } from "../calendar-group-strip/components/event-group-model/event-group-fields.constants";
 import { TagIcon } from "../tag-icon/tag-icon";
 
 import { COLUMN_OPTIONS } from "./calendar-select-strip.constants";
@@ -30,6 +31,13 @@ export function createColumnItems(
     ...base,
     ...createGroupItems(fields.filter((field) => field.levels.length > 0)),
   ];
+}
+
+/**
+ * Whether a row can be ticked as a column: any but the Tag row, which only holds the roots.
+ */
+export function isColumnChoice(node: Readonly<CascaderNode>): boolean {
+  return node.value !== ALL_TAGS_FIELD;
 }
 
 /**

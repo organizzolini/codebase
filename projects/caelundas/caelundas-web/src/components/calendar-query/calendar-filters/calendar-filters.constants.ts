@@ -47,11 +47,14 @@ export const STRIP_CLASS_NAME = [
   "[&_[data-slot=filter-chip]:not(:last-child)>[data-slot]:last-child]:rounded-r-none!",
   "[&_[aria-label=Navigate]>:first-child]:rounded-l-none!",
   "[&_[aria-label=Navigate]>:first-child]:border-l-0",
-  "has-[[data-slot=filter-chip]]:[&_[aria-label=Navigate]>:last-child]:rounded-r-none!",
+  "has-[[data-slot=filter-chip],[data-testid=strip-fold-button]]:[&_[aria-label=Navigate]>:last-child]:rounded-r-none!",
   "[&_[aria-label=Filter]>[data-slot=popover-trigger][data-slot=popover-trigger]]:rounded-l-lg!",
   "[&_[aria-label=Filter]>[data-slot=popover-trigger][data-slot=popover-trigger]]:border-l!",
   "data-attached:[&_[aria-label=Filter]>[data-slot=popover-trigger][data-slot=popover-trigger]]:rounded-r-none!",
 ].join(" ");
+
+/** The folded count, joined to whatever precedes it. */
+export const FOLD_BUTTON_CLASS_NAME = "rounded-l-none rounded-r-lg border-l-0";
 
 /** Holds Filter and the date navigator, which never part across a line. */
 export const FILTER_HEAD_CLASS_NAME = "flex shrink-0";

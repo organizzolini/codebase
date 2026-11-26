@@ -1,9 +1,13 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { Filters } from "@codebase/presentation";
 
-import { filterGroup, tagRule } from "../../../../../../testing/event-filters";
+import {
+  fieldRule,
+  filterGroup,
+  tagRule,
+} from "../../../../../../testing/event-filters";
 import { createEventFilterFields } from "../event-filter-model/event-filter-fields.utilities";
 
 import { FilterChipRow } from "./filter-chip-row";
@@ -74,5 +78,87 @@ describe(FilterChipRow, () => {
     renderRow(filterGroup("and"));
 
     expect(screen.queryByTestId("filter-chip-row")).toBeNull();
+  });
+
+  it("keeps only a rule from its chip's menu, removing the others", async () => {
+    const onQueryChange = vi.fn<(query: EventFilterQuery) => void>();
+    const keep = fieldRule("tag:tag-aspect", "is_any_of", ["tag-ingress"]);
+    const drop = fieldRule("weekday", "is_any_of", [1], { id: "drop" });
+
+    render(
+      <Filters<EventFilterValue>
+        fields={[...FIELDS]}
+        onQueryChange={onQueryChange}
+        query={filterGroup("and", keep, drop)}
+      >
+        <FilterChipRow />
+      </Filters>,
+    );
+    const [first] = await screen.findAllByRole("button", {
+      name: /filter options/u,
+    });
+
+    fireEvent.click(first ?? document.body);
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Only" }));
+
+    expect(onQueryChange.mock.lastCall?.[0].rules).toStrictEqual([keep]);
+  });
+
+  it("offers Only disabled when the rule is alone", async () => {
+    render(
+      <Filters<EventFilterValue>
+        fields={[...FIELDS]}
+        onQueryChange={vi.fn<(query: EventFilterQuery) => void>()}
+        query={filterGroup(
+          "and",
+          fieldRule("tag:tag-aspect", "is_any_of", ["tag-ingress"]),
+        )}
+      >
+        <FilterChipRow />
+      </Filters>,
+    );
+    fireEvent.click(
+      await screen.findByRole("button", { name: /filter options/u }),
+    );
+
+    const only = await screen.findByRole("menuitem", { name: "Only" });
+
+    expect(only.getAttribute("aria-disabled")).toBe("true");
+  });
+
+  describe("folded", () => {
+    const DATE = fieldRule("date", "between", ["2026-03-01", "2026-03-31"], {
+      id: "date",
+    });
+    const WEEKDAY = fieldRule("weekday", "is_any_of", [1], { id: "weekday" });
+
+    function renderFolded(isFolded: boolean): void {
+      render(
+        <Filters<EventFilterValue>
+          fields={[...FIELDS]}
+          onQueryChange={vi.fn<(query: EventFilterQuery) => void>()}
+          query={filterGroup("and", DATE, WEEKDAY)}
+        >
+          <FilterChipRow isFolded={isFolded} />
+        </Filters>,
+      );
+    }
+
+    it("draws every chip while unfolded", () => {
+      renderFolded(false);
+
+      expect(document.querySelectorAll("[data-slot=filter-chip]")).toHaveLength(
+        2,
+      );
+    });
+
+    it("draws only the date range, which stays, once folded", () => {
+      renderFolded(true);
+
+      const chips = document.querySelectorAll("[data-slot=filter-chip]");
+
+      expect(chips).toHaveLength(1);
+      expect(chips[0]?.textContent).toContain("Date");
+    });
   });
 });

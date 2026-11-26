@@ -99,7 +99,7 @@ describe("event grouping", () => {
       ]),
     );
 
-    await expect(readGrouping()).resolves.toBe("GroupBodyAspect › Simple");
+    await expect(readGrouping()).resolves.toBe("GroupBodySimple");
   });
 
   it("returns to the Tags chip when the last level is removed from the link", async () => {

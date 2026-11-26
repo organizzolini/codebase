@@ -10,6 +10,7 @@ import { MathService } from "../../../ephemeris/modules/math/math.service";
 import { DailyCyclesBuilderService } from "./daily-cycles-builder.service";
 import { DailyCyclesService } from "./daily-cycles.service";
 
+import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
 import type {
   AzimuthElevationEphemeris,
   HorizonPosition,
@@ -469,6 +470,60 @@ describe(DailyCyclesService, () => {
           trueElevations: [-0.82, -0.86, -0.9],
         }),
       ).not.toContain(moonsetSummary);
+    });
+  });
+
+  describe("detectProgressive", () => {
+    const crossing = (iso: string, name: string): DetectedCalendarEvent => ({
+      description: name,
+      end: moment.utc(iso),
+      start: moment.utc(iso),
+      summary: name,
+      tags: ["Astronomy", "Astrology", "Daily Lunar Cycle", "Lunar", name],
+    });
+
+    it("spans each moonrise to the moonset after it as the Moon being up", () => {
+      const spans = service.detectProgressive([
+        crossing("2026-03-05T13:30:00Z", "Moonset"),
+        crossing("2026-03-04T23:50:00Z", "Moonrise"),
+        crossing("2026-03-05T23:50:00Z", "Moonrise"),
+        crossing("2026-03-06T14:10:00Z", "Moonset"),
+      ]);
+
+      expect(
+        spans.map((span) => [
+          span.summary,
+          span.start.toISOString(),
+          span.end.toISOString(),
+        ]),
+      ).toStrictEqual([
+        ["🌙 Moon Up", "2026-03-04T23:50:00.000Z", "2026-03-05T13:30:00.000Z"],
+        ["🌙 Moon Up", "2026-03-05T23:50:00.000Z", "2026-03-06T14:10:00.000Z"],
+      ]);
+      expect(spans[0]?.tags).toStrictEqual([
+        "Astronomy",
+        "Astrology",
+        "Daily Lunar Cycle",
+        "Lunar",
+        "Moon Up",
+      ]);
+    });
+
+    it("makes no span of a moonset followed by a moonrise, when the Moon is down", () => {
+      expect(
+        service.detectProgressive([
+          crossing("2026-03-05T13:30:00Z", "Moonset"),
+          crossing("2026-03-05T23:50:00Z", "Moonrise"),
+        ]),
+      ).toStrictEqual([]);
+    });
+
+    it("ignores events that are no moonrise or moonset", () => {
+      expect(
+        service.detectProgressive([
+          crossing("2026-03-05T13:30:00Z", "Sunrise"),
+        ]),
+      ).toStrictEqual([]);
     });
   });
 });

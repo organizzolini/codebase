@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { getMetric } from "../../../../../../testing/metrics/metric-catalog";
+
 import { TotalsSubtotal } from "./totals-subtotal";
 
 import type { MetricNode } from "../../../calendar-metrics/calendar-metrics.types";
@@ -16,8 +18,8 @@ function createNode(isExpandable: boolean): MetricNode {
       path: null,
       rank: "alpha",
       values: [
-        { metric: "EVENTS", previous: 4, value: 6 },
-        { metric: "FIRST_START", previous: null, value: 1_772_366_400_000 },
+        { metric: "events", previous: 4, value: 6 },
+        { metric: "first-start", previous: null, value: 1_772_366_400_000 },
       ],
     },
     isExpandable,
@@ -29,7 +31,7 @@ describe(TotalsSubtotal, () => {
     render(
       <TotalsSubtotal
         compare={false}
-        metric="EVENTS"
+        metric={getMetric("events")}
         node={createNode(false)}
         onToggle={vi.fn<(id: string) => void>()}
         open={false}
@@ -50,14 +52,14 @@ describe(TotalsSubtotal, () => {
     render(
       <TotalsSubtotal
         compare={false}
-        metric="TOTAL_DURATION_MINUTES"
+        metric={getMetric("duration")}
         node={{
           ...node,
           group: {
             ...node.group,
             values: [
               {
-                metric: "TOTAL_DURATION_MINUTES",
+                metric: "duration",
                 previous: null,
                 value: 525_600 + 43_200 + 4320 + 720,
               },
@@ -82,7 +84,7 @@ describe(TotalsSubtotal, () => {
     render(
       <TotalsSubtotal
         compare={false}
-        metric="EVENTS"
+        metric={getMetric("events")}
         node={{
           ...node,
           group: { ...node.group, key: null, label: "No Body" },
@@ -101,7 +103,7 @@ describe(TotalsSubtotal, () => {
       <TotalsSubtotal
         color="rgb(255, 0, 0)"
         compare={false}
-        metric="EVENTS"
+        metric={getMetric("events")}
         node={createNode(false)}
         onToggle={vi.fn<(id: string) => void>()}
         open={false}
@@ -117,7 +119,7 @@ describe(TotalsSubtotal, () => {
   it("shows its change when compared", () => {
     render(
       <TotalsSubtotal
-        metric="EVENTS"
+        metric={getMetric("events")}
         node={createNode(false)}
         onToggle={vi.fn<(id: string) => void>()}
         open={false}
@@ -133,7 +135,7 @@ describe(TotalsSubtotal, () => {
     render(
       <TotalsSubtotal
         compare={false}
-        metric="FIRST_START"
+        metric={getMetric("first-start")}
         node={createNode(false)}
         onToggle={vi.fn<(id: string) => void>()}
         open={false}
@@ -148,7 +150,7 @@ describe(TotalsSubtotal, () => {
   it("reads a metric the group lacks as unknown", () => {
     render(
       <TotalsSubtotal
-        metric="SPANS"
+        metric={getMetric("progressive-events")}
         node={createNode(false)}
         onToggle={vi.fn<(id: string) => void>()}
         open={false}
@@ -164,7 +166,7 @@ describe(TotalsSubtotal, () => {
     render(
       <TotalsSubtotal
         compare={false}
-        metric="EVENTS"
+        metric={getMetric("events")}
         node={createNode(true)}
         onToggle={vi.fn<(id: string) => void>()}
         whole={10}
@@ -185,7 +187,7 @@ describe(TotalsSubtotal, () => {
     render(
       <TotalsSubtotal
         compare={false}
-        metric="EVENTS"
+        metric={getMetric("events")}
         node={createNode(true)}
         onToggle={onToggle}
         whole={10}

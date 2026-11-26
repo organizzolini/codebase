@@ -58,7 +58,7 @@ src/
       modules/render-entities/      # @DirectedAcyclicGraph, @Graph (two forms), the endpoint and reverse-relation decorators, the generated edge entity; globs to entity classes; the @Tree pick
       modules/render-options/       # Options every drawing command shares: connection, filter, sort, paging, caps, outputs
       modules/render-edges/         # Reads an edge table, finds roots and cycles, then pages and caps the edges
-      modules/render-nodes/         # Reads the labels of only the drawn nodes and graphs, and relabels a generated edge's graph
+      modules/render-nodes/         # Reads the labels of only the drawn nodes and owners, and relabels them through the edge's relations
       modules/render-mermaid/       # Pure renderer: a graph model to Mermaid text, with its limit warnings
       modules/render-trees/         # Reads a @Tree table in its storage, then filters, sorts, pages, and caps it
       modules/render-tree-data/     # The render-tree-data command: draws a @Tree entity
@@ -148,13 +148,19 @@ testing/
   `generatedEdgeOf` and `withGeneratedEdges`, which `createGraphDataSource` and a
   project's own entity list must use. A graph entity is a pick candidate, but the
   command reads the generated class, so `--filter` and `--sort` name its columns.
+  The generated edge has no owner column, since not every graph has
+  subgraphs, only the source and target columns, which default to `sourceNode`
+  and `targetNode` (`source_node`, `target_node`); the `sourceColumn` and
+  `targetColumn` options rename them. A graph with subgraphs writes its edge
+  entity by hand, with an owner column and relations of its own.
 - **Labels:** `RenderCommand` calls `RenderNodesService.relabel` after
   `RenderEdgesService` has paged and capped the edges, so node labels and neighborhood titles are read for
-  only the nodes drawn. A generated edge carries its graph's key as its label,
-  which `relabel` replaces with the graph's `@GraphLabel`.
+  only the nodes drawn. `relabel` reads the entities the edge's relations join:
+  the source column's labels each node, and the `@GraphLabel` column's titles
+  each neighborhood.
 - **Reverse relations** register by the generated entity's name, since its class
   does not exist when a node entity is defined, so a data source that builds the
-  node entity must also build the graph entity.
+  node entity must also build the declaring entity.
 
 ### Key Commands
 

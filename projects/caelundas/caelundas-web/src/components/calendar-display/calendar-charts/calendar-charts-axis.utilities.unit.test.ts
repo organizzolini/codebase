@@ -4,6 +4,7 @@ import {
   createChartBar,
   createChartSegment,
 } from "../../../../testing/chart-bars";
+import { getMetric } from "../../../../testing/metrics/metric-catalog";
 
 import {
   buildChartAxis,
@@ -14,6 +15,7 @@ import {
 const MINUTES = {
   day: 1440,
   hour: 60,
+  minute: 1,
   month: 43_200,
   week: 10_080,
   year: 525_600,
@@ -22,7 +24,7 @@ const MINUTES = {
 describe("calendar charts axis utilities", () => {
   describe(buildChartAxis, () => {
     it("runs from none to a hundred for a share", () => {
-      expect(buildChartAxis("COVERED_PERCENT", 40)).toStrictEqual({
+      expect(buildChartAxis(getMetric("covered-percent"), 40)).toStrictEqual({
         domain: [0, 100],
         ticks: undefined,
         unit: undefined,
@@ -30,7 +32,7 @@ describe("calendar charts axis utilities", () => {
     });
 
     it("runs from none to the biggest value for a count", () => {
-      expect(buildChartAxis("EVENTS", 40)).toStrictEqual({
+      expect(buildChartAxis(getMetric("events"), 40)).toStrictEqual({
         domain: [0, "auto"],
         ticks: undefined,
         unit: undefined,
@@ -38,15 +40,20 @@ describe("calendar charts axis utilities", () => {
     });
 
     it("lands a few minutes' ticks on whole minutes", () => {
-      const { ticks, unit } = buildChartAxis("TOTAL_DURATION_MINUTES", 8);
+      const { ticks, unit } = buildChartAxis(
+        getMetric("duration"),
+        8 * MINUTES.minute,
+      );
 
       expect(unit?.label).toBe("min");
-      expect(ticks).toStrictEqual([0, 2, 4, 6, 8]);
+      expect(ticks).toStrictEqual(
+        [0, 2, 4, 6, 8].map((n) => n * MINUTES.minute),
+      );
     });
 
     it("lands hours' ticks on whole hours", () => {
       const { domain, ticks, unit } = buildChartAxis(
-        "TOTAL_DURATION_MINUTES",
+        getMetric("duration"),
         5 * MINUTES.hour,
       );
 
@@ -61,7 +68,7 @@ describe("calendar charts axis utilities", () => {
       ["mo", 4 * MINUTES.month, [0, 1, 2, 3, 4].map((n) => n * MINUTES.month)],
       ["yr", 2 * MINUTES.year, [0, 1, 2].map((n) => n * MINUTES.year)],
     ])("picks %s from a maximum of that many", (label, maximum, ticks) => {
-      const axis = buildChartAxis("TOTAL_DURATION_MINUTES", maximum);
+      const axis = buildChartAxis(getMetric("duration"), maximum);
 
       expect(axis.unit?.label).toBe(label);
       expect(axis.ticks?.slice(0, ticks.length)).toStrictEqual(ticks);
@@ -70,7 +77,7 @@ describe("calendar charts axis utilities", () => {
 
     it("keeps a larger maximum's ticks few and whole", () => {
       const { ticks, unit } = buildChartAxis(
-        "TOTAL_DURATION_MINUTES",
+        getMetric("duration"),
         120 * MINUTES.day,
       );
 
@@ -80,13 +87,16 @@ describe("calendar charts axis utilities", () => {
       );
     });
 
-    it("counts a metric of hours in hours, and a zero in one gap", () => {
-      const hours = buildChartAxis("PROGRESSIVE_HOURS", 3);
+    it("counts every duration metric alike, and a zero in one gap", () => {
+      const hours = buildChartAxis(getMetric("duration"), 3 * MINUTES.hour);
 
       expect(hours.unit?.label).toBe("h");
-      expect(hours.ticks).toStrictEqual([0, 1, 2, 3]);
-      expect(buildChartAxis("TOTAL_DURATION_MINUTES", 0).ticks).toStrictEqual([
-        0, 1,
+      expect(hours.ticks).toStrictEqual(
+        [0, 1, 2, 3].map((n) => n * MINUTES.hour),
+      );
+      expect(buildChartAxis(getMetric("duration"), 0).ticks).toStrictEqual([
+        0,
+        MINUTES.minute,
       ]);
     });
   });
@@ -106,24 +116,25 @@ describe("calendar charts axis utilities", () => {
 
   describe(formatChartTick, () => {
     it("writes counts short and shares as percents", () => {
-      expect(formatChartTick("EVENTS", 1200)).toBe("1.2K");
-      expect(formatChartTick("COVERED_PERCENT", 50)).toBe("50%");
+      expect(formatChartTick(getMetric("events"), 1200)).toBe("1.2K");
+      expect(formatChartTick(getMetric("covered-percent"), 50)).toBe("50%");
     });
 
-    it("writes a duration in the axis's unit", () => {
-      const unit = { label: "d", minutes: MINUTES.day };
-
+    it("writes a duration, in minutes, in the axis's unit", () => {
       expect(
-        formatChartTick("TOTAL_DURATION_MINUTES", 2 * MINUTES.day, unit),
-      ).toBe("2 d");
-      expect(
-        formatChartTick("PROGRESSIVE_HOURS", 48, {
+        formatChartTick(getMetric("duration"), 2 * MINUTES.day, {
           label: "d",
           minutes: MINUTES.day,
         }),
       ).toBe("2 d");
       expect(
-        formatChartTick("TOTAL_DURATION_MINUTES", 3 * MINUTES.week, {
+        formatChartTick(getMetric("duration"), 48 * MINUTES.hour, {
+          label: "d",
+          minutes: MINUTES.day,
+        }),
+      ).toBe("2 d");
+      expect(
+        formatChartTick(getMetric("duration"), 3 * MINUTES.week, {
           label: "wk",
           minutes: MINUTES.week,
         }),

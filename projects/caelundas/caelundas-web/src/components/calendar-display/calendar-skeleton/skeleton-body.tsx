@@ -1,12 +1,8 @@
-import { Skeleton } from "@codebase/presentation";
-
-import {
-  CELL_KEYS,
-  COLUMN_COUNTS,
-  EVENT_HEIGHTS,
-  ROW_KEYS,
-  TIMELINE_BARS,
-} from "./calendar-skeleton.constants";
+import { COLUMN_COUNTS } from "./calendar-skeleton.constants";
+import { SkeletonColumns } from "./components/skeleton-columns/skeleton-columns";
+import { SkeletonMonth } from "./components/skeleton-month/skeleton-month";
+import { SkeletonTable } from "./components/skeleton-table/skeleton-table";
+import { SkeletonTimeline } from "./components/skeleton-timeline/skeleton-timeline";
 import { SkeletonBars } from "./skeleton-bars";
 import { SkeletonCards } from "./skeleton-cards";
 
@@ -41,89 +37,40 @@ export function SkeletonBody(
   switch (view) {
     case "charts": {
       content = (
-        <SkeletonBars className="flex min-h-0 flex-1 items-end gap-3 overflow-hidden" />
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <SkeletonBars />
+        </div>
       );
 
       break;
     }
     case "month": {
-      content = (
-        <div className="grid min-h-0 flex-1 grid-cols-7 grid-rows-6 gap-1">
-          {CELL_KEYS.map((key) => (
-            <Skeleton key={key} />
-          ))}
-        </div>
-      );
+      content = <SkeletonMonth />;
 
       break;
     }
     case "table": {
-      content = (
-        <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
-          {ROW_KEYS.map((key) => (
-            <Skeleton
-              key={key}
-              className="h-14 shrink-0"
-            />
-          ))}
-        </div>
-      );
+      content = <SkeletonTable />;
 
       break;
     }
     case "timeline": {
-      content = (
-        <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden">
-          {ROW_KEYS.map((key, index) => (
-            <div
-              key={key}
-              className="flex items-center gap-2"
-            >
-              <Skeleton className="h-6 w-24 shrink-0" />
-              <Skeleton
-                className={`h-6 ${TIMELINE_BARS[index % TIMELINE_BARS.length] ?? ""}`}
-              />
-            </div>
-          ))}
-        </div>
-      );
+      content = <SkeletonTimeline />;
 
       break;
     }
     case "totals": {
       content = (
-        <SkeletonCards className="grid min-h-0 flex-1 grid-cols-2 gap-2 overflow-hidden md:grid-cols-4" />
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <SkeletonCards />
+        </div>
       );
 
       break;
     }
     case "day":
     case "week": {
-      const count = COLUMN_COUNTS[view];
-
-      content = (
-        <div
-          className="grid min-h-0 flex-1 gap-1"
-          style={{ gridTemplateColumns: `3rem repeat(${String(count)}, 1fr)` }}
-        >
-          <Skeleton className="row-span-1 h-full" />
-          {Array.from({ length: count }, (_, column) => (
-            <div
-              key={`column-${String(column)}`}
-              className="flex flex-col gap-2"
-            >
-              <Skeleton className="h-6 shrink-0" />
-              {EVENT_HEIGHTS.map((height, index) => (
-                <Skeleton
-                  key={`event-${String(column)}-${String(index)}`}
-                  className={`${height} shrink-0`}
-                />
-              ))}
-              <Skeleton className="min-h-0 flex-1" />
-            </div>
-          ))}
-        </div>
-      );
+      content = <SkeletonColumns count={COLUMN_COUNTS[view]} />;
     }
   }
 

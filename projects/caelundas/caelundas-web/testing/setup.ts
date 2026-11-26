@@ -7,6 +7,7 @@ import {
   stopGraphqlMockServer,
 } from "@codebase/interface/testing";
 
+import { CATALOG_CACHE } from "../src/components/calendar-display/calendar-metrics/components/metric-catalog-provider/metric-catalog-provider.constants";
 import { clearCalendarCaches } from "../src/components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.utilities";
 
 import { installViewport } from "./viewport";
@@ -54,6 +55,7 @@ beforeEach(() => {
 
 afterEach(() => {
   clearCalendarCaches();
+  CATALOG_CACHE.clear();
   resetGraphqlMockServer();
 });
 

@@ -118,7 +118,7 @@ export class IngressesComposerService {
     const bodyCapitalized = bodyDisplayName(body);
     const signCapitalized = capitalize(sign);
     const description = `${bodyCapitalized} ingress decan ${decan} ${signCapitalized}`;
-    const summary = `${symbolByBody[body]}${symbolBySign[sign]}${symbolByDecan[decan]} ${description}`;
+    const summary = `${symbolByBody[body]}${symbolByDecan[decan]}${symbolBySign[sign]} ${description}`;
     return {
       description,
       end: date,
@@ -151,7 +151,7 @@ export class IngressesComposerService {
     const signSymbol = symbolBySign[sign];
 
     const description = `${bodyCapitalized} peak ingress ${signCapitalized}`;
-    const summary = `${bodySymbol}${signSymbol}⛰️ ${description}`;
+    const summary = `${bodySymbol}⛰️${signSymbol} ${description}`;
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: date.toISOString(),
@@ -175,25 +175,53 @@ export class IngressesComposerService {
   }
 
   /**
-   * Converts ordered sign-ingress instants into contiguous per-sign duration spans.
+   * Converts ordered sign-ingress instants into contiguous per-sign duration
+   * spans; the last stay runs to `closingEnd` when one is given.
    */
   buildProgressiveSpansForBody(
     bodyCapitalized: string,
     events: DetectedCalendarEvent[],
+    closingEnd?: Moment,
   ): DetectedCalendarEvent[] {
     const progressiveSpans: DetectedCalendarEvent[] = [];
     const sortedIngresses = _.sortBy(events, (event) => event.start.valueOf());
-    for (let index = 0; index < sortedIngresses.length - 1; index++) {
-      const entering = sortedIngresses[index];
-      const exiting = sortedIngresses[index + 1];
-      if (!entering || !exiting) {
+    for (const [index, entering] of sortedIngresses.entries()) {
+      const exit = sortedIngresses[index + 1]?.start ?? closingEnd;
+      if (exit === undefined) {
         continue;
       }
       progressiveSpans.push(
-        this.getSignIngressDurationEvent(entering, exiting, bodyCapitalized),
+        this.getSignIngressDurationEvent(entering, exit, bodyCapitalized),
       );
     }
     return progressiveSpans;
+  }
+
+  /**
+   * Creates the sign ingress event for a body entering `sign` at `date`, with
+   * no log line.
+   */
+  buildSignEntryEvent(args: {
+    body: Body;
+    date: Moment;
+    sign: Sign;
+  }): DetectedCalendarEvent {
+    const { body, date, sign } = args;
+    const bodyCapitalized = bodyDisplayName(body);
+    const signCapitalized = _.startCase(sign);
+    const description = `${bodyCapitalized} ingress ${signCapitalized}`;
+
+    return {
+      description,
+      end: date,
+      start: date,
+      summary: `${symbolByBody[body]}→${symbolBySign[sign]} ${description}`,
+      tags: [
+        ...IngressesComposerService.ingressBaseTags,
+        bodyCapitalized,
+        signCapitalized,
+      ],
+    };
   }
 
   /**
@@ -207,31 +235,16 @@ export class IngressesComposerService {
     longitude: number;
   }): DetectedCalendarEvent {
     const { body, date, longitude } = args;
-    const sign = IngressesComposerService.getSign(longitude);
-    const bodyCapitalized = bodyDisplayName(body);
-    const signCapitalized = _.startCase(sign);
-    const bodySymbol = symbolByBody[body];
-    const signSymbol = symbolBySign[sign];
-
-    const description = `${bodyCapitalized} ingress ${signCapitalized}`;
-    const summary = `${bodySymbol}→${signSymbol} ${description}`;
+    const signIngressEvent = this.buildSignEntryEvent({
+      body,
+      date,
+      sign: IngressesComposerService.getSign(longitude),
+    });
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: date.toISOString(),
-      summary,
+      summary: signIngressEvent.summary,
     });
-
-    const signIngressEvent: DetectedCalendarEvent = {
-      description,
-      end: date,
-      start: date,
-      summary,
-      tags: [
-        ...IngressesComposerService.ingressBaseTags,
-        bodyCapitalized,
-        signCapitalized,
-      ],
-    };
 
     return signIngressEvent;
   }
@@ -316,11 +329,11 @@ export class IngressesComposerService {
   }
 
   /**
-   * Builds a progressive sign-stay event from entering and next-sign exit instants.
+   * Builds a progressive sign-stay event from an entering ingress and the minute the stay ends.
    */
   getSignIngressDurationEvent(
     entering: DetectedCalendarEvent,
-    exiting: DetectedCalendarEvent,
+    exit: Moment,
     bodyCapitalized: string,
   ): DetectedCalendarEvent {
     const { body, sign, signCapitalized } = this.extractSignAndBodyFromTags(
@@ -331,7 +344,7 @@ export class IngressesComposerService {
     const signSymbol = symbolBySign[sign];
     return {
       description: `${bodyCapitalized} in ${signCapitalized}`,
-      end: exiting.start,
+      end: exit,
       start: entering.start,
       summary: `${bodySymbol}${signSymbol} ${bodyCapitalized} in ${signCapitalized}`,
       tags: [

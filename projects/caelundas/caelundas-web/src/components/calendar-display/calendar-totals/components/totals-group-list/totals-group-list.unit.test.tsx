@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { getMetric } from "../../../../../../testing/metrics/metric-catalog";
+
 import { TotalsGroupList } from "./totals-group-list";
 
 import type { MetricGroup } from "../../../calendar-metrics/calendar-metrics.types";
@@ -20,8 +22,8 @@ function createGroup(
     path: null,
     rank: id,
     values: [
-      { metric: "EVENTS", previous: value - 1, value },
-      { metric: "UNIQUE_NAMES", previous: null, value },
+      { metric: "events", previous: value - 1, value },
+      { metric: "unique-names", previous: null, value },
     ],
   };
 }
@@ -34,7 +36,7 @@ function createProperties(
     compare: false,
     expanded: new Set<string>(),
     groups: [createGroup("a", 6), createGroup("b", 4)],
-    metric: "EVENTS",
+    metric: getMetric("events"),
     onToggle: vi.fn<(id: string) => void>(),
     whole: 10,
     ...overrides,

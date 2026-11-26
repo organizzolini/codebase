@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import _ from "lodash";
 
 import { LoggerService } from "@codebase/observability";
 
@@ -10,12 +11,16 @@ import {
   ANNUAL_SOLAR_CYCLE_BASE_TAGS,
   APHELION_TAG,
   PERIHELION_TAG,
+  SEASON_BY_SEASON_START,
+  SEASONS_IN_ORDER,
   SOLAR_ADVANCING_DESCRIPTION,
   SOLAR_ADVANCING_SUMMARY,
   SOLAR_ADVANCING_TAG,
+  SOLAR_INTERVAL_NAMES,
   SOLAR_RETREATING_DESCRIPTION,
   SOLAR_RETREATING_SUMMARY,
   SOLAR_RETREATING_TAG,
+  SOLAR_YEAR_POINTS,
 } from "./annual-solar-cycle.constants";
 
 import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
@@ -70,6 +75,55 @@ export class AnnualSolarCycleService {
     );
   }
 
+  /** Builds the interval from the point at `from` to the next one. */
+  private getIntervalEvent(
+    beginning: DetectedCalendarEvent,
+    ending: DetectedCalendarEvent,
+    from: number,
+  ): DetectedCalendarEvent {
+    const name = SOLAR_INTERVAL_NAMES[from] ?? "";
+    const next = (from + 1) % SOLAR_YEAR_POINTS.length;
+    const named = from % 2 === 0 ? beginning : ending;
+    const [symbol = ""] = named.summary.split(" ");
+
+    return {
+      description: `${name} (${SOLAR_YEAR_POINTS[from] ?? ""} to ${SOLAR_YEAR_POINTS[next] ?? ""})`,
+      end: ending.start,
+      start: beginning.start,
+      summary: `${symbol} ${name}`,
+      tags: [
+        ...ANNUAL_SOLAR_CYCLE_BASE_TAGS,
+        name,
+        SEASONS_IN_ORDER[Math.floor(from / 4)] ?? "",
+      ],
+    };
+  }
+
+  /**
+   * Splits each gap between named points of the year at the hexadecan between:
+   * Post- the first, Pre- the next.
+   */
+  private getIntervalProgressiveEvents(
+    events: DetectedCalendarEvent[],
+  ): DetectedCalendarEvent[] {
+    const indexOf = (event: DetectedCalendarEvent): number =>
+      SOLAR_YEAR_POINTS.findIndex((name) => event.tags.includes(name));
+    const points = _.sortBy(
+      events.filter((event) => indexOf(event) !== -1),
+      (event) => event.start.valueOf(),
+    );
+
+    return points.slice(0, -1).flatMap((beginning, position) => {
+      const ending = points[position + 1];
+      const from = indexOf(beginning);
+
+      return ending !== undefined &&
+        indexOf(ending) === (from + 1) % SOLAR_YEAR_POINTS.length
+        ? [this.getIntervalEvent(beginning, ending, from)]
+        : [];
+    });
+  }
+
   /**
    * The minute whose radial speed is nearer zero, where the apsis is stamped;
    * ties go later.
@@ -97,6 +151,42 @@ export class AnnualSolarCycleService {
     return retreatingPairs.map(([beginning, ending]) =>
       this.getSolarRetreatingDurationEvent(beginning, ending),
     );
+  }
+
+  /**
+   * Chains the equinoxes and solstices into the four seasons: each runs from
+   * the point that begins it to the next one.
+   */
+  private getSeasonProgressiveEvents(
+    events: DetectedCalendarEvent[],
+  ): DetectedCalendarEvent[] {
+    const starts = _.sortBy(
+      events.filter((event) =>
+        Object.keys(SEASON_BY_SEASON_START).some((name) =>
+          event.tags.includes(name),
+        ),
+      ),
+      (event) => event.start.valueOf(),
+    );
+
+    return starts.slice(0, -1).flatMap((beginning, index) => {
+      const ending = starts[index + 1];
+      const season = Object.entries(SEASON_BY_SEASON_START).find(([point]) =>
+        beginning.tags.includes(point),
+      )?.[1];
+
+      return ending === undefined || season === undefined
+        ? []
+        : [
+            {
+              description: season.season,
+              end: ending.start,
+              start: beginning.start,
+              summary: `${season.symbol} ${season.season}`,
+              tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, season.season],
+            },
+          ];
+    });
   }
 
   /** Builds the progressive span event for Earth moving from aphelion toward perihelion. */
@@ -159,8 +249,8 @@ export class AnnualSolarCycleService {
   }
 
   /**
-   * Pairs apsis events into progressive spans: advancing from aphelion to
-   * perihelion, retreating back. Earth moves fastest at perihelion.
+   * Pairs apsis events into advancing and retreating spans, and the equinoxes
+   * and solstices into the four seasons.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const solarApsisEvents = events.filter((event) =>
@@ -175,6 +265,8 @@ export class AnnualSolarCycleService {
     return [
       ...this.getAdvancingProgressiveEvents(aphelionEvents, perihelionEvents),
       ...this.getRetreatingProgressiveEvents(perihelionEvents, aphelionEvents),
+      ...this.getSeasonProgressiveEvents(solarApsisEvents),
+      ...this.getIntervalProgressiveEvents(solarApsisEvents),
     ];
   }
 

@@ -3,10 +3,13 @@ import type { CalendarEvent, CalendarEventTag } from "@codebase/caelundas-db";
 import type { PostgresqlUpdatableEntity } from "@codebase/persistence";
 import type { Moment } from "moment-timezone";
 
-/** Event row for one observer, before the database adds columns. */
+/** Event row for one observer, before the database adds or generates columns. */
 export type CalendarEventRow = Omit<
   CalendarEvent,
-  keyof PostgresqlUpdatableEntity
+  | "endLocalDay"
+  | "startLocalDay"
+  | "startLocalHour"
+  | keyof PostgresqlUpdatableEntity
 >;
 
 /** Upsert link from an event to a tag node. */
@@ -15,14 +18,17 @@ export type CalendarEventTagLink = Pick<
   "calendarEventId" | "tagId"
 >;
 
-/** Detected event with raw tag strings, before the upsert's columns. */
-export type DetectedCalendarEvent = Omit<
-  CalendarEvent,
-  "latitude" | "longitude" | "timezone" | keyof PostgresqlUpdatableEntity
-> & {
+/** A detected event, in iCalendar terms, before its row. */
+export interface DetectedCalendarEvent {
+  /** Detail on it, stored as the row's `note`. */
+  description: string;
+  end: Moment;
+  start: Moment;
+  /** What happened, stored as the row's `name`. */
+  summary: string;
   /** Raw tag strings, such as `aspects` and `moon`. */
   tags: string[];
-};
+}
 
 /** The range and location whose events {@link CalendarEventsService.findInRange} returns. */
 export interface FindInRangeParameters extends Coordinates {
@@ -39,17 +45,17 @@ export interface Observer extends Coordinates {
 }
 
 /** Stored event from `findInRange`, with its directly linked tag names. */
-export type StoredCalendarEvent = CalendarEvent &
-  Pick<DetectedCalendarEvent, "tags">;
+export type StoredCalendarEvent = DetectedCalendarEvent &
+  Pick<CalendarEvent, "id" | "latitude" | "longitude" | "timezone">;
 
 /**
- * `RETURNING` row: database id, and summary, start and end.
+ * `RETURNING` row: database id, and name, start and end.
  */
 export interface WrittenCalendarEvent {
   end: Date | Moment;
   id: string;
+  name: string;
   start: Date | Moment;
-  summary: string;
 }
 
 /** An observer location in decimal degrees. */

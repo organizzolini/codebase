@@ -11,14 +11,13 @@ import type { CalendarEventRecord } from "../calendar-loader/calendar-records.ty
 const START = new Date("2026-03-04T10:00:00.000Z");
 const EVENT: CalendarEventRecord = {
   color: null,
-  description: "",
   durationMinutes: 0,
   end: START,
   groups: [],
   id: "event",
-  location: null,
+  name: "Event",
+  note: "",
   start: START,
-  summary: "Event",
   tags: [],
   timezone: "UTC",
 };

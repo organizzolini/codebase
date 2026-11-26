@@ -60,6 +60,17 @@ export function PickedGroupChips(
             )
           }
           label={label}
+          onOnly={
+            groups.length === 1
+              ? undefined
+              : () => {
+                  for (const other of groups) {
+                    if (other.id !== id) {
+                      dispatch({ id: other.id, type: "toggle" });
+                    }
+                  }
+                }
+          }
           onRemove={() => {
             dispatch({ id, type: "toggle" });
           }}

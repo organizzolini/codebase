@@ -12,13 +12,14 @@ import {
 import { useCalendarDisplay } from "../../../hooks/use-calendar-display/use-calendar-display";
 import { CALENDAR_VIEW_LABELS } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { QueryCascader } from "../../calendar-query/query-cascader/query-cascader";
-import {
-  CHIP_CLASS_NAME,
-  TREE_CLASS_NAME,
-} from "../calendar-display-menu/calendar-display-menu.constants";
+import { CHIP_CLASS_NAME } from "../calendar-display-menu/calendar-display-menu.constants";
 import { findToggledLeaf } from "../calendar-display-menu/calendar-display-menu.utilities";
 
-import { TITLE, VIEW_ICONS } from "./calendar-layout-menu.constants";
+import {
+  LAYOUT_TREE_CLASS_NAME,
+  TITLE,
+  VIEW_ICONS,
+} from "./calendar-layout-menu.constants";
 import {
   applyLayoutLeaf,
   createLayoutItems,
@@ -104,7 +105,7 @@ export function CalendarLayoutMenu(
           >
             <QueryCascader
               cascade={false}
-              className={TREE_CLASS_NAME}
+              className={LAYOUT_TREE_CLASS_NAME}
               expanded={toOpenBranches(opened, view)}
               items={createLayoutItems()}
               mode="tree"

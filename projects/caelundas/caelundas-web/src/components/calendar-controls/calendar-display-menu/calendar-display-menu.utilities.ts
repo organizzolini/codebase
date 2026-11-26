@@ -1,7 +1,7 @@
 import {
+  EyeOff,
   Galaxy,
   GitCompareArrows,
-  Layers,
   Palette,
   Sparkles,
 } from "lucide-react";
@@ -13,6 +13,7 @@ import {
   toVisibilityChange,
 } from "../../../hooks/use-night-sky/hooks/use-night-sky-controls/night-sky-controls.utilities";
 import { isMetricView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
+import { hasGroupRows } from "../../calendar-query/calendar-group-strip/calendar-group-strip.utilities";
 
 import {
   CONSTELLATION_CHOICES,
@@ -57,9 +58,6 @@ export function applyDisplayLeaf(
   const group = colon === -1 ? leaf : leaf.slice(0, colon);
   const value = colon === -1 ? "" : leaf.slice(colon + 1);
   const actions: Readonly<Record<string, () => void>> = {
-    clusters: () => {
-      handlers.handleClustersChange(!choices.clusters);
-    },
     colors: () => {
       handlers.handleColorsChange(!choices.colors);
     },
@@ -77,6 +75,9 @@ export function applyDisplayLeaf(
       if (choice !== undefined) {
         onSkyChange(toConstellationsChange(choice.words));
       }
+    },
+    hideEmpty: () => {
+      handlers.handleHideEmptyChange(!choices.hideEmpty);
     },
     setting: () => {
       applySkyLeaf(group, value, skyContext);
@@ -126,17 +127,21 @@ export function createDisplayItems(
       label: "Colors",
       value: "colors",
     },
-    {
-      icon: toIcon(Layers),
-      label: "Crowded days",
-      value: "clusters",
-    },
     ...(isMetricView(choices.view)
       ? [
           {
             icon: toIcon(GitCompareArrows),
             label: "Compare to previous period",
             value: "compare",
+          },
+        ]
+      : []),
+    ...(choices.view !== undefined && hasGroupRows(choices.view)
+      ? [
+          {
+            icon: toIcon(EyeOff),
+            label: "Hide empty groups",
+            value: "hideEmpty",
           },
         ]
       : []),
@@ -186,9 +191,9 @@ export function isDisplayChoice(node: Readonly<CascaderNode>): boolean {
 export function toDisplayValue(choices: DisplayChoices): string[] {
   return [
     `symbols:${choices.symbols}`,
-    ...(choices.clusters ? ["clusters"] : []),
     ...(choices.colors ? ["colors"] : []),
     ...(choices.compare && isMetricView(choices.view) ? ["compare"] : []),
+    ...(choices.hideEmpty && hasGroupRows(choices.view) ? ["hideEmpty"] : []),
     `constellations:${describeConstellations(choices.sky.constellations)}`,
     ...toSkyValue(choices.sky, choices.listing),
   ];

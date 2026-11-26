@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import {
   DatasetDocument,
+  EventMetricCatalogDocument,
   EventMetricsDocument,
   EventsDocument,
   FacetsDocument,
@@ -18,6 +19,7 @@ import {
 } from "./events-api.constants";
 
 import type {
+  EventMetricCatalogQuery,
   EventMetricsInput,
   EventsQuery,
   FacetsQuery,
@@ -102,6 +104,17 @@ export async function findFacets(period?: Period): Promise<EventFacet[]> {
 }
 
 /**
+ * Reads the catalog of metrics the API measures: what each is called, shows, measures and how it adds up.
+ */
+export async function findMetricCatalog(): Promise<
+  EventMetricCatalogQuery["eventMetricCatalog"]
+> {
+  const { eventMetricCatalog } = await queryApi(EventMetricCatalogDocument, {});
+
+  return eventMetricCatalog;
+}
+
+/**
  * Reads the named filters the calendar offers, resolved to the tags of the
  * data, and the one it opens on.
  */
@@ -176,15 +189,14 @@ function toEventRecord(
   event: EventsQuery["events"][number],
 ): CalendarEventRecord {
   return {
-    color: event.color,
-    description: event.description,
+    color: null,
     durationMinutes: event.durationMinutes,
     end: new Date(event.end),
     groups: event.groups,
     id: event.id,
-    location: event.location,
+    name: event.name,
+    note: event.note,
     start: new Date(event.start),
-    summary: event.summary,
     tags: event.tags,
     timezone: event.timezone,
   };

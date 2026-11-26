@@ -7,14 +7,13 @@ import type { CalendarEventRecord } from "../../calendar-display/events-calendar
 
 const EVENT: CalendarEventRecord = {
   color: null,
-  description: "Mars and Saturn stand ninety degrees apart",
   durationMinutes: 0,
   end: new Date("2026-03-03T10:00:00.000Z"),
   groups: [],
   id: "event-mars-square-saturn",
-  location: null,
+  name: "♂ □ ♄ Mars perfective square Saturn",
+  note: "Mars and Saturn stand ninety degrees apart",
   start: new Date("2026-03-03T10:00:00.000Z"),
-  summary: "♂ □ ♄ Mars perfective square Saturn",
   tags: [],
   timezone: "America/New_York",
 };

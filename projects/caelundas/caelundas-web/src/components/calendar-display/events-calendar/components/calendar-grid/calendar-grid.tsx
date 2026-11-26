@@ -28,11 +28,6 @@ import type { ReactNode } from "react";
 export interface CalendarGridProperties {
   anchor: Date;
   className?: string;
-  /**
-   * Whether the views of hours merge events that run together; on when
-   * absent.
-   */
-  clusters?: boolean | undefined;
   compact: boolean;
   events: readonly CalendarEventRecord[];
   onDateChange: (date: Date) => void;
@@ -53,7 +48,6 @@ export function CalendarGrid(
   const {
     anchor,
     className,
-    clusters = true,
     compact,
     events,
     onDateChange,
@@ -66,7 +60,6 @@ export function CalendarGrid(
   const clustered = useCalendarClusters({
     anchor,
     compact,
-    enabled: clusters,
     events,
     timeZone,
     view,

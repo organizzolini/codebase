@@ -1,8 +1,15 @@
 import { useNavigate } from "@tanstack/react-router";
+import { useMemo } from "react";
 
 import { toWindowSearch } from "../../components/calendar-controls/calendar-date-picker/calendar-date-picker.utilities";
 import { formatCalendarDate } from "../../components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
+import { createEventGroupFields } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
+import {
+  dropHiddenSorts,
+  getSelectedColumnIds,
+} from "../../components/calendar-query/calendar-select-strip/calendar-select-strip-scope.utilities";
 
+import type { EventFacet } from "../../components/calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { CalendarSearch } from "./calendar-search.types";
 import type { UseCalendarSearchResult } from "./use-calendar-search.types";
 
@@ -11,9 +18,13 @@ import type { UseCalendarSearchResult } from "./use-calendar-search.types";
 /**
  * Writes every link change in one place; the filter replaces the history entry, so edits do not fill it.
  */
-export function useCalendarSearch(timeZone: string): UseCalendarSearchResult {
+export function useCalendarSearch(
+  timeZone: string,
+  facets: readonly EventFacet[] = [],
+): UseCalendarSearchResult {
   // 🪝 Hooks
   const navigate = useNavigate({ from: "/" });
+  const fields = useMemo(() => createEventGroupFields(facets), [facets]);
 
   // 🏗 Setup
 
@@ -32,14 +43,23 @@ export function useCalendarSearch(timeZone: string): UseCalendarSearchResult {
 
   // 🎁 Result
   return {
-    handleClustersChange: (enabled) => {
-      updateSearch({ clusters: enabled ? undefined : false }, true);
-    },
     handleColorsChange: (enabled) => {
       updateSearch({ colors: enabled ? undefined : false }, true);
     },
     handleColumnsChange: (columns) => {
-      updateSearch({ columns });
+      // A column no longer shown keeps no sort, in the same history entry.
+      void navigate({
+        replace: false,
+        search: (previous) => ({
+          ...previous,
+          columns,
+          sort: dropHiddenSorts(
+            previous.sort,
+            getSelectedColumnIds(columns),
+            fields,
+          ),
+        }),
+      });
     },
     handleCompareChange: (enabled) => {
       updateSearch({ compare: enabled ? true : undefined }, true);
@@ -50,9 +70,15 @@ export function useCalendarSearch(timeZone: string): UseCalendarSearchResult {
     handleFilterChange: (filter) => {
       updateSearch({ filter }, true);
     },
+    handleFoldChange: (fold) => {
+      updateSearch({ fold }, true);
+    },
     handleGroupingChange: (group) => {
       // An empty grouping is the default, so the link drops it.
       updateSearch({ group: group.length === 0 ? undefined : group });
+    },
+    handleHideEmptyChange: (enabled) => {
+      updateSearch({ hideEmpty: enabled ? true : undefined }, true);
     },
     handleMetricsChange: (metrics) => {
       // No metrics are the layout's defaults, so the link drops an empty list.

@@ -1,13 +1,9 @@
 // 🏷️ Types
 
-import type { TableGroupsAction } from "../../../../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.types";
-import type { Dispatch } from "react";
-
 /**
- * The shared state's dispatch, the open groups, and how to open one.
+ * The open groups, and how to open or close one.
  */
 export interface UseMetricExpansionResult {
-  dispatch: Dispatch<TableGroupsAction>;
   /**
    * The ids of the groups open as the layout shows them.
    */

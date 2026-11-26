@@ -3,7 +3,6 @@
 import type { EventMetricsData } from "../../../../components/calendar-display/calendar-metrics/calendar-metrics.types";
 import type { EventFilterQuery } from "../../../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 import type { EventGroupLevel } from "../../../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
-import type { EventMetric } from "../../../../graphql/generated/operations";
 
 /**
  * How the last settled read ended, and the read it was for.
@@ -26,7 +25,7 @@ export interface UseEventMetricsOptions {
   compare: boolean;
   filter: EventFilterQuery | undefined;
   grouping: readonly EventGroupLevel[];
-  metrics: readonly EventMetric[];
+  metrics: readonly string[];
   timeZone: string;
 }
 

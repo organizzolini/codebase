@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 
+import { CATALOG } from "../../../../testing/metrics/metric-catalog";
 import { createEventGroupFields } from "../calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 
+import { TAG_SORT_PARENT } from "./calendar-sort-strip.constants";
 import {
   createKeyItems,
   createMetricSortItems,
@@ -10,8 +12,11 @@ import {
   flipSortAt,
   getSortChipIcon,
   getSortIcon,
+  isSortChoice,
   labelSort,
   labelSortChip,
+  listSortNames,
+  pathSort,
   toSorts,
   toSortValue,
 } from "./calendar-sort-strip.utilities";
@@ -46,7 +51,7 @@ const ASPECT: GroupSort = { direction: "asc", key: "tag", tag: "tag:aspect" };
 
 describe("calendar-sort-strip utilities", () => {
   describe(createSortItems, () => {
-    it("offers the keys first, then each tag root that has tags beneath it", () => {
+    it("offers the keys first, the tag order holding each tag root", () => {
       const items = createSortItems(FIELDS);
 
       expect(items.map((item) => item.value)).toStrictEqual([
@@ -54,20 +59,42 @@ describe("calendar-sort-strip utilities", () => {
         "name",
         "count",
         "first",
+        "start",
+        "end",
+        "duration",
+      ]);
+      expect(items[0]?.label).toBe("Tag");
+      expect(items[0]?.children?.map((item) => item.value)).toStrictEqual([
         "by:tag:aspect",
         "by:tag:body",
       ]);
     });
 
-    it("draws an icon beside each key", () => {
-      for (const item of createSortItems(FIELDS).slice(0, 4)) {
+    it("draws an icon beside each key, only the tag order holding roots", () => {
+      for (const item of createSortItems(FIELDS).slice(1, 7)) {
         expect(item.icon).toBeDefined();
         expect(item.children).toBeUndefined();
       }
+
+      expect(createSortItems(FIELDS)[0]?.icon).toBeDefined();
+    });
+
+    it("holds the roots under an own Tag row where the tag order is not offered", () => {
+      const items = createSortItems(FIELDS, ["name"]);
+
+      expect(items.map((item) => item.value)).toStrictEqual([
+        "name",
+        TAG_SORT_PARENT,
+      ]);
+      expect(items[1]?.children).toHaveLength(2);
+      expect(isSortChoice({ label: "Tag", value: TAG_SORT_PARENT })).toBe(
+        false,
+      );
+      expect(isSortChoice({ label: "Name", value: "name" })).toBe(true);
     });
 
     it("prefixes each tag and the tags beneath it, so none is taken for a key", () => {
-      const aspect = createSortItems(FIELDS).find(
+      const aspect = createSortItems(FIELDS)[0]?.children?.find(
         (item) => item.value === "by:tag:aspect",
       );
 
@@ -78,10 +105,18 @@ describe("calendar-sort-strip utilities", () => {
     });
 
     it("offers no derived field, which has no tags to rank by", () => {
-      expect(createSortItems([])).toHaveLength(4);
+      expect(createSortItems([])).toHaveLength(7);
       expect(
-        createSortItems(FIELDS).some((item) => item.value === "by:month"),
-      ).toBe(false);
+        JSON.stringify(createSortItems(FIELDS).map((item) => item.value)),
+      ).not.toContain("by:month");
+    });
+  });
+
+  describe(pathSort, () => {
+    it("writes a tag's root before it, and nothing for other sorts or a root", () => {
+      expect(pathSort(IN_SIMPLE, FIELDS)).toBe("Aspect › Simple");
+      expect(pathSort(ASPECT, FIELDS)).toBeUndefined();
+      expect(pathSort(NAME_ASC, FIELDS)).toBeUndefined();
     });
   });
 
@@ -93,7 +128,7 @@ describe("calendar-sort-strip utilities", () => {
 
     it("names a tag root by its label, and a tag after its root", () => {
       expect(labelSort(ASPECT, FIELDS)).toBe("Aspect");
-      expect(labelSort(IN_SIMPLE, FIELDS)).toBe("Aspect › Simple");
+      expect(labelSort(IN_SIMPLE, FIELDS)).toBe("Simple");
     });
 
     it("names a tag the data lacks by its id, or a tag sort naming none by its key", () => {
@@ -187,73 +222,106 @@ describe("calendar-sort-strip utilities", () => {
     const BY_SPANS: GroupSort = {
       direction: "asc",
       key: "metric",
-      metric: "SPANS",
+      metric: "progressive-events",
     };
 
     it("offers the tag order, the name, then a row for each metric", () => {
-      const items = createMetricSortItems(["EVENTS", "SPANS"]);
+      const items = createMetricSortItems(
+        ["events", "progressive-events", "unknown-slug"],
+        CATALOG.bySlug,
+      );
 
       expect(items.map((item) => item.value)).toStrictEqual([
         "order",
         "name",
-        "metric:EVENTS",
-        "metric:SPANS",
+        "metric:events",
+        "metric:progressive-events",
       ]);
-      expect(items[3]?.label).toBe("Spans");
-      expect(items[3]?.description).toBe("By each group's spans.");
+      expect(items[3]?.label).toBe("Progressive events");
+      expect(items[3]?.description).toBe("By each group's progressive events.");
     });
 
     it("ticks a metric sort by its own value, and reads it back, ascending", () => {
-      expect(toSortValue([BY_SPANS])).toStrictEqual(["metric:SPANS"]);
+      expect(toSortValue([BY_SPANS])).toStrictEqual([
+        "metric:progressive-events",
+      ]);
       expect(toSortValue([{ direction: "asc", key: "metric" }])).toStrictEqual([
         "metric:",
       ]);
-      expect(toSorts(["metric:SPANS"], [])).toStrictEqual([BY_SPANS]);
+      expect(toSorts(["metric:progressive-events"], [])).toStrictEqual([
+        BY_SPANS,
+      ]);
     });
 
-    it("keeps a metric sort's direction, and ignores a metric that is not a name", () => {
+    it("keeps a metric sort's direction, and ignores a metric that is not a slug", () => {
       const descending: GroupSort = { ...BY_SPANS, direction: "desc" };
 
-      expect(toSorts(["metric:SPANS", "name"], [descending])).toStrictEqual([
-        descending,
-        NAME_ASC,
-      ]);
-      expect(toSorts(["metric:narnia"], [])).toBeUndefined();
+      expect(
+        toSorts(["metric:progressive-events", "name"], [descending]),
+      ).toStrictEqual([descending, NAME_ASC]);
+      expect(toSorts(["metric:Not A Slug"], [])).toBeUndefined();
     });
 
     it("names the sort and draws the icon of its metric", () => {
-      expect(labelSortChip(BY_SPANS, FIELDS)).toBe("Spans");
-      expect(labelSortChip({ direction: "asc", key: "metric" }, FIELDS)).toBe(
-        "Metric",
+      expect(labelSortChip(BY_SPANS, FIELDS, CATALOG.bySlug)).toBe(
+        "Progressive events",
       );
-      expect(getSortChipIcon(BY_SPANS, FIELDS)).toBeDefined();
       expect(
-        getSortChipIcon({ direction: "asc", key: "metric" }, FIELDS),
+        labelSortChip(
+          { direction: "asc", key: "metric" },
+          FIELDS,
+          CATALOG.bySlug,
+        ),
+      ).toBe("Metric");
+      expect(getSortChipIcon(BY_SPANS, FIELDS, CATALOG.bySlug)).toBeDefined();
+      expect(
+        getSortChipIcon(
+          { direction: "asc", key: "metric" },
+          FIELDS,
+          CATALOG.bySlug,
+        ),
       ).toBeUndefined();
     });
 
+    it("reads a metric sort written with an old name as its slug", () => {
+      expect(toSorts(["metric:SPANS"], [])).toStrictEqual([BY_SPANS]);
+    });
+
+    it("names a metric sort of a metric the catalog lacks plainly", () => {
+      const unknown: GroupSort = { ...BY_SPANS, metric: "unknown-slug" };
+
+      expect(labelSortChip(unknown, FIELDS, CATALOG.bySlug)).toBe("Metric");
+      expect(getSortChipIcon(unknown, FIELDS, CATALOG.bySlug)).toBeUndefined();
+    });
+
     it("names and draws the other sorts as before", () => {
-      expect(labelSortChip(NAME_ASC, FIELDS)).toBe("Name");
-      expect(getSortChipIcon(NAME_ASC, FIELDS)).toBeDefined();
+      expect(labelSortChip(NAME_ASC, FIELDS, CATALOG.bySlug)).toBe("Name");
+      expect(getSortChipIcon(NAME_ASC, FIELDS, CATALOG.bySlug)).toBeDefined();
     });
 
     it("offers a view its own sorts", () => {
       const context = {
         columns: undefined,
         fields: FIELDS,
-        metrics: ["SPANS" as const],
+        metrics: ["progressive-events"],
       };
 
       expect(
-        createViewSortItems("totals", context).map((item) => item.value),
-      ).toStrictEqual(["order", "name", "metric:SPANS"]);
-      expect(
-        createViewSortItems("timeline", context).map((item) => item.value),
-      ).toContain("count");
-      expect(
-        createViewSortItems("table", { ...context, columns: ["name"] }).map(
+        createViewSortItems("totals", context, CATALOG).map(
           (item) => item.value,
         ),
+      ).toStrictEqual(["order", "name", "metric:progressive-events"]);
+      expect(
+        createViewSortItems("timeline", context, CATALOG).map(
+          (item) => item.value,
+        ),
+      ).toContain("count");
+      expect(
+        createViewSortItems(
+          "table",
+          { ...context, columns: ["name"] },
+          CATALOG,
+        ).map((item) => item.value),
       ).not.toContain("first");
     });
   });
@@ -267,6 +335,29 @@ describe("calendar-sort-strip utilities", () => {
       expect(flipSortAt([NAME_ASC], 0)).toStrictEqual([
         { direction: "desc", key: "name" },
       ]);
+    });
+  });
+
+  describe(listSortNames, () => {
+    const context = { bySlug: CATALOG.bySlug, fields: [] };
+
+    it("names a chip for each sort", () => {
+      expect(
+        listSortNames(
+          [
+            { direction: "asc", key: "name" },
+            { direction: "desc", key: "metric", metric: "events" },
+          ],
+          false,
+          context,
+        ),
+      ).toStrictEqual(["Name", "Events"]);
+    });
+
+    it("names the default sort Tags", () => {
+      expect(
+        listSortNames([{ direction: "asc", key: "order" }], true, context),
+      ).toStrictEqual(["Tags"]);
     });
   });
 });

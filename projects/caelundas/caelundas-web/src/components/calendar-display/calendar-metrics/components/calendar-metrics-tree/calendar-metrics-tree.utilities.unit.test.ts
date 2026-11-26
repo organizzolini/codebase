@@ -24,8 +24,8 @@ function group(
     path: null,
     rank,
     values: [
-      { metric: "EVENTS", previous: null, value: events },
-      { metric: "SPANS", previous: null, value: events * 2 },
+      { metric: "events", previous: null, value: events },
+      { metric: "progressive-events", previous: null, value: events * 2 },
     ],
   };
 }
@@ -155,7 +155,7 @@ describe("calendar-metrics tree utilities", () => {
 
     it("orders every level by a metric's value", () => {
       const sorted = sortMetricGroups(TREE, [
-        { direction: "desc", key: "metric", metric: "SPANS" },
+        { direction: "desc", key: "metric", metric: "progressive-events" },
       ]);
 
       expect(ids(sorted)).toStrictEqual(["/0:a", "/0:b", "/0:none"]);
@@ -183,7 +183,7 @@ describe("calendar-metrics tree utilities", () => {
       const sorted = sortMetricGroups(
         [group("/0:a", "A", 2), group("/0:c", "C", 2), group("/0:b", "B", 5)],
         [
-          { direction: "asc", key: "metric", metric: "EVENTS" },
+          { direction: "asc", key: "metric", metric: "events" },
           { direction: "desc", key: "name" },
         ],
       );
@@ -191,7 +191,7 @@ describe("calendar-metrics tree utilities", () => {
       expect(ids(sorted)).toStrictEqual(["/0:c", "/0:a", "/0:b"]);
     });
 
-    it("treats a metric it does not know as the tag order", () => {
+    it("treats a metric name that is no slug as the tag order", () => {
       expect(
         ids(
           sortMetricGroups(TREE, [
@@ -205,7 +205,7 @@ describe("calendar-metrics tree utilities", () => {
       expect(
         ids(
           sortMetricGroups(TREE, [
-            { direction: "asc", key: "metric", metric: "UNIQUE_TAGS" },
+            { direction: "asc", key: "metric", metric: "unique-tags" },
           ]),
         ),
       ).toStrictEqual(["/0:b", "/0:a", "/0:none"]);

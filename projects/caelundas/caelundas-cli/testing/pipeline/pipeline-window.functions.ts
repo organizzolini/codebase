@@ -57,7 +57,9 @@ async function sweep(
     const perfective = context
       .get(PerfectiveService)
       .detect(input, families ? { families } : {});
-    const progressive = context.get(ProgressiveService).detect(perfective);
+    const progressive = context
+      .get(ProgressiveService)
+      .detect(perfective, input);
 
     return {
       events: [...perfective, ...progressive].toSorted(

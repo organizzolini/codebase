@@ -290,6 +290,22 @@ export class DailyCyclesBuilderService {
   }
 
   /**
+   * Builds the span the Moon is above the horizon, from moonrise to moonset.
+   */
+  getMoonUpDurationEvent(
+    beginning: DetectedCalendarEvent,
+    ending: DetectedCalendarEvent,
+  ): DetectedCalendarEvent {
+    return {
+      description: "Moon Up (Moonrise to Moonset)",
+      end: ending.start,
+      start: beginning.start,
+      summary: "🌙 Moon Up",
+      tags: [...DailyCyclesBuilderService.lunarTags, "Moon Up"],
+    };
+  }
+
+  /**
    * Detects a rise at this minute: the upper limb's clearance crosses zero
    * upward, and the crossing rounds to this minute rather than a neighbor.
    */

@@ -207,6 +207,12 @@ export interface FiltersProps<V = unknown, O = unknown> {
   onConvertToAdvanced?: () => void
 
   /**
+   * Offers "Fold" in every chip's kebab, for the consumer to fold the chip row
+   * into a count; its presence IS the switch.
+   */
+  onFold?: (() => void) | undefined
+
+  /**
    * Classes for the dropdown MENUS and the field PICKER panel, one prop each
    * rather than one per mount point. Merged after the default, so `w-*` wins.
    */
@@ -256,6 +262,7 @@ export function Filters<V = unknown, O = unknown>({
   readOnly = false,
   onBeforeQueryChange,
   onConvertToAdvanced,
+  onFold,
   menuClassName,
   fieldPickerClassName,
   pathCollapse = "none",
@@ -838,6 +845,7 @@ export function Filters<V = unknown, O = unknown>({
       menuClassName,
       fieldPickerClassName,
       convertToAdvanced: onConvertToAdvanced,
+      fold: onFold,
       pathCollapse,
       maxPathSegments,
       resolveOperators,
@@ -884,6 +892,7 @@ export function Filters<V = unknown, O = unknown>({
       menuClassName,
       fieldPickerClassName,
       onConvertToAdvanced,
+      onFold,
       pathCollapse,
       maxPathSegments,
       resolveOperators,

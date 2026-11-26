@@ -5,13 +5,11 @@
  * A fixture event, with the tags it was given directly.
  */
 export interface FixtureEvent {
-  color: null | string;
-  description: string;
   end: string;
   id: string;
-  location: string;
+  name: string;
+  note: string;
   start: string;
-  summary: string;
   tagIds: readonly string[];
   timezone: string;
 }
@@ -26,7 +24,6 @@ export interface FixtureTag {
 }
 
 const NEW_YORK = {
-  location: "New York, NY",
   timezone: "America/New_York",
 } as const;
 
@@ -58,62 +55,56 @@ export const FIXTURE_TAGS: readonly FixtureTag[] = [
 
 export const FIXTURE_EVENTS: readonly FixtureEvent[] = [
   {
-    color: null,
-    description: "Mercury appears to move backward through the zodiac",
     end: "2026-03-20T19:32:00.000Z",
     id: "event-mercury-retrograde",
+    name: "Mercury Retrograde",
+    note: "Mercury appears to move backward through the zodiac",
     start: "2026-02-26T06:48:00.000Z",
-    summary: "Mercury Retrograde",
     tagIds: ["tag-retrograde", "tag-mercury"],
     ...NEW_YORK,
   },
   {
-    color: "#b91c1c",
-    description: "Mars and Venus meet at the same zodiacal longitude",
     end: "2026-03-04T15:20:00.000Z",
     id: "event-mars-conjunct-venus",
+    name: "Mars Conjunct Venus",
+    note: "Mars and Venus meet at the same zodiacal longitude",
     start: "2026-03-04T15:20:00.000Z",
-    summary: "Mars Conjunct Venus",
     tagIds: ["tag-conjunct", "tag-mars", "tag-venus"],
     ...NEW_YORK,
   },
   {
-    color: null,
-    description: "The Sun enters Aries at the vernal equinox",
     end: "2026-03-20T14:46:00.000Z",
     id: "event-sun-ingress-aries",
+    name: "Sun Ingress Aries",
+    note: "The Sun enters Aries at the vernal equinox",
     start: "2026-03-20T14:46:00.000Z",
-    summary: "Sun Ingress Aries",
     tagIds: ["tag-ingress", "tag-sun", "tag-aries", "tag-fire"],
     ...NEW_YORK,
   },
   {
-    color: null,
-    description: "Venus enters Aries",
     end: "2026-03-26T03:12:00.000Z",
     id: "event-venus-ingress-aries",
+    name: "Venus Ingress Aries",
+    note: "Venus enters Aries",
     start: "2026-03-26T03:12:00.000Z",
-    summary: "Venus Ingress Aries",
     tagIds: ["tag-ingress", "tag-venus", "tag-aries", "tag-fire"],
     ...NEW_YORK,
   },
   {
-    color: null,
-    description: "Mars and Saturn stand ninety degrees apart",
     end: "2026-04-10T22:05:00.000Z",
     id: "event-mars-square-saturn",
+    name: "Mars Square Saturn",
+    note: "Mars and Saturn stand ninety degrees apart",
     start: "2026-04-10T22:05:00.000Z",
-    summary: "Mars Square Saturn",
     tagIds: ["tag-square", "tag-mars", "tag-saturn"],
     ...NEW_YORK,
   },
   {
-    color: null,
-    description: "The Sun enters Cancer at the summer solstice",
     end: "2026-06-21T08:24:00.000Z",
     id: "event-sun-ingress-cancer",
+    name: "Sun Ingress Cancer",
+    note: "The Sun enters Cancer at the summer solstice",
     start: "2026-06-21T08:24:00.000Z",
-    summary: "Sun Ingress Cancer",
     tagIds: ["tag-ingress", "tag-sun"],
     ...NEW_YORK,
   },
@@ -128,12 +119,11 @@ export function createBusyEvents(start: string, count: number): FixtureEvent[] {
     const at = new Date(first + index * 60_000).toISOString();
 
     return {
-      color: null,
-      description: "A busy moment",
       end: at,
       id: `event-busy-${String(index + 1)}`,
+      name: `Busy Event ${String(index + 1)}`,
+      note: "A busy moment",
       start: at,
-      summary: `Busy Event ${String(index + 1)}`,
       tagIds: [],
       ...NEW_YORK,
     };

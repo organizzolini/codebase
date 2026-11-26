@@ -54,6 +54,10 @@ export interface CalendarTableProperties {
    */
   groupColors?: ReadonlyMap<string, string> | undefined;
   grouping: readonly EventGroupLevel[];
+  /**
+   * Whether groups with no events are left out; shown when absent.
+   */
+  hideEmpty?: boolean | undefined;
   onColumnsChange?:
     | ((columns: readonly string[] | undefined) => void)
     | undefined;
@@ -81,6 +85,7 @@ export function CalendarTable(
     facets,
     groupColors,
     grouping,
+    hideEmpty,
     onColumnsChange,
     onDateChange,
     onNavigationChange,
@@ -107,6 +112,7 @@ export function CalendarTable(
     facets,
     fields,
     grouping,
+    hideEmpty,
     sort,
     timeZone,
   });

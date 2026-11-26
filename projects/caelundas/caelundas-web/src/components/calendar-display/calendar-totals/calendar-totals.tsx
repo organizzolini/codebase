@@ -1,8 +1,12 @@
+import { useId } from "react";
+
 import { Button } from "@codebase/presentation";
 
+import { useMetricCatalog } from "../../../hooks/use-metric-layout/hooks/use-metric-catalog/use-metric-catalog";
 import { useMetricLayout } from "../../../hooks/use-metric-layout/use-metric-layout";
 import { SkeletonCards } from "../calendar-skeleton/skeleton-cards";
 
+import { toTotalsCards } from "./calendar-totals.utilities";
 import { TotalsCard } from "./components/totals-card/totals-card";
 
 import type { MetricLayoutProperties } from "../calendar-metrics/calendar-metrics-layout.types";
@@ -28,11 +32,19 @@ export function CalendarTotals(
   const { className, compare, groupColors, timeZone } = properties;
 
   // 🪝 Hooks
+  const { catalog } = useMetricCatalog();
   const layout = useMetricLayout({ ...properties, rootsUntilTouched: true });
+  const labelId = useId();
 
   // 🏗 Setup
   const { data, error, expanded, refetch, status, toggle } = layout;
   const totals = data?.total ?? [];
+  const cards = toTotalsCards(totals, catalog.bySlug);
+  // Named by the skeleton's own announcement, which it does not repeat.
+  const pending =
+    data === undefined
+      ? ({ "aria-labelledby": labelId, role: "region" } as const)
+      : {};
 
   // 💪 Handlers
 
@@ -68,9 +80,10 @@ export function CalendarTotals(
       aria-busy={status === "loading"}
       className={className}
       data-testid="calendar-totals"
+      {...pending}
     >
       {data === undefined ? (
-        <SkeletonCards />
+        <SkeletonCards labelId={labelId} />
       ) : (
         <section
           aria-label="Totals"
@@ -81,13 +94,14 @@ export function CalendarTotals(
               There are no totals to show for these days.
             </p>
           ) : null}
-          {totals.map((total) => (
+          {cards.map(({ metric, total }) => (
             <TotalsCard
-              key={total.metric}
+              key={metric.slug}
               compare={compare}
               expanded={expanded}
               groupColors={groupColors}
               groups={data.groups}
+              metric={metric}
               onToggle={toggle}
               timeZone={timeZone}
               total={total}

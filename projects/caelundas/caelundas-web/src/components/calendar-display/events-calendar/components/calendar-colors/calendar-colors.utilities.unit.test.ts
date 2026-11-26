@@ -15,14 +15,13 @@ function eventWith(
 ): CalendarEventRecord {
   return {
     color,
-    description: "",
     durationMinutes: 0,
     end: new Date("2026-03-01T00:00:00Z"),
     groups: [],
     id: paths.join("|"),
-    location: null,
+    name: "An event",
+    note: "",
     start: new Date("2026-03-01T00:00:00Z"),
-    summary: "An event",
     tags: paths.map((path, index) => ({
       depth: path.split(" / ").length - 1,
       id: `tag-${String(index)}`,
@@ -74,12 +73,12 @@ describe("calendar colors", () => {
       expect(getEventColor(eventWith(["Zodiac / Ingressive"]))).toBeNull();
     });
 
-    it("falls back to the color the data gives, or none", () => {
+    it("gives none for an event no kind rule covers, whatever color it carries", () => {
       expect(
         getEventColor(
           eventWith(["Body / Planet / Personal / Mars"], "#123456"),
         ),
-      ).toBe("#123456");
+      ).toBeNull();
       expect(
         getEventColor(eventWith(["Body / Planet / Personal / Mars"])),
       ).toBeNull();

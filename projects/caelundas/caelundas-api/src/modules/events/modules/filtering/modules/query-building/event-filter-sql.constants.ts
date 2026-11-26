@@ -3,11 +3,11 @@
 /** SQL for each derived field, in each event's own zone. */
 export const CALENDAR_FIELD_SQL = {
   durationMinutes: "e.duration_minutes",
-  endLocalDay: `(e."end" at time zone e.timezone)::date::text`,
+  endLocalDay: "e.end_local_day",
   hour: "e.start_local_hour",
   startLocalDay: "e.start_local_day",
   temporality: "e.temporality",
-  weekday: `extract(dow from e."start" at time zone e.timezone)::integer`,
+  weekday: "extract(dow from e.start_local_day::date)::integer",
 } as const;
 
 /** Tags in `{tags}` the event carries, ancestors included. */
@@ -63,15 +63,48 @@ export const PHASE_BOUNDARY_TAG_PATHS = [
   "Aspect / Phase / Dissolving",
 ] as const;
 
+// It reads `tag_info`, so its statement starts with TAG_INFO_SQL, and it binds
+// nothing, so Postgres computes it once.
+/** The ids of the boundary tags and their descendants. */
+export const PHASE_BOUNDARY_TAG_IDS_SQL = `(
+    select coalesce(array_agg(pc.descendant_id), '{}'::uuid[])
+    from tag_info p
+    join tags_closure pc on pc.ancestor_id = p.tag_id
+    where p.tag_path in (${PHASE_BOUNDARY_TAG_PATHS.map((path) => `'${path}'`).join(", ")})
+  )`;
+
+/** Path of the tag whose events last. */
+export const PROGRESSIVE_TAG_PATH = "Temporality / Progressive";
+
+// Like the boundary ids, it reads `tag_info` and binds nothing.
+/** The ids of the Progressive tag and its descendants. */
+export const PROGRESSIVE_TAG_IDS_SQL = `(
+    select coalesce(array_agg(pc.descendant_id), '{}'::uuid[])
+    from tag_info p
+    join tags_closure pc on pc.ancestor_id = p.tag_id
+    where p.tag_path = '${PROGRESSIVE_TAG_PATH}'
+  )`;
+
 /** True for an event `{event}` that carries no phase boundary tag. */
 export const NOT_PHASE_BOUNDARY_SQL = `not exists (
     select 1
     from calendar_event_tags pet
-    join tags_closure pc on pc.descendant_id = pet.tag_id
     where pet.calendar_event_id = {event}
-      and pc.ancestor_id in (
-        select p.tag_id
-        from tag_info p
-        where p.tag_path in (${PHASE_BOUNDARY_TAG_PATHS.map((path) => `'${path}'`).join(", ")})
-      )
+      and pet.tag_id = any(${PHASE_BOUNDARY_TAG_IDS_SQL}::uuid[])
+  )`;
+
+/** True for the facts event row `{alias}` with no boundary tag. */
+export const NOT_PHASE_BOUNDARY_FACTS_SQL = `not ({alias}.tag_ids && ${PHASE_BOUNDARY_TAG_IDS_SQL})`;
+
+// The stored local day and hour, its whole minutes and whether it is an
+// instant, in place of a view. Postgres folds the subquery in.
+/** The events with the local-time fields the API reads, days as text. */
+export const EVENTS_LOCAL_SQL = `(
+    select c.id, c."name", c.note, c."start", c."end", c.timezone,
+      c.start_local_day::text as start_local_day,
+      c.end_local_day::text as end_local_day,
+      c.start_local_hour::integer as start_local_hour,
+      floor(extract(epoch from c."end" - c."start") / 60)::integer as duration_minutes,
+      case when c."start" = c."end" then 'Instant' else 'Duration' end as temporality
+    from calendar_events c
   )`;

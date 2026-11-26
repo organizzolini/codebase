@@ -40,7 +40,7 @@ export function createHeaderActions(
 }
 
 /**
- * The sort a column orders groups by: name, first event, or its tag; none for a column that cannot sort.
+ * The sort a column orders by: name, start, end, duration or its tag; none for a column that cannot sort.
  */
 export function getColumnSort(column: TableColumn): SortTarget | undefined {
   if (column.kind === "name") {
@@ -48,7 +48,11 @@ export function getColumnSort(column: TableColumn): SortTarget | undefined {
   }
 
   if (column.kind === "start" || column.kind === "end") {
-    return { key: "first" };
+    return { key: column.kind };
+  }
+
+  if (column.kind === "duration") {
+    return { key: "duration" };
   }
 
   return column.kind === "tag" ? { key: "tag", tag: column.id } : undefined;

@@ -8,6 +8,7 @@ import {
 import { describe, expect, it, vi } from "vitest";
 
 import { serveCalendarApi } from "../../../../testing/calendar-api";
+import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 
 import { CalendarCharts } from "./calendar-charts";
 
@@ -23,7 +24,7 @@ function createProperties(
     compare: false,
     filter: undefined,
     grouping: [{ field: "tag:body" }, { field: "tag:body" }],
-    metrics: ["EVENTS", "UNIQUE_NAMES"],
+    metrics: ["events", "unique-names"],
     onDateChange: vi.fn<(date: Date) => void>(),
     onNavigationChange: vi.fn<() => void>(),
     sort: undefined,
@@ -38,7 +39,7 @@ describe(CalendarCharts, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarCharts {...createProperties()} />);
+    renderWithCatalog(<CalendarCharts {...createProperties()} />);
 
     await screen.findByRole("button", { name: "Alpha: 6" });
 
@@ -56,7 +57,7 @@ describe(CalendarCharts, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarCharts {...createProperties()} />);
+    renderWithCatalog(<CalendarCharts {...createProperties()} />);
 
     await screen.findByRole("button", { name: "Beta: 4" });
 
@@ -67,7 +68,7 @@ describe(CalendarCharts, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarCharts {...createProperties()} />);
+    renderWithCatalog(<CalendarCharts {...createProperties()} />);
 
     await screen.findByRole("button", { name: "Beta: 4" });
     fireEvent.click(screen.getByRole("button", { name: "Beta: 4" }));
@@ -88,7 +89,7 @@ describe(CalendarCharts, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarCharts {...createProperties()} />);
+    renderWithCatalog(<CalendarCharts {...createProperties()} />);
 
     await screen.findByRole("button", { name: "Beta: 4" });
 
@@ -102,9 +103,9 @@ describe(CalendarCharts, () => {
 
     serveCalendarApi();
 
-    const { rerender } = render(
+    const { rerender } = renderWithCatalog(
       <CalendarCharts
-        {...createProperties({ metrics: ["FIRST_START", "EVENTS"] })}
+        {...createProperties({ metrics: ["first-start", "events"] })}
       />,
     );
 
@@ -114,7 +115,7 @@ describe(CalendarCharts, () => {
     expect(screen.queryByRole("heading", { name: "First start" })).toBeNull();
 
     rerender(
-      <CalendarCharts {...createProperties({ metrics: ["LAST_START"] })} />,
+      <CalendarCharts {...createProperties({ metrics: ["last-start"] })} />,
     );
 
     await waitFor(() => {
@@ -126,7 +127,7 @@ describe(CalendarCharts, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(<CalendarCharts {...createProperties()} />);
+    renderWithCatalog(<CalendarCharts {...createProperties()} />);
 
     await screen.findByRole("button", { name: "Beta: 4" });
 
@@ -142,10 +143,10 @@ describe(CalendarCharts, () => {
     const ascending: GroupSort = {
       direction: "asc",
       key: "metric",
-      metric: "EVENTS",
+      metric: "events",
     };
     const name: GroupSort = { direction: "desc", key: "name" };
-    const { rerender } = render(
+    const { rerender } = renderWithCatalog(
       <CalendarCharts {...createProperties({ onSortChange, sort: [name] })} />,
     );
 
@@ -189,7 +190,7 @@ describe(CalendarCharts, () => {
     expect.hasAssertions();
 
     serveCalendarApi();
-    render(
+    renderWithCatalog(
       <CalendarCharts
         {...createProperties({
           groupColors: new Map([["alpha", "rgb(255, 0, 0)"]]),
@@ -208,14 +209,14 @@ describe(CalendarCharts, () => {
     serveCalendarApi();
 
     const { className: _className, ...properties } = createProperties();
-    const { rerender } = render(<CalendarCharts {...properties} />);
+    const { rerender } = renderWithCatalog(<CalendarCharts {...properties} />);
 
     await screen.findByRole("button", { name: "Beta: 4" });
 
     rerender(
       <CalendarCharts
         {...properties}
-        metrics={["SPANS"]}
+        metrics={["progressive-events"]}
       />,
     );
 
@@ -238,7 +239,7 @@ describe(CalendarCharts, () => {
 
   it("shows the bars while it loads", () => {
     serveCalendarApi();
-    render(<CalendarCharts {...createProperties()} />);
+    renderWithCatalog(<CalendarCharts {...createProperties()} />);
 
     expect(screen.getByTestId("skeleton-bars")).toBeDefined();
   });
@@ -247,7 +248,7 @@ describe(CalendarCharts, () => {
     const api = serveCalendarApi();
 
     api.fail("The metrics are down");
-    render(<CalendarCharts {...createProperties()} />);
+    renderWithCatalog(<CalendarCharts {...createProperties()} />);
 
     await expect(
       screen.findByText("The metrics are down"),
@@ -263,7 +264,9 @@ describe(CalendarCharts, () => {
 
   it("says there is nothing to chart without a group", async () => {
     serveCalendarApi();
-    render(<CalendarCharts {...createProperties({ grouping: [] })} />);
+    renderWithCatalog(
+      <CalendarCharts {...createProperties({ grouping: [] })} />,
+    );
 
     await expect(screen.findByText("Nothing to chart")).resolves.toBeDefined();
   });

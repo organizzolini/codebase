@@ -183,7 +183,7 @@ describe(TripleAspectsComposerService, () => {
           "Mars",
           "Mars Focal",
         ],
-      } as DetectedCalendarEvent;
+      };
       const dissolving = {
         ...forming,
         description: "Moon, Sun, Mars grand trine dissolving",
@@ -306,7 +306,7 @@ describe(TripleAspectsComposerService, () => {
           "Moon",
           "Mars",
         ],
-      } as DetectedCalendarEvent;
+      };
       const dissolving = {
         ...forming,
         description: "Sun, Moon, Mars dissolving",
@@ -348,7 +348,7 @@ describe(TripleAspectsComposerService, () => {
           "Moon",
           "Mars",
         ],
-      } as DetectedCalendarEvent;
+      };
       const dissolving = {
         ...forming,
         description: "Sun, Moon, Mars grand trine dissolving",
@@ -386,7 +386,7 @@ describe(TripleAspectsComposerService, () => {
           "Moon",
           "Mars",
         ],
-      } as DetectedCalendarEvent;
+      };
       const earlierDissolving = {
         ...laterForming,
         description: "Sun, Moon, Mars grand trine dissolving",
@@ -435,7 +435,7 @@ describe(TripleAspectsComposerService, () => {
           "Mars",
           "Mars Focal",
         ],
-      } as DetectedCalendarEvent;
+      };
       const dissolving = {
         ...forming,
         description: "Mars, Moon, Sun t-square dissolving (Mars focal)",
@@ -480,7 +480,7 @@ describe(TripleAspectsComposerService, () => {
           "Lunar Apogee",
           "North Lunar Node",
         ],
-      } as DetectedCalendarEvent;
+      };
       const dissolving = {
         ...forming,
         end: minute.clone().add(2, "hours"),
@@ -516,7 +516,7 @@ describe(TripleAspectsComposerService, () => {
           "Moon",
           "Mars",
         ],
-      } as DetectedCalendarEvent;
+      };
       const dissolving = {
         ...forming,
         description: "Sun, Moon, Mars grand trine dissolving",
@@ -569,7 +569,7 @@ describe(TripleAspectsComposerService, () => {
           "Moon",
           "Mars",
         ],
-      } as DetectedCalendarEvent;
+      };
       const formingEarlier = {
         ...formingLater,
         description: "earlier forming",

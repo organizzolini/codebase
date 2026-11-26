@@ -10,6 +10,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **angle**: Degree rotation the night sky star group is drawn at, derived from sidereal time as the sky turns.
 - **apogee**:
 - **appearance**:
+- **applicable**:
 - **aquarius**: Zodiac sign and constellation name whose sign glyph maps to its icon file in the calendar glyphs.
 - **aspect**: Angular relationship between two bodies, such as a conjunction or a harmonic, filtered and colored as a tag root.
 - **astraea**: Asteroid whose name the project does not use in code; it appears only in the glossary list here.
@@ -38,6 +39,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **contraparallel**: Aspect between bodies with equal declination on opposite sides of the equator; the project lists it only here.
 - **cradle**: Calendar glyph mapped from the bed emoji to cradle-icon.png, used for one event label in the glyph map.
 - **crescent**: Moon phase between new and quarter, offered as a filter value and drawn with waxing or waning crescent icons.
+- **crosshair**:
 - **cut**: Verb for removing or trimming: a view is added or cut from the list, and night sky rings are cut at the window edge.
 - **dasharray**:
 - **dawn**: Twilight start of morning, labeled Astronomical or Civil Dawn, each with its glyph in calendar icon constants.

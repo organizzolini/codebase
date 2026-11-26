@@ -1,6 +1,9 @@
 // ♟️ Constants
 import type { EclipseType } from "./eclipses.types";
 
+/** Hours either side of a window edge scanned for an eclipse's contacts. */
+export const ECLIPSE_EDGE_SCAN_HOURS = 8;
+
 /** Danjon's enlargement of Earth's shadow, scaling parallax by 1.01. */
 export const DANJON_SHADOW_ENLARGEMENT = 1.01;
 

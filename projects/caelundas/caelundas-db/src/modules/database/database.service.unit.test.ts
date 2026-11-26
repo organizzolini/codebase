@@ -4,8 +4,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { METRICS_REFRESH_STATEMENT } from "./database.constants";
 import { DatabaseService } from "./database.service";
+import { METRICS_REFRESH_STATEMENTS } from "./modules/metrics/calendar-event-facts.constants";
 
 import type { EntityManager } from "typeorm";
 
@@ -39,14 +39,21 @@ describe(DatabaseService, () => {
     expect(service.isConnected()).toBe(false);
   });
 
-  it("refreshes the metrics view concurrently through the manager it is given", async () => {
+  it("refreshes the tag sets first, then rebuilds the facts, each through the manager it is given", async () => {
     const manager = createMock<EntityManager>();
 
     await service.refreshMetrics(manager);
 
-    expect(manager.query).toHaveBeenCalledExactlyOnceWith(
-      "refresh materialized view concurrently calendar_event_facts",
+    expect(manager.query).toHaveBeenCalledTimes(
+      METRICS_REFRESH_STATEMENTS.length,
     );
-    expect(METRICS_REFRESH_STATEMENT).toContain("concurrently");
+    expect(manager.query).toHaveBeenNthCalledWith(
+      1,
+      "refresh materialized view concurrently calendar_event_tag_sets",
+    );
+
+    for (const [index, statement] of METRICS_REFRESH_STATEMENTS.entries()) {
+      expect(manager.query).toHaveBeenNthCalledWith(index + 1, statement);
+    }
   });
 });

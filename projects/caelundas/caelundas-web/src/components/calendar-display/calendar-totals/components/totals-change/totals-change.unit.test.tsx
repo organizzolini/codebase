@@ -1,13 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { getMetric } from "../../../../../../testing/metrics/metric-catalog";
+
 import { TotalsChange } from "./totals-change";
 
 describe(TotalsChange, () => {
   it("abbreviates a long previous duration and keeps the full words reachable", () => {
     render(
       <TotalsChange
-        metric="TOTAL_DURATION_MINUTES"
+        metric={getMetric("duration")}
         previous={525_600 + 43_200 + 4320 + 720}
         value={600_000}
         showPrevious
@@ -28,7 +30,7 @@ describe(TotalsChange, () => {
   it("shows nothing without a previous value", () => {
     render(
       <TotalsChange
-        metric="EVENTS"
+        metric={getMetric("events")}
         previous={null}
         value={10}
       />,
@@ -41,7 +43,7 @@ describe(TotalsChange, () => {
     render(
       <TotalsChange
         className="totals-change"
-        metric="EVENTS"
+        metric={getMetric("events")}
         previous={8}
         value={10}
       />,
@@ -57,7 +59,7 @@ describe(TotalsChange, () => {
   it("shows a fall and the previous value when asked", () => {
     render(
       <TotalsChange
-        metric="EVENTS"
+        metric={getMetric("events")}
         previous={20}
         value={10}
         showPrevious
@@ -74,7 +76,7 @@ describe(TotalsChange, () => {
   it("shows no change", () => {
     render(
       <TotalsChange
-        metric="EVENTS"
+        metric={getMetric("events")}
         previous={10}
         value={10}
       />,
@@ -88,7 +90,7 @@ describe(TotalsChange, () => {
   it("falls back to the change in units when the previous was zero", () => {
     render(
       <TotalsChange
-        metric="EVENTS"
+        metric={getMetric("events")}
         previous={0}
         value={5}
       />,

@@ -79,9 +79,7 @@ describe(TableHeaderCell, () => {
       await screen.findByRole("menuitem", { name: "Move right" }),
     );
     openMenu();
-    fireEvent.click(
-      await screen.findByRole("menuitem", { name: "Deselect column" }),
-    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
     expect(onClearSort).toHaveBeenCalledExactlyOnceWith();
     expect(onMoveLeft).toHaveBeenCalledExactlyOnceWith();
@@ -103,7 +101,7 @@ describe(TableHeaderCell, () => {
     ).toBe("true");
     expect(
       screen
-        .getByRole("menuitem", { name: "Deselect column" })
+        .getByRole("menuitem", { name: "Remove" })
         .getAttribute("aria-disabled"),
     ).toBe("true");
     expect(screen.queryByRole("menuitem", { name: "Clear sort" })).toBeNull();

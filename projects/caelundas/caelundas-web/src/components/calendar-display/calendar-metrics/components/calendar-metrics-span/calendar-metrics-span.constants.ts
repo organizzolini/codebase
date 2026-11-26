@@ -16,11 +16,6 @@ export const COMPACT_SPAN: DurationSpanOptions = { compact: true };
 export const DAY_MINUTES = 1440;
 
 /**
- * Hours in a day.
- */
-export const DAY_HOURS = 24;
-
-/**
  * What no time at all reads as.
  */
 export const ZERO_SPAN = "0 min";

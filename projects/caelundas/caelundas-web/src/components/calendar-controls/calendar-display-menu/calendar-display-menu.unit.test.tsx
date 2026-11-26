@@ -6,7 +6,6 @@ import { CalendarDisplayMenu } from "./calendar-display-menu";
 const display = vi.hoisted(() => ({
   change: vi.fn<() => void>(),
   handlers: {
-    handleClustersChange: vi.fn<(enabled: boolean) => void>(),
     handleColorsChange: vi.fn<() => void>(),
     handleScaleChange: vi.fn<() => void>(),
     handleSymbolsChange: vi.fn<() => void>(),
@@ -28,7 +27,6 @@ vi.mock(
           handlers: display.handlers,
           sky: readNightSkyOverrides({}),
           state: {
-            clusters: true,
             colors: true,
             scale: "month",
             symbols: "glyphs",
@@ -88,13 +86,15 @@ describe(CalendarDisplayMenu, () => {
     await expect(screen.findByTestId("query-cascader")).resolves.toBeDefined();
   });
 
-  it("lists Symbols, Colors, Crowded days and Skyfield, and no Layout", async () => {
+  it("lists Symbols, Colors and Skyfield, and no Crowded days or Layout", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
 
-    for (const label of ["Symbols", "Colors", "Crowded days", "Skyfield"]) {
+    for (const label of ["Symbols", "Colors", "Skyfield"]) {
       await expect(screen.findByText(label)).resolves.toBeDefined();
     }
+
+    expect(screen.queryByText("Crowded days")).toBeNull();
 
     expect(screen.queryByText("Layout")).toBeNull();
     expect(screen.queryByText("Quarter")).toBeNull();
@@ -105,9 +105,9 @@ describe(CalendarDisplayMenu, () => {
   it("writes a choice from the list: a switch flips, and a symbol set is ticked in its branch", async () => {
     render(<CalendarDisplayMenu {...PROPERTIES} />);
     fireEvent.click(screen.getByRole("button", { name: "Display" }));
-    fireEvent.click(await screen.findByText("Crowded days"));
+    fireEvent.click(await screen.findByText("Colors"));
 
-    expect(display.handlers.handleClustersChange).toHaveBeenCalledWith(false);
+    expect(display.handlers.handleColorsChange).toHaveBeenCalledWith(false);
 
     // Symbols is open already, so its Emojis row needs no click on the branch.
     fireEvent.click(await screen.findByText("Emojis"));

@@ -1,5 +1,4 @@
 import type { EventMetricsRow } from "../../event-metrics.types";
-import type { EventMeasure } from "../measures/event-metrics-measures.types";
 import type { factsRowSchema } from "./event-metrics-facts.constants";
 import type { z } from "zod";
 
@@ -9,8 +8,6 @@ import type { z } from "zod";
 export interface CompiledFactsQuery {
   /** How many grouping levels it measures; the total is not one. */
   levels: number;
-  /** The measures in each row, by the column `m_<name>`. */
-  measures: readonly EventMeasure[];
   parameters: unknown[];
   sql: string;
 }

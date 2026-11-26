@@ -19,19 +19,12 @@ import type { EventCalendarOccurrence } from "@codebase/presentation";
 // 🧩 Hook
 
 /**
- * Merges events of one kind that run together for the days the view shows, and holds which cluster is open.
+ * Always merges events of one kind that run together for the days a view of hours shows, and holds which cluster is open.
  */
 export function useCalendarClusters(
   properties: Readonly<UseCalendarClustersProperties>,
 ): UseCalendarClustersResult {
-  const {
-    anchor,
-    compact = false,
-    enabled,
-    events,
-    timeZone,
-    view,
-  } = properties;
+  const { anchor, compact = false, events, timeZone, view } = properties;
 
   // 🪝 Hooks
   const [openId, setOpenId] = useState<string | undefined>();
@@ -47,12 +40,12 @@ export function useCalendarClusters(
 
     return clusterEvents(events, {
       ...tuning,
-      enabled: enabled && CLUSTERED_VIEWS.has(view),
+      enabled: CLUSTERED_VIEWS.has(view),
       firstDay: visible.start.toISOString().slice(0, 10),
       lastDay: new Date(visible.end.getTime() - 1).toISOString().slice(0, 10),
       timeZone,
     });
-  }, [anchor, compact, enabled, events, timeZone, view]);
+  }, [anchor, compact, events, timeZone, view]);
 
   // 🏗 Setup
 
@@ -76,7 +69,7 @@ export function useCalendarClusters(
       setOpenId(undefined);
     },
     timeZone,
-    title: clustered.events.find((event) => event.id === openId)?.summary ?? "",
+    title: clustered.events.find((event) => event.id === openId)?.name ?? "",
   });
 
   return { dialog, events: clustered.events, handleEventClick };

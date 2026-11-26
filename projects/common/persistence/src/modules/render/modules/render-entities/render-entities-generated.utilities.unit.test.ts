@@ -52,24 +52,23 @@ function edgeMetadata(dataSource: DataSource, name: string): EntityMetadata {
 
 describe("generated edge entities", () => {
   describe("generating an edge entity", () => {
-    it("maps the generated entity to the table its name gives, with a key of the graph and both ends", async () => {
+    it("maps the generated entity to the table its name gives, with a key of both ends", async () => {
       const dataSource = await buildMetadata([Network, Station]);
       const metadata = edgeMetadata(dataSource, "NetworkLine");
 
       expect(metadata.tableName).toBe("network_lines");
       expect(
         metadata.primaryColumns.map(({ databaseName }) => databaseName),
-      ).toStrictEqual(["network_code", "from_number", "to_number"]);
+      ).toStrictEqual(["source_node", "target_node"]);
       expect(
         metadata.columns.map(({ databaseName, type }) => [databaseName, type]),
       ).toStrictEqual([
-        ["network_code", "text"],
-        ["from_number", "integer"],
-        ["to_number", "integer"],
+        ["source_node", "integer"],
+        ["target_node", "integer"],
       ]);
     });
 
-    it("indexes each end under a name from the table and the end's key column", async () => {
+    it("indexes each end under a name from the table and the end's column", async () => {
       const dataSource = await buildMetadata([Network, Station]);
 
       expect(
@@ -80,12 +79,12 @@ describe("generated edge entities", () => {
           ],
         ),
       ).toStrictEqual([
-        ["network_lines_from_number", ["from_number"]],
-        ["network_lines_to_number", ["to_number"]],
+        ["network_lines_source_node", ["source_node"]],
+        ["network_lines_target_node", ["target_node"]],
       ]);
     });
 
-    it("relates the edge to its graph and its two stations, deleting with any of them", async () => {
+    it("relates the edge to its two stations, deleting with either", async () => {
       const dataSource = await buildMetadata([Network, Station]);
       const { foreignKeys } = edgeMetadata(dataSource, "NetworkLine");
 
@@ -96,17 +95,17 @@ describe("generated edge entities", () => {
           onDelete,
         ]),
       ).toStrictEqual([
-        [["network_code"], "networks", "CASCADE"],
-        [["from_number"], "stations", "CASCADE"],
-        [["to_number"], "stations", "CASCADE"],
+        [["source_node"], "stations", "CASCADE"],
+        [["target_node"], "stations", "CASCADE"],
       ]);
     });
 
-    it("lets the graph reach its edges and a station reach the edges it starts and ends", async () => {
+    it("lets a station reach the edges it starts and ends", async () => {
       const dataSource = await buildMetadata([Network, Station]);
-      const reverse = (entity: typeof Network | typeof Station): string[] =>
+
+      expect(
         dataSource
-          .getMetadata(entity)
+          .getMetadata(Station)
           .oneToManyRelations.map(
             ({
               inverseEntityMetadata,
@@ -114,27 +113,14 @@ describe("generated edge entities", () => {
               propertyName,
             }) =>
               `${propertyName} -> ${inverseEntityMetadata.name}.${inverseSidePropertyPath}`,
-          );
-
-      expect(reverse(Network)).toStrictEqual(["lines -> NetworkLine.graph"]);
-      expect(reverse(Station)).toStrictEqual([
+          ),
+      ).toStrictEqual([
         "incomingLines -> NetworkLine.target",
         "outgoingLines -> NetworkLine.source",
       ]);
     });
 
-    it("saves a graph's edges with it: only the graph side cascades inserts", async () => {
-      const dataSource = await buildMetadata([Network, Station]);
-      const cascades = (entity: typeof Network | typeof Station): boolean[] =>
-        dataSource
-          .getMetadata(entity)
-          .oneToManyRelations.map(({ isCascadeInsert }) => isCascadeInsert);
-
-      expect(cascades(Network)).toStrictEqual([true]);
-      expect(cascades(Station)).toStrictEqual([false, false]);
-    });
-
-    it("copies the key type of a text graph and its text nodes onto a directed acyclic graph's edge", async () => {
+    it("copies the key type of text nodes onto a directed acyclic graph's edge", async () => {
       const dataSource = await buildMetadata([Pipeline, Job]);
 
       expect(
@@ -142,13 +128,26 @@ describe("generated edge entities", () => {
           ({ databaseName, type }) => [databaseName, type],
         ),
       ).toStrictEqual([
-        ["pipeline_code", "text"],
         ["from_code", "text"],
         ["to_code", "text"],
       ]);
       expect(edgeMetadata(dataSource, "PipelineDependency").tableName).toBe(
         "pipeline_dependencies",
       );
+    });
+
+    it("names the columns of a graph that overrides them, and indexes them by those names", async () => {
+      const dataSource = await buildMetadata([Pipeline, Job]);
+      const metadata = edgeMetadata(dataSource, "PipelineDependency");
+
+      expect(metadata.indices.map(({ name }) => name)).toStrictEqual([
+        "pipeline_dependencies_from_code",
+        "pipeline_dependencies_to_code",
+      ]);
+      expect(getGraphEdgeMetadata(Pipeline)).toMatchObject({
+        sourceColumn: "fromCode",
+        targetColumn: "toCode",
+      });
     });
 
     it("names the generated columns by their property for --filter and --sort", () => {
@@ -158,9 +157,8 @@ describe("generated edge entities", () => {
 
       expect(edge).toBeDefined();
       expect(entityColumnNames(edge ?? Network)).toStrictEqual([
-        "networkCode",
-        "fromNumber",
-        "toNumber",
+        "sourceNode",
+        "targetNode",
       ]);
     });
 
@@ -188,11 +186,9 @@ describe("generated edge entities", () => {
 
       expect(getGraphEdgeMetadata(Network)).toStrictEqual({
         directed: false,
-        generated: { edge, graph: Network, nodes: Station },
         kind: "graph",
-        labelColumn: "networkCode",
-        sourceColumn: "fromNumber",
-        targetColumn: "toNumber",
+        sourceColumn: "sourceNode",
+        targetColumn: "targetNode",
       });
       expect(getGraphEdgeMetadata(edge ?? Network)).toStrictEqual(
         getGraphEdgeMetadata(Network),
@@ -214,18 +210,6 @@ describe("generated edge entities", () => {
   });
 
   describe("refusing a graph that cannot generate its edge", () => {
-    it("names the entity with no primary column", () => {
-      expect(() => {
-        @Graph({ edge: "OrphanEdge", nodes: () => Station })
-        class NoKey {}
-        return NoKey;
-      }).toThrow(
-        new RenderEntitiesEdgeError(
-          "NoKey has 0 primary columns, so its @Graph edge OrphanEdge cannot reference it; give it exactly one",
-        ),
-      );
-    });
-
     it("names a node entity whose primary key spans several columns", () => {
       class Compound {
         @PrimaryColumn({ type: "text" })
@@ -282,11 +266,10 @@ describe("generated edge entities", () => {
       expect(
         storage.filterColumns(edge ?? SizedGraph).map(({ options }) => options),
       ).toStrictEqual([
-        { name: "sized_graph_id", primary: true, type: "text" },
         {
           enum: ["a", "b"],
           length: 8,
-          name: "from_code",
+          name: "source_node",
           precision: 4,
           primary: true,
           scale: 2,
@@ -297,7 +280,7 @@ describe("generated edge entities", () => {
         {
           enum: ["a", "b"],
           length: 8,
-          name: "to_code",
+          name: "target_node",
           precision: 4,
           primary: true,
           scale: 2,
@@ -332,7 +315,7 @@ describe("generated edge entities", () => {
       expect(edges).toHaveLength(1);
       expect(
         storage.columns.filter(({ target }) => target === edges[0]?.target),
-      ).toHaveLength(3);
+      ).toHaveLength(2);
     });
 
     it("names the graph whose nodes() entity cannot be read when the decorator runs", () => {

@@ -12,6 +12,7 @@ function facet(id: string, name: string, paths: string[]): EventFacetEntity {
     id,
     name,
     note: null,
+    slug: id,
     values: paths.map((path) => ({
       count: 1,
       depth: path.split(" / ").length,
@@ -20,6 +21,7 @@ function facet(id: string, name: string, paths: string[]): EventFacetEntity {
       name: path.split(" / ").at(-1) ?? path,
       note: null,
       path,
+      slug: (path.split(" / ").at(-1) ?? path).toLowerCase(),
     })),
   };
 }

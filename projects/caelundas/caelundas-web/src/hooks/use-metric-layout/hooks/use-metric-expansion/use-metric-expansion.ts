@@ -1,5 +1,6 @@
-import { use, useReducer } from "react";
+import { use, useEffect, useReducer } from "react";
 
+import { describeMetricGroups } from "../../../../components/calendar-display/calendar-metrics/components/calendar-metrics-tree/calendar-metrics-tree.utilities";
 import {
   INITIAL_TABLE_GROUPS,
   TableGroupsContext,
@@ -54,7 +55,13 @@ export function useMetricExpansion(
   };
 
   // ♻️ Lifecycle
+  useEffect(() => {
+    // Only the table's groups are known to it until a tree arrives; one on the same ids leaves what is open as it is.
+    if (data !== undefined) {
+      dispatch({ ...describeMetricGroups(data.groups), type: "register" });
+    }
+  }, [data, dispatch]);
 
   // 🎁 Result
-  return { dispatch, expanded: base ?? state.expanded, open, toggle };
+  return { expanded: base ?? state.expanded, open, toggle };
 }

@@ -290,6 +290,22 @@ non-zero, naming every stale or missing output:
 pnpm exec nx run persistence:start:postgresql-erd --args="--entities 'src/**/*.entity.ts' --output-markdown README.md --check"
 ```
 
+The diagram draws every table TypeORM creates for the entities, not only the
+entities. It builds the entities' metadata, without connecting, and adds the
+closure table of each `@Tree("closure-table")` entity (`ancestor_id` and
+`descendant_id` by default) and the join table of each many-to-many
+relation, each as a table of its own with its columns and a many-to-one
+relationship, labelled with the column, to the entity each foreign key
+references. An edge entity that `@Graph({ edge, nodes })` generates is added the same way,
+with its `source_node` and `target_node`. A view entity is drawn
+as `<name> (view)` or `<name> (materialized view)`, and the model's `kind`
+says so; its column types are the properties' declared types, since the
+view's SQL is not read. Entities, and the columns and relations written on them, are
+named as their classes and properties name them; the derived tables are named by the
+data source's naming strategy, as in the database. When the entities cannot build their
+metadata alone, such as when a relation points at an entity no glob matched,
+only the derived tables are left out.
+
 ## Moving data between databases
 
 The package is also a command line, `database`, that copies selected tables
@@ -541,79 +557,78 @@ is open.
 
 #### Generated edges
 
-Declare the graph once, on the graph entity, and name the edge entity it
-generates and the entity whose rows it joins. Nobody writes the edge class:
+Declare the edge once, on any class, and name the edge entity it generates and
+the entity whose rows it joins. Nobody writes the edge class:
 
 ```ts
 @Entity()
-@Graph({ directed: false, edge: "ConstellationEdge", nodes: () => Star })
-export class Constellation {
+@Graph({ directed: false, edge: "NetworkLine", nodes: () => Station })
+export class Network {
   @PrimaryColumn("text")
-  designation!: string;
-
-  @GraphLabel() // titles the constellation's box in the diagram
-  @Column("text")
-  name!: string;
-
-  @GraphEdges("ConstellationEdge")
-  edges?: Relation<GraphEdgeRow<Constellation, Star>>[];
+  code!: string;
 }
 
 @Entity()
-export class Star {
-  @GraphLabel() // labels the star's node
+export class Station {
+  @GraphLabel() // labels the station's node
   @PrimaryColumn({ transformer: createBigintTransformer(), type: "bigint" })
-  hip!: number;
+  number!: number;
 
-  @GraphOutgoingEdges("ConstellationEdge")
-  outgoingEdges?: Relation<GraphEdgeRow<Constellation, Star>>[];
+  @GraphOutgoingEdges("NetworkLine")
+  outgoingLines?: Relation<GraphEdgeRow<Station>>[];
 
-  @GraphIncomingEdges("ConstellationEdge")
-  incomingEdges?: Relation<GraphEdgeRow<Constellation, Star>>[];
+  @GraphIncomingEdges("NetworkLine")
+  incomingLines?: Relation<GraphEdgeRow<Station>>[];
 }
 ```
 
 - **Options:** `edge` names the generated entity, and so its table, by the
-  data source's naming strategy (`ConstellationEdge` is `constellation_edges`);
+  data source's naming strategy (`NetworkLine` is `network_lines`);
   `nodes` returns the node entity, read when the decorator runs, so import it
-  before the graph and keep the two out of an import cycle; `directed` is true
-  unless false; `table` names the table instead of `edge`. `@DirectedAcyclicGraph`
-  takes `edge`, `nodes`, and `table`.
-- **The generated entity** has a composite key of the graph's key and both
-  ends, each column of the type of the key it copies, so a `bigint` key with a
-  transformer stays one. Its properties are `<graph><Key>`, `from<NodeKey>`,
-  and `to<NodeKey>`, such as `constellationDesignation`, `fromHip`, and `toHip`,
-  which `--filter` and `--sort` name. The columns are `constellation_designation`,
-  `from_hip`, and `to_hip`. It indexes each end as `<table>_from_<key>` and
-  `<table>_to_<key>`, and it has a many-to-one relation to the graph (`graph`)
-  and to each node (`source`, `target`), each deleting with its row.
-- **Reaching it:** a data source must list the generated class beside the graph
-  and node entities. `withGeneratedEdges(entities)` adds the edge, node, and
-  graph entities of each graph in the list once, and the drawing commands and
-  `createGraphDataSource` use it. The edge has no class to import, so callers
-  address it by name: `manager.getRepository("ConstellationEdge")`.
-- **Reverse relations:** `@GraphEdges(edge)` on the graph entity lists the
-  edges of each graph row. On a node entity, `@GraphOutgoingEdges(edge)` lists
+  before the declaring class and keep the two out of an import cycle;
+  `directed` is true unless false; `table` names the table instead of `edge`.
+  `sourceColumn` and `targetColumn` name the two key properties, and the naming
+  strategy snake-cases each into its column; they default to `sourceNode` and
+  `targetNode`. `@DirectedAcyclicGraph` takes `edge`, `nodes`, `table`, and the
+  same two.
+- **The generated entity** is only the edge between a source node and a target
+  node: a composite key of both ends, each column of the type of the key it
+  copies, so a `bigint` key with a transformer stays one. Its properties are
+  `sourceNode` and `targetNode`, which `--filter` and `--sort` name, and its
+  columns are `source_node` and `target_node`. It indexes each end as
+  `<table>_<column>`, such as `network_lines_source_node`, and it has a
+  many-to-one relation to each node (`source`, `target`), deleting with its row.
+  It has no owner column, since not every graph has subgraphs: for edges that
+  belong to a subgraph, write the edge entity by hand with its own owner column
+  (the first form).
+- **Reaching it:** a data source must list the generated class beside the
+  node entity. `withGeneratedEdges(entities)` adds the edge, node, and
+  declaring entities of each graph in the list once, and the drawing commands
+  and `createGraphDataSource` use it. The edge has no class to import, so
+  callers address it by name: `manager.getRepository("NetworkLine")`.
+- **Reverse relations:** on a node entity, `@GraphOutgoingEdges(edge)` lists
   the edges that start at it and `@GraphIncomingEdges(edge)` those that end at
   it, so a node of an undirected graph needs both to find all its edges. Each is
-  a one-to-many whose inverse side is the edge's `graph`, `source`, or `target`
-  relation, so a node reaches its graphs through `edge.graph`, and a graph its
-  nodes through `edge.source` and `edge.target`. Type the properties with
-  `Relation<GraphEdgeRow<Graph, Node>>[]`.
+  a one-to-many whose inverse side is the edge's `source` or `target` relation.
+  Type the properties with `Relation<GraphEdgeRow<Node>>[]`.
 - **Labels:** `@GraphLabel()` on a node entity labels each drawn node with that
   column. Only the drawn nodes are read, in batches of 500 ids, so a large node
   table is never read whole; a node with no row or no label keeps its id.
-  `@GraphLabel()` on the graph entity titles each neighborhood with the graph
-  row's label in place of the graph's key.
-- **Refused at decoration, naming the class:** a graph or node entity without
-  exactly one primary column, `edge` without `nodes` or the reverse, an edge
-  name or table that an entity already has, two generating declarations on one
-  class, and a graph that also marks `@GraphSource` or `@GraphTarget` properties.
-  Use one form per graph.
+- **Refused at decoration, naming the class:** a node entity without exactly
+  one primary column, `edge` without `nodes` or the reverse, an edge name or
+  table that an entity already has, two generating declarations on one class,
+  and a class that also marks `@GraphSource` or `@GraphTarget` properties. Use
+  one form per class.
 
-The commands pick the graph entity: `--table constellations` picks it among
+The commands pick the declaring entity: `--table networks` picks it among
 several, and without `--table` the only one is chosen. `--filter` and `--sort`
 name the edge's columns, as in the first form.
+
+A hand-written edge entity may carry an owner column of its own, such as
+`constellation_id`, marked `@GraphLabel()` and joined to the owner by a
+`@ManyToOne`. The relations decide the labels: the entity the `@GraphSource`
+column joins labels each drawn node, and the entity the `@GraphLabel` column
+joins titles each neighborhood with its own `@GraphLabel`.
 
 ### Drawing trees
 
@@ -715,8 +730,9 @@ then drawn without it, since the title says it already, which keeps a
 constellation's lines uncluttered. A truncation node's edge has no label and is
 not counted. Otherwise the title is the label of the
 neighborhood's first root, or of its first node. Weights stay on their edges.
-A generated edge's label is its graph's key, shown as the graph's `@GraphLabel`
-when it has one, so the box reads "Ursa Major" and not "UMa".
+An edge's label may be the key of an owner row, shown as that row's
+`@GraphLabel` when the label column joins the owner by a relation, so the box
+reads "Ursa Major" and not "UMa".
 
 ### Known limits
 

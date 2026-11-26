@@ -13,7 +13,7 @@ import {
 import { EventsService } from "../../../../events.service";
 import { EventFilterCombinator } from "../../../filtering/modules/rules/event-filter-combinator.entities";
 import { EventMetricsService } from "../../event-metrics.service";
-import { EventMetric } from "../inputs/event-metric.entities";
+import { EventMetricsCatalogService } from "../catalog/event-metrics-catalog.service";
 
 import { EventMetricsFactsService } from "./event-metrics-facts.service";
 
@@ -37,8 +37,13 @@ const EMPTY = {
   start: "2026-06-01T05:00:00.000Z",
 };
 
-/** Every metric. */
-const METRICS = Object.values(EventMetric);
+/** The four percent metrics. */
+const PERCENTS = [
+  "total-time-percent",
+  "covered-percent",
+  "progressive-total-percent",
+  "progressive-covered-percent",
+];
 
 /** The tags, each with the one it sits beneath. */
 const TAGS: [string, string | undefined][] = [
@@ -61,8 +66,8 @@ const TAGS: [string, string | undefined][] = [
 /** One New York event of the fixture, with its tags. */
 interface Seed {
   end: string;
+  name: string;
   start: string;
-  summary: string;
   tags: string[];
 }
 
@@ -70,80 +75,80 @@ interface Seed {
 const SEEDS: Seed[] = [
   {
     end: "2026-01-13T09:00:00.000Z",
+    name: "Mars Retrograde",
     start: "2026-01-11T03:00:00.000Z",
-    summary: "Mars Retrograde",
     tags: ["Mars", "Progressive", "Conjunct"],
   },
   {
     end: "2026-01-12T12:00:00.000Z",
+    name: "Moon Conjunct Mars",
     start: "2026-01-12T12:00:00.000Z",
-    summary: "Moon Conjunct Mars",
     tags: ["Moon", "Mars", "Conjunct"],
   },
   {
     end: "2026-01-12T13:30:00.000Z",
+    name: "Moon Trine Sun",
     start: "2026-01-12T12:00:00.000Z",
-    summary: "Moon Trine Sun",
     tags: ["Moon", "Sun", "Trine"],
   },
   {
     end: "2026-01-12T15:00:00.000Z",
+    name: "Mars Station",
     start: "2026-01-12T13:00:00.000Z",
-    summary: "Mars Station",
     tags: ["Mars", "Progressive"],
   },
   {
     end: "2026-01-15T10:45:00.000Z",
+    name: "Mars Station",
     start: "2026-01-15T10:00:00.000Z",
-    summary: "Mars Station",
     tags: ["Mars"],
   },
   {
     end: "2026-01-18T05:00:00.000Z",
+    name: "Sun Day",
     start: "2026-01-18T04:00:00.000Z",
-    summary: "Sun Day",
     tags: ["Sun", "Progressive", "Conjunct"],
   },
   {
     end: "2026-01-16T12:00:00.000Z",
+    name: "Forming",
     start: "2026-01-16T12:00:00.000Z",
-    summary: "Forming",
     tags: ["Mars", "Forming"],
   },
   {
     end: "2026-01-14T15:00:00.000Z",
+    name: "Untagged",
     start: "2026-01-14T15:00:00.000Z",
-    summary: "Untagged",
     tags: [],
   },
   {
     end: "2026-01-17T22:00:00.000Z",
+    name: "Venus Long",
     start: "2026-01-17T03:00:00.000Z",
-    summary: "Venus Long",
     tags: ["Venus", "Trine", "Progressive"],
   },
   {
     end: "2026-01-19T20:00:00.000Z",
+    name: "Venus Moon",
     start: "2026-01-18T18:00:00.000Z",
-    summary: "Venus Moon",
     tags: ["Venus", "Moon", "Conjunct", "Progressive"],
   },
   {
     end: "2026-01-05T11:00:00.000Z",
+    name: "Mars Station",
     start: "2026-01-05T10:00:00.000Z",
-    summary: "Mars Station",
     tags: ["Mars"],
   },
   {
     end: "2026-01-08T12:00:00.000Z",
+    name: "Moon Past",
     start: "2026-01-08T12:00:00.000Z",
-    summary: "Moon Past",
     tags: ["Moon", "Conjunct"],
   },
   {
     end: "2026-01-21T12:00:00.000Z",
+    name: "Sun After",
     start: "2026-01-21T12:00:00.000Z",
-    summary: "Sun After",
     tags: ["Sun"],
   },
 ];
@@ -157,6 +162,14 @@ function normalize(value: unknown): unknown {
   );
 }
 
+/** The tag's name as the slug the table keeps. */
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .replaceAll(/[^a-z0-9]+/gu, "-")
+    .replaceAll(/^-+|-+$/gu, "");
+}
+
 /**
  * Measures a New York fixture over the facts and over the events, and asserts
  * each answer is the other's, for the groupings and filters the web asks.
@@ -164,6 +177,7 @@ function normalize(value: unknown): unknown {
 describe("event metrics over the facts", () => {
   let application: EventsApplication;
   let events = false;
+  let metrics: string[] = [];
   let metricsService: EventMetricsService;
   let queries: string[] = [];
   const tags = new Map<string, Tag>();
@@ -230,7 +244,7 @@ describe("event metrics over the facts", () => {
     const raw = await measure(input, true);
 
     expect(facts.result).toStrictEqual(raw.result);
-    expect(raw.sql).toContain("calendar_event_derived_times");
+    expect(raw.sql).toContain("from calendar_events c");
 
     return facts.sql;
   }
@@ -244,7 +258,9 @@ describe("event metrics over the facts", () => {
       name,
       await repository.save(
         repository.create(
-          above === undefined ? { name } : { name, parent: above },
+          above === undefined
+            ? { name, slug: slugify(name) }
+            : { name, parent: above, slug: slugify(name) },
         ),
       ),
     );
@@ -256,10 +272,10 @@ describe("event metrics over the facts", () => {
       [{ id: string }]
     >(
       `insert into calendar_events
-         (summary, description, "start", "end", latitude, longitude, timezone)
+         (name, note, "start", "end", latitude, longitude, timezone)
        values ($1, $1, $2, $3, 40.7128, -74.006, 'America/New_York')
        returning id`,
-      [seed.summary, seed.start, seed.end],
+      [seed.name, seed.start, seed.end],
     );
 
     for (const name of seed.tags) {
@@ -276,6 +292,12 @@ describe("event metrics over the facts", () => {
       strict: false,
     });
 
+    const catalog = await application.database.module
+      .get(EventMetricsCatalogService, { strict: false })
+      .getCatalog();
+
+    metrics = [...catalog.metrics.keys()];
+
     const eventsService = application.database.module.get(EventsService, {
       strict: false,
     });
@@ -284,7 +306,6 @@ describe("event metrics over the facts", () => {
       { strict: false },
     );
     const select = eventsService.select.bind(eventsService);
-    const selectTuned = eventsService.selectTuned.bind(eventsService);
     const compile = factsService.compile.bind(factsService);
 
     vi.spyOn(eventsService, "select").mockImplementation(
@@ -294,13 +315,6 @@ describe("event metrics over the facts", () => {
         return events && sql.includes("from zone z")
           ? []
           : select(sql, parameters, schema);
-      },
-    );
-    vi.spyOn(eventsService, "selectTuned").mockImplementation(
-      async (sql, parameters, schema) => {
-        queries.push(sql);
-
-        return selectTuned(sql, parameters, schema);
       },
     );
     vi.spyOn(factsService, "compile").mockImplementation((request) =>
@@ -349,21 +363,19 @@ describe("event metrics over the facts", () => {
         const sql = await expectEqual({
           compareToPrevious,
           grouping: defaultGrouping(),
-          metrics: METRICS,
+          metrics,
           period: WINDOW,
           ...(filtered ? { filter } : {}),
         });
 
-        expect(sql).toContain(
-          "join calendar_event_facts f on f.\"filter\" = 'event' and f.is_phase_boundary = false and f.extent",
-        );
-        expect(sql).not.toContain("from calendar_event_derived_times");
+        expect(sql).toContain("on true and not (f.tag_ids && (");
+        expect(sql).not.toContain("events_in_periods");
       }
     }
 
     const { groups } = await metricsService.findMetrics({
       grouping: defaultGrouping(),
-      metrics: [EventMetric.EVENTS],
+      metrics: ["events"],
       period: WINDOW,
     });
 
@@ -377,12 +389,7 @@ describe("event metrics over the facts", () => {
   it("measures each percent alone, over a period that starts mid-day", async () => {
     expect.hasAssertions();
 
-    for (const metric of [
-      EventMetric.TOTAL_TIME_PERCENT,
-      EventMetric.COVERED_PERCENT,
-      EventMetric.PROGRESSIVE_TOTAL_PERCENT,
-      EventMetric.PROGRESSIVE_COVERED_PERCENT,
-    ]) {
+    for (const metric of PERCENTS) {
       for (const period of [WINDOW, MIDDAY]) {
         await expectEqual({
           compareToPrevious: true,
@@ -390,7 +397,7 @@ describe("event metrics over the facts", () => {
             pick(["Body", "Aspect"]),
             pick(["Mars", "Moon", "Conjunct"], 2),
           ],
-          metrics: [EventMetric.EVENTS, metric],
+          metrics: ["events", metric],
           period,
         });
         await expectEqual({ metrics: [metric], period });
@@ -445,7 +452,7 @@ describe("event metrics over the facts", () => {
           pick(["Body", "Aspect", "Temporality"]),
           { field: "day", tags: [] },
         ],
-        metrics: METRICS,
+        metrics,
         period: WINDOW,
       });
     }
@@ -473,7 +480,7 @@ describe("event metrics over the facts", () => {
       await expectEqual({
         compareToPrevious: true,
         grouping,
-        metrics: METRICS,
+        metrics,
         period: WINDOW,
       });
     }
@@ -488,7 +495,7 @@ describe("event metrics over the facts", () => {
           pick(["Body", "Aspect"]),
           pick(["Mars", "Moon", "Trine"], 2),
         ],
-        metrics: [EventMetric.EVENTS, EventMetric.UNIQUE_TAGS],
+        metrics: ["events", "unique-tags"],
         period: WINDOW,
         tagRoot,
       });
@@ -501,13 +508,13 @@ describe("event metrics over the facts", () => {
     await expectEqual({
       compareToPrevious: true,
       grouping: defaultGrouping(),
-      metrics: METRICS,
+      metrics,
       period: EMPTY,
     });
 
     const { groups, total } = await metricsService.findMetrics({
       grouping: defaultGrouping(),
-      metrics: [EventMetric.EVENTS, EventMetric.TOTAL_TIME_PERCENT],
+      metrics: ["events", "total-time-percent"],
       period: EMPTY,
     });
 
@@ -520,7 +527,7 @@ describe("event metrics over the facts", () => {
 
     const { groups } = await metricsService.findMetrics({
       grouping: [pick(["Body"])],
-      metrics: [EventMetric.EVENTS],
+      metrics: ["events"],
       period: WINDOW,
     });
 

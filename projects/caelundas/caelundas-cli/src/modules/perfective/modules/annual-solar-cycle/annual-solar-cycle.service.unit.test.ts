@@ -405,6 +405,81 @@ describe(AnnualSolarCycleService, () => {
       );
     });
 
+    describe("seasons", () => {
+      const point = (name: string, at: string): DetectedCalendarEvent => ({
+        description: name,
+        end: moment.utc(at),
+        start: moment.utc(at),
+        summary: name,
+        tags: ["Astronomy", "Astrology", "Annual Solar Cycle", "Solar", name],
+      });
+      const seasons = (events: DetectedCalendarEvent[]): string[][] =>
+        service
+          .detectProgressive(events)
+          .filter(
+            (event) => event.tags.length === 5 && event.description.length < 7,
+          )
+          .map((event) => [
+            event.description,
+            event.start.toISOString(),
+            event.end.toISOString(),
+          ]);
+
+      it("chains the equinoxes and solstices into the four seasons, each from the point that begins it", () => {
+        expect(
+          seasons([
+            point("Winter Solstice", "2025-12-21T15:03:00.000Z"),
+            point("Vernal Equinox", "2026-03-20T14:46:00.000Z"),
+            point("Summer Solstice", "2026-06-21T08:24:00.000Z"),
+            point("Autumnal Equinox", "2026-09-23T00:05:00.000Z"),
+            point("Winter Solstice", "2026-12-21T20:50:00.000Z"),
+          ]),
+        ).toStrictEqual([
+          ["Winter", "2025-12-21T15:03:00.000Z", "2026-03-20T14:46:00.000Z"],
+          ["Spring", "2026-03-20T14:46:00.000Z", "2026-06-21T08:24:00.000Z"],
+          ["Summer", "2026-06-21T08:24:00.000Z", "2026-09-23T00:05:00.000Z"],
+          ["Autumn", "2026-09-23T00:05:00.000Z", "2026-12-21T20:50:00.000Z"],
+        ]);
+      });
+
+      it("draws a season's symbol and tags it as part of the annual cycle", () => {
+        const spring = service
+          .detectProgressive([
+            point("Vernal Equinox", "2026-03-20T14:46:00.000Z"),
+            point("Summer Solstice", "2026-06-21T08:24:00.000Z"),
+          ])
+          .find((event) => event.description === "Spring");
+
+        expect(spring?.summary).toBe("🌸 Spring");
+        expect(spring?.tags).toStrictEqual([
+          "Astronomy",
+          "Astrology",
+          "Annual Solar Cycle",
+          "Solar",
+          "Spring",
+        ]);
+      });
+
+      it("gives a lone equinox or solstice no season", () => {
+        expect(
+          seasons([point("Vernal Equinox", "2026-03-20T14:46:00.000Z")]),
+        ).toStrictEqual([]);
+      });
+
+      it("leaves the cross-quarter days and hexadecans out of the seasons", () => {
+        expect(
+          seasons([
+            point("Vernal Equinox", "2026-03-20T14:46:00.000Z"),
+            point("Beltane", "2026-05-05T00:00:00.000Z"),
+            point("First Hexadecan", "2026-04-05T00:00:00.000Z"),
+            point("Summer Solstice", "2026-06-21T08:24:00.000Z"),
+          ]),
+        ).toStrictEqual([
+          ["Spring", "2026-03-20T14:46:00.000Z", "2026-06-21T08:24:00.000Z"],
+        ]);
+      });
+    });
+
     it("never yields a span that ends before it starts", () => {
       const apsis = (
         kind: "Aphelion" | "Perihelion",
@@ -516,6 +591,82 @@ describe(AnnualSolarCycleService, () => {
       const progressiveEvents = service.detectProgressive([nonApsisEvent]);
 
       expect(progressiveEvents).toHaveLength(0);
+    });
+  });
+
+  describe("pre- and post- intervals", () => {
+    const point = (
+      name: string,
+      iso: string,
+      symbol: string,
+    ): DetectedCalendarEvent => ({
+      description: name,
+      end: moment.utc(iso),
+      start: moment.utc(iso),
+      summary: `${symbol} ${name}`,
+      tags: ["Astronomy", "Astrology", "Annual Solar Cycle", "Solar", name],
+    });
+    const spanNames = (events: DetectedCalendarEvent[]): string[] =>
+      service
+        .detectProgressive(events)
+        .filter((span) => span.description.includes(" to "))
+        .map((span) => span.description);
+
+    it("splits the gap from a named point to the next at the hexadecan between", () => {
+      expect(
+        spanNames([
+          point("Vernal Equinox", "2026-03-20T14:46:00Z", "🌸"),
+          point("First Hexadecan", "2026-04-12T00:00:00Z", "🌳"),
+          point("Beltane", "2026-05-05T00:00:00Z", "🐦‍🔥"),
+        ]),
+      ).toStrictEqual([
+        "Post-Vernal Equinox (Vernal Equinox to First Hexadecan)",
+        "Pre-Beltane (First Hexadecan to Beltane)",
+      ]);
+    });
+
+    it("names, dates and tags each interval, in the season of the point it starts at", () => {
+      const span = service
+        .detectProgressive([
+          point("Imbolc", "2026-02-04T00:00:00Z", "🐑"),
+          point("Fifteenth Hexadecan", "2026-02-28T00:00:00Z", "🌨️"),
+          point("Vernal Equinox", "2026-03-20T00:00:00Z", "🌸"),
+        ])
+        .find((candidate) => candidate.summary.includes("Post-"));
+
+      expect(span).toMatchObject({
+        end: moment.utc("2026-02-28T00:00:00Z"),
+        start: moment.utc("2026-02-04T00:00:00Z"),
+        summary: "🐑 Post-Imbolc",
+        tags: [
+          "Astronomy",
+          "Astrology",
+          "Annual Solar Cycle",
+          "Solar",
+          "Post-Imbolc",
+          "Winter",
+        ],
+      });
+    });
+
+    it("wraps from the last hexadecan to the vernal equinox", () => {
+      expect(
+        spanNames([
+          point("Fifteenth Hexadecan", "2026-02-28T00:00:00Z", "🌨️"),
+          point("Vernal Equinox", "2026-03-20T00:00:00Z", "🌸"),
+        ]),
+      ).toStrictEqual([
+        "Pre-Vernal Equinox (Fifteenth Hexadecan to Vernal Equinox)",
+      ]);
+    });
+
+    it("skips two points that are not neighbors", () => {
+      expect(
+        spanNames([
+          point("Vernal Equinox", "2026-03-20T00:00:00Z", "🌸"),
+          point("Beltane", "2026-05-05T00:00:00Z", "🐦‍🔥"),
+        ]),
+      ).toStrictEqual([]);
     });
   });
 });

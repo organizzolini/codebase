@@ -1,189 +1,296 @@
-import { EventMetric } from "../inputs/event-metric.entities";
-
-import { divide, read } from "./event-metrics-measures-math.utilities";
+import { FACTS_EVENT_COLUMN_SQL } from "../facts/event-metrics-facts.constants";
 
 import type {
-  EventDistinctMeasure,
-  EventMeasure,
-  EventMetricDefinition,
+  AggregateKind,
+  ExpressionOperator,
+} from "../catalog/event-metrics-catalog.types";
+import type {
+  EmptyValue,
+  MeasureGrain,
+  MeasureSpec,
+  RolledMeasure,
 } from "./event-metrics-measures.types";
 
 // ♟️ Constants
 
-/** Seconds in a minute. */
-const MINUTE = 60;
+/** The union of ranges in minutes, over `{ranges}`. */
+const UNION_MINUTES_SQL = `(select coalesce(sum(extract(epoch from upper(r) - lower(r))), 0) / 60 from unnest({ranges}) r)`;
 
-/** Seconds in an hour. */
-const HOUR = 3600;
+/** A progressive event clipped to its period, as a range. */
+const CLIPPED_RANGE_SQL = `tstzrange(greatest({a}."start", {a}.period_start), least({a}."end", {a}.period_end))`;
 
-/** The union of ranges in seconds, over `{ranges}`. */
-const UNION_SECONDS_SQL = `(select coalesce(sum(extract(epoch from upper(r) - lower(r))), 0) from unnest({ranges}) r)`;
+/** Narrows an aggregate to the events that last. */
+const PROGRESSIVE_FILTER_SQL = `filter (where {a}."end" > {a}."start"{and})`;
 
-/** An event's span clipped to its period, as a range. */
-const CLIPPED_RANGE_SQL = `tstzrange(greatest(x."start", x.period_start), least(x."end", x.period_end))`;
+/** The columns of an event row a measure may read. */
+export const EVENT_ROW_COLUMNS: ReadonlySet<string> = new Set([
+  ...Object.keys(FACTS_EVENT_COLUMN_SQL),
+  "ancestor_tag_ids",
+  "day",
+  "duration_minutes",
+  "end",
+  "hour",
+  "name",
+  "start",
+  "tag_ids",
+]);
 
-/** An event's seconds inside its period. */
-const CLIPPED_SECONDS_SQL = `extract(epoch from least(x."end", x.period_end) - greatest(x."start", x.period_start))`;
+/** Where the measures that merge across days are read. */
+const MERGEABLE_GRAINS: readonly MeasureGrain[] = ["day", "event"];
 
-/** Narrows an aggregate to events that carry the progressive tag. */
-const PROGRESSIVE_SQL = ` filter (where x.is_progressive)`;
+/** Where the measures that do not merge are read: the events. */
+const EVENT_GRAIN: readonly MeasureGrain[] = ["event"];
 
-/** Narrows an aggregate to events that last. */
-const SPAN_SQL = ` filter (where x."end" > x."start")`;
+/** The columns every event row of the facts statements carries. */
+export const EVENT_BASE_COLUMNS: ReadonlySet<string> = new Set([
+  "duration_minutes",
+  "end",
+  "start",
+  "tag_ids",
+]);
 
-/** What each distinct measure counts, and the rows it reads it from. */
-export const DISTINCT_MEASURE_SQL: Readonly<
-  Record<EventDistinctMeasure, { column: string; join: string }>
+/** Event-row columns no view column holds: computed from the row's tags. */
+export const DERIVED_EVENT_COLUMNS: ReadonlySet<string> = new Set([
+  "is_progressive",
+]);
+
+/** The kinds that read their measure's own column from an event row. */
+export const EVENT_COLUMN_KINDS: ReadonlySet<AggregateKind> = new Set([
+  "clipped-sum",
+  "clipped-union",
+  "count-distinct",
+  "maximum",
+  "minimum",
+  "sum",
+  "union",
+]);
+
+// Over the event rows `{a}` of a group, `{c}` being the measure's column and
+// `{filter}` its condition, if any. Tags are counted apart.
+/** Each kind's aggregate over a group's event rows. */
+export const EVENT_AGGREGATE_SQL: Readonly<Record<AggregateKind, string>> = {
+  "clipped-sum": `coalesce(sum(extract(epoch from least({a}."end", {a}.period_end) - greatest({a}."start", {a}.period_start)) / 60){filter}, 0)`,
+  "clipped-union": UNION_MINUTES_SQL.replace(
+    "{ranges}",
+    `range_agg(${CLIPPED_RANGE_SQL}){filter}`,
+  ),
+  "count-distinct": `count(distinct {c}){filter}`,
+  "distinct-names": `count(distinct {a}."name"){filter}`,
+  "distinct-tags": `(select count(distinct t.tag_id) from calendar_event_tags t where t.calendar_event_id = any(array_agg({a}.id)){tagRoot})`,
+  maximum: `max({c}){filter}`,
+  minimum: `min({c}){filter}`,
+  period: `extract(epoch from (min({a}.period_end) - min({a}.period_start))) / 60`,
+  "progressive-max": `max({a}.duration_minutes) ${PROGRESSIVE_FILTER_SQL}`,
+  "progressive-min": `min({a}.duration_minutes) ${PROGRESSIVE_FILTER_SQL}`,
+  "progressive-percentile": `percentile_cont({argument}) within group (order by {a}.duration_minutes) ${PROGRESSIVE_FILTER_SQL}`,
+  sum: `coalesce(sum({c}){filter}, 0)`,
+  union: UNION_MINUTES_SQL.replace("{ranges}", `range_agg({c}){filter}`),
+};
+
+// A count, a sum or a union reads 0 over no events; a least, a greatest or a
+// progressive extreme reads none; the period is never empty, so it reads a positive 1.
+/** What each kind of aggregate reads over no events. */
+export const EMPTY_VALUES: Readonly<Record<AggregateKind, EmptyValue>> = {
+  "clipped-sum": 0,
+  "clipped-union": 0,
+  "count-distinct": 0,
+  "distinct-names": 0,
+  "distinct-tags": 0,
+  maximum: null,
+  minimum: null,
+  period: 1,
+  "progressive-max": null,
+  "progressive-min": null,
+  "progressive-percentile": null,
+  sum: 0,
+  union: 0,
+};
+
+/** The values of an operator's operands read as Postgres reads them. */
+export const EMPTY_OPERATORS: Readonly<
+  Record<
+    ExpressionOperator,
+    (left: EmptyValue, right: EmptyValue) => EmptyValue
+  >
 > = {
-  tags: {
-    column: "d.id",
-    join: "cross join lateral unnest(x.direct_tag_ids) as d (id)",
+  add: (left, right) => (left === null || right === null ? null : left + right),
+  coalesce: (left, right) => left ?? right,
+  divide: (left, right) =>
+    left === null || right === null || right === 0 ? null : left / right,
+  greatest: (left, right) =>
+    left === null || right === null ? (left ?? right) : Math.max(left, right),
+  least: (left, right) =>
+    left === null || right === null ? (left ?? right) : Math.min(left, right),
+  multiply: (left, right) =>
+    left === null || right === null ? null : left * right,
+  percent: (left, right) =>
+    left === null || right === null || right === 0
+      ? null
+      : (100 * left) / right,
+  subtract: (left, right) =>
+    left === null || right === null ? null : left - right,
+};
+
+/** The picker's order by metric slug; others follow by slug. */
+export const METRIC_ORDER: readonly string[] = [
+  "events",
+  "unique-names",
+  "unique-tags",
+  "days-with-events",
+  "perfective-events",
+  "progressive-events",
+  "duration",
+  "covered-duration",
+  "average-duration",
+  "median-duration",
+  "longest-duration",
+  "shortest-duration",
+  "covered-percent",
+  "total-time-percent",
+  "progressive-covered-percent",
+  "progressive-total-percent",
+  "first-start",
+  "last-start",
+];
+
+// Each measure's aggregate, column, narrowing column and grains, by its row's
+// slug. The catalog load checks every column against the real view, so no row
+// can inject SQL.
+/** How each of the 18 measures is computed from the facts. */
+export const MEASURE_REGISTRY: Readonly<Record<string, MeasureSpec>> = {
+  "clipped-duration": {
+    aggregate: "clipped-sum",
+    column: null,
+    grains: EVENT_GRAIN,
+    unit: "duration",
+  },
+  "covered-clipped-duration": {
+    aggregate: "clipped-union",
+    column: null,
+    grains: EVENT_GRAIN,
+    unit: "duration",
+  },
+  "covered-duration": {
+    aggregate: "union",
+    column: "covered_range",
+    grains: EVENT_GRAIN,
+    unit: "duration",
+  },
+  "days-with-events": {
+    aggregate: "count-distinct",
+    column: "day",
+    grains: MERGEABLE_GRAINS,
+    unit: "count",
+  },
+  duration: {
+    aggregate: "sum",
+    column: "duration_minutes",
+    grains: MERGEABLE_GRAINS,
+    unit: "duration",
+  },
+  events: {
+    aggregate: "sum",
+    column: "events",
+    grains: MERGEABLE_GRAINS,
+    unit: "count",
+  },
+  "first-start": {
+    aggregate: "minimum",
+    column: "first_start",
+    grains: MERGEABLE_GRAINS,
+    unit: "instant",
+  },
+  "last-start": {
+    aggregate: "maximum",
+    column: "last_start",
+    grains: MERGEABLE_GRAINS,
+    unit: "instant",
+  },
+  "longest-progressive-duration": {
+    aggregate: "progressive-max",
+    column: null,
+    grains: EVENT_GRAIN,
+    unit: "duration",
+  },
+  "median-progressive-duration": {
+    aggregate: "progressive-percentile",
+    argument: 0.5,
+    column: null,
+    grains: EVENT_GRAIN,
+    unit: "duration",
+  },
+  "perfective-events": {
+    aggregate: "sum",
+    column: "perfective_events",
+    grains: MERGEABLE_GRAINS,
+    unit: "count",
+  },
+  "period-length": {
+    aggregate: "period",
+    column: null,
+    grains: EVENT_GRAIN,
+    unit: "duration",
+  },
+  "progressive-clipped-duration": {
+    aggregate: "clipped-sum",
+    column: null,
+    condition: "is_progressive",
+    grains: EVENT_GRAIN,
+    unit: "duration",
+  },
+  "progressive-covered-clipped-duration": {
+    aggregate: "clipped-union",
+    column: null,
+    condition: "is_progressive",
+    grains: EVENT_GRAIN,
+    unit: "duration",
+  },
+  "progressive-events": {
+    aggregate: "sum",
+    column: "progressive_events",
+    grains: MERGEABLE_GRAINS,
+    unit: "count",
+  },
+  "shortest-progressive-duration": {
+    aggregate: "progressive-min",
+    column: null,
+    grains: EVENT_GRAIN,
+    unit: "duration",
+  },
+  "unique-names": {
+    aggregate: "distinct-names",
+    column: null,
+    grains: EVENT_GRAIN,
+    unit: "count",
+  },
+  "unique-tags": {
+    aggregate: "distinct-tags",
+    column: null,
+    grains: EVENT_GRAIN,
+    unit: "count",
   },
 };
 
-/** The SQL of each measure counted within its group. */
-export const MEASURE_SQL: Readonly<
-  Record<Exclude<EventMeasure, EventDistinctMeasure>, string>
+// Over the rollup rows `w`: the kinds that merge across days. The instants
+// are already epoch milliseconds there.
+/** Each mergeable kind's aggregate over the rollup rows. */
+export const ROLLED_AGGREGATE_SQL: Readonly<
+  Partial<Record<AggregateKind, RolledMeasure>>
 > = {
-  clippedSeconds: `coalesce(sum(${CLIPPED_SECONDS_SQL}), 0)`,
-  coveredClippedSeconds: UNION_SECONDS_SQL.replace(
-    "{ranges}",
-    `range_agg(${CLIPPED_RANGE_SQL})`,
-  ),
-  coveredSeconds: UNION_SECONDS_SQL.replace(
-    "{ranges}",
-    `range_agg(tstzrange(x."start", x."end"))`,
-  ),
-  days: `count(distinct x.start_local_day)`,
-  events: `count(*)`,
-  firstStart: `extract(epoch from min(x."start")) * 1000`,
-  instants: `count(*) filter (where x."end" = x."start")`,
-  lastStart: `extract(epoch from max(x."start")) * 1000`,
-  longestSeconds: `max(x.duration_seconds)${SPAN_SQL}`,
-  medianSeconds: `percentile_cont(0.5) within group (order by x.duration_seconds)${SPAN_SQL}`,
-  names: `count(distinct x.summary)`,
-  periodSeconds: `extract(epoch from (min(x.period_end) - min(x.period_start)))`,
-  progressiveClippedSeconds: `coalesce(sum(${CLIPPED_SECONDS_SQL})${PROGRESSIVE_SQL}, 0)`,
-  progressiveCoveredClippedSeconds: UNION_SECONDS_SQL.replace(
-    "{ranges}",
-    `range_agg(${CLIPPED_RANGE_SQL})${PROGRESSIVE_SQL}`,
-  ),
-  progressiveSeconds: `coalesce(sum(x.duration_seconds)${PROGRESSIVE_SQL}, 0)`,
-  seconds: `coalesce(sum(x.duration_seconds), 0)`,
-  shortestSeconds: `min(x.duration_seconds)${SPAN_SQL}`,
-  spans: `count(*) filter (where x."end" > x."start")`,
+  "count-distinct": { sql: "count(distinct {c})" },
+  maximum: { sql: "max({c})" },
+  minimum: { sql: "min({c})" },
+  sum: { sql: "sum({c})" },
 };
 
-/** Each metric as a calculation, evaluated once per group in the service. */
-export const METRIC_DEFINITIONS: Readonly<
-  Record<EventMetric, EventMetricDefinition>
-> = {
-  [EventMetric.AVERAGE_DURATION_MINUTES]: {
-    compute: (_measures, metric) =>
-      divide(
-        metric(EventMetric.TOTAL_DURATION_MINUTES),
-        metric(EventMetric.SPANS),
-        1,
-      ),
-    measures: [],
-    metrics: [EventMetric.TOTAL_DURATION_MINUTES, EventMetric.SPANS],
-  },
-  [EventMetric.COVERED_MINUTES]: {
-    compute: (measures) => divide(measures.coveredSeconds, MINUTE, 1),
-    measures: ["coveredSeconds"],
-    metrics: [],
-  },
-  [EventMetric.COVERED_PERCENT]: {
-    compute: (measures) =>
-      divide(measures.coveredClippedSeconds, measures.periodSeconds, 100),
-    measures: ["coveredClippedSeconds", "periodSeconds"],
-    metrics: [],
-  },
-  [EventMetric.DAYS_WITH_EVENTS]: {
-    compute: (measures) => read(measures.days),
-    measures: ["days"],
-    metrics: [],
-  },
-  [EventMetric.EVENTS]: {
-    compute: (measures) => read(measures.events),
-    measures: ["events"],
-    metrics: [],
-  },
-  [EventMetric.FIRST_START]: {
-    compute: (measures) => read(measures.firstStart),
-    measures: ["firstStart"],
-    metrics: [],
-  },
-  [EventMetric.INSTANTS]: {
-    compute: (measures) => read(measures.instants),
-    measures: ["instants"],
-    metrics: [],
-  },
-  [EventMetric.LAST_START]: {
-    compute: (measures) => read(measures.lastStart),
-    measures: ["lastStart"],
-    metrics: [],
-  },
-  [EventMetric.LONGEST_DURATION_MINUTES]: {
-    compute: (measures) => divide(measures.longestSeconds, MINUTE, 1),
-    measures: ["longestSeconds"],
-    metrics: [],
-  },
-  [EventMetric.MEDIAN_DURATION_MINUTES]: {
-    compute: (measures) => divide(measures.medianSeconds, MINUTE, 1),
-    measures: ["medianSeconds"],
-    metrics: [],
-  },
-  [EventMetric.PROGRESSIVE_COVERED_PERCENT]: {
-    compute: (measures) =>
-      divide(
-        measures.progressiveCoveredClippedSeconds,
-        measures.periodSeconds,
-        100,
-      ),
-    measures: ["periodSeconds", "progressiveCoveredClippedSeconds"],
-    metrics: [],
-  },
-  [EventMetric.PROGRESSIVE_HOURS]: {
-    compute: (measures) => divide(measures.progressiveSeconds, HOUR, 1),
-    measures: ["progressiveSeconds"],
-    metrics: [],
-  },
-  [EventMetric.PROGRESSIVE_TOTAL_PERCENT]: {
-    compute: (measures) =>
-      divide(measures.progressiveClippedSeconds, measures.periodSeconds, 100),
-    measures: ["periodSeconds", "progressiveClippedSeconds"],
-    metrics: [],
-  },
-  [EventMetric.SHORTEST_DURATION_MINUTES]: {
-    compute: (measures) => divide(measures.shortestSeconds, MINUTE, 1),
-    measures: ["shortestSeconds"],
-    metrics: [],
-  },
-  [EventMetric.SPANS]: {
-    compute: (measures) => read(measures.spans),
-    measures: ["spans"],
-    metrics: [],
-  },
-  [EventMetric.TOTAL_DURATION_MINUTES]: {
-    compute: (measures) => divide(measures.seconds, MINUTE, 1),
-    measures: ["seconds"],
-    metrics: [],
-  },
-  [EventMetric.TOTAL_TIME_PERCENT]: {
-    compute: (measures) =>
-      divide(measures.clippedSeconds, measures.periodSeconds, 100),
-    measures: ["clippedSeconds", "periodSeconds"],
-    metrics: [],
-  },
-  [EventMetric.UNIQUE_NAMES]: {
-    compute: (measures) => read(measures.names),
-    measures: ["names"],
-    metrics: [],
-  },
-  [EventMetric.UNIQUE_TAGS]: {
-    compute: (measures) => read(measures.tags),
-    measures: ["tags"],
-    metrics: [],
-  },
+/** The operators of an expression, over the SQL of `{a}` and `{b}`. */
+export const OPERATOR_SQL: Readonly<Record<string, string>> = {
+  add: "({a} + {b})",
+  coalesce: "coalesce({a}, {b})",
+  divide: "({a} / nullif({b}, 0))",
+  greatest: "greatest({a}, {b})",
+  least: "least({a}, {b})",
+  multiply: "({a} * {b})",
+  percent: "(100.0 * {a} / nullif({b}, 0))",
+  subtract: "({a} - {b})",
 };

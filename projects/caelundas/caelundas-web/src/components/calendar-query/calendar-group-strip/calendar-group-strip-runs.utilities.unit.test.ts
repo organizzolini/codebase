@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   flattenGroupRuns,
+  iconGroupRun,
   labelGroupRun,
+  listGroupChipNames,
+  pathGroupRun,
   toGroupRuns,
   toRunLevels,
 } from "./calendar-group-strip-runs.utilities";
@@ -80,14 +83,58 @@ describe("group runs", () => {
   });
 
   describe(labelGroupRun, () => {
-    it("names a run by its root and the tags it groups beneath", () => {
+    it("names a run by the tags it groups beneath, not their path", () => {
       const [run] = toGroupRuns([
         { field: ASPECT },
         { field: ASPECT, parent: "compound" },
       ]);
 
       expect(run === undefined ? "" : labelGroupRun(run, FIELDS)).toBe(
+        "Compound",
+      );
+    });
+
+    it("names a run of the root's own children by the root", () => {
+      const [run] = toGroupRuns([{ field: ASPECT }]);
+
+      expect(run === undefined ? "" : labelGroupRun(run, FIELDS)).toBe(
+        "Aspect",
+      );
+    });
+  });
+
+  describe(pathGroupRun, () => {
+    it("writes the root, then the tags beneath it", () => {
+      const [run] = toGroupRuns([
+        { field: ASPECT },
+        { field: ASPECT, parent: "compound" },
+      ]);
+
+      expect(run === undefined ? "" : pathGroupRun(run, FIELDS)).toBe(
         "Aspect › Compound",
+      );
+    });
+
+    it("writes the root alone for its own children", () => {
+      const [run] = toGroupRuns([{ field: ASPECT }]);
+
+      expect(run === undefined ? "" : pathGroupRun(run, FIELDS)).toBe("Aspect");
+    });
+  });
+
+  describe(iconGroupRun, () => {
+    it("leads with the tag's own icon beneath a tag, else the root's", () => {
+      const [beneath] = toGroupRuns([{ field: ASPECT, parent: "compound" }]);
+      const [own] = toGroupRuns([{ field: ASPECT }]);
+      const compound = FIELDS.find((field) => field.id === ASPECT)?.nodes.find(
+        (node) => node.id === "compound",
+      );
+
+      expect(beneath === undefined ? "" : iconGroupRun(beneath, FIELDS)).toBe(
+        compound?.icon,
+      );
+      expect(own === undefined ? "" : iconGroupRun(own, FIELDS)).toBe(
+        FIELDS.find((field) => field.id === ASPECT)?.icon,
       );
     });
   });
@@ -110,6 +157,52 @@ describe("group runs", () => {
         "compound",
         "simple",
       ]);
+    });
+  });
+
+  describe(listGroupChipNames, () => {
+    const state = {
+      groupIds: ["/0:alpha", "/0:beta"],
+      picked: [
+        { color: undefined, id: "/0:alpha", label: "Alpha" },
+        { color: undefined, id: "/0:gone", label: "Gone" },
+      ],
+    };
+
+    it("names a chip for each run, then each group picked that the layout still holds", () => {
+      expect(
+        listGroupChipNames({
+          fields: FIELDS,
+          isDefaultGrouping: false,
+          runs: toGroupRuns([{ field: ASPECT }, { field: "year" }]),
+          state,
+          view: "charts",
+        }),
+      ).toStrictEqual(["Aspect", "Year", "Alpha"]);
+    });
+
+    it("names no picked group in a view that lists none", () => {
+      expect(
+        listGroupChipNames({
+          fields: FIELDS,
+          isDefaultGrouping: false,
+          runs: toGroupRuns([{ field: ASPECT }]),
+          state,
+          view: "month",
+        }),
+      ).toStrictEqual(["Aspect"]);
+    });
+
+    it("names the one Tags chip of the default grouping", () => {
+      expect(
+        listGroupChipNames({
+          fields: FIELDS,
+          isDefaultGrouping: true,
+          runs: [],
+          state: { groupIds: [], picked: [] },
+          view: "table",
+        }),
+      ).toStrictEqual(["Tags"]);
     });
   });
 });

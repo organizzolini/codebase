@@ -1,22 +1,18 @@
 import { TAG_FIELD_PREFIX } from "../../../filtering/modules/query-building/event-filter-fields.constants";
 import { compileFactsScope } from "../../../filtering/modules/query-building/event-scope.utilities";
 import { UUID_PATTERN } from "../../../filtering/modules/values/event-filter-values.constants";
-import { METRIC_COLUMN_PREFIX } from "../../event-metrics.constants";
-import { pinGrain } from "../../event-metrics.utilities";
-import { EventMetric } from "../inputs/event-metric.entities";
+import { collectMeasures } from "../catalog/event-metrics-catalog.utilities";
+import {
+  compileMetricColumns,
+  compileRolledMeasure,
+  isRolledMeasure,
+} from "../measures/event-metrics-measures.utilities";
 
 import {
   ROLLUP_CALENDAR_COLUMNS_SQL,
   ROLLUP_CALENDAR_KEYS,
-  ROLLUP_COVERED_SQL,
-  ROLLUP_DIRECTS_SQL,
-  ROLLUP_DURATIONS_SQL,
   ROLLUP_FACTS_SQL,
-  ROLLUP_FAMILY_ALIASES,
   ROLLUP_GUARD_SQL,
-  ROLLUP_METRIC_FAMILIES,
-  ROLLUP_METRIC_SQL,
-  ROLLUP_TAG_ROOT_SQL,
   ROLLUP_TAG_TARGET,
   ROLLUP_TOTAL_TARGET,
 } from "./event-metrics-rollup.constants";
@@ -25,11 +21,10 @@ import type { EventGroupLevel } from "../../../grouping/event-grouping.types";
 import type {
   CompiledEventMetricsQuery,
   EventMetricsQueryRequest,
-  FactsGrain,
 } from "../../event-metrics.types";
+import type { CatalogMeasure } from "../catalog/event-metrics-catalog.types";
 import type {
   RollupCalendarKey,
-  RollupFamily,
   RollupTarget,
 } from "./event-metrics-rollup.types";
 
@@ -68,39 +63,33 @@ export function compileRollupRead(
   const periods = bindPeriods(request, parameters);
   const bound = bind(parameters, zone);
   const root = target.root === null ? "" : bind(parameters, target.root);
-  const families = findFamilies(request.metrics);
-  const unique = compileUniqueRoot(request, parameters);
+  const measures = collectMeasures(request.metrics, request.catalog);
   const group = target.group === null ? "" : `, w.${target.group}`;
-  const zGroup = target.group === null ? "" : `, z.${target.group}`;
 
   return {
     parameters,
     sql: fill(ROLLUP_FACTS_SQL, [
+      ["{cells}", target.cells],
       ["{untagged}", target.untagged],
       ["{untaggedRows}", target.untaggedRows],
-      ["{families}", compileFamilies(families, target)],
-      [
-        "{covered}",
-        request.metrics.includes(EventMetric.COVERED_MINUTES)
-          ? ROLLUP_COVERED_SQL
-          : "",
-      ],
+      ["{totals}", compileColumns(measures)],
       ["{rollupExtra}", target.rollupExtra],
       ["{crossingExtra}", target.crossingExtra],
       ["{crossingJoin}", target.crossingJoin],
-      ["{restrict}", target.restrict],
-      ["{tagRoot}", unique],
       ["{group}", group],
-      ["{zGroup}", zGroup],
       ["{columns}", target.columns],
-      ["{metrics}", compileMetrics(request.metrics)],
-      ["{joins}", compileJoins(families, target)],
+      [
+        "{metrics}",
+        compileMetricColumns(request.metrics, {
+          catalog: request.catalog,
+          resolve: (measure) => `(t."m_${measure.slug}")::float8`,
+        }),
+      ],
+      ["{joins}", target.join],
       ["{periods}", periods],
       ["{zone}", `${bound}::text`],
       ["{root}", root],
-      ["{rollupRows}", scoped(request, "r", target.grain)],
-      ["{nameRows}", scoped(request, "r", "dayTagName")],
-      ["{eventRows}", scoped(request, "f", "event")],
+      ["{eventRows}", `true${compileFactsScope(request.scope, "f")}`],
     ]),
   };
 }
@@ -128,13 +117,18 @@ export function findRollupTarget(
     : describeCalendar(calendar);
 }
 
+// The facts are built for the default scope and cannot drop an event by its
+// tags, so a scope that keeps the phase boundaries reads the events.
 /**
- * Whether the request's filter and metrics are ones the rollups answer.
+ * Whether the rollups answer the request: no filter, metrics that merge, the default scope.
  */
 export function isRollupRequest(request: EventMetricsQueryRequest): boolean {
   return (
+    !request.scope.includePhaseBoundaries &&
     request.filter === null &&
-    request.metrics.every((metric) => ROLLUP_METRIC_SQL[metric] !== undefined)
+    collectMeasures(request.metrics, request.catalog).every((measure) =>
+      isRolledMeasure(measure),
+    )
   );
 }
 
@@ -173,86 +167,41 @@ function bindPeriods(
 }
 
 /**
- * The side statements the metrics read, each of a family once.
+ * One column a measure, named `m_<slug>`, over the rollup rows `w`.
  */
-function compileFamilies(
-  families: readonly RollupFamily[],
-  target: RollupTarget,
-): string {
-  const sources: Readonly<Record<RollupFamily, string>> = {
-    directs: ROLLUP_DIRECTS_SQL,
-    durations: ROLLUP_DURATIONS_SQL,
-    names: target.names,
-  };
-
-  return families.map((family) => sources[family]).join("");
-}
-
-/**
- * The joins of the side statements to the totals of each group.
- */
-function compileJoins(
-  families: readonly RollupFamily[],
-  target: RollupTarget,
-): string {
-  const group = target.group;
+function compileColumns(measures: readonly CatalogMeasure[]): string {
   let sql = "";
 
-  for (const family of families) {
-    const alias = ROLLUP_FAMILY_ALIASES[family];
+  for (const measure of measures) {
+    const rolled = compileRolledMeasure(measure);
 
-    sql += ` left join ${family} ${alias} on ${alias}.period = t.period${group === null ? "" : ` and ${alias}.${group} is not distinct from t.${group}`}`;
-  }
-
-  return sql + target.join;
-}
-
-/**
- * One metric column a metric, in the order asked.
- */
-function compileMetrics(metrics: readonly EventMetric[]): string {
-  let sql = "";
-
-  for (const [index, metric] of metrics.entries()) {
-    sql += `,\n    (${ROLLUP_METRIC_SQL[metric] ?? ""})::float8 as ${METRIC_COLUMN_PREFIX}${String(index)}`;
+    if (rolled !== null) {
+      sql += `,\n      ${rolled.sql} as "m_${measure.slug}"`;
+    }
   }
 
   return sql;
 }
 
 /**
- * The condition that limits the unique tags to those beneath the tag root,
- * binding the root once the metric is asked for.
- */
-function compileUniqueRoot(
-  request: EventMetricsQueryRequest,
-  values: unknown[],
-): string {
-  const { tagRoot } = request;
-
-  if (tagRoot === null || !request.metrics.includes(EventMetric.UNIQUE_TAGS)) {
-    return "";
-  }
-
-  // A root that is no tag id has no tags beneath it, as a null matches.
-  const bound = bind(values, UUID_PATTERN.test(tagRoot) ? tagRoot : null);
-
-  return ROLLUP_TAG_ROOT_SQL.replaceAll("{unique}", () => bound);
-}
-
-/**
  * The target of a calendar field's groups.
  */
-function describeCalendar({ column, key }: RollupCalendarKey): RollupTarget {
+function describeCalendar({
+  column,
+  key,
+  source,
+}: RollupCalendarKey): RollupTarget {
   // Every row already carries its day.
-  const own = column === "local_day";
+  const own = column === "day";
+  const read = (alias: string): string =>
+    `, ${source.replaceAll("{r}", () => alias)} as "${column}"`;
 
   return {
     ...ROLLUP_TOTAL_TARGET,
     columns: ROLLUP_CALENDAR_COLUMNS_SQL.replaceAll("{key}", () => key),
-    crossingExtra: `${ROLLUP_TOTAL_TARGET.crossingExtra}${own ? "" : `, x.${column}`}`,
+    crossingExtra: `${ROLLUP_TOTAL_TARGET.crossingExtra}${own ? "" : read("x")}`,
     group: column,
-    rollupExtra: `${ROLLUP_TOTAL_TARGET.rollupExtra}${own ? "" : `, r.${column}`}`,
+    rollupExtra: `${ROLLUP_TOTAL_TARGET.rollupExtra}${own ? "" : read("r")}`,
   };
 }
 
@@ -287,33 +236,4 @@ function fill(
   }
 
   return filled;
-}
-
-/**
- * The side statements the metrics need, each once, in the order asked.
- */
-function findFamilies(metrics: readonly EventMetric[]): RollupFamily[] {
-  const families = new Set<RollupFamily>();
-
-  for (const metric of metrics) {
-    const family = ROLLUP_METRIC_FAMILIES.get(metric);
-
-    if (family !== undefined) {
-      families.add(family);
-    }
-  }
-
-  return [...families];
-}
-
-/**
- * The condition that pins the facts rows `alias` names to one grain and the
- * request's scope.
- */
-function scoped(
-  request: EventMetricsQueryRequest,
-  alias: string,
-  grain: FactsGrain,
-): string {
-  return `${pinGrain(alias, grain)}${compileFactsScope(request.scope, alias)}`;
 }
