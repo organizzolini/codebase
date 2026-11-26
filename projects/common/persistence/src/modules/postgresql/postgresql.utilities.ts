@@ -69,9 +69,8 @@ export function createDataSource(
 }
 
 /**
- * Opens a data source for `PostgresqlModule`, then applies its pending
- * migrations, if it has any, before the application starts serving. A failed
- * migration closes the connection and throws {@link MigrationFailedError}.
+ * Opens a data source and applies its pending migrations. A failed migration
+ * closes the connection and throws {@link MigrationFailedError}.
  */
 export async function openDataSource(
   options: DataSourceOptions,
@@ -236,11 +235,11 @@ export function postgresSettingsSchema(
   });
 }
 
+// The lock lives and dies with the transaction, so it holds through a
+// transaction-mode pooler; later instances find nothing left to apply.
 /**
- * Applies the pending migrations of `dataSource` in one transaction that first
- * takes a transaction-scoped advisory lock. Instances starting together migrate
- * one at a time and the later ones find nothing to apply. The lock lives and
- * dies with the transaction, so it holds through a transaction-mode pooler.
+ * Applies pending migrations in one transaction holding an advisory lock, so
+ * instances starting together migrate one at a time.
  */
 export async function runMigrationsLocked(
   dataSource: DataSource,

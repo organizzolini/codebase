@@ -383,7 +383,8 @@ describe("database utilities", () => {
   });
 
   describe(openDataSource, () => {
-    /** Opens a data source with `migrations`, its connection stubbed, and `failure` raised by the migrations. */
+    // Its connection is stubbed, and `failure` is raised by the migrations.
+    /** Opens a data source with `migrations`. */
     const open = async (
       migrations: string[],
       failure?: Error,

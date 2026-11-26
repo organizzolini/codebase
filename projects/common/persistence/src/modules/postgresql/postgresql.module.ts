@@ -15,10 +15,9 @@ import type { DynamicModule } from "@nestjs/common";
  * PostgresqlModule.forRoot({ entities: [Meander], project: "meanderaw" })
  * ```
  *
- * Reads the project's `<PROJECT>_POSTGRES_*` variables, so `ConfigModule` must
- * be global. Never synchronizes. Applies the pending migrations of
- * `options.migrations`, if given, under an advisory lock before the application
- * starts, so a project passing none runs none.
+ * Reads `<PROJECT>_POSTGRES_*`, so `ConfigModule` must be global. Never
+ * synchronizes; applies `options.migrations`, if given, under an advisory lock
+ * at start.
  */
 @Module({
   controllers: [],
