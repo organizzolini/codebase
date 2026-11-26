@@ -17,6 +17,13 @@ each entity to `DATABASE_ENTITIES` in
 Keep migrations under `migrations/`. They are never run or synchronized on
 application startup.
 
+**Exception:** `DatabaseModule` here does apply the pending migrations when an
+application starts, before it serves, under a Postgres advisory lock, so
+replicas starting together migrate one at a time and the later ones find nothing
+to apply. `CAELUNDAS_DATABASE_MIGRATIONS` is the glob it reads
+(`.ts` beside the source, `.js` in an image), so every migration stays a file
+at run time.
+
 ### Entity relationship diagram
 
 The entity relationship diagram is generated from every TypeORM entity file
@@ -61,8 +68,8 @@ import { CaelundasDatabaseModule, CalendarEvent } from "@codebase/caelundas-db";
 `databaseDataSource`, in `src/modules/database/data-source.constants.ts`,
 is the same configuration as a standalone `DataSource`, built with the shared
 `createDataSource`, which is what the migration command line runs against.
-Neither synchronizes nor runs migrations on start, so only the data source and
-the test harness are given `CAELUNDAS_DATABASE_MIGRATIONS`.
+Neither synchronizes. The module applies the migrations on start; the data
+source runs them by hand.
 
 Both read only `CAELUNDAS_POSTGRES_*`, never the root's unprefixed
 `POSTGRES_*`, which are the shared container's admin login. The importing

@@ -7,6 +7,9 @@
   `src/modules/database/data-source.constants.ts`.
 - Keep project migrations under `migrations/`; the runtime never runs or
   synchronizes them.
+- **Exception:** `DatabaseModule` applies the pending migrations at start, under
+  an advisory lock, reading the `CAELUNDAS_DATABASE_MIGRATIONS` glob, so every
+  migration must stay a file an image can build.
 - Preserve project-specific entities and migrations when updating shared
   configuration.
 
@@ -62,11 +65,13 @@ migrations/                              # The migrations, each with its .sql pa
 - **The derived-times view needs no refresh;** the two derived tag tables are rebuilt by
   `refreshReadModel(manager)` in the caller's transaction. A view's name is not
   pluralized into sense: `calendar_event_derived_times` is already plural.
-- **The first migration is the baseline,** and the second replaces
-  `constellation_lines` with the generated `constellation_edges`, and the third sets the
-  role's default `search_path`, which PgBouncer drops from the startup parameters. Regenerate the first with `nx run caelundas-db:migration:generate` against
-  an empty local Postgres (schema-unqualified), then apply the two hand edits the README
-  lists. Never edit the generated SQL otherwise.
+- **One migration is the whole schema.** It creates the tables, the derived
+  tables and the view, and sets the role's default `search_path`, which
+  PgBouncer drops from the startup parameters. Nothing was in production when
+  the earlier three were squashed into it, and `pg_dump --schema-only` of the
+  old chain and of the new migration were identical. Add the next one with
+  `nx run caelundas-db:migration:generate`; never edit the generated SQL
+  otherwise.
 
 ## Commands
 
