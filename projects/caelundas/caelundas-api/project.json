@@ -32,6 +32,9 @@
       },
       "outputs": ["{workspaceRoot}/dist/caelundas-api"]
     },
+    "codometer-weigh": {
+      "dependsOn": ["...", "bundle"]
+    },
     "dependency-cruiser": {},
     "deprecate-code": {},
     "docker": {

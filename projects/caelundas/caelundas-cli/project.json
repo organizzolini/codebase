@@ -46,6 +46,9 @@
       },
       "outputs": ["{workspaceRoot}/dist/caelundas-cli"]
     },
+    "codometer-weigh": {
+      "dependsOn": ["...", "bundle"]
+    },
     "dependency-cruiser": {},
     "deprecate-code": {},
     "docker": {
