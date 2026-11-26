@@ -14,14 +14,14 @@ export const INCLUDE_CONSTRUCTOR_EDGES = true;
 // 🚫 Refusals
 
 /** Headline a command line the input service refused is reported under. */
-export const REJECTED_COMMAND_LINE = "🔭 Rejected the command line";
+export const REJECTED_COMMAND_LINE = "🔬 Rejected the command line";
 
 /** Headline a project whose tsconfig could not be read is reported under. */
-export const REJECTED_PROJECT = "🔭 Rejected a project it could not read";
+export const REJECTED_PROJECT = "🔬 Rejected a project it could not read";
 
 /** Headline a project's own refused configuration file is reported under. */
 export const REJECTED_PROJECT_CONFIGURATION =
-  "🔭 Rejected a project configuration";
+  "🔬 Rejected a project configuration";
 
 /** Refuses a bare argument, which would otherwise trace the workspace. */
 export const buildUnknownCommandMessage = (name: string): string =>

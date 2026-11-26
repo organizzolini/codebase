@@ -1,4 +1,4 @@
-# 🔭 Callidescope Core
+# 🔬 Callidescope Core
 
 [![npm](https://img.shields.io/npm/v/@callidescope/core?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/core)
 

@@ -88,7 +88,7 @@ describe(EdgesService, () => {
     });
 
     expect(logger.info).toHaveBeenCalledWith(
-      "🔭 Built call graph edges",
+      "🔬 Built call graph edges",
       undefined,
       { edgeCount: 0 },
     );

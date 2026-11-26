@@ -341,7 +341,7 @@ write: {
 ```
 
 Both take a `description`, placed under the heading, a `heading` (defaults to
-`# 🔭 Callidescope`, and should be set when the block is spliced into a file
+`# 🔬 Callidescope`, and should be set when the block is spliced into a file
 that already has a title, since most markdown linters reject a second
 first-level heading), and `previewCount` — how many stacks are shown before the
 rest go behind a disclosure, three by default. `previewCount` belongs to the

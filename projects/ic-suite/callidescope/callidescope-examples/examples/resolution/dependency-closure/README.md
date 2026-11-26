@@ -104,7 +104,7 @@ frame, the way every call out of a package did before closures existed.
 
 ## What a closure never widens
 
-Publishing. A run writes a `## 🔭 Callidescope` section for the projects it was
+Publishing. A run writes a `## 🔬 Callidescope` section for the projects it was
 **scoped** to and for no others, so this run publishes into the three guides of
 its three starting projects and leaves the three dependency packages alone —
 measurement reaches into a dependency, publishing does not. A closure that

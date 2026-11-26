@@ -70,10 +70,10 @@ export const CALLIDESCOPE_OUTPUT_FORMATS = [
 export const DEFAULT_OUTPUT_FORMAT = "markdown";
 
 /** Heading the section embedded in a project README is written under. */
-export const DEFAULT_PROJECT_README_HEADING = "## 🔭 Callidescope";
+export const DEFAULT_PROJECT_README_HEADING = "## 🔬 Callidescope";
 
 /** Whole-run markdown heading, level one: the block fills its file. */
-export const DEFAULT_RUN_HEADING = "# 🔭 Callidescope";
+export const DEFAULT_RUN_HEADING = "# 🔬 Callidescope";
 
 /** Stacks a README section shows before the rest fold into a disclosure. */
 export const DEFAULT_PREVIEW_COUNT = 3;

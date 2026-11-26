@@ -262,7 +262,7 @@ jobs:
           env.RELEASE_SUPERSEDED != 'true'
         run: pnpm exec nx run-many --target=build
 
-      - name: 🔭 Trace Calls
+      - name: 🔬 Trace Calls
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.target.id == 'push-releases' &&

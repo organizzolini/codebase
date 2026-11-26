@@ -85,7 +85,7 @@ export class ProgramService {
 
       if (projectProgram === undefined) {
         this.logger.warn(
-          "🔭 Skipped a file no traced project contains",
+          "🔬 Skipped a file no traced project contains",
           undefined,
           { workspaceRelativePath },
         );
@@ -200,7 +200,7 @@ export class ProgramService {
     // cannot describe anything other than what was really built.
     this.workspaceService.walkImportedProjectClosure({
       resolveProjectFiles: (project): readonly string[] => {
-        this.logger.debug("🔭 Reading a project", undefined, {
+        this.logger.debug("🔬 Reading a project", undefined, {
           projectName: project.name,
         });
 
@@ -220,7 +220,7 @@ export class ProgramService {
       workspaceProjects: args.workspaceProjects,
     });
 
-    this.logger.debug("🔭 Resolved a dependency closure", undefined, {
+    this.logger.debug("🔬 Resolved a dependency closure", undefined, {
       projectCount: built.length,
       startingProjectCount: args.startingProjects.length,
     });

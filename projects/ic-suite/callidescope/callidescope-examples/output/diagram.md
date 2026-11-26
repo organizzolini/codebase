@@ -1,6 +1,6 @@
 <!-- callidescope:start -->
 
-# 🔭 Callidescope
+# 🔬 Callidescope
 
 | Measure | Value |
 | --- | --- |

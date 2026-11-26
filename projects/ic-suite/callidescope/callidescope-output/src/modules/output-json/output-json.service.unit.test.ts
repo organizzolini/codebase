@@ -70,7 +70,7 @@ describe(OutputJsonService, () => {
       result,
     );
     expect(subjectLogger.info).toHaveBeenCalledWith(
-      "🔭 Wrote a report",
+      "🔬 Wrote a report",
       undefined,
       { path: path.resolve(reportPath) },
     );

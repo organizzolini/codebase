@@ -93,7 +93,7 @@ export class FileFilterService {
 
       return output.trim().split("\n").filter(Boolean);
     } catch {
-      this.logger.warn("🔭 Skipped an unreadable ignore file", undefined, {
+      this.logger.warn("🔬 Skipped an unreadable ignore file", undefined, {
         ignorePath: args.ignorePath,
       });
 
@@ -114,7 +114,7 @@ export class FileFilterService {
       const ignorePath = path.resolve(args.workspaceRoot, ignoreFile);
 
       if (!existsSync(ignorePath)) {
-        this.logger.warn("🔭 Skipped a missing ignore file", undefined, {
+        this.logger.warn("🔬 Skipped a missing ignore file", undefined, {
           ignoreFile,
         });
         continue;

@@ -58,7 +58,7 @@ export interface CallidescopeLimits {
 export interface CallidescopeMarkdownOutputConfiguration {
   description?: string | undefined;
   endMarker?: string | undefined;
-  /** Heading the block sits under; `# 🔭 Callidescope` by default. Use `##` when splicing into an already-titled file. */
+  /** Heading the block sits under; `# 🔬 Callidescope` by default. Use `##` when splicing into an already-titled file. */
   heading?: string | undefined;
   path: string;
   /** Stacks shown before the rest fold into a disclosure; set per destination, since a README and a report differ. */

@@ -1,6 +1,6 @@
 <!-- callidescope:start -->
 
-## 🔭 Callidescope
+## 🔬 Callidescope
 
 Call stacks traced through `projects/caelundas/caelundas-cli`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 

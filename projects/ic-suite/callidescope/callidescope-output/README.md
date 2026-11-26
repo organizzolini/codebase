@@ -1,4 +1,4 @@
-# 🔭 Callidescope Output
+# 🔬 Callidescope Output
 
 [![npm](https://img.shields.io/npm/v/@callidescope/output?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/output)
 

@@ -99,7 +99,7 @@ callidescope-examples/
   project buys (a project-scoped `exclude` glob, provable only against a
   project boundary), which `gated-leaf` already supplied.
 - **Its guide carries a generated block.** It declares a `write.markdown` of
-  its own pointing at `README.md` under a `## 🔭 Callidescope` heading, and it
+  its own pointing at `README.md` under a `## 🔬 Callidescope` heading, and it
   is scoped, so its `README.md` holds one between `<!-- callidescope:start -->`
   and `<!-- callidescope:end -->`. Do not hand-edit inside those anchors —
   regenerate.

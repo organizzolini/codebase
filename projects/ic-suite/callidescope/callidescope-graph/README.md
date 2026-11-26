@@ -1,4 +1,4 @@
-# 🔭 Callidescope Graph
+# 🔬 Callidescope Graph
 
 [![npm](https://img.shields.io/npm/v/@callidescope/graph?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/graph)
 

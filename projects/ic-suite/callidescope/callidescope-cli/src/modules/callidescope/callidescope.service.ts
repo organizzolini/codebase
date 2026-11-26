@@ -313,7 +313,7 @@ export class CallidescopeService {
     // `maximumDepthTraced`, never `maximumDepth`. A scoped run traces its dependency
     // closure, so this number can belong to a project it was never pointed at. Under
     // the bare name it would read as that project's limit, which would be headroom.
-    this.logger.info("🔭 Finished an analysis", undefined, {
+    this.logger.info("🔬 Finished an analysis", undefined, {
       callableCount: summary.callableCount,
       edgeCount: summary.edgeCount,
       entryPointCount: summary.entryPointCount,
@@ -356,7 +356,7 @@ export class CallidescopeService {
 
   /** Traces a workspace and returns everything the run found. */
   public async trace(args: TraceArguments): Promise<TraceOutcome> {
-    this.logger.info("🔭 Tracing a workspace", undefined, {
+    this.logger.info("🔬 Tracing a workspace", undefined, {
       workspaceRoot: args.workspaceRoot,
     });
 
