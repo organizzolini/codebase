@@ -33,11 +33,10 @@ infrastructure/
 │   ├── kubernetes-job/      # Reusable chart for K8s Jobs
 │   └── postgres/            # Shared PostgreSQL as CloudNativePG resources
 └── terraform/               # Cluster provisioning
-    ├── bootstrap/           # Namespaces, secrets, Argo CD core and the root Application
     ├── github/              # Repository settings, ruleset, Actions variables
-    ├── kubernetes/          # LKE cluster, Cloudflare tunnel and DNS record for caelundas
     ├── linode/              # Object Storage buckets: the state, the shared Nx cache, and Postgres backups
-    └── openrouter/          # OpenRouter workspace, key, guardrail, preset
+    ├── openrouter/          # OpenRouter workspace, key, guardrail, preset
+    └── organizzolini/       # LKE cluster, Cloudflare tunnel, namespaces, secrets, Argo CD, KUBECONFIG secret
 ```
 
 ### kubernetes-deployment Chart
@@ -73,31 +72,29 @@ Use a Job for work that runs to completion and leaves output behind (caelundas i
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
 
-**Kubernetes root**: `terraform/kubernetes` creates the LKE cluster and the Cloudflare tunnel, routing and DNS record. `k8s_version` is optional and pins the cluster's Kubernetes version; unset, it takes the newest from `linode_lke_versions`.
-
-**Bootstrap root**: `terraform/bootstrap` creates the `codebase` and `caelundas` namespaces (the apps do not set `CreateNamespace` for them), the `caelundas-postgres` secret in both, `postgres-backups` and `cloudflared-token`, then Argo CD core and a `root` Application on `main`. `state_bucket` (`TF_VAR_state_bucket`) locates the `linode` and `kubernetes` states it reads. The providers are configured from the kubeconfig output, so the first pull request's `github` and `bootstrap` plans are skipped by CI until the cluster exists. Continuous Deployment applies `github` after `kubernetes`, so the first merge is unaffected. The `argo-cd` chart has no ApplicationSet switch, so `argocd-values.yaml` sets `applicationSet.replicas: 0`. The namespaces and secrets use the `kubernetes_namespace_v1` and `kubernetes_secret_v1` resources, since the unsuffixed ones are deprecated in provider 3.x.
+**Organizzolini root**: `terraform/organizzolini` is the one root for everything the cluster needs, in one state (`organizzolini.tfstate`): the LKE cluster and its readiness wait (`cluster.tf`), the Cloudflare zone import, tunnel, routing and DNS record (`cloudflare.tf`), the `organizzolini` namespace (`namespaces.tf`), the platform secrets `postgres-backups` and `cloudflared-token` (`secrets.tf`), Argo CD core and a `root` Application on `main` (`argocd.tf`), the `KUBECONFIG` Actions secret (`github.tf`), and everything Terraform owns for Caelundas: its namespace and the `caelundas-postgres` secret in both namespaces (`caelundas.tf`). Adding another app means adding another file like `caelundas.tf`. The apps do not set `CreateNamespace`, so Terraform creates their namespaces. `k8s_version` is optional and pins the cluster's Kubernetes version; unset, it takes the newest from `linode_lke_versions`. `state_bucket` (`TF_VAR_state_bucket`) locates the `linode` state it reads for the backups key, through `try`, so a pull request plans before that output exists. `github_token` (`TF_VAR_github_token`) writes the Actions secret. The kubernetes and helm providers are configured from the cluster resource's own kubeconfig, so every Kubernetes and Helm resource depends on `terraform_data.cluster_ready`; the known caveats are in the README. The `argo-cd` chart has no ApplicationSet switch, so `argocd-values.yaml` sets `applicationSet.replicas: 0`. The namespaces and secrets use the `kubernetes_namespace_v1` and `kubernetes_secret_v1` resources, since the unsuffixed ones are deprecated in provider 3.x. New cloud-visible resources carry the `organizzolini_codebase_` address prefix and the `organizzolini-codebase-` label prefix.
 
 **Terraform tests**: `tests/` holds the `terraform test` suites written in HCL, which run against `mock_provider` blocks, so they need no credentials. `nx run infrastructure:terraform-test` initializes each root with `-backend=false` and runs its tests, for every root that has a `tests/` folder.
 
 ### cloudflared Chart
 
-**Purpose**: Run the remotely managed Cloudflare Tunnel connector in the `codebase` namespace. The connector dials out, so the chart has no Service and no ingress rules: routing lives in Cloudflare.
+**Purpose**: Run the remotely managed Cloudflare Tunnel connector in the `organizzolini` namespace. The connector dials out, so the chart has no Service and no ingress rules: routing lives in Cloudflare.
 
-- The token comes from the `cloudflared-token` Secret (key `token`) through `TUNNEL_TOKEN`. The bootstrap root creates that Secret.
+- The token comes from the `cloudflared-token` Secret (key `token`) through `TUNNEL_TOKEN`. The `organizzolini` Terraform root creates that Secret.
 - `image.tag` is pinned to an exact release, never `latest`. Bump it deliberately.
-- `metricsPort` (2000) serves `/ready` for both probes. It binds `0.0.0.0` so the kubelet can reach it.
+- `metricsPort` (2000) serves `/healthcheck` (the process is up) for liveness and `/ready` (a connection to Cloudflare's edge is registered) for readiness. It binds `0.0.0.0` so the kubelet can reach it.
 - Pods run as uid 65532 with a read-only root filesystem, no privilege escalation, all capabilities dropped, and the `RuntimeDefault` seccomp profile.
 
 `tests/cloudflared_test.yaml` asserts on rendered YAML only, so it needs no cluster or tunnel.
 
 ### postgres Chart
 
-**Purpose**: The shared PostgreSQL cluster in the `codebase` namespace, as CloudNativePG resources: a `Cluster` (`postgres`, PostgreSQL 18 pinned to an exact minor), a managed role and `Database` per project database, a `Pooler` (`postgres-pooler-rw`, PgBouncer in transaction mode), and Barman Cloud backups (`ObjectStore` `postgres-backups` with 30-day retention, and a daily `ScheduledBackup` at 03:00 UTC).
+**Purpose**: The shared PostgreSQL cluster in the `organizzolini` namespace, as CloudNativePG resources: a `Cluster` (`postgres`, PostgreSQL 18 pinned to an exact minor), a managed role and `Database` per project database, a `Pooler` (`postgres-pooler-rw`, PgBouncer in transaction mode), and Barman Cloud backups (`ObjectStore` `postgres-backups` with 30-day retention, and a daily `ScheduledBackup` at 03:00 UTC).
 
 - `projects` lists each project with its `databases`. Each project gets role `<name>_username` (password from the `<name>-postgres` Secret) and each database a `Database` resource whose PostgreSQL name is `<name>_<database>`, owned by that role, with schema `<name>`. Adding a project is adding a list entry, as with `POSTGRES_PROJECTS` in the local Compose file.
 - The direct service is `postgres-rw`; the app and jobs address the pooler, `postgres-pooler-rw`.
 - The volume uses the `linode-block-storage-retain` storage class, so deleting the `Cluster` keeps its data.
-- The chart needs the CloudNativePG operator and the Barman Cloud plugin CRDs, and the `postgres-backups` and `<name>-postgres` Secrets from the bootstrap root.
+- The chart needs the CloudNativePG operator and the Barman Cloud plugin CRDs, and the `postgres-backups` and `<name>-postgres` Secrets from the `organizzolini` Terraform root.
 
 `tests/postgres_test.yaml` asserts on rendered YAML only, since the CRDs are not installed locally.
 
@@ -106,7 +103,7 @@ Use a Job for work that runs to completion and leaves output behind (caelundas i
 **Connect to the database**: forward the direct service and read the password from the `caelundas-postgres` Secret:
 
 ```bash
-kubectl port-forward -n codebase svc/postgres-rw 5433:5432
+kubectl port-forward -n organizzolini svc/postgres-rw 5433:5432
 ```
 
 **Copy local data up**: dump the local schema, then restore it into a cluster database as the project role:
@@ -125,9 +122,9 @@ Use `caelundas_staging` in place of `caelundas_production` for staging. The same
 **Purpose**: The Argo CD app-of-apps tree. Each `applications` entry renders one `Application` in the `argocd` namespace, ordered by `argocd.argoproj.io/sync-wave` (0 cert-manager, 1 cloudnative-pg, 2 plugin-barman-cloud, 3 postgres, 4 cloudflared, 5 the two caelundas apps). The chart also renders the `batch-low` PriorityClass (value -10, `preemptionPolicy: Never`, not global), which the ingestion Job uses.
 
 - Upstream entries (`chart`) pin an exact `version`, never a range. `cert-manager` installs its CRDs through a Helm parameter and uses `ServerSideApply=true`; the two operator namespaces set `CreateNamespace=true`.
-- Repository entries (`path`) take `valueFiles` relative to the chart path. `codebase` and `caelundas` come from Terraform, so their apps do not set `CreateNamespace`.
+- Repository entries (`path`) take `valueFiles` relative to the chart path. `organizzolini` and `caelundas` come from Terraform, so their apps do not set `CreateNamespace`.
 - Every Application auto-syncs with `prune` and `selfHeal`, retries with backoff, and sets `SkipDryRunOnMissingResource=true`.
-- The root `Application` created by the bootstrap root points at this chart's path.
+- The root `Application` created by the `organizzolini` Terraform root points at this chart's path.
 
 `tests/applications_test.yaml` asserts on rendered YAML: the wave order, exact upstream pins, automated sync, dry-run skipping, the caelundas values, and the PriorityClass.
 
@@ -222,9 +219,10 @@ kubectl logs -n caelundas -l job-name=<release-name> --prefix --tail=50   # ever
 - [helm/kubernetes-job/templates/job.yaml](helm/kubernetes-job/templates/job.yaml): Job template
 - [helm/kubernetes-job/templates/pvc.yaml](helm/kubernetes-job/templates/pvc.yaml): PVC template
 - [helm/kubernetes-job/templates/\_helpers.tpl](helm/kubernetes-job/templates/_helpers.tpl): Helpers
-- [terraform/kubernetes/cluster.tf](terraform/kubernetes/cluster.tf): LKE cluster and its readiness wait
-- [terraform/kubernetes/cloudflare.tf](terraform/kubernetes/cloudflare.tf): Zone import, tunnel, routing, and DNS record
-- [terraform/bootstrap/main.tf](terraform/bootstrap/main.tf): Backend, remote state, and the provider wiring from the kubeconfig
-- [terraform/bootstrap/argocd.tf](terraform/bootstrap/argocd.tf): Argo CD core and the root Application
-- [terraform/bootstrap/secrets.tf](terraform/bootstrap/secrets.tf): Generated password and cluster secrets
+- [terraform/organizzolini/main.tf](terraform/organizzolini/main.tf): Backend, remote state, and the provider wiring from the cluster's kubeconfig
+- [terraform/organizzolini/cluster.tf](terraform/organizzolini/cluster.tf): LKE cluster and its readiness wait
+- [terraform/organizzolini/cloudflare.tf](terraform/organizzolini/cloudflare.tf): Zone import, tunnel, routing, and DNS record
+- [terraform/organizzolini/argocd.tf](terraform/organizzolini/argocd.tf): Argo CD core and the root Application
+- [terraform/organizzolini/secrets.tf](terraform/organizzolini/secrets.tf): Platform secrets
+- [terraform/organizzolini/caelundas.tf](terraform/organizzolini/caelundas.tf): Caelundas namespace, database password, and secrets
 - [terraform/openrouter/main.tf](terraform/openrouter/main.tf): OpenRouter resources and the S3-compatible state backend

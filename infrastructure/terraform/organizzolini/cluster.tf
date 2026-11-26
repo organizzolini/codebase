@@ -1,6 +1,6 @@
 data "linode_lke_versions" "available" {}
 
-resource "linode_lke_cluster" "cluster" {
+resource "linode_lke_cluster" "organizzolini_codebase" {
   label  = "organizzolini-codebase"
   region = var.region
   # A conditional evaluates only the branch it takes, so a pinned version never reads the data source.
@@ -21,15 +21,15 @@ resource "linode_lke_cluster" "cluster" {
   }
 }
 
-# Writes the kubeconfig to a 0600 temp file and waits for the API. Outputs
-# read through it, so the bootstrap root never reaches an API still starting.
+# Writes the kubeconfig to a 0600 temp file and waits for the API. Every Kubernetes and
+# Helm resource depends on it, so none reaches an API that is still starting.
 resource "terraform_data" "cluster_ready" {
-  triggers_replace = linode_lke_cluster.cluster.id
+  triggers_replace = linode_lke_cluster.organizzolini_codebase.id
 
   # The kubeconfig goes through the environment, which keeps it out of the logged command.
   provisioner "local-exec" {
     environment = {
-      KUBECONFIG_B64 = linode_lke_cluster.cluster.kubeconfig
+      KUBECONFIG_B64 = linode_lke_cluster.organizzolini_codebase.kubeconfig
     }
 
     command = <<-EOT

@@ -125,31 +125,6 @@ resource "github_actions_secret" "nx_cache_read_write_secret_access_key" {
   plaintext_value = try(data.terraform_remote_state.linode.outputs.nx_cache_read_write_secret_key, "")
 }
 
-# The kubernetes root's outputs: the cluster's kubeconfig, which the ingestion workflow
-# uses to reach the cluster. The read is wrapped in `try`, since a pull request can plan
-# before the kubernetes root has applied its outputs.
-data "terraform_remote_state" "kubernetes" {
-  backend = "s3"
-
-  config = {
-    bucket = var.state_bucket
-    key    = "kubernetes.tfstate"
-    region = "us-east-1"
-
-    skip_credentials_validation = true
-    skip_metadata_api_check     = true
-    skip_region_validation      = true
-    skip_requesting_account_id  = true
-    skip_s3_checksum            = true
-  }
-}
-
-resource "github_actions_secret" "kubeconfig" {
-  repository      = var.repository
-  secret_name     = "KUBECONFIG"
-  plaintext_value = try(data.terraform_remote_state.kubernetes.outputs.kubeconfig, "")
-}
-
 # The repository itself, imported as it is configured. Destroying it would
 # delete the codebase, so Terraform refuses to, and archives it if it ever does.
 import {

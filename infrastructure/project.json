@@ -129,20 +129,17 @@
     "terraform-apply": {
       "cache": false,
       "configurations": {
-        "bootstrap": {
-          "cwd": "{projectRoot}/terraform/bootstrap"
-        },
         "github": {
           "cwd": "{projectRoot}/terraform/github"
-        },
-        "kubernetes": {
-          "cwd": "{projectRoot}/terraform/kubernetes"
         },
         "linode": {
           "cwd": "{projectRoot}/terraform/linode"
         },
         "openrouter": {
           "cwd": "{projectRoot}/terraform/openrouter"
+        },
+        "organizzolini": {
+          "cwd": "{projectRoot}/terraform/organizzolini"
         }
       },
       "defaultConfiguration": "openrouter",
@@ -152,7 +149,7 @@
           "target": "terraform-init"
         }
       ],
-      "description": "Apply a Terraform root (--configuration=openrouter, github, linode, kubernetes, or bootstrap), creating, updating, and deleting what a fresh plan finds. Needs the terraform-plan variables. Run by the Continuous Deployment workflow on main; run it locally only on purpose.",
+      "description": "Apply a Terraform root (--configuration=openrouter, github, linode, or organizzolini), creating, updating, and deleting what a fresh plan finds. Needs the terraform-plan variables. Run by the Continuous Deployment workflow on main; run it locally only on purpose.",
       "executor": "nx:run-commands",
       "options": {
         "command": "terraform apply -input=false -auto-approve"
@@ -160,40 +157,37 @@
     },
     "terraform-format": {
       "cache": true,
-      "description": "Check that the OpenRouter, GitHub, Linode, Kubernetes, and Bootstrap Terraform is formatted. Part of lint-code. Requires terraform on PATH (the devcontainer installs it; CI uses hashicorp/setup-terraform).",
+      "description": "Check that the OpenRouter, GitHub, Linode, and Organizzolini Terraform is formatted. Part of lint-code. Requires terraform on PATH (the devcontainer installs it; CI uses hashicorp/setup-terraform).",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/terraform/{openrouter,github,kubernetes,bootstrap,linode}/**/*.tf",
+        "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "terraform fmt -check -diff -recursive openrouter github kubernetes bootstrap linode",
+        "command": "terraform fmt -check -diff -recursive openrouter github linode organizzolini",
         "cwd": "{projectRoot}/terraform"
       }
     },
     "terraform-init": {
       "cache": false,
       "configurations": {
-        "bootstrap": {
-          "cwd": "{projectRoot}/terraform/bootstrap"
-        },
         "github": {
           "cwd": "{projectRoot}/terraform/github"
-        },
-        "kubernetes": {
-          "cwd": "{projectRoot}/terraform/kubernetes"
         },
         "linode": {
           "cwd": "{projectRoot}/terraform/linode"
         },
         "openrouter": {
           "cwd": "{projectRoot}/terraform/openrouter"
+        },
+        "organizzolini": {
+          "cwd": "{projectRoot}/terraform/organizzolini"
         }
       },
       "defaultConfiguration": "openrouter",
-      "description": "Initialize a Terraform root (--configuration=openrouter, github, linode, kubernetes, or bootstrap) against its Linode Object Storage backend. Needs TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY.",
+      "description": "Initialize a Terraform root (--configuration=openrouter, github, linode, or organizzolini) against its Linode Object Storage backend. Needs TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY.",
       "executor": "nx:run-commands",
       "options": {
         "command": "terraform init -input=false -reconfigure -backend-config=\"bucket=$TF_STATE_BUCKET\""
@@ -202,20 +196,17 @@
     "terraform-plan": {
       "cache": false,
       "configurations": {
-        "bootstrap": {
-          "cwd": "{projectRoot}/terraform/bootstrap"
-        },
         "github": {
           "cwd": "{projectRoot}/terraform/github"
-        },
-        "kubernetes": {
-          "cwd": "{projectRoot}/terraform/kubernetes"
         },
         "linode": {
           "cwd": "{projectRoot}/terraform/linode"
         },
         "openrouter": {
           "cwd": "{projectRoot}/terraform/openrouter"
+        },
+        "organizzolini": {
+          "cwd": "{projectRoot}/terraform/organizzolini"
         }
       },
       "defaultConfiguration": "openrouter",
@@ -225,7 +216,7 @@
           "target": "terraform-init"
         }
       ],
-      "description": "Plan a Terraform root (--configuration=openrouter, github, linode, kubernetes, or bootstrap) and write plan.tfplan beside it, without changing anything. Needs the terraform-init variables plus TF_VAR_openrouter_management_key.",
+      "description": "Plan a Terraform root (--configuration=openrouter, github, linode, or organizzolini) and write plan.tfplan beside it, without changing anything. Needs the terraform-init variables plus TF_VAR_openrouter_management_key.",
       "executor": "nx:run-commands",
       "options": {
         "command": "terraform plan -input=false -lock=false -out=plan.tfplan"
@@ -250,16 +241,16 @@
     },
     "terraform-validate": {
       "cache": true,
-      "description": "Validate the OpenRouter, GitHub, Linode, Kubernetes, and Bootstrap Terraform without a backend or credentials. Part of lint-code. Requires terraform on PATH and downloads the provider, so it needs network access.",
+      "description": "Validate the OpenRouter, GitHub, Linode, and Organizzolini Terraform without a backend or credentials. Part of lint-code. Requires terraform on PATH and downloads the provider, so it needs network access.",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/terraform/{openrouter,github,kubernetes,bootstrap,linode}/**/*.tf",
+        "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "for module in openrouter github kubernetes bootstrap linode; do (cd $module && terraform init -input=false -backend=false && terraform validate) || exit 1; done",
+        "command": "for module in openrouter github linode organizzolini; do (cd $module && terraform init -input=false -backend=false && terraform validate) || exit 1; done",
         "cwd": "{projectRoot}/terraform"
       }
     },

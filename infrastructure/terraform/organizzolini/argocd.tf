@@ -9,6 +9,8 @@ resource "helm_release" "argocd" {
   timeout          = 600
 
   values = [file("${path.module}/argocd-values.yaml")]
+
+  depends_on = [terraform_data.cluster_ready]
 }
 
 # A chart rather than kubernetes_manifest, which cannot plan before the Application CRD exists.

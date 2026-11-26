@@ -20,16 +20,16 @@ resource "random_bytes" "tunnel_secret" {
   length = 32
 }
 
-resource "cloudflare_zero_trust_tunnel_cloudflared" "cluster" {
+resource "cloudflare_zero_trust_tunnel_cloudflared" "organizzolini_codebase" {
   account_id    = var.cloudflare_account_id
   name          = "organizzolini-codebase"
   config_src    = "cloudflare"
   tunnel_secret = random_bytes.tunnel_secret.base64
 }
 
-resource "cloudflare_zero_trust_tunnel_cloudflared_config" "cluster" {
+resource "cloudflare_zero_trust_tunnel_cloudflared_config" "organizzolini_codebase" {
   account_id = var.cloudflare_account_id
-  tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.cluster.id
+  tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.organizzolini_codebase.id
 
   config = {
     ingress = [
@@ -49,16 +49,16 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "cluster" {
   }
 }
 
-resource "cloudflare_dns_record" "caelundas" {
+resource "cloudflare_dns_record" "organizzolini_codebase_caelundas" {
   zone_id = var.cloudflare_zone_id
   name    = "caelundas"
   type    = "CNAME"
-  content = "${cloudflare_zero_trust_tunnel_cloudflared.cluster.id}.cfargotunnel.com"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.organizzolini_codebase.id}.cfargotunnel.com"
   proxied = true
   ttl     = 1
 }
 
-data "cloudflare_zero_trust_tunnel_cloudflared_token" "cluster" {
+data "cloudflare_zero_trust_tunnel_cloudflared_token" "organizzolini_codebase" {
   account_id = var.cloudflare_account_id
-  tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.cluster.id
+  tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.organizzolini_codebase.id
 }

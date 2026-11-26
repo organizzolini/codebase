@@ -43,3 +43,26 @@ variable "k8s_version" {
   type        = string
   default     = null
 }
+
+variable "github_token" {
+  description = "A token that can write Actions secrets on the repository."
+  type        = string
+  sensitive   = true
+}
+
+variable "owner" {
+  description = "Account or organization that owns the repository."
+  type        = string
+  default     = "Organizzolini"
+}
+
+variable "repository" {
+  description = "Repository that receives the KUBECONFIG Actions secret."
+  type        = string
+  default     = "codebase"
+}
+
+variable "state_bucket" {
+  description = "Bucket that holds the linode root's state, read for its outputs."
+  type        = string
+}
