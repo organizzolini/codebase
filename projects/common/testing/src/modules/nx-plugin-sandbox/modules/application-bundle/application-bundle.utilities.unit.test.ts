@@ -26,9 +26,9 @@ describeApplicationBundle({
         },
       }),
       [`${SHARED_PACKAGES[2]}/package.json`]: JSON.stringify({
-        dependencies: { "@scope/pkg": "1" },
+        dependencies: { "@scope/package": "1" },
       }),
-      "dist/sample/node_modules/.pnpm/@scope+pkg@1.0.0/node_modules/@scope/pkg/package.json":
+      "dist/sample/node_modules/.pnpm/@scope+package@1.0.0/node_modules/@scope/package/package.json":
         "{}",
       "dist/sample/node_modules/.pnpm/pg@1.0.0/node_modules/pg/package.json":
         "{}",
