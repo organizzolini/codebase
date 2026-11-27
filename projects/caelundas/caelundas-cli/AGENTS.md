@@ -22,7 +22,7 @@ src/modules/
   input/                               # Zod environmentSchema and config parsing
   calendar/                            # Instant-event builder shared by the detectors
   night-sky/                           # The night-sky command: HYG stars and d3-celestial figures
-  calendar-events/                     # Upsert and range queries over the calendar_events table
+  calendar-events/                     # Upsert into the calendar_events table
   tags/                                # Resolving raw tag strings to nodes of the tag tree
   ephemeris/                           # Swiss Ephemeris access; child modules: datetime/, math/, ephemeris-download/
   perfective/                          # Exact moment event detection; child modules: one per event family (eclipses/, phases/, ...)
@@ -34,7 +34,7 @@ src/modules/
 
 - **Input Validation** ([input.constants.ts](src/modules/input/input.constants.ts)): Zod schema for environment variables
 - **Ephemeris Retrieval** ([ephemeris/](src/modules/ephemeris/)): Swiss Ephemeris, computed locally
-- **Event Storage** ([calendar-events/](src/modules/calendar-events/)): Upserts detected events into Postgres and reads them back by range and location
+- **Event Storage** ([calendar-events/](src/modules/calendar-events/)): Upserts detected events into Postgres
 - **Event Detection** ([perfective/](src/modules/perfective/) and domain modules): Aspects, phases, eclipses, retrogrades
 - **Progressive Synthesis** ([progressive/](src/modules/progressive/)): Pairs start/end moments into calendar events
 
@@ -91,7 +91,7 @@ Postgres: the `caelundas` schema of `caelundas_development`, as `caelundas_usern
 - **Color and location**: optional as well as nullable (`color?: null | string`), so a detector leaves them out and a stored row reads back `null`; the writers treat the two alike.
 - **Coordinates**: `latitude`/`longitude` stay strings, which only `CalendarEventsService` reads or writes. The in-memory `geography`, `url`, and `priority` fields are gone: no detector set them, and no column stored them.
 
-A detected event, which has no id, audit columns, coordinates, or timezone yet, is `DetectedCalendarEvent` in `calendar-events.types.ts`, an `Omit` of the entity plus its raw `tags: string[]`. `findInRange` returns `StoredCalendarEvent`, the entity plus the names of its linked tags, ordered by name; it is assignable to `DetectedCalendarEvent`, so the writers take it too.
+A detected event, which has no id, audit columns, coordinates, or timezone yet, is `DetectedCalendarEvent` in `calendar-events.types.ts`, an `Omit` of the entity plus its raw `tags: string[]`.
 
 Tags go from raw strings to tree nodes in one place: `classifyEvent` in `tags/tags.utilities.ts` turns an event's raw tags into the root-to-node paths it is classified under, and `TagsService.resolve` inserts any missing node through a `TreeRepository`. The static maps live in `tags/tag-map.constants.ts`: `SHARED_TAG_MAP` for raw tags that mean the same everywhere (bodies, signs, decans), and `CONTEXT_TAG_MAPS` keyed by the raw tag that marks a kind of event (`Simple Aspect`, `Ingress`, `Venusian`), so `Full` is a lunar phase under `Monthly Lunar Cycle` and a synodic stage under `Venusian`. The lookup tables behind the implied tags (element, body class, aspect nature, dignity, synodic stage) live in `tags/tag-dimensions.constants.ts`. Ingress kind, eclipse kind, dignity and temporality need several raw tags or the event's times, so `classifyEvent` derives them. A raw tag no map knows falls back to a root of its own, and `Astronomy` and `Astrology` classify nothing. Each root in `TAG_ROOT` is one dimension; never nest one dimension under another. An event links only to the deepest node of each branch and carries the nodes above it through the closure table. A new detector tag should get a map entry, not a new root.
 
@@ -120,19 +120,18 @@ See
 
 ```bash
 IMAGE_TAG=local nx run caelundas-cli:docker:build   # linux/amd64, from the workspace root
-IMAGE_TAG=1.2.3 nx run caelundas-cli:docker:push    # one buildx build --push
+IMAGE_TAG=1.2.3 nx run caelundas-cli:docker:push    # one docker compose build --push
 ```
 
 [infrastructure/docker/application/Dockerfile](../../../infrastructure/docker/application/Dockerfile)
 builds `ghcr.io/organizzolini/caelundas-cli`, shared with the other applications and
-configured by [infrastructure/image.env](infrastructure/image.env). The image is
+built through the `caelundas-cli` service of [docker-compose.images.yml](../../../infrastructure/docker/docker-compose.images.yml). The image is
 the ingestion Job (the same command as `nx run caelundas-cli:start`, started by the image's `start` script). It runs as UID
 10001, bakes the Swiss Ephemeris files in at build time, and compiles `sweph`
 natively. It runs plain JavaScript that `nx run caelundas-cli:bundle`
 ([configuration/rolldown.config.ts](configuration/rolldown.config.ts)) writes: one
 file per module at its source path, so the migrations stay files the database
-module's glob finds. A package loaded by name rather than by import goes in that
-file's `runtimeDependencies`. Keep `--platform linux/amd64`.
+module's glob finds. Keep `--platform linux/amd64`.
 
 ## Performance
 
@@ -157,4 +156,4 @@ file's `runtimeDependencies`. Keep `--platform linux/amd64`.
 - `input.constants.ts` includes Zod validation
 - `ephemeris.service.ts` includes NASA API client
 - `calendar.service.ts` builds instant events
-- `infrastructure/image.env` configures the shared Dockerfile's container build
+- `infrastructure/docker/docker-compose.images.yml` configures the container build
