@@ -22,7 +22,7 @@ import {
 } from "../../../caelundas/symbol-caelundas.constants";
 import { EphemerisService } from "../../../ephemeris/ephemeris.service";
 
-import { DECAN_TAG_BY_DECAN } from "./ingresses.constants";
+import { DECAN_TAG_BY_DECAN, PEAK_SYMBOL } from "./ingresses.constants";
 
 import type { Body, Decan, Sign } from "../../../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
@@ -151,7 +151,7 @@ export class IngressesComposerService {
     const signSymbol = symbolBySign[sign];
 
     const description = `${bodyCapitalized} peak ingress ${signCapitalized}`;
-    const summary = `${bodySymbol}⛰️${signSymbol} ${description}`;
+    const summary = `${bodySymbol}${PEAK_SYMBOL}${signSymbol} ${description}`;
 
     this.logger.info("🗓️ Built a calendar event", undefined, {
       at: date.toISOString(),

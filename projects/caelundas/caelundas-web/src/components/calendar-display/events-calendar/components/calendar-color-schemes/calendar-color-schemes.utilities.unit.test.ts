@@ -200,15 +200,13 @@ describe(createColorScheme, () => {
     expect(scheme.colorOf(event(["tag-simple"]))).toBe(COLOR_PALETTE[0]);
   });
 
-  it("lists the weekdays, the hours and the durations ahead, a color each", () => {
+  it("lists the weekdays and the hours ahead, a color each", () => {
     const weekday = createColorScheme([{ field: "weekday" }], FIELDS);
     const hour = createColorScheme([{ field: "hour" }], FIELDS);
-    const duration = createColorScheme([{ field: "duration" }], FIELDS);
 
     expect(weekday.legend.map((entry) => entry.label)).toContain("Wednesday");
     expect(weekday.colorOf(event([], ["3"]))).toBe(weekday.legend[3]?.color);
     expect(hour.legend).toHaveLength(24);
-    expect(duration.legend.map((entry) => entry.key)).toContain("instant");
   });
 
   it("colors a period by its own text, the same each time, with no legend", () => {

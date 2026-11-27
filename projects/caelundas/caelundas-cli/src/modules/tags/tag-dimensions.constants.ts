@@ -227,3 +227,25 @@ export const NATURE_AND_HARMONIC_BY_PATTERN: Readonly<
   "T Square": ["Hard", 4],
   Yod: ["Neutral", 12],
 };
+
+const MINUTES_PER_HOUR = 60;
+const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR;
+const MINUTES_PER_YEAR = 365 * MINUTES_PER_DAY;
+
+/**
+ * Duration units, shortest first, with the minutes that reach each.
+ */
+export const DURATION_UNITS: readonly (readonly [
+  name: string,
+  minimumMinutes: number,
+])[] = [
+  ["Minutes", 1],
+  ["Hours", MINUTES_PER_HOUR],
+  ["Days", MINUTES_PER_DAY],
+  ["Weeks", 7 * MINUTES_PER_DAY],
+  ["Months", 30 * MINUTES_PER_DAY],
+  ["Quarters", 91 * MINUTES_PER_DAY],
+  ["Years", MINUTES_PER_YEAR],
+  ["Decades", 10 * MINUTES_PER_YEAR],
+  ["Centuries", 100 * MINUTES_PER_YEAR],
+];

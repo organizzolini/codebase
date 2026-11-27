@@ -234,7 +234,7 @@ describe(IngressStaysService, () => {
       "Taurus",
     ]);
     expect(decan?.summary).toMatch(/^☀️2️⃣♉︎ Sun in decan 2 Taurus$/u);
-    expect(half?.summary).toMatch(/^☀️📉♉︎ Sun in second half of Taurus$/u);
+    expect(half?.summary).toMatch(/^☀️⛰️♉︎ Sun in second half of Taurus$/u);
   });
 
   it("drops a stay with no length, as when an ingress lands on the window start", () => {

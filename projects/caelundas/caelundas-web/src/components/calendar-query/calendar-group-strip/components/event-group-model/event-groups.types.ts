@@ -7,11 +7,10 @@ import type { FilterOption } from "@codebase/presentation";
 import type { ReactNode } from "react";
 
 /**
- * A derived field's id: a time period or duration.
+ * A derived field's id: a time period.
  */
 export type DerivedGroupId =
   | "day"
-  | "duration"
   | "hour"
   | "month"
   | "quarter"

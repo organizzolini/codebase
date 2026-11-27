@@ -368,7 +368,7 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
     signs.map((sign) => {
       const name = `${sign.charAt(0).toUpperCase()}${sign.slice(1)}`;
       return [
-        `Sign / Sign / ${name}`,
+        `Sign / ${name}`,
         `The sign of ${SIGN_FIGURES[sign]}, a ${MODALITIES[sign].toLowerCase()} ${ELEMENT_BY_SIGN[sign].toLowerCase()} sign.`,
       ] as const;
     }),

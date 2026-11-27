@@ -48,7 +48,6 @@ describe("event group fields", () => {
         "day",
         "weekday",
         "hour",
-        "duration",
       ]);
       expect(
         fields.find(({ id }) => id === "tag:tag-aspect")?.levels,

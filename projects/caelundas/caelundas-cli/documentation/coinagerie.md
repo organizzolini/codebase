@@ -38,6 +38,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **cancer**: Zodiac sign Cancer, used as a sign name in ingress seed rows such as event-sun-ingress-cancer.
 - **capricorn**: Zodiac sign Capricorn, the sign name the ingresses service returns for longitude 270 degrees in the end-to-end test.
 - **cardinal**:
+- **century**:
 - **chiron**: The body Chiron, tracked alongside the planets in aspects and listed in the caelundas body constants.
 - **civil**: First of three twilight kinds, with nautical and astronomical, that the twilight module emits to mark dawn and dusk.
 - **conjunct**: The zero-degree aspect, written as an adjective the way every aspect is named, as in Sun conjunct Moon; conjunction is the noun.
@@ -51,6 +52,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **dawn**: The twilight moment when the Sun rises through a depression angle, opening civil, nautical, or astronomical morning light.
 - **daylight**: Span from civil dawn to civil dusk, treated as a separate interval in the twilight events alongside Night.
 - **db**: Part of the `@codebase/caelundas-db` package name, and the suffix of the `POSTGRES_DB` environment variable.
+- **decade**:
 - **decan**: One of three 10-degree thirds of a zodiac sign, numbered 1 to 3, whose ingresses the ingresses module detects.
 - **decile**: Harmonic aspect at 36 degrees, one tenth of a full circle, drawn with a perpendicular symbol.
 - **declination**: Angle north or south of the celestial equator, used as the star catalog's dec coordinate in night-sky figures.

@@ -21,6 +21,7 @@ export const TAG_MENU_EXCLUSIONS: Readonly<
     "Body",
     "Daily",
     "Daily / Time of Day",
+    "Duration",
     "Eclipse",
     "Eclipse / Frame",
     "Eclipse / Phase",

@@ -6,6 +6,7 @@ import {
   seedFilterTags,
   startEventsApplication,
 } from "../../../../../testing/events-application";
+import { tagRepository } from "../../../../../testing/tag-repository";
 
 import type {
   EventsApplication,
@@ -668,6 +669,45 @@ describe("events filtering end-to-end suite", () => {
         keep(structuredClone(filter) as unknown as GroupVariable),
       ).resolves.toStrictEqual([MARS_RETROGRADE, SUN_ENTERS_ARIES]);
     });
+  });
+
+  it("filters by a Duration tag like any other, a span carrying one unit", async () => {
+    expect.hasAssertions();
+
+    const repository = tagRepository(application.database.dataSource);
+    const duration = await repository.save(
+      repository.create({ name: "Duration", slug: "duration" }),
+    );
+    const hours = await repository.save(
+      repository.create({ name: "Hours", parent: duration, slug: "hours" }),
+    );
+    const days = await repository.save(
+      repository.create({ name: "Days", parent: duration, slug: "days" }),
+    );
+
+    for (const [name, unit] of [
+      [MOON_CONJUNCT_MARS, hours],
+      [MARS_RETROGRADE, days],
+    ] as const) {
+      await application.database.dataSource.query(
+        `insert into calendar_event_tags (calendar_event_id, tag_id)
+         select id, $2 from calendar_events where "name" = $1`,
+        [name, unit.id],
+      );
+    }
+    await application.database.dataSource.query(
+      "refresh materialized view tag_trees",
+    );
+
+    await expect(
+      keepWhere(tagRule(duration, "is_any_of", [hours.id])),
+    ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
+    await expect(
+      keepWhere(tagRule(duration, "is_any_of", [hours.id, days.id])),
+    ).resolves.toStrictEqual([MARS_RETROGRADE, MOON_CONJUNCT_MARS]);
+    await expect(
+      keepWhere(tagRule(duration, "is_none_of", [days.id])),
+    ).resolves.toContain(SUN_ENTERS_ARIES);
   });
 
   it("silently drops a rule whose only tag a menu leaves out, and keeps the tags it still offers", async () => {

@@ -159,10 +159,7 @@ function isDerivedFieldSelected(
     return selected.includes("name");
   }
 
-  if (
-    id === DERIVED_FIELD_IDS.duration ||
-    id === DERIVED_FIELD_IDS.durationMinutes
-  ) {
+  if (id === DERIVED_FIELD_IDS.durationMinutes) {
     return start && end;
   }
 

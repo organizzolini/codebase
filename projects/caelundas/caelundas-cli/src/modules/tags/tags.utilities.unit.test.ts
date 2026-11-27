@@ -36,6 +36,46 @@ function under(paths: readonly TagPath[], root: string): TagPath[] {
 
 describe("tags utilities", () => {
   describe(classifyEvent, () => {
+    it.each([
+      [0.5, "Minutes"],
+      [1, "Minutes"],
+      [59, "Minutes"],
+      [60, "Hours"],
+      [1439, "Hours"],
+      [1440, "Days"],
+      [10_079, "Days"],
+      [10_080, "Weeks"],
+      [43_199, "Weeks"],
+      [43_200, "Months"],
+      [131_039, "Months"],
+      [131_040, "Quarters"],
+      [525_599, "Quarters"],
+      [525_600, "Years"],
+      [5_255_999, "Years"],
+      [5_256_000, "Decades"],
+      [52_559_999, "Decades"],
+      [52_560_000, "Centuries"],
+    ])(
+      "gives a span of %s minutes the %s duration, and only that one",
+      (minutes, unit) => {
+        const end = moment.utc(AT).add(minutes, "minutes").toISOString();
+        const durations = under(classify(["Astronomy"], end), "Duration");
+
+        expect(durations).toStrictEqual([["Duration", unit]]);
+      },
+    );
+
+    it("gives an instant no duration", () => {
+      expect(under(classify(["Astronomy"]), "Duration")).toStrictEqual([]);
+    });
+
+    it("files an event under Progressive and a Duration together", () => {
+      const paths = classify(["Astronomy"], LATER);
+
+      expect(paths).toContainEqual(["Temporality", "Progressive"]);
+      expect(paths).toContainEqual(["Duration", "Days"]);
+    });
+
     it("falls back to a root named for an unmapped raw tag", () => {
       expect(classify(["moon phase"])).toContainEqual(["moon phase"]);
     });
@@ -105,7 +145,7 @@ describe("tags utilities", () => {
       expect(under(paths, "Body")).toStrictEqual([
         ["Body", "Planet", "Personal", "Mars"],
       ]);
-      expect(under(paths, "Sign")).toContainEqual(["Sign", "Sign", "Aries"]);
+      expect(under(paths, "Sign")).toContainEqual(["Sign", "Aries"]);
     });
 
     it.each([
@@ -118,7 +158,7 @@ describe("tags utilities", () => {
       (sign, element, modality, polarity) => {
         const paths = under(classify(["Ingress", "Sun", sign]), "Sign");
 
-        expect(paths).toContainEqual(["Sign", "Sign", sign]);
+        expect(paths).toContainEqual(["Sign", sign]);
         expect(paths).toContainEqual(["Sign", "Element", element]);
         expect(paths).toContainEqual(["Sign", "Modality", modality]);
         expect(paths).toContainEqual(["Sign", "Polarity", polarity]);
@@ -537,9 +577,9 @@ describe("tags utilities", () => {
   describe(tagRank, () => {
     it.each([
       [["Aspect"], 1],
-      [["Temporality"], 9],
-      [["Sign", "Sign", "Aries"], 1],
-      [["Sign", "Sign", "Pisces"], 12],
+      [["Temporality"], 10],
+      [["Sign", "Aries"], 1],
+      [["Sign", "Pisces"], 12],
       [["Body", "Luminary", "Moon"], 2],
       [["Daily", "Solar Cycle", "Nadir"], 4],
     ])("places %j at %i among its siblings", (path, rank) => {

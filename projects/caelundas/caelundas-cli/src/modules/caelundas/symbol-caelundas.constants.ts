@@ -159,16 +159,16 @@ export const symbolBySextupleAspect = {
 
 /** Maps stelliums (3+ planets together) to emoji. */
 export const symbolByStellium = {
-  "decuple stellium": "☀️",
-  "duodecuple stellium": "🔥",
-  "nonuple stellium": "🔆",
+  "decuple stellium": "❇️",
+  "duodecuple stellium": "🎆",
+  "nonuple stellium": "✳️",
   "octuple stellium": "✴️",
   "quadruple stellium": "🌟",
   "quintuple stellium": "⭐",
   "septuple stellium": "🌠",
   "sextuple stellium": "💫",
   "triple stellium": "✨",
-  "undecuple stellium": "🌞",
+  "undecuple stellium": "🎇",
 } as const;
 
 // 🔁 Orbital Directions

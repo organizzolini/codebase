@@ -19,7 +19,6 @@ const DERIVED_FIELDS = [
   ["date", "Date"],
   ["weekday", "Weekday"],
   ["hour", "Hour"],
-  ["duration", "Duration"],
   ["duration-minutes", "Duration (minutes)"],
   ["text", "Text"],
 ];

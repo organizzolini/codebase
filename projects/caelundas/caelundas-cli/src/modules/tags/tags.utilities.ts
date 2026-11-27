@@ -2,7 +2,10 @@ import { bodyFromDisplayName, isSign } from "../caelundas/caelundas.types";
 
 import { TAG_EXTRA_PARENTS } from "./modules/tag-metadata/tag-metadata-parents.constants";
 import { TAG_CHILD_RANKS } from "./modules/tag-metadata/tag-metadata-rank.constants";
-import { SIGNS_BY_DIGNITY_BY_PLANET } from "./tag-dimensions.constants";
+import {
+  DURATION_UNITS,
+  SIGNS_BY_DIGNITY_BY_PLANET,
+} from "./tag-dimensions.constants";
 import {
   CONTEXT_TAG_MAPS,
   ECLIPSE_TYPE_NAMES,
@@ -29,6 +32,7 @@ export function classifyEvent(event: ClassifiableEvent): TagPath[] {
     ...[...rawTags].flatMap((rawTag) => mapRawTag(rawTag, maps)),
     ...ingressPaths(event, rawTags),
     ...eclipsePaths(rawTags),
+    ...durationPaths(event),
     [TAG_ROOT.temporality, isInstant(event) ? "Perfective" : "Progressive"],
   ]);
 }
@@ -106,6 +110,20 @@ function dignityPaths(rawTags: ReadonlySet<string>): TagPath[] {
   ];
 
   return [[TAG_ROOT.sign, "Dignity", dignity]];
+}
+
+/**
+ * The unit a span lasts, the largest of `DURATION_UNITS` it reaches, Minutes for less; an instant has none.
+ */
+function durationPaths(event: ClassifiableEvent): TagPath[] {
+  if (isInstant(event)) {
+    return [];
+  }
+
+  const minutes = (event.end.valueOf() - event.start.valueOf()) / 60_000;
+  const unit = DURATION_UNITS.findLast(([, minimum]) => minutes >= minimum);
+
+  return [[TAG_ROOT.duration, unit?.[0] ?? "Minutes"]];
 }
 
 /** An eclipse's kind, from the body eclipsed and the eclipse's type. */

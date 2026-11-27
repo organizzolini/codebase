@@ -95,7 +95,11 @@ aspect is in orb, the weeks a planet is retrograde.
 A perfective event is an instant: a boundary that starts or ends something, or
 a point inside it. A progressive event is the span between a start boundary and
 an end boundary. It classifies as `Temporality / Progressive`, and an instant as
-`Temporality / Perfective`.
+`Temporality / Perfective`. A progressive event also carries one `Duration` tag, the
+largest unit its length reaches (see `DURATION_UNITS` in `tags/tag-dimensions.constants.ts`):
+`Minutes` from 1 minute (a shorter span too), `Hours` from 60 minutes, `Days` from 24 hours,
+`Weeks` from 7 days, `Months` from 30 days, `Quarters` from 91 days, `Years` from 365 days,
+`Decades` from 3,650 days and `Centuries` from 36,500 days; an instant carries none.
 
 | Span                                             | From                                    | To                                 | Window edges |
 | ------------------------------------------------ | --------------------------------------- | ---------------------------------- | ------------ |
@@ -366,7 +370,7 @@ this project, about ten of them at most, since every filter, group and sort menu
 on them. A root groups what one module family detects with the attributes that
 travel with it, and a tag with several parents is carried as several paths on
 the event, not as a node with two parents, so an Aries event carries
-`Sign / Sign / Aries`, `Sign / Element / Fire`, `Sign / Modality /
+`Sign / Aries`, `Sign / Element / Fire`, `Sign / Modality /
 Cardinal` and `Sign / Polarity / Positive` side by side:
 
 | Root          | Its nodes                                                                                                                                                                                                                                                                               |
@@ -378,6 +382,7 @@ Cardinal` and `Sign / Polarity / Positive` side by side:
 | `Daily`       | The `Solar Cycle` and `Lunar Cycle` of a day, each with its `Rise`, `Set`, `Zenith` and `Nadir` (and the Moon's `Moon Up` span), its `Twilight` events and spans, and `Time of Day`                                                                                                     |
 | `Planetary`   | `Direction` (stations and retrograde periods), `Phase` (`Mercurian`, `Venusian` and `Martian`) and `Synodic Stage`, a node for each of `Mercury`, `Venus` and `Mars` holding that planet's own stages (`Widening`, `Closing` and so on, one tag a planet, so planets share stage names) |
 | `Eclipse`     | `Solar` and `Lunar` by type (`Total`, `Partial`, `Annular`), with their `Frame` (`Geocentric` or `Topocentric`) and `Phase`                                                                                                                                                             |
+| `Duration`    | `Minutes`, `Hours`, `Days`, `Weeks`, `Months`, `Quarters`, `Years`, `Decades` and `Centuries`: the largest unit a span reaches (1 minute, 60 minutes, 24 hours, 7 days, 30 days, 91 days, 365 days, 3,650 days, 36,500 days), none for an instant                                       |
 | `Temporality` | `Perfective`, an instant in time, or `Progressive`, progressing over a duration of time                                                                                                                                                                                                 |
 
 Mars is full at opposition rather than at a superior conjunction, so its full

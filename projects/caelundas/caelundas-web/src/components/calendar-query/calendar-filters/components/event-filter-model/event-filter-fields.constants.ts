@@ -6,7 +6,6 @@ import {
   DATE_RANGE_EDITOR,
   DERIVED_FIELD_IDS,
   DERIVED_OPERATORS,
-  DURATION_BUCKETS,
   NUMBER_OPERATORS,
   TAG_OPERATORS,
   WEEKDAY_LABELS,
@@ -161,20 +160,6 @@ export const DERIVED_FIELDS: readonly EventFilterField[] = [
     label: "Hour",
     operators: NUMBER_FIELD_OPERATORS,
     type: "number",
-  },
-  {
-    defaultOperator: DERIVED_OPERATORS.isAnyOf,
-    description:
-      "How long an event lasts, in steps: an instant, minutes, hours, days, weeks or months",
-    icon: createElement(TagIcon, { name: "timer" }),
-    id: DERIVED_FIELD_IDS.duration,
-    label: "Duration",
-    operators: SET_OPERATORS,
-    options: DURATION_BUCKETS.map((bucket) => ({
-      label: bucket.label,
-      value: bucket.value,
-    })),
-    type: "multiselect",
   },
   {
     defaultOperator: NUMBER_OPERATORS.gte,

@@ -11,21 +11,7 @@ export const MAXIMUM_GROUP_LEVELS = 16;
 export const MAXIMUM_GROUP_DEPTH = 16;
 
 /**
- * The ids of the fields derived from each event's start or duration.
- */
-export const DERIVED_GROUP_IDS = {
-  day: "day",
-  duration: "duration",
-  hour: "hour",
-  month: "month",
-  quarter: "quarter",
-  week: "week",
-  weekday: "weekday",
-  year: "year",
-} as const;
-
-/**
- * Derived fields in picker order: longest periods, then duration.
+ * Derived fields in picker order, longest periods first.
  */
 export const DERIVED_GROUP_ORDER: readonly DerivedGroupId[] = [
   "year",
@@ -35,7 +21,6 @@ export const DERIVED_GROUP_ORDER: readonly DerivedGroupId[] = [
   "day",
   "weekday",
   "hour",
-  "duration",
 ];
 
 /**
@@ -43,7 +28,6 @@ export const DERIVED_GROUP_ORDER: readonly DerivedGroupId[] = [
  */
 export const DERIVED_GROUP_ICONS: Readonly<Record<DerivedGroupId, string>> = {
   day: "calendar-1",
-  duration: "timer",
   hour: "clock",
   month: "calendar-days",
   quarter: "calendar-range",
@@ -57,7 +41,6 @@ export const DERIVED_GROUP_ICONS: Readonly<Record<DerivedGroupId, string>> = {
  */
 export const DERIVED_GROUP_LABELS: Readonly<Record<DerivedGroupId, string>> = {
   day: "Day",
-  duration: "Duration",
   hour: "Hour",
   month: "Month",
   quarter: "Quarter",
@@ -73,7 +56,6 @@ export const DERIVED_GROUP_DESCRIPTIONS: Readonly<
   Record<DerivedGroupId, string>
 > = {
   day: "The day an event starts on",
-  duration: "How long an event lasts, from an instant to months",
   hour: "The hour of the day an event starts in",
   month: "The month an event starts in",
   quarter: "The quarter of the year an event starts in",

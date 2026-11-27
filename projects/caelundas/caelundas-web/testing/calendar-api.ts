@@ -5,7 +5,6 @@ import {
   timelineScaleSchema,
 } from "../src/components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { getViewWindows } from "../src/components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
-import { DURATION_BUCKETS } from "../src/components/calendar-query/calendar-filters/components/event-filter-model/event-filters.constants";
 import {
   mockDatasetQuery,
   mockEventMetricCatalogQuery,
@@ -690,21 +689,11 @@ function overlaps(
  */
 function readDerivedKey(event: FixtureEvent, field: string): string {
   const day = readLocalDay(event);
-  const minutes = Math.round(
-    (new Date(event.end).getTime() - new Date(event.start).getTime()) / 60_000,
-  );
   const date = new Date(`${day}T00:00:00Z`);
 
   switch (field) {
     case "day": {
       return day;
-    }
-    case "duration": {
-      return (
-        DURATION_BUCKETS.find(
-          (bucket) => minutes >= bucket.minimum && minutes <= bucket.maximum,
-        )?.value ?? ""
-      );
     }
     case "hour": {
       return readLocalHour(event);

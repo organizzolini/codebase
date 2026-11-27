@@ -103,7 +103,8 @@ describe("calendar-view-strip utilities", () => {
           id: "zodiac",
           name: "Sign",
           values: [
-            { count: 1, depth: 1, id: "sign", name: "Sign", path: "Sign" },
+            { count: 1, depth: 1, id: "aries", name: "Aries", path: "Aries" },
+            { count: 1, depth: 1, id: "fire", name: "Fire", path: "Fire" },
           ],
         },
         {
@@ -116,7 +117,7 @@ describe("calendar-view-strip utilities", () => {
 
       expect(signs?.id).toBe("body-signs");
       expect(signs?.group).toStrictEqual([
-        { field: "tag:zodiac", parent: "sign" },
+        { field: "tag:zodiac", tags: ["aries"] },
         { field: "tag:body" },
       ]);
     });

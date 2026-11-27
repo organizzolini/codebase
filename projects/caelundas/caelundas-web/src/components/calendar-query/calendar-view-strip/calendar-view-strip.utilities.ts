@@ -130,6 +130,13 @@ function resolveGroup(
   const group: EventGroupLevel[] = [];
 
   for (const reference of definition.group) {
+    const picked = resolvePickedTags(reference, facets);
+
+    if (picked !== undefined) {
+      group.push(picked);
+      continue;
+    }
+
     const found = resolveReference(reference, facets);
 
     if (found !== undefined) {
@@ -145,6 +152,27 @@ function resolveGroup(
 }
 
 // 🌎 Public Functions
+
+/** The level of one group for each tag a reference lists by paths, when the data has any of them. */
+function resolvePickedTags(
+  reference: Readonly<ViewLevelReference>,
+  facets: readonly EventFacet[],
+): EventGroupLevel | undefined {
+  const facet = findRoot(facets, reference.root);
+  const tags: string[] = [];
+
+  for (const path of reference.paths ?? []) {
+    const tag = facet === undefined ? undefined : findTag(facet, path);
+
+    if (tag !== undefined) {
+      tags.push(tag.id);
+    }
+  }
+
+  return facet === undefined || tags.length === 0
+    ? undefined
+    : { field: `${TAG_FIELD_PREFIX}${facet.id}`, tags };
+}
 
 /** What a level or sort reference names: its root's field id and the tag id of its path, when it has one. */
 function resolveReference(

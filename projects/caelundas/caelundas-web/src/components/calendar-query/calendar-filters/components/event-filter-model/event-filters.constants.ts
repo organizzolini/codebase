@@ -17,7 +17,6 @@ export const TAG_OPERATORS = {
  */
 export const DERIVED_FIELD_IDS = {
   date: "date",
-  duration: "duration",
   durationMinutes: "duration-minutes",
   hour: "hour",
   text: "text",
@@ -45,28 +44,6 @@ export const DERIVED_OPERATORS = {
   notBetween: "not_between",
   notContains: "not_contains",
 } as const;
-
-/**
- * The duration buckets, each a closed range of whole minutes.
- */
-export const DURATION_BUCKETS: readonly {
-  label: string;
-  maximum: number;
-  minimum: number;
-  value: string;
-}[] = [
-  { label: "Instant", maximum: 0, minimum: 0, value: "instant" },
-  { label: "Minutes", maximum: 59, minimum: 1, value: "minutes" },
-  { label: "Hours", maximum: 1439, minimum: 60, value: "hours" },
-  { label: "Days", maximum: 10_079, minimum: 1440, value: "days" },
-  { label: "Weeks", maximum: 43_199, minimum: 10_080, value: "weeks" },
-  {
-    label: "Months",
-    maximum: Number.MAX_SAFE_INTEGER,
-    minimum: 43_200,
-    value: "months",
-  },
-];
 
 /**
  * The days of the week, numbered from Sunday, the API's numbering.

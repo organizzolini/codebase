@@ -1,5 +1,4 @@
 import {
-  DURATION_BUCKETS,
   TAG_FIELD_PREFIX,
   WEEKDAY_LABELS,
 } from "../../../../calendar-query/calendar-filters/components/event-filter-model/event-filters.constants";
@@ -162,19 +161,12 @@ function hashColor(key: string): string {
 }
 
 /**
- * The values of a derived field known ahead, each with the next color: weekdays, hours and duration buckets; periods have too many to list.
+ * The values of a derived field known ahead, each with the next color: weekdays and hours; periods have too many to list.
  */
 function listValues(field: EventGroupField): ColorLegendEntry[] {
   const keys: { key: string; label: string }[] = [];
 
   switch (field.id) {
-    case "duration": {
-      for (const bucket of DURATION_BUCKETS) {
-        keys.push({ key: bucket.value, label: bucket.label });
-      }
-
-      break;
-    }
     case "hour": {
       for (const hour of HOURS) {
         keys.push({ key: hour, label: formatDerivedKey("hour", hour) });

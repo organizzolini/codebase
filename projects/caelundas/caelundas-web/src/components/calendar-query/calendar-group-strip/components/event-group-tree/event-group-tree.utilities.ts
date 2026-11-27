@@ -4,11 +4,9 @@ import {
 } from "../event-group-model/event-group-fields.constants";
 import { formatDerivedKey } from "../event-group-model/event-group-labels.utilities";
 import { compareNatural } from "../event-group-model/event-group-order.utilities";
-import { DERIVED_GROUP_IDS } from "../event-group-model/event-groups.constants";
 
 import { measureGroup, sortGroupEvents } from "./event-group-sort.utilities";
 import {
-  DURATION_RANKS,
   NO_GROUP_RANK,
   PATH_SEPARATOR,
   SORT_SIGNS,
@@ -201,12 +199,7 @@ function describeGroup(
     };
   }
 
-  const rank =
-    context.field === DERIVED_GROUP_IDS.duration
-      ? (DURATION_RANKS.get(groupKey.key) ?? "-1")
-      : groupKey.key;
-
-  return { label: heading, path: [heading], rank };
+  return { label: heading, path: [heading], rank: groupKey.key };
 }
 
 /**

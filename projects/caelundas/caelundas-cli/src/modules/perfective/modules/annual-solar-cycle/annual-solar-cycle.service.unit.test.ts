@@ -617,7 +617,7 @@ describe(AnnualSolarCycleService, () => {
         spanNames([
           point("Vernal Equinox", "2026-03-20T14:46:00Z", "🌸"),
           point("First Hexadecan", "2026-04-12T00:00:00Z", "🌳"),
-          point("Beltane", "2026-05-05T00:00:00Z", "🐦‍🔥"),
+          point("Beltane", "2026-05-05T00:00:00Z", "🌼"),
         ]),
       ).toStrictEqual([
         "Post-Vernal Equinox (Vernal Equinox to First Hexadecan)",
@@ -664,7 +664,7 @@ describe(AnnualSolarCycleService, () => {
       expect(
         spanNames([
           point("Vernal Equinox", "2026-03-20T00:00:00Z", "🌸"),
-          point("Beltane", "2026-05-05T00:00:00Z", "🐦‍🔥"),
+          point("Beltane", "2026-05-05T00:00:00Z", "🌼"),
         ]),
       ).toStrictEqual([]);
     });

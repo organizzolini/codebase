@@ -23,11 +23,8 @@ export const HALF_TAG_BY_HALF = {
   "2": "After Peak",
 } as const;
 
-/** Symbol of each half: climbing to the peak, then past it. */
-export const HALF_SYMBOL_BY_HALF = {
-  "1": "📈",
-  "2": "📉",
-} as const;
+/** Symbol of a sign's peak, shared by its ingress and both halves' stays. */
+export const PEAK_SYMBOL = "⛰️";
 
 /** Minutes between one search probe and the next. */
 export const SIGN_SEARCH_STEP_MINUTES = 1440;

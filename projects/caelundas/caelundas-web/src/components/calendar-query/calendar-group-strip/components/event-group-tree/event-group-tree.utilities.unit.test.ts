@@ -153,31 +153,6 @@ describe("event group tree", () => {
       expect(aspect?.id).toBe("/0:tag-conjunct");
     });
 
-    it("orders derived groups in time", async () => {
-      const tree = await group([{ field: "duration" }]);
-
-      expect(summarize(tree)).toStrictEqual(["Instant 5", "Weeks 1"]);
-    });
-
-    it("sorts a duration key no bucket names before the buckets", async () => {
-      serveCalendarApi();
-
-      const [first] = await findEvents({ period: WINDOW });
-      const odd = { key: "eons", label: null, path: null };
-
-      expect(
-        first === undefined
-          ? []
-          : summarize(
-              buildEventGroups(
-                [{ ...first, groups: [[odd]] }],
-                [{ field: "duration" }],
-                fields,
-              ),
-            ),
-      ).toStrictEqual(["eons 1"]);
-    });
-
     it("puts events read without keys in a field's last group", async () => {
       serveCalendarApi();
 
@@ -224,8 +199,6 @@ describe("event group tree", () => {
       { expected: "Wednesday", field: "weekday", key: "3" },
       { expected: "12 AM", field: "hour", key: "00" },
       { expected: "11 PM", field: "hour", key: "23" },
-      { expected: "Hours", field: "duration", key: "hours" },
-      { expected: "eons", field: "duration", key: "eons" },
       { expected: "9", field: "weekday", key: "9" },
       { expected: "other", field: "other", key: "other" },
     ])(

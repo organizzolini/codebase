@@ -47,6 +47,10 @@ export interface ViewLevelReference {
    * The tag's names beneath its root, joined by " / "; the root's own tags when absent.
    */
   path?: string;
+  /**
+   * Tags of the root, by path, to group by one group each, in place of the children of one tag.
+   */
+  paths?: readonly string[];
   root: string;
 }
 

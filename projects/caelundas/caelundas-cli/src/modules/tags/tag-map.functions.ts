@@ -137,7 +137,7 @@ export function signPaths(sign: Sign): readonly TagPath[] {
   const element = ELEMENT_BY_SIGN[sign];
 
   return [
-    [TAG_ROOT.sign, "Sign", _.startCase(sign)],
+    [TAG_ROOT.sign, _.startCase(sign)],
     [TAG_ROOT.sign, "Element", element],
     [TAG_ROOT.sign, "Modality", MODALITY_BY_SIGN[sign]],
     [TAG_ROOT.sign, "Polarity", POLARITY_BY_ELEMENT[element]],

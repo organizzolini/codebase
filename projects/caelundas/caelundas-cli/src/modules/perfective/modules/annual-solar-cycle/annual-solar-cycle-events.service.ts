@@ -176,7 +176,7 @@ export class AnnualSolarCycleEventsService {
     return this.buildSolarCycleEvent({
       date,
       description: "Beltane",
-      summary: "🐦‍🔥 Beltane",
+      summary: "🌼 Beltane",
       tags: [...ANNUAL_SOLAR_CYCLE_BASE_TAGS, "Beltane"],
     });
   }

@@ -166,8 +166,8 @@ describe("column scope utilities", () => {
     });
 
     it("offers the duration fields only when both Start and End are selected", () => {
-      expect(ids(["start", "end"])).toContain("duration");
-      expect(ids(["start"])).not.toContain("duration");
+      expect(ids(["start", "end"])).toContain("duration-minutes");
+      expect(ids(["start"])).not.toContain("duration-minutes");
     });
   });
 

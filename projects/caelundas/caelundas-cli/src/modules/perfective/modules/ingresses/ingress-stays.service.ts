@@ -14,9 +14,9 @@ import {
 import {
   DECAN_TAG_BY_DECAN,
   DECAN_ZONES,
-  HALF_SYMBOL_BY_HALF,
   HALF_TAG_BY_HALF,
   HALF_ZONES,
+  PEAK_SYMBOL,
   ZONE_STAY_KINDS,
 } from "./ingresses.constants";
 import { SignTransitsService } from "./sign-transits.service";
@@ -86,7 +86,7 @@ export class IngressStaysService {
       description,
       end: stay.end,
       start: stay.start,
-      summary: `${symbolByBody[body]}${HALF_SYMBOL_BY_HALF[half]}${symbolBySign[sign]} ${description}`,
+      summary: `${symbolByBody[body]}${PEAK_SYMBOL}${symbolBySign[sign]} ${description}`,
       tags: [
         "Astronomy",
         "Astrology",

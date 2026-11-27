@@ -14,16 +14,32 @@ export const CHIP_CLASS_NAME = "bg-background dark:bg-input/30";
 /** The icon of the chip while the link matches no view. */
 export const CUSTOM_VIEW_ICON = "pencil-ruler";
 
+/** The twelve signs in order, which Body Signs keeps. */
+const SIGNS: readonly string[] = [
+  "Aries",
+  "Taurus",
+  "Gemini",
+  "Cancer",
+  "Leo",
+  "Virgo",
+  "Libra",
+  "Scorpio",
+  "Sagittarius",
+  "Capricorn",
+  "Aquarius",
+  "Pisces",
+];
+
 /** The views, in menu order. */
 export const VIEWS: readonly ViewDefinition[] = [
   {
     description: "Which sign each body is in: sign ingresses and transits.",
-    filter: [{ paths: ["Sign"], root: "Sign" }],
-    group: [{ path: "Sign", root: "Sign" }, { root: "Body" }],
+    filter: [{ paths: SIGNS, root: "Sign" }],
+    group: [{ paths: SIGNS, root: "Sign" }, { root: "Body" }],
     icon: "stars",
     id: "body-signs",
     name: "Body Signs",
-    sort: [{ path: "Sign", root: "Sign" }, { root: "Body" }],
+    sort: [{ root: "Sign" }, { root: "Body" }],
   },
   {
     description:

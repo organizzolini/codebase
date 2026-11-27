@@ -231,8 +231,8 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   each tag ticked becomes a group of the events under it, so several tags are
   one pick; with none ticked it groups by the root's first level, and a link
   from before tags could be picked still names a `depth`. A level may instead
-  be a year, quarter, month, week, day, weekday, hour, or duration bucket
-  read in each event's own zone.
+  be a year, quarter, month, week, day, weekday, hour, or hour
+  read in each event's own zone; how long an event lasts is the Duration tag root, whose units (Minutes to Centuries) are picked like any tag, and a link from before that names the retired duration bucket field has the level dropped.
   `toEventGroupingInput` in `src/components/calendar-query/calendar-group-by/` turns a grouping
   into the query's grouping input, and the API returns each event's group keys
   in its `groups`; `buildEventGroups` builds the tree from them. An event
@@ -332,7 +332,7 @@ A search lists every match flat, folders left out. Each tag's count is of the ev
   it, so a new root needs no code change. A root whose tags all end in a
   number, such as Aspect Harmonic, offers comparisons (equals, greater and
   less than, between) on that number instead of a pick list. Date range,
-  weekday, hour, duration bucket, duration in minutes, temporality, and text
+  weekday, hour, duration in minutes, temporality, and text
   search follow them; a tag root
   named like one of those is left to the derived field.
 - Date, weekday, and hour are read in each event's own zone by the API, from

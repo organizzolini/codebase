@@ -7,6 +7,7 @@ export const TAG_ROOT = {
   aspect: "Aspect",
   body: "Body",
   daily: "Daily",
+  duration: "Duration",
   eclipse: "Eclipse",
   lunar: "Lunar",
   planetary: "Planetary",

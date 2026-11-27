@@ -1,6 +1,7 @@
 import { iconNames } from "lucide-react/dynamic";
 import { describe, expect, it } from "vitest";
 
+import { DURATION_UNITS } from "../../tag-dimensions.constants";
 import { CONTEXT_TAG_MAPS, SHARED_TAG_MAP } from "../../tag-map.constants";
 
 import { TAG_MENU_EXCLUSIONS } from "./tag-metadata-flags.constants";
@@ -51,6 +52,10 @@ function generatedPaths(): string[][] {
     add(["Eclipse", "Lunar", type]);
   }
 
+  for (const [unit] of DURATION_UNITS) {
+    add(["Duration", unit]);
+  }
+
   add(["Temporality", "Perfective"]);
   add(["Temporality", "Progressive"]);
 
@@ -60,7 +65,7 @@ function generatedPaths(): string[][] {
 describe("tag metadata", () => {
   describe(tagMenuFlags, () => {
     it("offers a tag in every menu unless it is excluded", () => {
-      expect(tagMenuFlags(["Sign", "Sign", "Aries"])).toStrictEqual({
+      expect(tagMenuFlags(["Sign", "Aries"])).toStrictEqual({
         isFilterable: true,
         isGroupable: true,
         isSelectable: true,
@@ -131,7 +136,7 @@ describe("tag metadata", () => {
         ["Planetary", "Synodic Stage"],
         ["Solar", "Annual Cycle"],
         ["Sign", "Ingress"],
-        ["Sign", "Sign"],
+        ["Sign", "Aries"],
       ].filter((path) => !tagMenuFlags(path).isFilterable);
 
       expect(named).toStrictEqual([]);
