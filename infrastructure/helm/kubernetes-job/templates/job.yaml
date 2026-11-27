@@ -53,7 +53,7 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ required (printf "image.tag is required (no release of %s yet)" .Values.image.repository) .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.command }}
           command:
@@ -94,12 +94,8 @@ spec:
         {{- end }}
         {{- if .Values.persistence.enabled }}
         - name: data
-          {{- if eq .Values.persistence.type "emptyDir" }}
-          emptyDir: {}
-          {{- else }}
           persistentVolumeClaim:
             claimName: {{ include "kubernetes-job.fullname" . }}
-          {{- end }}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

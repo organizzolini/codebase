@@ -48,24 +48,14 @@ jobs:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBECONFIG }}
 
-      # `helm template` shows the image the release would run. The chart
-      # renders `repository:tag`, so an empty tag ends in a colon.
+      # A green run means the Job was created, not that the ingestion finished: the step summary lists the commands
+      # that follow it. With no release yet the chart fails on its empty image tag, saying so.
       - name: 🚀 Install caelundas-cli Release
         env:
           RELEASE: caelundas-cli-${{ github.run_id }}
         run: |
-          set -euo pipefail
-          chart_arguments=(
-            infrastructure/helm/kubernetes-job -n caelundas
-            -f infrastructure/helm/kubernetes-job/values/base.yaml
-            -f infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml
+          helm install "$RELEASE" infrastructure/helm/kubernetes-job -n caelundas \
+            -f infrastructure/helm/kubernetes-job/values/base.yaml \
+            -f infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml \
             --set-file envFile="$RUNNER_TEMP/caelundas-cli.env"
-          )
-          image="$(helm template "$RELEASE" "${chart_arguments[@]}" --show-only templates/job.yaml \
-            | sed -n 's/^ *image: "\(.*\)"$/\1/p')"
-          if [[ "$image" != *:?* ]]; then
-            echo "::error::no caelundas-cli release yet"
-            exit 1
-          fi
-          helm install "$RELEASE" "${chart_arguments[@]}"
           helm get notes "$RELEASE" -n caelundas >> "$GITHUB_STEP_SUMMARY"

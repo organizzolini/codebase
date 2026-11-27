@@ -1,4 +1,4 @@
-{{- if and .Values.persistence.enabled (ne .Values.persistence.type "emptyDir") }}
+{{- if .Values.persistence.enabled }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

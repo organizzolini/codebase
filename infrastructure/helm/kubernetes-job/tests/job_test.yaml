@@ -6,6 +6,8 @@ templates:
   - templates/NOTES.txt
 values:
   - ../values/base.yaml
+set:
+  image.tag: 1.0.0
 tests:
   - it: renders a plain Job with a backoff limit by default
     asserts:
@@ -16,18 +18,6 @@ tests:
         hasDocuments:
           count: 1
 
-  - it: mounts an emptyDir when persistence.type is emptyDir
-    set:
-      persistence.type: emptyDir
-    asserts:
-      - template: templates/job.yaml
-        equal:
-          path: spec.template.spec.volumes[0].emptyDir
-          value: {}
-      - template: templates/pvc.yaml
-        hasDocuments:
-          count: 0
-
   - it: sets priorityClassName when given
     set:
       priorityClassName: batch-low
@@ -37,22 +27,21 @@ tests:
           path: spec.template.spec.priorityClassName
           value: batch-low
 
-  - it: renders an empty tag as `repository:` rather than the chart appVersion
+  - it: fails to render while the image tag is empty
     values:
       - ../values/base.yaml
       - ../values/caelundas-cli.yaml
+    set:
+      image.tag: ""
     template: templates/job.yaml
     asserts:
-      - equal:
-          path: spec.template.spec.containers[0].image
-          value: "ghcr.io/organizzolini/caelundas-cli:"
+      - failedTemplate:
+          errorMessage: image.tag is required (no release of ghcr.io/organizzolini/caelundas-cli yet)
 
   - it: caelundas-cli values render a staging job
     values:
       - ../values/base.yaml
       - ../values/caelundas-cli.yaml
-    set:
-      image.tag: 1.0.0
     template: templates/job.yaml
     asserts:
       - equal:

@@ -7,8 +7,7 @@ replicaCount: 1
 image:
   repository: my-application
   pullPolicy: IfNotPresent
-  # The image tag. Empty renders `repository:`, which no cluster can pull, so a
-  # caller checks for it before installing.
+  # The image tag, required: rendering fails while it is empty.
   tag: ""
 
 imagePullSecrets: []
@@ -78,8 +77,6 @@ args: []
 
 persistence:
   enabled: true
-  # persistentVolumeClaim binds a PVC; emptyDir mounts scratch space and creates no PVC
-  type: persistentVolumeClaim
   storageClassName: standard
   accessMode: ReadWriteOnce
   size: 1Gi
