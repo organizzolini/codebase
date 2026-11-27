@@ -31,14 +31,14 @@
         "helm-releases": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-releases"
         },
+        "image-tags": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts image-tags"
+        },
         "link-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts link-packages"
         },
         "publish-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts publish-packages"
-        },
-        "release-images": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts release-images"
         },
         "tag-codebase": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts tag-codebase"

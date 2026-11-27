@@ -16,7 +16,7 @@ const COMMAND_NAMES = [
   "helm-releases",
   "link-packages",
   "publish-packages",
-  "release-images",
+  "image-tags",
   "tag-codebase",
   "tag-packages",
   "version-packages",

@@ -5,31 +5,31 @@ import { LoggerService } from "@codebase/observability";
 
 import { describeError } from "../process-runner/process-runner.utilities";
 
-import { ReleaseImagesService } from "./release-images.service";
+import { ImageTagsService } from "./image-tags.service";
 
 /**
- * Builds and pushes the Caelundas images and writes their tags into the Helm
- * values, as semantic-release's `prepareCmd`.
+ * Writes the release version as the image tag in the Helm values, after
+ * semantic-release's `prepareCmd` pushed the images.
  *
- * Takes the release version. `DRY_RUN=1` runs no build or push. Exits 1 on
- * any failure.
+ * Takes the release version. `DRY_RUN=1` writes nothing. Exits 1 on any
+ * failure.
  */
 @Command({
   arguments: "<version>",
   description:
-    "Build and push the Caelundas images and write their tags into the Helm values",
-  name: "release-images",
+    "Write the release version as the image tag in the Helm values files",
+  name: "image-tags",
 })
 @Injectable()
-export class ReleaseImagesCommand extends CommandRunner {
+export class ImageTagsCommand extends CommandRunner {
   // 🏗 Dependency Injection
 
   constructor(
-    private readonly releaseImagesService: ReleaseImagesService,
+    private readonly imageTagsService: ImageTagsService,
     private readonly logger: LoggerService,
   ) {
     super();
-    this.logger.setContext(ReleaseImagesCommand.name);
+    this.logger.setContext(ImageTagsCommand.name);
   }
 
   // 🔐 Private Fields
@@ -40,14 +40,14 @@ export class ReleaseImagesCommand extends CommandRunner {
 
   // 🌎 Public Methods
 
-  /** Releases the images, and exits with the outcome. */
+  /** Writes the tags, and exits with the outcome. */
   public async run(passedParameters: string[]): Promise<void> {
     const [version = ""] = passedParameters;
 
     await Promise.resolve();
 
     try {
-      this.releaseImagesService.run(version);
+      this.imageTagsService.run(version);
     } catch (error: unknown) {
       console.error(describeError(error));
       process.exitCode = 1;

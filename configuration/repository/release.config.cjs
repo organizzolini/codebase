@@ -72,12 +72,12 @@ module.exports = {
       },
     ],
 
-    // Builds and pushes the Caelundas images, then writes their tags into the Helm values the next step commits
+    // Pushes every image with a `docker` target, then writes the tag into the Helm values the next step commits
     [
       "@semantic-release/exec",
       {
         prepareCmd:
-          "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts release-images '${nextRelease.version}'",
+          "IMAGE_TAG='${nextRelease.version}' pnpm exec nx run-many --target=docker --configuration=push --parallel=1 --nxBail && NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts image-tags '${nextRelease.version}'",
       },
     ],
 
@@ -109,7 +109,7 @@ module.exports = {
           "projects/meanderaw/*/documentation/entity-relationship-diagram.md",
           "projects/ic-suite/*/*/CHANGELOG.md",
           "projects/ic-suite/*/*/package.json",
-          // Image tags `@semantic-release/exec` wrote, so Argo CD syncs to images that exist. The same glob picks the files in release-images.
+          // Image tags `@semantic-release/exec` wrote, so Argo CD syncs to images that exist. The same glob picks the files in image-tags.
           "infrastructure/helm/*/values/*.yaml",
         ],
         message: "chore(release): 🔖 tag codebase ${nextRelease.version}",

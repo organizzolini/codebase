@@ -6,7 +6,7 @@ export const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[\w.\-]+)?$/v;
 /** Every Helm values file, which semantic-release also commits. */
 export const VALUES_GLOB = "infrastructure/helm/*/values/*.yaml";
 
-/** Where the images live; a name there is an Nx project's. */
+/** Where this repository's images live. */
 export const IMAGE_REPOSITORY_PREFIX = "ghcr.io/organizzolini/";
 
 /** Reports a version that cannot be a release's. */

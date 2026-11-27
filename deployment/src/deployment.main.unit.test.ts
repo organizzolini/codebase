@@ -2,9 +2,9 @@ import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { HelmReleasesModule } from "./modules/helm-releases/helm-releases.module";
+import type { ImageTagsModule } from "./modules/image-tags/image-tags.module";
 import type { LinkPackagesModule } from "./modules/link-packages/link-packages.module";
 import type { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
-import type { ReleaseImagesModule } from "./modules/release-images/release-images.module";
 import type { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
 import type { TagPackagesModule } from "./modules/tag-packages/tag-packages.module";
 import type { VersionPackagesModule } from "./modules/version-packages/version-packages.module";
@@ -23,7 +23,7 @@ const run = vi.fn<CommandFactoryRun>().mockResolvedValue(undefined);
 const loggerServiceMock = createMock<LoggerService>();
 const tagCodebaseModuleMock = createMock<TagCodebaseModule>();
 const versionPackagesModuleMock = createMock<VersionPackagesModule>();
-const releaseImagesModuleMock = createMock<ReleaseImagesModule>();
+const imageTagsModuleMock = createMock<ImageTagsModule>();
 const tagPackagesModuleMock = createMock<TagPackagesModule>();
 const publishPackagesModuleMock = createMock<PublishPackagesModule>();
 const helmReleasesModuleMock = createMock<HelmReleasesModule>();
@@ -76,9 +76,9 @@ vi.mock("./modules/publish-packages/publish-packages.module", () => ({
   },
 }));
 
-vi.mock("./modules/release-images/release-images.module", () => ({
-  ReleaseImagesModule: function ReleaseImagesModule() {
-    return releaseImagesModuleMock;
+vi.mock("./modules/image-tags/image-tags.module", () => ({
+  ImageTagsModule: function ImageTagsModule() {
+    return imageTagsModuleMock;
   },
 }));
 

@@ -5,18 +5,13 @@ import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { expectLoggerContext } from "@codebase/observability/testing";
-import {
-  createTemporaryDirectory,
-  FakeProcessRunner,
-  writeFileTree,
-} from "@codebase/testing";
+import { createTemporaryDirectory, writeFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TEMPORARY_ROOT } from "../../../testing/mocks";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
-import { ReleaseImagesCommand } from "./release-images.command";
-import { ReleaseImagesService } from "./release-images.service";
+import { ImageTagsCommand } from "./image-tags.command";
+import { ImageTagsService } from "./image-tags.service";
 
 const API_VALUES =
   "infrastructure/helm/kubernetes-deployment/values/caelundas-api.yaml";
@@ -27,25 +22,21 @@ const CLI_VALUES =
 const WEB_VALUES =
   "infrastructure/helm/kubernetes-deployment/values/caelundas-web.yaml";
 
-describe(ReleaseImagesCommand, () => {
+describe(ImageTagsCommand, () => {
   let workspace: string;
 
-  const moduleOptions = { mocks: [ReleaseImagesService] };
+  const moduleOptions = { mocks: [ImageTagsService] };
   const originalExitCode = process.exitCode;
 
-  /** Runs the command over a scripted runner with the given arguments. */
-  const runCommand = async (
-    runner: FakeProcessRunner,
-    parameters: string[],
-  ): Promise<void> => {
-    const { module } = await buildTestingModule(ReleaseImagesCommand, {
+  /** Runs the command with the given arguments. */
+  const runCommand = async (parameters: string[]): Promise<void> => {
+    const { module } = await buildTestingModule(ImageTagsCommand, {
       providers: [
-        ReleaseImagesService,
+        ImageTagsService,
         { provide: ConfigService, useValue: new ConfigService() },
-        { provide: ProcessRunnerService, useValue: runner },
       ],
     });
-    const subject = await module.resolve(ReleaseImagesCommand);
+    const subject = await module.resolve(ImageTagsCommand);
 
     await subject.run(parameters);
   };
@@ -74,26 +65,24 @@ describe(ReleaseImagesCommand, () => {
     expect.hasAssertions();
 
     const { instance } = await buildTestingModule(
-      ReleaseImagesCommand,
+      ImageTagsCommand,
       moduleOptions,
     );
 
-    expect(instance).toBeInstanceOf(ReleaseImagesCommand);
+    expect(instance).toBeInstanceOf(ImageTagsCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    await expectLoggerContext(ReleaseImagesCommand, moduleOptions);
+    await expectLoggerContext(ImageTagsCommand, moduleOptions);
   });
 
-  it("releases every image and exits 0", async () => {
+  it("tags every image and exits 0", async () => {
     expect.hasAssertions();
 
-    const runner = new FakeProcessRunner({});
-    await runCommand(runner, ["1.2.3"]);
+    await runCommand(["1.2.3"]);
 
-    expect(runner.streamed).toHaveLength(1);
     expect(fs.readFileSync(path.join(workspace, CLI_VALUES), "utf8")).toBe(
       "image:\n  repository: ghcr.io/organizzolini/caelundas-cli\n  tag: 1.2.3\n",
     );
@@ -103,8 +92,7 @@ describe(ReleaseImagesCommand, () => {
   it("exits 1 and says why when the version is missing", async () => {
     expect.hasAssertions();
 
-    const runner = new FakeProcessRunner({});
-    await runCommand(runner, []);
+    await runCommand([]);
 
     expect(console.error).toHaveBeenCalledExactlyOnceWith(
       '❌ "" is not a release version',

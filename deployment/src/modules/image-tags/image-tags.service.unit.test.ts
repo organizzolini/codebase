@@ -4,18 +4,13 @@ import path from "node:path";
 import { ConfigService } from "@nestjs/config";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import {
-  createTemporaryDirectory,
-  FakeProcessRunner,
-  writeFileTree,
-} from "@codebase/testing";
+import { createTemporaryDirectory, writeFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TEMPORARY_ROOT } from "../../../testing/mocks";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
-import { VALUES_GLOB } from "./release-images.constants";
-import { ReleaseImagesService } from "./release-images.service";
+import { VALUES_GLOB } from "./image-tags.constants";
+import { ImageTagsService } from "./image-tags.service";
 
 const API_VALUES =
   "infrastructure/helm/kubernetes-deployment/values/caelundas-api.yaml";
@@ -42,22 +37,13 @@ const VALUES = {
   [WEB_VALUES]: "image:\n  repository: ghcr.io/organizzolini/caelundas-web\n",
 };
 
-const PUSH =
-  "env IMAGE_TAG=2.0.0 pnpm exec nx run-many --target=docker:push --projects=caelundas-api,caelundas-cli,caelundas-web --parallel=1 --nxBail";
-
-describe(ReleaseImagesService, () => {
-  /** Builds the service over a scripted runner, with `DRY_RUN` as given. */
-  const buildService = async (
-    runner: FakeProcessRunner,
-    dryRun?: string,
-  ): Promise<ReleaseImagesService> => {
+describe(ImageTagsService, () => {
+  /** Builds the service with `DRY_RUN` as given. */
+  const buildService = async (dryRun?: string): Promise<ImageTagsService> => {
     vi.stubEnv("DRY_RUN", dryRun);
 
-    const { instance } = await buildTestingModule(ReleaseImagesService, {
-      providers: [
-        { provide: ConfigService, useValue: new ConfigService() },
-        { provide: ProcessRunnerService, useValue: runner },
-      ],
+    const { instance } = await buildTestingModule(ImageTagsService, {
+      providers: [{ provide: ConfigService, useValue: new ConfigService() }],
     });
 
     return instance;
@@ -83,39 +69,17 @@ describe(ReleaseImagesService, () => {
   it("resolves with its dependencies", async () => {
     expect.hasAssertions();
 
-    const { instance } = await buildTestingModule(ReleaseImagesService, {
-      mocks: [ConfigService, ProcessRunnerService],
+    const { instance } = await buildTestingModule(ImageTagsService, {
+      mocks: [ConfigService],
     });
 
-    expect(instance).toBeInstanceOf(ReleaseImagesService);
-  });
-
-  it("pushes every image in one run before writing any tag", async () => {
-    expect.hasAssertions();
-
-    const runner = new FakeProcessRunner({});
-    const atPush: string[] = [];
-
-    runner.effects[PUSH] = () => {
-      atPush.push(read(API_VALUES), read(CLI_VALUES), read(WEB_VALUES));
-    };
-
-    const service = await buildService(runner);
-
-    service.run("2.0.0");
-
-    expect(runner.lines).toStrictEqual([PUSH]);
-    expect(atPush).toStrictEqual([
-      VALUES[API_VALUES],
-      VALUES[CLI_VALUES],
-      VALUES[WEB_VALUES],
-    ]);
+    expect(instance).toBeInstanceOf(ImageTagsService);
   });
 
   it("writes the tag into each file that names an image, keeping comments", async () => {
     expect.hasAssertions();
 
-    const service = await buildService(new FakeProcessRunner({}));
+    const service = await buildService();
 
     service.run("2.0.0");
 
@@ -132,7 +96,7 @@ describe(ReleaseImagesService, () => {
     expect(read(THIRD_PARTY_VALUES)).toBe(VALUES[THIRD_PARTY_VALUES]);
   });
 
-  it("releases a fourth image from its values file alone", async () => {
+  it("tags a fourth image from its values file alone", async () => {
     expect.hasAssertions();
 
     const fourth =
@@ -142,39 +106,24 @@ describe(ReleaseImagesService, () => {
       [fourth]: "image:\n  repository: ghcr.io/organizzolini/other\n",
     });
 
-    const runner = new FakeProcessRunner({});
-    const service = await buildService(runner);
+    const service = await buildService();
 
     service.run("2.0.0");
 
-    expect(runner.lines[0]).toContain(
-      "--projects=caelundas-api,caelundas-cli,caelundas-web,other ",
-    );
     expect(read(fourth)).toContain("tag: 2.0.0");
   });
 
-  it("prints the push on a dry run, still writing the tags", async () => {
+  it("prints the files it would write on a dry run, writing nothing", async () => {
     expect.hasAssertions();
 
-    const runner = new FakeProcessRunner({});
-    const service = await buildService(runner, "1");
+    const service = await buildService("1");
 
     service.run("2.0.0");
 
-    expect(runner.streamed).toHaveLength(0);
-    expect(console.info).toHaveBeenCalledWith(`🌵 Dry run, would run: ${PUSH}`);
-    expect(read(CLI_VALUES)).toContain('tag: "2.0.0"');
-  });
-
-  it("writes no tag when the push fails", async () => {
-    expect.hasAssertions();
-
-    const runner = new FakeProcessRunner({}, 0, { [PUSH]: 1 });
-    const service = await buildService(runner);
-
-    expect(() => {
-      service.run("2.0.0");
-    }).toThrow(`${PUSH} exited 1`);
+    expect(console.info).toHaveBeenCalledWith(
+      `🌵 Dry run, would write image.tag 2.0.0 to ${CLI_VALUES}`,
+    );
+    expect(console.info).toHaveBeenCalledTimes(3);
     expect(read(API_VALUES)).toBe(VALUES[API_VALUES]);
     expect(read(CLI_VALUES)).toBe(VALUES[CLI_VALUES]);
     expect(read(WEB_VALUES)).toBe(VALUES[WEB_VALUES]);
@@ -191,25 +140,21 @@ describe(ReleaseImagesService, () => {
       { recursive: true },
     );
 
-    const runner = new FakeProcessRunner({});
-    const service = await buildService(runner);
+    const service = await buildService();
 
     expect(() => {
       service.run("2.0.0");
     }).toThrow("No Helm values file sets image.repository");
-    expect(runner.lines).toStrictEqual([]);
   });
 
   it("refuses a version that is not a release version", async () => {
     expect.hasAssertions();
 
-    const runner = new FakeProcessRunner({});
-    const service = await buildService(runner);
+    const service = await buildService();
 
     expect(() => {
       service.run("latest");
     }).toThrow('"latest" is not a release version');
-    expect(runner.lines).toStrictEqual([]);
   });
 
   it("commits the same glob semantic-release does", () => {
