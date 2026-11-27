@@ -12,7 +12,7 @@ variable "state_bucket" {
 variable "owner" {
   description = "Account or organization that owns the repository."
   type        = string
-  default     = "Organizzolini"
+  default     = "organizzolini"
 }
 
 variable "repository" {

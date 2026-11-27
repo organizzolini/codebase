@@ -1,10 +1,9 @@
-data "linode_lke_versions" "available" {}
-
 resource "linode_lke_cluster" "organizzolini" {
   label  = "organizzolini"
   region = var.region
-  # A conditional evaluates only the branch it takes, so a pinned version never reads the data source.
-  k8s_version = var.k8s_version != null ? var.k8s_version : reverse(sort([for v in data.linode_lke_versions.available.versions : v.id]))[0]
+  # Bump deliberately, with the Kubernetes version kubeconform and pluto check against
+  # (the `kubeconform` and `pluto` targets of the infrastructure project).
+  k8s_version = "1.35"
 
   control_plane {
     high_availability = false

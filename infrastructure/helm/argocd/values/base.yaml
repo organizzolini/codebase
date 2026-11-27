@@ -1,4 +1,4 @@
-# Default values for argocd-applications: one Argo CD Application per entry.
+# Default values for argocd: one Argo CD Application per entry.
 # Repository-backed entries use path and valueFiles. A valueFiles entry is relative to the chart path, or starts with $values/ for a file elsewhere in the repository (a project's own values), which makes the Application multi-source.
 repoURL: https://github.com/organizzolini/codebase.git
 targetRevision: main
@@ -82,7 +82,7 @@ applications:
   - name: postgres
     syncWave: 3
     namespace: organizzolini
-    path: infrastructure/helm/postgres
+    path: projects/common/persistence/infrastructure/helm/postgres
     valueFiles:
       - values/base.yaml
 

@@ -6,18 +6,18 @@
 
 ## Contents
 
-| Directory                                                | Purpose                                                           |
-| -------------------------------------------------------- | ----------------------------------------------------------------- |
-| [helm/kubernetes-job](helm/kubernetes-job)               | Helm chart for one-shot Jobs, such as the caelundas-cli ingestion |
-| [helm/kubernetes-deployment](helm/kubernetes-deployment) | Reusable Helm chart for long-running services                     |
-| [helm/postgres](helm/postgres)                           | Shared PostgreSQL on CloudNativePG, with PgBouncer and backups    |
-| [helm/cloudflared](helm/cloudflared)                     | Cloudflare Tunnel connector, routed from Cloudflare               |
-| [helm/argocd-applications](helm/argocd-applications)     | Argo CD app-of-apps tree, synced in waves, plus `batch-low`       |
-| [terraform/](terraform)                                  | Linode LKE (Kubernetes) cluster provisioning                      |
-| [terraform/openrouter](terraform/openrouter)             | OpenRouter workspace, API key, guardrail, and ranked-model preset |
-| [terraform/github](terraform/github)                     | GitHub repository settings, `main` ruleset, and Actions variables |
-| [terraform/linode](terraform/linode)                     | The Object Storage bucket that holds Terraform state              |
-| [terraform/organizzolini](terraform/organizzolini)       | LKE cluster, Cloudflare tunnel, namespaces, secrets, and Argo CD  |
+| Directory                                                                                 | Purpose                                                           |
+| ----------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| [helm/kubernetes-job](helm/kubernetes-job)                                                | Helm chart for one-shot Jobs, such as the caelundas-cli ingestion |
+| [helm/kubernetes-deployment](helm/kubernetes-deployment)                                  | Reusable Helm chart for long-running services                     |
+| [persistence postgres chart](../projects/common/persistence/infrastructure/helm/postgres) | Shared PostgreSQL on CloudNativePG, with PgBouncer and backups    |
+| [helm/cloudflared](helm/cloudflared)                                                      | Cloudflare Tunnel connector, routed from Cloudflare               |
+| [helm/argocd](helm/argocd)                                                                | Argo CD app-of-apps tree, synced in waves, plus `batch-low`       |
+| [terraform/](terraform)                                                                   | Linode LKE (Kubernetes) cluster provisioning                      |
+| [terraform/openrouter](terraform/openrouter)                                              | OpenRouter workspace, API key, guardrail, and ranked-model preset |
+| [terraform/github](terraform/github)                                                      | GitHub repository settings, `main` ruleset, and Actions variables |
+| [terraform/linode](terraform/linode)                                                      | The Object Storage bucket that holds Terraform state              |
+| [terraform/organizzolini](terraform/organizzolini)                                        | LKE cluster, Cloudflare tunnel, namespaces, secrets, and Argo CD  |
 
 ## Quick Start
 
@@ -52,11 +52,11 @@ Continuous Integration plans a pull request that changes the root and comments t
 
 ### Manage the Organizzolini Root with Terraform
 
-The `terraform/organizzolini` root holds everything the cluster needs, in one state. It creates the `organizzolini` LKE cluster (region `us-iad`, one `g6-standard-2` pool whose autoscaler keeps 1 to 2 nodes) and everything Cloudflare does for the public host `caelundas.organizzolini.net`. It imports the existing `organizzolini.net` zone, which it refuses to destroy, and manages no zone settings or other records. Its tunnel routes `/graphql` to `caelundas-api:80` (the Service port, which targets the API's development port) and everything else to `caelundas-web:80`, and a proxied CNAME points the host at the tunnel.
+The `terraform/organizzolini` root holds everything the cluster needs, in one state. It creates the `organizzolini` LKE cluster (region `us-iad`, one `g6-standard-2` pool whose autoscaler keeps 1 to 2 nodes, on the Kubernetes version hardcoded in `cluster.tf`; bump it by hand together with the version the `kubeconform` and `pluto` targets check against) and everything Cloudflare does for the public host `caelundas.organizzolini.net`. It imports the existing `organizzolini.net` zone, which it refuses to destroy, and manages no zone settings or other records. Its tunnel routes `/graphql` to `caelundas-api:80` (the Service port, which targets the API's development port) and everything else to `caelundas-web:80`, and a proxied CNAME points the host at the tunnel.
 
-Inside the cluster it holds what must not live in git, or must exist before Argo CD. **It creates the `organizzolini` and `caelundas` namespaces**, because the Argo CD applications do not set `CreateNamespace` for them. It generates the `caelundas_username` role's password and writes it as the `caelundas-postgres` secret in both namespaces, writes `postgres-backups` and `cloudflared-token` into `organizzolini`, installs the pinned `argo-cd` chart in the core profile (no API server, Dex, or notifications; zero ApplicationSet replicas, since the chart has no switch for that controller), and installs the `argocd-apps` chart with one `root` Application that follows `infrastructure/helm/argocd-applications` on `main`. It also publishes the cluster's kubeconfig as the `KUBECONFIG` Actions secret. It reads only the `linode` root's state, for the backups key, through `try`, so a pull request plans before that output exists.
+Inside the cluster it holds what must not live in git, or must exist before Argo CD. **It creates the `organizzolini` and `caelundas` namespaces**, because the Argo CD applications do not set `CreateNamespace` for them. It generates the `caelundas_username` role's password and writes it as the `caelundas-postgres` secret in both namespaces, writes `postgres-backups` and `cloudflared-token` into `organizzolini`, installs the pinned `argo-cd` chart in the core profile (no API server, Dex, or notifications; zero ApplicationSet replicas, since the chart has no switch for that controller), and installs the `argocd-apps` chart with one `root` Application that follows `infrastructure/helm/argocd` on `main`. It also publishes the cluster's kubeconfig as the `KUBECONFIG` Actions secret. It reads only the `linode` root's state, for the backups key, through `try`, so a pull request plans before that output exists.
 
-It needs `TF_VAR_linode_token`, `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_account_id`, `TF_VAR_cloudflare_zone_id`, `TF_VAR_state_bucket`, and `TF_VAR_github_token`. In CI the Cloudflare account and zone IDs come from the `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_ZONE_ID` repository secrets, next to `CLOUDFLARE_API_TOKEN`. The optional `TF_VAR_k8s_version` pins the LKE Kubernetes version; unset, the cluster takes the newest available. The readiness wait runs `kubectl`, which must be on `PATH`.
+It needs `TF_VAR_linode_token`, `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_account_id`, `TF_VAR_cloudflare_zone_id`, `TF_VAR_state_bucket`, and `TF_VAR_github_token`. In CI the Cloudflare account and zone IDs come from the `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_ZONE_ID` repository secrets, next to `CLOUDFLARE_API_TOKEN`. The readiness wait runs `kubectl`, which must be on `PATH`.
 
 **Known caveat**: the kubernetes and helm providers are configured from the cluster resource's kubeconfig in the same root. That suits one cluster and one maintainer, but the provider configuration is unknown at plan time until the cluster exists, so the first plan shows the cluster and its dependents, and replacing or destroying the cluster requires removing the Kubernetes and Helm resources from state, or destroying them first, since Terraform cannot configure the providers for a cluster that is going away.
 
@@ -140,18 +140,12 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 | `open-webui`         | `up`, `down`, `open` for the Open WebUI service                        |
 | `terraform`          | `plan` (default) or `import` against the cluster                       |
 | `trivy-config`       | Trivy misconfiguration scan of the Terraform code and rendered charts  |
-| `helm-lint`          | `helm lint --strict` every Helm release, with each project's values    |
-| `helm-render`        | Render every release to `dist/infrastructure/helm-render/`             |
-| `kubeconform`        | Validate the rendered manifests against Kubernetes and CRD schemas     |
-| `kube-linter`        | Lint the rendered manifests for hardening and resource settings        |
-| `pluto`              | Flag deprecated or removed Kubernetes APIs in the rendered manifests   |
-| `tflint`             | Lint each Terraform root with tflint's terraform ruleset               |
 | `hadolint`           | Lint every Dockerfile                                                  |
 | `helm-test`          | Run the helm-unittest suites under every chart with a `tests/` folder  |
 | `terraform-validate` | Validate each Terraform root, then run its unit tests                  |
 | `compose-config`     | Validate the Docker Compose files                                      |
 
-`helm-lint`, `helm-test`, `kubeconform`, `kube-linter`, `pluto`, `tflint`, `hadolint`, `terraform-validate`, and `compose-config` also run in CI: `lint-code` depends on them, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. The workflow linters `actionlint` and `zizmor` belong to the configuration project and run in the same leg. The linters come from the `installation` project's `software` command (kubeconform, kube-linter, pluto, and hadolint through its `infrastructure` group, actionlint through `configuration`, the Go ones built with `go install` from a pinned tag, hadolint from its pinned release), setup-tflint, and the uv lockfile (zizmor), through the `infrastructure` and `configuration` inputs of the setup-codebase action and the devcontainer. They need `helm` and `docker compose` (`helm-test` installs the pinned helm-unittest plugin on first run); `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
+The Helm and Terraform linters that read this project's files belong to other projects: `deployment:helm-lint` and `deployment:helm-render` (the `deployment` project's helm commands), and `integration:kubeconform`, `integration:kube-linter`, `integration:pluto`, and `integration:tflint` (the repository-wide CI linters, applied by the `name:integration` tag). `helm-test`, `hadolint`, `terraform-validate`, and `compose-config` also run in CI: `lint-code` depends on all of them, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. The workflow linters `actionlint` and `zizmor` belong to the configuration project and run in the same leg. The linters come from the `installation` project's `software` command (kubeconform, kube-linter, pluto, and hadolint through its `infrastructure` group, actionlint through `configuration`, the Go ones built with `go install` from a pinned tag, hadolint from its pinned release), setup-tflint, and the uv lockfile (zizmor), through the `infrastructure` and `configuration` inputs of the setup-codebase action and the devcontainer. They need `helm` and `docker compose` (`helm-test` installs the pinned helm-unittest plugin through `software helm-unittest`); `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
 
 ## Documentation
 

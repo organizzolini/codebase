@@ -1,17 +1,12 @@
 import { Module } from "@nestjs/common";
 
-import { LoggerModule } from "@codebase/observability";
-
-import { ProcessRunnerModule } from "../process-runner/process-runner.module";
-
-import { HelmReleasesCommand } from "./helm-releases.command";
 import { HelmReleasesService } from "./helm-releases.service";
 
-/** Provides the command that lints or renders every Helm release. */
+/** Provides the discovery of every Helm release the repository ships. */
 @Module({
   controllers: [],
-  exports: [HelmReleasesCommand, HelmReleasesService],
-  imports: [LoggerModule, ProcessRunnerModule],
-  providers: [HelmReleasesCommand, HelmReleasesService],
+  exports: [HelmReleasesService],
+  imports: [],
+  providers: [HelmReleasesService],
 })
 export class HelmReleasesModule {}

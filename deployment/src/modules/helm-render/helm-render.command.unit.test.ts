@@ -3,30 +3,30 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { HelmReleasesCommand } from "./helm-releases.command";
-import { HelmReleasesService } from "./helm-releases.service";
+import { HelmRenderCommand } from "./helm-render.command";
+import { HelmRenderService } from "./helm-render.service";
 
-describe(HelmReleasesCommand, () => {
-  const moduleOptions = { mocks: [HelmReleasesService] };
+import type { HelmRenderOptions } from "./helm-render.types";
+
+describe(HelmRenderCommand, () => {
+  const moduleOptions = { mocks: [HelmRenderService] };
   const originalExitCode = process.exitCode;
-  const lint = vi.fn<HelmReleasesService["lint"]>();
-  const render = vi.fn<HelmReleasesService["render"]>();
+  const render = vi.fn<HelmRenderService["render"]>();
   const messages: string[] = [];
 
   /** Runs the command over a fake service. */
-  const runCommand = async (parameters: string[]): Promise<void> => {
-    const { module } = await buildTestingModule(HelmReleasesCommand, {
-      providers: [{ provide: HelmReleasesService, useValue: { lint, render } }],
+  const runCommand = async (options?: HelmRenderOptions): Promise<void> => {
+    const { module } = await buildTestingModule(HelmRenderCommand, {
+      providers: [{ provide: HelmRenderService, useValue: { render } }],
     });
 
-    const subject = await module.resolve(HelmReleasesCommand);
+    const subject = await module.resolve(HelmRenderCommand);
 
-    await subject.run(parameters);
+    await subject.run([], options);
   };
 
   beforeEach(() => {
     process.exitCode = undefined;
-    lint.mockReset();
     render.mockReset();
     messages.length = 0;
     vi.spyOn(console, "error").mockImplementation((line: unknown): void => {
@@ -42,32 +42,34 @@ describe(HelmReleasesCommand, () => {
     expect.hasAssertions();
 
     const { instance } = await buildTestingModule(
-      HelmReleasesCommand,
+      HelmRenderCommand,
       moduleOptions,
     );
 
-    expect(instance).toBeInstanceOf(HelmReleasesCommand);
+    expect(instance).toBeInstanceOf(HelmRenderCommand);
   });
 
   it("sets logger context", async () => {
     expect.hasAssertions();
 
-    await expectLoggerContext(HelmReleasesCommand, moduleOptions);
+    await expectLoggerContext(HelmRenderCommand, moduleOptions);
   });
 
-  it("exits with the status of a lint", async () => {
+  it("parses --directory as given", async () => {
     expect.hasAssertions();
 
-    lint.mockReturnValue(1);
-    await runCommand(["lint"]);
+    const { instance } = await buildTestingModule(
+      HelmRenderCommand,
+      moduleOptions,
+    );
 
-    expect(process.exitCode).toBe(1);
+    expect(instance.parseDirectory("dist/out")).toBe("dist/out");
   });
 
   it("renders into the directory given and exits 0", async () => {
     expect.hasAssertions();
 
-    await runCommand(["render", "dist/out"]);
+    await runCommand({ directory: "dist/out" });
 
     expect(render).toHaveBeenCalledExactlyOnceWith("dist/out");
     expect(process.exitCode).toBe(0);
@@ -79,21 +81,18 @@ describe(HelmReleasesCommand, () => {
     render.mockImplementation(() => {
       throw new Error("helm template failed");
     });
-    await runCommand(["render", "dist/out"]);
+    await runCommand({ directory: "dist/out" });
 
     expect(messages).toStrictEqual(["helm template failed"]);
     expect(process.exitCode).toBe(1);
   });
 
-  it.each([[["render"]], [["publish"]], [[]]])(
-    "exits 2 with the usage for %j",
-    async (parameters) => {
-      expect.hasAssertions();
+  it("exits 1 when the directory is missing", async () => {
+    expect.hasAssertions();
 
-      await runCommand(parameters);
+    await runCommand();
 
-      expect(messages[0]).toContain("usage: helm-releases");
-      expect(process.exitCode).toBe(2);
-    },
-  );
+    expect(render).not.toHaveBeenCalled();
+    expect(process.exitCode).toBe(1);
+  });
 });

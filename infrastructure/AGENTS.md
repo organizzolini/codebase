@@ -27,7 +27,7 @@ terraform apply
 ```text
 infrastructure/
 ├── helm/
-│   ├── argocd-applications/ # Argo CD app-of-apps tree and the batch-low PriorityClass
+│   ├── argocd/ # Argo CD app-of-apps tree and the batch-low PriorityClass
 │   ├── cloudflared/         # Cloudflare Tunnel connector, routing held in Cloudflare
 │   ├── kubernetes-deployment/  # Reusable chart for long-running services
 │   ├── kubernetes-job/      # Reusable chart for K8s Jobs
@@ -83,7 +83,7 @@ The chart is the smallest correct Job: the image (`image.tag` is required, so an
 
 ### postgres Chart
 
-**Purpose**: The shared PostgreSQL cluster in the `organizzolini` namespace, as CloudNativePG resources: a `Cluster` (`postgres`, PostgreSQL 18 pinned to an exact minor), a managed role and `Database` per project database, a `Pooler` (`postgres-pooler-rw`, PgBouncer in transaction mode), and Barman Cloud backups (`ObjectStore` `postgres-backups` with 30-day retention, and a daily `ScheduledBackup` at 03:00 UTC).
+**Purpose**: The shared PostgreSQL cluster, owned by the persistence project at `projects/common/persistence/infrastructure/helm/postgres`, in the `organizzolini` namespace, as CloudNativePG resources: a `Cluster` (`postgres`, PostgreSQL 18 pinned to an exact minor), a managed role and `Database` per project database, a `Pooler` (`postgres-pooler-rw`, PgBouncer in transaction mode), and Barman Cloud backups (`ObjectStore` `postgres-backups` with 30-day retention, and a daily `ScheduledBackup` at 03:00 UTC).
 
 - `projects` lists each project with its `databases`. Each project gets role `<name>_username` (password from the `<name>-postgres` Secret) and each database a `Database` resource whose PostgreSQL name is `<name>_<database>`, owned by that role, with schema `<name>`. Adding a project is adding a list entry, as with `POSTGRES_PROJECTS` in the local Compose file.
 - The direct service is `postgres-rw`; the app and jobs address the pooler, `postgres-pooler-rw`.
@@ -111,9 +111,9 @@ Use `caelundas_staging` in place of `caelundas_production` for staging. The same
 
 **Rehearse a restore**: bootstrap a throwaway `Cluster` from `postgres-backups` with a `recoveryTarget`, check the row counts against the live cluster, then delete it. Never restore over `postgres`.
 
-### argocd-applications Chart
+### argocd Chart
 
-**Purpose**: The Argo CD app-of-apps tree. Each `applications` entry renders one `Application` in the `argocd` namespace, ordered by `argocd.argoproj.io/sync-wave` (0 cert-manager, 1 cloudnative-pg, 2 plugin-barman-cloud, 3 postgres, 4 cloudflared, 5 the two caelundas apps). The chart also renders the `batch-low` PriorityClass (value -10, `preemptionPolicy: Never`, not global), which the ingestion Job uses.
+**Purpose**: The Argo CD app-of-apps tree (this repository's `helm/argocd` chart, not the upstream `argo-cd` chart that Terraform installs as the `argocd` release). Each `applications` entry renders one `Application` in the `argocd` namespace, ordered by `argocd.argoproj.io/sync-wave` (0 cert-manager, 1 cloudnative-pg, 2 plugin-barman-cloud, 3 postgres, 4 cloudflared, 5 the two caelundas apps). The chart also renders the `batch-low` PriorityClass (value -10, `preemptionPolicy: Never`, not global), which batch Jobs use.
 
 - Upstream entries (`chart`) pin an exact `version`, never a range. `cert-manager` installs its CRDs through a Helm parameter and uses `ServerSideApply=true`; the two operator namespaces set `CreateNamespace=true`.
 - Repository entries (`path`) take `valueFiles` relative to the chart path; an entry starting with `$values/` is a path in the repository (a project's own `helm-values.yaml`), which makes the Application multi-source with a `ref: values` source (Argo CD 2.6 or later; the pinned chart installs 3.x). `organizzolini` and `caelundas` come from Terraform, so their apps do not set `CreateNamespace`.
@@ -140,20 +140,20 @@ argocd app diff --core <name>                 # the live-versus-desired diff, re
 - Chart metadata: [helm/cloudflared/Chart.yaml](helm/cloudflared/Chart.yaml)
 - Base values: [helm/cloudflared/values/base.yaml](helm/cloudflared/values/base.yaml)
 - Templates: [helm/cloudflared/templates/](helm/cloudflared/templates/)
-- Chart metadata: [helm/postgres/Chart.yaml](helm/postgres/Chart.yaml)
-- Base values: [helm/postgres/values/base.yaml](helm/postgres/values/base.yaml)
-- Templates: [helm/postgres/templates/](helm/postgres/templates/)
-- Chart metadata: [helm/argocd-applications/Chart.yaml](helm/argocd-applications/Chart.yaml)
-- Base values: [helm/argocd-applications/values/base.yaml](helm/argocd-applications/values/base.yaml)
-- Templates: [helm/argocd-applications/templates/](helm/argocd-applications/templates/)
+- Chart metadata: [postgres/Chart.yaml](../projects/common/persistence/infrastructure/helm/postgres/Chart.yaml)
+- Base values: [postgres/values/base.yaml](../projects/common/persistence/infrastructure/helm/postgres/values/base.yaml)
+- Templates: [postgres/templates/](../projects/common/persistence/infrastructure/helm/postgres/templates/)
+- Chart metadata: [helm/argocd/Chart.yaml](helm/argocd/Chart.yaml)
+- Base values: [helm/argocd/values/base.yaml](helm/argocd/values/base.yaml)
+- Templates: [helm/argocd/templates/](helm/argocd/templates/)
 
 ## Kubernetes Deployment
 
-See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint`, `helm-test`, `kubeconform`, `kube-linter`, `pluto`, `tflint`, `hadolint`, `terraform-validate` (validate and test), and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
+See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-test`, `hadolint`, `terraform-validate` (validate and test), and `compose-config` of this project run in CI as part of `lint-code`, as do `deployment:helm-lint` and the linters of the `integration` project (`kubeconform`, `kube-linter`, `pluto`, `tflint`), in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
 
 ## Linters
 
-The `helm-releases` command of the `deployment` project discovers the Helm releases, so none is listed anywhere: every folder under `helm/` holding a `Chart.yaml` installs as `<chart>` with `values/base.yaml`, and every `projects/*/*/infrastructure/helm-values.yaml` installs as `<chart>-<project>`, layered over the base of the chart its top-level `chart` key names (the chart ignores the key). The namespace comes from the Argo CD Application in `helm/argocd-applications/values/base.yaml` whose `path` and `valueFiles` (a project file as `$values/<path>`) match the release, else `default`; an empty `image.tag` in the values is filled with a placeholder so the chart renders. A chart whose release the files cannot describe adds an optional `release.yaml` beside `Chart.yaml` with `namespace` and `strings` (extra `--set-string` pairs), as `argocd-applications` does for its namespace. `helm-lint` runs `helm lint --strict` over the releases, and `helm-render` templates them into `dist/infrastructure/helm-render/`, which `kubeconform`, `kube-linter`, `pluto`, and `trivy-config` read. Add a chart or a project's `helm-values.yaml` and the next run picks it up; edit no code.
+The `helm-lint` and `helm-render` commands, and targets, of the `deployment` project discover the Helm releases, so none is listed anywhere: every folder holding a `Chart.yaml` directly under this project's `helm/` or under a project's own `infrastructure/helm/` (the `postgres` chart lives in the persistence project) installs as `<chart>` with `values/base.yaml`, and every `projects/*/*/infrastructure/helm-values.yaml` installs as `<chart>-<project>`, layered over the base of the chart its top-level `chart` key names (the chart ignores the key). The namespace comes from the Argo CD Application in `helm/argocd/values/base.yaml` whose `path` and `valueFiles` (a project file as `$values/<path>`) match the release, else `default`; an empty `image.tag` in the values is filled with a placeholder so the chart renders. A chart whose release the files cannot describe adds an optional `release.yaml` beside `Chart.yaml` with `namespace` and `strings` (extra `--set-string` pairs), as `argocd` does for its namespace. `deployment:helm-lint` runs `helm lint --strict` over the releases, and `deployment:helm-render` templates them into `dist/deployment/helm-render/`, which `integration:kubeconform`, `integration:kube-linter`, `integration:pluto`, and `infrastructure:trivy-config` read. The four linters are defined in `nx.json` and applied to the `integration` project by its `name:integration` tag; they read this project's charts and Terraform through their inputs. Chart names must be unique across both places. Add a chart or values file and the next run picks it up; edit no code. Only charts every project shares stay in this folder; a chart for one project or one common project belongs in that project's `infrastructure/` folder.
 
 - **kubeconform**: strict schemas for Kubernetes 1.35.0 plus the datreeio CRDs catalog for Argo CD, CloudNativePG, Barman Cloud, and cert-manager. A kind with no schema fails, so nothing is skipped. It reads schemas from raw.githubusercontent.com.
 - **kube-linter**: runs its default checks, which include the hardening ones, with no config and no exclusions. Fix the chart, not the check.
@@ -163,7 +163,7 @@ The `helm-releases` command of the `deployment` project discovers the Helm relea
 - **hadolint**: `configuration/lint/hadolint.yaml` (the `configuration` project) ignores no rule: the Dockerfile pins `tini`, builds on the full Node image so no `apt-get` runs in the install stage, and starts with `node main.js` under `tini`, with no shell.
 - **actionlint** and **zizmor** (configuration project): `.github/actionlint.yaml` and `.github/zizmor.yml` record every ignored message and changed rule with its reason.
 
-A failure prints the tool's own message with the file and line; the rendered file name is the release, so open `dist/infrastructure/helm-render/<release>.yaml` to see what was linted.
+A failure prints the tool's own message with the file and line; the rendered file name is the release, so open `dist/deployment/helm-render/<release>.yaml` to see what was linted.
 
 ## Moving the Terraform State Bucket
 

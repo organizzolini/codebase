@@ -15,13 +15,13 @@ spec:
   {{- end }}
   {{- if $referenced }}
   sources:
-    - {{ include "argocd-applications.source" (dict "app" . "root" $) | trim | nindent 6 | trim }}
+    - {{ include "argocd.source" (dict "app" . "root" $) | trim | nindent 6 | trim }}
     - repoURL: {{ $.Values.repoURL }}
       targetRevision: {{ $.Values.targetRevision }}
       ref: values
   {{- else }}
   source:
-    {{- include "argocd-applications.source" (dict "app" . "root" $) | trim | nindent 4 }}
+    {{- include "argocd.source" (dict "app" . "root" $) | trim | nindent 4 }}
   {{- end }}
   destination:
     server: https://kubernetes.default.svc

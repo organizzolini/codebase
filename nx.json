@@ -187,6 +187,27 @@
     "globalGenerators": ["@conformetry/nx:sync"]
   },
   "targetDefaults": {
+    "actionlint": [
+      {
+        "cache": true,
+        "description": "Lint every workflow under .github/workflows with actionlint (expression types, shell steps through shellcheck, runner labels, permissions scopes). actionlint reads workflows only, so the composite actions under .github/actions are covered by zizmor. .github/actionlint.yaml holds its one ignored message with the reason. Part of lint-code. Requires actionlint on PATH.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:name:configuration"]
+        },
+        "inputs": [
+          "{workspaceRoot}/.github/actionlint.yaml",
+          "{workspaceRoot}/.github/workflows/*.yml",
+          {
+            "externalDependencies": []
+          }
+        ],
+        "options": {
+          "command": "actionlint $(git ls-files -- '.github/workflows/*.yml')",
+          "cwd": "{workspaceRoot}"
+        }
+      }
+    ],
     "await-health": [
       {
         "cache": false,
@@ -568,6 +589,64 @@
         }
       }
     ],
+    "kube-linter": [
+      {
+        "cache": true,
+        "dependsOn": [
+          {
+            "projects": ["deployment"],
+            "target": "helm-render"
+          }
+        ],
+        "description": "Lint the rendered manifests with kube-linter's default checks, which include the read-only root filesystem, non-root, privilege escalation, and resource request and limit rules; the version is pinned by the installation project, so the defaults cannot drift. Part of lint-code. Defined in nx.json for the integration project, which holds the repository-wide CI linters. Requires kube-linter on PATH.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:name:integration"]
+        },
+        "inputs": [
+          {
+            "dependentTasksOutputFiles": "**/*.yaml",
+            "transitive": false
+          },
+          {
+            "externalDependencies": []
+          }
+        ],
+        "options": {
+          "command": "kube-linter lint dist/deployment/helm-render",
+          "cwd": "{workspaceRoot}"
+        }
+      }
+    ],
+    "kubeconform": [
+      {
+        "cache": true,
+        "dependsOn": [
+          {
+            "projects": ["deployment"],
+            "target": "helm-render"
+          }
+        ],
+        "description": "Validate the rendered manifests against the Kubernetes 1.35.0 schemas and, for the Argo CD, CloudNativePG, Barman Cloud, and cert-manager custom resources, the datreeio/CRDs-catalog schemas. Strict (unknown fields fail), and a kind with no schema fails too: nothing is skipped. Part of lint-code. Requires kubeconform on PATH and network access to raw.githubusercontent.com, where the schemas are fetched.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:name:integration"]
+        },
+        "inputs": [
+          {
+            "dependentTasksOutputFiles": "**/*.yaml",
+            "transitive": false
+          },
+          {
+            "externalDependencies": []
+          }
+        ],
+        "options": {
+          "command": "kubeconform -strict -summary -kubernetes-version 1.35.0 -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' dist/deployment/helm-render",
+          "cwd": "{workspaceRoot}"
+        }
+      }
+    ],
     "lint-code": {
       "cache": false,
       "configurations": {
@@ -595,7 +674,7 @@
         "tflint",
         "zizmor"
       ],
-      "description": "Aggregator for lint-code. `helm-lint`, `helm-test`, `compose-config`, `hadolint`, `kubeconform`, `kube-linter`, `pluto`, `terraform-format`, `terraform-validate`, and `tflint` are defined only by the infrastructure project, and `actionlint` and `zizmor` only by the configuration project, so Nx skips them everywhere else. They shell out to helm, docker compose, and the tools the setup-codebase action installs (kubeconform, kube-linter, pluto, tflint, hadolint, actionlint), which the devcontainer ships too; compose-config creates the gitignored root .env from .env.default when it is missing. The Kubernetes tools read the one rendering `helm-render` writes, and kubeconform fetches its CRD schemas over the network.",
+      "description": "Aggregator for lint-code. `helm-test`, `compose-config`, `hadolint`, `terraform-format`, and `terraform-validate` are defined only by the infrastructure project, `helm-lint` only by the deployment project, `kubeconform`, `kube-linter`, `pluto`, and `tflint` only by the integration project, and `actionlint` and `zizmor` only by the configuration project, so Nx skips them everywhere else. They shell out to helm, docker compose, and the tools the setup-codebase action installs (kubeconform, kube-linter, pluto, tflint, hadolint, actionlint), which the devcontainer ships too; compose-config creates the gitignored root .env from .env.default when it is missing. The Kubernetes tools read the one rendering the deployment project's `helm-render` writes, and kubeconform fetches its CRD schemas over the network.",
       "executor": "nx:noop",
       "inputs": ["default"]
     },
@@ -772,6 +851,35 @@
           "cwd": "{workspaceRoot}"
         },
         "outputs": ["{workspaceRoot}/dist/tarballs/{projectName}-*.tgz"]
+      }
+    ],
+    "pluto": [
+      {
+        "cache": true,
+        "dependsOn": [
+          {
+            "projects": ["deployment"],
+            "target": "helm-render"
+          }
+        ],
+        "description": "Detect Kubernetes API versions the rendered manifests use that 1.35.0 deprecates or has removed. A removed API fails the target; a deprecated one is printed as a warning and exits 0. Part of lint-code. Requires pluto on PATH.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:name:integration"]
+        },
+        "inputs": [
+          {
+            "dependentTasksOutputFiles": "**/*.yaml",
+            "transitive": false
+          },
+          {
+            "externalDependencies": []
+          }
+        ],
+        "options": {
+          "command": "pluto detect-files -d dist/deployment/helm-render --target-versions k8s=v1.35.0 --ignore-deprecations -o wide",
+          "cwd": "{workspaceRoot}"
+        }
       }
     ],
     "prettier": [
@@ -1159,6 +1267,28 @@
       "executor": "nx:noop",
       "inputs": ["default"]
     },
+    "tflint": [
+      {
+        "cache": true,
+        "description": "Lint the OpenRouter, GitHub, Linode, and Organizzolini Terraform roots with tflint and its bundled terraform ruleset (preset all). Each root uses its own .tflint.hcl when it has one, otherwise terraform/.tflint.hcl. The ruleset ships inside the pinned tflint binary, so there is no plugin download and no `tflint --init`, and nothing touches .terraform, so it may run beside the terraform targets. The stale root main.tf is not listed and is never scanned. Part of lint-code. Requires tflint on PATH.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:name:integration"]
+        },
+        "inputs": [
+          "{workspaceRoot}/infrastructure/terraform/*/.tflint.hcl",
+          "{workspaceRoot}/infrastructure/terraform/.tflint.hcl",
+          "{workspaceRoot}/infrastructure/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
+          {
+            "externalDependencies": []
+          }
+        ],
+        "options": {
+          "command": "for root in openrouter github linode organizzolini; do (cd $root && c=../.tflint.hcl; [ -f .tflint.hcl ] && c=.tflint.hcl; tflint --config $c) || exit 1; done",
+          "cwd": "{workspaceRoot}/infrastructure/terraform"
+        }
+      }
+    ],
     "ty": [
       {
         "cache": true,
@@ -1348,6 +1478,26 @@
         ],
         "options": {
           "command": "uv run --project configuration/python yamllint -c configuration/lint/yamllint.yaml '{projectRoot}'",
+          "cwd": "{workspaceRoot}"
+        }
+      }
+    ],
+    "zizmor": [
+      {
+        "cache": true,
+        "description": "Audit .github (workflows, composite actions, dependabot.yml) for security problems with zizmor, offline so the result is deterministic: template injection, excessive permissions, credential persistence, unpinned actions, Dependabot cooldown settings. .github/zizmor.yml is the policy and records each rule it changes with the reason. zizmor itself is pinned in configuration/python, so the pyproject and lockfile are inputs and an upgrade re-runs it. Part of lint-code.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:name:configuration"]
+        },
+        "inputs": [
+          "{workspaceRoot}/.github/**/*.yaml",
+          "{workspaceRoot}/.github/**/*.yml",
+          "{workspaceRoot}/configuration/python/pyproject.toml",
+          "{workspaceRoot}/configuration/python/uv.lock"
+        ],
+        "options": {
+          "command": "uv run --project configuration/python zizmor --offline .github",
           "cwd": "{workspaceRoot}"
         }
       }

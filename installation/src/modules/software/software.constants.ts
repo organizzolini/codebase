@@ -2,7 +2,7 @@
 
 import { RELEASE_ARCHIVE_TOOLS } from "../release-archives/release-archives.constants";
 
-import type { GoTool, InfrastructureTool } from "./software.types";
+import type { GoTool, HelmPlugin, InfrastructureTool } from "./software.types";
 
 /** The check that asks Python whether it is new enough. */
 export const PYTHON_VERSION_CHECK =
@@ -92,6 +92,27 @@ export const GO_TOOLS: readonly GoTool[] = [
   },
 ];
 
+/** The Helm plugins `helm-test` runs, checked against these checksums. */
+export const HELM_PLUGINS: readonly HelmPlugin[] = [
+  {
+    architectures: { arm64: "arm64", x64: "amd64" },
+    checksums: {
+      arm64: "c66062713cd3cbb1a80d7098bd1d4a48db8438f56b43fb6377df65447f93f8de",
+      x64: "48e86ecc1467b009630e5954375e5d8494139f73b466df5fe8c04fa45b634939",
+    },
+    downloadUrl:
+      "https://github.com/helm-unittest/helm-unittest/releases/download/v{version}/helm-unittest-linux-{architecture}-{version}.tgz",
+    name: "unittest",
+    software: "helm-unittest",
+    version: "1.2.1",
+  },
+];
+
+/** The names `software` is given to install those plugins. */
+export const HELM_PLUGIN_NAMES: ReadonlySet<string> = new Set(
+  HELM_PLUGINS.map(({ software }) => software),
+);
+
 /** The names of those Go programs. */
 export const GO_TOOL_NAMES: ReadonlySet<string> = new Set(
   GO_TOOLS.map(({ name }) => name),
@@ -117,6 +138,7 @@ export const NAMED_SOFTWARE: readonly string[] = [
   ...Object.keys(SOFTWARE_GROUPS),
   ...ARCHIVE_TOOL_NAMES,
   ...GO_TOOL_NAMES,
+  ...HELM_PLUGIN_NAMES,
   POSTGRES_CLIENT_NAME,
 ];
 

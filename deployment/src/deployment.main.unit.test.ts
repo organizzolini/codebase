@@ -1,7 +1,8 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { HelmReleasesModule } from "./modules/helm-releases/helm-releases.module";
+import type { HelmLintModule } from "./modules/helm-lint/helm-lint.module";
+import type { HelmRenderModule } from "./modules/helm-render/helm-render.module";
 import type { ImageTagsModule } from "./modules/image-tags/image-tags.module";
 import type { LinkPackagesModule } from "./modules/link-packages/link-packages.module";
 import type { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
@@ -26,7 +27,8 @@ const versionPackagesModuleMock = createMock<VersionPackagesModule>();
 const imageTagsModuleMock = createMock<ImageTagsModule>();
 const tagPackagesModuleMock = createMock<TagPackagesModule>();
 const publishPackagesModuleMock = createMock<PublishPackagesModule>();
-const helmReleasesModuleMock = createMock<HelmReleasesModule>();
+const helmLintModuleMock = createMock<HelmLintModule>();
+const helmRenderModuleMock = createMock<HelmRenderModule>();
 const linkPackagesModuleMock = createMock<LinkPackagesModule>();
 
 vi.mock("nest-commander", () => ({
@@ -58,9 +60,15 @@ vi.mock("./modules/tag-codebase/tag-codebase.module", () => ({
   },
 }));
 
-vi.mock("./modules/helm-releases/helm-releases.module", () => ({
-  HelmReleasesModule: function HelmReleasesModule() {
-    return helmReleasesModuleMock;
+vi.mock("./modules/helm-lint/helm-lint.module", () => ({
+  HelmLintModule: function HelmLintModule() {
+    return helmLintModuleMock;
+  },
+}));
+
+vi.mock("./modules/helm-render/helm-render.module", () => ({
+  HelmRenderModule: function HelmRenderModule() {
+    return helmRenderModuleMock;
   },
 }));
 

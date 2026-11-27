@@ -2,14 +2,26 @@
 
 import { z } from "zod";
 
-/** Where the charts live, relative to the workspace root. */
+/** The workspace root, which every path here is relative to. */
+export const WORKSPACE_ROOT = ".";
+
+/** Where the central charts live, relative to the workspace root. */
 export const HELM_ROOT = "infrastructure/helm";
+
+/** Where chart folders sit: central, or in a project's `infrastructure` folder. */
+export const CHART_PATTERNS = [
+  `${HELM_ROOT}/*/Chart.yaml`,
+  "projects/**/infrastructure/helm/*/Chart.yaml",
+];
+
+/** Folders chart discovery never enters. */
+export const IGNORED_FOLDERS = ["**/node_modules"];
 
 /** The values file every release layers first. */
 export const BASE_VALUES = "base.yaml";
 
 /** The chart whose values list the Argo CD Applications. */
-export const APPLICATIONS_CHART = "argocd-applications";
+export const APPLICATIONS_CHART = "argocd";
 
 /** The namespace of a release no Application or override names. */
 export const DEFAULT_NAMESPACE = "default";
@@ -51,6 +63,3 @@ export const projectValuesSchema = z.looseObject({ chart: z.string().min(1) });
 export const valuesSchema = z.looseObject({
   image: z.looseObject({ tag: z.string().optional() }).optional(),
 });
-
-/** Tells how to call the command. */
-export const USAGE = "usage: helm-releases lint | render <directory>";

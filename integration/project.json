@@ -8,6 +8,7 @@
     "framework:nestjs",
     "generator:nestjs-command-project",
     "language:typescript",
+    "name:integration",
     "type:package"
   ],
   "targets": {
@@ -120,6 +121,8 @@
     "format-code": {},
     "guard-code": {},
     "knip": {},
+    "kube-linter": {},
+    "kubeconform": {},
     "lint-code": {},
     "lockfile": {
       "cache": true,
@@ -177,6 +180,7 @@
         "cwd": "{workspaceRoot}"
       }
     },
+    "pluto": {},
     "prettier": {},
     "project-ports": {
       "cache": true,
@@ -339,6 +343,7 @@
       }
     },
     "test-code": {},
+    "tflint": {},
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},

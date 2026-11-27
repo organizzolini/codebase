@@ -29,7 +29,7 @@ resource "helm_release" "root_application" {
         project   = "default"
         source = {
           repoURL        = "https://github.com/organizzolini/codebase.git"
-          path           = "infrastructure/helm/argocd-applications"
+          path           = "infrastructure/helm/argocd"
           targetRevision = "main"
           helm = {
             valueFiles = ["values/base.yaml"]

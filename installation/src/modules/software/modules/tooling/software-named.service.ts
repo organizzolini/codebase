@@ -14,6 +14,7 @@ import {
   ARCHIVE_TOOL_NAMES,
   archiveToolOnMacMessage,
   GO_TOOLS,
+  HELM_PLUGINS,
   NAMED_SOFTWARE,
   POSTGRES_CLIENT_NAME,
   POSTGRES_NOT_18_MESSAGE,
@@ -24,11 +25,12 @@ import {
 
 import { SoftwareDatabaseService } from "./software-database.service";
 import { SoftwareGoToolsService } from "./software-go-tools.service";
+import { SoftwareHelmPluginsService } from "./software-helm-plugins.service";
 
 import type { SoftwareEnvironment } from "../../software.types";
 
 /**
- * Installs just the tools named: a release archive (Linux only), a Go linter, `postgres-client`, or a project group such as `infrastructure`.
+ * Installs just the tools named: a release archive (Linux only), a Go linter, a Helm plugin, `postgres-client`, or a project group such as `infrastructure`.
  *
  * Installs match `software`, so every machine runs one version of each tool.
  * An uninstallable tool fails the run, since it was asked for.
@@ -42,6 +44,7 @@ export class SoftwareNamedService {
     private readonly releaseArchivesService: ReleaseArchivesService,
     private readonly softwareDatabaseService: SoftwareDatabaseService,
     private readonly softwareGoToolsService: SoftwareGoToolsService,
+    private readonly softwareHelmPluginsService: SoftwareHelmPluginsService,
     private readonly processRunner: ProcessRunnerService,
     private readonly logger: LoggerService,
   ) {
@@ -84,6 +87,12 @@ export class SoftwareNamedService {
 
     for (const tool of GO_TOOLS.filter(({ name: known }) => known === name)) {
       this.softwareGoToolsService.install(tool);
+    }
+
+    for (const plugin of HELM_PLUGINS.filter(
+      ({ software }) => software === name,
+    )) {
+      this.softwareHelmPluginsService.install(plugin);
     }
   }
 

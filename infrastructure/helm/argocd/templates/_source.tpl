@@ -1,5 +1,5 @@
 {{- /* One Application source: a chart from a Helm repository, or a path in this repository with its values. */ -}}
-{{- define "argocd-applications.source" -}}
+{{- define "argocd.source" -}}
 {{- $root := .root }}
 {{- with .app }}
 {{- if .chart }}

@@ -51,7 +51,7 @@ jobs:
           - id: build-devcontainer
             name: Devcontainer
             emoji: 🧑‍🏭
-            timeout: 15
+            timeout: 12
           # The last 30 successful runs took 3.8 minutes at the median and 23.5 at
           # most. Three cold image builds with pushes add about 12 (one took
           # 2.2 here, 4.5 on a runner), so 40 holds; a timeout before the push leaves nothing.

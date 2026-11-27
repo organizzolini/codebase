@@ -24,6 +24,7 @@ import { SoftwarePythonService } from "./modules/runtimes/software-python.servic
 import { SoftwareDatabaseService } from "./modules/tooling/software-database.service";
 import { SoftwareGoToolsService } from "./modules/tooling/software-go-tools.service";
 import { SoftwareGpgService } from "./modules/tooling/software-gpg.service";
+import { SoftwareHelmPluginsService } from "./modules/tooling/software-helm-plugins.service";
 import { SoftwareInfraService } from "./modules/tooling/software-infra.service";
 import { SoftwareNamedService } from "./modules/tooling/software-named.service";
 import { SoftwareCommand } from "./software.command";
@@ -89,6 +90,7 @@ describe(SoftwareCommand, () => {
         SoftwareDockerService,
         SoftwareGoToolsService,
         SoftwareGpgService,
+        SoftwareHelmPluginsService,
         SoftwareInfraService,
         SoftwareLinuxService,
         SoftwareNamedService,

@@ -38,12 +38,6 @@ variable "hostname" {
   default     = "caelundas.organizzolini.net"
 }
 
-variable "k8s_version" {
-  description = "Pins the LKE Kubernetes version. Null means the newest available."
-  type        = string
-  default     = null
-}
-
 variable "github_token" {
   description = "A token that can write Actions secrets on the repository."
   type        = string
@@ -53,7 +47,7 @@ variable "github_token" {
 variable "owner" {
   description = "Account or organization that owns the repository."
   type        = string
-  default     = "Organizzolini"
+  default     = "organizzolini"
 }
 
 variable "repository" {

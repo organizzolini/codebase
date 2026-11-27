@@ -66,7 +66,6 @@ variables {
   cloudflare_account_id = "0123456789abcdef0123456789abcdef"
   cloudflare_zone_id    = "fedcba9876543210fedcba9876543210"
   github_token          = "mock-token"
-  k8s_version           = "1.34"
   state_bucket          = "mock-state-bucket"
 }
 
@@ -175,8 +174,8 @@ run "the_root_app_follows_the_applications_chart_on_main" {
   command = plan
 
   assert {
-    condition     = yamldecode(helm_release.root_application.values[0]).applications.root.source.path == "infrastructure/helm/argocd-applications" && yamldecode(helm_release.root_application.values[0]).applications.root.source.targetRevision == "main"
-    error_message = "The root app must read the argocd-applications chart on main."
+    condition     = yamldecode(helm_release.root_application.values[0]).applications.root.source.path == "infrastructure/helm/argocd" && yamldecode(helm_release.root_application.values[0]).applications.root.source.targetRevision == "main"
+    error_message = "The root app must read the argocd chart on main."
   }
 
   assert {
