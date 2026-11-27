@@ -7,9 +7,9 @@ Refreshes the repository documentation from code. Its one command, `refresh-docu
 - `openwiki/` — the generated pages, reached through the root `openwiki` symlink.
 - `agents/` — the settings the vendored skills read: the issue tracker, handoffs, and OpenWiki.
 - `documentation/` — the generated toolchain reports for callidescope, codependix, codometer, and coinagerie.
-- `workspace/` — the whole workspace's callidescope, codependix, and codometer reports.
+- `codebase/` — the whole repository's callidescope, codependix, and codometer reports.
 
-Plans and specs are issues and conventions are skills, so nothing else belongs here. Never hand-edit `openwiki/`, `workspace/`, or `documentation/documentation/`: change the source and let the next run regenerate them.
+Plans and specs are issues and conventions are skills, so nothing else belongs here. Never hand-edit `openwiki/`, `codebase/`, or `documentation/documentation/`: change the source and let the next run regenerate them.
 
 ## Rate limits
 

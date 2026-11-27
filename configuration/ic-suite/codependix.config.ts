@@ -972,21 +972,21 @@ const codependixConfiguration: CodependixConfiguration = {
     fileImports: {
       markdown: {
         anchor: "codependix-file-imports",
-        path: "documentation/workspace/codependix.md",
+        path: "documentation/codebase/codependix.md",
       },
       target: "markdown",
     },
     nestjsModules: {
       markdown: {
         anchor: "codependix-nestjs-modules",
-        path: "documentation/workspace/codependix.md",
+        path: "documentation/codebase/codependix.md",
       },
       target: "markdown",
     },
     nxProjects: {
       markdown: {
         anchor: "codependix-nx-projects",
-        path: "documentation/workspace/codependix.md",
+        path: "documentation/codebase/codependix.md",
       },
       target: "markdown",
     },

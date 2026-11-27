@@ -556,7 +556,7 @@
               "ruleId": "any-file"
             }
           ],
-          "name": "workspace"
+          "name": "codebase"
         },
         {
           "ruleId": "any-file"
