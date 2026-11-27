@@ -32,6 +32,10 @@ tests:
         equal:
           path: spec.ports[0].targetPort
           value: 6173
+      - template: templates/service.yaml
+        equal:
+          path: spec.ports[0].port
+          value: 80
 
   - it: runs the pod as non-root
     set:

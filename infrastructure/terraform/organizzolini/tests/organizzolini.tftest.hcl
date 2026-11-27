@@ -74,8 +74,8 @@ run "the_tunnel_sends_graphql_to_the_api_and_everything_else_to_the_web" {
   command = plan
 
   assert {
-    condition     = cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].hostname == "caelundas.organizzolini.net" && cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].path == "^/graphql" && cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].service == "http://caelundas-api.caelundas.svc.cluster.local:6173"
-    error_message = "The first ingress rule must send /graphql on the public host to the API on its development port, 6173."
+    condition     = cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].hostname == "caelundas.organizzolini.net" && cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].path == "^/graphql" && cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].service == "http://caelundas-api.caelundas.svc.cluster.local:80"
+    error_message = "The first ingress rule must send /graphql on the public host to the API on port 80."
   }
 
   assert {

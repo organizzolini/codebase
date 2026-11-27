@@ -6,9 +6,6 @@ image:
 # The API's development port, from caelundas-api's configuration/.env.default, which the image listens on
 containerPort: 6173
 
-service:
-  port: 6173
-
 # Lightship serves probes on 9000, separate from the application port
 probes:
   liveness:
