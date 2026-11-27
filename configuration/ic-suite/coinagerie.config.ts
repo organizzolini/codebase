@@ -123,7 +123,7 @@ const repositoryWordExclusions: string[] = `
   codependix codometer codometerignore coinagerie compliance conformetry
   context core deprecate dispatch documentation execa fold guard handoff ic
   infrastructure installation kubectl lexico map meanderaw
-  observability pnpm presentation prompt refresh structure suite
+  observability organizzolini pnpm presentation prompt refresh structure suite
   synchronization triage typecheck validation wiki
 `
   .split(/\s+/u)
