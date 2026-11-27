@@ -41,6 +41,3 @@ export const applicationsSchema = z.object({
 export const valuesSchema = z.looseObject({
   image: z.looseObject({ tag: z.string().optional() }).optional(),
 });
-
-/** Tells how to call the command. */
-export const USAGE = "usage: helm-releases lint | render <directory>";

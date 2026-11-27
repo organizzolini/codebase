@@ -28,8 +28,11 @@
     "start": {
       "cache": false,
       "configurations": {
-        "helm-releases": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-releases"
+        "helm-lint": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-lint"
+        },
+        "helm-render": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-render"
         },
         "link-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts link-packages"

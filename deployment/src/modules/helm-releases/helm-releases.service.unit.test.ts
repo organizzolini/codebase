@@ -3,25 +3,15 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { createTemporaryDirectory, FakeProcessRunner } from "@codebase/testing";
+import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { TEMPORARY_ROOT } from "../../../testing/mocks";
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { HelmReleasesService } from "./helm-releases.service";
 
-/** Two charts: `alpha` with a variant and empty tag, `beta` plain. */
-const charts = (): string => {
-  const root = createTemporaryDirectory("charts", TEMPORARY_ROOT);
-  const files = {
-    "alpha/Chart.yaml": "name: alpha",
-    "alpha/values/base.yaml": 'image:\n  tag: ""',
-    "alpha/values/web.yaml": "a: 1",
-    "beta/Chart.yaml": "name: beta",
-    "beta/values/base.yaml": "a: 1",
-  };
-
+/** Writes files, by path under a root, creating folders as needed. */
+const write = (root: string, files: Record<string, string>): string => {
   for (const [name, content] of Object.entries(files)) {
     fs.mkdirSync(path.dirname(path.join(root, name)), { recursive: true });
     fs.writeFileSync(path.join(root, name), content);
@@ -30,27 +20,13 @@ const charts = (): string => {
   return root;
 };
 
-/** The helm arguments the two charts' releases are given. */
-const arguments_ = (root: string): string[] => {
-  const base = (chart: string): string =>
-    `${root}/${chart} --namespace default --values ${root}/${chart}/values/base.yaml`;
-  const web = `--values ${root}/alpha/values/web.yaml`;
-  const tag = "--set-string image.tag=0.0.0";
+/** Builds a charts folder holding the given files. */
+const tree = (files: Record<string, string>): string =>
+  write(createTemporaryDirectory("charts", TEMPORARY_ROOT), files);
 
-  return [
-    `${base("alpha")} ${tag}`,
-    `${base("alpha")} ${web} ${tag}`,
-    base("beta"),
-  ];
-};
-
-/** Builds the service over a scripted runner. */
-const build = async (
-  runner: FakeProcessRunner,
-): Promise<HelmReleasesService> => {
-  const { module } = await buildTestingModule(HelmReleasesService, {
-    providers: [{ provide: ProcessRunnerService, useValue: runner }],
-  });
+/** Builds the service, which has no dependencies. */
+const build = async (): Promise<HelmReleasesService> => {
+  const { module } = await buildTestingModule(HelmReleasesService);
 
   return module.resolve(HelmReleasesService);
 };
@@ -59,74 +35,186 @@ describe(HelmReleasesService, () => {
   it("resolves with its dependencies", async () => {
     expect.hasAssertions();
 
-    const { instance } = await buildTestingModule(HelmReleasesService, {
-      mocks: [ProcessRunnerService],
-    });
+    const { instance } = await buildTestingModule(HelmReleasesService);
 
     expect(instance).toBeInstanceOf(HelmReleasesService);
   });
 
-  it("lints every discovered release strictly, with its values", async () => {
+  it("builds the chart, namespace, values and string arguments", async () => {
     expect.hasAssertions();
 
-    const root = charts();
-    const runner = new FakeProcessRunner({});
-    const subject = await build(runner);
+    const subject = await build();
 
-    expect(subject.lint(root)).toBe(0);
-    expect(runner.lines).toStrictEqual(
-      arguments_(root).map((line) => `helm lint --strict ${line}`),
-    );
+    expect(
+      subject.chartArguments("/charts", {
+        chart: "app",
+        namespace: "one",
+        release: "app",
+        strings: { key: "value" },
+        values: ["values/base.yaml"],
+      }),
+    ).toStrictEqual([
+      "/charts/app",
+      "--namespace",
+      "one",
+      "--values",
+      "/charts/app/values/base.yaml",
+      "--set-string",
+      "key=value",
+    ]);
   });
 
-  it("stops linting at the first release that fails", async () => {
+  it("makes one release of a chart with only base values", async () => {
     expect.hasAssertions();
 
-    const root = charts();
-    const runner = new FakeProcessRunner({}, 0, {
-      [`helm lint --strict ${root}/alpha *`]: 1,
-    });
-    const subject = await build(runner);
+    const subject = await build();
 
-    expect(subject.lint(root)).toBe(1);
-    expect(runner.lines).toHaveLength(1);
-  });
-
-  it("renders every release into its own file in the directory", async () => {
-    expect.hasAssertions();
-
-    const root = charts();
-    const directory = path.join(
-      createTemporaryDirectory("helm", TEMPORARY_ROOT),
-      "nested",
-    );
-    const runner = new FakeProcessRunner({
-      "helm template *": { status: 0, stderr: "", stdout: "" },
-    });
-    const subject = await build(runner);
-
-    subject.render(directory, root);
-
-    expect(fs.existsSync(directory)).toBe(true);
-    expect(runner.lines).toStrictEqual(
-      ["alpha", "alpha-web", "beta"].map(
-        (release, index) =>
-          `helm template ${release} ${arguments_(root)[index] ?? ""}`,
+    expect(
+      subject.discover(
+        tree({
+          "app/Chart.yaml": "name: app",
+          "app/values/base.yaml": "a: 1",
+        }),
       ),
-    );
+    ).toStrictEqual([
+      {
+        chart: "app",
+        namespace: "default",
+        release: "app",
+        strings: {},
+        values: ["values/base.yaml"],
+      },
+    ]);
   });
 
-  it("fails a render that helm fails, naming the command", async () => {
+  it("adds a release for each further values file, layered over base", async () => {
     expect.hasAssertions();
 
-    const directory = createTemporaryDirectory("helm", TEMPORARY_ROOT);
-    const runner = new FakeProcessRunner({
-      "helm template *": { status: 1, stderr: "bad chart", stdout: "" },
-    });
-    const subject = await build(runner);
+    const subject = await build();
 
-    expect(() => {
-      subject.render(directory, charts());
-    }).toThrow("bad chart");
+    const releases = subject.discover(
+      tree({
+        "app/Chart.yaml": "name: app",
+        "app/values/base.yaml": "a: 1",
+        "app/values/one.yaml": "a: 2",
+        "app/values/two.yaml": "a: 3",
+      }),
+    );
+
+    expect(
+      releases.map(({ release, values }) => [release, values]),
+    ).toStrictEqual([
+      ["app", ["values/base.yaml"]],
+      ["app-one", ["values/base.yaml", "values/one.yaml"]],
+      ["app-two", ["values/base.yaml", "values/two.yaml"]],
+    ]);
+  });
+
+  it("ignores folders without a Chart.yaml and finds every chart", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    const releases = subject.discover(
+      tree({
+        "a/Chart.yaml": "name: a",
+        "a/values/base.yaml": "a: 1",
+        "b/Chart.yaml": "name: b",
+        "notes/readme.md": "not a chart",
+      }),
+    );
+
+    expect(releases.map(({ release }) => release)).toStrictEqual(["a", "b"]);
+  });
+
+  it("takes the namespace from the Application that installs the release", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    const releases = subject.discover(
+      tree({
+        "app/Chart.yaml": "name: app",
+        "app/values/base.yaml": "a: 1",
+        "app/values/web.yaml": "a: 2",
+        "argocd/Chart.yaml": "name: argocd",
+        "argocd/values/base.yaml": [
+          "applications:",
+          "  - name: external",
+          "    namespace: elsewhere",
+          "    chart: {name: x}",
+          "  - name: app",
+          "    namespace: one",
+          "    path: infrastructure/helm/app",
+          "    valueFiles: [values/base.yaml]",
+          "  - name: app-web",
+          "    namespace: two",
+          "    path: infrastructure/helm/app",
+          "    valueFiles: [values/base.yaml, values/web.yaml]",
+        ].join("\n"),
+      }),
+    );
+
+    expect(
+      releases.map(({ namespace, release }) => [release, namespace]),
+    ).toStrictEqual([
+      ["app", "one"],
+      ["app-web", "two"],
+      ["argocd", "default"],
+    ]);
+  });
+
+  it("passes a placeholder tag where the values leave image.tag empty", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    const releases = subject.discover(
+      tree({
+        "app/Chart.yaml": "name: app",
+        "app/values/base.yaml": 'image:\n  tag: ""',
+        "app/values/pinned.yaml": "image:\n  tag: 1.2.3",
+      }),
+    );
+
+    expect(releases.map(({ strings }) => strings)).toStrictEqual([
+      { "image.tag": "0.0.0" },
+      {},
+    ]);
+  });
+
+  it("reads a chart's release.yaml over what it derives", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    const [release] = subject.discover(
+      tree({
+        "app/Chart.yaml": "name: app",
+        "app/release.yaml": "namespace: custom\nstrings:\n  key: value",
+        "app/values/base.yaml": 'image:\n  tag: ""',
+      }),
+    );
+
+    expect(release).toMatchObject({
+      namespace: "custom",
+      strings: { "image.tag": "0.0.0", key: "value" },
+    });
+  });
+
+  it("rejects a release.yaml with an unknown key", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    expect(() =>
+      subject.discover(
+        tree({
+          "app/Chart.yaml": "name: app",
+          "app/release.yaml": "unknown: typo",
+          "app/values/base.yaml": "a: 1",
+        }),
+      ),
+    ).toThrow("unknown");
   });
 });

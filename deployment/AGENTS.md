@@ -16,8 +16,10 @@ one class.
 | `tag-packages`     | `src/modules/tag-packages`     | 🔖 Tag Packages in Continuous Deployment, and `version-packages` first         |
 | `publish-packages` | `src/modules/publish-packages` | 📦 Publish Packages in Continuous Deployment                                   |
 | `link-packages`    | `src/modules/link-packages`    | 🔗 Link Packages in Continuous Deployment                                      |
-| `helm-releases`    | `src/modules/helm-releases`    | Discovers the Helm releases for `helm-lint` and `helm-render` (infrastructure) |
+| `helm-lint`        | `src/modules/helm-lint`        | The `helm-lint` target of this project                                         |
+| `helm-render`      | `src/modules/helm-render`      | The `helm-render` target of this project, with `--directory`                   |
 
+`src/modules/helm-releases` holds the discovery of every Helm release that both helm commands share, and
 `src/modules/process-runner` holds the shared wrapper over `node:child_process`
 (`capture` returns the output, `captureAsync` does so without blocking, and
 `stream` inherits it, and `captureToFile` writes it to a file byte for byte).

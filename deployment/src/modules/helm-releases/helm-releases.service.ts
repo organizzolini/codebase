@@ -2,24 +2,31 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
+import { parse } from "yaml";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { requireSuccess } from "../process-runner/process-runner.utilities";
-
-import { HELM_ROOT } from "./helm-releases.constants";
-import { discoverReleases } from "./helm-releases.utilities";
+import {
+  APPLICATIONS_CHART,
+  applicationsSchema,
+  BASE_VALUES,
+  DEFAULT_NAMESPACE,
+  HELM_ROOT,
+  OVERRIDE_FILE,
+  overrideSchema,
+  PLACEHOLDER_IMAGE_TAG,
+  valuesSchema,
+} from "./helm-releases.constants";
 
 import type { HelmRelease } from "./helm-releases.types";
 
 /**
- * Lints or renders every Helm release found under the charts folder, so each
- * tool judges exactly what Argo CD or a workflow installs.
+ * Finds every Helm release under the charts folder, so each tool judges
+ * exactly what Argo CD or a workflow installs.
  */
 @Injectable()
 export class HelmReleasesService {
   // 🏗 Dependency Injection
 
-  constructor(private readonly processRunner: ProcessRunnerService) {}
+  constructor() {}
 
   // 🔐 Private Fields
 
@@ -27,8 +34,123 @@ export class HelmReleasesService {
 
   // 🔏 Private Methods
 
+  /** Maps each Application's chart and values files, joined, to its namespace. */
+  private applicationNamespaces(root: string): Map<string, string> {
+    const file = path.join(root, APPLICATIONS_CHART, "values", BASE_VALUES);
+    const parsed = applicationsSchema.safeParse(this.readYaml(file));
+    const namespaces = new Map<string, string>();
+
+    for (const application of parsed.success ? parsed.data.applications : []) {
+      if (application.path !== undefined) {
+        namespaces.set(
+          [
+            path.basename(application.path),
+            ...(application.valueFiles ?? []),
+          ].join(" "),
+          application.namespace,
+        );
+      }
+    }
+
+    return namespaces;
+  }
+
+  /** The folders under a charts folder that hold a `Chart.yaml`, sorted. */
+  private chartNames(root: string): string[] {
+    return fs
+      .readdirSync(root, { withFileTypes: true })
+      .filter(
+        (entry) =>
+          entry.isDirectory() &&
+          fs.existsSync(path.join(root, entry.name, "Chart.yaml")),
+      )
+      .map((entry) => entry.name)
+      .toSorted();
+  }
+
+  /** The releases of one chart: base alone, then base with each other values file. */
+  private chartReleases(
+    root: string,
+    chart: string,
+    namespaces: Map<string, string>,
+  ): HelmRelease[] {
+    const chartDirectory = path.join(root, chart);
+    const override = overrideSchema.parse(
+      this.readYaml(path.join(chartDirectory, OVERRIDE_FILE)) ?? {},
+    );
+    const base = `values/${BASE_VALUES}`;
+
+    const releases: HelmRelease[] = [];
+
+    for (const variant of [undefined, ...this.valuesFiles(chartDirectory)]) {
+      const values =
+        variant === undefined ? [base] : [base, `values/${variant}`];
+
+      releases.push({
+        chart,
+        namespace:
+          override.namespace ??
+          namespaces.get([chart, ...values].join(" ")) ??
+          DEFAULT_NAMESPACE,
+        release:
+          variant === undefined
+            ? chart
+            : `${chart}-${path.basename(variant, ".yaml")}`,
+        strings: {
+          ...(this.hasEmptyImageTag(chartDirectory, values)
+            ? { "image.tag": PLACEHOLDER_IMAGE_TAG }
+            : {}),
+          ...override.strings,
+        },
+        values,
+      });
+    }
+
+    return releases;
+  }
+
+  /** Whether the last values file to set `image.tag` leaves it empty. */
+  private hasEmptyImageTag(chartDirectory: string, values: string[]): boolean {
+    let last: string | undefined;
+
+    for (const file of values) {
+      const parsed = valuesSchema.safeParse(
+        this.readYaml(path.join(chartDirectory, file)),
+      );
+
+      last = (parsed.success ? parsed.data.image?.tag : undefined) ?? last;
+    }
+
+    return last === "";
+  }
+
+  /** Reads a YAML file, or `undefined` when it does not exist. */
+  private readYaml(file: string): unknown {
+    return fs.existsSync(file)
+      ? parse(fs.readFileSync(file, "utf8"))
+      : undefined;
+  }
+
+  /** Lists the values files of a chart other than `base.yaml`, sorted. */
+  private valuesFiles(chartDirectory: string): string[] {
+    const directory = path.join(chartDirectory, "values");
+    const names: string[] = [];
+
+    for (const name of fs.existsSync(directory)
+      ? fs.readdirSync(directory)
+      : []) {
+      if (name.endsWith(".yaml") && name !== BASE_VALUES) {
+        names.push(name);
+      }
+    }
+
+    return names.toSorted();
+  }
+
+  // 🌎 Public Methods
+
   /** The chart, namespace, values, and string arguments both helm commands take. */
-  private static chartArguments(root: string, release: HelmRelease): string[] {
+  public chartArguments(root: string, release: HelmRelease): string[] {
     const chart = path.resolve(root, release.chart);
 
     return [
@@ -43,44 +165,19 @@ export class HelmReleasesService {
     ];
   }
 
-  // 🌎 Public Methods
+  /**
+   * Finds each chart's release with base values, plus `<chart>-<name>` for every
+   * other values file layered over base.
+   */
+  public discover(root = HELM_ROOT): HelmRelease[] {
+    const namespaces = this.applicationNamespaces(root);
 
-  /** Runs `helm lint --strict` on each release, stopping at the first that fails. */
-  public lint(root = HELM_ROOT): number {
-    for (const release of discoverReleases(root)) {
-      const status = this.processRunner.stream("helm", [
-        "lint",
-        "--strict",
-        ...HelmReleasesService.chartArguments(root, release),
-      ]);
+    const releases: HelmRelease[] = [];
 
-      if (status !== 0) {
-        return status;
-      }
+    for (const chart of this.chartNames(root)) {
+      releases.push(...this.chartReleases(root, chart, namespaces));
     }
 
-    return 0;
-  }
-
-  /** Templates each release into `<directory>/<release>.yaml`, failing on the first error. */
-  public render(directory: string, root = HELM_ROOT): void {
-    fs.mkdirSync(directory, { recursive: true });
-
-    for (const release of discoverReleases(root)) {
-      const args = [
-        "template",
-        release.release,
-        ...HelmReleasesService.chartArguments(root, release),
-      ];
-
-      requireSuccess(
-        this.processRunner.captureToFile(
-          "helm",
-          args,
-          path.join(directory, `${release.release}.yaml`),
-        ),
-        `helm ${args.join(" ")}`,
-      );
-    }
+    return releases;
   }
 }

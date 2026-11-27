@@ -13,7 +13,8 @@ const BOOT_TIMEOUT_MILLISECONDS = 60_000;
 
 /** The commands the container must register, each named in the help. */
 const COMMAND_NAMES = [
-  "helm-releases",
+  "helm-lint",
+  "helm-render",
   "link-packages",
   "publish-packages",
   "tag-codebase",
