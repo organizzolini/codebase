@@ -16,14 +16,20 @@ describeApplicationBundle({
   bundle: async () => {
     await Promise.resolve();
     writeFileTree(workspaceRoot, {
-      ...Object.fromEntries(
-        SHARED_PACKAGES.map((shared) => [
-          `${shared}/package.json`,
-          JSON.stringify({
-            dependencies: { "@codebase/other": "workspace:*" },
-          }),
-        ]),
-      ),
+      // One package without dependencies, one with shipped, unshipped and workspace ones, one whose dependency only the store holds.
+      [`${SHARED_PACKAGES[0]}/package.json`]: "{}",
+      [`${SHARED_PACKAGES[1]}/package.json`]: JSON.stringify({
+        dependencies: {
+          "@codebase/other": "workspace:*",
+          pg: "1",
+          vitest: "1",
+        },
+      }),
+      [`${SHARED_PACKAGES[2]}/package.json`]: JSON.stringify({
+        dependencies: { "@scope/pkg": "1" },
+      }),
+      "dist/sample/node_modules/.pnpm/@scope+pkg@1.0.0/node_modules/@scope/pkg/package.json":
+        "{}",
       "dist/sample/node_modules/.pnpm/pg@1.0.0/node_modules/pg/package.json":
         "{}",
       "dist/sample/node_modules/pg/package.json": "{}",
