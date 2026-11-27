@@ -12,7 +12,7 @@ import { discoverReleases } from "./helm-releases.utilities";
 import type { HelmRelease } from "./helm-releases.types";
 
 /**
- * Lints or renders every Helm release found under the charts folder, so each
+ * Lints or renders every Helm release found under the charts folder and the projects, so each
  * tool judges exactly what Argo CD or a workflow installs.
  */
 @Injectable()
@@ -46,8 +46,8 @@ export class HelmReleasesService {
   // 🌎 Public Methods
 
   /** Runs `helm lint --strict` on each release, stopping at the first that fails. */
-  public lint(root = HELM_ROOT): number {
-    for (const release of discoverReleases(root)) {
+  public lint(root = HELM_ROOT, workspace = "."): number {
+    for (const release of discoverReleases(root, workspace)) {
       const status = this.processRunner.stream("helm", [
         "lint",
         "--strict",
@@ -63,10 +63,10 @@ export class HelmReleasesService {
   }
 
   /** Templates each release into `<directory>/<release>.yaml`, failing on the first error. */
-  public render(directory: string, root = HELM_ROOT): void {
+  public render(directory: string, root = HELM_ROOT, workspace = "."): void {
     fs.mkdirSync(directory, { recursive: true });
 
-    for (const release of discoverReleases(root)) {
+    for (const release of discoverReleases(root, workspace)) {
       const args = [
         "template",
         release.release,

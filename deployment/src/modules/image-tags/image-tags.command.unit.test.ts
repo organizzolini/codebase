@@ -14,13 +14,13 @@ import { ImageTagsCommand } from "./image-tags.command";
 import { ImageTagsService } from "./image-tags.service";
 
 const API_VALUES =
-  "infrastructure/helm/kubernetes-deployment/values/caelundas-api.yaml";
+  "projects/caelundas/caelundas-api/infrastructure/helm-values.yaml";
 
 const CLI_VALUES =
-  "infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml";
+  "projects/caelundas/caelundas-cli/infrastructure/helm-values.yaml";
 
 const WEB_VALUES =
-  "infrastructure/helm/kubernetes-deployment/values/caelundas-web.yaml";
+  "projects/caelundas/caelundas-web/infrastructure/helm-values.yaml";
 
 describe(ImageTagsCommand, () => {
   let workspace: string;

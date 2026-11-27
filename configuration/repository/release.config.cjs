@@ -110,7 +110,7 @@ module.exports = {
           "projects/ic-suite/*/*/CHANGELOG.md",
           "projects/ic-suite/*/*/package.json",
           // Image tags `@semantic-release/exec` wrote, so Argo CD syncs to images that exist. The same glob picks the files in image-tags.
-          "infrastructure/helm/*/values/*.yaml",
+          "projects/*/*/infrastructure/helm-values.yaml",
         ],
         message: "chore(release): 🔖 tag codebase ${nextRelease.version}",
       },

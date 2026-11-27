@@ -11,15 +11,15 @@ import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { HelmReleasesService } from "./helm-releases.service";
 
-/** Two charts: `alpha` with a variant and empty tag, `beta` plain. */
-const charts = (): string => {
-  const root = createTemporaryDirectory("charts", TEMPORARY_ROOT);
+/** Charts `alpha` and `beta`, and a project that owns values for `alpha`. */
+const workspaceFiles = (): string => {
+  const root = createTemporaryDirectory("workspace", TEMPORARY_ROOT);
   const files = {
-    "alpha/Chart.yaml": "name: alpha",
-    "alpha/values/base.yaml": 'image:\n  tag: ""',
-    "alpha/values/web.yaml": "a: 1",
-    "beta/Chart.yaml": "name: beta",
-    "beta/values/base.yaml": "a: 1",
+    "infrastructure/helm/alpha/Chart.yaml": "name: alpha",
+    "infrastructure/helm/alpha/values/base.yaml": 'image:\n  tag: ""',
+    "infrastructure/helm/beta/Chart.yaml": "name: beta",
+    "infrastructure/helm/beta/values/base.yaml": "a: 1",
+    "projects/group/web/infrastructure/helm-values.yaml": "chart: alpha\na: 1",
   };
 
   for (const [name, content] of Object.entries(files)) {
@@ -30,17 +30,18 @@ const charts = (): string => {
   return root;
 };
 
-/** The helm arguments the two charts' releases are given. */
-const arguments_ = (root: string): string[] => {
+/** The helm arguments the two charts' and the project's releases are given. */
+const arguments_ = (workspace: string): string[] => {
+  const root = `${workspace}/infrastructure/helm`;
   const base = (chart: string): string =>
     `${root}/${chart} --namespace default --values ${root}/${chart}/values/base.yaml`;
-  const web = `--values ${root}/alpha/values/web.yaml`;
+  const web = `--values ${workspace}/projects/group/web/infrastructure/helm-values.yaml`;
   const tag = "--set-string image.tag=0.0.0";
 
   return [
     `${base("alpha")} ${tag}`,
-    `${base("alpha")} ${web} ${tag}`,
     base("beta"),
+    `${base("alpha")} ${web} ${tag}`,
   ];
 };
 
@@ -69,33 +70,36 @@ describe(HelmReleasesService, () => {
   it("lints every discovered release strictly, with its values", async () => {
     expect.hasAssertions();
 
-    const root = charts();
+    const workspace = workspaceFiles();
+    const root = `${workspace}/infrastructure/helm`;
     const runner = new FakeProcessRunner({});
     const subject = await build(runner);
 
-    expect(subject.lint(root)).toBe(0);
+    expect(subject.lint(root, workspace)).toBe(0);
     expect(runner.lines).toStrictEqual(
-      arguments_(root).map((line) => `helm lint --strict ${line}`),
+      arguments_(workspace).map((line) => `helm lint --strict ${line}`),
     );
   });
 
   it("stops linting at the first release that fails", async () => {
     expect.hasAssertions();
 
-    const root = charts();
+    const workspace = workspaceFiles();
+    const root = `${workspace}/infrastructure/helm`;
     const runner = new FakeProcessRunner({}, 0, {
       [`helm lint --strict ${root}/alpha *`]: 1,
     });
     const subject = await build(runner);
 
-    expect(subject.lint(root)).toBe(1);
+    expect(subject.lint(root, workspace)).toBe(1);
     expect(runner.lines).toHaveLength(1);
   });
 
   it("renders every release into its own file in the directory", async () => {
     expect.hasAssertions();
 
-    const root = charts();
+    const workspace = workspaceFiles();
+    const root = `${workspace}/infrastructure/helm`;
     const directory = path.join(
       createTemporaryDirectory("helm", TEMPORARY_ROOT),
       "nested",
@@ -105,13 +109,13 @@ describe(HelmReleasesService, () => {
     });
     const subject = await build(runner);
 
-    subject.render(directory, root);
+    subject.render(directory, root, workspace);
 
     expect(fs.existsSync(directory)).toBe(true);
     expect(runner.lines).toStrictEqual(
-      ["alpha", "alpha-web", "beta"].map(
+      ["alpha", "beta", "alpha-web"].map(
         (release, index) =>
-          `helm template ${release} ${arguments_(root)[index] ?? ""}`,
+          `helm template ${release} ${arguments_(workspace)[index] ?? ""}`,
       ),
     );
   });
@@ -126,7 +130,9 @@ describe(HelmReleasesService, () => {
     const subject = await build(runner);
 
     expect(() => {
-      subject.render(directory, charts());
+      const workspace = workspaceFiles();
+
+      subject.render(directory, `${workspace}/infrastructure/helm`, workspace);
     }).toThrow("bad chart");
   });
 });

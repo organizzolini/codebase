@@ -11,21 +11,33 @@ import {
   OVERRIDE_FILE,
   overrideSchema,
   PLACEHOLDER_IMAGE_TAG,
+  PROJECT_VALUES_GLOB,
+  projectValuesSchema,
+  REFERENCE_PREFIX,
   valuesSchema,
 } from "./helm-releases.constants";
 
-import type { HelmRelease } from "./helm-releases.types";
+import type { HelmRelease, ProjectContext } from "./helm-releases.types";
 
 /**
- * Finds each chart's release with base values, plus `<chart>-<name>` for every
- * other values file layered over base.
+ * Finds each chart's release with base values, plus `<chart>-<project>` for
+ * every project that owns a `helm-values.yaml` naming the chart it layers over.
  */
-export function discoverReleases(root: string): HelmRelease[] {
+export function discoverReleases(
+  root: string,
+  workspace: string,
+): HelmRelease[] {
   const namespaces = applicationNamespaces(root);
   const releases: HelmRelease[] = [];
 
   for (const chart of chartNames(root)) {
-    releases.push(...chartReleases(root, chart, namespaces));
+    releases.push(chartRelease(root, chart, namespaces));
+  }
+
+  for (const file of fs
+    .globSync(PROJECT_VALUES_GLOB, { cwd: workspace })
+    .toSorted()) {
+    releases.push(projectRelease(file, { namespaces, root, workspace }));
   }
 
   return releases;
@@ -65,44 +77,33 @@ function chartNames(root: string): string[] {
     .toSorted();
 }
 
-/** The releases of one chart: base alone, then base with each other values file. */
-function chartReleases(
+/** The release of one chart with its base values alone. */
+function chartRelease(
   root: string,
   chart: string,
   namespaces: Map<string, string>,
-): HelmRelease[] {
+): HelmRelease {
   const chartDirectory = path.join(root, chart);
   const override = overrideSchema.parse(
     readYaml(path.join(chartDirectory, OVERRIDE_FILE)) ?? {},
   );
-  const base = `values/${BASE_VALUES}`;
+  const values = [`values/${BASE_VALUES}`];
 
-  const releases: HelmRelease[] = [];
-
-  for (const variant of [undefined, ...valuesFiles(chartDirectory)]) {
-    const values = variant === undefined ? [base] : [base, `values/${variant}`];
-
-    releases.push({
-      chart,
-      namespace:
-        override.namespace ??
-        namespaces.get([chart, ...values].join(" ")) ??
-        DEFAULT_NAMESPACE,
-      release:
-        variant === undefined
-          ? chart
-          : `${chart}-${path.basename(variant, ".yaml")}`,
-      strings: {
-        ...(hasEmptyImageTag(chartDirectory, values)
-          ? { "image.tag": PLACEHOLDER_IMAGE_TAG }
-          : {}),
-        ...override.strings,
-      },
-      values,
-    });
-  }
-
-  return releases;
+  return {
+    chart,
+    namespace:
+      override.namespace ??
+      namespaces.get([chart, ...values].join(" ")) ??
+      DEFAULT_NAMESPACE,
+    release: chart,
+    strings: {
+      ...(hasEmptyImageTag(chartDirectory, values)
+        ? { "image.tag": PLACEHOLDER_IMAGE_TAG }
+        : {}),
+      ...override.strings,
+    },
+    values,
+  };
 }
 
 /** Whether the last values file to set `image.tag` leaves it empty. */
@@ -120,17 +121,31 @@ function hasEmptyImageTag(chartDirectory: string, values: string[]): boolean {
   return last === "";
 }
 
+/** The release of a project's values file, over its chart's base values. */
+function projectRelease(
+  file: string,
+  { namespaces, root, workspace }: ProjectContext,
+): HelmRelease {
+  const absolute = path.resolve(workspace, file);
+  const { chart } = projectValuesSchema.parse(readYaml(absolute));
+  const chartDirectory = path.resolve(root, chart);
+  const base = `values/${BASE_VALUES}`;
+  const values = [base, path.relative(chartDirectory, absolute)];
+
+  return {
+    chart,
+    namespace:
+      namespaces.get([chart, base, `${REFERENCE_PREFIX}${file}`].join(" ")) ??
+      DEFAULT_NAMESPACE,
+    release: `${chart}-${path.basename(path.dirname(path.dirname(file)))}`,
+    strings: hasEmptyImageTag(chartDirectory, values)
+      ? { "image.tag": PLACEHOLDER_IMAGE_TAG }
+      : {},
+    values,
+  };
+}
+
 /** Reads a YAML file, or `undefined` when it does not exist. */
 function readYaml(file: string): unknown {
   return fs.existsSync(file) ? parse(fs.readFileSync(file, "utf8")) : undefined;
-}
-
-/** Lists the values files of a chart other than `base.yaml`, sorted. */
-function valuesFiles(chartDirectory: string): string[] {
-  const directory = path.join(chartDirectory, "values");
-  const names = fs.existsSync(directory)
-    ? fs.readdirSync(directory).filter((name) => name.endsWith(".yaml"))
-    : [];
-
-  return names.toSorted().filter((name) => name !== BASE_VALUES);
 }

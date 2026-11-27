@@ -13,18 +13,18 @@ import { VALUES_GLOB } from "./image-tags.constants";
 import { ImageTagsService } from "./image-tags.service";
 
 const API_VALUES =
-  "infrastructure/helm/kubernetes-deployment/values/caelundas-api.yaml";
+  "projects/caelundas/caelundas-api/infrastructure/helm-values.yaml";
 
-const BASE_VALUES =
-  "infrastructure/helm/kubernetes-deployment/values/base.yaml";
+const BASE_VALUES = "projects/example/untagged/infrastructure/helm-values.yaml";
 
 const CLI_VALUES =
-  "infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml";
+  "projects/caelundas/caelundas-cli/infrastructure/helm-values.yaml";
 
 const WEB_VALUES =
-  "infrastructure/helm/kubernetes-deployment/values/caelundas-web.yaml";
+  "projects/caelundas/caelundas-web/infrastructure/helm-values.yaml";
 
-const THIRD_PARTY_VALUES = "infrastructure/helm/cloudflared/values/base.yaml";
+const THIRD_PARTY_VALUES =
+  "projects/example/third-party/infrastructure/helm-values.yaml";
 
 /** Values files as found, with comments and blank lines. */
 const VALUES = {
@@ -100,7 +100,7 @@ describe(ImageTagsService, () => {
     expect.hasAssertions();
 
     const fourth =
-      "infrastructure/helm/kubernetes-deployment/values/other.yaml";
+      "projects/caelundas/caelundas-other/infrastructure/helm-values.yaml";
 
     writeFileTree(workspace, {
       [fourth]: "image:\n  repository: ghcr.io/organizzolini/other\n",
@@ -132,13 +132,9 @@ describe(ImageTagsService, () => {
   it("fails when no values file names an image", async () => {
     expect.hasAssertions();
 
-    fs.rmSync(path.join(workspace, "infrastructure/helm/kubernetes-job"), {
+    fs.rmSync(path.join(workspace, "projects/caelundas"), {
       recursive: true,
     });
-    fs.rmSync(
-      path.join(workspace, "infrastructure/helm/kubernetes-deployment"),
-      { recursive: true },
-    );
 
     const service = await buildService();
 

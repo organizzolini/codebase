@@ -13,3 +13,13 @@ export interface HelmRelease {
   /** Values files, relative to the chart, layered in order. */
   values: readonly string[];
 }
+
+/** Where a project's values file is found and which namespaces Applications give. */
+export interface ProjectContext {
+  /** Namespaces by the chart and values files an Application installs. */
+  namespaces: ReadonlyMap<string, string>;
+  /** The charts folder. */
+  root: string;
+  /** The workspace root, which the project's path is relative to. */
+  workspace: string;
+}
