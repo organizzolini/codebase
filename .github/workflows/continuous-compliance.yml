@@ -62,14 +62,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: 📦 Setup pnpm
-        uses: ./.github/actions/setup-pnpm
-
-      - name: 🟢 Setup node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: 🧑‍🍳 Setup Codebase
+        uses: ./.github/actions/setup-codebase
         with:
-          node-version-file: .nvmrc
-          cache: pnpm
+          install: "false"
+          node-cache: pnpm
+          nx-cache: "false"
+          nx-graph-cache: "false"
+          nx-shas: "false"
+          python-dependencies: "false"
+          uv: "false"
 
       # The compliance CLI and the workspace packages it imports are all this
       # needs. Still no Nx cache, no uv, and no Homebrew: there is no project
@@ -114,14 +116,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: 📦 Setup pnpm
-        uses: ./.github/actions/setup-pnpm
-
-      - name: 🟢 Setup node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: 🧑‍🍳 Setup Codebase
+        uses: ./.github/actions/setup-codebase
         with:
-          node-version-file: .nvmrc
-          cache: pnpm
+          install: "false"
+          node-cache: pnpm
+          nx-cache: "false"
+          nx-graph-cache: "false"
+          nx-shas: "false"
+          python-dependencies: "false"
+          uv: "false"
 
       - name: 📚 Install Root Dependencies
         run: |
@@ -157,14 +161,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: 📦 Setup pnpm
-        uses: ./.github/actions/setup-pnpm
-
-      - name: 🟢 Setup node
-        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      - name: 🧑‍🍳 Setup Codebase
+        uses: ./.github/actions/setup-codebase
         with:
-          node-version-file: .nvmrc
-          cache: pnpm
+          install: "false"
+          node-cache: pnpm
+          nx-cache: "false"
+          nx-graph-cache: "false"
+          nx-shas: "false"
+          python-dependencies: "false"
+          uv: "false"
 
       - name: 📚 Install Root Dependencies
         run: |

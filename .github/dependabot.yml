@@ -93,7 +93,6 @@ updates:
     directories:
       - /
       - /.github/actions/setup-codebase
-      - /.github/actions/setup-pnpm
     schedule:
       interval: weekly
       day: friday

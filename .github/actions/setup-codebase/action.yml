@@ -1,7 +1,7 @@
 name: 🧑‍🍳 Setup Codebase
 description: |
-  Nx codebase setup with pnpm, node, and cache management
-  (requires checkout first)
+  Nx codebase setup with pnpm (restored from cache), node, and cache
+  management (requires checkout first)
 
   Every optional step is gated by an input so a job pays only for what it
   uses. A tool install is named after the project whose Nx targets need
@@ -70,6 +70,11 @@ inputs:
   eslint-cache:
     description: Restore and save the ESLint cache
     default: "false"
+  node-cache:
+    description: |
+      Package manager whose store `setup-node` caches, such as `pnpm`, or empty
+      for none. For a job that installs on its own, without `install`.
+    default: ""
   uv:
     description: |
       Install uv. Required by far more than the Python projects — yaml-lint
@@ -95,13 +100,78 @@ outputs:
 runs:
   using: composite
   steps:
+    # `pnpm/action-setup` runs `npm ci` against its own bundled pnpm, an uncached
+    # registry round trip on every job, then self-updates to the pinned version. This
+    # caches the result by version and skips the action on a hit, since its first act
+    # is to delete its `dest`. Upstream has no setting for it: pnpm/action-setup#141.
+    #
+    # Read with `grep`/`sed` rather than `node -p`: this runs before `setup-node`.
+    - name: 🧮 Resolve pnpm Version
+      id: pnpm-version
+      run: |
+        version="$(
+          grep -o '"packageManager": *"pnpm@[^"+]*' package.json \
+            | sed 's/.*pnpm@//'
+        )"
+        if [ -z "${version}" ]; then
+          echo "❌ No pnpm version found in package.json's packageManager field"
+          exit 1
+        fi
+        echo "version=${version}" >>"$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: ♻️ Sync pnpm Cache
+      id: pnpm-cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/setup-pnpm
+        key: pnpm-${{ runner.os }}-${{ steps.pnpm-version.outputs.version }}
+
     - name: 📦 Setup pnpm
-      uses: ./.github/actions/setup-pnpm
+      if: steps.pnpm-cache.outputs.cache-hit != 'true'
+      uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+
+    # A cache hit repeats the action's PATH setup by hand, with literal paths in the
+    # hosted runner's home. pnpm v10 and v11 disagree on whether `PNPM_HOME` or its
+    # `bin` holds the shims, so both go on PATH.
+    - name: 🛤️ Restore Cached pnpm PATH
+      if: steps.pnpm-cache.outputs.cache-hit == 'true'
+      run: |
+        echo "PNPM_HOME=/home/runner/setup-pnpm/node_modules/.bin" >>"$GITHUB_ENV"
+        echo "/home/runner/setup-pnpm/node_modules/.bin" >>"$GITHUB_PATH"
+        echo "/home/runner/setup-pnpm/node_modules/.bin/bin" >>"$GITHUB_PATH"
+      shell: bash
+
+    # A cache entry is immutable, so a damaged one would break every job until the
+    # pinned version changed; this step reinstalls it, and warns when an upgrade
+    # moves the shims the PATH above relies on.
+    - name: 🔎 Verify Cached pnpm
+      if: steps.pnpm-cache.outputs.cache-hit == 'true'
+      id: pnpm-verify
+      env:
+        EXPECTED_VERSION: ${{ steps.pnpm-version.outputs.version }}
+      run: |
+        actual="$(pnpm --version 2>/dev/null || true)"
+        if [ "${actual}" = "${EXPECTED_VERSION}" ]; then
+          echo "usable=true" >>"$GITHUB_OUTPUT"
+        else
+          echo "usable=false" >>"$GITHUB_OUTPUT"
+          echo "::warning::Cached pnpm reported '${actual}', expected" \
+            "'${EXPECTED_VERSION}' — reinstalling from the registry."
+        fi
+      shell: bash
+
+    - name: 🩹 Repair pnpm Install
+      if: |
+        steps.pnpm-cache.outputs.cache-hit == 'true'
+        && steps.pnpm-verify.outputs.usable != 'true'
+      uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
 
     - name: 🟢 Setup node
       uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version-file: .nvmrc
+        cache: ${{ inputs.node-cache }}
 
     - name: 🎯 Set Nx SHAs
       if: inputs.nx-shas == 'true'
