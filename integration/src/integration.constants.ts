@@ -15,15 +15,11 @@ export const environmentSchema = z.object({
   /** A push's previous tip, `github.event.before`. */
   BEFORE: z.string().optional(),
   GITHUB_ENV: z.string().optional(),
-  /** The file GitHub Actions reads step outputs from. */
   /** The event that triggered the run, such as `push` or `merge_group`. */
   GITHUB_EVENT_NAME: z.string().optional(),
-  GITHUB_OUTPUT: z.string().optional(),
   /** The ref a run is for; a merge group's names the pull request. */
   GITHUB_REF: z.string().optional(),
   GITHUB_REPOSITORY: z.string().optional(),
-  /** The run's id, which the upgrade pull request links to. */
-  GITHUB_RUN_ID: z.string().optional(),
   GITHUB_SERVER_URL: z.string().optional(),
   INCLUDE_TEMPLATES: z.string().optional(),
   /**

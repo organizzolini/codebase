@@ -1,4 +1,4 @@
-import type { Command } from "../process-runner/process-runner.types";
+import type { Command } from "../../../process-runner/process-runner.types";
 import type { UpgradeStep } from "./upgrade-dependencies.types";
 
 // ♟️ Constants
@@ -28,6 +28,9 @@ export const WARNING_LIMIT = 10;
 
 /** Most characters quoted from a warning or skipped step's reason. */
 export const LINE_CHARACTERS = 160;
+
+/** What the pull request says the ReUI step did; it prints its own retry hint on an outage. */
+export const REUI_SUMMARY = "ReUI skill refreshed";
 
 /** Formats upgrades, so the commit hook does not reformat them. */
 const FORMAT_UPGRADED_FILES: Command = [
@@ -81,19 +84,20 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
   },
   {
     // `skills update` installs for every agent when none is detected, leaving
-    // an untracked agent/ folder, so it is removed. It skips ReUI's JSON bundle
-    // and the IC-suite skills, which sit too deep to find, so both are
-    // re-added from local sources.
+    // an untracked agent/ folder, so it is removed.
     commands: [
       ["pnpm", "exec", "skills", "update", "--yes"],
       ["rm", "-rf", "agent/"],
-      [
-        "node",
-        "--import",
-        "@swc-node/register/esm-register",
-        "installation/src/installation.main.ts",
-        "update-reui-skill",
-      ],
+    ],
+    label: "Upgrade skills",
+  },
+  // `skills update` skips ReUI's JSON bundle, so it is refreshed on its own.
+  { label: "Upgrade ReUI skill", task: "reui" },
+  {
+    // `skills update` also skips the IC-suite skills, which sit too deep to
+    // find, so they are re-added from local sources, then everything is
+    // formatted.
+    commands: [
       [
         "find",
         "./projects/ic-suite",
@@ -115,7 +119,7 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
       ["rm", "-rf", "agent/"],
       FORMAT_UPGRADED_FILES,
     ],
-    label: "Upgrade skills",
+    label: "Restore IC-suite skills",
   },
 ];
 

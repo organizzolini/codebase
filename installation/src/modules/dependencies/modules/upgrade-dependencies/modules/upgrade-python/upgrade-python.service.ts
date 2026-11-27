@@ -2,7 +2,7 @@ import fs from "node:fs";
 
 import { Injectable } from "@nestjs/common";
 
-import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { ProcessRunnerService } from "../../../../../process-runner/process-runner.service";
 
 import {
   APPLICATION_PYPROJECT,

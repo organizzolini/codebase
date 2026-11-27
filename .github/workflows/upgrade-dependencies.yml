@@ -33,7 +33,7 @@ jobs:
       # request lists what was skipped. The job fails only when an undo fails.
       - name: ⬆️ Upgrade Dependencies
         id: upgrade
-        run: NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts upgrade-dependencies
+        run: NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts upgrade-dependencies
 
       - name: 🔐 Import GPG Key
         id: import-gpg

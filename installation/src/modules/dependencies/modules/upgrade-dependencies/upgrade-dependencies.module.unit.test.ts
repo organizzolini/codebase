@@ -6,7 +6,7 @@ import {
   expectModuleProvides,
 } from "@codebase/testing/nestjs";
 
-import { ProcessRunnerModule } from "../process-runner/process-runner.module";
+import { ProcessRunnerModule } from "../../../process-runner/process-runner.module";
 
 import { UpgradeDependenciesCommand } from "./upgrade-dependencies.command";
 import { UpgradeDependenciesModule } from "./upgrade-dependencies.module";
