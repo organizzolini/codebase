@@ -74,7 +74,7 @@ describe("event group tree", () => {
         ["Body 6", ["Mars 2", "Mercury 1", "Saturn 1", "Sun 2", "Venus 2"]],
         ["Element 2", ["Fire 2"]],
         ["Planetary 1", [["Direction 1", ["Retrograde Period 1"]]]],
-        ["Zodiac 3", ["Aries 2", "Ingress 3"]],
+        ["Sign 3", ["Aries 2", "Ingress 3"]],
       ]);
     });
 
@@ -140,7 +140,7 @@ describe("event group tree", () => {
       expect(summarize(tree)).toStrictEqual([
         "Aries 2",
         "Ingress 3",
-        "No Zodiac 3",
+        "No Sign 3",
       ]);
     });
 
@@ -519,7 +519,7 @@ describe("event group tree", () => {
     });
 
     it("ignores tags beneath another root, or with no place in the ranks", () => {
-      const other = holding("Other", [{ id: "mars", path: "Zodiac / Mars" }]);
+      const other = holding("Other", [{ id: "mars", path: "Sign / Mars" }]);
       const absent = holding("Absent", [{ id: "ghost", path: "Body / Ghost" }]);
 
       expect(

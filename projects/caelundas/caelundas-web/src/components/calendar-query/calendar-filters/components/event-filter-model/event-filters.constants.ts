@@ -105,7 +105,7 @@ export const TAG_ROOT_DESCRIPTIONS: Readonly<Record<string, string>> = {
   Eclipse: "Solar and lunar eclipses.",
   Lunar: "The Moon's month and orbit.",
   Planetary: "The planets' own cycles.",
+  Sign: "The signs and what they imply.",
   Solar: "The Sun's year.",
   Temporality: "Whether an event is an instant or progresses over time.",
-  Zodiac: "The signs and what they imply.",
 };

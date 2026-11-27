@@ -54,7 +54,7 @@ export const FIXTURE_TAGS: readonly FixtureTag[] = [
   { id: "tag-venus", name: "Venus", parentId: "tag-body" },
   { id: "tag-mars", name: "Mars", parentId: "tag-body" },
   { id: "tag-saturn", name: "Saturn", parentId: "tag-body" },
-  { id: "tag-zodiac", name: "Zodiac", parentId: null },
+  { id: "tag-zodiac", name: "Sign", parentId: null },
   { id: "tag-ingress", name: "Ingress", parentId: "tag-zodiac" },
   { id: "tag-aries", name: "Aries", parentId: "tag-zodiac" },
   { id: "tag-element", name: "Element", parentId: null },

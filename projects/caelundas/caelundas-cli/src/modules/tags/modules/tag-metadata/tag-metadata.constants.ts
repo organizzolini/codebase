@@ -9,6 +9,10 @@ export const TAG_METADATA: Readonly<
     "hexagon",
     "Patterns of three or more bodies linked by aspects.",
   ],
+  "Aspect / Compound / Focal Body": [
+    "crosshair",
+    "The body a compound pattern points at.",
+  ],
   "Aspect / Compound / Quadruple": ["square", "Patterns of four bodies."],
   "Aspect / Compound / Quintuple": ["pentagon", "Patterns of five bodies."],
   "Aspect / Compound / Sextuple": ["hexagon", "Patterns of six bodies."],
@@ -17,7 +21,6 @@ export const TAG_METADATA: Readonly<
     "Bodies bunched together, counted by how many.",
   ],
   "Aspect / Compound / Triple": ["triangle", "Patterns of three bodies."],
-  "Aspect / Focal Body": ["crosshair", "The body a pattern points at."],
   "Aspect / Harmonic": [
     "audio-waveform",
     "The harmonic of an aspect: 1 for a conjunction, 2 an opposition, 3 a trine, 4 a square, and so on.",
@@ -162,6 +165,31 @@ export const TAG_METADATA: Readonly<
     "milestone",
     "A planet's stage in its cycle with the Sun.",
   ],
+  Sign: ["star", "The signs and what they imply."],
+  "Sign / Decan": ["layers", "The ten-degree third of a sign a body is in."],
+  "Sign / Dignity": ["crown", "How strongly a planet sits in its sign."],
+  "Sign / Element": [
+    "flame",
+    "The element of a sign: fire, earth, air or water.",
+  ],
+  "Sign / Element / Air": ["wind", "Gemini, Libra and Aquarius."],
+  "Sign / Element / Earth": ["mountain", "Taurus, Virgo and Capricorn."],
+  "Sign / Element / Fire": ["flame", "Aries, Leo and Sagittarius."],
+  "Sign / Element / Water": ["droplets", "Cancer, Scorpio and Pisces."],
+  "Sign / Ingress": [
+    "log-in",
+    "A body enters a sign, or a decan of one, and its stay there.",
+  ],
+  "Sign / Modality": [
+    "repeat",
+    "The modality of a sign: cardinal, fixed or mutable.",
+  ],
+  "Sign / Peak": [
+    "split",
+    "Which side of a sign's peak, at 15°, a body is on.",
+  ],
+  "Sign / Polarity": ["plus", "The polarity of a sign: positive or negative."],
+  "Sign / Sign": ["star", "The zodiac sign a body is in."],
   Solar: ["sun", "The Sun's year."],
   "Solar / Annual Cycle": [
     "rotate-cw",
@@ -197,34 +225,6 @@ export const TAG_METADATA: Readonly<
     "hourglass",
     "Progressing over a duration of time.",
   ],
-  Zodiac: ["star", "The signs and what they imply."],
-  "Zodiac / Decan": ["layers", "The ten-degree third of a sign a body is in."],
-  "Zodiac / Dignity": ["crown", "How strongly a planet sits in its sign."],
-  "Zodiac / Element": [
-    "flame",
-    "The element of a sign: fire, earth, air or water.",
-  ],
-  "Zodiac / Element / Air": ["wind", "Gemini, Libra and Aquarius."],
-  "Zodiac / Element / Earth": ["mountain", "Taurus, Virgo and Capricorn."],
-  "Zodiac / Element / Fire": ["flame", "Aries, Leo and Sagittarius."],
-  "Zodiac / Element / Water": ["droplets", "Cancer, Scorpio and Pisces."],
-  "Zodiac / Ingress": [
-    "log-in",
-    "A body enters a sign, or a decan of one, and its stay there.",
-  ],
-  "Zodiac / Modality": [
-    "repeat",
-    "The modality of a sign: cardinal, fixed or mutable.",
-  ],
-  "Zodiac / Peak": [
-    "split",
-    "Which side of a sign's peak, at 15°, a body is on.",
-  ],
-  "Zodiac / Polarity": [
-    "plus",
-    "The polarity of a sign: positive or negative.",
-  ],
-  "Zodiac / Sign": ["star", "The zodiac sign a body is in."],
 };
 
 /** An icon by a node's last name, when its family's is vague. */

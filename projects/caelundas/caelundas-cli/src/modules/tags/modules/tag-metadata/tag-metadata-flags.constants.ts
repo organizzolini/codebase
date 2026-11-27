@@ -3,7 +3,8 @@
 import type { TagMenuFlag } from "./tag-metadata.types";
 
 // The menus only offer a tag, so a saved link to one still works. Filter
-// leaves out roots and headers over a dimension no preset or view filters by.
+// leaves out roots, headers over a dimension no preset or view filters by, and
+// Dignity's values, which belong to a planet and a sign together.
 // Group leaves out a header over a single tag. Sort and Select leave out
 // Benefic and Malefic.
 
@@ -13,7 +14,7 @@ export const TAG_MENU_EXCLUSIONS: Readonly<
 > = {
   isFilterable: [
     "Aspect",
-    "Aspect / Focal Body",
+    "Aspect / Compound / Focal Body",
     "Aspect / Harmonic",
     "Aspect / Nature",
     "Aspect / Phase",
@@ -25,17 +26,22 @@ export const TAG_MENU_EXCLUSIONS: Readonly<
     "Eclipse / Phase",
     "Lunar",
     "Planetary",
+    "Sign",
+    "Sign / Decan",
+    "Sign / Dignity",
+    "Sign / Dignity / Detriment",
+    "Sign / Dignity / Domicile",
+    "Sign / Dignity / Exaltation",
+    "Sign / Dignity / Fall",
+    "Sign / Dignity / Peregrine",
+    "Sign / Element",
+    "Sign / Modality",
+    "Sign / Peak",
+    "Sign / Polarity",
     "Solar",
     "Solar / Annual Cycle / Interval",
     "Solar / Season",
     "Temporality",
-    "Zodiac",
-    "Zodiac / Decan",
-    "Zodiac / Dignity",
-    "Zodiac / Element",
-    "Zodiac / Modality",
-    "Zodiac / Peak",
-    "Zodiac / Polarity",
   ],
   isGroupable: ["Aspect / Compound / Sextuple", "Planetary / Phase / Martian"],
   isSelectable: ["Body / Planet / Benefic", "Body / Planet / Malefic"],

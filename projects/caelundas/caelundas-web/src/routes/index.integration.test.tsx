@@ -416,12 +416,12 @@ describe("index", () => {
       expect(
         within(toolbar).getByRole("button", { name: "Filter, 2 active" }),
       ).toBeDefined();
-      expect(
-        within(chips).getAllByText(/^(Body|Zodiac|Aspect)$/u),
-      ).toHaveLength(3);
+      expect(within(chips).getAllByText(/^(Body|Sign|Aspect)$/u)).toHaveLength(
+        3,
+      );
 
       fireEvent.click(
-        within(chips).getByRole("button", { name: "Zodiac filter options" }),
+        within(chips).getByRole("button", { name: "Sign filter options" }),
       );
       fireEvent.click(
         await screen.findByRole("menuitem", { name: "Remove" }, BUILDER_WAIT),

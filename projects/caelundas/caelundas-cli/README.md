@@ -288,7 +288,7 @@ pairwise conjunct bodies with three or more members.
   A retrograde re-entry across a sign boundary does not fire a peak ingress.
 - **Sign transit** is a body's stay in one sign, from its sign ingress to the
   next one, named like `Moon in Taurus`. It carries the ingress, sign, and body
-  tags, and classifies as `Zodiac / Ingress / Sign Transit` and `Temporality /
+  tags, and classifies as `Sign / Ingress / Sign Transit` and `Temporality /
 Progressive`, so filtering by body, sign, or progressive finds it. A
   retrograde re-entry starts a new stay in the sign it left. Every body that has
   sign ingresses gets one, so a body is always in a sign.
@@ -296,8 +296,8 @@ Progressive`, so filtering by body, sign, or progressive finds it. A
 Aries`, and **peak transit** its stay in the first or second 15° of a sign,
   before or after the peak, named like `Sun in first half of Aries`. A decan
   transit runs between sign and decan ingresses, a peak transit between sign
-  and peak ingresses, and each classifies as `Zodiac / Ingress / Decan Transit`
-  or `Peak Transit`, with the decan or `Zodiac / Peak / Before Peak` or `After
+  and peak ingresses, and each classifies as `Sign / Ingress / Decan Transit`
+  or `Peak Transit`, with the decan or `Sign / Peak / Before Peak` or `After
 Peak` beneath it. Each slice is read from the ephemeris at
   the change, not from the tags, since a retrograde body leaving a sign enters
   its last decan, and the second half, not the first.
@@ -366,20 +366,19 @@ this project, about ten of them at most, since every filter, group and sort menu
 on them. A root groups what one module family detects with the attributes that
 travel with it, and a tag with several parents is carried as several paths on
 the event, not as a node with two parents, so an Aries event carries
-`Zodiac / Sign / Aries`, `Zodiac / Element / Fire`, `Zodiac / Modality /
-Cardinal` and `Zodiac / Polarity / Positive` side by side:
+`Sign / Sign / Aries`, `Sign / Element / Fire`, `Sign / Modality /
+Cardinal` and `Sign / Polarity / Positive` side by side:
 
-| Root          | Its nodes                                                                                                                                                                                                                                                                   |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Aspect`      | `Simple` (`Major`, `Minor` and `Specialty`) and `Compound` (`Triple`, `Quadruple`, `Quintuple`, `Sextuple` and `Stellium`) aspects by name, with their `Nature`, `Harmonic` (`Harmonic 1` to `Harmonic 12`), `Phase` (`Forming`, `Exact` and `Dissolving`) and `Focal Body` |
-| `Body`        | Every body under its class: `Luminary`, `Planet` (holding `Personal`, `Social` and `Outer`), `Asteroid` or `Point`                                                                                                                                                          |
-| `Zodiac`      | `Sign`, `Element`, `Modality`, `Polarity`, `Decan`, a traditional planet's `Dignity` in the sign it enters, and the `Ingress` kinds                                                                                                                                         |
-| `Solar`       | The `Annual Cycle` (solstices, equinoxes, cross-quarter days, hexadecans, apsides, and the sixteen `Interval`s) and its `Season`                                                                                                                                            |
-| `Lunar`       | The `Monthly Cycle`, with the Moon's phases, and its `Apsides`, with `Advancing` and `Retreating`                                                                                                                                                                           |
-| `Daily`       | The `Solar Cycle` and `Lunar Cycle` of a day, each with its `Rise`, `Set`, `Zenith` and `Nadir` (and the Moon's `Moon Up` span), its `Twilight` events and spans, and `Time of Day`                                                                                         |
-| `Planetary`   | `Direction` (stations and retrograde periods), `Phase` (`Mercurian`, `Venusian` and `Martian`) and `Synodic Stage` (including `Widening` and `Closing`)                                                                                                                     |
-| `Eclipse`     | `Solar` and `Lunar` by type (`Total`, `Partial`, `Annular`), with their `Frame` (`Geocentric` or `Topocentric`) and `Phase`                                                                                                                                                 |
-| `Temporality` | `Perfective`, an instant in time, or `Progressive`, progressing over a duration of time                                                                                                                                                                                     |
+| Root          | Its nodes                                                                                                                                                                                                                                                                               |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Body`        | Every body under its class: `Luminary`, `Planet` (holding `Personal`, `Social` and `Outer`), `Asteroid` or `Point`                                                                                                                                                                      |
+| `Sign`        | `Sign`, `Element`, `Modality`, `Polarity`, `Decan`, a traditional planet's `Dignity` in the sign it enters, and the `Ingress` kinds                                                                                                                                                     |
+| `Solar`       | The `Annual Cycle` (solstices, equinoxes, cross-quarter days, hexadecans, apsides, and the sixteen `Interval`s) and its `Season`                                                                                                                                                        |
+| `Lunar`       | The `Monthly Cycle`, with the Moon's phases, and its `Apsides`, with `Advancing` and `Retreating`                                                                                                                                                                                       |
+| `Daily`       | The `Solar Cycle` and `Lunar Cycle` of a day, each with its `Rise`, `Set`, `Zenith` and `Nadir` (and the Moon's `Moon Up` span), its `Twilight` events and spans, and `Time of Day`                                                                                                     |
+| `Planetary`   | `Direction` (stations and retrograde periods), `Phase` (`Mercurian`, `Venusian` and `Martian`) and `Synodic Stage`, a node for each of `Mercury`, `Venus` and `Mars` holding that planet's own stages (`Widening`, `Closing` and so on, one tag a planet, so planets share stage names) |
+| `Eclipse`     | `Solar` and `Lunar` by type (`Total`, `Partial`, `Annular`), with their `Frame` (`Geocentric` or `Topocentric`) and `Phase`                                                                                                                                                             |
+| `Temporality` | `Perfective`, an instant in time, or `Progressive`, progressing over a duration of time                                                                                                                                                                                                 |
 
 Mars is full at opposition rather than at a superior conjunction, so its full
 and opposition events take an `Opposition` synodic stage of their own; a phase

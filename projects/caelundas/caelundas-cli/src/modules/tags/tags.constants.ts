@@ -10,9 +10,9 @@ export const TAG_ROOT = {
   eclipse: "Eclipse",
   lunar: "Lunar",
   planetary: "Planetary",
+  sign: "Sign",
   solar: "Solar",
   temporality: "Temporality",
-  zodiac: "Zodiac",
 } as const;
 
 /** Raw tags every detector attaches, which tell no event apart from another. */

@@ -101,7 +101,7 @@ describe("calendar-view-strip utilities", () => {
       const resolved = resolveViews([
         {
           id: "zodiac",
-          name: "Zodiac",
+          name: "Sign",
           values: [
             { count: 1, depth: 1, id: "sign", name: "Sign", path: "Sign" },
           ],

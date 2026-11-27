@@ -11,15 +11,15 @@ function parentsOf(key: string): string[] {
 
 describe("tag extra parents", () => {
   it("lists a sign under its element, modality and polarity", () => {
-    expect(parentsOf("Zodiac / Sign / Aries")).toStrictEqual([
-      "Zodiac / Element / Fire",
-      "Zodiac / Modality / Cardinal",
-      "Zodiac / Polarity / Positive",
+    expect(parentsOf("Sign / Sign / Aries")).toStrictEqual([
+      "Sign / Element / Fire",
+      "Sign / Modality / Cardinal",
+      "Sign / Polarity / Positive",
     ]);
-    expect(parentsOf("Zodiac / Sign / Pisces")).toStrictEqual([
-      "Zodiac / Element / Water",
-      "Zodiac / Modality / Mutable",
-      "Zodiac / Polarity / Negative",
+    expect(parentsOf("Sign / Sign / Pisces")).toStrictEqual([
+      "Sign / Element / Water",
+      "Sign / Modality / Mutable",
+      "Sign / Polarity / Negative",
     ]);
   });
 

@@ -28,7 +28,7 @@ export interface TagEdgeRow {
   targetNode: string;
 }
 
-/** An element of the zodiac. */
+/** An element of the signs. */
 export type TagElement = "Air" | "Earth" | "Fire" | "Water";
 
 /**

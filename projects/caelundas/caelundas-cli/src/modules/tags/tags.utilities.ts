@@ -105,7 +105,7 @@ function dignityPaths(rawTags: ReadonlySet<string>): TagPath[] {
     "Peregrine",
   ];
 
-  return [[TAG_ROOT.zodiac, "Dignity", dignity]];
+  return [[TAG_ROOT.sign, "Dignity", dignity]];
 }
 
 /** An eclipse's kind, from the body eclipsed and the eclipse's type. */
@@ -159,7 +159,7 @@ function ingressPaths(
   }
 
   return [
-    [TAG_ROOT.zodiac, "Ingress", ingressKind(event, rawTags)],
+    [TAG_ROOT.sign, "Ingress", ingressKind(event, rawTags)],
     ...dignityPaths(rawTags),
   ];
 }

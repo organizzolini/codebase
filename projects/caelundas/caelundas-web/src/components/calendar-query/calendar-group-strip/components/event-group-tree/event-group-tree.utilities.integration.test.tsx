@@ -63,7 +63,7 @@ describe("event grouping", () => {
 
     // The roots head the rows, and the first is open to the tags beneath it.
     await expect(
-      screen.findByRole("button", { name: "Zodiac" }),
+      screen.findByRole("button", { name: "Sign" }),
     ).resolves.toBeDefined();
     await expect(
       screen.findByRole("button", { name: "Simple" }),

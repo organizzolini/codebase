@@ -57,9 +57,9 @@ export interface FilterTags {
   readonly moon: Tag;
   readonly planet: Tag;
   readonly planetary: Tag;
+  readonly sign: Tag;
   readonly signIngress: Tag;
   readonly simple: Tag;
-  readonly zodiac: Tag;
 }
 
 /** The body of a GraphQL response: data, errors, or both. */
@@ -189,11 +189,9 @@ export async function seedFilterTags(
   const major = await tags.save(
     tags.create({ name: "Major", parent: simple, slug: "major" }),
   );
-  const zodiac = await tags.save(
-    tags.create({ name: "Zodiac", slug: "zodiac" }),
-  );
+  const sign = await tags.save(tags.create({ name: "Sign", slug: "sign" }));
   const ingress = await tags.save(
-    tags.create({ name: "Ingress", parent: zodiac, slug: "ingress" }),
+    tags.create({ name: "Ingress", parent: sign, slug: "ingress" }),
   );
   const signIngress = await tags.save(
     tags.create({
@@ -259,9 +257,9 @@ export async function seedFilterTags(
     moon,
     planet,
     planetary,
+    sign,
     signIngress,
     simple,
-    zodiac,
   };
 }
 

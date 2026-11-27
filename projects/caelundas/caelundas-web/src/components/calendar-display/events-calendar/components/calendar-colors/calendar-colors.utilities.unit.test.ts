@@ -54,7 +54,7 @@ describe("calendar colors", () => {
           "Aspect / Compound / Triple / Yod",
           "Daily / Solar Cycle",
           "Daily / Lunar Cycle",
-          "Zodiac / Ingress / Sign Ingress",
+          "Sign / Ingress / Sign Ingress",
           "Daily / Twilight / Civil Dawn",
         ].map((path) => getEventColor(eventWith([path]))),
       );
@@ -70,7 +70,7 @@ describe("calendar colors", () => {
     });
 
     it("does not take a tag whose name only starts like a rule's", () => {
-      expect(getEventColor(eventWith(["Zodiac / Ingressive"]))).toBeNull();
+      expect(getEventColor(eventWith(["Sign / Ingressive"]))).toBeNull();
     });
 
     it("gives none for an event no kind rule covers, whatever color it carries", () => {

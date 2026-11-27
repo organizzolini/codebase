@@ -622,7 +622,7 @@ describe("events filtering end-to-end suite", () => {
               {
                 negated: false,
                 operator: "is_any_of",
-                path: [`tag:${tags.zodiac.id}`],
+                path: [`tag:${tags.sign.id}`],
                 values: [tags.signIngress.id],
               },
               notTheMoon,

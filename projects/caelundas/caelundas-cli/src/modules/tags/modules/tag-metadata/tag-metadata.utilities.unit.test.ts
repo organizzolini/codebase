@@ -26,11 +26,11 @@ function generatedPaths(): string[][] {
   }
 
   for (const kind of ["Decan", "Peak", "Sign"]) {
-    add(["Zodiac", "Ingress", `${kind} Ingress`]);
+    add(["Sign", "Ingress", `${kind} Ingress`]);
   }
 
   for (const kind of ["Decan", "Peak", "Sign"]) {
-    add(["Zodiac", "Ingress", `${kind} Transit`]);
+    add(["Sign", "Ingress", `${kind} Transit`]);
   }
 
   for (const dignity of [
@@ -40,7 +40,7 @@ function generatedPaths(): string[][] {
     "Fall",
     "Peregrine",
   ]) {
-    add(["Zodiac", "Dignity", dignity]);
+    add(["Sign", "Dignity", dignity]);
   }
 
   for (const type of ["Annular", "Partial", "Total"]) {
@@ -60,7 +60,7 @@ function generatedPaths(): string[][] {
 describe("tag metadata", () => {
   describe(tagMenuFlags, () => {
     it("offers a tag in every menu unless it is excluded", () => {
-      expect(tagMenuFlags(["Zodiac", "Sign", "Aries"])).toStrictEqual({
+      expect(tagMenuFlags(["Sign", "Sign", "Aries"])).toStrictEqual({
         isFilterable: true,
         isGroupable: true,
         isSelectable: true,
@@ -69,7 +69,7 @@ describe("tag metadata", () => {
     });
 
     it("keeps a header over one dimension's values out of the Filter menu only", () => {
-      expect(tagMenuFlags(["Zodiac", "Element"])).toStrictEqual({
+      expect(tagMenuFlags(["Sign", "Element"])).toStrictEqual({
         isFilterable: false,
         isGroupable: true,
         isSelectable: true,
@@ -80,7 +80,7 @@ describe("tag metadata", () => {
     it("keeps a label over one dimension's spans or sides out of the Filter menu", () => {
       for (const path of [
         ["Solar", "Annual Cycle", "Interval"],
-        ["Zodiac", "Peak"],
+        ["Sign", "Peak"],
       ]) {
         expect(tagMenuFlags(path).isFilterable).toBe(false);
       }
@@ -89,6 +89,21 @@ describe("tag metadata", () => {
         tagMenuFlags(["Solar", "Annual Cycle", "Interval", "Beltane Pre"])
           .isFilterable,
       ).toBe(true);
+    });
+
+    it("keeps Dignity and its values out of the Filter menu, as a dignity belongs to a planet and a sign together", () => {
+      const offered = [
+        "",
+        "Detriment",
+        "Domicile",
+        "Exaltation",
+        "Fall",
+        "Peregrine",
+      ]
+        .map((name) => ["Sign", "Dignity", name].filter(Boolean))
+        .filter((path) => tagMenuFlags(path).isFilterable);
+
+      expect(offered).toStrictEqual([]);
     });
 
     it("keeps Benefic out of the Sort and Select menus but in the Filter and Group menus", () => {
@@ -115,8 +130,8 @@ describe("tag metadata", () => {
         ["Planetary", "Phase"],
         ["Planetary", "Synodic Stage"],
         ["Solar", "Annual Cycle"],
-        ["Zodiac", "Ingress"],
-        ["Zodiac", "Sign"],
+        ["Sign", "Ingress"],
+        ["Sign", "Sign"],
       ].filter((path) => !tagMenuFlags(path).isFilterable);
 
       expect(named).toStrictEqual([]);
@@ -156,7 +171,7 @@ describe("tag metadata", () => {
 
     it("gives a leaf the icon its name calls for over its family's", () => {
       expect(tagMetadata(["Body", "Luminary", "Sun"]).icon).toBe("sun");
-      expect(tagMetadata(["Zodiac", "Dignity", "Domicile"]).icon).toBe("house");
+      expect(tagMetadata(["Sign", "Dignity", "Domicile"]).icon).toBe("house");
       expect(
         tagMetadata(["Planetary", "Phase", "Venusian", "Morning Rise"]).icon,
       ).toBe("sunrise");

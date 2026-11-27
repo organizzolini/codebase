@@ -53,7 +53,7 @@ const MAJOR_ASPECTS: PresetRule = {
 const SIGN_INGRESSES: PresetRule = {
   operator: TAG_OPERATORS.isAnyOf,
   paths: ["Ingress / Sign Ingress"],
-  root: "Zodiac",
+  root: "Sign",
 };
 
 /** Presets in menu order; missing tags are skipped, not fatal. */
@@ -131,7 +131,7 @@ export const PRESETS: readonly Preset[] = [
         {
           operator: TAG_OPERATORS.isAnyOf,
           paths: ["Ingress"],
-          root: "Zodiac",
+          root: "Sign",
         },
       ],
     },

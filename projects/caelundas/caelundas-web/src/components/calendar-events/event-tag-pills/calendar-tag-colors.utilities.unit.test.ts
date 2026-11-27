@@ -20,7 +20,7 @@ describe(getTagColor, () => {
 
   it("gives different roots different colors", () => {
     expect(getTagColor(tag("Body / Mars"))).not.toBe(
-      getTagColor(tag("Zodiac / Leo")),
+      getTagColor(tag("Sign / Leo")),
     );
   });
 

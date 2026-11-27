@@ -12,7 +12,7 @@ export const CLUSTERED_KIND_PATHS: ReadonlySet<string> = new Set([
   "Aspect / Simple / Minor",
   "Aspect / Simple / Specialty",
   "Planetary / Direction / Retrograde Period",
-  "Zodiac / Ingress",
+  "Sign / Ingress",
 ]);
 
 /**

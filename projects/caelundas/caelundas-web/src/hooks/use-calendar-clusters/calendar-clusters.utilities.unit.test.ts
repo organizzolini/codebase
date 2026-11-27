@@ -197,7 +197,7 @@ describe(clusterEvents, () => {
       "Planetary / Direction / Retrograde Period",
       "retrograde periods",
     ],
-    ["sign ingresses", "Zodiac / Ingress / Sign Ingress", "ingresses"],
+    ["sign ingresses", "Sign / Ingress / Sign Ingress", "ingresses"],
   ])("merges %s like aspects", (_name, path, kind) => {
     const clustered = clusterEvents(
       [

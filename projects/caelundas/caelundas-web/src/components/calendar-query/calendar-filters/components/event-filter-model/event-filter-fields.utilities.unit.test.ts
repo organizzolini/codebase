@@ -55,7 +55,7 @@ describe(createEventFilterFields, () => {
       ["tag:tag-body", "Body"],
       ["tag:tag-element", "Element"],
       ["tag:tag-planetary", "Planetary"],
-      ["tag:tag-zodiac", "Zodiac"],
+      ["tag:tag-zodiac", "Sign"],
       ...DERIVED_FIELDS,
     ]);
     expect(
@@ -473,7 +473,7 @@ describe(createEventFilterFields, () => {
     const facet = {
       icon: null,
       id: "zodiac",
-      name: "Zodiac",
+      name: "Sign",
       note: null,
       values: [
         {

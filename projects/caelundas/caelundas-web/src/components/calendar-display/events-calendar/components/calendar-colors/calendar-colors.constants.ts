@@ -26,7 +26,7 @@ export const EVENT_COLOR_RULES: readonly EventColorRule[] = [
     label: "Aspect patterns",
     path: "Aspect / Compound",
   },
-  { color: "#10b981", label: "Ingresses", path: "Zodiac / Ingress" },
+  { color: "#10b981", label: "Ingresses", path: "Sign / Ingress" },
   { color: "#f97316", label: "Directions", path: "Planetary / Direction" },
   {
     color: "#a8a29e",

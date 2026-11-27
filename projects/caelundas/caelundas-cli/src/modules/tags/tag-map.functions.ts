@@ -66,15 +66,16 @@ export function mapNone(names: readonly string[]): TagMap {
 }
 
 /**
- * Raw tags of one planet's phase events, keyed by the marker tag such as `Venusian`; phases take their stage from `stageByPhase` where needed.
+ * Raw tags of one planet's phase events, keyed by the marker tag such as `Venusian`; each stage sits under its planet, so planets share stage names.
  */
 export function mapPlanetaryPhases(args: {
   marker: string;
   phases: readonly string[];
+  planet: string;
   planetPaths: readonly TagPath[];
   stageByPhase?: Readonly<Record<string, string>>;
 }): TagMap {
-  const { marker, phases, planetPaths, stageByPhase = {} } = args;
+  const { marker, phases, planet, planetPaths, stageByPhase = {} } = args;
   const markerPath: TagPath = [TAG_ROOT.planetary, "Phase", marker];
 
   return {
@@ -91,7 +92,7 @@ export function mapPlanetaryPhases(args: {
           name,
           [
             [...markerPath, leaf],
-            [TAG_ROOT.planetary, "Synodic Stage", stage],
+            [TAG_ROOT.planetary, "Synodic Stage", planet, stage],
           ],
         ];
       }),
@@ -129,16 +130,16 @@ export function one(path: TagPath): readonly TagPath[] {
 }
 
 /**
- * The nodes a sign stands for: the sign itself, and beside it, in the zodiac,
+ * The nodes a sign stands for: the sign itself, and beside it, in the Sign root,
  * the element, modality and polarity it implies.
  */
 export function signPaths(sign: Sign): readonly TagPath[] {
   const element = ELEMENT_BY_SIGN[sign];
 
   return [
-    [TAG_ROOT.zodiac, "Sign", _.startCase(sign)],
-    [TAG_ROOT.zodiac, "Element", element],
-    [TAG_ROOT.zodiac, "Modality", MODALITY_BY_SIGN[sign]],
-    [TAG_ROOT.zodiac, "Polarity", POLARITY_BY_ELEMENT[element]],
+    [TAG_ROOT.sign, "Sign", _.startCase(sign)],
+    [TAG_ROOT.sign, "Element", element],
+    [TAG_ROOT.sign, "Modality", MODALITY_BY_SIGN[sign]],
+    [TAG_ROOT.sign, "Polarity", POLARITY_BY_ELEMENT[element]],
   ];
 }

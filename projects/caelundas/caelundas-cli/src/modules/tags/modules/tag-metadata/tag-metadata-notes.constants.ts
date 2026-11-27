@@ -136,6 +136,21 @@ const PHASE_NOTES: Readonly<Record<string, string>> = {
 };
 
 /** Each hexadecan's point of the year, in sixteenths. */
+/** What each synodic stage means, whichever planet it is of. */
+const STAGE_NOTES: Readonly<Record<string, string>> = {
+  Brightest: "The planet shines at its brightest.",
+  Closing:
+    "The span the planet closes on the Sun, from greatest elongation or opposition to set.",
+  Conjunction: "The planet lines up with the Sun.",
+  Elongation: "The planet stands farthest from the Sun.",
+  Opposition: "The planet is opposite the Sun.",
+  "Rise and set": "The planet rises or sets with the Sun's light.",
+  Station: "The planet stops against the stars.",
+  Visibility: "The span the planet is seen at one end of the day.",
+  Widening:
+    "The span the planet widens from the Sun, from rise to greatest elongation or opposition.",
+};
+
 const HEXADECAN_SIXTEENTHS: Readonly<Record<string, number>> = {
   Eleventh: 11,
   Fifteenth: 15,
@@ -198,22 +213,39 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
   "Planetary / Phase / Mercurian":
     "Mercury's cycle of visibility with the Sun.",
   "Planetary / Phase / Venusian": "Venus's cycle of visibility with the Sun.",
-  "Planetary / Synodic Stage / Brightest":
-    "The planet shines at its brightest.",
-  "Planetary / Synodic Stage / Closing":
-    "The span the planet closes on the Sun, from greatest elongation or opposition to set.",
-  "Planetary / Synodic Stage / Conjunction":
-    "The planet lines up with the Sun.",
-  "Planetary / Synodic Stage / Elongation":
-    "The planet stands farthest from the Sun.",
-  "Planetary / Synodic Stage / Opposition": "The planet is opposite the Sun.",
-  "Planetary / Synodic Stage / Rise and set":
-    "The planet rises or sets with the Sun's light.",
-  "Planetary / Synodic Stage / Station": "The planet stops against the stars.",
-  "Planetary / Synodic Stage / Visibility":
-    "The span the planet is seen at one end of the day.",
-  "Planetary / Synodic Stage / Widening":
-    "The span the planet widens from the Sun, from rise to greatest elongation or opposition.",
+  "Planetary / Synodic Stage / Mars":
+    "Mars's stages in its cycle with the Sun.",
+  "Planetary / Synodic Stage / Mercury":
+    "Mercury's stages in its cycle with the Sun.",
+  "Planetary / Synodic Stage / Venus":
+    "Venus's stages in its cycle with the Sun.",
+  "Sign / Decan / First Decan": "The first ten degrees of a sign.",
+  "Sign / Decan / Second Decan": "The middle ten degrees of a sign.",
+  "Sign / Decan / Third Decan": "The last ten degrees of a sign.",
+  "Sign / Dignity / Detriment": "The planet sits opposite its home sign: weak.",
+  "Sign / Dignity / Domicile": "The planet sits in its home sign: strong.",
+  "Sign / Dignity / Exaltation":
+    "The planet sits in the sign where it is honored.",
+  "Sign / Dignity / Fall": "The planet sits opposite its exaltation: lowered.",
+  "Sign / Dignity / Peregrine":
+    "The planet holds no dignity or debility in the sign.",
+  "Sign / Ingress / Decan Ingress": "A body enters a new decan of a sign.",
+  "Sign / Ingress / Decan Transit": "A body's stay in one decan, a span.",
+  "Sign / Ingress / Peak Ingress": "A body reaches the midpoint of a sign.",
+  "Sign / Ingress / Peak Transit":
+    "A body's stay on one side of a sign's peak, a span.",
+  "Sign / Ingress / Sign Ingress": "A body enters a new sign, an instant.",
+  "Sign / Ingress / Sign Transit": "A body's stay in one sign, a span.",
+  "Sign / Modality / Cardinal":
+    "Signs that start a season: Aries, Cancer, Libra, Capricorn.",
+  "Sign / Modality / Fixed":
+    "Signs in the middle of a season: Taurus, Leo, Scorpio, Aquarius.",
+  "Sign / Modality / Mutable":
+    "Signs that end a season: Gemini, Virgo, Sagittarius, Pisces.",
+  "Sign / Peak / After Peak": "The last fifteen degrees of a sign.",
+  "Sign / Peak / Before Peak": "The first fifteen degrees of a sign.",
+  "Sign / Polarity / Negative": "Earth and water signs: receptive.",
+  "Sign / Polarity / Positive": "Fire and air signs: outward.",
   "Solar / Annual Cycle / Advancing": "The Sun's days are growing longer.",
   "Solar / Annual Cycle / Aphelion": "The Earth is farthest from the Sun.",
   "Solar / Annual Cycle / Cross-Quarter Day / Beltane":
@@ -242,35 +274,6 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
     "The season from the summer solstice to the autumn equinox.",
   "Solar / Season / Winter":
     "The season from the winter solstice to the spring equinox.",
-  "Zodiac / Decan / First Decan": "The first ten degrees of a sign.",
-  "Zodiac / Decan / Second Decan": "The middle ten degrees of a sign.",
-  "Zodiac / Decan / Third Decan": "The last ten degrees of a sign.",
-  "Zodiac / Dignity / Detriment":
-    "The planet sits opposite its home sign: weak.",
-  "Zodiac / Dignity / Domicile": "The planet sits in its home sign: strong.",
-  "Zodiac / Dignity / Exaltation":
-    "The planet sits in the sign where it is honored.",
-  "Zodiac / Dignity / Fall":
-    "The planet sits opposite its exaltation: lowered.",
-  "Zodiac / Dignity / Peregrine":
-    "The planet holds no dignity or debility in the sign.",
-  "Zodiac / Ingress / Decan Ingress": "A body enters a new decan of a sign.",
-  "Zodiac / Ingress / Decan Transit": "A body's stay in one decan, a span.",
-  "Zodiac / Ingress / Peak Ingress": "A body reaches the midpoint of a sign.",
-  "Zodiac / Ingress / Peak Transit":
-    "A body's stay on one side of a sign's peak, a span.",
-  "Zodiac / Ingress / Sign Ingress": "A body enters a new sign, an instant.",
-  "Zodiac / Ingress / Sign Transit": "A body's stay in one sign, a span.",
-  "Zodiac / Modality / Cardinal":
-    "Signs that start a season: Aries, Cancer, Libra, Capricorn.",
-  "Zodiac / Modality / Fixed":
-    "Signs in the middle of a season: Taurus, Leo, Scorpio, Aquarius.",
-  "Zodiac / Modality / Mutable":
-    "Signs that end a season: Gemini, Virgo, Sagittarius, Pisces.",
-  "Zodiac / Peak / After Peak": "The last fifteen degrees of a sign.",
-  "Zodiac / Peak / Before Peak": "The first fifteen degrees of a sign.",
-  "Zodiac / Polarity / Negative": "Earth and water signs: receptive.",
-  "Zodiac / Polarity / Positive": "Fire and air signs: outward.",
 };
 
 /** A leaf's note when it has no metadata entry, by path. */
@@ -332,7 +335,7 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
   ...Object.fromEntries(
     Object.entries(BODY_NOTES).flatMap(([name, note]) => [
       [
-        `Aspect / Focal Body / ${name} Focal`,
+        `Aspect / Compound / Focal Body / ${name} Focal`,
         `The pattern points at ${name}.`,
       ] as const,
       ...[
@@ -346,6 +349,14 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
     ]),
   ),
   ...Object.fromEntries(
+    ["Mars", "Mercury", "Venus"].flatMap((planet) =>
+      Object.entries(STAGE_NOTES).map(
+        ([stage, note]) =>
+          [`Planetary / Synodic Stage / ${planet} / ${stage}`, note] as const,
+      ),
+    ),
+  ),
+  ...Object.fromEntries(
     ["Martian", "Mercurian", "Venusian"].flatMap((marker) =>
       Object.entries(PHASE_NOTES).map(
         ([phase, note]) =>
@@ -357,7 +368,7 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
     signs.map((sign) => {
       const name = `${sign.charAt(0).toUpperCase()}${sign.slice(1)}`;
       return [
-        `Zodiac / Sign / ${name}`,
+        `Sign / Sign / ${name}`,
         `The sign of ${SIGN_FIGURES[sign]}, a ${MODALITIES[sign].toLowerCase()} ${ELEMENT_BY_SIGN[sign].toLowerCase()} sign.`,
       ] as const;
     }),

@@ -246,7 +246,9 @@ describe("tag map vocabulary", () => {
         classify(["Planetary Phase", "Martian", phase]).filter(
           ([, branch]) => branch === "Synodic Stage",
         ),
-      ).toStrictEqual([[TAG_ROOT.planetary, "Synodic Stage", "Opposition"]]);
+      ).toStrictEqual([
+        [TAG_ROOT.planetary, "Synodic Stage", "Mars", "Opposition"],
+      ]);
     },
   );
 
@@ -255,19 +257,22 @@ describe("tag map vocabulary", () => {
       classify(["Planetary Phase", "Venusian", "Full"]).filter(
         ([, branch]) => branch === "Synodic Stage",
       ),
-    ).toStrictEqual([[TAG_ROOT.planetary, "Synodic Stage", "Conjunction"]]);
+    ).toStrictEqual([
+      [TAG_ROOT.planetary, "Synodic Stage", "Venus", "Conjunction"],
+    ]);
   });
 
   it("takes a phase's own name for its stage when none is mapped for it", () => {
     const map = mapPlanetaryPhases({
       marker: "Venusian",
       phases: ["odd phase"],
+      planet: "Venus",
       planetPaths: [],
     });
 
     expect(map["Odd Phase"]).toStrictEqual([
       [TAG_ROOT.planetary, "Phase", "Venusian", "Venusian Odd Phase"],
-      [TAG_ROOT.planetary, "Synodic Stage", "Odd Phase"],
+      [TAG_ROOT.planetary, "Synodic Stage", "Venus", "Odd Phase"],
     ]);
   });
 });

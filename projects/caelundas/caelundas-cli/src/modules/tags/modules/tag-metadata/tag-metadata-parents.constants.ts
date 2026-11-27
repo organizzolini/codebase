@@ -52,7 +52,7 @@ const PATTERN_ENTRIES = COMPOUND_CLASSES.flatMap(
 );
 
 /**
- * Other parents of a tag, by its path, each as a path: the zodiac groups of a sign, the nature and harmonic of an aspect, the fortune of a planet and the season of a solar point. Events carry the child already, so a group only counts through it.
+ * Other parents of a tag, by its path, each as a path: the sign groups of a sign, the nature and harmonic of an aspect, the fortune of a planet and the season of a solar point. Events carry the child already, so a group only counts through it.
  */
 export const TAG_EXTRA_PARENTS: Readonly<
   Record<string, readonly (readonly [string, ...string[]])[]>

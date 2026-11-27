@@ -143,7 +143,7 @@ describe(EventsCalendar, () => {
           depth: 2,
           id: "tag-zodiac-ingress",
           name: "Sign Ingress",
-          path: "Zodiac / Ingress / Sign Ingress",
+          path: "Sign / Ingress / Sign Ingress",
         },
       ],
       timezone: "America/New_York",

@@ -150,18 +150,18 @@ export const SHARED_TAG_MAP: TagMap = {
     ]),
   ),
   ...mapEach(Object.values(DECAN_TAG_BY_DECAN), (name) => [
-    TAG_ROOT.zodiac,
+    TAG_ROOT.sign,
     "Decan",
     name,
   ]),
   ...mapEach(Object.values(HALF_TAG_BY_HALF), (name) => [
-    TAG_ROOT.zodiac,
+    TAG_ROOT.sign,
     "Peak",
     name,
   ]),
   ...mapEach(
     BODY_NAMES.map((name) => `${name} Focal`),
-    (name) => [TAG_ROOT.aspect, "Focal Body", name],
+    (name) => [...COMPOUND_ASPECT, "Focal Body", name],
   ),
   // Which sphere an event is in is its root's job now, not a tag's.
   ...mapNone(["Lunar", "Solar"]),
@@ -224,6 +224,7 @@ const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   Martian: mapPlanetaryPhases({
     marker: "Martian",
     phases: [...Object.keys(symbolByMartianPhase), ...MARTIAN_SPAN_PHASES],
+    planet: "Mars",
     planetPaths: bodyPaths("mars"),
     stageByPhase: MARTIAN_SYNODIC_STAGE_BY_PHASE,
   }),
@@ -234,6 +235,7 @@ const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
       ...VISIBILITY_PHASES,
       ...ELONGATION_PHASES,
     ],
+    planet: "Mercury",
     planetPaths: bodyPaths("mercury"),
   }),
   Venusian: mapPlanetaryPhases({
@@ -243,6 +245,7 @@ const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
       ...VISIBILITY_PHASES,
       ...ELONGATION_PHASES,
     ],
+    planet: "Venus",
     planetPaths: bodyPaths("venus"),
   }),
 };

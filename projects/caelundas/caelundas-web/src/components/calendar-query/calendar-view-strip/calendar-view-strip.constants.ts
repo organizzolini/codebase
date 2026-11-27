@@ -18,12 +18,12 @@ export const CUSTOM_VIEW_ICON = "pencil-ruler";
 export const VIEWS: readonly ViewDefinition[] = [
   {
     description: "Which sign each body is in: sign ingresses and transits.",
-    filter: [{ paths: ["Sign"], root: "Zodiac" }],
-    group: [{ path: "Sign", root: "Zodiac" }, { root: "Body" }],
+    filter: [{ paths: ["Sign"], root: "Sign" }],
+    group: [{ path: "Sign", root: "Sign" }, { root: "Body" }],
     icon: "stars",
     id: "body-signs",
     name: "Body Signs",
-    sort: [{ path: "Sign", root: "Zodiac" }, { root: "Body" }],
+    sort: [{ path: "Sign", root: "Sign" }, { root: "Body" }],
   },
   {
     description:

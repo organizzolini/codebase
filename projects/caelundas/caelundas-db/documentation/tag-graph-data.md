@@ -6,25 +6,25 @@ flowchart LR
         n0["Aspect"]
         n1["Harmonic"]
         n2["Nature"]
-        n3["Focal Body"]
-        n4["Phase"]
-        n5["Compound"]
-        n6["Simple"]
-        n44["Harmonic 4"]
-        n45["Harmonic 12"]
-        n46["Harmonic 11"]
-        n47["Harmonic 5"]
-        n48["Harmonic 9"]
-        n49["Harmonic 10"]
-        n50["Harmonic 6"]
-        n51["Harmonic 8"]
-        n52["Harmonic 1"]
-        n53["Harmonic 7"]
-        n54["Harmonic 2"]
-        n55["Harmonic 3"]
-        n56["Hard"]
-        n57["Neutral"]
-        n58["Soft"]
+        n3["Phase"]
+        n4["Compound"]
+        n5["Simple"]
+        n43["Harmonic 4"]
+        n44["Harmonic 12"]
+        n45["Harmonic 11"]
+        n46["Harmonic 5"]
+        n47["Harmonic 9"]
+        n48["Harmonic 10"]
+        n49["Harmonic 6"]
+        n50["Harmonic 8"]
+        n51["Harmonic 1"]
+        n52["Harmonic 7"]
+        n53["Harmonic 2"]
+        n54["Harmonic 3"]
+        n55["Hard"]
+        n56["Neutral"]
+        n57["Soft"]
+        n58["Focal Body"]
         n59["Chiron Focal"]
         n60["Venus Focal"]
         n61["Moon Focal"]
@@ -53,39 +53,39 @@ flowchart LR
         n105["Minor"]
         n106["Specialty"]
         n107["Major"]
-        n212["T Square"]
-        n213["Grand Cross"]
-        n214["Square"]
-        n215["Sesquiquadrate"]
-        n216["Semisquare"]
-        n217["Opposite"]
-        n218["Yod"]
-        n219["Grand Trine"]
-        n220["Kite"]
-        n221["Quincunx"]
-        n222["Semisextile"]
-        n223["Undecile"]
-        n224["Conjunct"]
-        n225["Septile"]
-        n226["Quintile"]
-        n227["Novile"]
-        n228["Tredecile"]
-        n229["Decile"]
-        n230["Biquintile"]
-        n231["Sextile"]
-        n232["Trine"]
-        n233["Hexagram"]
-        n234["4 Body"]
-        n235["5 Body"]
-        n236["6 Body"]
-        n237["7 Body"]
-        n238["3 Body"]
+        n209["T Square"]
+        n210["Grand Cross"]
+        n211["Square"]
+        n212["Sesquiquadrate"]
+        n213["Semisquare"]
+        n214["Opposite"]
+        n215["Yod"]
+        n216["Grand Trine"]
+        n217["Kite"]
+        n218["Quincunx"]
+        n219["Semisextile"]
+        n220["Undecile"]
+        n221["Conjunct"]
+        n222["Septile"]
+        n223["Quintile"]
+        n224["Novile"]
+        n225["Tredecile"]
+        n226["Decile"]
+        n227["Biquintile"]
+        n228["Sextile"]
+        n229["Trine"]
+        n230["Hexagram"]
+        n231["4 Body"]
+        n232["5 Body"]
+        n233["6 Body"]
+        n234["7 Body"]
+        n235["3 Body"]
         n0 --> n1
         n0 --> n2
         n0 --> n3
         n0 --> n4
         n0 --> n5
-        n0 --> n6
+        n1 --> n43
         n1 --> n44
         n1 --> n45
         n1 --> n46
@@ -97,118 +97,118 @@ flowchart LR
         n1 --> n52
         n1 --> n53
         n1 --> n54
-        n1 --> n55
+        n2 --> n55
         n2 --> n56
         n2 --> n57
-        n2 --> n58
-        n3 --> n59
-        n3 --> n60
-        n3 --> n61
-        n3 --> n62
-        n3 --> n63
-        n3 --> n64
-        n3 --> n65
-        n3 --> n66
-        n3 --> n67
-        n3 --> n68
-        n3 --> n69
-        n3 --> n70
-        n3 --> n71
-        n3 --> n72
-        n3 --> n73
-        n3 --> n74
-        n3 --> n75
-        n3 --> n76
-        n4 --> n77
-        n4 --> n78
-        n4 --> n79
-        n5 --> n91
-        n5 --> n92
-        n5 --> n93
-        n5 --> n94
-        n6 --> n105
-        n6 --> n106
-        n6 --> n107
-        n44 --> n212
-        n44 --> n213
-        n44 --> n214
-        n56 --> n212
-        n56 --> n213
-        n56 --> n214
+        n58 --> n59
+        n58 --> n60
+        n58 --> n61
+        n58 --> n62
+        n58 --> n63
+        n58 --> n64
+        n58 --> n65
+        n58 --> n66
+        n58 --> n67
+        n58 --> n68
+        n58 --> n69
+        n58 --> n70
+        n58 --> n71
+        n58 --> n72
+        n58 --> n73
+        n58 --> n74
+        n58 --> n75
+        n58 --> n76
+        n3 --> n77
+        n3 --> n78
+        n3 --> n79
+        n4 --> n58
+        n4 --> n91
+        n4 --> n92
+        n4 --> n93
+        n4 --> n94
+        n5 --> n105
+        n5 --> n106
+        n5 --> n107
+        n43 --> n209
+        n43 --> n210
+        n43 --> n211
+        n55 --> n209
+        n55 --> n210
+        n55 --> n211
+        n55 --> n212
+        n55 --> n213
+        n55 --> n214
+        n91 --> n209
+        n91 --> n215
+        n91 --> n216
+        n92 --> n210
+        n92 --> n217
+        n44 --> n215
+        n44 --> n218
+        n44 --> n219
+        n56 --> n93
         n56 --> n215
-        n56 --> n216
-        n56 --> n217
-        n91 --> n212
-        n91 --> n218
-        n91 --> n219
-        n92 --> n213
-        n92 --> n220
-        n45 --> n218
-        n45 --> n221
-        n45 --> n222
-        n57 --> n93
-        n57 --> n218
-        n57 --> n221
+        n56 --> n218
+        n56 --> n220
+        n56 --> n221
+        n56 --> n222
+        n105 --> n218
+        n105 --> n212
+        n105 --> n213
+        n105 --> n219
+        n45 --> n220
+        n106 --> n220
+        n106 --> n223
+        n106 --> n224
+        n106 --> n225
+        n106 --> n222
+        n106 --> n226
+        n106 --> n227
+        n46 --> n223
+        n46 --> n227
         n57 --> n223
         n57 --> n224
         n57 --> n225
-        n105 --> n221
-        n105 --> n215
-        n105 --> n216
-        n105 --> n222
-        n46 --> n223
-        n106 --> n223
-        n106 --> n226
-        n106 --> n227
-        n106 --> n228
-        n106 --> n225
-        n106 --> n229
-        n106 --> n230
-        n47 --> n226
-        n47 --> n230
-        n58 --> n226
-        n58 --> n227
-        n58 --> n228
-        n58 --> n231
-        n58 --> n222
-        n58 --> n229
-        n58 --> n230
-        n58 --> n232
-        n58 --> n219
-        n58 --> n220
-        n58 --> n233
-        n48 --> n227
-        n49 --> n228
-        n49 --> n229
+        n57 --> n228
+        n57 --> n219
+        n57 --> n226
+        n57 --> n227
+        n57 --> n229
+        n57 --> n216
+        n57 --> n217
+        n57 --> n230
+        n47 --> n224
+        n48 --> n225
+        n48 --> n226
+        n107 --> n211
+        n107 --> n228
+        n107 --> n221
         n107 --> n214
-        n107 --> n231
-        n107 --> n224
-        n107 --> n217
-        n107 --> n232
-        n50 --> n231
-        n50 --> n220
-        n50 --> n233
-        n51 --> n215
-        n51 --> n216
-        n52 --> n93
-        n52 --> n224
-        n53 --> n225
-        n54 --> n217
-        n55 --> n232
-        n55 --> n219
+        n107 --> n229
+        n49 --> n228
+        n49 --> n217
+        n49 --> n230
+        n50 --> n212
+        n50 --> n213
+        n51 --> n93
+        n51 --> n221
+        n52 --> n222
+        n53 --> n214
+        n54 --> n229
+        n54 --> n216
+        n93 --> n231
+        n93 --> n232
+        n93 --> n233
         n93 --> n234
         n93 --> n235
-        n93 --> n236
-        n93 --> n237
-        n93 --> n238
-        n94 --> n233
+        n94 --> n230
     end
     subgraph nb1["Body"]
-        n7["Body"]
-        n8["Asteroid"]
-        n9["Luminary"]
-        n10["Point"]
-        n11["Planet"]
+        n6["Body"]
+        n7["Asteroid"]
+        n8["Luminary"]
+        n9["Point"]
+        n10["Planet"]
         n80["Chiron"]
         n81["Juno"]
         n82["Ceres"]
@@ -230,19 +230,19 @@ flowchart LR
         n102["Lunar Apogee"]
         n103["North Lunar Node"]
         n104["Lilith"]
-        n282["Malefic"]
-        n283["Benefic"]
-        n7 --> n8
-        n7 --> n9
-        n7 --> n10
-        n7 --> n11
-        n8 --> n80
-        n8 --> n81
-        n8 --> n82
-        n8 --> n83
-        n8 --> n84
-        n9 --> n85
-        n9 --> n86
+        n279["Malefic"]
+        n280["Benefic"]
+        n6 --> n7
+        n6 --> n8
+        n6 --> n9
+        n6 --> n10
+        n7 --> n80
+        n7 --> n81
+        n7 --> n82
+        n7 --> n83
+        n7 --> n84
+        n8 --> n85
+        n8 --> n86
         n87 --> n88
         n87 --> n89
         n87 --> n90
@@ -251,32 +251,32 @@ flowchart LR
         n95 --> n98
         n99 --> n100
         n99 --> n101
-        n10 --> n102
-        n10 --> n103
-        n10 --> n104
-        n11 --> n87
-        n11 --> n95
-        n11 --> n99
-        n11 --> n282
-        n11 --> n283
-        n282 --> n97
-        n282 --> n101
-        n283 --> n96
-        n283 --> n100
+        n9 --> n102
+        n9 --> n103
+        n9 --> n104
+        n10 --> n87
+        n10 --> n95
+        n10 --> n99
+        n10 --> n279
+        n10 --> n280
+        n279 --> n97
+        n279 --> n101
+        n280 --> n96
+        n280 --> n100
     end
     subgraph nb2["Temporality"]
-        n12["Temporality"]
-        n13["Perfective"]
-        n14["Progressive"]
-        n12 --> n13
-        n12 --> n14
+        n11["Temporality"]
+        n12["Perfective"]
+        n13["Progressive"]
+        n11 --> n12
+        n11 --> n13
     end
     subgraph nb3["Daily"]
-        n15["Daily"]
-        n16["Solar Cycle"]
-        n17["Lunar Cycle"]
-        n18["Twilight"]
-        n19["Time of Day"]
+        n14["Daily"]
+        n15["Solar Cycle"]
+        n16["Lunar Cycle"]
+        n17["Twilight"]
+        n18["Time of Day"]
         n108["Nadir"]
         n109["Rise"]
         n110["Zenith"]
@@ -298,42 +298,42 @@ flowchart LR
         n161["Night"]
         n162["Morning"]
         n163["Evening"]
-        n15 --> n16
-        n15 --> n17
-        n15 --> n18
-        n15 --> n19
-        n16 --> n108
-        n16 --> n109
-        n16 --> n110
-        n16 --> n111
-        n17 --> n147
-        n17 --> n148
-        n17 --> n149
-        n17 --> n150
-        n17 --> n151
-        n18 --> n152
-        n18 --> n153
-        n18 --> n154
-        n18 --> n155
-        n18 --> n156
-        n18 --> n157
-        n18 --> n158
-        n18 --> n159
-        n18 --> n160
-        n18 --> n161
-        n19 --> n162
-        n19 --> n163
+        n14 --> n15
+        n14 --> n16
+        n14 --> n17
+        n14 --> n18
+        n15 --> n108
+        n15 --> n109
+        n15 --> n110
+        n15 --> n111
+        n16 --> n147
+        n16 --> n148
+        n16 --> n149
+        n16 --> n150
+        n16 --> n151
+        n17 --> n152
+        n17 --> n153
+        n17 --> n154
+        n17 --> n155
+        n17 --> n156
+        n17 --> n157
+        n17 --> n158
+        n17 --> n159
+        n17 --> n160
+        n17 --> n161
+        n18 --> n162
+        n18 --> n163
     end
-    subgraph nb4["Zodiac"]
-        n20["Zodiac"]
-        n21["Decan"]
-        n22["Dignity"]
-        n23["Element"]
-        n24["Modality"]
-        n25["Polarity"]
-        n26["Sign"]
-        n27["Ingress"]
-        n28["Peak"]
+    subgraph nb4["Sign"]
+        n19["Sign"]
+        n20["Decan"]
+        n21["Dignity"]
+        n22["Element"]
+        n23["Modality"]
+        n24["Polarity"]
+        n25["Sign"]
+        n26["Ingress"]
+        n27["Peak"]
         n112["Second Decan"]
         n113["Third Decan"]
         n114["First Decan"]
@@ -369,51 +369,51 @@ flowchart LR
         n144["Sign Transit"]
         n145["Peak Transit"]
         n146["Decan Transit"]
-        n284["After Peak"]
-        n285["Before Peak"]
-        n20 --> n21
-        n20 --> n22
-        n20 --> n23
-        n20 --> n24
-        n20 --> n25
-        n20 --> n26
-        n20 --> n27
-        n20 --> n28
-        n21 --> n112
-        n21 --> n113
-        n21 --> n114
-        n22 --> n115
-        n22 --> n116
-        n22 --> n117
-        n22 --> n118
-        n22 --> n119
-        n23 --> n120
-        n23 --> n121
-        n23 --> n122
-        n23 --> n123
-        n24 --> n124
-        n24 --> n125
-        n24 --> n126
-        n25 --> n127
-        n25 --> n128
-        n26 --> n129
-        n26 --> n130
-        n26 --> n131
-        n26 --> n132
-        n26 --> n133
-        n26 --> n134
-        n26 --> n135
-        n26 --> n136
-        n26 --> n137
-        n26 --> n138
-        n26 --> n139
-        n26 --> n140
-        n27 --> n141
-        n27 --> n142
-        n27 --> n143
-        n27 --> n144
-        n27 --> n145
-        n27 --> n146
+        n281["After Peak"]
+        n282["Before Peak"]
+        n19 --> n20
+        n19 --> n21
+        n19 --> n22
+        n19 --> n23
+        n19 --> n24
+        n19 --> n25
+        n19 --> n26
+        n19 --> n27
+        n20 --> n112
+        n20 --> n113
+        n20 --> n114
+        n21 --> n115
+        n21 --> n116
+        n21 --> n117
+        n21 --> n118
+        n21 --> n119
+        n22 --> n120
+        n22 --> n121
+        n22 --> n122
+        n22 --> n123
+        n23 --> n124
+        n23 --> n125
+        n23 --> n126
+        n24 --> n127
+        n24 --> n128
+        n25 --> n129
+        n25 --> n130
+        n25 --> n131
+        n25 --> n132
+        n25 --> n133
+        n25 --> n134
+        n25 --> n135
+        n25 --> n136
+        n25 --> n137
+        n25 --> n138
+        n25 --> n139
+        n25 --> n140
+        n26 --> n141
+        n26 --> n142
+        n26 --> n143
+        n26 --> n144
+        n26 --> n145
+        n26 --> n146
         n120 --> n129
         n120 --> n135
         n120 --> n137
@@ -450,13 +450,13 @@ flowchart LR
         n126 --> n136
         n126 --> n137
         n126 --> n140
-        n28 --> n284
-        n28 --> n285
+        n27 --> n281
+        n27 --> n282
     end
     subgraph nb5["Lunar"]
-        n29["Lunar"]
-        n30["Apsides"]
-        n31["Monthly Cycle"]
+        n28["Lunar"]
+        n29["Apsides"]
+        n30["Monthly Cycle"]
         n164["Perigee"]
         n165["Apogee"]
         n166["Advancing"]
@@ -469,114 +469,154 @@ flowchart LR
         n177["Waxing Crescent"]
         n178["First Quarter"]
         n179["Waxing Gibbous"]
-        n29 --> n30
-        n29 --> n31
-        n30 --> n164
-        n30 --> n165
-        n30 --> n166
-        n30 --> n167
-        n31 --> n172
-        n31 --> n173
-        n31 --> n174
-        n31 --> n175
-        n31 --> n176
-        n31 --> n177
-        n31 --> n178
-        n31 --> n179
+        n28 --> n29
+        n28 --> n30
+        n29 --> n164
+        n29 --> n165
+        n29 --> n166
+        n29 --> n167
+        n30 --> n172
+        n30 --> n173
+        n30 --> n174
+        n30 --> n175
+        n30 --> n176
+        n30 --> n177
+        n30 --> n178
+        n30 --> n179
     end
     subgraph nb6["Planetary"]
-        n32["Planetary"]
-        n33["Direction"]
-        n34["Synodic Stage"]
-        n35["Phase"]
+        n31["Planetary"]
+        n32["Direction"]
+        n33["Synodic Stage"]
+        n34["Phase"]
         n168["Station Direct"]
         n169["Station Retrograde"]
         n170["Retrograde Period"]
         n171["Direct Period"]
-        n189["Rise and set"]
-        n190["Visibility"]
-        n191["Elongation"]
-        n192["Brightest"]
-        n193["Widening"]
-        n194["Closing"]
-        n195["Mercurian"]
-        n196["Venusian"]
-        n197["Martian"]
-        n239["Morning Set"]
-        n240["Evening Rise"]
-        n241["Evening Visibility"]
-        n242["Eastern Elongation"]
-        n243["Evening Set"]
-        n244["Morning Rise"]
-        n245["Morning Visibility"]
-        n246["Western Elongation"]
-        n247["Western Brightest"]
-        n248["Morning Widening"]
-        n249["Morning Closing"]
-        n250["Evening Widening"]
-        n251["Evening Closing"]
-        n262["Evening Rise"]
-        n263["Evening Visibility"]
-        n264["Eastern Elongation"]
-        n265["Eastern Brightest"]
-        n266["Evening Set"]
-        n267["Morning Rise"]
-        n268["Western Brightest"]
-        n269["Evening Widening"]
-        n270["Evening Closing"]
-        n271["Morning Visibility"]
+        n189["Mars"]
+        n190["Mercury"]
+        n191["Venus"]
+        n192["Mercurian"]
+        n193["Venusian"]
+        n194["Martian"]
+        n236["Morning Set"]
+        n237["Evening Rise"]
+        n238["Evening Visibility"]
+        n239["Eastern Elongation"]
+        n240["Evening Set"]
+        n241["Morning Rise"]
+        n242["Morning Visibility"]
+        n243["Western Elongation"]
+        n244["Western Brightest"]
+        n245["Morning Widening"]
+        n246["Morning Closing"]
+        n247["Evening Widening"]
+        n248["Evening Closing"]
+        n259["Evening Rise"]
+        n260["Evening Visibility"]
+        n261["Eastern Elongation"]
+        n262["Eastern Brightest"]
+        n263["Evening Set"]
+        n264["Morning Rise"]
+        n265["Western Brightest"]
+        n266["Evening Widening"]
+        n267["Evening Closing"]
+        n268["Morning Visibility"]
+        n269["Morning Widening"]
+        n270["Morning Closing"]
+        n271["Morning Rise"]
         n272["Morning Widening"]
-        n273["Morning Closing"]
-        n274["Morning Rise"]
-        n275["Morning Widening"]
-        n32 --> n33
-        n32 --> n34
-        n32 --> n35
-        n33 --> n168
-        n33 --> n169
-        n33 --> n170
-        n33 --> n171
-        n34 --> n189
-        n34 --> n190
-        n34 --> n191
+        n299["Rise and set"]
+        n300["Widening"]
+        n301["Conjunction"]
+        n302["Visibility"]
+        n303["Station"]
+        n304["Opposition"]
+        n305["Brightest"]
+        n306["Closing"]
+        n307["Visibility"]
+        n308["Elongation"]
+        n309["Brightest"]
+        n310["Closing"]
+        n311["Widening"]
+        n312["Conjunction"]
+        n313["Rise and set"]
+        n314["Brightest"]
+        n315["Closing"]
+        n316["Visibility"]
+        n317["Widening"]
+        n318["Conjunction"]
+        n319["Rise and set"]
+        n320["Station"]
+        n321["Elongation"]
+        n31 --> n32
+        n31 --> n33
+        n31 --> n34
+        n32 --> n168
+        n32 --> n169
+        n32 --> n170
+        n32 --> n171
+        n33 --> n189
+        n33 --> n190
+        n33 --> n191
         n34 --> n192
         n34 --> n193
         n34 --> n194
-        n35 --> n195
-        n35 --> n196
-        n35 --> n197
-        n195 --> n239
-        n195 --> n240
-        n195 --> n241
-        n195 --> n242
-        n195 --> n243
-        n195 --> n244
-        n195 --> n245
-        n195 --> n246
-        n195 --> n247
-        n195 --> n248
-        n195 --> n249
-        n195 --> n250
-        n195 --> n251
-        n196 --> n262
-        n196 --> n263
-        n196 --> n264
-        n196 --> n265
-        n196 --> n266
-        n196 --> n267
-        n196 --> n268
-        n196 --> n269
-        n196 --> n270
-        n196 --> n271
-        n196 --> n272
-        n196 --> n273
-        n197 --> n274
-        n197 --> n275
+        n192 --> n236
+        n192 --> n237
+        n192 --> n238
+        n192 --> n239
+        n192 --> n240
+        n192 --> n241
+        n192 --> n242
+        n192 --> n243
+        n192 --> n244
+        n192 --> n245
+        n192 --> n246
+        n192 --> n247
+        n192 --> n248
+        n193 --> n259
+        n193 --> n260
+        n193 --> n261
+        n193 --> n262
+        n193 --> n263
+        n193 --> n264
+        n193 --> n265
+        n193 --> n266
+        n193 --> n267
+        n193 --> n268
+        n193 --> n269
+        n193 --> n270
+        n194 --> n271
+        n194 --> n272
+        n189 --> n299
+        n189 --> n300
+        n189 --> n301
+        n189 --> n302
+        n189 --> n303
+        n189 --> n304
+        n189 --> n305
+        n189 --> n306
+        n190 --> n307
+        n190 --> n308
+        n190 --> n309
+        n190 --> n310
+        n190 --> n311
+        n190 --> n312
+        n190 --> n313
+        n191 --> n314
+        n191 --> n315
+        n191 --> n316
+        n191 --> n317
+        n191 --> n318
+        n191 --> n319
+        n191 --> n320
+        n191 --> n321
     end
     subgraph nb7["Solar"]
-        n36["Solar"]
-        n37["Annual Cycle"]
-        n38["Season"]
+        n35["Solar"]
+        n36["Annual Cycle"]
+        n37["Season"]
         n180["Perihelion"]
         n181["Retreating"]
         n182["Hexadecan"]
@@ -586,89 +626,92 @@ flowchart LR
         n186["Aphelion"]
         n187["Advancing"]
         n188["Interval"]
-        n198["Winter"]
-        n199["Spring"]
-        n200["Summer"]
-        n201["Autumn"]
-        n252["Thirteenth Hexadecan"]
-        n253["Imbolc"]
-        n254["Fifteenth Hexadecan"]
-        n255["Winter Solstice"]
-        n256["First Hexadecan"]
-        n257["Third Hexadecan"]
-        n258["Fifth Hexadecan"]
-        n259["Seventh Hexadecan"]
-        n260["Ninth Hexadecan"]
-        n261["Eleventh Hexadecan"]
-        n276["Beltane"]
-        n277["Lammas"]
-        n278["Samhain"]
-        n279["Vernal Equinox"]
-        n280["Autumnal Equinox"]
-        n281["Summer Solstice"]
-        n286["Post-Winter Solstice"]
-        n287["Pre-Imbolc"]
-        n288["Post-Imbolc"]
-        n289["Pre-Vernal Equinox"]
-        n290["Post-Vernal Equinox"]
-        n291["Pre-Beltane"]
-        n292["Post-Beltane"]
-        n293["Pre-Summer Solstice"]
-        n294["Post-Summer Solstice"]
-        n295["Pre-Lammas"]
-        n296["Post-Lammas"]
-        n297["Pre-Autumnal Equinox"]
-        n298["Post-Autumnal Equinox"]
-        n299["Pre-Samhain"]
-        n300["Post-Samhain"]
-        n301["Pre-Winter Solstice"]
-        n36 --> n37
-        n36 --> n38
-        n37 --> n180
-        n37 --> n181
-        n37 --> n182
-        n37 --> n183
-        n37 --> n184
-        n37 --> n185
-        n37 --> n186
-        n37 --> n187
-        n37 --> n188
-        n38 --> n198
-        n38 --> n199
-        n38 --> n200
-        n38 --> n201
-        n198 --> n252
-        n198 --> n253
-        n198 --> n254
-        n198 --> n255
-        n182 --> n252
+        n195["Winter"]
+        n196["Spring"]
+        n197["Summer"]
+        n198["Autumn"]
+        n249["Thirteenth Hexadecan"]
+        n250["Imbolc"]
+        n251["Fifteenth Hexadecan"]
+        n252["Winter Solstice"]
+        n253["First Hexadecan"]
+        n254["Third Hexadecan"]
+        n255["Fifth Hexadecan"]
+        n256["Seventh Hexadecan"]
+        n257["Ninth Hexadecan"]
+        n258["Eleventh Hexadecan"]
+        n273["Beltane"]
+        n274["Lammas"]
+        n275["Samhain"]
+        n276["Vernal Equinox"]
+        n277["Autumnal Equinox"]
+        n278["Summer Solstice"]
+        n283["Post-Winter Solstice"]
+        n284["Pre-Imbolc"]
+        n285["Post-Imbolc"]
+        n286["Pre-Vernal Equinox"]
+        n287["Post-Vernal Equinox"]
+        n288["Pre-Beltane"]
+        n289["Post-Beltane"]
+        n290["Pre-Summer Solstice"]
+        n291["Post-Summer Solstice"]
+        n292["Pre-Lammas"]
+        n293["Post-Lammas"]
+        n294["Pre-Autumnal Equinox"]
+        n295["Post-Autumnal Equinox"]
+        n296["Pre-Samhain"]
+        n297["Post-Samhain"]
+        n298["Pre-Winter Solstice"]
+        n35 --> n36
+        n35 --> n37
+        n36 --> n180
+        n36 --> n181
+        n36 --> n182
+        n36 --> n183
+        n36 --> n184
+        n36 --> n185
+        n36 --> n186
+        n36 --> n187
+        n36 --> n188
+        n37 --> n195
+        n37 --> n196
+        n37 --> n197
+        n37 --> n198
+        n195 --> n249
+        n195 --> n250
+        n195 --> n251
+        n195 --> n252
+        n182 --> n249
+        n182 --> n251
+        n182 --> n253
         n182 --> n254
+        n182 --> n255
         n182 --> n256
         n182 --> n257
         n182 --> n258
-        n182 --> n259
-        n182 --> n260
-        n182 --> n261
-        n183 --> n253
-        n183 --> n276
-        n183 --> n277
-        n183 --> n278
-        n199 --> n279
-        n199 --> n256
-        n199 --> n276
-        n199 --> n257
-        n184 --> n279
-        n184 --> n280
-        n200 --> n281
-        n200 --> n258
-        n200 --> n277
-        n200 --> n259
-        n185 --> n281
-        n185 --> n255
-        n201 --> n280
-        n201 --> n260
-        n201 --> n278
-        n201 --> n261
+        n183 --> n250
+        n183 --> n273
+        n183 --> n274
+        n183 --> n275
+        n196 --> n276
+        n196 --> n253
+        n196 --> n273
+        n196 --> n254
+        n184 --> n276
+        n184 --> n277
+        n197 --> n278
+        n197 --> n255
+        n197 --> n274
+        n197 --> n256
+        n185 --> n278
+        n185 --> n252
+        n198 --> n277
+        n198 --> n257
+        n198 --> n275
+        n198 --> n258
+        n188 --> n283
+        n188 --> n284
+        n188 --> n285
         n188 --> n286
         n188 --> n287
         n188 --> n288
@@ -682,30 +725,30 @@ flowchart LR
         n188 --> n296
         n188 --> n297
         n188 --> n298
-        n188 --> n299
-        n188 --> n300
-        n188 --> n301
     end
     subgraph nb8["Eclipse"]
-        n39["Eclipse"]
-        n40["Frame"]
-        n41["Phase"]
-        n42["Solar"]
-        n43["Lunar"]
-        n202["Geocentric"]
-        n203["Topocentric"]
-        n204["Beginning"]
-        n205["Maximum"]
-        n206["Ending"]
-        n207["Annular"]
-        n208["Total"]
-        n209["Partial"]
-        n210["Total"]
-        n211["Partial"]
-        n39 --> n40
-        n39 --> n41
-        n39 --> n42
-        n39 --> n43
+        n38["Eclipse"]
+        n39["Frame"]
+        n40["Phase"]
+        n41["Solar"]
+        n42["Lunar"]
+        n199["Geocentric"]
+        n200["Topocentric"]
+        n201["Beginning"]
+        n202["Maximum"]
+        n203["Ending"]
+        n204["Annular"]
+        n205["Total"]
+        n206["Partial"]
+        n207["Total"]
+        n208["Partial"]
+        n38 --> n39
+        n38 --> n40
+        n38 --> n41
+        n38 --> n42
+        n39 --> n199
+        n39 --> n200
+        n40 --> n201
         n40 --> n202
         n40 --> n203
         n41 --> n204
@@ -713,17 +756,14 @@ flowchart LR
         n41 --> n206
         n42 --> n207
         n42 --> n208
-        n42 --> n209
-        n43 --> n210
-        n43 --> n211
     end
     class n0 root
-    class n7 root
-    class n12 root
-    class n15 root
-    class n20 root
-    class n29 root
-    class n32 root
-    class n36 root
-    class n39 root
+    class n6 root
+    class n11 root
+    class n14 root
+    class n19 root
+    class n28 root
+    class n31 root
+    class n35 root
+    class n38 root
 ```

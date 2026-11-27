@@ -168,7 +168,7 @@ describe(createColorScheme, () => {
     const ingress = {
       ...event(["tag-other"]),
       tags: [
-        { depth: 2, id: "ingress", name: "Ingress", path: "Zodiac / Ingress" },
+        { depth: 2, id: "ingress", name: "Ingress", path: "Sign / Ingress" },
       ],
     };
 

@@ -82,8 +82,8 @@ describe("tags utilities", () => {
       ]);
 
       expect(under(paths, "Aspect")).toStrictEqual([
+        ["Aspect", "Compound", "Focal Body", "Mercury Focal"],
         ["Aspect", "Compound", "Triple", "T Square"],
-        ["Aspect", "Focal Body", "Mercury Focal"],
         ["Aspect", "Harmonic", "Harmonic 4"],
         ["Aspect", "Nature", "Hard"],
         ["Aspect", "Phase", "Forming"],
@@ -105,11 +105,7 @@ describe("tags utilities", () => {
       expect(under(paths, "Body")).toStrictEqual([
         ["Body", "Planet", "Personal", "Mars"],
       ]);
-      expect(under(paths, "Zodiac")).toContainEqual([
-        "Zodiac",
-        "Sign",
-        "Aries",
-      ]);
+      expect(under(paths, "Sign")).toContainEqual(["Sign", "Sign", "Aries"]);
     });
 
     it.each([
@@ -120,12 +116,12 @@ describe("tags utilities", () => {
     ])(
       "implies %s's element, modality and polarity in the zodiac",
       (sign, element, modality, polarity) => {
-        const paths = under(classify(["Ingress", "Sun", sign]), "Zodiac");
+        const paths = under(classify(["Ingress", "Sun", sign]), "Sign");
 
-        expect(paths).toContainEqual(["Zodiac", "Sign", sign]);
-        expect(paths).toContainEqual(["Zodiac", "Element", element]);
-        expect(paths).toContainEqual(["Zodiac", "Modality", modality]);
-        expect(paths).toContainEqual(["Zodiac", "Polarity", polarity]);
+        expect(paths).toContainEqual(["Sign", "Sign", sign]);
+        expect(paths).toContainEqual(["Sign", "Element", element]);
+        expect(paths).toContainEqual(["Sign", "Modality", modality]);
+        expect(paths).toContainEqual(["Sign", "Polarity", polarity]);
       },
     );
 
@@ -209,16 +205,16 @@ describe("tags utilities", () => {
       ["Mercury", "Pisces", "Detriment"],
       ["Saturn", "Aries", "Fall"],
     ])("gives %s's ingress into %s the %s dignity", (planet, sign, dignity) => {
-      expect(
-        under(classify(["Ingress", planet, sign]), "Zodiac"),
-      ).toContainEqual(["Zodiac", "Dignity", dignity]);
+      expect(under(classify(["Ingress", planet, sign]), "Sign")).toContainEqual(
+        ["Sign", "Dignity", dignity],
+      );
     });
 
     it("gives each ingress of a traditional planet one dignity", () => {
       const counts = ["Moon", "Venus", "Mars", "Jupiter"].flatMap((planet) =>
         ["Aries", "Cancer", "Libra", "Capricorn"].map(
           (sign) =>
-            under(classify(["Ingress", planet, sign]), "Zodiac").filter(
+            under(classify(["Ingress", planet, sign]), "Sign").filter(
               ([, branch]) => branch === "Dignity",
             ).length,
         ),
@@ -232,7 +228,7 @@ describe("tags utilities", () => {
       [["Simple Aspect", "Sun", "Leo"]],
     ])("gives %j no dignity", (tags) => {
       expect(
-        under(classify(tags), "Zodiac").filter(
+        under(classify(tags), "Sign").filter(
           ([, branch]) => branch === "Dignity",
         ),
       ).toStrictEqual([]);
@@ -259,7 +255,7 @@ describe("tags utilities", () => {
 
         expect(under(paths, "Planetary")).toStrictEqual([
           ["Planetary", "Phase", marker, phase],
-          ["Planetary", "Synodic Stage", stage],
+          ["Planetary", "Synodic Stage", planet, stage],
         ]);
         expect(under(paths, "Body")).toStrictEqual([
           ["Body", "Planet", "Personal", planet],
@@ -272,7 +268,7 @@ describe("tags utilities", () => {
 
       expect(under(paths, "Planetary")).toStrictEqual([
         ["Planetary", "Phase", "Martian", "Martian Opposition"],
-        ["Planetary", "Synodic Stage", "Opposition"],
+        ["Planetary", "Synodic Stage", "Mars", "Opposition"],
       ]);
     });
 
@@ -283,6 +279,7 @@ describe("tags utilities", () => {
       expect(under(paths, "Planetary")).toContainEqual([
         "Planetary",
         "Synodic Stage",
+        "Venus",
         "Conjunction",
       ]);
     });
@@ -296,8 +293,8 @@ describe("tags utilities", () => {
         "Leo",
       ]);
 
-      expect(under(paths, "Zodiac")).toContainEqual([
-        "Zodiac",
+      expect(under(paths, "Sign")).toContainEqual([
+        "Sign",
         "Decan",
         "Second Decan",
       ]);
@@ -311,8 +308,8 @@ describe("tags utilities", () => {
       [["Ingress", "Peak", "Mars", "Aries"], LATER, "Peak Transit"],
       [["Ingress", "Peak", "Mars", "Aries"], AT, "Peak Ingress"],
     ])("files %j ending at %s as a %s", (tags, end, kind) => {
-      expect(under(classify(tags, end), "Zodiac")).toContainEqual([
-        "Zodiac",
+      expect(under(classify(tags, end), "Sign")).toContainEqual([
+        "Sign",
         "Ingress",
         kind,
       ]);
@@ -342,8 +339,8 @@ describe("tags utilities", () => {
     it.each([
       [["Retrogrades"], ["Planetary", "Direction", "Retrograde Period"]],
       [["Directs"], ["Planetary", "Direction", "Direct Period"]],
-      [["Before Peak"], ["Zodiac", "Peak", "Before Peak"]],
-      [["After Peak"], ["Zodiac", "Peak", "After Peak"]],
+      [["Before Peak"], ["Sign", "Peak", "Before Peak"]],
+      [["After Peak"], ["Sign", "Peak", "After Peak"]],
       [
         ["Annual Solar Cycle", "Spring"],
         ["Solar", "Season", "Spring"],
@@ -434,7 +431,7 @@ describe("tags utilities", () => {
       ],
       [
         ["Planetary Phase", "Mercurian", "Morning Closing"],
-        ["Planetary", "Synodic Stage", "Closing"],
+        ["Planetary", "Synodic Stage", "Mercury", "Closing"],
       ],
       [
         ["Annual Solar Cycle", "Solar", "Perihelion"],
@@ -533,9 +530,7 @@ describe("tags utilities", () => {
 
   describe(tagPathKey, () => {
     it("tells apart paths whose names join alike", () => {
-      expect(tagPathKey(["Zodiac", "Sign"])).not.toBe(
-        tagPathKey(["Zodiac Sign"]),
-      );
+      expect(tagPathKey(["Sign", "Sign"])).not.toBe(tagPathKey(["Sign Sign"]));
     });
   });
 
@@ -543,8 +538,8 @@ describe("tags utilities", () => {
     it.each([
       [["Aspect"], 1],
       [["Temporality"], 9],
-      [["Zodiac", "Sign", "Aries"], 1],
-      [["Zodiac", "Sign", "Pisces"], 12],
+      [["Sign", "Sign", "Aries"], 1],
+      [["Sign", "Sign", "Pisces"], 12],
       [["Body", "Luminary", "Moon"], 2],
       [["Daily", "Solar Cycle", "Nadir"], 4],
     ])("places %j at %i among its siblings", (path, rank) => {
@@ -565,7 +560,7 @@ describe("tags utilities", () => {
     it.each([
       ["Aspect", "aspect"],
       ["Sign Ingress", "sign-ingress"],
-      ["Zodiac / Sign", "zodiac-sign"],
+      ["Sign / Sign", "sign-sign"],
       ["  --Mars's  Retrograde!! ", "mars-s-retrograde"],
       ["Decan 2", "decan-2"],
     ])("slugs %s as %s", (name, slug) => {

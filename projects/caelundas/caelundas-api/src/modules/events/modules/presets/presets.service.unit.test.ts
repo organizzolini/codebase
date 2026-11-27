@@ -41,7 +41,7 @@ const FACETS = [
   facet("aspect", "Aspect", ["Simple / Major"]),
   facet("body", "Body", ["Luminary / Moon", "Luminary / Sun"]),
   facet("planetary", "Planetary", ["Direction"]),
-  facet("zodiac", "Zodiac", ["Ingress / Sign Ingress"]),
+  facet("sign", "Sign", ["Ingress / Sign Ingress"]),
 ];
 
 describe(PresetsService, () => {
@@ -74,8 +74,8 @@ describe(PresetsService, () => {
             rules: [
               {
                 operator: "is_any_of",
-                path: ["tag:zodiac"],
-                values: ["zodiac:Ingress / Sign Ingress"],
+                path: ["tag:sign"],
+                values: ["sign:Ingress / Sign Ingress"],
               },
               { path: ["tag:body"] },
             ],

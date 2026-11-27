@@ -609,7 +609,7 @@ describe("calendar events service integration", () => {
       expect(row?.tags).toStrictEqual(
         expect.arrayContaining(["Aries", "Cardinal", "Fire", "Positive"]),
       );
-      expect(roots).toStrictEqual(["Zodiac", "Zodiac", "Zodiac", "Zodiac"]);
+      expect(roots).toStrictEqual(["Sign", "Sign", "Sign", "Sign"]);
     });
 
     it("lists a sign under its element, modality and polarity too, adding each edge once however often it is carried", async () => {
