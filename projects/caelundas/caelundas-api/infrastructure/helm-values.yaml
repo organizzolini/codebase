@@ -1,5 +1,7 @@
-# Values for the caelundas-api Deployment. Layer after base.yaml:
-#   --values values/base.yaml --values values/caelundas-api.yaml
+# Values for the caelundas-api Deployment.
+# Layered over infrastructure/helm/kubernetes-deployment/values/base.yaml.
+# The helm-releases command reads `chart`; the chart ignores it.
+chart: kubernetes-deployment
 image:
   repository: ghcr.io/organizzolini/caelundas-api
 

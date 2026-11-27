@@ -1,5 +1,7 @@
-# Values for the caelundas-cli ingestion Job. Layer after base.yaml:
-#   --values values/base.yaml --values values/caelundas-cli.yaml
+# Values for the caelundas-cli ingestion Job.
+# Layered over infrastructure/helm/kubernetes-job/values/base.yaml.
+# The helm-releases command reads `chart`; the chart ignores it.
+chart: kubernetes-job
 image:
   repository: ghcr.io/organizzolini/caelundas-cli
   # The release commit fills the tag with the codebase release version.

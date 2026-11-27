@@ -8,7 +8,7 @@ tests:
   - it: renders nothing while image.tag is empty
     values:
       - ../values/base.yaml
-      - ../values/caelundas-api.yaml
+      - ../../../../projects/caelundas/caelundas-api/infrastructure/helm-values.yaml
     asserts:
       - template: templates/deployment.yaml
         hasDocuments:
@@ -20,7 +20,7 @@ tests:
   - it: renders a Deployment and Service once tagged
     values:
       - ../values/base.yaml
-      - ../values/caelundas-api.yaml
+      - ../../../../projects/caelundas/caelundas-api/infrastructure/helm-values.yaml
     set:
       image.tag: 1.0.0
     asserts:
@@ -67,7 +67,7 @@ tests:
   - it: gives the web nginx a writable cache directory
     values:
       - ../values/base.yaml
-      - ../values/caelundas-web.yaml
+      - ../../../../projects/caelundas/caelundas-web/infrastructure/helm-values.yaml
     set:
       image.tag: 1.0.0
     template: templates/deployment.yaml
@@ -79,7 +79,7 @@ tests:
   - it: labels the Service selector and the Deployment pods by component
     values:
       - ../values/base.yaml
-      - ../values/caelundas-api.yaml
+      - ../../../../projects/caelundas/caelundas-api/infrastructure/helm-values.yaml
     set:
       image.tag: 1.0.0
     asserts:
@@ -99,7 +99,7 @@ tests:
   - it: api values reach production through the pooler
     values:
       - ../values/base.yaml
-      - ../values/caelundas-api.yaml
+      - ../../../../projects/caelundas/caelundas-api/infrastructure/helm-values.yaml
     set:
       image.tag: 1.0.0
     asserts:
@@ -133,7 +133,7 @@ tests:
   - it: web values expose port 80 to the standard port 8080
     values:
       - ../values/base.yaml
-      - ../values/caelundas-web.yaml
+      - ../../../../projects/caelundas/caelundas-web/infrastructure/helm-values.yaml
     set:
       image.tag: 1.0.0
     asserts:

@@ -147,16 +147,20 @@ tests:
           content: SkipDryRunOnMissingResource=true
         documentIndex: 6
 
-  - it: caelundas apps use kubernetes-deployment with their own values
+  - it: caelundas apps use kubernetes-deployment with the values their project owns
     template: templates/applications.yaml
     asserts:
       - equal:
-          path: spec.source.path
+          path: spec.sources[0].path
           value: infrastructure/helm/kubernetes-deployment
         documentIndex: 5
       - contains:
-          path: spec.source.helm.valueFiles
-          content: values/caelundas-api.yaml
+          path: spec.sources[0].helm.valueFiles
+          content: $values/projects/caelundas/caelundas-api/infrastructure/helm-values.yaml
+        documentIndex: 5
+      - equal:
+          path: spec.sources[1].ref
+          value: values
         documentIndex: 5
 
   - it: defines the low batch priority

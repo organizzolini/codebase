@@ -34,11 +34,12 @@
     },
     "helm-lint": {
       "cache": true,
-      "description": "Lint every Helm release this repository ships with `helm lint --strict`, each chart layered with the values files its Argo CD Application uses. The `helm-releases` command of the deployment project discovers the releases from the chart folders, and helm-render runs it too, so lint and every render-based check judge the same set. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
+      "description": "Lint every Helm release this repository ships with `helm lint --strict`, each chart alone and layered with the values file each project owns. The `helm-releases` command of the deployment project discovers the releases from the chart folders, and helm-render runs it too, so lint and every render-based check judge the same set. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/helm/**/*",
         "{workspaceRoot}/deployment/src/**/*",
+        "{workspaceRoot}/projects/*/*/infrastructure/helm-values.yaml",
         {
           "externalDependencies": []
         }
@@ -50,11 +51,12 @@
     },
     "helm-render": {
       "cache": true,
-      "description": "Render every Helm release to dist/infrastructure/helm-render/<release>.yaml with helm template, using the values files each Argo CD Application or workflow passes and a placeholder image tag where a chart renders nothing without one. The single rendering that kubeconform, kube-linter, pluto, and trivy-config all consume, so no tool re-templates differently. Requires helm on PATH.",
+      "description": "Render every Helm release to dist/infrastructure/helm-render/<release>.yaml with helm template, using the values file each project owns, which its Argo CD Application or workflow passes and a placeholder image tag where a chart renders nothing without one. The single rendering that kubeconform, kube-linter, pluto, and trivy-config all consume, so no tool re-templates differently. Requires helm on PATH.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/helm/**/*",
         "{workspaceRoot}/deployment/src/**/*",
+        "{workspaceRoot}/projects/*/*/infrastructure/helm-values.yaml",
         {
           "externalDependencies": []
         }
@@ -72,6 +74,7 @@
       "inputs": [
         "{projectRoot}/helm/**/*",
         "{projectRoot}/install-helm-unittest.sh",
+        "{workspaceRoot}/projects/*/*/infrastructure/helm-values.yaml",
         {
           "externalDependencies": []
         }

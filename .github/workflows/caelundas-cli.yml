@@ -56,6 +56,6 @@ jobs:
         run: |
           helm install "$RELEASE" infrastructure/helm/kubernetes-job -n caelundas \
             -f infrastructure/helm/kubernetes-job/values/base.yaml \
-            -f infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml \
+            -f projects/caelundas/caelundas-cli/infrastructure/helm-values.yaml \
             --set-file envFile="$RUNNER_TEMP/caelundas-cli.env"
           helm get notes "$RELEASE" -n caelundas >> "$GITHUB_STEP_SUMMARY"
