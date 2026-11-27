@@ -18,9 +18,9 @@ const charts = (): string => {
   const files = {
     "infrastructure/helm/alpha/Chart.yaml": "name: alpha",
     "infrastructure/helm/alpha/values/base.yaml": 'image:\n  tag: ""',
-    "projects/group/web/infrastructure/helm-values.yaml": "chart: alpha",
     "projects/common/store/infrastructure/helm/beta/Chart.yaml": "name: beta",
     "projects/common/store/infrastructure/helm/beta/values/base.yaml": "a: 1",
+    "projects/group/web/infrastructure/helm-values.yaml": "chart: alpha",
   };
 
   for (const [name, content] of Object.entries(files)) {

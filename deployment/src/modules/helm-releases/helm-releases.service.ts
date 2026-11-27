@@ -22,7 +22,7 @@ import {
   WORKSPACE_ROOT,
 } from "./helm-releases.constants";
 
-import type { HelmRelease } from "./helm-releases.types";
+import type { HelmRelease, ProjectContext } from "./helm-releases.types";
 
 /**
  * Finds every Helm release, charts and project values, so each tool judges
@@ -136,10 +136,8 @@ export class HelmReleasesService {
 
   /** The release of a project's values file, over the base values of the chart it names. */
   private projectRelease(
-    root: string,
     file: string,
-    directories: ReadonlyMap<string, string>,
-    namespaces: Map<string, string>,
+    { directories, namespaces, root }: ProjectContext,
   ): HelmRelease {
     const absolute = path.resolve(root, file);
     const { chart } = projectValuesSchema.parse(this.readYaml(absolute));
@@ -212,7 +210,9 @@ export class HelmReleasesService {
     for (const file of fs
       .globSync(PROJECT_VALUES_GLOB, { cwd: root, exclude: IGNORED_FOLDERS })
       .toSorted()) {
-      releases.push(this.projectRelease(root, file, charts, namespaces));
+      releases.push(
+        this.projectRelease(file, { directories: charts, namespaces, root }),
+      );
     }
 
     return releases;
