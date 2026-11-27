@@ -970,15 +970,24 @@ const codependixConfiguration: CodependixConfiguration = {
    */
   workspace: {
     fileImports: {
-      markdown: { anchor: "codependix-file-imports", path: "codependix.md" },
+      markdown: {
+        anchor: "codependix-file-imports",
+        path: "documentation/codebase/codependix.md",
+      },
       target: "markdown",
     },
     nestjsModules: {
-      markdown: { anchor: "codependix-nestjs-modules", path: "codependix.md" },
+      markdown: {
+        anchor: "codependix-nestjs-modules",
+        path: "documentation/codebase/codependix.md",
+      },
       target: "markdown",
     },
     nxProjects: {
-      markdown: { anchor: "codependix-nx-projects", path: "codependix.md" },
+      markdown: {
+        anchor: "codependix-nx-projects",
+        path: "documentation/codebase/codependix.md",
+      },
       target: "markdown",
     },
   },
