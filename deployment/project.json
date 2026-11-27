@@ -24,6 +24,7 @@
       "inputs": [
         "{projectRoot}/src/**/*",
         "{workspaceRoot}/infrastructure/helm/**/*",
+        "{workspaceRoot}/projects/**/infrastructure/helm/**/*",
         {
           "externalDependencies": []
         }
@@ -40,6 +41,7 @@
       "inputs": [
         "{projectRoot}/src/**/*",
         "{workspaceRoot}/infrastructure/helm/**/*",
+        "{workspaceRoot}/projects/**/infrastructure/helm/**/*",
         {
           "externalDependencies": []
         }

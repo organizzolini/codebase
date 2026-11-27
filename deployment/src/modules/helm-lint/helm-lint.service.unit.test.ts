@@ -16,11 +16,11 @@ import { HelmLintService } from "./helm-lint.service";
 const charts = (): string => {
   const root = createTemporaryDirectory("charts", TEMPORARY_ROOT);
   const files = {
-    "alpha/Chart.yaml": "name: alpha",
-    "alpha/values/base.yaml": 'image:\n  tag: ""',
-    "alpha/values/web.yaml": "a: 1",
-    "beta/Chart.yaml": "name: beta",
-    "beta/values/base.yaml": "a: 1",
+    "infrastructure/helm/alpha/Chart.yaml": "name: alpha",
+    "infrastructure/helm/alpha/values/base.yaml": 'image:\n  tag: ""',
+    "infrastructure/helm/alpha/values/web.yaml": "a: 1",
+    "projects/common/store/infrastructure/helm/beta/Chart.yaml": "name: beta",
+    "projects/common/store/infrastructure/helm/beta/values/base.yaml": "a: 1",
   };
 
   for (const [name, content] of Object.entries(files)) {
@@ -33,9 +33,13 @@ const charts = (): string => {
 
 /** The helm arguments the two charts' releases are given. */
 const arguments_ = (root: string): string[] => {
+  const directories: Record<string, string> = {
+    alpha: "infrastructure/helm/alpha",
+    beta: "projects/common/store/infrastructure/helm/beta",
+  };
   const base = (chart: string): string =>
-    `${root}/${chart} --namespace default --values ${root}/${chart}/values/base.yaml`;
-  const web = `--values ${root}/alpha/values/web.yaml`;
+    `${root}/${directories[chart]} --namespace default --values ${root}/${directories[chart]}/values/base.yaml`;
+  const web = `--values ${root}/infrastructure/helm/alpha/values/web.yaml`;
   const tag = "--set-string image.tag=0.0.0";
 
   return [
@@ -86,7 +90,7 @@ describe(HelmLintService, () => {
 
     const root = charts();
     const runner = new FakeProcessRunner({}, 0, {
-      [`helm lint --strict ${root}/alpha *`]: 1,
+      [`helm lint --strict ${root}/infrastructure/helm/alpha *`]: 1,
     });
     const subject = await build(runner);
 

@@ -49,6 +49,17 @@
         {
           "children": [
             {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "infrastructure"
+        },
+        {
+          "children": [
+            {
               "children": [
                 {
                   "ruleId": "module-folder"

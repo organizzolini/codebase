@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { HELM_ROOT } from "../helm-releases/helm-releases.constants";
+import { WORKSPACE_ROOT } from "../helm-releases/helm-releases.constants";
 import { HelmReleasesService } from "../helm-releases/helm-releases.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
@@ -25,7 +25,7 @@ export class HelmLintService {
   // 🌎 Public Methods
 
   /** Lints each release, stopping at the first that fails, and returns its status. */
-  public lint(root = HELM_ROOT): number {
+  public lint(root = WORKSPACE_ROOT): number {
     for (const release of this.helmReleases.discover(root)) {
       const status = this.processRunner.stream("helm", [
         ...LINT_ARGUMENTS,

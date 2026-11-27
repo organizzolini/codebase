@@ -8,12 +8,15 @@ import {
   APPLICATIONS_CHART,
   applicationsSchema,
   BASE_VALUES,
+  CHART_PATTERNS,
   DEFAULT_NAMESPACE,
   HELM_ROOT,
+  IGNORED_FOLDERS,
   OVERRIDE_FILE,
   overrideSchema,
   PLACEHOLDER_IMAGE_TAG,
   valuesSchema,
+  WORKSPACE_ROOT,
 } from "./helm-releases.constants";
 
 import type { HelmRelease } from "./helm-releases.types";
@@ -36,7 +39,13 @@ export class HelmReleasesService {
 
   /** Maps each Application's chart and values files, joined, to its namespace. */
   private applicationNamespaces(root: string): Map<string, string> {
-    const file = path.join(root, APPLICATIONS_CHART, "values", BASE_VALUES);
+    const file = path.join(
+      root,
+      HELM_ROOT,
+      APPLICATIONS_CHART,
+      "values",
+      BASE_VALUES,
+    );
     const parsed = applicationsSchema.safeParse(this.readYaml(file));
     const namespaces = new Map<string, string>();
 
@@ -55,26 +64,35 @@ export class HelmReleasesService {
     return namespaces;
   }
 
-  /** The folders under a charts folder that hold a `Chart.yaml`, sorted. */
-  private chartNames(root: string): string[] {
-    return fs
-      .readdirSync(root, { withFileTypes: true })
-      .filter(
-        (entry) =>
-          entry.isDirectory() &&
-          fs.existsSync(path.join(root, entry.name, "Chart.yaml")),
-      )
-      .map((entry) => entry.name)
-      .toSorted();
+  /** The folders that hold a `Chart.yaml`, central or in a project, by chart name. */
+  private chartDirectories(root: string): string[] {
+    const directories = fs
+      .globSync(CHART_PATTERNS, {
+        cwd: root,
+        exclude: IGNORED_FOLDERS,
+      })
+      .map((file) => path.dirname(file));
+    const names = new Set(
+      directories.map((directory) => path.basename(directory)),
+    );
+
+    if (names.size !== directories.length) {
+      throw new Error(`Two charts share a name: ${directories.join(", ")}`);
+    }
+
+    return directories.toSorted((first, second) =>
+      path.basename(first).localeCompare(path.basename(second)),
+    );
   }
 
   /** The releases of one chart: base alone, then base with each other values file. */
   private chartReleases(
     root: string,
-    chart: string,
+    directory: string,
     namespaces: Map<string, string>,
   ): HelmRelease[] {
-    const chartDirectory = path.join(root, chart);
+    const chart = path.basename(directory);
+    const chartDirectory = path.join(root, directory);
     const override = overrideSchema.parse(
       this.readYaml(path.join(chartDirectory, OVERRIDE_FILE)) ?? {},
     );
@@ -88,6 +106,7 @@ export class HelmReleasesService {
 
       releases.push({
         chart,
+        directory,
         namespace:
           override.namespace ??
           namespaces.get([chart, ...values].join(" ")) ??
@@ -151,7 +170,7 @@ export class HelmReleasesService {
 
   /** The chart, namespace, values, and string arguments both helm commands take. */
   public chartArguments(root: string, release: HelmRelease): string[] {
-    const chart = path.resolve(root, release.chart);
+    const chart = path.resolve(root, release.directory);
 
     return [
       chart,
@@ -169,13 +188,13 @@ export class HelmReleasesService {
    * Finds each chart's release with base values, plus `<chart>-<name>` for every
    * other values file layered over base.
    */
-  public discover(root = HELM_ROOT): HelmRelease[] {
+  public discover(root = WORKSPACE_ROOT): HelmRelease[] {
     const namespaces = this.applicationNamespaces(root);
 
     const releases: HelmRelease[] = [];
 
-    for (const chart of this.chartNames(root)) {
-      releases.push(...this.chartReleases(root, chart, namespaces));
+    for (const directory of this.chartDirectories(root)) {
+      releases.push(...this.chartReleases(root, directory, namespaces));
     }
 
     return releases;

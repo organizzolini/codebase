@@ -82,7 +82,7 @@ applications:
   - name: postgres
     syncWave: 3
     namespace: organizzolini
-    path: infrastructure/helm/postgres
+    path: projects/common/persistence/infrastructure/helm/postgres
     valueFiles:
       - values/base.yaml
 

@@ -18,17 +18,18 @@
     "guard-code": {},
     "helm-test": {
       "cache": true,
-      "description": "Run the helm-unittest suites under every chart that has a tests folder. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. The `software helm-unittest` command of the installation project installs the pinned helm-unittest plugin first when `helm plugin list` lacks it, checking the tarball's sha256. Requires helm, curl, and sha256sum on PATH.",
+      "description": "Run the helm-unittest suites under every chart that has a tests folder, whether the chart sits in infrastructure/helm or in a project's own infrastructure/helm folder. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. The `software helm-unittest` command of the installation project installs the pinned helm-unittest plugin first when `helm plugin list` lacks it, checking the tarball's sha256. Requires helm, curl, and sha256sum on PATH.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/helm/**/*",
         "{workspaceRoot}/installation/src/modules/software/software.constants.ts",
+        "{workspaceRoot}/projects/**/infrastructure/helm/**/*",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts software helm-unittest && for chart in {projectRoot}/helm/*/; do if [ -d \"$chart/tests\" ]; then helm unittest \"$chart\" || exit 1; fi; done",
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts software helm-unittest && for chart in $(git ls-files --cached --others --exclude-standard -- 'infrastructure/helm/*/Chart.yaml' 'projects/**/infrastructure/helm/*/Chart.yaml' | xargs -n1 dirname); do if [ -d \"$chart/tests\" ]; then helm unittest \"$chart\" || exit 1; fi; done",
         "cwd": "{workspaceRoot}"
       }
     },

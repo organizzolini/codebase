@@ -2,8 +2,10 @@
 
 /** One Helm release, as Argo CD or a workflow installs it. */
 export interface HelmRelease {
-  /** The chart's folder under `infrastructure/helm`. */
+  /** The chart's name, which is its folder's name. */
   chart: string;
+  /** The chart's folder, relative to the workspace root. */
+  directory: string;
   /** The Kubernetes namespace the release installs into. */
   namespace: string;
   /** The release name `helm template` is given. */

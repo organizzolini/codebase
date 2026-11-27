@@ -2,8 +2,20 @@
 
 import { z } from "zod";
 
-/** Where the charts live, relative to the workspace root. */
+/** The workspace root, which every path here is relative to. */
+export const WORKSPACE_ROOT = ".";
+
+/** Where the central charts live, relative to the workspace root. */
 export const HELM_ROOT = "infrastructure/helm";
+
+/** Every place a chart folder may sit: central, or in a project's own `infrastructure` folder. */
+export const CHART_PATTERNS = [
+  `${HELM_ROOT}/*/Chart.yaml`,
+  "projects/**/infrastructure/helm/*/Chart.yaml",
+];
+
+/** Folders chart discovery never enters. */
+export const IGNORED_FOLDERS = ["**/node_modules"];
 
 /** The values file every release layers first. */
 export const BASE_VALUES = "base.yaml";

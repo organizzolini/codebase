@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { Injectable } from "@nestjs/common";
 
-import { HELM_ROOT } from "../helm-releases/helm-releases.constants";
+import { WORKSPACE_ROOT } from "../helm-releases/helm-releases.constants";
 import { HelmReleasesService } from "../helm-releases/helm-releases.service";
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
 import { requireSuccess } from "../process-runner/process-runner.utilities";
@@ -29,7 +29,7 @@ export class HelmRenderService {
   // 🌎 Public Methods
 
   /** Templates each release into `<directory>/<release>.yaml`, failing on the first error. */
-  public render(directory: string, root = HELM_ROOT): void {
+  public render(directory: string, root = WORKSPACE_ROOT): void {
     fs.mkdirSync(directory, { recursive: true });
 
     for (const release of this.helmReleases.discover(root)) {

@@ -20,9 +20,17 @@ const write = (root: string, files: Record<string, string>): string => {
   return root;
 };
 
-/** Builds a charts folder holding the given files. */
+/** Builds a workspace holding the given files, relative to its central charts folder. */
 const tree = (files: Record<string, string>): string =>
-  write(createTemporaryDirectory("charts", TEMPORARY_ROOT), files);
+  write(
+    createTemporaryDirectory("charts", TEMPORARY_ROOT),
+    Object.fromEntries(
+      Object.entries(files).map(([name, content]) => [
+        name.startsWith("projects/") ? name : `infrastructure/helm/${name}`,
+        content,
+      ]),
+    ),
+  );
 
 /** Builds the service, which has no dependencies. */
 const build = async (): Promise<HelmReleasesService> => {
@@ -48,17 +56,18 @@ describe(HelmReleasesService, () => {
     expect(
       subject.chartArguments("/charts", {
         chart: "app",
+        directory: "infrastructure/helm/app",
         namespace: "one",
         release: "app",
         strings: { key: "value" },
         values: ["values/base.yaml"],
       }),
     ).toStrictEqual([
-      "/charts/app",
+      "/charts/infrastructure/helm/app",
       "--namespace",
       "one",
       "--values",
-      "/charts/app/values/base.yaml",
+      "/charts/infrastructure/helm/app/values/base.yaml",
       "--set-string",
       "key=value",
     ]);
@@ -79,6 +88,7 @@ describe(HelmReleasesService, () => {
     ).toStrictEqual([
       {
         chart: "app",
+        directory: "infrastructure/helm/app",
         namespace: "default",
         release: "app",
         strings: {},
@@ -216,5 +226,43 @@ describe(HelmReleasesService, () => {
         }),
       ),
     ).toThrow("unknown");
+  });
+
+  it("finds a chart in a project's own infrastructure folder", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+    const releases = subject.discover(
+      tree({
+        "app/Chart.yaml": "name: app",
+        "projects/common/store/infrastructure/helm/db/Chart.yaml": "name: db",
+        "projects/common/store/infrastructure/helm/db/values/base.yaml": "a: 1",
+        "projects/common/store/node_modules/infrastructure/helm/x/Chart.yaml":
+          "name: x",
+      }),
+    );
+
+    expect(
+      releases.map(({ directory, release }) => [release, directory]),
+    ).toStrictEqual([
+      ["app", "infrastructure/helm/app"],
+      ["db", "projects/common/store/infrastructure/helm/db"],
+    ]);
+  });
+
+  it("refuses two charts with one name", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    expect(() =>
+      subject.discover(
+        tree({
+          "app/Chart.yaml": "name: app",
+          "projects/common/store/infrastructure/helm/app/Chart.yaml":
+            "name: app",
+        }),
+      ),
+    ).toThrow("Two charts share a name");
   });
 });
