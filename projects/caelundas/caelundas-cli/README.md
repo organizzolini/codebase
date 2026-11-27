@@ -77,19 +77,19 @@ perfects, a planet stations, or a body crosses a sign boundary.
 moments into the periods a reader actually wants on a calendar: the days an
 aspect is in orb, the weeks a planet is retrograde.
 
-| Family | Events |
-| ------ | ------ |
-| Aspects | Major (conjunct, opposite, sextile, square, trine), minor, and harmonic aspects between the Sun, Moon, planets, Chiron, Lilith, four asteroids, the north lunar node, and the lunar apogee; forming, exact, and dissolving moments, and the span between them |
-| Compound aspects | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of three or more bodies |
-| Monthly lunar cycle | The eight Moon phases, each as an instant and as the span until the next |
-| Planetary phases | Mercury, Venus, and Mars: conjunctions, Mars's opposition, the greatest elongations of Mercury and Venus, brightest, rise and set, and morning- and evening-star visibility spans |
-| Eclipses | Solar and lunar: begin, maximum, and end |
-| Retrogrades | Stations and retrograde periods |
-| Ingresses | Sign, decan, and peak ingresses, and the span in each sign |
-| Annual solar cycle | Solstices, equinoxes, cross-quarter days, hexadecans, perihelion and aphelion |
-| Lunar apsides | Lunar apogee and perigee, where the Moon's radial speed changes sign |
-| Daily cycles | Sunrise, sunset, solar zenith and nadir, moonrise, moonset, lunar zenith and nadir |
-| Twilights | Civil, nautical, and astronomical dawn and dusk, with the Daylight, twilight, and Night spans |
+| Family              | Events                                                                                                                                                                                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Aspects             | Major (conjunct, opposite, sextile, square, trine), minor, and harmonic aspects between the Sun, Moon, planets, Chiron, Lilith, four asteroids, the north lunar node, and the lunar apogee; forming, exact, and dissolving moments, and the span between them |
+| Compound aspects    | Triple (grand trine, hammer, T-square, yod), quadruple (boomerang, butterfly, cradle, grand cross, hourglass, kite, mystic rectangle), pentagram, hexagram, and stelliums of three or more bodies                                                             |
+| Monthly lunar cycle | The eight Moon phases, each as an instant and as the span until the next                                                                                                                                                                                      |
+| Planetary phases    | Mercury, Venus, and Mars: conjunctions, Mars's opposition, the greatest elongations of Mercury and Venus, brightest, rise and set, and morning- and evening-star visibility spans                                                                             |
+| Eclipses            | Solar and lunar: begin, maximum, and end                                                                                                                                                                                                                      |
+| Retrogrades         | Stations and retrograde periods                                                                                                                                                                                                                               |
+| Ingresses           | Sign, decan, and peak ingresses, and the span in each sign                                                                                                                                                                                                    |
+| Annual solar cycle  | Solstices, equinoxes, cross-quarter days, hexadecans, perihelion and aphelion                                                                                                                                                                                 |
+| Lunar apsides       | Lunar apogee and perigee, where the Moon's radial speed changes sign                                                                                                                                                                                          |
+| Daily cycles        | Sunrise, sunset, solar zenith and nadir, moonrise, moonset, lunar zenith and nadir                                                                                                                                                                            |
+| Twilights           | Civil, nautical, and astronomical dawn and dusk, with the Daylight, twilight, and Night spans                                                                                                                                                                 |
 
 ## Conventions
 
@@ -103,15 +103,15 @@ Every Moon phase is timed by the Moon's apparent geocentric ecliptic longitude
 minus the Sun's, E, normalized to [0°, 360°). Positions are Swiss Ephemeris
 apparent geocentric values. Illumination is not used:
 
-| Phase | E |
-| ----- | - |
-| New Moon | 0° |
-| Waxing Crescent | 45° |
-| First Quarter | 90° |
-| Waxing Gibbous | 135° |
-| Full Moon | 180° |
-| Waning Gibbous | 225° |
-| Last Quarter | 270° |
+| Phase           | E    |
+| --------------- | ---- |
+| New Moon        | 0°   |
+| Waxing Crescent | 45°  |
+| First Quarter   | 90°  |
+| Waxing Gibbous  | 135° |
+| Full Moon       | 180° |
+| Waning Gibbous  | 225° |
+| Last Quarter    | 270° |
 | Waning Crescent | 315° |
 
 The four primary phases follow the definition the US Naval Observatory and
@@ -179,14 +179,14 @@ astronomical dawn.
 Each run upserts the events it detects into the `calendar_events` table, in the
 `caelundas` schema.
 
-| Column | Holds |
-| ------ | ----- |
-| `summary`, `description` | The event's title and detail |
-| `start`, `end` | `timestamptz`; equal for an instant |
-| `color`, `location` | Nullable display hints |
-| `latitude`, `longitude` | The `numeric` observer location the event was computed for |
-| `timezone` | The IANA zone derived from that location, such as `America/New_York`, to render local time in |
-| `id`, `created_at`, `updated_at`, … | `uuidv7()` id and audit columns |
+| Column                              | Holds                                                                                         |
+| ----------------------------------- | --------------------------------------------------------------------------------------------- |
+| `summary`, `description`            | The event's title and detail                                                                  |
+| `start`, `end`                      | `timestamptz`; equal for an instant                                                           |
+| `color`, `location`                 | Nullable display hints                                                                        |
+| `latitude`, `longitude`             | The `numeric` observer location the event was computed for                                    |
+| `timezone`                          | The IANA zone derived from that location, such as `America/New_York`, to render local time in |
+| `id`, `created_at`, `updated_at`, … | `uuidv7()` id and audit columns                                                               |
 
 An event is unique on `(summary, start, end, latitude, longitude)`:
 
@@ -199,11 +199,11 @@ An event is unique on `(summary, start, end, latitude, longitude)`:
 
 An event's tags live in two more tables rather than a column:
 
-| Table | Holds |
-| ----- | ----- |
-| `tags` | A tree of labels with many roots: a `name`, unique among its siblings, and a nullable `parent_id` |
-| `tags_closure` | One `(ancestor_id, descendant_id)` row per pair in the tree, each tag paired with itself included, so ancestors, descendants, and depth are plain joins |
-| `calendar_event_tags` | The links between events and tags, keyed on `(calendar_event_id, tag_id)`, with a second index leading with the tag |
+| Table                 | Holds                                                                                                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tags`                | A tree of labels with many roots: a `name`, unique among its siblings, and a nullable `parent_id`                                                       |
+| `tags_closure`        | One `(ancestor_id, descendant_id)` row per pair in the tree, each tag paired with itself included, so ancestors, descendants, and depth are plain joins |
+| `calendar_event_tags` | The links between events and tags, keyed on `(calendar_event_id, tag_id)`, with a second index leading with the tag                                     |
 
 The upsert classifies each event's raw tags into paths of the tree, inserting
 any node that is missing, and replaces the event's links, so a re-run that
@@ -213,15 +213,15 @@ not know falls back to a root of its own. Each root is one dimension, and
 independent dimensions are never nested, so an Aries event carries `Aries`,
 `Fire`, `Cardinal` and `Positive` side by side:
 
-| Root | Its nodes |
-| ---- | --------- |
-| `Type` | `Aspect` (simple and compound, by class and name), `Ingress`, `Eclipse`, `Station`, `Retrograde Period`, `Twilight`, `Cycle` and `Planetary Phase` (`Venusian`, `Mercurian`, `Martian`) |
-| `Planet`, `Body Class` | Every body, and its class: `Luminary`, `Personal`, `Social`, `Outer`, `Asteroid`, `Node` or `Point` |
-| `Sign`, `Element`, `Modality`, `Polarity`, `Decan` | A sign and what it implies, and the decan a decan ingress enters |
-| `Aspect Nature`, `Aspect Harmonic` | `Hard`, `Soft` or `Neutral`, and `Harmonic 1` to `Harmonic 12` |
-| `Phase`, `Lunar Phase`, `Synodic Stage` | Forming to dissolving and eclipse beginning to ending, the Moon's phases, and the stages of the Mercury, Venus and Mars cycles |
-| `Motion`, `Temporality`, `Season`, `Domain`, `Dignity` | Retrograde and stations, `Instant` or `Duration`, the season of a solar cycle point, `Solar`, `Lunar` or `Planetary`, and a traditional planet's dignity in the sign it enters |
-| `Focal Body`, `Eclipse Frame`, `Time of Day` | The focus of a compound aspect, an eclipse seen geocentrically or from the observer, and a twilight's morning or evening |
+| Root                                                   | Its nodes                                                                                                                                                                               |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Type`                                                 | `Aspect` (simple and compound, by class and name), `Ingress`, `Eclipse`, `Station`, `Retrograde Period`, `Twilight`, `Cycle` and `Planetary Phase` (`Venusian`, `Mercurian`, `Martian`) |
+| `Planet`, `Body Class`                                 | Every body, and its class: `Luminary`, `Personal`, `Social`, `Outer`, `Asteroid`, `Node` or `Point`                                                                                     |
+| `Sign`, `Element`, `Modality`, `Polarity`, `Decan`     | A sign and what it implies, and the decan a decan ingress enters                                                                                                                        |
+| `Aspect Nature`, `Aspect Harmonic`                     | `Hard`, `Soft` or `Neutral`, and `Harmonic 1` to `Harmonic 12`                                                                                                                          |
+| `Phase`, `Lunar Phase`, `Synodic Stage`                | Forming to dissolving and eclipse beginning to ending, the Moon's phases, and the stages of the Mercury, Venus and Mars cycles                                                          |
+| `Motion`, `Temporality`, `Season`, `Domain`, `Dignity` | Retrograde and stations, `Instant` or `Duration`, the season of a solar cycle point, `Solar`, `Lunar` or `Planetary`, and a traditional planet's dignity in the sign it enters          |
+| `Focal Body`, `Eclipse Frame`, `Time of Day`           | The focus of a compound aspect, an eclipse seen geocentrically or from the observer, and a twilight's morning or evening                                                                |
 
 The last three roots go beyond the dimensions the spec lists. Their raw tags
 tell events apart in ways no listed dimension holds, and filing them under
@@ -293,11 +293,11 @@ IMAGE_TAG=local nx run caelundas-cli:docker:build   # loads the image into the l
 IMAGE_TAG=1.2.3 nx run caelundas-cli:docker:push    # one docker compose build --push
 ```
 
-The image is `ghcr.io/organizzolini/caelundas-cli:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with the shared [application/Dockerfile](../../../infrastructure/docker/application/Dockerfile), through the `caelundas-cli` service of [docker-compose.images.yml](../../../infrastructure/docker/docker-compose.images.yml). It runs as UID 10001 under `tini` and runs the ingest the way `nx run caelundas-cli:start` does, reading the environment and writing events to Postgres. It writes nothing to disk, so it runs with a read-only root filesystem. The CLI applies the pending `caelundas-db` migrations when it starts, under a Postgres advisory lock, so a fresh database needs nothing first and a restart applies nothing. The Swiss Ephemeris files are baked in at build time, so a run never downloads them. The image declares no `HEALTHCHECK`: an ingestion Job runs to completion and serves nothing. Set `IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
+The image is `ghcr.io/organizzolini/caelundas-cli:<IMAGE_TAG>` for `linux/amd64`, built from the workspace root with the shared [application/Dockerfile](../../../infrastructure/docker/application/Dockerfile), through this project's own [docker-compose.yml](infrastructure/docker-compose.yml), which the shared `docker` target in `nx.json` runs. It runs as UID 10001 under `tini` as `node main.js`, which takes the `caelundas` subcommand as its argument (the Job's `args`), the way `nx run caelundas-cli:start` does, reading the environment and writing events to Postgres. It writes nothing to disk, so it runs with a read-only root filesystem. The CLI applies the pending `caelundas-db` migrations when it starts, under a Postgres advisory lock, so a fresh database needs nothing first and a restart applies nothing. The Swiss Ephemeris files are baked in at build time, so a run never downloads them. The image declares no `HEALTHCHECK`: an ingestion Job runs to completion and serves nothing. Set `IMAGE_CA_BUNDLE` to a PEM file to trust a TLS-inspecting proxy during the build.
 
 On the cluster, the `caelundas-cli` workflow runs the image as one Job. Its one input is the dotenv text this CLI reads from `configuration/.env` (pre-filled with the Environment section of [.env.default](configuration/.env.default)); the chart mounts it there and the CLI validates every line. The ConfigMap that carries it is not for secrets, and the Actions string box is a single line, so for several lines run `gh workflow run caelundas-cli.yml -f environment="$(cat my.env)"`. Split a long range into several runs.
 
-Size: 310 MB (310,239,522 bytes; 68 MB compressed) on `gcr.io/distroless/nodejs26-debian13`, down from 506 MB on `node:26.13.1-trixie-slim` and 2.12 GB before the pruning. The build stage bundles the ingest and the ephemeris download with rolldown (`nx run caelundas-cli:bundle`, to `dist/<project>` at the workspace root), one file per module at its source path so the migrations stay files, and the image ships only that output, `tini` with `dash` as its only shell, the ephemeris files, and a `node_modules` of the production packages it imports, `sweph` included and cut to its compiled binding, with no source maps, declarations, or documentation: no transpiler, TypeScript, or test tooling. See [container-images.md](../../../infrastructure/documentation/container-images.md) for where the bytes are.
+Size: 310 MB (310,239,522 bytes; 68 MB compressed) on `gcr.io/distroless/nodejs26-debian13`, down from 506 MB on `node:26.13.1-trixie-slim` and 2.12 GB before the pruning. The build stage bundles the ingest and the ephemeris download with rolldown (`nx run caelundas-cli:bundle`, to `dist/<project>` at the workspace root), one file per module at its source path so the migrations stay files, and the image ships only that output, `tini` and no shell, the ephemeris files, and a `node_modules` of the production packages it imports, `sweph` included and cut to its compiled binding, with no source maps, declarations, or documentation: no transpiler, TypeScript, or test tooling. See [container-images.md](../../../infrastructure/documentation/container-images.md) for where the bytes are.
 
 Measured against a local Postgres 18 with the Job's limits (`--memory 1536m --cpus 1`), one year (`START_DATE=2026-01-01`, `END_DATE=2026-12-31`) stored 50,492 events in 45 minutes and peaked at about 802 MiB, sampled once a second with `docker stats`, well under the Job's 1.5 GiB limit. Node's default heap under that limit is about 760 MB, which the run overran after storing the events, so the image sets `NODE_OPTIONS=--max-old-space-size=1024`.
 

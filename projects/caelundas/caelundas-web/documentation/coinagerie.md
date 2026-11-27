@@ -96,6 +96,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **observer**: The viewer position on Earth, from which local times, horizons and eclipses are measured.
 - **octile**: An aspect at 45 degrees, the eighth harmonic, mapped to its own PNG icon.
 - **octuple**: Stellium label for a cluster of eight bodies, mapped to a symbol in the stellium constants.
+- **opencontainer**: The `org.opencontainers.image.source` label on the image, which links the package on the GitHub Container Registry back to this repository.
 - **ophicus**: Constellation name for a body or sign outside the twelve zodiac signs, unused by any code here.
 - **opposition**: The 180-degree aspect, harmonic 2, mapped to its own PNG icon in the glyph set.
 - **orcus**: Trans-Neptunian body name that no code in this project uses, so it survives only as a glossary entry.

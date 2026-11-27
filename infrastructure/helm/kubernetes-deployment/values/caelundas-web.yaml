@@ -3,20 +3,6 @@
 image:
   repository: ghcr.io/organizzolini/caelundas-web
 
-# Unprivileged nginx listens on the web app's development port, from caelundas-web's vite.config.mts; the Service exposes it on 80
-containerPort: 8967
-
-service:
-  port: 80
-
-probes:
-  liveness:
-    path: /
-    port: 8967
-  readiness:
-    path: /
-    port: 8967
-
 resources:
   requests:
     cpu: 10m

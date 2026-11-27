@@ -8,7 +8,7 @@
 
 | Directory                                                | Purpose                                                           |
 | -------------------------------------------------------- | ----------------------------------------------------------------- |
-| [helm/kubernetes-job](helm/kubernetes-job)               | Reusable Helm chart for batch job deployments with PVC storage    |
+| [helm/kubernetes-job](helm/kubernetes-job)               | Helm chart for one-shot Jobs, such as the caelundas-cli ingestion |
 | [helm/kubernetes-deployment](helm/kubernetes-deployment) | Reusable Helm chart for long-running services                     |
 | [helm/postgres](helm/postgres)                           | Shared PostgreSQL on CloudNativePG, with PgBouncer and backups    |
 | [helm/cloudflared](helm/cloudflared)                     | Cloudflare Tunnel connector, routed from Cloudflare               |

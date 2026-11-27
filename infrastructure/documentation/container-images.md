@@ -64,11 +64,13 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
 - **One shared Dockerfile.** `infrastructure/docker/application/Dockerfile` has
   an `install` and a `build` stage every image shares, then a `node` target for
   the applications and a `static` target for the web app.
-  `infrastructure/docker/docker-compose.images.yml`, a standard Compose file
-  beside the local-services one, holds one build-only service per image: its
-  context, Dockerfile, arguments, label, platform and optional CA-bundle secret.
-  `docker:build` runs `docker compose build <service>` (loaded into the daemon)
-  and `docker:push` runs `docker compose build --push <service>`, one step.
+  Each application owns its build in `<project>/infrastructure/docker-compose.yml`,
+  a standard Compose file with one service: its context, Dockerfile, arguments,
+  label, platform and optional CA-bundle secret. The shared `docker` target in
+  `nx.json` applies to every project tagged `container:image`: `docker:build`
+  runs `docker compose build` (loaded into the daemon) and `docker:push` runs
+  `docker compose build --push`, one step. A new image is a Compose file and the
+  tag; `nx run-many --target=docker --configuration=push` then picks it up.
   Rejected: a Dockerfile per project, which repeated the install, non-root, label
   and tini lines three times, and a per-project Dockerfile that `FROM`s a shared
   base image, which needs a second build before the first.
@@ -114,26 +116,26 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
   and the migrations share a backend. A failed migration closes the connection
   and is not retried (`toRetry`), so the pod exits instead of leaking pools.
   The migration hook and its chart, image tag and variable are gone.
-- **Ports.** Each image listens on the port `project-ports` derived from its
-  name. The API's `docker` target passes its `configuration/.env.default` to
-  Compose as `--env-file`, so that port has one source; the web port is the one
-  in `vite.config.mts`, which the Compose file repeats beside a comment. The
-  charts hold the container port, and the tunnel reaches each Service on port
-  80, so no Terraform or Service value repeats a hashed port. The API's own default stays 3000, because
-  the generator template pins that literal and `conformetry-validate` rejects
-  another; the image sets `CAELUNDAS_API_PORT` unless the environment does.
-- **Tini.** The `node` target runs under `tini` as `ENTRYPOINT`, for signals and
-  zombie reaping, per docker-node. A Kubernetes `command` replaces the entry
-  point, so a Job that sets one names `tini` itself; the ingestion Job sets none.
+- **Ports.** In production every application listens on 8080, and Lightship on
+  9000. The chart sets the API's port in its container environment
+  (`CAELUNDAS_API_PORT: "8080"`), and nginx listens on 8080; the hash-derived
+  ports from `project-ports` are a local-development concern only. The Service
+  maps 80 to 8080 and the tunnel reaches each Service on port 80, so no Terraform
+  or Service value repeats a port. The API's own default stays 3000, because the
+  generator template pins that literal and `conformetry-validate` rejects another.
+- **Tini and one start command.** The `node` target is `ENTRYPOINT ["tini", "--",
+  "node"]` with `CMD ["main.js"]`, for signals and zombie reaping, per
+  docker-node. The build stage renames each project's entry file to `main.js`
+  (`ENTRY`, a build argument only), so no image has a start script or a shell. A
+  Job passes `args`, such as the CLI's `main.js caelundas`; a Kubernetes `command`
+  would replace the entry point, so none sets one.
 - **`HEALTHCHECK NONE` on Node images.** Kubernetes ignores `HEALTHCHECK` and
   probes Lightship on 9000, which answers only inside Kubernetes, so there is
   nothing cleaner to check outside it.
 - **Base: `gcr.io/distroless/nodejs26-debian13`.** Node 26.13.1 on glibc, 243 MB
   against 353 MB for `node:26.13.1-trixie-slim`, with no package manager or
-  coreutils. It has no `tini` and no shell, so a stage copies in `tini` and
-  `dash` as `sh` (the `start` script, `docker/application/start.sh`, is `CMD`),
-  and a `node` link on `PATH`. The script uses shell builtins only, since
-  `printenv` is gone. The build runs on `node:26.13.1-trixie`, the same Debian
+  coreutils. It has no `tini`, so a stage copies in `tini` and a `node` link on
+  `PATH`; nothing at start needs a shell. The build runs on `node:26.13.1-trixie`, the same Debian
   release and glibc as the base, with the toolchain `sweph` compiles with, so
   its binding runs unchanged and no stage calls `apt-get install` on a
   variable package list (`tini` is the one pinned package). The tag
@@ -159,7 +161,7 @@ unpacked layers; the compressed push is 68 MB for each Node image).
 | Part                         | api before | api after | cli before | cli after |
 | ---------------------------- | ---------: | --------: | ---------: | --------: |
 | Base                         |     353 MB |    243 MB |     353 MB |    243 MB |
-| `tini`, `dash`               |       1 MB |    0.2 MB |       1 MB |    0.2 MB |
+| `tini`                       |       1 MB |    0.2 MB |       1 MB |    0.2 MB |
 | Application and node_modules |     189 MB |     88 MB |     133 MB |     59 MB |
 | Files in node_modules        |     24,000 |    11,650 |     17,000 |     7,950 |
 | Image                        |     563 MB |    339 MB |     506 MB |    310 MB |

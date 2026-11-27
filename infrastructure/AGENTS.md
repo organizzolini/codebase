@@ -44,29 +44,18 @@ infrastructure/
 **Purpose**: Deploy long-running services as a Deployment and Service. The application migrates its own database at startup, under a Postgres advisory lock, so replicas starting together migrate one at a time and the chart has no hook.
 
 - `image.tag: ""` (default) renders nothing, so Argo CD reports the app Synced/Healthy before the first release. The release commit sets the tag.
-- The Deployment exposes `containerPort` as `http`, and a `probes` port when liveness probes use another port (Lightship uses 9000).
+- The Deployment exposes `containerPort` (8080 for every application) as `http`, and a `probes` port when liveness probes use another port (Lightship uses 9000).
 - The Deployment pods and the Service selector both carry `app.kubernetes.io/component: server`.
 
 `values/caelundas-api.yaml` and `values/caelundas-web.yaml` layer over `values/base.yaml`.
 
 ### kubernetes-job Chart
 
-**Purpose**: Deploy batch jobs with optional PVC storage.
+**Purpose**: Run one container image to completion as a Job: today only the caelundas-cli ingestion, which writes to Postgres and leaves nothing on disk. Use a Deployment for anything that serves requests continuously.
 
-**Use cases**:
+The chart is the smallest correct Job: the image (`image.tag` is required, so an empty tag fails the render with `image.tag is required (no release of <repository> yet)` instead of pulling `repository:`), `args`, `env`, `resources`, `backoffLimit`, `ttlSecondsAfterFinished`, and an optional `priorityClassName`. The pod runs as uid 10001 under the `RuntimeDefault` seccomp profile with a read-only root filesystem, no privilege escalation and all capabilities dropped, with an `emptyDir` at `/tmp`. `envFile` and `envFileMountPath` hold the text of a dotenv file (`--set-file envFile=my.env`) and where it appears: `configmap.yaml` renders the ConfigMap `<fullname>-env`, and the Job mounts it read-only at the path through `subPath`. A ConfigMap is not private, so it is never for secrets: a password stays a Secret reference in `env`. `envFile` without a mount path fails the render.
 
-- Data migrations
-- Report generation
-
-Use a Job for work that runs to completion and leaves output behind (caelundas ingests events into Postgres); use a Deployment for anything that serves requests continuously.
-
-**Values added for ephemeral runs** (defaults keep today's rendering unchanged):
-
-- `priorityClassName`: PriorityClass name for the pod; empty (default) omits the field.
-- `image.tag` is required: an empty tag fails the render with `image.tag is required (no release of <repository> yet)`, so an install before the first release says so instead of pulling `repository:`.
-- `envFile` and `envFileMountPath`: the text of a dotenv file (`--set-file envFile=my.env`) and where it appears in the container. `configmap.yaml` renders it into the ConfigMap `<fullname>-env`, and the Job mounts that read-only at the path through `subPath`. A ConfigMap is not private, so it is never for secrets: a password stays a Secret reference in `env`. Nothing renders while `envFile` is empty, and `envFile` without a mount path fails the render.
-
-`values/caelundas-cli.yaml` layers over `values/base.yaml` for the caelundas-cli ingestion Job: a plain Job with `persistence.enabled: false` (it writes only to Postgres, so no data volume or PVC; every Job mounts an `emptyDir` for scratch space beside its read-only root filesystem), `batch-low` priority, the staging Postgres environment, and `envFileMountPath: /app/configuration/.env`, the file the CLI's `ConfigModule` reads relative to its working directory.
+`values/caelundas-cli.yaml` layers over `values/base.yaml` for the ingestion Job: `batch-low` priority, `args: [main.js, caelundas]` (the image runs `node`), the staging Postgres environment, and `envFileMountPath: /app/configuration/.env`, the file the CLI's `ConfigModule` reads relative to its working directory.
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run infrastructure:helm-test` over every chart that has a `tests/` folder.
 
@@ -171,7 +160,7 @@ The `helm-releases` command of the `deployment` project discovers the Helm relea
 - **pluto**: a removed API fails, a deprecated one prints and passes.
 - **trivy-config**: also scans the rendered manifests at CRITICAL and HIGH. Fix the chart; never add a trivyignore entry.
 - **tflint**: `terraform/.tflint.hcl` enables the bundled terraform ruleset (`preset = "all"`). The `github` root's `outputs.tf` holds only a comment, since `terraform_standard_module_structure` wants every root to declare where its outputs go.
-- **hadolint**: `configuration/lint/hadolint.yaml` (the `configuration` project) ignores no rule: the Dockerfile pins `tini`, builds on the full Node image so no `apt-get` runs in the install stage, and starts through `docker/application/start.sh`.
+- **hadolint**: `configuration/lint/hadolint.yaml` (the `configuration` project) ignores no rule: the Dockerfile pins `tini`, builds on the full Node image so no `apt-get` runs in the install stage, and starts with `node main.js` under `tini`, with no shell.
 - **actionlint** and **zizmor** (configuration project): `.github/actionlint.yaml` and `.github/zizmor.yml` record every ignored message and changed rule with its reason.
 
 A failure prints the tool's own message with the file and line; the rendered file name is the release, so open `dist/infrastructure/helm-render/<release>.yaml` to see what was linted.
@@ -227,15 +216,13 @@ kubectl logs -n caelundas -l job-name=<release-name> --prefix --tail=50
 
 ## Troubleshooting
 
-- **Job stuck in `Pending`** — inspect with `kubectl describe job <name>`, then the pod and PVC. Usual causes are an image pull failure against GHCR, insufficient cluster CPU/memory, or an unbound PVC.
-- **PVCs outliving their Job** — PVCs (the chart's `persistence.enabled`, which the ingestion Job turns off) are never deleted automatically when a Job or pod goes away. Remove them explicitly (`kubectl delete pvc <name>`) once you have what you need from it.
+- **Job stuck in `Pending`** — inspect with `kubectl describe job <name>`, then the pod. Usual causes are an image pull failure against GHCR or insufficient cluster CPU/memory.
 - **`exec format error`** — the image was built for arm64. Rebuild with `--platform linux/amd64`.
 
 ## Key Files
 
 - [../.github/workflows/caelundas-cli.yml](../.github/workflows/caelundas-cli.yml): On-demand ingestion workflow
 - [helm/kubernetes-job/templates/job.yaml](helm/kubernetes-job/templates/job.yaml): Job template
-- [helm/kubernetes-job/templates/pvc.yaml](helm/kubernetes-job/templates/pvc.yaml): PVC template
 - [helm/kubernetes-job/templates/\_helpers.tpl](helm/kubernetes-job/templates/_helpers.tpl): Helpers
 - [terraform/organizzolini/main.tf](terraform/organizzolini/main.tf): Backend, remote state, and the provider wiring from the cluster's kubeconfig
 - [terraform/organizzolini/cluster.tf](terraform/organizzolini/cluster.tf): LKE cluster and its readiness wait

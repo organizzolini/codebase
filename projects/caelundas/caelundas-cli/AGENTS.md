@@ -125,8 +125,8 @@ IMAGE_TAG=1.2.3 nx run caelundas-cli:docker:push    # one docker compose build -
 
 [infrastructure/docker/application/Dockerfile](../../../infrastructure/docker/application/Dockerfile)
 builds `ghcr.io/organizzolini/caelundas-cli`, shared with the other applications and
-built through the `caelundas-cli` service of [docker-compose.images.yml](../../../infrastructure/docker/docker-compose.images.yml). The image is
-the ingestion Job (the same command as `nx run caelundas-cli:start`, started by the image's `start` script). It runs as UID
+built through this project's own [docker-compose.yml](infrastructure/docker-compose.yml). The image is
+the ingestion Job (the same command as `nx run caelundas-cli:start`: `node main.js caelundas`, the Job's `args`). It runs as UID
 10001, bakes the Swiss Ephemeris files in at build time, and compiles `sweph`
 natively. It runs plain JavaScript that `nx run caelundas-cli:bundle`
 ([configuration/rolldown.config.ts](configuration/rolldown.config.ts)) writes: one
@@ -156,4 +156,4 @@ module's glob finds. Keep `--platform linux/amd64`.
 - `input.constants.ts` includes Zod validation
 - `ephemeris.service.ts` includes NASA API client
 - `calendar.service.ts` builds instant events
-- `infrastructure/docker/docker-compose.images.yml` configures the container build
+- `infrastructure/docker-compose.yml` configures the container build

@@ -39,6 +39,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **north**: The direction of positive declination, as in the ecliptic's northernmost point.
 - **obliquity**: The tilt of Earth's axis, about 23.4 degrees, used to convert ecliptic longitude into right ascension and declination.
 - **observer**: The viewer on Earth, whose time zone and position decide which events and which sky are shown.
+- **opencontainer**: The `org.opencontainers.image.source` label on the image, which links the package on the GitHub Container Registry back to this repository.
 - **phase**: The tag root holding `Forming` and `Dissolving`, the stages of an aspect that event queries leave out.
 - **planet**: The tag root whose paths name a body, as in `Planet / Mars / Retrograde`.
 - **polar**: Measured from the celestial pole, as in the polar distance of the top and bottom of the view.

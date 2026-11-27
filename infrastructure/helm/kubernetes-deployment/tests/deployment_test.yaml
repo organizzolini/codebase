@@ -31,7 +31,13 @@ tests:
       - template: templates/service.yaml
         equal:
           path: spec.ports[0].targetPort
-          value: 6173
+          value: 8080
+      - template: templates/deployment.yaml
+        contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CAELUNDAS_API_PORT
+            value: "8080"
       - template: templates/service.yaml
         equal:
           path: spec.ports[0].port
@@ -124,7 +130,7 @@ tests:
             name: probes
             containerPort: 9000
 
-  - it: web values expose port 80 to the development port 8967
+  - it: web values expose port 80 to the standard port 8080
     values:
       - ../values/base.yaml
       - ../values/caelundas-web.yaml
@@ -138,4 +144,4 @@ tests:
       - template: templates/service.yaml
         equal:
           path: spec.ports[0].targetPort
-          value: 8967
+          value: 8080
