@@ -235,8 +235,10 @@ describe(HelmReleasesService, () => {
     const releases = subject.discover(
       tree({
         "app/Chart.yaml": "name: app",
-        "projects/common/store/infrastructure/helm/db/Chart.yaml": "name: db",
-        "projects/common/store/infrastructure/helm/db/values/base.yaml": "a: 1",
+        "projects/common/store/infrastructure/helm/database/Chart.yaml":
+          "name: database",
+        "projects/common/store/infrastructure/helm/database/values/base.yaml":
+          "a: 1",
         "projects/common/store/node_modules/infrastructure/helm/x/Chart.yaml":
           "name: x",
       }),
@@ -246,7 +248,7 @@ describe(HelmReleasesService, () => {
       releases.map(({ directory, release }) => [release, directory]),
     ).toStrictEqual([
       ["app", "infrastructure/helm/app"],
-      ["db", "projects/common/store/infrastructure/helm/db"],
+      ["database", "projects/common/store/infrastructure/helm/database"],
     ]);
   });
 
