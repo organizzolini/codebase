@@ -51,7 +51,7 @@ jobs:
           - id: build-devcontainer
             name: Devcontainer
             emoji: 🧑‍🏭
-            timeout: 15
+            timeout: 12
           # Sized for a release of many packages: a 28-package release once outran a
           # 24-minute limit. A release now takes 15 to 21 minutes, and a timeout before
           # the push leaves nothing behind.
