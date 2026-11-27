@@ -5,14 +5,10 @@ image:
   # The release commit fills the tag with the codebase release version.
   tag: ""
 
-job:
-  ttlSecondsAfterFinished: 86400
-
 priorityClassName: batch-low
 
-# The Job writes only to Postgres, so it mounts no volume.
-persistence:
-  enabled: false
+# The image runs `node`; the entry file and the CLI's ingestion subcommand follow.
+args: [main.js, caelundas]
 
 # The ingestion workflow passes the environment text with `--set-file envFile=...`. It appears where the CLI's
 # ConfigModule reads its dotenv file (configuration/.env under the working directory, /app), and the CLI's own

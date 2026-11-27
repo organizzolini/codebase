@@ -1,97 +1,31 @@
-# Default values for kubernetes-job.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-replicaCount: 1
-
+# Defaults for the kubernetes-job chart; a release layers its own values file after this one.
 image:
-  repository: my-application
-  pullPolicy: IfNotPresent
-  # The image tag, required: rendering fails while it is empty.
+  repository: ""
+  # Required: rendering fails while it is empty.
   tag: ""
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-podAnnotations: {}
-
-podSecurityContext:
-  fsGroup: 1000
-  runAsNonRoot: true
-  seccompProfile:
-    type: RuntimeDefault
-
-# The root filesystem is read-only; the Job mounts an emptyDir at the temporary directory for scratch space
-securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-      - ALL
-  readOnlyRootFilesystem: true
-  runAsNonRoot: true
-  runAsUser: 1000
-
-# Labels the templates stamp on the Job and PVC when set. Declared here so the
-# templates can read them when a deploy passes neither.
-metadata:
-  gitCommit: ""
-  timestamp: ""
-
-# Job-specific configuration
-job:
-  # Number of retries before considering a Job as failed
-  backoffLimit: 3
-  # Number of successful completions required
-  completions: 1
-  # Number of pods running in parallel
-  parallelism: 1
-  # Time in seconds after which a finished job is automatically deleted
-  ttlSecondsAfterFinished: 86400
+# Retries before the Job counts as failed, and how long a finished Job stays before it is deleted
+backoffLimit: 3
+ttlSecondsAfterFinished: 86400
 
 # Name of an existing PriorityClass for the pod; empty omits the field
 priorityClassName: ""
 
-# Environment variables
+# Container arguments, after the image's entrypoint
+args: []
+
+# Environment variables, as Kubernetes `env` entries
 env: []
-# - name: MY_ENV_VAR
-#   value: "my-value"
-# - name: SECRET_ENV_VAR
-#   valueFrom:
-#     secretKeyRef:
-#       name: my-secret
-#       key: secret-key
 
 # The text of a dotenv file, such as `--set-file envFile=my.env`. It becomes a ConfigMap, mounted read-only at
-# envFileMountPath. A ConfigMap is not private, so never put a secret in it; reference a Secret through env.
+# envFileMountPath (required with envFile). A ConfigMap is not private, so never put a secret in it; reference a Secret through env.
 envFile: ""
-# Where the file appears in the container (required with envFile)
 envFileMountPath: ""
 
-# Command and arguments override
-command: []
-# - "/bin/sh"
-args: []
-# - "-c"
-# - "echo hello"
-
-persistence:
-  enabled: true
-  storageClassName: standard
-  accessMode: ReadWriteOnce
-  size: 1Gi
-  mountPath: /app/output
-
 resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
   requests:
     cpu: 100m
     memory: 128Mi
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+  limits:
+    cpu: 100m
+    memory: 128Mi

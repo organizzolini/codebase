@@ -4,61 +4,26 @@ metadata:
   name: {{ include "kubernetes-job.fullname" . }}
   labels:
     {{- include "kubernetes-job.labels" . | nindent 4 }}
-    {{- if .Values.metadata.gitCommit }}
-    caelundas.job/git-commit: {{ .Values.metadata.gitCommit | quote }}
-    {{- end }}
-    {{- if .Values.metadata.timestamp }}
-    caelundas.job/timestamp: {{ .Values.metadata.timestamp | quote }}
-    {{- end }}
 spec:
-  backoffLimit: {{ .Values.job.backoffLimit }}
-  completions: {{ .Values.job.completions }}
-  {{- if gt (int .Values.job.parallelism) 1 }}
-  parallelism: {{ .Values.job.parallelism }}
-  {{- end }}
-  {{- if .Values.job.ttlSecondsAfterFinished }}
-  ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
-  {{- end }}
+  backoffLimit: {{ .Values.backoffLimit }}
+  ttlSecondsAfterFinished: {{ .Values.ttlSecondsAfterFinished }}
   template:
     metadata:
       labels:
-        {{- include "kubernetes-job.selectorLabels" . | nindent 8 }}
-        {{- if .Values.metadata.gitCommit }}
-        caelundas.job/git-commit: {{ .Values.metadata.gitCommit | quote }}
-        {{- end }}
-        {{- if .Values.metadata.timestamp }}
-        caelundas.job/timestamp: {{ .Values.metadata.timestamp | quote }}
-        {{- end }}
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- include "kubernetes-job.labels" . | nindent 8 }}
     spec:
       restartPolicy: Never
-      serviceAccountName: default
       {{- with .Values.priorityClassName }}
-      priorityClassName: {{ . | quote }}
+      priorityClassName: {{ . }}
       {{- end }}
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.podSecurityContext }}
       securityContext:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: {{ .Chart.Name }}
-          {{- with .Values.securityContext }}
-          securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           image: "{{ .Values.image.repository }}:{{ required (printf "image.tag is required (no release of %s yet)" .Values.image.repository) .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.command }}
-          command:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
           {{- with .Values.args }}
           args:
             {{- toYaml . | nindent 12 }}
@@ -67,10 +32,14 @@ spec:
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.resources }}
           resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
           volumeMounts:
             - name: tmp
               mountPath: /tmp
@@ -80,10 +49,6 @@ spec:
               subPath: .env
               readOnly: true
             {{- end }}
-            {{- if .Values.persistence.enabled }}
-            - name: data
-              mountPath: {{ .Values.persistence.mountPath }}
-            {{- end }}
       volumes:
         - name: tmp
           emptyDir: {}
@@ -92,20 +57,3 @@ spec:
           configMap:
             name: {{ include "kubernetes-job.fullname" . }}-env
         {{- end }}
-        {{- if .Values.persistence.enabled }}
-        - name: data
-          persistentVolumeClaim:
-            claimName: {{ include "kubernetes-job.fullname" . }}
-        {{- end }}
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
