@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.15.4](https://github.com/organizzolini/codebase/compare/v6.15.3...v6.15.4) (2026-11-27)
+
+### ♻️ Code Refactoring
+
+* **configuration,documentation:** ♻️ move workspace reports into the documentation project ([#2622](https://github.com/organizzolini/codebase/issues/2622)) ([3810142](https://github.com/organizzolini/codebase/commit/3810142b6756520c9371be9c75611431add97a85)), closes [#2621](https://github.com/organizzolini/codebase/issues/2621)
+
 ## [6.15.3](https://github.com/organizzolini/codebase/compare/v6.15.2...v6.15.3) (2026-11-26)
 
 ### ♻️ Code Refactoring
