@@ -1,6 +1,3 @@
-// 📤 Exports
-export type { ApplicationBundleExpectations } from "./modules/application-bundle/application-bundle.types";
-export { describeApplicationBundle } from "./modules/application-bundle/application-bundle.utilities";
 export type { CapturedOutput } from "./modules/capture/capture.types";
 export {
   captureExitCode,
@@ -50,6 +47,9 @@ export {
   processFailure,
   stubFetch,
 } from "./modules/mocks/mocks.utilities";
+// 📤 Exports
+export type { ApplicationBundleExpectations } from "./modules/nx-plugin-sandbox/modules/application-bundle/application-bundle.types";
+export { describeApplicationBundle } from "./modules/nx-plugin-sandbox/modules/application-bundle/application-bundle.utilities";
 export { useWorkingDirectory } from "./modules/temporary-directory/modules/working-directory/working-directory.utilities";
 export { TEMPORARY_DIRECTORY_PREFIX } from "./modules/temporary-directory/temporary-directory.constants";
 export {

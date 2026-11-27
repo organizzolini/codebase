@@ -2,8 +2,8 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { writeFileTree } from "../file-tree/file-tree.utilities";
-import { makeDirectory } from "../temporary-directory/temporary-directory.utilities";
+import { writeFileTree } from "../../../file-tree/file-tree.utilities";
+import { makeDirectory } from "../../../temporary-directory/temporary-directory.utilities";
 
 import { SHARED_PACKAGES } from "./application-bundle.constants";
 import { describeApplicationBundle } from "./application-bundle.utilities";

@@ -25,7 +25,7 @@ export interface ApplicationBundleExpectations {
   readonly workspaceRoot: string;
 }
 
-/** What a check reads of the build: where it is and what its store holds. */
+/** Where a build is and what its store holds. */
 export interface BuiltBundle {
   directory: string;
   storeEntries: () => string[];

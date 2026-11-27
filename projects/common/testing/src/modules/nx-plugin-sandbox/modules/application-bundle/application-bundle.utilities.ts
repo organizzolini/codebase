@@ -4,8 +4,8 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { writeFileTree } from "../file-tree/file-tree.utilities";
-import { createTemporaryDirectory } from "../temporary-directory/temporary-directory.utilities";
+import { writeFileTree } from "../../../file-tree/file-tree.utilities";
+import { createTemporaryDirectory } from "../../../temporary-directory/temporary-directory.utilities";
 
 import {
   DEVELOPMENT_STORE_PREFIXES,
