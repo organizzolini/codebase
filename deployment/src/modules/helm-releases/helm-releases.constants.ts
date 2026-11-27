@@ -8,7 +8,7 @@ export const WORKSPACE_ROOT = ".";
 /** Where the central charts live, relative to the workspace root. */
 export const HELM_ROOT = "infrastructure/helm";
 
-/** Every place a chart folder may sit: central, or in a project's own `infrastructure` folder. */
+/** Where chart folders sit: central, or in a project's `infrastructure` folder. */
 export const CHART_PATTERNS = [
   `${HELM_ROOT}/*/Chart.yaml`,
   "projects/**/infrastructure/helm/*/Chart.yaml",

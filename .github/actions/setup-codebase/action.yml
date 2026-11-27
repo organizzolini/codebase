@@ -100,12 +100,10 @@ outputs:
 runs:
   using: composite
   steps:
-    # `pnpm/action-setup` runs `npm ci` against its own bundled pnpm, an uncached
-    # registry round trip on every job, then self-updates to the pinned version. This
-    # caches the result by version and skips the action on a hit, since its first act
-    # is to delete its `dest`. Upstream has no setting for it: pnpm/action-setup#141.
-    #
-    # Read with `grep`/`sed` rather than `node -p`: this runs before `setup-node`.
+    # `pnpm/action-setup` runs an uncached `npm ci` against its own bundled pnpm on
+    # every job, then self-updates to the pinned version. This caches the result by
+    # version and skips the action on a hit. Upstream has no setting: pnpm/action-setup#141.
+    # Read with `grep`/`sed`, since this runs before `setup-node`.
     - name: 🧮 Resolve pnpm Version
       id: pnpm-version
       run: |

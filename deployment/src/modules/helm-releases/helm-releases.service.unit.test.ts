@@ -20,7 +20,7 @@ const write = (root: string, files: Record<string, string>): string => {
   return root;
 };
 
-/** Builds a workspace holding the given files, relative to its central charts folder. */
+/** Builds a workspace of the given files, central charts unless under projects. */
 const tree = (files: Record<string, string>): string =>
   write(
     createTemporaryDirectory("charts", TEMPORARY_ROOT),
