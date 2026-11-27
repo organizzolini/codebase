@@ -548,6 +548,17 @@
           "name": "openwiki"
         },
         {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "workspace"
+        },
+        {
           "ruleId": "any-file"
         }
       ],
@@ -1029,19 +1040,7 @@
         "name": "CHANGELOG.md"
       },
       {
-        "name": "callidescope.md"
-      },
-      {
         "name": "codependix-workspace-graph.json"
-      },
-      {
-        "name": "codependix.md"
-      },
-      {
-        "name": "codometer.md"
-      },
-      {
-        "name": "coinagerie.md"
       },
       {
         "name": "compliance",
