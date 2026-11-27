@@ -1,4 +1,6 @@
 // 📤 Exports
+export type { ApplicationBundleExpectations } from "./modules/application-bundle/application-bundle.types";
+export { describeApplicationBundle } from "./modules/application-bundle/application-bundle.utilities";
 export type { CapturedOutput } from "./modules/capture/capture.types";
 export {
   captureExitCode,
