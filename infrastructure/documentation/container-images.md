@@ -63,10 +63,12 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
 
 - **One shared Dockerfile.** `infrastructure/docker/application/Dockerfile` has
   an `install` and a `build` stage every image shares, then a `node` target for
-  the applications and a `static` target for the web app. Each project's
-  `infrastructure/image.env` supplies the arguments, and
-  `infrastructure/docker/docker-image.sh` turns them into one
-  `docker buildx build`: `--load` for `docker:build`, `--push` for `docker:push`.
+  the applications and a `static` target for the web app.
+  `infrastructure/docker/docker-compose.images.yml`, a standard Compose file
+  beside the local-services one, holds one build-only service per image: its
+  context, Dockerfile, arguments, label, platform and optional CA-bundle secret.
+  `docker:build` runs `docker compose build <service>` (loaded into the daemon)
+  and `docker:push` runs `docker compose build --push <service>`, one step.
   Rejected: a Dockerfile per project, which repeated the install, non-root, label
   and tini lines three times, and a per-project Dockerfile that `FROM`s a shared
   base image, which needs a second build before the first.
@@ -113,10 +115,11 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
   and is not retried (`toRetry`), so the pod exits instead of leaking pools.
   The migration hook and its chart, image tag and variable are gone.
 - **Ports.** Each image listens on the port `project-ports` derived from its
-  name, read from `configuration/.env.default` or `vite.config.mts` when the
-  image is built, so the Dockerfile and `image.env` hold no number. The chart
-  values and the tunnel rule hold the same number, since YAML and HCL cannot
-  read it; their tests assert it. The API's own default stays 3000, because
+  name. The API's `docker` target passes its `configuration/.env.default` to
+  Compose as `--env-file`, so that port has one source; the web port is the one
+  in `vite.config.mts`, which the Compose file repeats beside a comment. The
+  charts hold the container port, and the tunnel reaches each Service on port
+  80, so no Terraform or Service value repeats a hashed port. The API's own default stays 3000, because
   the generator template pins that literal and `conformetry-validate` rejects
   another; the image sets `CAELUNDAS_API_PORT` unless the environment does.
 - **Tini.** The `node` target runs under `tini` as `ENTRYPOINT`, for signals and
@@ -142,9 +145,11 @@ it. Every claim names the page that owns it. Read on 2026-11-26.
   block. nginx-unprivileged as UID 101, the shell at `index.html` with a
   `try_files` fallback, and hashed assets cached as immutable match the
   SPA-mode guidance.
-- **Open item.** A read-only root filesystem needs the API schema written
-  elsewhere (`autoSchemaFile` writes beside its module, so that one directory is
-  writable) and the CLI logs under `output/`. The charts leave it off.
+- **Read-only root filesystem.** The charts turn it on, with `/tmp` writable.
+  The API's `autoSchemaFile` writes `schema.gql` beside its module on every
+  start, and the generator template pins that literal, so the image links the
+  file to `/tmp` (`TEMPORARY_PATHS`) at build time. Run the API image with a
+  read-only root and only `/tmp` writable to check it.
 
 ## Image size
 

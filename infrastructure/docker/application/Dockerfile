@@ -1,24 +1,24 @@
 # syntax=docker/dockerfile:1
 
 # One Dockerfile for every Node application image (`--target node`) and every static site image
-# (`--target static`). The base image tags are literal so Dependabot reads them. `docker-image.sh` builds it from the workspace root, passing the build
-# arguments below from the project's own `infrastructure/image.env`.
+# (`--target static`). The base image tags are literal so Dependabot reads them. `docker-compose.images.yml` builds it from the workspace root,
+# passing the build arguments below.
 # The workspace install, shared by every image: the pnpm closure of one project, with its dev dependencies. The full
 # (not slim) Node image carries the toolchain a native addon compiles with (g++, make, python3), and this stage never ships.
 FROM node:26.13.1-trixie AS install
 ARG PROJECT
-# The pnpm release the root package.json `packageManager` names; docker-image.sh fills it.
-ARG PNPM_VERSION
 # Native dependencies to rebuild after the install, which skips scripts.
 ARG REBUILT_PACKAGES=""
 ENV npm_config_store_dir=/pnpm/store
 WORKDIR /workspace
 COPY . .
-# An optional CA bundle (`--secret id=ca-bundle`) lets the install trust a TLS-inspecting proxy; it is never baked in.
+# An optional CA bundle (the `ca-bundle` secret, empty when unset) lets the install trust a TLS-inspecting proxy; it is never baked in.
+# The pnpm release is the one the root package.json `packageManager` names.
 RUN --mount=type=secret,id=ca-bundle,required=false \
     --mount=type=cache,id=pnpm-store,target=/pnpm/store \
-    if [ -f /run/secrets/ca-bundle ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/ca-bundle; fi; \
-    npm install --global "pnpm@${PNPM_VERSION}" && \
+    if [ -s /run/secrets/ca-bundle ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/ca-bundle; fi; \
+    pnpm_version=$(sed -n 's/.*"packageManager": *"pnpm@\([^"+]*\).*/\1/p' package.json) && \
+    npm install --global "pnpm@${pnpm_version:?package.json has no pnpm packageManager}" && \
     pnpm install --frozen-lockfile --ignore-scripts --filter "${PROJECT}..." && \
     if [ -n "$REBUILT_PACKAGES" ]; then pnpm rebuild $REBUILT_PACKAGES; fi
 
@@ -39,7 +39,7 @@ ARG TEMPORARY_PATHS=""
 WORKDIR /workspace/${PROJECT_DIRECTORY}
 RUN env ${BUILD_ENVIRONMENT} sh -c "${BUILD_COMMAND}"
 RUN --mount=type=secret,id=ca-bundle,required=false \
-    if [ -f /run/secrets/ca-bundle ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/ca-bundle; fi; \
+    if [ -s /run/secrets/ca-bundle ]; then export NODE_EXTRA_CA_CERTS=/run/secrets/ca-bundle; fi; \
     if [ -n "$PREPARE_COMMAND" ]; then sh -c "$PREPARE_COMMAND"; fi
 RUN mkdir /out && \
     cp -a "${OUTPUT_PATH}/." /out/ && \
@@ -62,13 +62,11 @@ RUN apt-get update && \
 # A Node application: the build output and its production node_modules, no dev dependencies, on a distroless base
 # (glibc and Node only: no package manager, no coreutils, so the start command uses only shell builtins).
 FROM gcr.io/distroless/nodejs26-debian13:nonroot AS node
-LABEL org.opencontainers.image.source="https://github.com/organizzolini/codebase"
 # The entry file, run with node from /app.
 ARG ENTRY
 # The port the application listens on, and the variable it reads that from; the image sets it unless the environment does.
 ARG PORT=""
 ARG PORT_VARIABLE=""
-ARG EXPOSED_PORTS=""
 ARG RUNTIME_NODE_OPTIONS=""
 ENV NODE_ENV=production \
     NODE_OPTIONS=${RUNTIME_NODE_OPTIONS} \
@@ -82,7 +80,7 @@ COPY infrastructure/docker/application/start.sh /usr/local/bin/start
 WORKDIR /app
 COPY --from=build /out ./
 USER 10001:10001
-EXPOSE ${EXPOSED_PORTS}
+EXPOSE ${PORT}
 # Kubernetes ignores HEALTHCHECK and probes the application itself, so the image declares none.
 HEALTHCHECK NONE
 ENTRYPOINT ["tini", "--"]
@@ -95,7 +93,6 @@ RUN sed "s/__PORT__/${PORT}/g" infrastructure/docker/nginx/default.conf.template
 
 # A static site: unprivileged nginx serves the build output as UID 101, the image's own user.
 FROM nginxinc/nginx-unprivileged:1.30.6-alpine3.24 AS static
-LABEL org.opencontainers.image.source="https://github.com/organizzolini/codebase"
 ARG PORT
 ENV APPLICATION_PORT=${PORT}
 COPY --from=build /out /usr/share/nginx/html

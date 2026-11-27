@@ -55,21 +55,16 @@
       "cache": false,
       "configurations": {
         "build": {
-          "env": {
-            "DOCKER_OUTPUT": "--load"
-          }
+          "command": "docker compose -f infrastructure/docker/docker-compose.images.yml build caelundas-cli"
         },
         "push": {
-          "env": {
-            "DOCKER_OUTPUT": "--push"
-          }
+          "command": "docker compose -f infrastructure/docker/docker-compose.images.yml build --push caelundas-cli"
         }
       },
       "defaultConfiguration": "build",
-      "description": "Build (`docker:build`, loaded into the local daemon) or build and push (`docker:push`, one `docker buildx build --push`) the caelundas-cli image for linux/amd64 from the shared application Dockerfile, tagged ghcr.io/organizzolini/caelundas-cli:$IMAGE_TAG (default local). Set IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build. Never cached: a Docker build has no file outputs Nx could restore, so a remote cache hit would skip building, and a push is a side effect; layer caching is BuildKit's job.",
+      "description": "Build (`docker:build`, loaded into the local daemon) or build and push (`docker:push`, one `docker compose build --push`) the caelundas-cli image for linux/amd64 with the `caelundas-cli` service of infrastructure/docker/docker-compose.images.yml, tagged ghcr.io/organizzolini/caelundas-cli:$IMAGE_TAG (default local). Set IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build. Never cached: a Docker build has no file outputs Nx could restore, so a remote cache hit would skip building, and a push is a side effect; layer caching is BuildKit's job.",
       "executor": "nx:run-commands",
       "options": {
-        "command": "sh infrastructure/docker/docker-image.sh {projectRoot}",
         "cwd": "{workspaceRoot}"
       }
     },
