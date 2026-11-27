@@ -50,7 +50,14 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
     label: "Upgrade Python",
     // The environment is rebuilt from the lock the step left unchanged.
     recover: [
-      ["uv", "sync", "--frozen", "--quiet", "--project", "configuration"],
+      [
+        "uv",
+        "sync",
+        "--frozen",
+        "--quiet",
+        "--project",
+        "configuration/python",
+      ],
     ],
     task: "python",
   },
@@ -67,7 +74,9 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
   },
   {
     // One lockfile covers every uv workspace member.
-    commands: [["uv", "lock", "--upgrade", "--project", "configuration"]],
+    commands: [
+      ["uv", "lock", "--upgrade", "--project", "configuration/python"],
+    ],
     label: "Upgrade Python dependencies",
   },
   {
