@@ -72,12 +72,12 @@ module.exports = {
       },
     ],
 
-    // Builds and pushes the changed Caelundas images, then writes their tags into the Helm values the next step commits
+    // Builds and pushes the Caelundas images, then writes their tags into the Helm values the next step commits
     [
       "@semantic-release/exec",
       {
         prepareCmd:
-          "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts release-images '${nextRelease.version}' '${lastRelease.gitTag}'",
+          "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts release-images '${nextRelease.version}'",
       },
     ],
 
@@ -109,10 +109,8 @@ module.exports = {
           "projects/meanderaw/*/documentation/entity-relationship-diagram.md",
           "projects/ic-suite/*/*/CHANGELOG.md",
           "projects/ic-suite/*/*/package.json",
-          // Image tags `@semantic-release/exec` wrote, so Argo CD syncs to images that exist
-          "infrastructure/helm/kubernetes-deployment/values/caelundas-api.yaml",
-          "infrastructure/helm/kubernetes-deployment/values/caelundas-web.yaml",
-          "infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml",
+          // Image tags `@semantic-release/exec` wrote, so Argo CD syncs to images that exist. The same glob picks the files in release-images.
+          "infrastructure/helm/*/values/*.yaml",
         ],
         message: "chore(release): 🔖 tag codebase ${nextRelease.version}",
       },

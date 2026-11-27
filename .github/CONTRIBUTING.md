@@ -566,7 +566,7 @@ Releases operate at two distinct tiers:
 | `docs`, `style`, `test`, `chore`                                          | None     | None                          |
 | Any type with the `no-release` scope                                      | None     | As its type                   |
 
-**Workflow**: merge to `main` → semantic-release analyzes the squashed commit → bumps the version → builds and pushes each Caelundas image that changed and writes its tag into the Helm values → updates `CHANGELOG.md` → commits all of it → creates the tag and GitHub release. Images are pushed before the release commit exists, so Argo CD only ever syncs to images that exist; a failed build or push fails the release before it commits anything.
+**Workflow**: merge to `main` → semantic-release analyzes the squashed commit → bumps the version → builds and pushes every Caelundas image and writes the tag into each Helm values file that names one → updates `CHANGELOG.md` → commits all of it → creates the tag and GitHub release. Images are pushed before the release commit exists, so Argo CD only ever syncs to images that exist; a failed build or push fails the release before it commits anything.
 
 **Test locally:**
 

@@ -6,25 +6,21 @@ import { ConfigService } from "@nestjs/config";
 import { parseDocument } from "yaml";
 
 import { ProcessRunnerService } from "../process-runner/process-runner.service";
-import { requireSuccess } from "../process-runner/process-runner.utilities";
 
 import {
-  IMAGE_TARGETS,
-  imageMessage,
+  IMAGE_REPOSITORY_PREFIX,
   invalidVersionMessage,
-  projectNamesSchema,
+  NO_IMAGES_MESSAGE,
+  VALUES_GLOB,
   VERSION_PATTERN,
 } from "./release-images.constants";
 
 import type { Environment } from "../../deployment.types";
-import type { ImageTarget } from "./release-images.types";
+import type { ReleaseImage } from "./release-images.types";
 
 /**
- * Builds and pushes each Caelundas image changed since the last release, then
- * writes its tag into the Helm values files.
- *
- * Only tag fields change. An image is pushed before its tag is written, so no
- * release commit names a missing image.
+ * Pushes every image the Helm values files name, then writes the release
+ * version into them, so no release commit names a missing image.
  */
 @Injectable()
 export class ReleaseImagesService {
@@ -41,35 +37,31 @@ export class ReleaseImagesService {
 
   // 🔏 Private Methods
 
-  /** Lists the projects Nx finds affected between the last release and HEAD. */
-  private async affectedProjects(lastTag: string): Promise<string[]> {
-    const listing = requireSuccess(
-      await this.processRunner.captureAsync("pnpm", [
-        "exec",
-        "nx",
-        "show",
-        "projects",
-        "--affected",
-        "--json",
-        `--base=${lastTag}`,
-        "--head=HEAD",
-      ]),
-      "nx show projects --affected",
-    );
+  /** Reads the values files that set an image repository. */
+  private readImages(): ReleaseImage[] {
+    const images: ReleaseImage[] = [];
 
-    return projectNamesSchema.parse(JSON.parse(listing));
-  }
+    for (const file of fs
+      .globSync(VALUES_GLOB, { cwd: process.cwd() })
+      .toSorted()) {
+      const document = parseDocument(
+        fs.readFileSync(path.join(process.cwd(), file), "utf8"),
+      );
+      const repository: unknown = document.getIn(["image", "repository"]);
 
-  /** Builds and pushes a project's image for a version, in one `docker:push` run. */
-  private pushImage(project: string, version: string): void {
-    this.stream("env", [
-      `IMAGE_TAG=${version}`,
-      "pnpm",
-      "exec",
-      "nx",
-      "run",
-      `${project}:docker:push`,
-    ]);
+      if (
+        typeof repository === "string" &&
+        repository.startsWith(IMAGE_REPOSITORY_PREFIX)
+      ) {
+        images.push({
+          document,
+          file,
+          project: repository.slice(IMAGE_REPOSITORY_PREFIX.length),
+        });
+      }
+    }
+
+    return images;
   }
 
   /** Runs a command with this process's output, throwing when it fails. */
@@ -89,50 +81,45 @@ export class ReleaseImagesService {
     }
   }
 
-  /** Sets one tag field, keeping the file's comments and blank lines. */
-  private writeTag(
-    file: string,
-    keys: readonly string[],
-    version: string,
-  ): void {
-    const absolute = path.join(process.cwd(), file);
-    const document = parseDocument(fs.readFileSync(absolute, "utf8"));
-
-    document.setIn(keys, version);
-    fs.writeFileSync(absolute, document.toString({ lineWidth: 0 }));
-  }
-
   // 🌎 Public Methods
 
   /**
-   * Releases the images changed since `lastTag`, or all without one.
+   * Pushes every image tagged with the version, then writes the tag.
    *
    * @param version - Release version.
-   * @param lastTag - Last tag, or empty.
    */
-  public async run(version: string, lastTag: string): Promise<void> {
+  public run(version: string): void {
     if (!VERSION_PATTERN.test(version)) {
       throw new Error(invalidVersionMessage(version));
     }
 
-    const affected =
-      lastTag === "" ? undefined : await this.affectedProjects(lastTag);
+    const images = this.readImages();
 
-    IMAGE_TARGETS.forEach((image: ImageTarget) => {
-      const changed =
-        affected === undefined || affected.includes(image.project);
+    if (images.length === 0) {
+      throw new Error(NO_IMAGES_MESSAGE);
+    }
 
-      console.info(imageMessage(image.project, changed));
+    const projects = images.map(({ project }) => project).toSorted();
 
-      if (!changed) {
-        return;
-      }
+    // One at a time and stopping at the first failure: a failed push writes no tag.
+    this.stream("env", [
+      `IMAGE_TAG=${version}`,
+      "pnpm",
+      "exec",
+      "nx",
+      "run-many",
+      "--target=docker:push",
+      `--projects=${projects.join(",")}`,
+      "--parallel=1",
+      "--nxBail",
+    ]);
 
-      this.pushImage(image.project, version);
-
-      image.fields.forEach(({ file, path: keys }) => {
-        this.writeTag(file, keys, version);
-      });
-    });
+    for (const { document, file } of images) {
+      document.setIn(["image", "tag"], version);
+      fs.writeFileSync(
+        path.join(process.cwd(), file),
+        document.toString({ lineWidth: 0 }),
+      );
+    }
   }
 }

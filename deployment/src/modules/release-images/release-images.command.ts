@@ -8,16 +8,16 @@ import { describeError } from "../process-runner/process-runner.utilities";
 import { ReleaseImagesService } from "./release-images.service";
 
 /**
- * Builds and pushes the changed Caelundas images and writes their tags into
- * the Helm values, as semantic-release's `prepareCmd`.
+ * Builds and pushes the Caelundas images and writes their tags into the Helm
+ * values, as semantic-release's `prepareCmd`.
  *
- * Takes the release version and the last release's git tag. `DRY_RUN=1` runs
- * no build or push. Exits 1 on any failure.
+ * Takes the release version. `DRY_RUN=1` runs no build or push. Exits 1 on
+ * any failure.
  */
 @Command({
-  arguments: "<version> [last-tag]",
+  arguments: "<version>",
   description:
-    "Build and push the changed Caelundas images and write their tags into the Helm values",
+    "Build and push the Caelundas images and write their tags into the Helm values",
   name: "release-images",
 })
 @Injectable()
@@ -42,10 +42,12 @@ export class ReleaseImagesCommand extends CommandRunner {
 
   /** Releases the images, and exits with the outcome. */
   public async run(passedParameters: string[]): Promise<void> {
-    try {
-      const [version = "", lastTag = ""] = passedParameters;
+    const [version = ""] = passedParameters;
 
-      await this.releaseImagesService.run(version, lastTag);
+    await Promise.resolve();
+
+    try {
+      this.releaseImagesService.run(version);
     } catch (error: unknown) {
       console.error(describeError(error));
       process.exitCode = 1;

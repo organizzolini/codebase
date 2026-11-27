@@ -1,16 +1,13 @@
 // 🏷️ Types
 
-/** A Caelundas image, and every field that names its tag. */
-export interface ImageTarget {
-  fields: readonly TagField[];
-  /** The Nx project whose `docker:push` builds and pushes the image. */
-  project: string;
-}
+import type { Document } from "yaml";
 
-/** A field in a values file that holds an image tag. */
-export interface TagField {
+/** A Helm values file that names an image of this repository. */
+export interface ReleaseImage {
+  /** The parsed file, which keeps its comments when written back. */
+  document: Document;
   /** The values file, relative to the workspace root. */
   file: string;
-  /** The keys leading to the field. */
-  path: readonly string[];
+  /** The image's name, which is its Nx project's name. */
+  project: string;
 }
