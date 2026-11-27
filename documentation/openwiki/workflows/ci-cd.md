@@ -1,7 +1,11 @@
 ---
 type: "Reference"
 title: "CI/CD Pipelines"
-openwiki_generated: true
+description: "Documents the GitHub Actions workflows (continuous-integration, continuous-deployment, continuous-compliance, refresh-documentation, upgrade-dependencies), the setup-codebase and cleanup-codebase composite actions, and the fully automated release process on merge to main."
+tags: ["ci-cd", "github-actions", "workflows", "release", "automation"]
+verified:
+  - by: openwiki/0.9.0
+    at: 2026-11-27T18:15:08.471Z
 sources:
   - id: openwiki-source-021f568adb8078955fd1aacf
     resource: repo://.github/actions/cleanup-codebase/action.yml
@@ -17,28 +21,22 @@ sources:
     resource: repo://.github/workflows/refresh-documentation.yml
   - id: openwiki-source-c2af95c435a3c7ffd53cfe73
     resource: repo://.github/workflows/upgrade-dependencies.yml
-  - id: openwiki-source-70c07817764b8e76381afb35
-    resource: repo://configuration/repository/release.config.cjs
-  - id: openwiki-source-cbacafef122fab5636a5e673
-    resource: repo://documentation/development/release-process.md
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
-verified:
-  - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+generated: { by: "openwiki/0.9.0", at: "2026-11-27T18:15:08.471Z" }
 ---
-
 
 # CI/CD Pipelines
 
-This page documents the GitHub Actions workflows that form the CI/CD pipeline, the `setup-codebase` composite action that prepares every job, and the fully automated release process that runs on merge to `main`.
+This page documents the GitHub Actions workflows that form the CI/CD pipeline, the `setup-codebase` and `cleanup-codebase` composite actions that prepare and finalize every job, and the fully automated release process that runs on merge to `main`.
 
 ## Overview
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
 | **Continuous Integration** | Push to `main`, PRs, merge queue | Lint, typecheck, test, build, security scan |
-| **Continuous Deployment** | Push to `main`, devcontainer changes | Build devcontainer, release & publish packages |
+| **Continuous Deployment** | Push to `main`, devcontainer changes | Build devcontainer, release & publish packages, apply infrastructure |
 | **Continuous Compliance** | Issues, PRs, merge queue, weekly schedule | Governance, commit conventions, issue metadata |
+| **Refresh Documentation** | Weekly schedule (Friday 8:18am UTC), manual | Refresh repository documentation via OpenWiki |
+| **Upgrade Dependencies** | Weekly schedule (Friday 8:18am UTC), manual | Upgrade dependencies and open a signed PR |
 
 All workflows share the `setup-codebase` composite action for environment preparation and the `cleanup-codebase` action for cache persistence.
 
@@ -52,7 +50,7 @@ The `setup-codebase` action is a composite action that every CI job calls first.
 
 ### Key Responsibilities
 
-1. **Package manager setup** — Installs the pnpm version pinned in `package.json`'s `packageManager` field via a cached `pnpm/action-setup` invocation (see `setup-pnpm` action).
+1. **Package manager setup** — Installs the pnpm version pinned in `package.json`'s `packageManager` field via a cached `pnpm/action-setup` invocation.
 2. **Node.js setup** — Installs the Node version from `.nvmrc` with pnpm cache.
 3. **Nx SHAs resolution** — Runs `nrwl/nx-set-shas@v5` to compute `NX_BASE` and `NX_HEAD` for `nx affected`. The `nx-base` input controls the base strategy:
    - `last-successful` (default): Uses the last commit whose whole workflow succeeded.
@@ -65,7 +63,8 @@ The `setup-codebase` action is a composite action that every CI job calls first.
 9. **Python dependencies** — Runs `uv sync --frozen --project configuration/python` into shared root `.venv` (used by `yaml-lint` and `sqlfluff` on every TypeScript project).
 10. **ESLint cache** — Restores `.eslintcache` for the lint job.
 11. **node-gyp permissions repair** — Fixes executable bit on bundled `gyp_main.py` to avoid intermittent `Permission denied` during native builds.
-12. **Node dependencies install** — Runs `pnpm install --frozen-lockfile` (skippable).
+11. **Node dependencies install** — Runs `pnpm install --frozen-lockfile` (skippable).
+12. **Start Nx Shared Cache** — Seeds session and starts self-hosted remote cache server for trusted runs.
 13. **Push-base bounding** — On CI pushes with `nx-base: push-before`, runs `bound-base-to-push` to ensure the base is an ancestor of HEAD.
 14. **PR cache import** — On merge group runs, imports the PR's Nx cache from an artifact.
 15. **Task database verification** — Discards corrupt databases from cancelled saves before first task runs.
@@ -75,6 +74,49 @@ The `setup-codebase` action is a composite action that every CI job calls first.
 
 - `nx-cache-primary-key`: The exact-match cache key computed for this job (pass to `cleanup-codebase`).
 - `nx-cache-scope`: The scope this job used (pass to `cleanup-codebase` for artifact naming).
+
+### Inputs
+
+| Input | Default | Purpose |
+|-------|---------|---------|
+| `gitleaks` | `false` | Install gitleaks for secret scanning |
+| `install` | `true` | Install node dependencies with pnpm |
+| `nx-cache` | `true` | Restore and save the Nx task cache |
+| `nx-cache-scope` | `${{ github.job }}` | Partition key for Nx task cache |
+| `nx-graph-cache` | `true` | Restore and save the Nx project graph |
+| `nx-shas` | `true` | Resolve NX_BASE and NX_HEAD |
+| `nx-base` | `last-successful` | Base strategy for push events |
+| `python-dependencies` | `true` | Sync uv workspace into shared `.venv` |
+| `postgres-client` | `false` | Install PostgreSQL 18 client tools |
+| `trivy` | `false` | Install trivy for infrastructure scanning |
+| `terraform` | `false` | Install terraform |
+| `eslint-cache` | `false` | Restore and save ESLint cache |
+| `uv` | `true` | Install uv (required for yaml-lint, sqlfluff) |
+
+---
+
+## cleanup-codebase Composite Action
+
+**Location**: `.github/actions/cleanup-codebase/action.yml`
+
+Saves whatever progress a job made, even one a timeout or a cancellation cut short. Call this as a job's last step with `if: always()`, passing the `nx-cache-primary-key` `setup-codebase` output through. `setup-codebase` only restores the Nx task cache now, never saves it — a job that skips this action gets no save at all.
+
+### Key Responsibilities
+
+1. **Cleanup codebase** — Runs `integration:cleanup-codebase` to discard damaged task databases from cancelled runs.
+2. **Share Nx cache with merge group** — Uploads Nx cache as a workflow artifact for the merge group to import (3-day retention).
+3. **Save Nx cache** — Saves `.nx/cache` and `.nx/workspace-data/*.db*` to the cache service using the exact-match key.
+4. **Save ESLint cache** — Saves `.eslintcache` when requested.
+
+### Inputs
+
+| Input | Default | Purpose |
+|-------|---------|---------|
+| `nx-cache` | `true` | Save the Nx task cache |
+| `nx-cache-primary-key` | — | Exact-match key from `setup-codebase` output |
+| `nx-cache-scope` | — | Scope for artifact naming |
+| `nx-cache-artifact` | `false` | Upload cache as artifact for merge group |
+| `eslint-cache` | `false` | Save ESLint cache |
 
 ---
 
@@ -91,55 +133,51 @@ The `setup-codebase` action is a composite action that every CI job calls first.
 
 ### Concurrency
 
-- Group: `${{ workflow }}-${{ ref == main && sha || ref }}`
+- Group: `${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}`
 - Cancel in-progress for non-main refs
 
 ### Permissions
 
-- `actions: read`, `contents: write`, `pull-requests: write`, `issues: write`
+- `actions: read`, `contents: write`, `packages: read`, `pull-requests: write`, `issues: write`
 
-### Job Matrix (17 legs)
+### Job Matrix (19 Legs)
 
-| Target | Name | Emoji | Notes |
-|--------|------|-------|-------|
-| `static-code` | Static | 🧑‍⚕️ | `typecheck-code`, `format-code`, `lint-code` and `deprecate-code` in one `nx affected` call |
-| `guard-code` | Guard | 💂 | `catalog-manifests`, `coinagerie-check`, `lockfile`, `project-ports`, `readme-projects`, `vscode-extensions` (kept equal to `guard-code`'s `dependsOn` in `nx.json`, less the gates with legs below) |
-| `callidescope-restrict` | Callidescope Restrict | 🔭 | Call-stack depth and breadth gate |
-| `codependix-bound` | Codependix Bound | 🕸️ | Dependency boundary gate |
-| `conformetry-validate` | Conformetry Validate | 👔 | The one leg that also asks the affected run to include conformetry templates |
-| `test-code` | Test Codebase, Test Common, Test Affirmancy, Test Caelundas, Test IC Suite, Test Lexico, Test Meanderaw | 🧑‍🔬 | One leg per project group (see below); Caelundas has a 15-minute timeout |
-| `secure-code` | Secure | 🕵️ | Gitleaks and Trivy scanning |
-| `build-projects` | Build | 👷 | Build plus the codometer size gate |
-| `end-to-end` | End to End IC Suite | 🤵 | Packs the five CLIs and four Nx plugins and runs them as a consumer would |
-| `plan-terraform` | Infrastructure | 🧑‍🚀 | Plans the OpenRouter, GitHub and Linode roots when Terraform changed, and comments the plans |
-| `build-devcontainer` | Devcontainer | 🧑‍🏭 | Builds and tests the devcontainer image when its inputs changed (15-minute timeout) |
+The workflow runs a matrix of 19 legs, each with its own Nx target(s), timeout, and optional inputs:
 
-Legs time out after 12 minutes unless they set `timeout-minutes`.
+| Leg | Emoji | Target(s) | Timeout | Special Inputs |
+|-----|-------|-----------|---------|----------------|
+| **Static** | 🧑‍⚕️ | `static-code` (typecheck-code, format-code, lint-code, deprecate-code) | 12m | `eslint-cache: true`, `terraform: true` |
+| **Guard** | 💂 | `guard-code` (agent-instructions, catalog-manifests, coinagerie-check, lockfile, project-ports, pull-request-template, readme-projects, skill-descriptions, typeorm-migration-sql, vscode-extensions) | 12m | — |
+| **Callidescope Restrict** | 🔬 | `callidescope-restrict` | 12m | — |
+| **Codependix Bound** | 🕸️ | `codependix-bound` | 12m | — |
+| **Diagram Entity Relationships** | 🗃️ | `erd` | 12m | — |
+| **Codometer Limit** | ⏲️ | `codometer-limit` | 12m | — |
+| **Conformetry Validate** | 👔 | `conformetry-validate` | 12m | `INCLUDE_TEMPLATES: true` |
+| **Test Codebase** | 🧑‍🔬 | `test-code` (excludes affirmancy, caelundas, ic-suite, lexico, meanderaw, common) | 12m | `postgres-client: false` |
+| **Test Common** | 🧑‍🔬 | `test-code` (only projects/common/**) | 12m | `postgres-client: true` |
+| **Test Affirmancy** | 🧑‍🔬 | `test-code` (only projects/affirmancy/**) | 12m | — |
+| **Test Caelundas** | 🧑‍🔬 | `test-code` (only projects/caelundas/**) | 15m | — |
+| **Test IC Suite** | 🧑‍🔬 | `test-code` (only projects/ic-suite/**) | 12m | — |
+| **Test Lexico** | 🧑‍🔬 | `test-code` (only projects/lexico/**) | 12m | `postgres-client: true` |
+| **Test Meanderaw** | 🧑‍🔬 | `test-code` (only projects/meanderaw/**) | 12m | — |
+| **Secure** | 🕵️ | `secure-code` | 12m | `gitleaks: true`, `trivy: true` |
+| **Build** | 👷 | `build-projects` | 12m | `python-dependencies: false`, `uv: false`, `continue-on-error: true` |
+| **End to End IC Suite** | 🤵 | `end-to-end` | 12m | `python-dependencies: false`, `uv: false` |
+| **Infrastructure** | 🧑‍🚀 | `plan-terraform` | 12m | `terraform: true`, `python-dependencies: false`, `uv: false` |
+| **Devcontainer** | 🧑‍🏭 | `build-devcontainer` | 15m | — |
 
-### Test Sharding Strategy
+### Key Behaviors
 
-The test suite is split into one parallel leg per project group so no single leg waits for slow projects:
+- **Conditional skipping**: Terraform and Devcontainer legs skip when no relevant files changed. A newer PR run cancels the previous one.
+- **Nx affected**: Uses `integration:run-affected` with `--parallel=4`, selecting targets by their inputs. Conformetry templates require `INCLUDE_TEMPLATES` because `.nxignore` hides them.
+- **Merge group**: Restores `main`'s caches, saves none, and imports the PR's cache from the artifact uploaded by the PR run.
+- **Reporting**: The `report-integration` composite action reports outcomes for build, static, and test legs on PRs and main.
 
-| Leg | Projects included |
-|-----|-------------------|
-| **Test Codebase** | Everything not in another leg (new projects stay here until split out) |
-| **Test Common** | `projects/common/**` (installs the Postgres client) |
-| **Test Affirmancy** | `projects/affirmancy/**` |
-| **Test Caelundas** | `projects/caelundas/**` |
-| **Test IC Suite** | `projects/ic-suite/**` |
-| **Test Lexico** | `projects/lexico/**` (installs the Postgres client) |
-| **Test Meanderaw** | `projects/meanderaw/**` |
+### Nx Cache Configuration
 
-A leg with nothing affected runs nothing.
-
-### Key Steps
-
-1. **Skip Conditionally** — Avoids redundant runs for the same PR by checking for newer workflow runs.
-2. **Checkout Repository** — Full history (`fetch-depth: 0`) for Nx affected.
-3. **Setup Codebase** — Composite action with granular cache/toggle inputs per matrix leg.
-4. **Run Check** — Executes `nx affected` with the target; `guard-code` includes conformetry templates when changed files touch `configuration/conformetry-templates/`.
-5. **Report Integration** — Uploads results for build, typecheck, and test targets on main and PRs.
-6. **Cleanup Codebase** — Saves Nx cache (skipped on merge group), exports PR cache as artifact on PR runs.
+- Shared remote cache bucket configured via repository variables and secrets
+- PRs and non-main manual runs get read-only access; main and trusted runs get read-write
+- Cache scope includes the target name and shard (e.g., `continuous-integration-test-code-codebase`)
 
 ---
 
@@ -150,58 +188,86 @@ A leg with nothing affected runs nothing.
 ### Triggers
 
 - Push to `main`
-- Pull requests touching `.devcontainer/**`, `.env.default`, `infrastructure/docker/docker-compose.yml`, `package.json`, or this workflow
 - Manual dispatch
 
 ### Concurrency
 
-- Group: `${{ workflow }}-${{ ref }}`
-- Cancel in-progress only for pull requests (never cancel a release run)
+- Group: `${{ github.workflow }}-${{ github.ref }}`
+- **Never cancels** in-progress runs (releases and applies queue per ref)
 
 ### Permissions
 
-- `contents: write`, `packages: write`, `issues: write`, `pull-requests: write`
-- `id-token: write` (for npm provenance attestations)
-- `attestations: write`, `artifact-metadata: write` (for build-provenance attestations and Linked artifacts)
+- `contents: write`, `packages: write`, `issues: write`, `pull-requests: write`, `id-token: write`, `attestations: write`, `artifact-metadata: write`
 
-### Job Matrix (3 targets)
+### Job Matrix (3 Targets)
 
-| ID | Name | Emoji | Timeout | Purpose |
-|----|------|-------|---------|---------|
-| `build-devcontainer` | Devcontainer | 🧑‍🏭 | 20m | Build and test the devcontainer image |
-| `push-releases` | Releases | 🦸 | 32m | Full release automation (version, tag, publish, attest) |
-| `apply-terraform` | Infrastructure | 🏗️ | 20m | Applies the Terraform roots (openrouter, linode, github) when a push to `main` changes `infrastructure/terraform/**` |
+| Target | Emoji | Timeout | Purpose |
+|--------|-------|---------|---------|
+| **build-devcontainer** | 🧑‍🏭 | 20m | Build and publish devcontainer image to GHCR |
+| **push-releases** | 🦸 | 32m | Version, build, tag, publish packages; regenerate committed output |
+| **apply-terraform** | 🏗️ | 20m | Apply OpenRouter Terraform when changed |
 
-### Devcontainer Build (🧑‍🏭)
+### Devcontainer Build (build-devcontainer)
 
-1. **Skip Conditionally** — Checks if changed files match devcontainer-relevant patterns (`.devcontainer/**`, `.env.default`, `docker-compose.yml`, workflow file, or `packageManager` pin). If 300+ files changed, builds rather than guessing.
-2. **Setup Environment** — Copies `.env.default` to `.env`, adds `LOCAL_WORKSPACE_FOLDER`.
-3. **Docker Buildx** — Sets up multi-platform builder.
-4. **Login to GHCR** — Uses `GITHUB_TOKEN`.
-5. **Build Image** — Uses `devcontainers/ci@v0.3` with cloud config; pushes to `ghcr.io/organizzolini/codebase-devcontainer` only on push/workflow_dispatch to `main`.
-6. **Test Image** — Runs `.devcontainer/scripts/test-devcontainer.sh` inside the built image (never pushes).
+Conditionally built only when relevant files change (`.devcontainer/`, `.env.default`, workflow file, `docker-compose.yml`, or `packageManager` in `package.json`). Uses `devcontainers/ci@v0.3` with Buildx, caches from `ghcr.io/organizzolini/codebase-devcontainer:latest`, pushes only on `main` push or workflow_dispatch, and runs tests inside the built image.
 
-### Release Automation (🦸)
+### Release Automation (push-releases)
 
-The release runs entirely on merge to `main`. When `main` moves during a release run, the run steps aside: later steps skip (`RELEASE_SUPERSEDED`) and the newer commit's run releases everything.
+This is the core release job. It implements the full automated release process described in [Release Process](../workflows/release.md) and `deployment/documentation/release-process.md`.
 
-#### Release Steps
+#### Steps
 
-1. **Setup Codebase**, **Import GPG Key** and **Check Commit Signing Configuration** — the release signs its commits.
-2. **🏷️ Version Packages** — `deployment version-packages` versions the ic-suite packages with Nx Release and writes their changelogs, uncommitted, before the build so npm gets the build of the published manifest.
-3. **👷 Build Projects** — `nx run-many --target=build`.
-4. **Regenerate committed output on the default branch** — 🔭 Trace Calls (`configuration:callidescope:write`), 🕸️ Graph Dependencies (`configuration:codependix:write`), 👔 Inventory Generators (`conformetry-generators` write), 🔗 Synchronize (conventional config, devcontainer configuration, pull request template, skill exclusions), 📊 Measure Code (codometer write for every project and the workspace), 🪙 Coin Vocabulary (`coinagerie-check` write).
-5. **🔖 Tag Codebase** — semantic-release versions and tags the codebase itself and creates the `v*` release the README badge shows (never an ic-suite package); its one `chore(release): 🔖 tag codebase` commit also carries the package versions and changelogs the version step wrote.
-6. **🔖 Tag Packages** — tags each newly versioned package `<project>@<version>` on the release commit and pushes the tags.
-7. **📦 Publish Packages** — publishes each released package to npm with provenance and to GitHub Packages under the owner's scope; a re-run completes a run that stopped partway.
-8. **🔗 Link Packages** and **🔏 Attest Packages** — lists each npm package on the organization's Linked artifacts page and attests builds with `actions/attest` for the tarballs this run published.
-9. **🧹 Cleanup Codebase** — saves the Nx cache.
+1. **Supersession check** — Before any work, queries GitHub API to see if `main` has advanced beyond this commit. If so, sets `skip=true` and exits. The newer commit's run will release everything.
 
-The `deployment` project's commands (`version-packages`, `tag-codebase`, `tag-packages`, `publish-packages`, `link-packages`) own the logic; the workflow only orders them.
+2. **Checkout** — Full history, no persisted credentials.
 
-#### Two Versioning Systems
+3. **Setup codebase** — With `nx-shas: true`, `nx-base: push-before`, Python dependencies, uv.
 
-Nx Release owns independent ic-suite package versions (tagged `<project>@<version>` with per-package `CHANGELOG.md`), while semantic-release owns the single codebase version (tagged `v<version>`, shown in the README badge).
+4. **Import GPG key** — For signing release commits and tags.
+
+5. **Check commit signing configuration** — Verifies git signing is configured.
+
+6. **Version Packages** — Runs `deployment:version-packages` (Nx release) to determine and write each ic-suite package's version from conventional commits, prepend to each package's `CHANGELOG.md`, without committing. If `main` moves during the run, later steps detect it and set `RELEASE_SUPERSEDED=true`, causing all subsequent steps to skip.
+
+7. **Build Projects** — `nx run-many --target=build` (skipped if superseded).
+
+8. **Regenerate committed output** (all skipped if superseded):
+   - **Trace Calls** — `nx run configuration:callidescope:write`
+   - **Graph Dependencies** — `nx run configuration:codependix:write`
+   - **Diagram Entity Relationships** — `nx affected --target=erd --configuration=write`
+   - **Synchronize** — Runs `agent-instructions`, `conventional-config`, `devcontainer-configuration`, `pull-request-template`, `skill-exclusions` with `--configuration=write`
+   - **Measure Code** — `nx run-many --target=codometer-weigh --configuration=write` and `nx run configuration:codometer:write`
+   - **Coin Vocabulary** — `nx run-many --target=coinagerie-check --configuration=write`
+
+9. **Tag Codebase** — Runs `deployment:tag-codebase` (semantic-release). This:
+   - Analyzes commits since last release to determine version bump
+   - Generates release notes grouped by gitmoji sections
+   - Updates root `CHANGELOG.md`, `README.md`, `package.json`, `pnpm-lock.yaml`
+   - Commits all version-bumped files (including package versions/changelogs from step 6) as `chore(release): 🔖 tag codebase <version>`
+   - Tags the commit `v<version>` and creates GitHub release
+
+10. **Tag Packages** — Runs `deployment:tag-packages`:
+    - Tags each newly versioned ic-suite package as `<project>@<version>` on the release commit
+    - Pushes tags six at a time (GitHub rejects >6 refs per push), retries up to 3 times
+    - If no codebase release occurred (e.g., `scope:no-release`), commits package versions separately as `chore(release): 🔖 tag packages`
+
+11. **Publish Packages** — Runs `deployment:publish-packages`:
+    - `pnpm -r publish --provenance` publishes every package in the Nx release group whose version is not on npm yet
+    - Each gets an npm provenance attestation linking to the commit and workflow run
+    - Mirrors to GitHub Packages under `@organizzolini/<package>` scope
+
+12. **Link Packages** — Runs `deployment:link-packages`:
+    - Creates storage records on the organization's Linked artifacts page for each npm package
+    - Names npm as registry, links npmjs.com page, SHA-256 of tarball, this repository
+    - Marks versions published in this run for attestation
+
+13. **Attest Packages** — Uses `actions/attest@v4` to create GitHub build-provenance attestations for each npm tarball this run published.
+
+14. **Cleanup Codebase** — Saves Nx cache for the next release run.
+
+### Infrastructure Apply (apply-terraform)
+
+Runs on push to `main` when Terraform files changed, or on workflow_dispatch. Applies three Terraform roots in order: `openrouter` (first, GitHub root reads its outputs), `linode`, `github`. State stored in Linode bucket with no locking; the workflow's per-ref concurrency group prevents overlapping applies.
 
 ---
 
@@ -215,12 +281,13 @@ Nx Release owns independent ic-suite package versions (tagged `<project>@<versio
 - Issues (opened, reopened, unassigned, edited, labeled, unlabeled)
 - Pull requests (opened, reopened, synchronize, edited, labeled, unlabeled, assigned, unassigned, ready_for_review)
 - Merge group (checks_requested)
-- Weekly schedule (Friday 8:18am New York time: 12:18 UTC in summer, 13:18 UTC in winter)
+- Weekly schedule: Friday 12:18 UTC (8:18am NYC EDT / 13:18 UTC EST)
 - Manual dispatch
 
 ### Concurrency
 
-- Per-event-group; cancels in-progress for PRs
+- Group: `${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || (github.ref == 'refs/heads/main' && github.sha || github.run_id) }}`
+- Cancel in-progress for PRs
 
 ### Permissions
 
@@ -228,40 +295,13 @@ Nx Release owns independent ic-suite package versions (tagged `<project>@<versio
 
 ### Jobs
 
-#### 🧑‍💼 Issue
+| Job | Name | Trigger | Purpose |
+|-----|------|---------|---------|
+| **issue** | 🧑‍💼 Issue | Issues, schedule, manual | Validates issue metadata, types, hierarchy, release significance; labels and assigns |
+| **enforce** | 👮 Enforce | PRs, merge group | Repository governance and workflow security; runs before a change lands |
+| **comply** | 🧑‍⚖️ Comply | PRs, merge group | Pull request metadata and commit message conventions |
 
-Runs on issue events, schedule, and manual dispatch (not dependabot).
-
-1. **Checkout**, **Setup pnpm**, **Setup Node**
-2. **Install Root Dependencies** — Only root, `synchronization...`, `validation...` (no Nx graph).
-3. **Reconcile Issue Labels** — On `issues.opened` only; applies required labels from issue body.
-4. **Ensure Issue Assignee** — Defaults unassigned issues to repository owner.
-5. **Ensure Open Issues Have Assignees** — On schedule/manual, sweeps all open unassigned issues.
-6. **Audit Single Issue Metadata** — On issue events, validates the issue's metadata.
-7. **Audit All Open Issues Metadata** — On schedule/manual, sweeps all open issues and hierarchy relationships.
-
-#### 👮 Enforce
-
-Runs on push, merge group, schedule, manual, and non-draft PRs (includes dependabot).
-
-1. **Checkout**, **Setup pnpm**, **Setup Node**
-2. **Install Root Dependencies** — Same minimal filter.
-3. **Audit Repository Governance** — Validates `CODEOWNERS` rules and workflow security.
-
-#### 🧑‍⚖️ Comply
-
-Runs on PR events, merge group, and non-draft PRs (includes dependabot; exempts dependabot from title/body checks).
-
-1. **Resolve Merge Group PR** — Extracts PR number/author from `gh-readonly-queue` ref.
-2. **Checkout**, **Setup pnpm**, **Setup Node**
-3. **Install Root Dependencies**
-4. **Reconcile PR Labels** — On PR events only; syncs labels from PR title.
-5. **Validate Branch Name** — On PR events; validates against Conventional Commits.
-6. **Validate PR Title** — On PR and merge group; validates Conventional Commits format (exempts dependabot).
-7. **Validate PR Body** — On PR and merge group; validates required template sections (exempts dependabot).
-8. **Validate Release Significance** — PR title significance must match or exceed commits.
-9. **Validate Commit Message** — On push to main; validates latest commit subject (exempts dependabot).
-10. **Validate Merge Group Commit Message** — On merge group; validates head commit subject (skips generic "Merge pull request #" subjects; exempts dependabot).
+All three jobs use the `compliance` CLI (Node.js) which runs directly without Nx cache or full dependency install. They install only the compliance project and its dependencies.
 
 ---
 
@@ -271,24 +311,41 @@ Runs on PR events, merge group, and non-draft PRs (includes dependabot; exempts 
 
 ### Triggers
 
-- Weekly schedule (Friday 8:18am UTC)
+- Weekly schedule: Friday 8:18am UTC (cron: `18 8 * * 5`)
 - Manual dispatch
 
 ### Concurrency
 
-- Per-ref; cancels in-progress
+- Group: `${{ github.workflow }}-${{ github.ref }}`
+- Cancel in-progress: true
 
 ### Permissions
 
 - `contents: write`, `pull-requests: write`
 
+### Configuration
+
+Uses OpenWiki with OpenRouter provider:
+- `OPENWIKI_PROVIDER=openrouter`
+- `OPENWIKI_MODEL_ID` from repository variable
+- `OPENROUTER_API_KEY` from secret
+- `OPENWIKI_MAX_OUTPUT_TOKENS=16384`
+- `OPENWIKI_PROVIDER_RETRY_ATTEMPTS=12` (free models allow 20 req/min; retries outlast a spent minute)
+- `OPENWIKI_TELEMETRY_DISABLED=true`
+- `OPENROUTER_SESSION_ID` groups requests in OpenRouter Sessions view
+
 ### Steps
 
-1. **Checkout** — Full history.
-2. **Setup Codebase** — With `nx-shas: false` (no Nx affected needed).
-3. **Refresh Documentation** — Runs `nx run documentation:refresh-documentation` with OpenWiki configured for OpenRouter (`OPENWIKI_PROVIDER=openrouter`, the model from the `OPENWIKI_MODEL_ID` variable that Terraform keeps at the OpenRouter preset, 12 provider retries for a free model's rate limits, and the `OPENROUTER_API_KEY` secret).
-4. **Import GPG Key** — For signed commits, after the model has finished so the key is not in the job while the model's tools run.
-5. **Upsert Pull Request** — Creates or updates a signed PR on the `docs/documentation-refresh` branch, adding only `documentation/openwiki/**`, `AGENTS.md` and the workflow file.
+1. **Checkout** — Full history (`fetch-depth: 0`)
+2. **Setup Codebase** — With `nx-shas: false` (no Nx affected needed)
+3. **Refresh Documentation** — Runs `nx run documentation:refresh-documentation`. The command retries rate-limited runs, writes attempts to job summary, outputs `wiki-changed` (false when only bookkeeping files changed).
+4. **Import GPG Key** — If `wiki-changed != 'false'`, imports GPG key for signed commits.
+5. **Upsert Pull Request** — If `wiki-changed != 'false'`, creates/updates PR on `docs/documentation-refresh` branch with signed commits, title `docs(documentation): 📝 refresh`, auto-deletes branch on merge.
+
+### Notes
+
+- Read-only Nx cache access (scheduled run has no reason to write what `main` reads)
+- 360-minute timeout (6 hours) for large documentation refreshes
 
 ---
 
@@ -298,12 +355,13 @@ Runs on PR events, merge group, and non-draft PRs (includes dependabot; exempts 
 
 ### Triggers
 
-- Weekly schedule (Friday 8:18am UTC)
+- Weekly schedule: Friday 8:18am UTC (cron: `18 8 * * 5`)
 - Manual dispatch
 
 ### Concurrency
 
-- Per-ref; cancels in-progress
+- Group: `${{ github.workflow }}-${{ github.ref }}`
+- Cancel in-progress: true
 
 ### Permissions
 
@@ -312,16 +370,58 @@ Runs on PR events, merge group, and non-draft PRs (includes dependabot; exempts 
 ### Steps
 
 1. **Checkout**
-2. **Setup Codebase** — With `nx-shas: false`.
-3. **Upgrade Dependencies** — Runs `integration/src/integration.main.ts upgrade-dependencies` which upgrades in sequence: pnpm, Node, Python, lockfile, Python dependencies, skills, Impeccable. Failed upgrades are undone; rest continue. Outputs `has_dependency_updates` and `body_path`.
-4. **Import GPG Key** — If upgrades found.
-5. **Open Pull Request** — Creates PR on `chore/dependencies-upgrade` with required labels (`dependencies`, `automated`, `type:chore`, `scope:dependencies`, `source:agent`) and assignee.
+2. **Setup Codebase** — With `nx-shas: false`
+3. **Upgrade Dependencies** — Runs `integration:upgrade-dependencies` which:
+   - Upgrades pnpm, Node, Python, lockfile, Python dependencies, skills in turn
+   - A failed upgrade is undone and the rest still run
+   - PR body lists what was skipped
+   - Job fails only when an undo fails
+   - Outputs `has_dependency_updates` and `body_path`
+4. **Import GPG Key** — If updates exist
+5. **Open Pull Request** — If updates exist:
+   - Branch: `chore/dependencies-upgrade`
+   - Commit message: `chore(dependencies): ⬆️ upgrade`
+   - Title: `chore(dependencies): ⬆️ upgrade`
+   - Labels: `dependencies`, `automated`, `type:chore`, `scope:dependencies`, `source:agent` (required by Comply)
+   - Assignee: `JimmyPaolini`
+   - Signed commits with imported GPG key
+
+### Notes
+
+- 45-minute timeout
+- The pre-commit hook runs every check on all ~58 projects, taking ~20 minutes
 
 ---
 
-## Related Pages
+## Release Process
+
+The release process is fully automated on merge to `main`. It uses two versioning systems:
+
+- **Nx release** owns independent ic-suite package versions (tagged `<project>@<version>`, each with its own `CHANGELOG.md` inside the package)
+- **semantic-release** owns the single codebase version (tagged `v<version>`, creates GitHub releases shown in the README badge)
+
+See [Release Process](../workflows/release.md) and `deployment/documentation/release-process.md` for complete details.
+
+### Key Properties
+
+1. **Single release commit** — The semantic-release commit (`chore(release): 🔖 tag codebase <version>`) carries the package versions and changelogs from Nx release, so a release lands as one commit after the change itself.
+
+2. **Supersession handling** — If `main` advances during the run, later steps detect it and skip (`RELEASE_SUPERSEDED`), so the newer commit's run releases everything.
+
+3. **Provenance and attestations** — Every npm publish includes provenance; GitHub build-provenance attestations are created for packages published in the run.
+
+4. **GitHub Packages mirror** — Each package is mirrored to `@organizzolini/<package>` on GitHub Packages (requires GitHub token to install).
+
+5. **Linked artifacts** — Every version on npm gets a storage record on the organization's Linked artifacts page.
+
+6. **New publishable packages** — Need `"version": "0.0.0"` added to `package.json` by hand (conformetry templates omit `version` since Nx owns it once released).
+
+---
+
+## Related Documentation
 
 - [Release Process](../workflows/release.md) — Detailed release automation documentation
-- [Code Quality Gates](../workflows/code-quality.md) — IC-Suite quality gates integrated into CI
-- [Development Workflow](../workflows/development.md) — Agent development workflow
-- [Infrastructure](../architecture/infrastructure.md) — Infrastructure and devcontainer details
+- [Development Workflow](../workflows/development.md) — Local development and PR workflow
+- [Code Quality](../workflows/code-quality.md) — Linting, formatting, typechecking
+- [Infrastructure](../architecture/infrastructure.md) — Terraform, devcontainer, deployment architecture
+- [Local Development](../operations/local-development.md) — Running workflows locally

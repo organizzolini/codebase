@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:bac5f0456caff8a1b30aa4d2ddb39a0dd1a48d653e36a4b5e8bf9eb407591886",
+  "pageVersion": "sha256:2a89a8fa15debae982ba73038f1cb7409789c66eafe9bbbc97e405e424a4fec2",
   "claims": [
     {
       "id": "claim_0d5836ccb1294a0187993a301209a081",
@@ -79,20 +79,6 @@
         {
           "resource": "repo://projects/ic-suite/conformetry/conformetry-output/src/index.ts",
           "version": "repo-file-v1:sha256:24ff444f08ca1467384739b6260e01089d186f02b3dc269dccf4ccae18dd5808"
-        }
-      ]
-    },
-    {
-      "id": "claim_59bca53c62254ed497cb1af3c9757a63",
-      "statement": "The cli layer holds only *.command.ts modules and nothing else, never any logic.",
-      "evidence": [
-        {
-          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.command.ts",
-          "version": "repo-file-v1:sha256:b5c4304d497b7d901e497494bf7fb3d585a7d426f78de364a1e9e4ee3fcc94df"
-        },
-        {
-          "resource": "repo://projects/ic-suite/codependix/codependix-cli/src/modules/map/map.command.ts",
-          "version": "repo-file-v1:sha256:3e1711daf8fb1564f015d5d891ca409c29af7ea5c671f9101b664b19533a7b89"
         }
       ]
     },
@@ -282,7 +268,7 @@
       "evidence": [
         {
           "resource": "repo://.github/workflows/continuous-integration.yml#L72-L74",
-          "version": "repo-lines-v1:sha256:45f30802b716a441c28eb757b2ac8935f63a027ac51971e12523323b75c5a7c3:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODIzNTAxMjZiMmE2ZTYyNTYyOTI0ZDVjMTRhZTljODUyNmUyOWYyMjY4ZTJmZDRhYjQ0ZDJiYjkwOThiZGNkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTBjYjc0ZDU4M2FmYTEyNjI3MDEzMWExMDlhZmFjMDg2YjAxOWM3ZTViZTg1MjU5NjdkNGVjZDBlZmFiNmIzNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2RkMmFjNmI4YjQxMGIxM2ZlZTlhNmVjZDA0ODY3MmYxNzBiZGRiMTVhNDg5MWI3OTlhYjQ4MzU4YWY0ZmY5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTFkYTBiMDdkZTg1NDFiY2ViNGNlYjMyNWRjNTlkZTNiY2JhMjZmZTg3MzVjZDAwNGJiZGM5YTY1YmIyMGEwOCJ9"
+          "version": "repo-lines-v1:sha256:4c3e83fc3476269023ed960e207ac21943e787a06667bf6ae814f9bc1ca9c0de:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODIzNTAxMjZiMmE2ZTYyNTYyOTI0ZDVjMTRhZTljODUyNmUyOWYyMjY4ZTJmZDRhYjQ0ZDJiYjkwOThiZGNkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMTBjYjc0ZDU4M2FmYTEyNjI3MDEzMWExMDlhZmFjMDg2YjAxOWM3ZTViZTg1MjU5NjdkNGVjZDBlZmFiNmIzNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiY2RkMmFjNmI4YjQxMGIxM2ZlZTlhNmVjZDA0ODY3MmYxNzBiZGRiMTVhNDg5MWI3OTlhYjQ4MzU4YWY0ZmY5YiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMTFkYTBiMDdkZTg1NDFiY2ViNGNlYjMyNWRjNTlkZTNiY2JhMjZmZTg3MzVjZDAwNGJiZGM5YTY1YmIyMGEwOCJ9"
         },
         {
           "resource": "repo://nx.json#L502-L515",
@@ -432,7 +418,7 @@
       "evidence": [
         {
           "resource": "repo://.github/workflows/continuous-integration.yml#L60-L100",
-          "version": "repo-lines-v1:sha256:de29d0cb24a8fbf9bf41be691dff21a5f82c9040b987efa54e6c81eb847b07f7:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxY2FhMjllZjNkODE1YzUzZDZkNGVkZTk1Y2JiMTJlOWZhZDg4YmZiM2Y1Yjc0YWI5Y2RhZWEyMDJhMmE4NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1YzVkMmZhM2RlNzQ5MjJhZjg0OGZjOWIyYmFlYjkzNmEwZTRmMWE3NmRjNDllOTQ1NjM3ODRjMTZiN2Q0ZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxM2IyOWFmZGQxNzlhYzJhZGVkNjUzZjgxODNiMDQyNmE2ODM3Mjg5OGMwNDVlNzUyOTY2YjIzODBhMzg1M2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYWFiZGJlYWI5OGYyMjA5Y2FlOTE5ZjcwNDQwYmZmNzhjYWQ0ODkyNThlODQ1NjUxZjQ0ZmVmYjg0YjcxMDkifQ"
+          "version": "repo-lines-v1:sha256:744573af8eb919b8104ce5054e8b8e51e791d8c13d64007bc92a0648521fac50:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxY2FhMjllZjNkODE1YzUzZDZkNGVkZTk1Y2JiMTJlOWZhZDg4YmZiM2Y1Yjc0YWI5Y2RhZWEyMDJhMmE4NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1YzVkMmZhM2RlNzQ5MjJhZjg0OGZjOWIyYmFlYjkzNmEwZTRmMWE3NmRjNDllOTQ1NjM3ODRjMTZiN2Q0ZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxM2IyOWFmZGQxNzlhYzJhZGVkNjUzZjgxODNiMDQyNmE2ODM3Mjg5OGMwNDVlNzUyOTY2YjIzODBhMzg1M2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYWFiZGJlYWI5OGYyMjA5Y2FlOTE5ZjcwNDQwYmZmNzhjYWQ0ODkyNThlODQ1NjUxZjQ0ZmVmYjg0YjcxMDkifQ"
         }
       ]
     },
@@ -459,10 +445,64 @@
           "version": "repo-lines-v1:sha256:d15de8a05523c25cf622042847351850ca515625364295a61f727ba557de7079:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU1NWYzZmJiOGJlZTE0NWJmOGZlNGY2NjRkNDllMzgzNDYxYjQ0NGFjYzliYWY1YmYwMzRlZTZlM2ViZWI3MDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmZDM2MmRiMWFkOGNmZThkZWU1MGQxZDhhZTZjZWE3ZmM1ZTIzYWFmYmY0Y2NmNWUzM2FlZWMyNzQ0Y2FjZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwZTc2MjBiNzBkMWE5MTlhNzZlMGM3OTc1NmNkMTNjYzRiZDliM2VkY2FhNjQ1N2E4NThkOWFlZDQ0NTM5OWIifQ"
         }
       ]
+    },
+    {
+      "id": "claim_253e65252494440bbba6df67831e6a1e",
+      "statement": "The CLI layer contains *.command.ts modules that wire the toolchain together; these modules include logic for option parsing, configuration resolution, reporting, and orchestrating the toolchain run.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-cli/src/modules/callidescope/callidescope.command.ts",
+          "version": "repo-file-v1:sha256:047586f6848e94c96d2a51b4b0c3b0c7cfc7f497007e89d471e3cfbb38b3d888"
+        },
+        {
+          "resource": "repo://projects/ic-suite/codependix/codependix-cli/src/modules/map/map.command.ts",
+          "version": "repo-file-v1:sha256:3e1711daf8fb1564f015d5d891ca409c29af7ea5c671f9101b664b19533a7b89"
+        }
+      ]
+    },
+    {
+      "id": "claim_ee7e4b2082e34e6ca30a78ea29c6e808",
+      "statement": "The callidescope Nx plugin infers four per-project targets: callidescope-trace, callidescope-depth, callidescope-breadth, and callidescope-restrict.",
+      "evidence": [
+        {
+          "resource": "repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.constants.ts#L10-L22",
+          "version": "repo-lines-v1:sha256:cb67d4a33548494b46009a83c239ec080358eb909e4d1944806b8e6ec59c3a1b:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA3N2NiNTViYzJjOWNlYTAwMGJlZTE3Njg0Y2ViYTIzMGU5MzA2NzI1NjQ5NDg1YTUwOGQzNTU0NzFjNGRhZjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUxYmFlMTE5NThhNWU2M2Q3ZjYxZWJmNjFlMWIyMTY1ODViOGIyNTAzZTdmY2ZjYzk1Yjk5OWEyNjA1MzhlN2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyNDExOGZkMDc2ZTAzMmEyNzg1MmZmNDMwNjE0ZDkyM2E4ZWE3MzI4MjFiOTIxNjEzYWZiYWY2NGI5NDljYzQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI1OWMwMWJmMmU1ZTEzZDJiMDE0OTJjNDM3MTg2ZGVjYjE1OWViNTE0OWQ2MGIzYmUxNDFhNTU5ZWFmOTA3NTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8870e5db7ca341488c3372ef2ee50cc2",
+      "statement": "The CI workflow matrix runs seven legs: Static, Guard, Callidescope Restrict, Codependix Bound, Codometer Limit, Conformetry Validate, and Build.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/continuous-integration.yml#L60-L100",
+          "version": "repo-lines-v1:sha256:744573af8eb919b8104ce5054e8b8e51e791d8c13d64007bc92a0648521fac50:eyJzZWxlY3RlZExpbmVDb3VudCI6NDEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxY2FhMjllZjNkODE1YzUzZDZkNGVkZTk1Y2JiMTJlOWZhZDg4YmZiM2Y1Yjc0YWI5Y2RhZWEyMDJhMmE4NjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM1YzVkMmZhM2RlNzQ5MjJhZjg0OGZjOWIyYmFlYjkzNmEwZTRmMWE3NmRjNDllOTQ1NjM3ODRjMTZiN2Q0ZGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjIxM2IyOWFmZGQxNzlhYzJhZGVkNjUzZjgxODNiMDQyNmE2ODM3Mjg5OGMwNDVlNzUyOTY2YjIzODBhMzg1M2MiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYWFiZGJlYWI5OGYyMjA5Y2FlOTE5ZjcwNDQwYmZmNzhjYWQ0ODkyNThlODQ1NjUxZjQ0ZmVmYjg0YjcxMDkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_df6b62442ee84da085c05ba3a5c08f5b",
+      "statement": "The guard-code aggregator target depends on callidescope-restrict, codependix-bound, coinagerie-check, and conformetry-validate plus workspace integrity checks, but does not include codometer-limit or codometer-weigh.",
+      "evidence": [
+        {
+          "resource": "repo://nx.json#L493-L520",
+          "version": "repo-lines-v1:sha256:535b006f1b3f146351e08ce6820b2fd5b59f879ff6d475c5b9815fc1a21fdc57:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJlMTZlZDQ0ODUyMzhlZWIzZjVlODZkZDAxYWM3ZmNiZmRmZTA3NmM2MzQzMGQ3Nzc4ZjllOTE1MDZmOGQ2ZDgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5NWI4YzViZjg2Mzc0MzY3MWRlZjNmNjMwZWIyMzJkNTlhN2E2MzRhMDcwZmM0MzZlZWMzN2E4Njc0ZTZjMzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ1NTBmNzc4OGM5NmFmYTQ1N2Q2YjgzMzdjY2RlM2I4MmQ5NjkzMjIxM2FkOWZlMWJlMDNlOGE0ZjJhMDI1N2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJkZjJjYTY3NjUwYWFiYWIzZTlmMTQxY2QwODBlMjYwMWZmNGNhMzBlNmM1OGZiZTE0YjgxNDc0ZGQ5NTUyOGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3897a425fb914c5ea1a6c2117850da03",
+      "statement": "The build-projects aggregator depends on build and codometer-weigh, so codometer gates compiled size during the build phase.",
+      "evidence": [
+        {
+          "resource": "repo://nx.json#L420-L430",
+          "version": "repo-lines-v1:sha256:91a4cd9d7f0b9038d9806b2d8319e908e63876ab0b2d172bdebde0d1cf4b8c0c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZjZGI5Mzc5MWMyZDIxOGY3MDAzZDhhZjRjMGY2ODAwNWI5MDQ3MTY0YjRlNTcwN2M5NThlZWRhNTkyZmY0NjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg4MDA1ZDU3MTA2YTM2MmViMDAwZGFmM2RhNDY3NGM4MmI1MThmZjVhMmUyZjY3ZWU4ZTc1N2EzMzNjMmFmNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhYWIxNDYyOWRlMjM4MmNiNGNjZDI1NWFmMDRhMGNhOTkxZGRhYjg3MzY1NDIxYTBkODMxYWVkZGM2Yjg3OTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0N2ZlZTRhY2NhMzA5MDIxNzMwMTE1YzhhZmQwZDk4ZDBjNDEyOWQwNjc5Mzk4Zjk3ODVmYTNkN2MyZmM4NjUifQ"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-25T18:55:00.444Z"
+    "at": "2026-11-27T18:15:08.471Z"
   }
 }
