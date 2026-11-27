@@ -10,17 +10,17 @@
     "callidescope-configure": {
       "source": "./projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-configure",
       "sourceType": "local",
-      "computedHash": "9cd3f684c1224afb671e5d1d6e1aa1bfd2934fffaf29a735807a462785d04938"
+      "computedHash": "2bfd46ee92879935c7abe0e6e3ea3055dc23f009fa227e4892d6265007cfb11a"
     },
     "callidescope-trace": {
       "source": "./projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace",
       "sourceType": "local",
-      "computedHash": "8ad799acb9cc05a07719c6f9b4705f822bf4e4a4414c17fee7d2ee6b33d935a0"
+      "computedHash": "efd481f15faf1469b0afa1cd713873470b8de06d2497fffb9792e8aaa385ec9e"
     },
     "callidescope-triage": {
       "source": "./projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-triage",
       "sourceType": "local",
-      "computedHash": "7bea9a5c18b9b659f2419fa0297a89ce247873698ef81896ca69e733b3dcd1af"
+      "computedHash": "5c73b48d5e6255799126faa21170fb809a34c8e46945597f19e12689ba416506"
     },
     "codependix-configure": {
       "source": "./projects/ic-suite/codependix/codependix-agents/skills/codependix-configure",
