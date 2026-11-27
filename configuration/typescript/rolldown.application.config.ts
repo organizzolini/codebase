@@ -15,20 +15,18 @@ import path from "node:path";
 import type { BuildOptions, Plugin } from "rolldown";
 
 /** Options for the shared bundle of a NestJS application. */
-export interface RolldownApplicationOptions {
+interface RolldownApplicationOptions {
   /** Entry points: output name to source path, from the package directory. */
   readonly entry: Readonly<Record<string, string>>;
   /** Workspace-relative directories whose `.ts` files load by glob, built as entries. */
   readonly globbedDirectories?: readonly string[];
   /** The directory of the application being bundled. */
   readonly packageDirectory: string;
-  /** Packages this application loads by name at run time, beyond {@link BY_NAME_DEPENDENCIES}. */
-  readonly runtimeDependencies?: readonly string[];
 }
 
 // TypeORM's driver and pino's pretty transport, which a shared package loads by name.
 /** Packages loaded by name at run time, which no import shows. */
-export const BY_NAME_DEPENDENCIES = ["pg", "pino-pretty"] as const;
+const BY_NAME_DEPENDENCIES = ["pg", "pino-pretty"] as const;
 
 /** Specifier prefixes bundled into the output instead of installed beside it. */
 const BUNDLED_PREFIXES = [
@@ -81,13 +79,11 @@ export function createRolldownApplicationConfig({
   entry,
   globbedDirectories = [],
   packageDirectory,
-  runtimeDependencies = [],
 }: RolldownApplicationOptions): BuildOptions {
   const origins = new Map<string, Set<string>>();
   const roots = [
     ...declaredDependencies(packageDirectory),
     ...BY_NAME_DEPENDENCIES,
-    ...runtimeDependencies,
   ];
   const workspaceRoot = path.resolve(import.meta.dirname, "../..");
   // Outside `projects/`, whose folders conformetry reads as instances.
@@ -156,7 +152,7 @@ export function createRolldownApplicationConfig({
  * Copies `packages` and the dependencies they need out of the pnpm store into
  * `<outputDirectory>/node_modules`, keeping its layout and links.
  */
-export function copyProductionModules(
+function copyProductionModules(
   packages: readonly { directory: string; name: string }[],
   outputDirectory: string,
 ): void {
@@ -206,7 +202,7 @@ export function copyProductionModules(
  * `roots` and every package they need at run time: dependencies, optional
  * dependencies, and peers that are not optional.
  */
-export function collectPackages(roots: readonly string[]): Set<string> {
+function collectPackages(roots: readonly string[]): Set<string> {
   const packages = new Set<string>();
   const pending = [...roots];
 
@@ -234,12 +230,12 @@ export function collectPackages(roots: readonly string[]): Set<string> {
 }
 
 /** Whether a package belongs in the image: not a type package, and not an omitted one. */
-export function isRuntimePackage(name: string): boolean {
+function isRuntimePackage(name: string): boolean {
   return !name.startsWith("@types/") && !OMITTED_PACKAGES.has(name);
 }
 
 /** Whether a file or directory of a package is kept: links and directories, code, data and licenses. */
-export function isRuntimeFile(source: string): boolean {
+function isRuntimeFile(source: string): boolean {
   const name = path.basename(source);
   const stats = lstatSync(source);
   if (stats.isDirectory()) {
@@ -256,10 +252,7 @@ export function isRuntimeFile(source: string): boolean {
 }
 
 /** The first directory in `directories`, or above one, installing `name`. */
-export function locatePackage(
-  name: string,
-  directories: readonly string[],
-): string {
+function locatePackage(name: string, directories: readonly string[]): string {
   for (const start of directories) {
     for (
       let directory = start;
@@ -276,7 +269,7 @@ export function locatePackage(
 }
 
 /** The package a specifier names: `@scope/name/sub` is `@scope/name`. */
-export function packageName(specifier: string): string {
+function packageName(specifier: string): string {
   const segments = specifier.split("/");
 
   return segments.slice(0, specifier.startsWith("@") ? 2 : 1).join("/");
