@@ -1,4 +1,4 @@
-# Default values for argocd-applications: one Argo CD Application per entry.
+# Default values for argocd: one Argo CD Application per entry.
 # Repository-backed entries use path and valueFiles, relative to the repository root and the chart path.
 repoURL: https://github.com/organizzolini/codebase.git
 targetRevision: main

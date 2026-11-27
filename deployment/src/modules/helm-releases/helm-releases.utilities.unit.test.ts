@@ -89,8 +89,8 @@ describe(discoverReleases, () => {
         "app/Chart.yaml": "name: app",
         "app/values/base.yaml": "a: 1",
         "app/values/web.yaml": "a: 2",
-        "argocd-applications/Chart.yaml": "name: argocd-applications",
-        "argocd-applications/values/base.yaml": [
+        "argocd/Chart.yaml": "name: argocd",
+        "argocd/values/base.yaml": [
           "applications:",
           "  - name: external",
           "    namespace: elsewhere",
@@ -112,7 +112,7 @@ describe(discoverReleases, () => {
     ).toStrictEqual([
       ["app", "one"],
       ["app-web", "two"],
-      ["argocd-applications", "default"],
+      ["argocd", "default"],
     ]);
   });
 

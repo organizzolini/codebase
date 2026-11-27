@@ -27,7 +27,7 @@ terraform apply
 ```text
 infrastructure/
 ├── helm/
-│   ├── argocd-applications/ # Argo CD app-of-apps tree and the batch-low PriorityClass
+│   ├── argocd/ # Argo CD app-of-apps tree and the batch-low PriorityClass
 │   ├── cloudflared/         # Cloudflare Tunnel connector, routing held in Cloudflare
 │   ├── kubernetes-job/      # Reusable chart for K8s Jobs
 │   └── postgres/            # Shared PostgreSQL as CloudNativePG resources
@@ -103,9 +103,9 @@ Use `caelundas_staging` in place of `caelundas_production` for staging. The same
 
 **Rehearse a restore**: bootstrap a throwaway `Cluster` from `postgres-backups` with a `recoveryTarget`, check the row counts against the live cluster, then delete it. Never restore over `postgres`.
 
-### argocd-applications Chart
+### argocd Chart
 
-**Purpose**: The Argo CD app-of-apps tree. Each `applications` entry renders one `Application` in the `argocd` namespace, ordered by `argocd.argoproj.io/sync-wave` (0 cert-manager, 1 cloudnative-pg, 2 plugin-barman-cloud, 3 postgres, 4 cloudflared). The chart also renders the `batch-low` PriorityClass (value -10, `preemptionPolicy: Never`, not global), which batch Jobs use.
+**Purpose**: The Argo CD app-of-apps tree (this repository's `helm/argocd` chart, not the upstream `argo-cd` chart that Terraform installs as the `argocd` release). Each `applications` entry renders one `Application` in the `argocd` namespace, ordered by `argocd.argoproj.io/sync-wave` (0 cert-manager, 1 cloudnative-pg, 2 plugin-barman-cloud, 3 postgres, 4 cloudflared). The chart also renders the `batch-low` PriorityClass (value -10, `preemptionPolicy: Never`, not global), which batch Jobs use.
 
 - Upstream entries (`chart`) pin an exact `version`, never a range. `cert-manager` installs its CRDs through a Helm parameter and uses `ServerSideApply=true`; the two operator namespaces set `CreateNamespace=true`.
 - Repository entries (`path`) take `valueFiles` relative to the chart path. `organizzolini` and `caelundas` come from Terraform, so their apps do not set `CreateNamespace`.
@@ -132,9 +132,9 @@ argocd app diff --core <name>                 # the live-versus-desired diff, re
 - Chart metadata: [helm/postgres/Chart.yaml](helm/postgres/Chart.yaml)
 - Base values: [helm/postgres/values/base.yaml](helm/postgres/values/base.yaml)
 - Templates: [helm/postgres/templates/](helm/postgres/templates/)
-- Chart metadata: [helm/argocd-applications/Chart.yaml](helm/argocd-applications/Chart.yaml)
-- Base values: [helm/argocd-applications/values/base.yaml](helm/argocd-applications/values/base.yaml)
-- Templates: [helm/argocd-applications/templates/](helm/argocd-applications/templates/)
+- Chart metadata: [helm/argocd/Chart.yaml](helm/argocd/Chart.yaml)
+- Base values: [helm/argocd/values/base.yaml](helm/argocd/values/base.yaml)
+- Templates: [helm/argocd/templates/](helm/argocd/templates/)
 
 ## Kubernetes Deployment
 
@@ -142,7 +142,7 @@ See [README.md](README.md) for the Helm deploy commands and the `nx run infrastr
 
 ## Linters
 
-The `helm-releases` command of the `deployment` project discovers the Helm releases, so none is listed anywhere: every folder under `helm/` holding a `Chart.yaml` installs as `<chart>` with `values/base.yaml`, and once more as `<chart>-<name>` for each other `values/<name>.yaml` layered over it. The namespace comes from the Argo CD Application in `helm/argocd-applications/values/base.yaml` whose `path` and `valueFiles` match the release, else `default`; an empty `image.tag` in the values is filled with a placeholder so the chart renders. A chart whose release the files cannot describe adds an optional `release.yaml` beside `Chart.yaml` with `namespace` and `strings` (extra `--set-string` pairs), as `argocd-applications` does for its namespace. `helm-lint` runs `helm lint --strict` over the releases, and `helm-render` templates them into `dist/infrastructure/helm-render/`, which `kubeconform`, `kube-linter`, `pluto`, and `trivy-config` read. Add a chart or values file and the next run picks it up; edit no code.
+The `helm-releases` command of the `deployment` project discovers the Helm releases, so none is listed anywhere: every folder under `helm/` holding a `Chart.yaml` installs as `<chart>` with `values/base.yaml`, and once more as `<chart>-<name>` for each other `values/<name>.yaml` layered over it. The namespace comes from the Argo CD Application in `helm/argocd/values/base.yaml` whose `path` and `valueFiles` match the release, else `default`; an empty `image.tag` in the values is filled with a placeholder so the chart renders. A chart whose release the files cannot describe adds an optional `release.yaml` beside `Chart.yaml` with `namespace` and `strings` (extra `--set-string` pairs), as `argocd` does for its namespace. `helm-lint` runs `helm lint --strict` over the releases, and `helm-render` templates them into `dist/infrastructure/helm-render/`, which `kubeconform`, `kube-linter`, `pluto`, and `trivy-config` read. Add a chart or values file and the next run picks it up; edit no code.
 
 - **kubeconform**: strict schemas for Kubernetes 1.35.0 plus the datreeio CRDs catalog for Argo CD, CloudNativePG, Barman Cloud, and cert-manager. A kind with no schema fails, so nothing is skipped. It reads schemas from raw.githubusercontent.com.
 - **kube-linter**: runs its default checks, which include the hardening ones, with no config and no exclusions. Fix the chart, not the check.

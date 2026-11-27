@@ -9,7 +9,7 @@ export const HELM_ROOT = "infrastructure/helm";
 export const BASE_VALUES = "base.yaml";
 
 /** The chart whose values list the Argo CD Applications. */
-export const APPLICATIONS_CHART = "argocd-applications";
+export const APPLICATIONS_CHART = "argocd";
 
 /** The namespace of a release no Application or override names. */
 export const DEFAULT_NAMESPACE = "default";
