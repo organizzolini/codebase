@@ -353,19 +353,11 @@ jobs:
 
       # Only Buildx and the registry login: the devcontainer build installs
       # the workspace itself, so nothing else is set up here.
-      - name: 🕋 Setup Codebase for Devcontainer
+      - name: 🕋 Setup Docker for Devcontainer
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'build-devcontainer'
-        uses: ./.github/actions/setup-codebase
-        with:
-          deployment: "true"
-          install: "false"
-          nx-cache: "false"
-          nx-graph-cache: "false"
-          nx-shas: "false"
-          python-dependencies: "false"
-          uv: "false"
+        uses: ./.github/actions/setup-docker
 
       - name: 🐳 Build Devcontainer Image
         if: >-
