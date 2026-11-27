@@ -73,22 +73,7 @@
   "sourceRoot": "configuration",
   "tags": ["name:configuration"],
   "targets": {
-    "actionlint": {
-      "cache": true,
-      "description": "Lint every workflow under .github/workflows with actionlint (expression types, shell steps through shellcheck, runner labels, permissions scopes). actionlint reads workflows only, so the composite actions under .github/actions are covered by zizmor. .github/actionlint.yaml holds its one ignored message with the reason. Part of lint-code. Requires actionlint on PATH.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{workspaceRoot}/.github/actionlint.yaml",
-        "{workspaceRoot}/.github/workflows/*.yml",
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "actionlint $(git ls-files -- '.github/workflows/*.yml')",
-        "cwd": "{workspaceRoot}"
-      }
-    },
+    "actionlint": {},
     "build-projects": {
       "cache": false,
       "dependsOn": ["codometer"],
@@ -854,20 +839,6 @@
         "cwd": "{workspaceRoot}"
       }
     },
-    "zizmor": {
-      "cache": true,
-      "description": "Audit .github (workflows, composite actions, dependabot.yml) for security problems with zizmor, offline so the result is deterministic: template injection, excessive permissions, credential persistence, unpinned actions, Dependabot cooldown settings. .github/zizmor.yml is the policy and records each rule it changes with the reason. zizmor itself is pinned in configuration/python, so the pyproject and lockfile are inputs and an upgrade re-runs it. Part of lint-code.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{workspaceRoot}/.github/**/*.yaml",
-        "{workspaceRoot}/.github/**/*.yml",
-        "{workspaceRoot}/configuration/python/pyproject.toml",
-        "{workspaceRoot}/configuration/python/uv.lock"
-      ],
-      "options": {
-        "command": "uv run --project configuration/python zizmor --offline .github",
-        "cwd": "{workspaceRoot}"
-      }
-    }
+    "zizmor": {}
   }
 }
