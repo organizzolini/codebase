@@ -1,7 +1,7 @@
 import { bodyFromDisplayName, isSign } from "../caelundas/caelundas.types";
 
+import { TAG_EXTRA_PARENTS } from "./modules/tag-metadata/tag-metadata-parents.constants";
 import { TAG_CHILD_RANKS } from "./modules/tag-metadata/tag-metadata-rank.constants";
-import { TAG_EXTRA_PARENTS } from "./modules/tag-metadata/tag-metadata.constants";
 import { SIGNS_BY_DIGNITY_BY_PLANET } from "./tag-dimensions.constants";
 import {
   CONTEXT_TAG_MAPS,

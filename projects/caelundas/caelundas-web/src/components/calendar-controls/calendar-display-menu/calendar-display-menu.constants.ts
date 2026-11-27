@@ -18,9 +18,8 @@ export const SYMBOL_CHOICES: Readonly<
   glyphs: { icon: Shapes, label: "Glyphs" },
 };
 
-/** Tightens the tree: no tick slot on branches, one indent step fewer. */
+/** Tightens the tree: one indent step fewer. */
 export const TREE_CLASS_NAME = [
-  "[&_[data-slot=cascader-item-checkbox-spacer]]:hidden",
   "[&_[data-slot=cascader-item]]:ps-[max(var(--cascader-row-inset,6px),calc(var(--cascader-row-inset,6px)+var(--cascader-indent,0px)-16px))]!",
 ].join(" ");
 

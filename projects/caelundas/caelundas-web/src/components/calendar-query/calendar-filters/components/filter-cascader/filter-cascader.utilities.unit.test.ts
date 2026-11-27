@@ -29,6 +29,53 @@ const FIELDS = createEventFilterFields([
     ],
   },
 ]);
+/** Venus under two parents, and a header the Filter menu leaves out. */
+const SHARED_FIELDS = createEventFilterFields([
+  {
+    id: "body",
+    name: "Body",
+    values: [
+      {
+        count: 3,
+        depth: 1,
+        id: "planet",
+        isFilterable: false,
+        name: "Planet",
+        path: "Planet",
+      },
+      {
+        count: 2,
+        depth: 2,
+        id: "personal",
+        name: "Personal",
+        path: "Planet / Personal",
+      },
+      {
+        alsoUnder: ["Planet / Benefic"],
+        count: 1,
+        depth: 3,
+        id: "venus",
+        name: "Venus",
+        path: "Planet / Personal / Venus",
+      },
+      {
+        count: 1,
+        depth: 2,
+        id: "benefic",
+        name: "Benefic",
+        path: "Planet / Benefic",
+      },
+      {
+        alsoUnder: ["Planet / Personal"],
+        count: 1,
+        depth: 3,
+        id: "venus",
+        name: "Venus",
+        path: "Planet / Benefic / Venus",
+      },
+    ],
+  },
+]);
 const EMPTY: EventFilterQuery = {
   combinator: "or",
   id: "filter",
@@ -52,6 +99,65 @@ describe("filter-cascader utilities", () => {
       expect(type === undefined ? true : isValue(type)).toBe(false);
       expect(tag === undefined ? true : isValue(tag)).toBe(false);
       expect(isValue({ label: "Aspect", value: "tag:type|aspect" })).toBe(true);
+    });
+  });
+
+  describe("a tag under several parents", () => {
+    const rows = (): string[] => {
+      const body = createFilterItems(SHARED_FIELDS)[0]?.children?.[0];
+      const values: string[] = [];
+      const pending = [...(body?.children ?? [])];
+
+      for (
+        let node = pending.shift();
+        node !== undefined;
+        node = pending.shift()
+      ) {
+        values.push(node.value);
+        pending.unshift(...(node.children ?? []));
+      }
+
+      return values;
+    };
+
+    it("is a row under each parent, each with a value of its own and the other parents in its description", () => {
+      const body = createFilterItems(SHARED_FIELDS)[0]?.children?.[0];
+      const benefic = body?.children?.[0]?.children?.[1];
+
+      expect(rows().filter((value) => value.includes("venus"))).toStrictEqual([
+        "tag:body|venus@@Planet / Personal / Venus",
+        "tag:body|venus@@Planet / Benefic / Venus",
+      ]);
+      expect(benefic?.label).toBe("Benefic");
+      expect(benefic?.children?.[0]?.description).toContain("also Personal");
+    });
+
+    it("ticks every row of a picked tag, and keeps one rule value for it", () => {
+      const query: EventFilterQuery = {
+        ...EMPTY,
+        rules: [
+          {
+            id: "body-rule",
+            operator: "is_any_of",
+            path: ["tag:body"],
+            type: "rule",
+            value: ["venus", "gone"],
+          },
+        ],
+      };
+
+      expect(toFilterValue(SHARED_FIELDS, query)).toStrictEqual([
+        "tag:body|venus@@Planet / Personal / Venus",
+        "tag:body|venus@@Planet / Benefic / Venus",
+        "tag:body|gone",
+      ]);
+    });
+
+    it("lists a header the menu leaves out as a folder that cannot be ticked", () => {
+      const planet =
+        createFilterItems(SHARED_FIELDS)[0]?.children?.[0]?.children?.[0];
+
+      expect(planet === undefined ? true : isValue(planet)).toBe(false);
     });
   });
 

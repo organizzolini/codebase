@@ -547,7 +547,7 @@ describe("calendar events service integration", () => {
       ]);
     });
 
-    it("saves each node of a nested path once, under its ancestors", async () => {
+    it("saves each node of a nested path once, under its ancestors and its nature and harmonic", async () => {
       expect.hasAssertions();
 
       const nestedTags = ["Simple Aspect", "Major Aspect", "Trine"];
@@ -566,7 +566,16 @@ describe("calendar events service integration", () => {
         leaf === undefined ? [] : await treeOf(leaf, "ancestors");
 
       expect(leaves).toHaveLength(1);
-      expect(ancestors).toStrictEqual(["Aspect", "Major", "Simple", "Trine"]);
+      expect(ancestors).toStrictEqual([
+        "Aspect",
+        "Harmonic",
+        "Harmonic 3",
+        "Major",
+        "Nature",
+        "Simple",
+        "Soft",
+        "Trine",
+      ]);
     });
 
     it("tags an Aries event with its sign, element, modality and polarity side by side", async () => {
@@ -601,6 +610,48 @@ describe("calendar events service integration", () => {
         expect.arrayContaining(["Aries", "Cardinal", "Fire", "Positive"]),
       );
       expect(roots).toStrictEqual(["Zodiac", "Zodiac", "Zodiac", "Zodiac"]);
+    });
+
+    it("lists a sign under its element, modality and polarity too, adding each edge once however often it is carried", async () => {
+      expect.hasAssertions();
+
+      const countEdges = async (): Promise<number> => {
+        const [row] = await database.dataSource.query<{ count: string }[]>(
+          `select count(*) from tag_edges`,
+        );
+
+        return Number(row?.count);
+      };
+      const events = [
+        tagged("Leo ingress", "2026-09-20T00:00:00Z", [
+          "Astronomy",
+          "Astrology",
+          "Ingress",
+          "Sun",
+          "Leo",
+        ]),
+      ];
+
+      await service.upsert(events, philadelphia);
+      const edges = await countEdges();
+      await service.upsert(events, philadelphia);
+      const leo = await tags.findOneByOrFail({ name: "Leo" });
+      const parents = await database.dataSource.query<{ name: string }[]>(
+        `select p."name" from tag_edges e join tags p on p.id = e.source_node
+        where e.target_node = $1 order by p."name"`,
+        [leo.id],
+      );
+      const fire = await tags.findOneByOrFail({ name: "Fire" });
+      const under = await treeOf(fire, "descendants");
+
+      expect(parents.map(({ name }) => name)).toStrictEqual([
+        "Fire",
+        "Fixed",
+        "Positive",
+        "Sign",
+      ]);
+      await expect(countEdges()).resolves.toBe(edges);
+      expect(under).toStrictEqual(["Aries", "Fire", "Leo"]);
     });
 
     it("files a planetary phase under Phase as Planetary, with its planet", async () => {

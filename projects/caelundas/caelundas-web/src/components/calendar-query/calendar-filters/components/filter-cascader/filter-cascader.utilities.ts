@@ -1,6 +1,12 @@
 import { flattenFilterRules } from "@codebase/presentation";
 
+import { isOfferedRow } from "../../../calendar-group-strip/calendar-group-strip-items.utilities";
+import { SHARED_SEPARATOR } from "../../../calendar-group-strip/calendar-group-strip.constants";
 import { createTagParent } from "../../../calendar-group-strip/calendar-group-strip.utilities";
+import {
+  TAG_ALSO_UNDER,
+  TAG_FOLDER,
+} from "../../../filter-tag-editor/filter-tag-editor.constants";
 import { describeTagOption } from "../event-filter-model/event-filter-fields.utilities";
 import { TAG_FIELD_PREFIX } from "../event-filter-model/event-filters.constants";
 
@@ -49,10 +55,12 @@ export function createFilterItems(
 }
 
 /**
- * Whether a row is a value that can be ticked, not an attribute, which only opens.
+ * Whether a row is a value that can be ticked, not an attribute or a folder, which only open.
  */
 export function isValue(node: CascaderNode): boolean {
-  return !node.value.startsWith(`field${VALUE_SEPARATOR}`);
+  return (
+    !node.value.startsWith(`field${VALUE_SEPARATOR}`) && isOfferedRow(node)
+  );
 }
 
 // 🌎 Public Functions
@@ -104,7 +112,7 @@ export function toFilterQuery(
 }
 
 /**
- * What to tick for a filter: each value a rule picking among a field's values holds.
+ * What to tick for a filter: each value its rules pick, every row of a tag under several parents.
  */
 export function toFilterValue(
   fields: readonly EventFilterField[],
@@ -120,9 +128,7 @@ export function toFilterValue(
     );
 
     if (field !== undefined && Array.isArray(rule.value)) {
-      for (const picked of rule.value) {
-        value.push(`${field.id}${VALUE_SEPARATOR}${String(picked)}`);
-      }
+      value.push(...toPickedValues(field, rule.value.map(String)));
     }
   }
 
@@ -177,12 +183,53 @@ function toCascaderNode(
   option: FilterOption,
 ): CascaderNode {
   const description = describeTagOption(option);
+  const isFolder = TAG_FOLDER.safeParse(option.data).data?.folder === true;
 
   return {
+    ...(isFolder ? { data: { folder: true } } : {}),
     ...(description === undefined ? {} : { description }),
     ...(option.icon === undefined ? {} : { icon: option.icon }),
     ...(option.keywords === undefined ? {} : { keywords: option.keywords }),
     label: option.label,
-    value: `${field.id}${VALUE_SEPARATOR}${option.value}`,
+    value: toRowValue(field, option),
   };
+}
+
+/**
+ * The rows to tick for a field's picked tags: every row of each, a bare value for one no row lists.
+ */
+function toPickedValues(
+  field: EventFilterField,
+  picked: readonly string[],
+): string[] {
+  const rows = new Set<string>();
+  const values: string[] = [];
+
+  for (const option of field.options ?? []) {
+    if (picked.includes(option.value)) {
+      rows.add(option.value);
+      values.push(toRowValue(field, option));
+    }
+  }
+
+  for (const id of picked) {
+    if (!rows.has(id)) {
+      values.push(`${field.id}${VALUE_SEPARATOR}${id}`);
+    }
+  }
+
+  return values;
+}
+
+/**
+ * One row's value: the field and tag ids, plus the path for a tag under several parents.
+ */
+function toRowValue(field: EventFilterField, option: FilterOption): string {
+  const shared =
+    (TAG_ALSO_UNDER.safeParse(option.data).data?.alsoUnder ?? []).length > 0;
+  const path = option.keywords?.[1];
+
+  return `${field.id}${VALUE_SEPARATOR}${option.value}${
+    shared && path !== undefined ? `${SHARED_SEPARATOR}${path}` : ""
+  }`;
 }

@@ -101,12 +101,7 @@ export function TagRow(properties: Readonly<TagRowProperties>): ReactNode {
             className="size-5 shrink-0"
           />
         )}
-        {row.isFolder ? (
-          <span
-            aria-hidden="true"
-            className="size-4 shrink-0"
-          />
-        ) : (
+        {row.isFolder ? null : (
           <Checkbox
             aria-hidden="true"
             checked={checked}

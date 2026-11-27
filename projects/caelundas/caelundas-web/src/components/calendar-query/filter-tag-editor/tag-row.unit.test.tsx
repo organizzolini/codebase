@@ -78,6 +78,21 @@ describe(TagRow, () => {
     expect(onToggle).not.toHaveBeenCalled();
   });
 
+  it("reserves no room for a checkbox on a folder, so it shows only its caret, icon and name", () => {
+    render(
+      <TagRow
+        onKeyDown={vi.fn<() => void>()}
+        onOpenChange={vi.fn<() => void>()}
+        onToggle={vi.fn<() => void>()}
+        row={{ ...ROW, isFolder: true }}
+      />,
+    );
+    const row = screen.getByRole("option");
+
+    expect(row.querySelector("span.size-4")).toBeNull();
+    expect(row.querySelector("[data-slot=checkbox]")).toBeNull();
+  });
+
   it("counts the picks inside a closed tag", () => {
     renderRow();
 

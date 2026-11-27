@@ -71,7 +71,7 @@ const ASPECT_CLASSES = [
 ] as const;
 
 /** The class of compound aspect each compound pattern name belongs to. */
-const COMPOUND_CLASSES = [
+export const COMPOUND_CLASSES = [
   ["Triple Aspect", Object.keys(symbolByTripleAspect)],
   ["Quadruple Aspect", Object.keys(symbolByQuadrupleAspect)],
   ["Quintuple Aspect", Object.keys(symbolByQuintupleAspect)],

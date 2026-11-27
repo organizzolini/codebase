@@ -61,7 +61,7 @@ migrations/                              # The migrations, each with its .sql pa
 - **The tags are a directed acyclic graph.** `Tag` is `@Graph({ edge: "TagEdge", nodes: () => Tag })`,
   so `tag_edges` (`source_node` the parent, `target_node` the child, primary key the pair, cascading) is
   generated, never hand-written. A tag with no incoming edge is a root; a tag may have several parents
-  (Venus is under Planet / Personal and under Benefic). `tags.parent_id` and TypeORM's `@Tree` closure
+  (Venus is under Planet / Personal and under Planet / Benefic, Aries under Sign, Fire, Cardinal and Positive). `tags.parent_id` and TypeORM's `@Tree` closure
   table are gone. `tag_trees` is a materialized view, `(ancestor_id, descendant_id)` over a recursive
   walk of every path with the tag itself included and each pair once, refreshed first (concurrently) by
   `refreshMetrics`; read ancestors and descendants from it, never from a path. A `tag_edges_guard`

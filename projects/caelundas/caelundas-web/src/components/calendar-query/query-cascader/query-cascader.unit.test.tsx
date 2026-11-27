@@ -118,4 +118,26 @@ describe(QueryCascader, () => {
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
+
+  it("gives a branch that cannot be ticked no checkbox slot, so only its leaves lead with a box", () => {
+    const { container } = render(
+      <QueryCascader
+        defaultExpanded={["name"]}
+        items={ITEMS}
+        mode="tree"
+        onValueChange={() => {}}
+        placeholder="Filter by"
+        selectable={(node) => node.value !== "name"}
+        value={[]}
+        multiple
+      />,
+    );
+
+    expect(
+      container.querySelectorAll('[data-slot="cascader-item-checkbox-spacer"]'),
+    ).toHaveLength(0);
+    expect(
+      container.querySelectorAll('[data-slot="cascader-item-checkbox"]'),
+    ).not.toHaveLength(0);
+  });
 });

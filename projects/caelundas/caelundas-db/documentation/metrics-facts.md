@@ -53,7 +53,7 @@ filter. The facts are over every stored event. The tables are in
 A fact sits at a day filter, the measures of the whole set on that day, or at a tag
 filter, the measures of the events carrying that tag or a descendant, so a parent's
 figures include its children's. Tag filters are not nested in one another: a tag may
-have several parents (Venus is under Planet and under Benefic), so one parent filter
+have several parents (Venus is under Planet / Personal and Planet / Benefic, Aries under Sign and Fire), so one parent filter
 could not say where it sits, and `tag_trees` gives the ancestry instead. Every tag
 filter is beneath its day's filter, and carries the day's `period` as well, so a window
 of days is a range of one index and not a walk up the parents. A shared tag's filter

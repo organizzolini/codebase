@@ -596,19 +596,10 @@ const CascaderItem = React.memo(function CascaderItem({
         />
       ) : null}
 
-      {/* Tree + multi-select: the box leads the row, and an unselectable row
-          still reserves its width. */}
-      {leadingCheckbox ? (
-        selectable ? (
-          checkbox
-        ) : (
-          <span
-            data-slot="cascader-item-checkbox-spacer"
-            aria-hidden="true"
-            className="size-4 shrink-0"
-          />
-        )
-      ) : null}
+      {/* Tree + multi-select: the box leads the row. An unselectable row has
+          none and reserves nothing, so it reads as a folder: caret, icon,
+          label. */}
+      {leadingCheckbox && selectable ? checkbox : null}
 
       {node.icon ? (
         <span

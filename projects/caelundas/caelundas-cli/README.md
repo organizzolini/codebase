@@ -394,7 +394,7 @@ and a `rank`, its place among its siblings from `tags/modules/tag-metadata/tag-m
 first created.
 
 An event links only to the deepest node of each branch it is classified
-under, and carries the nodes above through the tag trees view; a node declared under several parents (`TAG_EXTRA_PARENTS`, such as Venus under Benefic as well as Planet) is one node with an edge from each, so an event carrying it is under every parent.
+under, and carries the nodes above through the tag trees view; a node declared under several parents (`TAG_EXTRA_PARENTS`, such as Venus under Planet / Benefic as well as Planet / Personal, Aries under Fire, Cardinal and Positive as well as Sign, or a square under Hard and Harmonic 4) is one node with an edge from each, so an event carrying it is under every parent.
 
 Coordinates are `numeric(9, 6)`: the driver returns them as strings, such as
 `"39.949309"`, and a number is written fixed to six decimals, so the natural key

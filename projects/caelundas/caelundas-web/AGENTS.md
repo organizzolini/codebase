@@ -313,7 +313,7 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
 count, and `alsoUnder` naming its other parents) is a row under each, with a small link
 mark and "also Benefic" under its name; ticking it anywhere ticks it everywhere, a
 parent's partial and full states count it once, and the rule's chip carries the same
-link mark. Event pills show it once. The Group menu lists the groupable tags, leaves too,
+link mark. Event pills show it once. The Filter menu's tree (`filter-cascader.utilities.ts`) gives a shared tag the same `id@@path` row values, a click on any row ticking or clearing it everywhere and its parents showing partly ticked, and draws a folder (a tag Filter leaves out) with only its caret, icon and name, no checkbox slot. The Group menu lists the groupable tags, leaves too,
 and a shared tag is a row under each parent with "also Benefic" in its description and one id
 (the cascader holds one row to a value, so a shared row's value is `id@@path` and
 `toTaggedIds` and `toRowValues` make a click on any row tick or clear the tag everywhere).

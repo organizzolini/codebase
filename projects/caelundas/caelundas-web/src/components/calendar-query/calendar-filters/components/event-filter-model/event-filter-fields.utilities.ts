@@ -2,7 +2,10 @@ import { Link2 } from "lucide-react";
 import { createElement } from "react";
 
 import { TagLead } from "../../../../calendar-events/tag-lead/tag-lead";
-import { TAG_NOTE } from "../../../filter-tag-editor/filter-tag-editor.constants";
+import {
+  TAG_ALSO_UNDER,
+  TAG_NOTE,
+} from "../../../filter-tag-editor/filter-tag-editor.constants";
 import { describeAlsoUnder } from "../../../filter-tag-editor/filter-tag-editor.utilities";
 
 import {
@@ -126,18 +129,18 @@ export function describeRoot(facet: EventFacet): string {
 }
 
 /**
- * What a tag option says beneath its name: its note, then its count of events.
+ * What a tag option says beneath its name: its other parents, note and event count.
  */
 export function describeTagOption(option: FilterOption): string | undefined {
   const note = TAG_NOTE.safeParse(option.data).data?.note;
+  const parents = TAG_ALSO_UNDER.safeParse(option.data).data?.alsoUnder ?? [];
+  // Each parent's last name only: its path up to the last slash, at the start or after a comma, goes.
+  const names = parents.join(", ").replaceAll(/(?:^|(?<=, ))[^,]*\/ /gu, "");
+  const cue = parents.length === 0 ? undefined : `also ${names}`;
 
-  if (note === undefined) {
-    return option.description;
-  }
-
-  return option.description === undefined
-    ? note
-    : `${note} · ${option.description}`;
+  return (
+    [cue, note, option.description].filter(Boolean).join(" · ") || undefined
+  );
 }
 
 /**

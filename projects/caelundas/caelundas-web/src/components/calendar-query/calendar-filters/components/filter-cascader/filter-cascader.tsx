@@ -1,6 +1,7 @@
 import { CalendarDays } from "lucide-react";
 import { useMemo } from "react";
 
+import { toTaggedIds } from "../../../calendar-group-strip/calendar-group-strip-items.utilities";
 import { QueryCascader } from "../../../query-cascader/query-cascader";
 import { keepHiddenValues } from "../../../query-cascader/query-cascader.utilities";
 
@@ -98,9 +99,12 @@ export function FilterCascader(
         items={items}
         mode="tree"
         onValueChange={(next) => {
+          const current = toFilterValue(fields, query);
+
+          // A tag under several parents is one tag: a click on any of its rows ticks or clears them all.
           onQueryChange(
             toFilterQuery(
-              keepHiddenValues(next, toFilterValue(fields, query), items),
+              toTaggedIds(keepHiddenValues(next, current, items), current),
               fields,
               query,
             ),

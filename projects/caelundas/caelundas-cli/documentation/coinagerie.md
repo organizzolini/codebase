@@ -84,6 +84,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **finder**: A service that finds the boundary events a sweep window cut off, which the progressive pass pairs with the ones it detected.
 - **fire**: Element tag for the fire signs Aries, Leo, and Sagittarius, a root tag node that ingress tags link to.
 - **focal**: Body at the apex or focus of a compound aspect pattern, such as the Venus focal body in a kite, named in event summaries.
+- **fortune**:
 - **gamma**: Closest approach of the shadow axis to Earth's center, in Earth radii, that classifies an eclipse as partial, central, or total.
 - **gap**: Difference between two longitudes or times, such as the separation that closes through an aspect's orb threshold.
 - **gemini**: Zodiac sign spanning 60 to 90 degrees of ecliptic longitude, the Gemini tag used in ingress detection and symbols.

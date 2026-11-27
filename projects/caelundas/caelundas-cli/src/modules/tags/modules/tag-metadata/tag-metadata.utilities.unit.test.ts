@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { CONTEXT_TAG_MAPS, SHARED_TAG_MAP } from "../../tag-map.constants";
 
 import { TAG_MENU_EXCLUSIONS } from "./tag-metadata-flags.constants";
-import { TAG_EXTRA_PARENTS } from "./tag-metadata.constants";
+import { TAG_EXTRA_PARENTS } from "./tag-metadata-parents.constants";
 import { tagMenuFlags, tagMetadata } from "./tag-metadata.utilities";
 
 /** Every path the tag maps can produce, each with its ancestors. */
@@ -77,8 +77,22 @@ describe("tag metadata", () => {
       });
     });
 
+    it("keeps a label over one dimension's spans or sides out of the Filter menu", () => {
+      for (const path of [
+        ["Solar", "Annual Cycle", "Interval"],
+        ["Zodiac", "Peak"],
+      ]) {
+        expect(tagMenuFlags(path).isFilterable).toBe(false);
+      }
+
+      expect(
+        tagMenuFlags(["Solar", "Annual Cycle", "Interval", "Beltane Pre"])
+          .isFilterable,
+      ).toBe(true);
+    });
+
     it("keeps Benefic out of the Sort and Select menus but in the Filter and Group menus", () => {
-      expect(tagMenuFlags(["Body", "Benefic"])).toStrictEqual({
+      expect(tagMenuFlags(["Body", "Planet", "Benefic"])).toStrictEqual({
         isFilterable: true,
         isGroupable: true,
         isSelectable: false,

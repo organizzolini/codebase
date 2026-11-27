@@ -21,9 +21,8 @@ import type { LucideIcon } from "lucide-react";
 
 export const TITLE = "Layout";
 
-/** Hides the checkbox spacer and indents nested rows by depth. */
+/** Indents nested rows by depth. */
 export const LAYOUT_TREE_CLASS_NAME = [
-  "[&_[data-slot=cascader-item-checkbox-spacer]]:hidden",
   "[&_[data-slot=cascader-item]]:ps-[calc(var(--cascader-row-inset,6px)+var(--cascader-indent,0px)*2)]!",
 ].join(" ");
 

@@ -389,6 +389,18 @@ describe(createEventFilterFields, () => {
       expect(options[0]?.data).toMatchObject({ alsoUnder: [] });
     });
 
+    it("leads its description with the names of its other parents", () => {
+      const options = createTagOptions(facet, listOfferedValues(facet.values));
+
+      expect(describeTagOption(options[1] as never)).toBe(
+        "also Planet · 2 events",
+      );
+      expect(describeTagOption(options[3] as never)).toBe(
+        "also Benefic · 2 events",
+      );
+      expect(describeTagOption(options[0] as never)).toBe("3 events");
+    });
+
     it("marks the chip of a rule holding it, and only that", () => {
       const field = createEventFilterFields([facet]).find(
         ({ id }) => id === "tag:body",

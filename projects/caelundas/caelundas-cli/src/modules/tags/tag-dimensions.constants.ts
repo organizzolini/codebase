@@ -112,6 +112,14 @@ export const SIGNS_BY_DIGNITY_BY_PLANET: Readonly<
   ],
 };
 
+/** Which of tradition's two fortunes a planet is, so it also sits under that group. */
+export const FORTUNE_BY_PLANET: Readonly<Partial<Record<Body, string>>> = {
+  jupiter: "Benefic",
+  mars: "Malefic",
+  saturn: "Malefic",
+  venus: "Benefic",
+};
+
 /** Synodic stage each Mercury, Venus, or Mars phase marks. */
 export const SYNODIC_STAGE_BY_PHASE: Readonly<Record<string, string>> = {
   brightest: "Brightest",
