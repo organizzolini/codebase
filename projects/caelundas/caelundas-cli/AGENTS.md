@@ -110,7 +110,7 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 Ingestion runs as a **Kubernetes Job**, one range per run, writing events to Postgres and nothing else (no volume is mounted). The
 `.github/workflows/caelundas-cli.yml` workflow takes the dotenv text as its one input and mounts it as `configuration/.env`, the file this CLI's
 `ConfigModule` reads; the schema validates it. The Job's values are
-[values/caelundas-cli.yaml](../../../infrastructure/helm/kubernetes-job/values/caelundas-cli.yaml). Run
+[infrastructure/helm-values.yaml](infrastructure/helm-values.yaml). Run
 `gh workflow run caelundas-cli.yml -f environment="$(cat my.env)"` for several lines, and split a long range into several runs.
 The ConfigMap is not for secrets: the database password is a Secret reference.
 See
@@ -156,4 +156,5 @@ module's glob finds. Keep `--platform linux/amd64`.
 - `input.constants.ts` includes Zod validation
 - `ephemeris.service.ts` includes NASA API client
 - `calendar.service.ts` builds instant events
+- `infrastructure/helm-values.yaml` holds this project's Helm values over the shared `kubernetes-job` chart
 - `infrastructure/docker-compose.yml` configures the container build

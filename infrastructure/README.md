@@ -140,7 +140,7 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 | `open-webui`         | `up`, `down`, `open` for the Open WebUI service                        |
 | `terraform`          | `plan` (default) or `import` against the cluster                       |
 | `trivy-config`       | Trivy misconfiguration scan of the Terraform code and rendered charts  |
-| `helm-lint`          | `helm lint --strict` every Helm release, with its Argo CD values files |
+| `helm-lint`          | `helm lint --strict` every Helm release, with each project's values    |
 | `helm-render`        | Render every release to `dist/infrastructure/helm-render/`             |
 | `kubeconform`        | Validate the rendered manifests against Kubernetes and CRD schemas     |
 | `kube-linter`        | Lint the rendered manifests for hardening and resource settings        |
