@@ -11,7 +11,7 @@
 | [helm/kubernetes-job](helm/kubernetes-job)               | Reusable Helm chart for batch job deployments with PVC storage    |
 | [helm/postgres](helm/postgres)                           | Shared PostgreSQL on CloudNativePG, with PgBouncer and backups    |
 | [helm/cloudflared](helm/cloudflared)                     | Cloudflare Tunnel connector, routed from Cloudflare               |
-| [helm/argocd](helm/argocd)     | Argo CD app-of-apps tree, synced in waves, plus `batch-low`       |
+| [helm/argocd](helm/argocd)                               | Argo CD app-of-apps tree, synced in waves, plus `batch-low`       |
 | [terraform/](terraform)                                  | Linode LKE (Kubernetes) cluster provisioning                      |
 | [terraform/openrouter](terraform/openrouter)             | OpenRouter workspace, API key, guardrail, and ranked-model preset |
 | [terraform/github](terraform/github)                     | GitHub repository settings, `main` ruleset, and Actions variables |
