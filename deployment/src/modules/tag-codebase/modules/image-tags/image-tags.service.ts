@@ -13,7 +13,7 @@ import {
   VERSION_PATTERN,
 } from "./image-tags.constants";
 
-import type { Environment } from "../../deployment.types";
+import type { Environment } from "../../../../deployment.types";
 import type { ImageValues } from "./image-tags.types";
 
 /** Writes a release's version as the image tag of every Helm values file that names one of this repository's images. */

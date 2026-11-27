@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { HelmLintModule } from "./modules/helm-lint/helm-lint.module";
 import type { HelmRenderModule } from "./modules/helm-render/helm-render.module";
-import type { ImageTagsModule } from "./modules/image-tags/image-tags.module";
 import type { LinkPackagesModule } from "./modules/link-packages/link-packages.module";
 import type { PublishPackagesModule } from "./modules/publish-packages/publish-packages.module";
+import type { ImageTagsModule } from "./modules/tag-codebase/modules/image-tags/image-tags.module";
 import type { TagCodebaseModule } from "./modules/tag-codebase/tag-codebase.module";
 import type { TagPackagesModule } from "./modules/tag-packages/tag-packages.module";
 import type { VersionPackagesModule } from "./modules/version-packages/version-packages.module";
@@ -84,7 +84,7 @@ vi.mock("./modules/publish-packages/publish-packages.module", () => ({
   },
 }));
 
-vi.mock("./modules/image-tags/image-tags.module", () => ({
+vi.mock("./modules/tag-codebase/modules/image-tags/image-tags.module", () => ({
   ImageTagsModule: function ImageTagsModule() {
     return imageTagsModuleMock;
   },

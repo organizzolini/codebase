@@ -12,7 +12,7 @@ import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { HelmLintService } from "./helm-lint.service";
 
-/** Two charts: `alpha` with an empty tag and a project's values, `beta` plain. */
+/** Two charts, one with project values. */
 const charts = (): string => {
   const root = createTemporaryDirectory("charts", TEMPORARY_ROOT);
   const files = {

@@ -3,7 +3,7 @@ import { Command, CommandRunner } from "nest-commander";
 
 import { LoggerService } from "@codebase/observability";
 
-import { describeError } from "../process-runner/process-runner.utilities";
+import { describeError } from "../../../process-runner/process-runner.utilities";
 
 import { ImageTagsService } from "./image-tags.service";
 

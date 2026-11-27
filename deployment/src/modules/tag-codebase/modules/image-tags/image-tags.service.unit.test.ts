@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createTemporaryDirectory, writeFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { TEMPORARY_ROOT } from "../../../testing/mocks";
+import { TEMPORARY_ROOT } from "../../../../../testing/mocks";
 
 import { VALUES_GLOB } from "./image-tags.constants";
 import { ImageTagsService } from "./image-tags.service";
@@ -159,7 +159,7 @@ describe(ImageTagsService, () => {
     const config = fs.readFileSync(
       path.join(
         import.meta.dirname,
-        "../../../../configuration/repository/release.config.cjs",
+        "../../../../../../configuration/repository/release.config.cjs",
       ),
       "utf8",
     );

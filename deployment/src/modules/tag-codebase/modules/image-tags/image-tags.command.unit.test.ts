@@ -8,7 +8,7 @@ import { expectLoggerContext } from "@codebase/observability/testing";
 import { createTemporaryDirectory, writeFileTree } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { TEMPORARY_ROOT } from "../../../testing/mocks";
+import { TEMPORARY_ROOT } from "../../../../../testing/mocks";
 
 import { ImageTagsCommand } from "./image-tags.command";
 import { ImageTagsService } from "./image-tags.service";
