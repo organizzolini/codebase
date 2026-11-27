@@ -13,6 +13,7 @@ import { ReleaseArchivesService } from "../../../release-archives/release-archiv
 
 import { SoftwareDatabaseService } from "./software-database.service";
 import { SoftwareGoToolsService } from "./software-go-tools.service";
+import { SoftwareHelmPluginsService } from "./software-helm-plugins.service";
 import { SoftwareNamedService } from "./software-named.service";
 
 import type { FakeMachine } from "../../../../../testing/fake-process-runner";
@@ -25,6 +26,7 @@ describe(SoftwareNamedService, () => {
   const install = vi.fn<ReleaseArchivesService["install"]>();
   const installPostgres = vi.fn<SoftwareDatabaseService["installPostgres"]>();
   const installGoTool = vi.fn<SoftwareGoToolsService["install"]>();
+  const installHelmPlugin = vi.fn<SoftwareHelmPluginsService["install"]>();
   /** Builds the service over a fake machine, path variable only. */
   const build = async (
     environment: Record<string, string> = {},
@@ -49,6 +51,10 @@ describe(SoftwareNamedService, () => {
           provide: SoftwareGoToolsService,
           useValue: { install: installGoTool },
         },
+        {
+          provide: SoftwareHelmPluginsService,
+          useValue: { install: installHelmPlugin },
+        },
         { provide: ProcessRunnerService, useValue: runner },
       ],
     });
@@ -64,6 +70,7 @@ describe(SoftwareNamedService, () => {
     install.mockReset();
     installPostgres.mockReset();
     installGoTool.mockReset();
+    installHelmPlugin.mockReset();
   });
 
   afterEach(() => {
@@ -78,6 +85,7 @@ describe(SoftwareNamedService, () => {
         ReleaseArchivesService,
         SoftwareDatabaseService,
         SoftwareGoToolsService,
+        SoftwareHelmPluginsService,
         ProcessRunnerService,
       ],
     });
@@ -109,6 +117,18 @@ describe(SoftwareNamedService, () => {
       "terraform",
       "uv",
     ]);
+  });
+
+  it("installs the helm-unittest plugin by name", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    subject.install(["helm-unittest"]);
+
+    expect(installHelmPlugin).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ name: "unittest", version: "1.2.1" }),
+    );
   });
 
   it("refuses a release archive tool on a Mac, where Homebrew installs it", async () => {
