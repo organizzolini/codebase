@@ -72,7 +72,10 @@ describe("calendar-metrics utilities", () => {
       const start = Date.UTC(2026, 2, 5, 15, 40);
       // Newer ICU data puts a narrow no-break space before the meridiem.
       const read = (slug: "first-start" | "last-start", zone: string): string =>
-        formatMetricValue(getMetric(slug), start, zone).replaceAll(" ", " ");
+        formatMetricValue(getMetric(slug), start, zone).replaceAll(
+          "\u202F",
+          " ",
+        );
 
       expect(read("first-start", "UTC")).toBe("Mar 5, 2026, 3:40 PM");
       expect(read("first-start", "America/New_York")).toBe(
@@ -89,7 +92,7 @@ describe("calendar-metrics utilities", () => {
         formatMetricValue(
           getMetric("last-start"),
           Date.UTC(2026, 0, 1, 0, 5),
-        ).replaceAll(" ", " "),
+        ).replaceAll("\u202F", " "),
       ).toBe("Jan 1, 2026, 12:05 AM");
     });
 
