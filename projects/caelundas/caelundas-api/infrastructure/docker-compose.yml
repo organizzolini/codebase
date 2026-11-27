@@ -1,0 +1,25 @@
+# Builds the caelundas-api image: `docker compose build` builds it, `build --push` pushes it (the project's `docker` target runs both).
+# IMAGE_TAG (default local) tags it. IMAGE_CA_BUNDLE is an optional PEM file for a TLS-inspecting proxy; unset, the secret is empty.
+name: caelundas-api
+
+secrets:
+  ca-bundle:
+    file: ${IMAGE_CA_BUNDLE:-/dev/null}
+
+services:
+  caelundas-api:
+    image: ghcr.io/organizzolini/caelundas-api:${IMAGE_TAG:-local}
+    build:
+      context: ../../../..
+      dockerfile: infrastructure/docker/application/Dockerfile
+      platforms: [linux/amd64]
+      labels:
+        org.opencontainers.image.source: https://github.com/organizzolini/codebase
+      secrets: [ca-bundle]
+      target: node
+      args:
+        PROJECT: caelundas-api
+        PROJECT_DIRECTORY: projects/caelundas/caelundas-api
+        ENTRY: caelundas-api.js
+        # The GraphQL schema is written beside the root module at startup; the image links it into its one writable directory so the root filesystem can stay read-only.
+        TEMPORARY_PATHS: projects/caelundas/caelundas-api/src/schema.gql

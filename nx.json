@@ -308,6 +308,28 @@
       "executor": "nx:noop",
       "inputs": ["default"]
     },
+    "docker": [
+      {
+        "cache": false,
+        "configurations": {
+          "build": {
+            "command": "docker compose -f {projectRoot}/infrastructure/docker-compose.yml build"
+          },
+          "push": {
+            "command": "docker compose -f {projectRoot}/infrastructure/docker-compose.yml build --push"
+          }
+        },
+        "defaultConfiguration": "build",
+        "description": "Build (`docker:build`, loaded into the local daemon) or build and push (`docker:push`, one `docker compose build --push`) the container image of a project tagged `container:image`, for linux/amd64, with the service of its own infrastructure/docker-compose.yml, tagged ghcr.io/organizzolini/<project>:$IMAGE_TAG (default local). Set IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build. Never cached: a Docker build has no file outputs Nx could restore, so a remote cache hit would skip building, and a push is a side effect; layer caching is BuildKit's job. A new image needs the tag and its compose file.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:container:image"]
+        },
+        "options": {
+          "cwd": "{workspaceRoot}"
+        }
+      }
+    ],
     "end-to-end": {
       "cache": true,
       "dependsOn": ["^pack", "pack"],

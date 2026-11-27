@@ -13,6 +13,7 @@
   "projectType": "application",
   "sourceRoot": "projects/caelundas/caelundas-web/src",
   "tags": [
+    "container:image",
     "domain:caelundas",
     "framework:react",
     "framework:tanstack-start",
@@ -65,23 +66,7 @@
     },
     "dependency-cruiser": {},
     "deprecate-code": {},
-    "docker": {
-      "cache": false,
-      "configurations": {
-        "build": {
-          "command": "docker compose -f infrastructure/docker/docker-compose.images.yml build caelundas-web"
-        },
-        "push": {
-          "command": "docker compose -f infrastructure/docker/docker-compose.images.yml build --push caelundas-web"
-        }
-      },
-      "defaultConfiguration": "build",
-      "description": "Build (`docker:build`, loaded into the local daemon) or build and push (`docker:push`, one `docker compose build --push`) the caelundas-web image for linux/amd64 with the `caelundas-web` service of infrastructure/docker/docker-compose.images.yml, tagged ghcr.io/organizzolini/caelundas-web:$IMAGE_TAG (default local). It bakes VITE_CAELUNDAS_API_URL into the app. Set IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build. Never cached: a Docker build has no file outputs Nx could restore, so a remote cache hit would skip building, and a push is a side effect; layer caching is BuildKit's job.",
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "{workspaceRoot}"
-      }
-    },
+    "docker": {},
     "eslint": {},
     "format-code": {},
     "guard-code": {},

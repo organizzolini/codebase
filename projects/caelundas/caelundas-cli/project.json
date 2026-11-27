@@ -4,6 +4,7 @@
   "projectType": "application",
   "sourceRoot": "projects/caelundas/caelundas-cli",
   "tags": [
+    "container:image",
     "domain:caelundas",
     "framework:nest-commander",
     "framework:nestjs",
@@ -51,23 +52,7 @@
     },
     "dependency-cruiser": {},
     "deprecate-code": {},
-    "docker": {
-      "cache": false,
-      "configurations": {
-        "build": {
-          "command": "docker compose -f infrastructure/docker/docker-compose.images.yml build caelundas-cli"
-        },
-        "push": {
-          "command": "docker compose -f infrastructure/docker/docker-compose.images.yml build --push caelundas-cli"
-        }
-      },
-      "defaultConfiguration": "build",
-      "description": "Build (`docker:build`, loaded into the local daemon) or build and push (`docker:push`, one `docker compose build --push`) the caelundas-cli image for linux/amd64 with the `caelundas-cli` service of infrastructure/docker/docker-compose.images.yml, tagged ghcr.io/organizzolini/caelundas-cli:$IMAGE_TAG (default local). Set IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build. Never cached: a Docker build has no file outputs Nx could restore, so a remote cache hit would skip building, and a push is a side effect; layer caching is BuildKit's job.",
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "{workspaceRoot}"
-      }
-    },
+    "docker": {},
     "download-ephemeris": {
       "cache": true,
       "description": "Download the Swiss Ephemeris data files to data/ephemeris/ (cached, so CI fetches them once per cache key). Runs its own entry point, which does not open the database.",
