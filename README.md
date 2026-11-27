@@ -3,8 +3,6 @@
 [![Continuous Integration](https://github.com/Organizzolini/codebase/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/Organizzolini/codebase/actions/workflows/continuous-integration.yml)
 [![Continuous Deployment](https://github.com/Organizzolini/codebase/actions/workflows/continuous-deployment.yml/badge.svg)](https://github.com/Organizzolini/codebase/actions/workflows/continuous-deployment.yml)
 [![Continuous Compliance](https://github.com/Organizzolini/codebase/actions/workflows/continuous-compliance.yml/badge.svg)](https://github.com/Organizzolini/codebase/actions/workflows/continuous-compliance.yml)
-[![Version](https://img.shields.io/github/v/release/Organizzolini/codebase?logo=semanticrelease&label=Version)](https://github.com/Organizzolini/codebase/releases/latest)
-[![License](https://img.shields.io/github/license/Organizzolini/codebase?label=License)](LICENSE)
 
 ## 💾 Technology
 
