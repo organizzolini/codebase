@@ -16,39 +16,6 @@
     },
     "format-code": {},
     "guard-code": {},
-    "helm-lint": {
-      "cache": true,
-      "description": "Lint every Helm release this repository ships with `helm lint --strict`, each chart layered with the values files its Argo CD Application uses. The `helm-lint` command of the deployment project discovers the releases from the chart folders, as `helm-render` does, so lint and every render-based check judge the same set. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/helm/**/*",
-        "{workspaceRoot}/deployment/src/**/*",
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-lint",
-        "cwd": "{workspaceRoot}"
-      }
-    },
-    "helm-render": {
-      "cache": true,
-      "description": "Render every Helm release to dist/infrastructure/helm-render/<release>.yaml with helm template, using the values files each Argo CD Application passes. The single rendering that kubeconform, kube-linter, pluto, and trivy-config all consume, so no tool re-templates differently. Requires helm on PATH.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/helm/**/*",
-        "{workspaceRoot}/deployment/src/**/*",
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "rm -rf dist/infrastructure/helm-render && NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-render --directory dist/infrastructure/helm-render",
-        "cwd": "{workspaceRoot}"
-      },
-      "outputs": ["{workspaceRoot}/dist/infrastructure/helm-render"]
-    },
     "helm-test": {
       "cache": true,
       "description": "Run the helm-unittest suites under every chart that has a tests folder. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. The `software helm-unittest` command of the installation project installs the pinned helm-unittest plugin first when `helm plugin list` lacks it, checking the tarball's sha256. Requires helm, curl, and sha256sum on PATH.",
@@ -62,44 +29,6 @@
       ],
       "options": {
         "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts software helm-unittest && for chart in {projectRoot}/helm/*/; do if [ -d \"$chart/tests\" ]; then helm unittest \"$chart\" || exit 1; fi; done",
-        "cwd": "{workspaceRoot}"
-      }
-    },
-    "kube-linter": {
-      "cache": true,
-      "dependsOn": ["helm-render"],
-      "description": "Lint the rendered manifests with kube-linter's default checks, which include the read-only root filesystem, non-root, privilege escalation, and resource request and limit rules; the version is pinned by the installation project, so the defaults cannot drift. Part of lint-code. Requires kube-linter on PATH.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        {
-          "dependentTasksOutputFiles": "**/*.yaml",
-          "transitive": false
-        },
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "kube-linter lint dist/infrastructure/helm-render",
-        "cwd": "{workspaceRoot}"
-      }
-    },
-    "kubeconform": {
-      "cache": true,
-      "dependsOn": ["helm-render"],
-      "description": "Validate the rendered manifests against the Kubernetes 1.35.0 schemas and, for the Argo CD, CloudNativePG, Barman Cloud, and cert-manager custom resources, the datreeio/CRDs-catalog schemas. Strict (unknown fields fail), and a kind with no schema fails too: nothing is skipped. Part of lint-code. Requires kubeconform on PATH and network access to raw.githubusercontent.com, where the schemas are fetched.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        {
-          "dependentTasksOutputFiles": "**/*.yaml",
-          "transitive": false
-        },
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "kubeconform -strict -summary -kubernetes-version 1.35.0 -schema-location default -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' dist/infrastructure/helm-render",
         "cwd": "{workspaceRoot}"
       }
     },
@@ -125,25 +54,6 @@
       }
     },
     "oxfmt": {},
-    "pluto": {
-      "cache": true,
-      "dependsOn": ["helm-render"],
-      "description": "Detect Kubernetes API versions the rendered manifests use that 1.35.0 deprecates or has removed. A removed API fails the target; a deprecated one is printed as a warning and exits 0. Part of lint-code. Requires pluto on PATH.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        {
-          "dependentTasksOutputFiles": "**/*.yaml",
-          "transitive": false
-        },
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "pluto detect-files -d dist/infrastructure/helm-render --target-versions k8s=v1.35.0 --ignore-deprecations -o wide",
-        "cwd": "{workspaceRoot}"
-      }
-    },
     "postgres": {
       "configurations": {
         "down": {
@@ -314,26 +224,14 @@
         "cwd": "{projectRoot}/terraform"
       }
     },
-    "tflint": {
-      "cache": true,
-      "description": "Lint the OpenRouter, GitHub, Linode, and Organizzolini Terraform roots with tflint and its bundled terraform ruleset (preset all). Each root uses its own .tflint.hcl when it has one, otherwise terraform/.tflint.hcl. The ruleset ships inside the pinned tflint binary, so there is no plugin download and no `tflint --init`, and nothing touches .terraform, so it may run beside the terraform targets. The stale root main.tf is not listed and is never scanned. Part of lint-code. Requires tflint on PATH.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/terraform/*/.tflint.hcl",
-        "{projectRoot}/terraform/.tflint.hcl",
-        "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "for root in openrouter github linode organizzolini; do (cd $root && c=../.tflint.hcl; [ -f .tflint.hcl ] && c=.tflint.hcl; tflint --config $c) || exit 1; done",
-        "cwd": "{projectRoot}/terraform"
-      }
-    },
     "trivy-config": {
       "cache": true,
-      "dependsOn": ["helm-render"],
+      "dependsOn": [
+        {
+          "projects": ["deployment"],
+          "target": "helm-render"
+        }
+      ],
       "description": "Scan Terraform infrastructure code and the rendered Helm manifests (helm-render) for misconfigurations using Trivy, both at CRITICAL and HIGH severity. Identical to what the Secure check runs, so a local run reproduces CI exactly. Requires trivy and helm on PATH (the devcontainer installs trivy; otherwise `brew install trivy`).",
       "executor": "nx:run-commands",
       "inputs": [
@@ -348,7 +246,7 @@
         }
       ],
       "options": {
-        "command": "trivy config {projectRoot}/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore && trivy config dist/infrastructure/helm-render --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore",
+        "command": "trivy config {projectRoot}/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore && trivy config dist/deployment/helm-render --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore",
         "cwd": "{workspaceRoot}"
       }
     },

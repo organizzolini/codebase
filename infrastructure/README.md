@@ -6,17 +6,17 @@
 
 ## Contents
 
-| Directory                                                | Purpose                                                           |
-| -------------------------------------------------------- | ----------------------------------------------------------------- |
-| [helm/kubernetes-job](helm/kubernetes-job)               | Reusable Helm chart for batch job deployments with PVC storage    |
-| [helm/postgres](helm/postgres)                           | Shared PostgreSQL on CloudNativePG, with PgBouncer and backups    |
-| [helm/cloudflared](helm/cloudflared)                     | Cloudflare Tunnel connector, routed from Cloudflare               |
-| [helm/argocd](helm/argocd)                               | Argo CD app-of-apps tree, synced in waves, plus `batch-low`       |
-| [terraform/](terraform)                                  | Linode LKE (Kubernetes) cluster provisioning                      |
-| [terraform/openrouter](terraform/openrouter)             | OpenRouter workspace, API key, guardrail, and ranked-model preset |
-| [terraform/github](terraform/github)                     | GitHub repository settings, `main` ruleset, and Actions variables |
-| [terraform/linode](terraform/linode)                     | The Object Storage bucket that holds Terraform state              |
-| [terraform/organizzolini](terraform/organizzolini)       | LKE cluster, Cloudflare tunnel, namespaces, secrets, and Argo CD  |
+| Directory                                          | Purpose                                                           |
+| -------------------------------------------------- | ----------------------------------------------------------------- |
+| [helm/kubernetes-job](helm/kubernetes-job)         | Reusable Helm chart for batch job deployments with PVC storage    |
+| [helm/postgres](helm/postgres)                     | Shared PostgreSQL on CloudNativePG, with PgBouncer and backups    |
+| [helm/cloudflared](helm/cloudflared)               | Cloudflare Tunnel connector, routed from Cloudflare               |
+| [helm/argocd](helm/argocd)                         | Argo CD app-of-apps tree, synced in waves, plus `batch-low`       |
+| [terraform/](terraform)                            | Linode LKE (Kubernetes) cluster provisioning                      |
+| [terraform/openrouter](terraform/openrouter)       | OpenRouter workspace, API key, guardrail, and ranked-model preset |
+| [terraform/github](terraform/github)               | GitHub repository settings, `main` ruleset, and Actions variables |
+| [terraform/linode](terraform/linode)               | The Object Storage bucket that holds Terraform state              |
+| [terraform/organizzolini](terraform/organizzolini) | LKE cluster, Cloudflare tunnel, namespaces, secrets, and Argo CD  |
 
 ## Quick Start
 
@@ -139,17 +139,11 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 | `open-webui`         | `up`, `down`, `open` for the Open WebUI service                        |
 | `terraform`          | `plan` (default) or `import` against the cluster                       |
 | `trivy-config`       | Trivy misconfiguration scan of the Terraform code and rendered charts  |
-| `helm-lint`          | `helm lint --strict` every Helm release, with its Argo CD values files |
-| `helm-render`        | Render every release to `dist/infrastructure/helm-render/`             |
-| `kubeconform`        | Validate the rendered manifests against Kubernetes and CRD schemas     |
-| `kube-linter`        | Lint the rendered manifests for hardening and resource settings        |
-| `pluto`              | Flag deprecated or removed Kubernetes APIs in the rendered manifests   |
-| `tflint`             | Lint each Terraform root with tflint's terraform ruleset               |
 | `helm-test`          | Run the helm-unittest suites under every chart with a `tests/` folder  |
 | `terraform-validate` | Validate each Terraform root, then run its unit tests                  |
 | `compose-config`     | Validate the Docker Compose file                                       |
 
-`helm-lint`, `helm-test`, `kubeconform`, `kube-linter`, `pluto`, `tflint`, `terraform-validate`, and `compose-config` also run in CI: `lint-code` depends on them, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. The workflow linters `actionlint` and `zizmor` belong to the configuration project and run in the same leg. The linters come from the `installation` project's `software` command (kubeconform, kube-linter, and pluto through its `infrastructure` group, actionlint through `configuration`, each built with `go install` from a pinned tag), setup-tflint, and the uv lockfile (zizmor), through the `infrastructure` and `configuration` inputs of the setup-codebase action and the devcontainer. They need `helm` and `docker compose` (`helm-test` installs the pinned helm-unittest plugin on first run); `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
+The Helm and Terraform linters that read this project's files belong to other projects: `deployment:helm-lint` and `deployment:helm-render` (the `deployment` project's helm commands), and `integration:kubeconform`, `integration:kube-linter`, `integration:pluto`, and `integration:tflint` (the repository-wide CI linters, applied by the `name:integration` tag). `helm-test`, `terraform-validate`, and `compose-config` also run in CI: `lint-code` depends on all of them, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. The workflow linters `actionlint` and `zizmor` belong to the configuration project and run in the same leg. The linters come from the `installation` project's `software` command (kubeconform, kube-linter, and pluto through its `infrastructure` group, actionlint through `configuration`, each built with `go install` from a pinned tag), setup-tflint, and the uv lockfile (zizmor), through the `infrastructure` and `configuration` inputs of the setup-codebase action and the devcontainer. They need `helm` and `docker compose` (`helm-test` installs the pinned helm-unittest plugin on first run); `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
 
 ## Documentation
 

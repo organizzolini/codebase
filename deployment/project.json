@@ -17,6 +17,39 @@
     "eslint": {},
     "format-code": {},
     "guard-code": {},
+    "helm-lint": {
+      "cache": true,
+      "description": "Lint every Helm release this repository ships with `helm lint --strict`, each chart layered with the values files its Argo CD Application uses. The `helm-lint` command of this project discovers the releases from the chart folders, as `helm-render` does, so lint and every render-based check judge the same set. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/src/**/*",
+        "{workspaceRoot}/infrastructure/helm/**/*",
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-lint",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "helm-render": {
+      "cache": true,
+      "description": "Render every Helm release to dist/deployment/helm-render/<release>.yaml with helm template, using the values files each Argo CD Application passes. The single rendering that kubeconform, kube-linter, pluto, and trivy-config all consume, so no tool re-templates differently. Requires helm on PATH.",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{projectRoot}/src/**/*",
+        "{workspaceRoot}/infrastructure/helm/**/*",
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "command": "rm -rf dist/deployment/helm-render && NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-render --directory dist/deployment/helm-render",
+        "cwd": "{workspaceRoot}"
+      },
+      "outputs": ["{workspaceRoot}/dist/deployment/helm-render"]
+    },
     "knip": {},
     "lint-code": {},
     "markdown-lint": {},

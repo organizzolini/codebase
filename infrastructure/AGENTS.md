@@ -138,11 +138,11 @@ argocd app diff --core <name>                 # the live-versus-desired diff, re
 
 ## Kubernetes Deployment
 
-See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-lint`, `helm-test`, `kubeconform`, `kube-linter`, `pluto`, `tflint`, `terraform-validate` (validate and test), and `compose-config` run in CI as part of `lint-code`, in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
+See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `helm-test`, `terraform-validate` (validate and test), and `compose-config` of this project run in CI as part of `lint-code`, as do `deployment:helm-lint` and the linters of the `integration` project (`kubeconform`, `kube-linter`, `pluto`, `tflint`), in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
 
 ## Linters
 
-The `helm-lint` and `helm-render` commands of the `deployment` project discover the Helm releases, so none is listed anywhere: every folder under `helm/` holding a `Chart.yaml` installs as `<chart>` with `values/base.yaml`, and once more as `<chart>-<name>` for each other `values/<name>.yaml` layered over it. The namespace comes from the Argo CD Application in `helm/argocd/values/base.yaml` whose `path` and `valueFiles` match the release, else `default`; an empty `image.tag` in the values is filled with a placeholder so the chart renders. A chart whose release the files cannot describe adds an optional `release.yaml` beside `Chart.yaml` with `namespace` and `strings` (extra `--set-string` pairs), as `argocd` does for its namespace. `helm-lint` runs `helm lint --strict` over the releases, and `helm-render` templates them into `dist/infrastructure/helm-render/`, which `kubeconform`, `kube-linter`, `pluto`, and `trivy-config` read. Add a chart or values file and the next run picks it up; edit no code.
+The `helm-lint` and `helm-render` commands, and targets, of the `deployment` project discover the Helm releases, so none is listed anywhere: every folder under `helm/` holding a `Chart.yaml` installs as `<chart>` with `values/base.yaml`, and once more as `<chart>-<name>` for each other `values/<name>.yaml` layered over it. The namespace comes from the Argo CD Application in `helm/argocd/values/base.yaml` whose `path` and `valueFiles` match the release, else `default`; an empty `image.tag` in the values is filled with a placeholder so the chart renders. A chart whose release the files cannot describe adds an optional `release.yaml` beside `Chart.yaml` with `namespace` and `strings` (extra `--set-string` pairs), as `argocd` does for its namespace. `deployment:helm-lint` runs `helm lint --strict` over the releases, and `deployment:helm-render` templates them into `dist/deployment/helm-render/`, which `integration:kubeconform`, `integration:kube-linter`, `integration:pluto`, and `infrastructure:trivy-config` read. The four linters are defined in `nx.json` and applied to the `integration` project by its `name:integration` tag; they read this project's charts and Terraform through their inputs. Add a chart or values file and the next run picks it up; edit no code.
 
 - **kubeconform**: strict schemas for Kubernetes 1.35.0 plus the datreeio CRDs catalog for Argo CD, CloudNativePG, Barman Cloud, and cert-manager. A kind with no schema fails, so nothing is skipped. It reads schemas from raw.githubusercontent.com.
 - **kube-linter**: runs its default checks, which include the hardening ones, with no config and no exclusions. Fix the chart, not the check.
@@ -151,7 +151,7 @@ The `helm-lint` and `helm-render` commands of the `deployment` project discover 
 - **tflint**: `terraform/.tflint.hcl` enables the bundled terraform ruleset (`preset = "all"`). The `github` root's `outputs.tf` holds only a comment, since `terraform_standard_module_structure` wants every root to declare where its outputs go.
 - **actionlint** and **zizmor** (configuration project): `.github/actionlint.yaml` and `.github/zizmor.yml` record every ignored message and changed rule with its reason.
 
-A failure prints the tool's own message with the file and line; the rendered file name is the release, so open `dist/infrastructure/helm-render/<release>.yaml` to see what was linted.
+A failure prints the tool's own message with the file and line; the rendered file name is the release, so open `dist/deployment/helm-render/<release>.yaml` to see what was linted.
 
 ## Moving the Terraform State Bucket
 

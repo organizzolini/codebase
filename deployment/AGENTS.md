@@ -28,6 +28,13 @@ group and runs registry calls six at a time; `src/modules/main-tip` notices when
 `main` moved during a release run and sets `RELEASE_SUPERSEDED`, which every
 later release step skips on.
 
+### Helm Targets
+
+`helm-lint` and `helm-render` run the commands of the same names over every
+chart under `infrastructure/helm`, and are the renderings and lint the
+`integration` project's `kubeconform`, `kube-linter`, and `pluto`, and
+infrastructure's `trivy-config`, read from `dist/deployment/helm-render`.
+
 ### Release Steps
 
 The release job of `.github/workflows/continuous-deployment.yml` runs the
