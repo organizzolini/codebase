@@ -39,7 +39,11 @@ export const RATE_LIMIT_RESET_PATTERN =
 
 /** The progress line OpenWiki prints as it reaches each page. */
 export const PAGE_PROGRESS_PATTERN =
-  /^Documenting (?:page )?(?<position>\d+) of \d+/gmu;
+  /^Documenting (?:page )?(?<position>\d+) of (?<total>\d+)/gmu;
+
+/** The line printed for a page whose worker ended without submitting. */
+export const SKIPPED_PAGE_PATTERN =
+  /^(?<page>\S+) was restored after its worker exited without submitting/gmu;
 
 /** What a refresh may change that its pull request carries. */
 export const OPENWIKI_COMMITTED_PATHS = [
