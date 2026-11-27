@@ -66,7 +66,6 @@ variables {
   cloudflare_account_id = "0123456789abcdef0123456789abcdef"
   cloudflare_zone_id    = "fedcba9876543210fedcba9876543210"
   github_token          = "mock-token"
-  k8s_version           = "1.34"
   state_bucket          = "mock-state-bucket"
 }
 
