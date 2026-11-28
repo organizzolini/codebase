@@ -828,6 +828,8 @@ const codependixConfiguration: CodependixConfiguration = {
           ],
         },
       },
+      // The infrastructure project is typed apart, `type:infrastructure`, so
+      // this rule leaves it free to depend on any project, applications too.
       {
         from: { tags: ["type:package"] },
         kind: "forbid",

@@ -4,7 +4,7 @@
   "name": "infrastructure",
   "projectType": "library",
   "sourceRoot": "infrastructure",
-  "tags": ["language:infrastructure", "type:package"],
+  "tags": ["language:infrastructure", "type:infrastructure"],
   "targets": {
     "compose-config": {
       "cache": false,
