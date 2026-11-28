@@ -56,12 +56,12 @@ output "terraform_state_secret_key" {
 
 output "organizzolini_postgres_backups_access_key" {
   description = "Access key of the key that can read and write the backups bucket only."
-  value       = linode_object_storage_key.organizzolini_postgres_backups.access_key
+  value       = module.postgres_backups.access_key
   sensitive   = true
 }
 
 output "organizzolini_postgres_backups_secret_key" {
   description = "Secret key of the key that can read and write the backups bucket only."
-  value       = linode_object_storage_key.organizzolini_postgres_backups.secret_key
+  value       = module.postgres_backups.secret_key
   sensitive   = true
 }

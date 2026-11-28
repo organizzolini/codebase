@@ -30,7 +30,7 @@ rollout's first new pod migrates, so every migration must stay expand-only
 earlier migrations were squashed into one with a new timestamp, so a local
 database that applied them holds three rows in `caelundas.migrations` and
 would try to create its tables again: reset it with
-`nx run infrastructure:postgres:recreate`, then start an application or run
+`nx run persistence:postgres:recreate`, then start an application or run
 `nx run caelundas-db:migration:run`.
 
 ### Entity relationship diagram

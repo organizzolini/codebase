@@ -54,7 +54,7 @@ Continuous Integration plans a pull request that changes the root and comments t
 
 The `terraform/organizzolini` root holds everything the cluster needs, in one state. It creates the `organizzolini` LKE cluster (region `us-iad`, one `g6-standard-2` pool whose autoscaler keeps 1 to 2 nodes, on the Kubernetes version hardcoded in `cluster.tf`; bump it by hand together with the version the `kubeconform` and `pluto` targets check against) and everything Cloudflare does for the public host `caelundas.organizzolini.net`. It imports the existing `organizzolini.net` zone, which it refuses to destroy, and manages no zone settings or other records. Its tunnel routes `/graphql` to `caelundas-api:80` (the Service port, which targets the API's development port) and everything else to `caelundas-web:80`, and a proxied CNAME points the host at the tunnel.
 
-Inside the cluster it holds what must not live in git, or must exist before Argo CD. **It creates the `organizzolini` and `caelundas` namespaces**, because the Argo CD applications do not set `CreateNamespace` for them. It generates the `caelundas_username` role's password and writes it as the `caelundas-postgres` secret in both namespaces, writes `postgres-backups` and `cloudflared-token` into `organizzolini`, installs the pinned `argo-cd` chart in the core profile (no API server, Dex, or notifications; zero ApplicationSet replicas, since the chart has no switch for that controller), and installs the `argocd-apps` chart with one `root` Application that follows `infrastructure/helm/argocd` on `main`. It also publishes the cluster's kubeconfig as the `KUBECONFIG` Actions secret. It reads only the `linode` root's state, for the backups key, through `try`, so a pull request plans before that output exists.
+Inside the cluster it holds what must not live in git, or must exist before Argo CD. **It creates the `organizzolini` and `caelundas` namespaces**, because the Argo CD applications do not set `CreateNamespace` for them. Through the project modules below, it generates the `caelundas_username` role's password and writes it as the `caelundas-postgres` secret in both namespaces, and writes `postgres-backups`, and, itself, `cloudflared-token` into `organizzolini`, installs the pinned `argo-cd` chart in the core profile (no API server, Dex, or notifications; zero ApplicationSet replicas, since the chart has no switch for that controller), and installs the `argocd-apps` chart with one `root` Application that follows `infrastructure/helm/argocd` on `main`. It also publishes the cluster's kubeconfig as the `KUBECONFIG` Actions secret. It reads only the `linode` root's state, for the backups key, through `try`, so a pull request plans before that output exists.
 
 It needs `TF_VAR_linode_token`, `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_account_id`, `TF_VAR_cloudflare_zone_id`, `TF_VAR_state_bucket`, and `TF_VAR_github_token`. In CI the Cloudflare account and zone IDs come from the `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_ZONE_ID` repository secrets, next to `CLOUDFLARE_API_TOKEN`. The readiness wait runs `kubectl`, which must be on `PATH`.
 
@@ -93,14 +93,14 @@ Owner prerequisites, all in one place:
 ### Run Local Services
 
 ```bash
-nx run infrastructure:postgres:up
+nx run persistence:postgres:up
 nx run infrastructure:searxng:up
 nx run infrastructure:open-webui:up
 ```
 
 ### Project Databases on an Existing Volume
 
-The Compose `postgres` service creates every database-backed project's
+The Compose `postgres` service, defined in the persistence project's `infrastructure/docker` folder, creates every database-backed project's
 `<project>_username` role, `<project>_development` database, and `<project>`
 schema from its `POSTGRES_PROJECTS` list, but only when the volume is empty.
 To add a project to a volume that already holds data, add its name to the
@@ -108,7 +108,7 @@ list, recreate the container while keeping its volume, and run the same init
 script for that project alone:
 
 ```bash
-nx run infrastructure:postgres:up
+nx run persistence:postgres:up
 docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh
 ```
 
@@ -119,7 +119,7 @@ docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb
 ```
 
 The script stops at the first object that already exists, so name only the
-projects the volume lacks. Never use `infrastructure:postgres:recreate` for this:
+projects the volume lacks. Never use `persistence:postgres:recreate` for this:
 it deletes the volume and every row in it.
 
 ### Provision Kubernetes Cluster
@@ -135,17 +135,14 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 
 | Target               | Does                                                                   |
 | -------------------- | ---------------------------------------------------------------------- |
-| `postgres`           | `up`, `down`, `recreate` (removes the volume) for the local PostgreSQL |
 | `searxng`            | `up`, `down`, `open` for the SearxNG metasearch service                |
 | `open-webui`         | `up`, `down`, `open` for the Open WebUI service                        |
 | `terraform`          | `plan` (default) or `import` against the cluster                       |
-| `trivy-config`       | Trivy misconfiguration scan of the Terraform code and rendered charts  |
 | `hadolint`           | Lint every Dockerfile                                                  |
-| `helm-test`          | Run the helm-unittest suites under every chart with a `tests/` folder  |
 | `terraform-validate` | Validate each Terraform root, then run its unit tests                  |
 | `compose-config`     | Validate the Docker Compose files                                      |
 
-The Helm and Terraform linters that read this project's files belong to other projects: `deployment:helm-lint` and `deployment:helm-render` (the `deployment` project's helm commands), and `integration:kubeconform`, `integration:kube-linter`, `integration:pluto`, and `integration:tflint` (the repository-wide CI linters, applied by the `name:integration` tag). `helm-test`, `hadolint`, `terraform-validate`, and `compose-config` also run in CI: `lint-code` depends on all of them, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. The workflow linters `actionlint` and `zizmor` belong to the configuration project and run in the same leg. The linters come from the `installation` project's `software` command (kubeconform, kube-linter, pluto, and hadolint through its `infrastructure` group, actionlint through `configuration`, the Go ones built with `go install` from a pinned tag, hadolint from its pinned release), setup-tflint, and the uv lockfile (zizmor), through the `infrastructure` and `configuration` inputs of the setup-codebase action and the devcontainer. They need `helm` and `docker compose` (`helm-test` installs the pinned helm-unittest plugin through `software helm-unittest`); `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
+The Helm and Terraform linters that read this project's files belong to other projects: `deployment:helm-lint`, `deployment:helm-render`, and `deployment:helm-test` (the `deployment` project's helm commands and chart tests), and `integration:kubeconform`, `integration:kube-linter`, `integration:pluto`, `integration:tflint`, and `integration:trivy-config` (the repository-wide CI linters and scanner, applied by the `name:integration` tag; `trivy-config` runs under `secure-code`, the others under `lint-code`). `hadolint`, `terraform-validate`, and `compose-config` also run in CI: `lint-code` depends on all of them, so the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml) runs them. The workflow linters `actionlint` and `zizmor` belong to the configuration project and run in the same leg. The linters come from the `installation` project's `software` command (kubeconform, kube-linter, pluto, and hadolint through its `infrastructure` group, actionlint through `configuration`, the Go ones built with `go install` from a pinned tag, hadolint from its pinned release), setup-tflint, and the uv lockfile (zizmor), through the `infrastructure` and `configuration` inputs of the setup-codebase action and the devcontainer. They need `helm` and `docker compose` (`deployment:helm-test` installs the pinned helm-unittest plugin on first run); `compose-config` creates a missing root `.env` from `.env.default` and never overwrites an existing one.
 
 ## Documentation
 
@@ -155,4 +152,4 @@ The Helm and Terraform linters that read this project's files belong to other pr
 
 The `terraform/github` root imports the repository's settings (merge methods, features, secret scanning, Dependabot security updates) and its `main` ruleset, and sets the `OPENWIKI_MODEL_ID` Actions variable to the OpenRouter preset (`@preset/refresh-documentation`) by reading the openrouter root's state. It needs `TF_VAR_state_bucket` and `TF_VAR_github_token`. CI reads the `GH_TOKEN` repository secret, which needs Administration, Variables and Secrets write on this repository, because `GITHUB_TOKEN` cannot be granted any of them. Because the provider cannot express the ruleset's `code_quality` rule or its unattributed-changes approval, `terraform_data.main_ruleset_unsupported_rules` patches both back through the GitHub REST API whenever the ruleset updates. Terraform cannot read the value of the imported "Default key", so `OPENROUTER_API_KEY` stays a hand-set secret.
 
-The `terraform/linode` root imports the state bucket (`organizzolini`, region `us-iad-2`) and its access key and refuses to destroy it. It also creates the Postgres backups bucket (`organizzolini-postgres-backups`, region `us-iad-2`, private) and a key that reads and writes only that bucket, which CloudNativePG archives to; the bucket has no lifecycle rule, since Barman's retention deletes old backups, and it refuses to destroy. It needs `TF_VAR_linode_token`; CI reads the `LINODE_TOKEN` repository secret, a Linode API token with Object Storage read and write.
+The `terraform/linode` root imports the state bucket (`organizzolini`, region `us-iad-2`) and its access key and refuses to destroy it. It also instantiates the persistence project's `postgres-backups-bucket` module, which creates the Postgres backups bucket (`organizzolini-postgres-backups`, region `us-iad-2`, private) and a key that reads and writes only that bucket, which CloudNativePG archives to; `moved` blocks map the resources' former root addresses into the module, so no plan destroys the bucket. The bucket has no lifecycle rule, since Barman's retention deletes old backups, and it refuses to destroy. It needs `TF_VAR_linode_token`; CI reads the `LINODE_TOKEN` repository secret, a Linode API token with Object Storage read and write.

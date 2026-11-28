@@ -29,6 +29,7 @@ const config: KnipConfig = {
   // Binaries invoked via project.json targets or scripts, not imported in code
   ignoreBinaries: [
     "terraform", // Terraform CLI, used for infrastructure provisioning
+    "helm", // Helm CLI, run by the deployment project's helm-test target
     "gitleaks", // Gitleaks CLI, used for detecting hardcoded secrets
     "trivy", // Trivy CLI, used for security scanning (container images & infrastructure)
     "uv", // uv Python package manager, used in lint-staged for nbstripout

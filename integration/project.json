@@ -235,6 +235,7 @@
       "outputs": []
     },
     "repl": {},
+    "secure-code": {},
     "skill-descriptions": {
       "cache": true,
       "description": "Verify every skill this repository authors keeps its description within 128 words, and all of them within 12,288 characters together, so the agent's skill listing never truncates. A `guard-code` dependency, affected whenever a skill or the skills lockfile changes.",
@@ -344,6 +345,7 @@
     },
     "test-code": {},
     "tflint": {},
+    "trivy-config": {},
     "type-coverage": {},
     "typecheck": {},
     "typecheck-code": {},

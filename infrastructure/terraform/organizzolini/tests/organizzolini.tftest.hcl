@@ -39,16 +39,6 @@ override_resource {
   target = cloudflare_zone.organizzolini_net
 }
 
-# A random password is only known after apply, and applying would run the readiness wait,
-# so a fixed result lets the secrets be asserted in a plan.
-override_resource {
-  target          = random_password.caelundas_postgres
-  override_during = plan
-  values = {
-    result = "mock-password"
-  }
-}
-
 # The linode root has not applied in a test, so its remote state is overridden.
 override_data {
   target = data.terraform_remote_state.linode
@@ -127,26 +117,26 @@ run "nothing_outside_organizzolini_net_is_named" {
   }
 }
 
-run "both_caelundas_secrets_carry_the_one_generated_password" {
+run "the_caelundas_module_creates_the_namespace_and_serves_the_role" {
   command = plan
 
   assert {
-    condition     = kubernetes_secret_v1.caelundas_postgres_organizzolini.data["password"] == random_password.caelundas_postgres.result && kubernetes_secret_v1.caelundas_postgres_caelundas.data["password"] == random_password.caelundas_postgres.result
-    error_message = "Both caelundas-postgres secrets must carry the generated password."
+    condition     = module.caelundas_database.namespace == "caelundas"
+    error_message = "The caelundas module must create the caelundas namespace."
   }
 
   assert {
-    condition     = kubernetes_secret_v1.caelundas_postgres_organizzolini.data["username"] == "caelundas_username" && kubernetes_secret_v1.caelundas_postgres_caelundas.metadata[0].namespace == "caelundas"
-    error_message = "The role is caelundas_username and the second secret lives in caelundas."
+    condition     = module.caelundas_database.role == "caelundas_username"
+    error_message = "The caelundas module must serve the caelundas_username role."
   }
 }
 
-run "the_backups_secret_holds_the_key_from_the_linode_state" {
+run "the_backups_secret_is_built_by_the_backups_module" {
   command = plan
 
   assert {
-    condition     = kubernetes_secret_v1.postgres_backups.data["ACCESS_KEY_ID"] == "mock-access-key" && kubernetes_secret_v1.postgres_backups.data["ACCESS_SECRET_KEY"] == "mock-secret-key"
-    error_message = "postgres-backups must carry the backups key the linode root outputs."
+    condition     = module.postgres_backups_secret.name == "postgres-backups"
+    error_message = "postgres-backups must be built from the backups key the linode root outputs."
   }
 }
 

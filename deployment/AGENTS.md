@@ -34,9 +34,10 @@ later release step skips on.
 `helm-lint` and `helm-render` run the commands of the same names over every
 chart (in `infrastructure/helm` or a project's own `infrastructure/helm`) and every
 project's `infrastructure/helm-values.yaml` (released as `<chart>-<project>` over
-the chart its `chart` key names), and are the renderings and lint the
+the chart its `chart` key names), and `helm-test` runs the helm-unittest suites
+of those charts. They are the renderings and lint the
 `integration` project's `kubeconform`, `kube-linter`, and `pluto`, and
-infrastructure's `trivy-config`, read from `dist/deployment/helm-render`.
+`integration:trivy-config`, read from `dist/deployment/helm-render`.
 
 ### Release Steps
 

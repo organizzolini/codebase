@@ -145,6 +145,7 @@ jobs:
           filters: |
             terraform:
               - infrastructure/terraform/**
+              - projects/*/*/infrastructure/terraform/**
 
       # The one setup of every leg. The release needs Python, uv, Buildx and a
       # ghcr.io login to push the Caelundas images; the infrastructure leg needs

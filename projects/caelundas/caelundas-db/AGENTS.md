@@ -12,7 +12,7 @@
   migration must stay a file an image can build.
   Migrations must stay expand-only, since old pods run while the first new
   pod migrates. The squash re-timestamped the schema, so reset a local database
-  that applied the earlier three with `nx run infrastructure:postgres:recreate`.
+  that applied the earlier three with `nx run persistence:postgres:recreate`.
 - Preserve project-specific entities and migrations when updating shared
   configuration.
 
@@ -75,6 +75,10 @@ migrations/                              # The migrations, each with its .sql pa
   old chain and of the new migration were identical. Add the next one with
   `nx run caelundas-db:migration:generate`; never edit the generated SQL
   otherwise.
+
+## Infrastructure
+
+`infrastructure/terraform/database` is the Terraform module that creates the `caelundas` namespace every Caelundas workload runs in, generates the `caelundas_username` role's password, and writes it as the `caelundas-postgres` Secret in the platform namespace, where the postgres chart reads it, and in the `caelundas` namespace, where the apps do. The `organizzolini` root in the `infrastructure` project instantiates it.
 
 ## Commands
 

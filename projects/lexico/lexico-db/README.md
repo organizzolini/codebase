@@ -181,7 +181,7 @@ maintainer's call once the counts below match.
 
 2. **Create the role, database, and schema** if the volume predates them,
    with the Compose init script. Skip it if the objects already exist; never
-   run `infrastructure:postgres:recreate`, which deletes the volume:
+   run `persistence:postgres:recreate`, which deletes the volume:
 
    ```bash
    docker exec -e POSTGRES_PROJECTS=lexico postgres sh /docker-entrypoint-initdb.d/databases.sh

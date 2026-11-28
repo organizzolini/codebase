@@ -1,14 +1,16 @@
 # Platform secrets: what the shared Postgres cluster and the tunnel connector need.
-resource "kubernetes_secret_v1" "postgres_backups" {
-  metadata {
-    name      = "postgres-backups"
-    namespace = kubernetes_namespace_v1.organizzolini.metadata[0].name
-  }
+module "postgres_backups_secret" {
+  source = "../../../projects/common/persistence/infrastructure/terraform/postgres-backups-secret"
 
-  data = {
-    ACCESS_KEY_ID     = try(data.terraform_remote_state.linode.outputs.organizzolini_postgres_backups_access_key, "")
-    ACCESS_SECRET_KEY = try(data.terraform_remote_state.linode.outputs.organizzolini_postgres_backups_secret_key, "")
-  }
+  namespace  = kubernetes_namespace_v1.organizzolini.metadata[0].name
+  access_key = try(data.terraform_remote_state.linode.outputs.organizzolini_postgres_backups_access_key, "")
+  secret_key = try(data.terraform_remote_state.linode.outputs.organizzolini_postgres_backups_secret_key, "")
+}
+
+# The Secret was a resource of this root before moving into the module.
+moved {
+  from = kubernetes_secret_v1.postgres_backups
+  to   = module.postgres_backups_secret.kubernetes_secret_v1.backups
 }
 
 resource "kubernetes_secret_v1" "cloudflared_token" {

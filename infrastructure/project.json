@@ -1,5 +1,6 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": ["caelundas-db", "persistence"],
   "name": "infrastructure",
   "projectType": "library",
   "sourceRoot": "infrastructure",
@@ -32,24 +33,6 @@
         "cwd": "{workspaceRoot}"
       }
     },
-    "helm-test": {
-      "cache": true,
-      "description": "Run the helm-unittest suites under every chart that has a tests folder, whether the chart sits in infrastructure/helm or in a project's own infrastructure/helm folder. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. The `software helm-unittest` command of the installation project installs the pinned helm-unittest plugin first when `helm plugin list` lacks it, checking the tarball's sha256. Requires helm, curl, and sha256sum on PATH.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/helm/**/*",
-        "{workspaceRoot}/installation/src/modules/software/software.constants.ts",
-        "{workspaceRoot}/projects/**/infrastructure/helm/**/*",
-        "{workspaceRoot}/projects/*/*/infrastructure/helm-values.yaml",
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts software helm-unittest && for chart in $(git ls-files --cached --others --exclude-standard -- 'infrastructure/helm/*/Chart.yaml' 'projects/**/infrastructure/helm/*/Chart.yaml' | xargs -n1 dirname); do if [ -d \"$chart/tests\" ]; then helm unittest \"$chart\" || exit 1; fi; done",
-        "cwd": "{workspaceRoot}"
-      }
-    },
     "lint-code": {},
     "markdown-lint": {},
     "open-webui": {
@@ -72,25 +55,6 @@
       }
     },
     "oxfmt": {},
-    "postgres": {
-      "configurations": {
-        "down": {
-          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml down postgres"
-        },
-        "recreate": {
-          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml down -v postgres && docker compose -f {projectRoot}/docker/docker-compose.yml up -d postgres"
-        },
-        "up": {
-          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml up -d postgres"
-        }
-      },
-      "defaultConfiguration": "up",
-      "description": "Start, stop, or recreate the local PostgreSQL container (recreate removes the volume)",
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "{workspaceRoot}"
-      }
-    },
     "searxng": {
       "configurations": {
         "down": {
@@ -110,7 +74,6 @@
         "cwd": "{workspaceRoot}"
       }
     },
-    "secure-code": {},
     "spell-check": {},
     "terraform": {
       "cache": false,
@@ -161,16 +124,17 @@
     },
     "terraform-format": {
       "cache": true,
-      "description": "Check that the OpenRouter, GitHub, Linode, and Organizzolini Terraform is formatted. Part of lint-code. Requires terraform on PATH (the devcontainer installs it; CI uses hashicorp/setup-terraform).",
+      "description": "Check that the OpenRouter, GitHub, Linode, and Organizzolini Terraform roots, and the modules the projects keep under their own infrastructure/terraform folders, are formatted. Part of lint-code. Requires terraform on PATH (the devcontainer installs it; CI uses hashicorp/setup-terraform).",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
+        "{workspaceRoot}/projects/*/*/infrastructure/terraform/**/*.tf",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "terraform fmt -check -diff -recursive openrouter github linode organizzolini",
+        "command": "terraform fmt -check -diff -recursive openrouter github linode organizzolini ../../projects/*/*/infrastructure/terraform",
         "cwd": "{projectRoot}/terraform"
       }
     },
@@ -228,44 +192,20 @@
     },
     "terraform-validate": {
       "cache": true,
-      "description": "Validate the OpenRouter, GitHub, Linode, and Organizzolini Terraform without a backend or credentials, then run the unit tests (terraform test, against mock providers) of each root that has a tests folder. One target, because validate and test both run terraform init in the same root directories, and concurrent inits corrupt .terraform and the lock file. Part of lint-code. Requires terraform on PATH and downloads the providers, so it needs network access.",
+      "description": "Validate the OpenRouter, GitHub, Linode, and Organizzolini Terraform roots, and the modules the projects keep under their own infrastructure/terraform folders, without a backend or credentials, then run the unit tests (terraform test, against mock providers) of each root or module that has a tests folder. One target, because validate and test both run terraform init in the same directories, and concurrent inits corrupt .terraform and the lock file. Part of lint-code. Requires terraform on PATH and downloads the providers, so it needs network access.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
         "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/tests/**/*",
+        "{workspaceRoot}/projects/*/*/infrastructure/terraform/**/*.tf",
+        "{workspaceRoot}/projects/*/*/infrastructure/terraform/*/tests/**/*",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "for module in openrouter github linode organizzolini; do (cd $module && terraform init -input=false -backend=false && terraform validate && if [ -d tests ]; then terraform test; fi) || exit 1; done",
+        "command": "for module in openrouter github linode organizzolini ../../projects/*/*/infrastructure/terraform/*; do (cd $module && terraform init -input=false -backend=false && terraform validate && if [ -d tests ]; then terraform test; fi) || exit 1; done",
         "cwd": "{projectRoot}/terraform"
-      }
-    },
-    "trivy-config": {
-      "cache": true,
-      "dependsOn": [
-        {
-          "projects": ["deployment"],
-          "target": "helm-render"
-        }
-      ],
-      "description": "Scan Terraform infrastructure code and the rendered Helm manifests (helm-render) for misconfigurations using Trivy, both at CRITICAL and HIGH severity. Identical to what the Secure check runs, so a local run reproduces CI exactly. Requires trivy and helm on PATH (the devcontainer installs trivy; otherwise `brew install trivy`).",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/terraform/**/*.tf",
-        "{workspaceRoot}/configuration/security/trivyignore",
-        {
-          "dependentTasksOutputFiles": "**/*.yaml",
-          "transitive": false
-        },
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "trivy config {projectRoot}/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore && trivy config dist/deployment/helm-render --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore",
-        "cwd": "{workspaceRoot}"
       }
     },
     "yaml-lint": {}
