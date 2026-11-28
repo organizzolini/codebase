@@ -1,7 +1,9 @@
+import type { environmentSchema } from "../../../../installation.constants";
 import type {
   CapturedProcess,
   Command,
-} from "../process-runner/process-runner.types";
+} from "../../../process-runner/process-runner.types";
+import type { z } from "zod";
 
 // 🏷️ Types
 
@@ -13,6 +15,9 @@ export interface CommandStep {
   /** Commands that put the environment right after the step is undone. */
   recover?: readonly Command[];
 }
+
+/** Variables the upgrade reads: the workflow output file and run id. */
+export type Environment = z.infer<typeof environmentSchema>;
 
 /** A failed, undone step, with its report label. */
 export type Failure = SkippedStep & { label: string };
@@ -72,7 +77,7 @@ export interface UpgradeSucceeded {
 }
 
 /** An upgrade with logic of its own, which a service carries out. */
-export type UpgradeTask = "node" | "pnpm" | "python";
+export type UpgradeTask = "node" | "pnpm" | "python" | "reui";
 
 /** What carries out a task. It throws to say the upgrade failed. */
 export interface UpgradeTaskRunner {

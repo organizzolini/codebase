@@ -6,10 +6,10 @@ The workspace's call graph, traced by [callidescope](../../projects/ic-suite/cal
 
 | Measure | Value |
 | --- | --- |
-| Callables | 10370 |
+| Callables | 10373 |
 | Files | 3316 |
-| Calls traced | 11118 |
-| Call stacks | 2918 |
+| Calls traced | 11120 |
+| Call stacks | 2920 |
 | Deepest stack | 17 |
 | Stacks through recursion | 19 |
 | Unfollowable calls | 736 |

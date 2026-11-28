@@ -76,9 +76,12 @@
         },
         "update-reui-skill": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts update-reui-skill"
+        },
+        "upgrade-dependencies": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts upgrade-dependencies"
         }
       },
-      "description": "Run one installation command by name: setup, shell-configuration, software, environment-files, dependencies, remote-cache, update-reui-skill, shared-nx-cache, session-branch-name, or session-worktree-name.",
+      "description": "Run one installation command by name: setup, shell-configuration, software, environment-files, dependencies, remote-cache, update-reui-skill, upgrade-dependencies, shared-nx-cache, session-branch-name, or session-worktree-name.",
       "executor": "nx:run-commands",
       "options": {
         "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register installation/src/installation.main.ts",

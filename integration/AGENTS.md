@@ -1,6 +1,6 @@
 # integration
 
-**Purpose**: Everything that guards a change on its way to `main`, as tested commands. That is the local branch into its remote branch at commit and push, and a pull request into `main`. It holds the checks (catalog pins, the lockfile, the README's project rows), the derivations that keep generated files in step with their sources, and the Continuous Integration plumbing: the affected run, the Nx base and task-cache steps, codometer's baseline and pull-request report, and the weekly dependency upgrades. "Integration" in this project means that path, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
+**Purpose**: Everything that guards a change on its way to `main`, as tested commands. That is the local branch into its remote branch at commit and push, and a pull request into `main`. It holds the checks (catalog pins, the lockfile, the README's project rows), the derivations that keep generated files in step with their sources, and the Continuous Integration plumbing: the affected run, the Nx base and task-cache steps, codometer's baseline and pull-request report. "Integration" in this project means that path, never the `vitest:integration` test kind. Commands only compute and print and set an exit code; services hold the logic behind injected file-system and process wrappers.
 
 ## Checks, derivations, and the aggregate
 
@@ -40,7 +40,6 @@ one class.
 | `run-affected`                         | `src/modules/run-affected`                                       | the Continuous Integration matrix legs, for every check but Secure                                                                                                                                                                                                                                                                   |
 | `collect-codometer-baseline`           | `src/modules/collect-codometer-baseline`                         | the `report-integration` composite action, on a green `main` build                                                                                                                                                                                                                                                                   |
 | `report-codometer-changes`             | `src/modules/report-codometer-changes`                           | the `report-integration` composite action, on a pull request's build                                                                                                                                                                                                                                                                 |
-| `upgrade-dependencies`                 | `src/modules/upgrade-dependencies`                               | the `upgrade-dependencies` workflow                                                                                                                                                                                                                                                                                                  |
 | `conventional-config`                  | `src/modules/synchronization/modules/conventional-config`        | the release workflow's `write` step; derives commit types and scopes, commitlint, release configuration. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                                                           |
 | `devcontainer-configuration`           | `src/modules/synchronization/modules/devcontainer-configuration` | the release workflow's `write` step and `test-devcontainer.sh`; derives the cloud devcontainer's shared fields. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                                                    |
 | `package-manifests`                    | `src/modules/synchronization/modules/package-manifests`          | nothing in CI: run it by name; derives publishable package metadata. `check` by default, `write` rewrites; it sets `fixCommand` to its `:write` target                                                                                                                                                                               |
@@ -76,26 +75,6 @@ through a library yet. `src/modules/task-database` holds the service the three
 task-database commands share; it reads `NX_WORKSPACE_DATA_DIRECTORY` and
 `MACHINE_ID_FILES`, and opens the databases with the built-in `node:sqlite`, so
 no `sqlite3` binary is needed.
-
-`upgrade-dependencies` runs the steps listed in its constants one at a time. A
-step is either a list of commands, run in order until one fails, or a task that
-a service carries out: `upgrade-pnpm`, `upgrade-node` and `upgrade-python`, with
-`package-manifest` editing the `package.json` fields the first two rewrite. A
-task throws to say it failed, and returns the version it landed on, which the
-pull request shows. No step uses a shell. Before each step the command records
-the whole working tree as a git tree, untracked files included, and a step that
-fails is undone by restoring that tree, which is what the previous step left, so
-a later failure never undoes an earlier success. A skipped step is listed in the
-pull request body the command writes to the OS temp directory and names in the
-`body_path` output. Only a step that cannot be undone stops the run. To add an
-upgrade, add a step to `UPGRADE_STEPS`: commands when nothing needs deciding, a
-new task service when something does. A step that needs the environment rebuilt
-after it is undone gives `recover` commands.
-
-`upgrade-node` moves `.nvmrc` and `engines.node` to the newest release of the
-major in use, read from nodejs.org, and never crosses a major or goes back.
-`upgrade-python` never lowers the version: uv installs the newest stable Python
-it knows, which can be older than one the repository already uses.
 
 Run one locally with `nx run integration:start:<command>`, setting the
 variables it reads (`TARGET`, `NX_BASE`, `NX_HEAD`, and so on).

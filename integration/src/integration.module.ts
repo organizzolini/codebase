@@ -17,7 +17,6 @@ import { AdoptTaskDatabaseModule } from "./modules/task-database/modules/adopt-t
 import { KeepTaskDatabaseModule } from "./modules/task-database/modules/keep-task-database/keep-task-database.module";
 import { MergeTaskCacheModule } from "./modules/task-database/modules/merge-task-cache/merge-task-cache.module";
 import { VerifyTaskDatabaseModule } from "./modules/task-database/modules/verify-task-database/verify-task-database.module";
-import { UpgradeDependenciesModule } from "./modules/upgrade-dependencies/upgrade-dependencies.module";
 
 /**
  * Root NestJS application module.
@@ -43,7 +42,6 @@ import { UpgradeDependenciesModule } from "./modules/upgrade-dependencies/upgrad
     RunAffectedModule,
     SetupCodebaseModule,
     SynchronizationModule,
-    UpgradeDependenciesModule,
     VerifyTaskDatabaseModule,
   ],
 })

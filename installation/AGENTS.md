@@ -2,7 +2,7 @@
 
 **Purpose**: Set up a developer machine once Node and pnpm exist: shell configuration, the remaining software, `.env` files, and dependencies. It also holds the checks that guard a session and its skills: `installed-skills`, `vscode-settings`, `session-branch-name`, and `session-worktree-name`, described below. A behavior-preserving port of what the `scripts/local/` shell used to do.
 
-One command is maintenance rather than setup: `update-reui-skill` refreshes the vendored ReUI skill, and `upgrade-dependencies.yml` runs it after `skills update`. It is not part of `setup`, and an outage prints the retry command and exits 0.
+Two commands are maintenance rather than setup. `update-reui-skill` refreshes the vendored ReUI skill; it is not part of `setup`, and an outage prints the retry command and exits 0. `upgrade-dependencies` is what `upgrade-dependencies.yml` runs weekly, and it runs `update-reui-skill` as one of its steps.
 
 `installed-skills` restores the skills `skills-lock.json` declares that are missing from `.agents/skills/`. `postinstall` runs its `write` mode on every `pnpm install`, and `scripts/git/validate-session-skills.sh` runs its `check` mode at session start. `vscode-settings` merges `.vscode/settings.json` into the VS Code Machine settings of a devcontainer, and `post-create-command.sh` runs its `write` mode. Neither is part of `setup`: a laptop has no devcontainer Machine settings, and the lockfile's skills are restored by `pnpm install`, not by the setup steps.
 
@@ -17,7 +17,8 @@ bash scripts/installation.sh                     # A fresh machine: the script i
 nx run installation:start:setup                  # Everything this project does, in order
 nx run installation:start:software               # Or one step: shell-configuration, software, environment-files, dependencies
 nx run installation:start:local-services         # Start a Docker daemon where this machine can run one, then the local Postgres container
-nx run installation:start:update-reui-skill      # Refresh the vendored ReUI skill (also run by the weekly upgrade-dependencies workflow)
+nx run installation:start:update-reui-skill      # Refresh the vendored ReUI skill (also a step of upgrade-dependencies)
+nx run installation:start:upgrade-dependencies   # The weekly upgrades (pnpm, node, Python, lockfile, skills), each undone if it fails; set GITHUB_OUTPUT and GITHUB_RUN_ID as the workflow does
 nx run installation:installed-skills:check   # Lists locked skills whose SKILL.md is absent; `:write` restores them (postinstall runs it)
 nx run installation:vscode-settings:check    # Machine settings hold every workspace key (devcontainer only; `:write` merges them)
 nx run installation:start:session-branch-name    # The checked-out branch against the naming convention (the session hook's check; prints only its context)
@@ -42,6 +43,7 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 | `dependencies`          | `modules/dependencies`                                                    |
 | `local-services`        | `modules/local-services`                                                  |
 | `update-reui-skill`     | `modules/dependencies/modules/installed-skills/modules/update-reui-skill` |
+| `upgrade-dependencies`  | `modules/dependencies/modules/upgrade-dependencies`                       |
 | `installed-skills`      | `modules/dependencies/modules/installed-skills`                           |
 | `vscode-settings`       | `modules/shell-configuration/modules/vscode-settings`                     |
 | `session-branch-name`   | `modules/session-branch-name`                                             |
@@ -50,6 +52,26 @@ Every command spawns processes only through `ProcessRunnerService` and prints on
 | `shared-nx-cache`       | `modules/setup/modules/shared-nx-cache`                                   |
 
 Codometer caps a folder at 12 entries, and `src/modules/` holds exactly 12, so a command that belongs with another nests under that module's `modules/` folder: `installed-skills` under `dependencies`, `update-reui-skill` under `installed-skills`, and `vscode-settings` under `shell-configuration`. Never raise the limit; group further into `modules/` folders instead.
+
+`upgrade-dependencies` runs the steps listed in its constants one at a time, from `UPGRADE_STEPS`. A
+step is either a list of commands, run in order until one fails, or a task that
+a service carries out: `upgrade-pnpm`, `upgrade-node`, `upgrade-python` and `reui` (which calls `update-reui-skill`), with
+`package-manifest` editing the `package.json` fields the first two rewrite. A
+task throws to say it failed, and returns the version it landed on, which the
+pull request shows. No step uses a shell. Before each step the command records
+the whole working tree as a git tree, untracked files included, and a step that
+fails is undone by restoring that tree, which is what the previous step left, so
+a later failure never undoes an earlier success. A skipped step is listed in the
+pull request body the command writes to the OS temp directory and names in the
+`body_path` output, through `GITHUB_OUTPUT`. Only a step that cannot be undone stops the run. To add an
+upgrade, add a step to `UPGRADE_STEPS`: commands when nothing needs deciding, a
+new task service when something does. A step that needs the environment rebuilt
+after it is undone gives `recover` commands.
+
+`upgrade-node` moves `.nvmrc` and `engines.node` to the newest release of the
+major in use, read from nodejs.org, and never crosses a major or goes back.
+`upgrade-python` never lowers the version: uv installs the newest stable Python
+it knows, which can be older than one the repository already uses.
 
 `software` with names, such as `software gitleaks trivy postgres-client`, installs only those, through `modules/software/modules/tooling/software-named.service.ts`. The names are any tool installed from a release archive (`helm`, `kubectl`, `terraform`, `gitleaks`, `trivy`, `uv`), which only Linux uses, and `postgres-client` (PostgreSQL 18's `pg_dump` and `pg_restore`), which works on both. They are the same installs `software` makes with no names, so a laptop, a devcontainer, and a CI runner run one version of each; the `setup-codebase` composite action runs it this way after `pnpm install`, with the software its inputs ask for. Naming software changes two things: a tool that cannot be installed fails the run instead of warning, since it was asked for, and the apt steps go through `sudo` when this is not root, as on a runner. It puts `~/.local/bin` first on `PATH`, and in `GITHUB_PATH` when that is set.
 
