@@ -5,13 +5,19 @@ description: "High-level testing strategy: test targets (vitest:unit, vitest:int
 tags: ["testing", "strategy", "ci", "vitest", "coverage", "testcontainers", "graphql", "msw"]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-22T00:18:20.862Z
+    at: 2026-11-27T18:15:08.471Z
 sources:
   - id: openwiki-source-ab09db9d0408f67f5441bda9
     resource: repo://.agents/skills/test-driven-development/SKILL.md
-  - id: openwiki-source-4cfef24d7967ddef88357d1c
+  - id: openwiki-source-6a912425b229e5927e9f176b
+    resource: repo://.agents/skills/validate-code/references/raising-coverage.md
+  - id: openwiki-source-dbd25ad441b2f5c4f5cd1ba8
+    resource: repo://.agents/skills/validate-code/SKILL.md
+  - id: openwiki-source-4eb7192efa90bb62d72fc053
     resource: repo://.agents/skills/write-tests/references/mocking.md
-  - id: openwiki-source-db7eb71a3306403209a370a4
+  - id: openwiki-source-aa10727535a81dc51f0d1ed2
+    resource: repo://.agents/skills/write-tests/references/nestjs.md
+  - id: openwiki-source-d986e114dbe9e209298488a1
     resource: repo://.agents/skills/write-tests/SKILL.md
   - id: openwiki-source-6315af249215d8768fb68811
     resource: repo://.github/workflows/continuous-integration.yml
@@ -19,8 +25,6 @@ sources:
     resource: repo://AGENTS.md
   - id: openwiki-source-0144ea531e31aa5c07ef9da9
     resource: repo://configuration/typescript/vitest.config.ts
-  - id: openwiki-source-9352839a473daa8b8f2309be
-    resource: repo://projects/common/interface/src/modules/graphql-client/graphql-client.constants.ts
   - id: openwiki-source-882dec87f9be719705f89e96
     resource: repo://projects/common/interface/src/modules/graphql-client/graphql-client.utilities.ts
   - id: openwiki-source-fb04b392a5b00efed2344b4b
@@ -37,9 +41,7 @@ sources:
     resource: repo://projects/common/testing/README.md
   - id: openwiki-source-1174ba92a7794a5880ff3068
     resource: repo://projects/lexico/lexico-web/configuration/codegen.ts
-  - id: openwiki-source-cbca90a5ed54cecf99d6ea3f
-    resource: repo://projects/lexico/lexico-web/README.md
-generated: { by: "claude-code", at: "2026-11-22T00:18:20.862Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-27T18:15:08.471Z" }
 ---
 
 # Testing Strategy Overview
@@ -54,8 +56,8 @@ This document summarizes the workspace's testing philosophy, conventions, and to
 - **GREEN** – Write the minimal implementation to make the test pass. Verify the test passes and the full project suite stays green.
 - **REFACTOR** – Clean up duplication, improve names, extract helpers. **Refactoring is a separate step** after green; never add behavior during refactor.
 
-<!-- openwiki: broken internal link [.agents/skills/test-driven-development/SKILL.md] file ".agents/skills/test-driven-development/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-The TDD cycle is non-negotiable for new features, bug fixes, refactoring, and behavior changes. Exceptions (throwaway prototypes, generated code, configuration files) require explicit human partner approval. See the [test-driven-development skill](.agents/skills/test-driven-development/SKILL.md) for the complete rules and common rationalizations to avoid.
+<!-- openwiki: broken internal link [../.agents/skills/test-driven-development/SKILL.md] file "../.agents/skills/test-driven-development/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+The TDD cycle is non-negotiable for new features, bug fixes, refactoring, and behavior changes. Exceptions (throwaway prototypes, generated code, configuration files) require explicit human partner approval. See the [test-driven-development skill](../.agents/skills/test-driven-development/SKILL.md) for the complete rules and common rationalizations to avoid.
 
 ## Test Types and Naming
 
@@ -100,7 +102,7 @@ Four quality gates must pass for every change. **Lowering any threshold to make 
 
 | Gate | Threshold | Command |
 |------|-----------|---------|
-| **Test coverage** | 96% branches, functions, lines, statements (set once in `configuration/vitest.config.ts`) | `nx run <project>:vitest --configuration=coverage` |
+| **Test coverage** | 96% branches, functions, lines, statements (set once in `configuration/typescript/vitest.config.ts`) | `nx run <project>:vitest --configuration=coverage` |
 | **Type coverage** | Per project, in `package.json` as `typeCoverage.atLeast`. Most packages at 100% with `strict: true` | `nx run <project>:type-coverage` |
 | **Compiled size** | Per project, declared in `codometer.config.ts` | `nx run <project>:codometer` |
 | **Duplication** | Advisory only (not a CI gate) | `nx run configuration:jscpd` |
@@ -110,10 +112,12 @@ Key practices:
 - If branch coverage is just below threshold, add focused tests for uncovered guard/fallback branches first (undefined/null guards, sparse-array fallbacks, error-only paths).
 - Use a hotspot-first loop: generate coverage, sort lowest branch-coverage files, patch highest-impact offenders, re-run coverage.
 - Raise coverage with behavior-first assertions, not synthetic test inflation.
-- Keep project Vitest configs thin and inherit shared defaults using `mergeConfig(...)` from `configuration/vitest.config.ts` so threshold changes stay centralized.
+- Keep project Vitest configs thin and inherit shared defaults using `mergeConfig(...)` from `configuration/typescript/vitest.config.ts` so threshold changes stay centralized.
 - Before opening or updating a coverage-focused PR, run the CI-shaped command locally: `nx affected --target=vitest --configuration=coverage --base=main`.
 
-See the [validate-code skill](../../../.agents/skills/validate-code/SKILL.md#quality-gates) for the full gate table and the [raising-coverage reference](../../../.agents/skills/validate-code/references/raising-coverage.md) for coverage practices.
+<!-- openwiki: broken internal link [../.agents/skills/validate-code/SKILL.md#quality-gates] file "../.agents/skills/validate-code/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+<!-- openwiki: broken internal link [../.agents/skills/validate-code/references/raising-coverage.md] file "../.agents/skills/validate-code/references/raising-coverage.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+See the [validate-code skill](../.agents/skills/validate-code/SKILL.md#quality-gates) for the full gate table and the [raising-coverage reference](../.agents/skills/validate-code/references/raising-coverage.md) for coverage practices.
 
 ## Mocking Conventions
 
@@ -135,7 +139,10 @@ const mockService = createMock<MyService>();
 - Configure mock return values per test using `mockResolvedValue()`, `mockRejectedValue()`, `mockReturnValue()`.
 - Reset mocks with `mockClear()` if test contamination occurs.
 
-See the [write-tests skill](../../../.agents/skills/write-tests/SKILL.md) and its [mocking](../../../.agents/skills/write-tests/references/mocking.md) and [NestJS](../../../.agents/skills/write-tests/references/nestjs.md) references for complete patterns, anti-patterns, and NestJS DI integration examples.
+<!-- openwiki: broken internal link [../.agents/skills/write-tests/SKILL.md] file "../.agents/skills/write-tests/SKILL.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+<!-- openwiki: broken internal link [../.agents/skills/write-tests/references/mocking.md] file "../.agents/skills/write-tests/references/mocking.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+<!-- openwiki: broken internal link [../.agents/skills/write-tests/references/nestjs.md] file "../.agents/skills/write-tests/references/nestjs.md" does not exist. Fix the href or restore the target, then delete this comment. -->
+See the [write-tests skill](../.agents/skills/write-tests/SKILL.md) and its [mocking](../.agents/skills/write-tests/references/mocking.md) and [NestJS](../.agents/skills/write-tests/references/nestjs.md) references for complete patterns, anti-patterns, and NestJS DI integration examples.
 
 ## Shared Test Helpers
 
@@ -233,7 +240,6 @@ The `lexico-web` project uses GraphQL Code Generator to produce typed client art
 
 **Output artifacts** (generated into `src/graphql/generated/`):
 - **`operations.ts`** — Typed operation documents (TypeScript + `typescript-operations` + `typed-document-node`). Every `.graphql` file under `src/graphql/operations/**` becomes a typed `TypedDocumentNode` with inferred variables and result types.
-- **`validation.ts`** — Zod v4 schemas for each operation's variables and result, emitted via `typescript-validation-schema` with `withOperationType: true`. Import path: `./operations`.
 - **`mocks.ts`** — MSW handlers for each operation, emitted via `typescript-msw`. Provides `mock<OperationName>Query`/`Mutation` helpers that accept a resolver returning `HttpResponse.json({ data: ... })`.
 
 **Scalars** are mapped to wire representation: `DateTime` and `ID` both serialize as `string` in JSON.
@@ -242,8 +248,11 @@ The `lexico-web` project uses GraphQL Code Generator to produce typed client art
 // projects/lexico/lexico-web/configuration/codegen.ts
 import { createGraphqlCodegenConfig } from "@codebase/interface/client";
 
+import type { CodegenConfig } from "@graphql-codegen/cli";
+
 const config: CodegenConfig = createGraphqlCodegenConfig({
   schema: "../lexico-api/src/schema.gql",
+  validators: false,
 });
 
 export default config;

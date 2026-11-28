@@ -15,17 +15,17 @@ occurred is most of the work. Separate them first:
 | A breadth row over the limit              | A **finding**. Split the callable                                                                                                                           |
 | `A configured destination is stale`       | **Drift**. Re-run `--write`                                                                                                                                 |
 | `## Read nothing of its own (0 files)`    | A gate **judged a project whose own files it never read**. Its verdict means nothing                                                                        |
-| `🔭 Rejected a project it could not read` | A project's tsconfig **is missing at `projectTsconfigPath` or did not parse**. The trace stopped there                                                      |
-| `🔭 Traced nothing`                       | The run **saw no code at all**. Nothing below it means anything                                                                                             |
-| `🔭 Rejected the command line`            | A **mistake** in the flags. Nothing was traced                                                                                                              |
-| `🔭 Rejected a project configuration`     | One project's own configuration **was missing at the configured path, incomplete, or refused** for a field only the workspace may set. Nothing was reported |
+| `🔬 Rejected a project it could not read` | A project's tsconfig **is missing at `projectTsconfigPath` or did not parse**. The trace stopped there                                                      |
+| `🔬 Traced nothing`                       | The run **saw no code at all**. Nothing below it means anything                                                                                             |
+| `🔬 Rejected the command line`            | A **mistake** in the flags. Nothing was traced                                                                                                              |
+| `🔬 Rejected a project configuration`     | One project's own configuration **was missing at the configured path, incomplete, or refused** for a field only the workspace may set. Nothing was reported |
 
 The bottom five all mean the run never produced a verdict on the code. None of
 them writes a destination, so a checkout is unchanged by any of them — and no
 finding, or absence of one, should be believed from a run that printed one.
 
 The `limits` command prints its own read failures under the same
-`🔭 Rejected a project configuration` headline, fixed the same way — see
+`🔬 Rejected a project configuration` headline, fixed the same way — see
 [A refused project configuration](#a-refused-project-configuration).
 
 ## A depth gate that failed
@@ -74,7 +74,7 @@ gate into headroom for the one project the finding is about.
 ### The summary's depth is not the project's depth
 
 The number to take is the one a **verdict** gives you, and never the one a
-summary line prints. A `🔭 Finished an analysis` log line reports
+summary line prints. A `🔬 Finished an analysis` log line reports
 `maximumDepthTraced`, and the name is literal: it reduces over the whole of a
 run's measurement, the entire dependency-widened trace, so it is the deepest
 stack anywhere the run reached rather than anywhere it was pointed. The
@@ -144,7 +144,7 @@ This run judged a project whose own code it never read:
 ```
 
 The run itself was not empty — the dependencies it traced were read — so this is
-narrower than `🔭 Traced nothing`: only the judged project's own sources went
+narrower than `🔬 Traced nothing`: only the judged project's own sources went
 missing. A gate fails on it and a `trace` prints it and passes, because a gate
 that never looked cannot tell a clean project from an unread one, where a trace
 decides nothing and is a report for a reader to open.

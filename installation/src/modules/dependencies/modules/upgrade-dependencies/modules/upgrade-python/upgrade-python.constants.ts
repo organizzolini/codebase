@@ -1,4 +1,4 @@
-import type { Command } from "../../../process-runner/process-runner.types";
+import type { Command } from "../../../../../process-runner/process-runner.types";
 
 // ♟️ Constants
 
@@ -30,6 +30,6 @@ export const INSTALL_COMMAND: Command = [
 
 /** Re-lock, then prove it installs; a lock misses no-wheel packages. */
 export const LOCK_COMMANDS: readonly Command[] = [
-  ["uv", "lock", "--project", "configuration"],
-  ["uv", "sync", "--frozen", "--quiet", "--project", "configuration"],
+  ["uv", "lock", "--project", "configuration/python"],
+  ["uv", "sync", "--frozen", "--quiet", "--project", "configuration/python"],
 ];

@@ -130,7 +130,7 @@ describe(LimitsCommand, () => {
         configurationPath: "packages/alpha/callidescope.config.ts",
         project: "packages/alpha",
       }),
-      "🔭 Rejected a project configuration",
+      "🔬 Rejected a project configuration",
     ],
     [
       "a project configuration setting a workspace-only field",
@@ -138,7 +138,7 @@ describe(LimitsCommand, () => {
         field: "output",
         project: "packages/alpha",
       }),
-      "🔭 Rejected a project configuration",
+      "🔬 Rejected a project configuration",
     ],
     [
       "a project directory holding no tsconfig",
@@ -146,12 +146,12 @@ describe(LimitsCommand, () => {
         configurationPath: "packages/alpha/tsconfig.json",
         messages: ["missing"],
       }),
-      "🔭 Rejected a project it could not read",
+      "🔬 Rejected a project it could not read",
     ],
     [
       "a command line the input service refused",
       new InputError("not a format"),
-      "🔭 Rejected the command line",
+      "🔬 Rejected the command line",
     ],
   ])(
     "fails the run and prints nothing for %s",

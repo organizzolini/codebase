@@ -25,29 +25,38 @@ graph LR
 ```mermaid
 flowchart LR
   AdoptTaskDatabaseModule
+  AgentInstructionsModule
   BoundBaseToPushModule
+  CatalogManifestsModule
   CleanupCodebaseModule
   CollectCodometerBaselineModule
+  ConventionalConfigModule
+  DevcontainerConfigurationModule
   DiscoveryModule
   ImportPrTaskCacheModule
   KeepTaskDatabaseModule
+  LockfileModule
   LoggerModule([LoggerModule])
   MainModule
   MergeTaskCacheModule
-  PackageManifestModule
+  PackageManifestsModule
   ProcessRunnerModule
+  ProjectPortsModule
+  ReadmeProjectsModule
   ReportCodometerChangesModule
   RunAffectedModule
   SetupCodebaseModule
+  SkillDescriptionsModule
+  SkillExclusionsModule
+  SynchronizationModule
   TaskDatabaseModule
-  UpgradeDependenciesModule
-  UpgradeNodeModule
-  UpgradePnpmModule
-  UpgradePythonModule
   VerifyTaskDatabaseModule
+  VscodeExtensionsModule
   AdoptTaskDatabaseModule --> TaskDatabaseModule
+  AgentInstructionsModule --> ReadmeProjectsModule
   BoundBaseToPushModule --> ProcessRunnerModule
   CleanupCodebaseModule --> TaskDatabaseModule
+  CollectCodometerBaselineModule --> ProcessRunnerModule
   ImportPrTaskCacheModule --> ProcessRunnerModule
   ImportPrTaskCacheModule --> TaskDatabaseModule
   KeepTaskDatabaseModule --> TaskDatabaseModule
@@ -62,7 +71,7 @@ flowchart LR
   MainModule --> ReportCodometerChangesModule
   MainModule --> RunAffectedModule
   MainModule --> SetupCodebaseModule
-  MainModule --> UpgradeDependenciesModule
+  MainModule --> SynchronizationModule
   MainModule --> VerifyTaskDatabaseModule
   MergeTaskCacheModule --> TaskDatabaseModule
   ReportCodometerChangesModule --> ProcessRunnerModule
@@ -70,14 +79,17 @@ flowchart LR
   SetupCodebaseModule --> BoundBaseToPushModule
   SetupCodebaseModule --> ImportPrTaskCacheModule
   SetupCodebaseModule --> TaskDatabaseModule
-  UpgradeDependenciesModule --> ProcessRunnerModule
-  UpgradeDependenciesModule --> UpgradeNodeModule
-  UpgradeDependenciesModule --> UpgradePnpmModule
-  UpgradeDependenciesModule --> UpgradePythonModule
-  UpgradeNodeModule --> PackageManifestModule
-  UpgradePnpmModule --> PackageManifestModule
-  UpgradePnpmModule --> ProcessRunnerModule
-  UpgradePythonModule --> ProcessRunnerModule
+  SynchronizationModule --> AgentInstructionsModule
+  SynchronizationModule --> CatalogManifestsModule
+  SynchronizationModule --> ConventionalConfigModule
+  SynchronizationModule --> DevcontainerConfigurationModule
+  SynchronizationModule --> LockfileModule
+  SynchronizationModule --> PackageManifestsModule
+  SynchronizationModule --> ProjectPortsModule
+  SynchronizationModule --> ReadmeProjectsModule
+  SynchronizationModule --> SkillDescriptionsModule
+  SynchronizationModule --> SkillExclusionsModule
+  SynchronizationModule --> VscodeExtensionsModule
   VerifyTaskDatabaseModule --> TaskDatabaseModule
 ```
 
@@ -95,16 +107,6 @@ graph LR
   file_configuration_coinagerie_config_ts["configuration/coinagerie.config.ts"]
   file_configuration_eslint_config_ts["configuration/eslint.config.ts"]
   file_configuration_vitest_config_ts["configuration/vitest.config.ts"]
-  file_src_executors_codometer_batch_executor_ts["src/executors/codometer/batch-executor.ts"]
-  file_src_executors_codometer_batch_executor_unit_test_ts["src/executors/codometer/batch-executor.unit.test.ts"]
-  file_src_executors_codometer_codometer_constants_ts["src/executors/codometer/codometer.constants.ts"]
-  file_src_executors_codometer_codometer_runner_ts["src/executors/codometer/codometer.runner.ts"]
-  file_src_executors_codometer_codometer_runner_unit_test_ts["src/executors/codometer/codometer.runner.unit.test.ts"]
-  file_src_executors_codometer_codometer_types_ts["src/executors/codometer/codometer.types.ts"]
-  file_src_executors_codometer_codometer_utilities_ts["src/executors/codometer/codometer.utilities.ts"]
-  file_src_executors_codometer_codometer_utilities_unit_test_ts["src/executors/codometer/codometer.utilities.unit.test.ts"]
-  file_src_executors_codometer_executor_ts["src/executors/codometer/executor.ts"]
-  file_src_executors_codometer_executor_unit_test_ts["src/executors/codometer/executor.unit.test.ts"]
   file_src_executors_knip_batch_executor_ts["src/executors/knip/batch-executor.ts"]
   file_src_executors_knip_batch_executor_unit_test_ts["src/executors/knip/batch-executor.unit.test.ts"]
   file_src_executors_knip_executor_ts["src/executors/knip/executor.ts"]
@@ -153,6 +155,7 @@ graph LR
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts["src/modules/collect-codometer-baseline/collect-codometer-baseline.service.ts"]
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_unit_test_ts["src/modules/collect-codometer-baseline/collect-codometer-baseline.service.unit.test.ts"]
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_types_ts["src/modules/collect-codometer-baseline/collect-codometer-baseline.types.ts"]
+  file_src_modules_collect_codometer_baseline_collect_codometer_baseline_utilities_ts["src/modules/collect-codometer-baseline/collect-codometer-baseline.utilities.ts"]
   file_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts["src/modules/import-pr-task-cache/import-pr-task-cache.command.ts"]
   file_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts["src/modules/import-pr-task-cache/import-pr-task-cache.command.unit.test.ts"]
   file_src_modules_import_pr_task_cache_import_pr_task_cache_constants_ts["src/modules/import-pr-task-cache/import-pr-task-cache.constants.ts"]
@@ -161,17 +164,6 @@ graph LR
   file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts["src/modules/import-pr-task-cache/import-pr-task-cache.service.ts"]
   file_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts["src/modules/import-pr-task-cache/import-pr-task-cache.service.unit.test.ts"]
   file_src_modules_import_pr_task_cache_import_pr_task_cache_types_ts["src/modules/import-pr-task-cache/import-pr-task-cache.types.ts"]
-  file_src_modules_merge_task_cache_merge_task_cache_command_ts["src/modules/merge-task-cache/merge-task-cache.command.ts"]
-  file_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts["src/modules/merge-task-cache/merge-task-cache.command.unit.test.ts"]
-  file_src_modules_merge_task_cache_merge_task_cache_constants_ts["src/modules/merge-task-cache/merge-task-cache.constants.ts"]
-  file_src_modules_merge_task_cache_merge_task_cache_module_ts["src/modules/merge-task-cache/merge-task-cache.module.ts"]
-  file_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts["src/modules/merge-task-cache/merge-task-cache.module.unit.test.ts"]
-  file_src_modules_merge_task_cache_merge_task_cache_types_ts["src/modules/merge-task-cache/merge-task-cache.types.ts"]
-  file_src_modules_package_manifest_package_manifest_constants_ts["src/modules/package-manifest/package-manifest.constants.ts"]
-  file_src_modules_package_manifest_package_manifest_module_ts["src/modules/package-manifest/package-manifest.module.ts"]
-  file_src_modules_package_manifest_package_manifest_service_ts["src/modules/package-manifest/package-manifest.service.ts"]
-  file_src_modules_package_manifest_package_manifest_service_unit_test_ts["src/modules/package-manifest/package-manifest.service.unit.test.ts"]
-  file_src_modules_package_manifest_package_manifest_types_ts["src/modules/package-manifest/package-manifest.types.ts"]
   file_src_modules_process_runner_process_runner_constants_ts["src/modules/process-runner/process-runner.constants.ts"]
   file_src_modules_process_runner_process_runner_module_ts["src/modules/process-runner/process-runner.module.ts"]
   file_src_modules_process_runner_process_runner_module_unit_test_ts["src/modules/process-runner/process-runner.module.unit.test.ts"]
@@ -203,6 +195,97 @@ graph LR
   file_src_modules_setup_codebase_setup_codebase_module_ts["src/modules/setup-codebase/setup-codebase.module.ts"]
   file_src_modules_setup_codebase_setup_codebase_module_unit_test_ts["src/modules/setup-codebase/setup-codebase.module.unit.test.ts"]
   file_src_modules_setup_codebase_setup_codebase_types_ts["src/modules/setup-codebase/setup-codebase.types.ts"]
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_ts["src/modules/synchronization/modules/agent-instructions/agent-instructions.command.ts"]
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_unit_test_ts["src/modules/synchronization/modules/agent-instructions/agent-instructions.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_constants_ts["src/modules/synchronization/modules/agent-instructions/agent-instructions.constants.ts"]
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_ts["src/modules/synchronization/modules/agent-instructions/agent-instructions.module.ts"]
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_unit_test_ts["src/modules/synchronization/modules/agent-instructions/agent-instructions.module.unit.test.ts"]
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_ts["src/modules/synchronization/modules/agent-instructions/agent-instructions.service.ts"]
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_unit_test_ts["src/modules/synchronization/modules/agent-instructions/agent-instructions.service.unit.test.ts"]
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_types_ts["src/modules/synchronization/modules/agent-instructions/agent-instructions.types.ts"]
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_command_ts["src/modules/synchronization/modules/catalog-manifests/catalog-manifests.command.ts"]
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_command_unit_test_ts["src/modules/synchronization/modules/catalog-manifests/catalog-manifests.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_constants_ts["src/modules/synchronization/modules/catalog-manifests/catalog-manifests.constants.ts"]
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_module_ts["src/modules/synchronization/modules/catalog-manifests/catalog-manifests.module.ts"]
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_module_unit_test_ts["src/modules/synchronization/modules/catalog-manifests/catalog-manifests.module.unit.test.ts"]
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_ts["src/modules/synchronization/modules/catalog-manifests/catalog-manifests.service.ts"]
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_unit_test_ts["src/modules/synchronization/modules/catalog-manifests/catalog-manifests.service.unit.test.ts"]
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_types_ts["src/modules/synchronization/modules/catalog-manifests/catalog-manifests.types.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_ts["src/modules/synchronization/modules/conventional-config/conventional-config-io.service.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_unit_test_ts["src/modules/synchronization/modules/conventional-config/conventional-config-io.service.unit.test.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_ts["src/modules/synchronization/modules/conventional-config/conventional-config-validators.service.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_unit_test_ts["src/modules/synchronization/modules/conventional-config/conventional-config-validators.service.unit.test.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_command_ts["src/modules/synchronization/modules/conventional-config/conventional-config.command.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_command_unit_test_ts["src/modules/synchronization/modules/conventional-config/conventional-config.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_constants_integration_test_ts["src/modules/synchronization/modules/conventional-config/conventional-config.constants.integration.test.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_constants_ts["src/modules/synchronization/modules/conventional-config/conventional-config.constants.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_module_ts["src/modules/synchronization/modules/conventional-config/conventional-config.module.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_ts["src/modules/synchronization/modules/conventional-config/conventional-config.service.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_unit_test_ts["src/modules/synchronization/modules/conventional-config/conventional-config.service.unit.test.ts"]
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_types_ts["src/modules/synchronization/modules/conventional-config/conventional-config.types.ts"]
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_ts["src/modules/synchronization/modules/devcontainer-configuration/devcontainer-configuration.command.ts"]
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_unit_test_ts["src/modules/synchronization/modules/devcontainer-configuration/devcontainer-configuration.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_constants_ts["src/modules/synchronization/modules/devcontainer-configuration/devcontainer-configuration.constants.ts"]
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_module_ts["src/modules/synchronization/modules/devcontainer-configuration/devcontainer-configuration.module.ts"]
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_types_ts["src/modules/synchronization/modules/devcontainer-configuration/devcontainer-configuration.types.ts"]
+  file_src_modules_synchronization_modules_lockfile_lockfile_command_ts["src/modules/synchronization/modules/lockfile/lockfile.command.ts"]
+  file_src_modules_synchronization_modules_lockfile_lockfile_command_unit_test_ts["src/modules/synchronization/modules/lockfile/lockfile.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_lockfile_lockfile_constants_ts["src/modules/synchronization/modules/lockfile/lockfile.constants.ts"]
+  file_src_modules_synchronization_modules_lockfile_lockfile_module_ts["src/modules/synchronization/modules/lockfile/lockfile.module.ts"]
+  file_src_modules_synchronization_modules_lockfile_lockfile_module_unit_test_ts["src/modules/synchronization/modules/lockfile/lockfile.module.unit.test.ts"]
+  file_src_modules_synchronization_modules_lockfile_lockfile_service_ts["src/modules/synchronization/modules/lockfile/lockfile.service.ts"]
+  file_src_modules_synchronization_modules_lockfile_lockfile_service_unit_test_ts["src/modules/synchronization/modules/lockfile/lockfile.service.unit.test.ts"]
+  file_src_modules_synchronization_modules_lockfile_lockfile_types_ts["src/modules/synchronization/modules/lockfile/lockfile.types.ts"]
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_command_ts["src/modules/synchronization/modules/package-manifests/package-manifests.command.ts"]
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_command_unit_test_ts["src/modules/synchronization/modules/package-manifests/package-manifests.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_constants_ts["src/modules/synchronization/modules/package-manifests/package-manifests.constants.ts"]
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_module_ts["src/modules/synchronization/modules/package-manifests/package-manifests.module.ts"]
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_service_ts["src/modules/synchronization/modules/package-manifests/package-manifests.service.ts"]
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_service_unit_test_ts["src/modules/synchronization/modules/package-manifests/package-manifests.service.unit.test.ts"]
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_types_ts["src/modules/synchronization/modules/package-manifests/package-manifests.types.ts"]
+  file_src_modules_synchronization_modules_project_ports_project_ports_command_ts["src/modules/synchronization/modules/project-ports/project-ports.command.ts"]
+  file_src_modules_synchronization_modules_project_ports_project_ports_command_unit_test_ts["src/modules/synchronization/modules/project-ports/project-ports.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_project_ports_project_ports_constants_ts["src/modules/synchronization/modules/project-ports/project-ports.constants.ts"]
+  file_src_modules_synchronization_modules_project_ports_project_ports_module_ts["src/modules/synchronization/modules/project-ports/project-ports.module.ts"]
+  file_src_modules_synchronization_modules_project_ports_project_ports_service_ts["src/modules/synchronization/modules/project-ports/project-ports.service.ts"]
+  file_src_modules_synchronization_modules_project_ports_project_ports_service_unit_test_ts["src/modules/synchronization/modules/project-ports/project-ports.service.unit.test.ts"]
+  file_src_modules_synchronization_modules_project_ports_project_ports_types_ts["src/modules/synchronization/modules/project-ports/project-ports.types.ts"]
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_command_ts["src/modules/synchronization/modules/readme-projects/readme-projects.command.ts"]
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_command_unit_test_ts["src/modules/synchronization/modules/readme-projects/readme-projects.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_constants_ts["src/modules/synchronization/modules/readme-projects/readme-projects.constants.ts"]
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_module_ts["src/modules/synchronization/modules/readme-projects/readme-projects.module.ts"]
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_module_unit_test_ts["src/modules/synchronization/modules/readme-projects/readme-projects.module.unit.test.ts"]
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_service_ts["src/modules/synchronization/modules/readme-projects/readme-projects.service.ts"]
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_service_unit_test_ts["src/modules/synchronization/modules/readme-projects/readme-projects.service.unit.test.ts"]
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_types_ts["src/modules/synchronization/modules/readme-projects/readme-projects.types.ts"]
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_ts["src/modules/synchronization/modules/skill-descriptions/skill-descriptions.command.ts"]
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_unit_test_ts["src/modules/synchronization/modules/skill-descriptions/skill-descriptions.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_constants_ts["src/modules/synchronization/modules/skill-descriptions/skill-descriptions.constants.ts"]
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_module_ts["src/modules/synchronization/modules/skill-descriptions/skill-descriptions.module.ts"]
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_module_unit_test_ts["src/modules/synchronization/modules/skill-descriptions/skill-descriptions.module.unit.test.ts"]
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_service_ts["src/modules/synchronization/modules/skill-descriptions/skill-descriptions.service.ts"]
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_service_unit_test_ts["src/modules/synchronization/modules/skill-descriptions/skill-descriptions.service.unit.test.ts"]
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_types_ts["src/modules/synchronization/modules/skill-descriptions/skill-descriptions.types.ts"]
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_ts["src/modules/synchronization/modules/skill-exclusions/skill-exclusions.command.ts"]
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_unit_test_ts["src/modules/synchronization/modules/skill-exclusions/skill-exclusions.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_constants_ts["src/modules/synchronization/modules/skill-exclusions/skill-exclusions.constants.ts"]
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_module_ts["src/modules/synchronization/modules/skill-exclusions/skill-exclusions.module.ts"]
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_types_ts["src/modules/synchronization/modules/skill-exclusions/skill-exclusions.types.ts"]
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_ts["src/modules/synchronization/modules/vscode-extensions/vscode-extensions.command.ts"]
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_unit_test_ts["src/modules/synchronization/modules/vscode-extensions/vscode-extensions.command.unit.test.ts"]
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_constants_ts["src/modules/synchronization/modules/vscode-extensions/vscode-extensions.constants.ts"]
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_module_ts["src/modules/synchronization/modules/vscode-extensions/vscode-extensions.module.ts"]
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_types_ts["src/modules/synchronization/modules/vscode-extensions/vscode-extensions.types.ts"]
+  file_src_modules_synchronization_synchronization_markers_service_ts["src/modules/synchronization/synchronization-markers.service.ts"]
+  file_src_modules_synchronization_synchronization_markers_service_unit_test_ts["src/modules/synchronization/synchronization-markers.service.unit.test.ts"]
+  file_src_modules_synchronization_synchronization_command_ts["src/modules/synchronization/synchronization.command.ts"]
+  file_src_modules_synchronization_synchronization_command_unit_test_ts["src/modules/synchronization/synchronization.command.unit.test.ts"]
+  file_src_modules_synchronization_synchronization_constants_ts["src/modules/synchronization/synchronization.constants.ts"]
+  file_src_modules_synchronization_synchronization_module_ts["src/modules/synchronization/synchronization.module.ts"]
+  file_src_modules_synchronization_synchronization_module_unit_test_ts["src/modules/synchronization/synchronization.module.unit.test.ts"]
+  file_src_modules_synchronization_synchronization_service_ts["src/modules/synchronization/synchronization.service.ts"]
+  file_src_modules_synchronization_synchronization_service_unit_test_ts["src/modules/synchronization/synchronization.service.unit.test.ts"]
+  file_src_modules_synchronization_synchronization_types_ts["src/modules/synchronization/synchronization.types.ts"]
   file_src_modules_task_database_modules_adopt_task_database_adopt_task_database_command_ts["src/modules/task-database/modules/adopt-task-database/adopt-task-database.command.ts"]
   file_src_modules_task_database_modules_adopt_task_database_adopt_task_database_command_unit_test_ts["src/modules/task-database/modules/adopt-task-database/adopt-task-database.command.unit.test.ts"]
   file_src_modules_task_database_modules_adopt_task_database_adopt_task_database_constants_ts["src/modules/task-database/modules/adopt-task-database/adopt-task-database.constants.ts"]
@@ -215,6 +298,12 @@ graph LR
   file_src_modules_task_database_modules_keep_task_database_keep_task_database_module_ts["src/modules/task-database/modules/keep-task-database/keep-task-database.module.ts"]
   file_src_modules_task_database_modules_keep_task_database_keep_task_database_module_unit_test_ts["src/modules/task-database/modules/keep-task-database/keep-task-database.module.unit.test.ts"]
   file_src_modules_task_database_modules_keep_task_database_keep_task_database_types_ts["src/modules/task-database/modules/keep-task-database/keep-task-database.types.ts"]
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_command_ts["src/modules/task-database/modules/merge-task-cache/merge-task-cache.command.ts"]
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_command_unit_test_ts["src/modules/task-database/modules/merge-task-cache/merge-task-cache.command.unit.test.ts"]
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_constants_ts["src/modules/task-database/modules/merge-task-cache/merge-task-cache.constants.ts"]
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_module_ts["src/modules/task-database/modules/merge-task-cache/merge-task-cache.module.ts"]
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_module_unit_test_ts["src/modules/task-database/modules/merge-task-cache/merge-task-cache.module.unit.test.ts"]
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_types_ts["src/modules/task-database/modules/merge-task-cache/merge-task-cache.types.ts"]
   file_src_modules_task_database_modules_verify_task_database_verify_task_database_command_ts["src/modules/task-database/modules/verify-task-database/verify-task-database.command.ts"]
   file_src_modules_task_database_modules_verify_task_database_verify_task_database_command_unit_test_ts["src/modules/task-database/modules/verify-task-database/verify-task-database.command.unit.test.ts"]
   file_src_modules_task_database_modules_verify_task_database_verify_task_database_constants_ts["src/modules/task-database/modules/verify-task-database/verify-task-database.constants.ts"]
@@ -229,56 +318,7 @@ graph LR
   file_src_modules_task_database_task_database_types_ts["src/modules/task-database/task-database.types.ts"]
   file_src_modules_task_database_task_database_utilities_ts["src/modules/task-database/task-database.utilities.ts"]
   file_src_modules_task_database_task_database_utilities_unit_test_ts["src/modules/task-database/task-database.utilities.unit.test.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_constants_ts["src/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.constants.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_module_ts["src/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.module.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts["src/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.service.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_unit_test_ts["src/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.service.unit.test.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_types_ts["src/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.types.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_constants_ts["src/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.constants.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_module_ts["src/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.module.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts["src/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.service.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts["src/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.service.unit.test.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_types_ts["src/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.types.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_constants_ts["src/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.constants.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_module_ts["src/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.module.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts["src/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.service.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_unit_test_ts["src/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.service.unit.test.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_types_ts["src/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.types.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_utilities_ts["src/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.utilities.ts"]
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_utilities_unit_test_ts["src/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.utilities.unit.test.ts"]
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_command_ts["src/modules/upgrade-dependencies/upgrade-dependencies.command.ts"]
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts["src/modules/upgrade-dependencies/upgrade-dependencies.command.unit.test.ts"]
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts["src/modules/upgrade-dependencies/upgrade-dependencies.constants.ts"]
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts["src/modules/upgrade-dependencies/upgrade-dependencies.module.ts"]
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts["src/modules/upgrade-dependencies/upgrade-dependencies.module.unit.test.ts"]
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts["src/modules/upgrade-dependencies/upgrade-dependencies.service.ts"]
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts["src/modules/upgrade-dependencies/upgrade-dependencies.service.unit.test.ts"]
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts["src/modules/upgrade-dependencies/upgrade-dependencies.types.ts"]
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts["src/modules/upgrade-dependencies/upgrade-dependencies.utilities.ts"]
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_unit_test_ts["src/modules/upgrade-dependencies/upgrade-dependencies.utilities.unit.test.ts"]
   file_testing_mocks_ts["testing/mocks.ts"]
-  file_src_executors_codometer_batch_executor_ts --> file_src_executors_codometer_codometer_runner_ts
-  file_src_executors_codometer_batch_executor_ts --> file_src_executors_codometer_codometer_types_ts
-  file_src_executors_codometer_batch_executor_ts --> file_src_executors_codometer_codometer_utilities_ts
-  file_src_executors_codometer_batch_executor_unit_test_ts --> file_src_executors_codometer_batch_executor_ts
-  file_src_executors_codometer_batch_executor_unit_test_ts --> file_src_executors_codometer_codometer_types_ts
-  file_src_executors_codometer_batch_executor_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
-  file_src_executors_codometer_codometer_runner_ts --> file_src_executors_codometer_codometer_constants_ts
-  file_src_executors_codometer_codometer_runner_ts --> file_src_executors_codometer_codometer_types_ts
-  file_src_executors_codometer_codometer_runner_ts --> file_src_executors_codometer_codometer_utilities_ts
-  file_src_executors_codometer_codometer_runner_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_executors_codometer_codometer_runner_ts --> file_src_modules_process_runner_process_runner_types_ts
-  file_src_executors_codometer_codometer_runner_unit_test_ts --> file_src_executors_codometer_codometer_runner_ts
-  file_src_executors_codometer_codometer_runner_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
-  file_src_executors_codometer_codometer_utilities_ts --> file_src_executors_codometer_codometer_constants_ts
-  file_src_executors_codometer_codometer_utilities_ts --> file_src_executors_codometer_codometer_types_ts
-  file_src_executors_codometer_codometer_utilities_ts --> file_src_modules_process_runner_process_runner_types_ts
-  file_src_executors_codometer_codometer_utilities_unit_test_ts --> file_src_executors_codometer_codometer_utilities_ts
-  file_src_executors_codometer_executor_ts --> file_src_executors_codometer_codometer_runner_ts
-  file_src_executors_codometer_executor_ts --> file_src_executors_codometer_codometer_types_ts
-  file_src_executors_codometer_executor_unit_test_ts --> file_src_executors_codometer_codometer_types_ts
-  file_src_executors_codometer_executor_unit_test_ts --> file_src_executors_codometer_executor_ts
-  file_src_executors_codometer_executor_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
   file_src_executors_knip_batch_executor_ts --> file_src_executors_knip_knip_runner_ts
   file_src_executors_knip_batch_executor_ts --> file_src_executors_knip_knip_types_ts
   file_src_executors_knip_batch_executor_ts --> file_src_executors_knip_knip_utilities_ts
@@ -324,14 +364,14 @@ graph LR
   file_src_integration_module_ts --> file_src_modules_cleanup_codebase_cleanup_codebase_module_ts
   file_src_integration_module_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_ts
   file_src_integration_module_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_module_ts
-  file_src_integration_module_ts --> file_src_modules_merge_task_cache_merge_task_cache_module_ts
   file_src_integration_module_ts --> file_src_modules_report_codometer_changes_report_codometer_changes_module_ts
   file_src_integration_module_ts --> file_src_modules_run_affected_run_affected_module_ts
   file_src_integration_module_ts --> file_src_modules_setup_codebase_setup_codebase_module_ts
+  file_src_integration_module_ts --> file_src_modules_synchronization_synchronization_module_ts
   file_src_integration_module_ts --> file_src_modules_task_database_modules_adopt_task_database_adopt_task_database_module_ts
   file_src_integration_module_ts --> file_src_modules_task_database_modules_keep_task_database_keep_task_database_module_ts
+  file_src_integration_module_ts --> file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_module_ts
   file_src_integration_module_ts --> file_src_modules_task_database_modules_verify_task_database_verify_task_database_module_ts
-  file_src_integration_module_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts
   file_src_integration_repl_ts --> file_src_integration_module_ts
   file_src_integration_types_ts --> file_src_integration_constants_ts
   file_src_modules_bound_base_to_push_bound_base_to_push_command_ts --> file_src_modules_bound_base_to_push_bound_base_to_push_service_ts
@@ -367,13 +407,21 @@ graph LR
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_unit_test_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_ts
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts
+  file_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_ts --> file_src_modules_process_runner_process_runner_module_ts
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_unit_test_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_command_ts
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_unit_test_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_ts
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_unit_test_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts
+  file_src_modules_collect_codometer_baseline_collect_codometer_baseline_module_unit_test_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts --> file_src_integration_types_ts
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_constants_ts
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_types_ts
+  file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_utilities_ts
+  file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_unit_test_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_ts
+  file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
   file_src_modules_collect_codometer_baseline_collect_codometer_baseline_service_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_collect_codometer_baseline_collect_codometer_baseline_utilities_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_constants_ts
   file_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
   file_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_command_ts
   file_src_modules_import_pr_task_cache_import_pr_task_cache_command_unit_test_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
@@ -399,20 +447,6 @@ graph LR
   file_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_src_modules_import_pr_task_cache_import_pr_task_cache_service_ts
   file_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_import_pr_task_cache_import_pr_task_cache_service_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
-  file_src_modules_merge_task_cache_merge_task_cache_command_ts --> file_src_modules_merge_task_cache_merge_task_cache_constants_ts
-  file_src_modules_merge_task_cache_merge_task_cache_command_ts --> file_src_modules_task_database_task_database_service_ts
-  file_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_src_modules_merge_task_cache_merge_task_cache_command_ts
-  file_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
-  file_src_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_testing_mocks_ts
-  file_src_modules_merge_task_cache_merge_task_cache_module_ts --> file_src_modules_merge_task_cache_merge_task_cache_command_ts
-  file_src_modules_merge_task_cache_merge_task_cache_module_ts --> file_src_modules_task_database_task_database_module_ts
-  file_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_src_modules_merge_task_cache_merge_task_cache_command_ts
-  file_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_src_modules_merge_task_cache_merge_task_cache_module_ts
-  file_src_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_src_modules_task_database_task_database_module_ts
-  file_src_modules_package_manifest_package_manifest_module_ts --> file_src_modules_package_manifest_package_manifest_service_ts
-  file_src_modules_package_manifest_package_manifest_service_ts --> file_src_modules_package_manifest_package_manifest_constants_ts
-  file_src_modules_package_manifest_package_manifest_service_ts --> file_src_modules_package_manifest_package_manifest_types_ts
-  file_src_modules_package_manifest_package_manifest_service_unit_test_ts --> file_src_modules_package_manifest_package_manifest_service_ts
   file_src_modules_process_runner_process_runner_module_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_process_runner_process_runner_module_unit_test_ts --> file_src_modules_process_runner_process_runner_module_ts
   file_src_modules_process_runner_process_runner_module_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
@@ -435,6 +469,7 @@ graph LR
   file_src_modules_report_codometer_changes_report_codometer_changes_module_unit_test_ts --> file_src_modules_report_codometer_changes_report_codometer_changes_service_ts
   file_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_src_integration_types_ts
   file_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_constants_ts
+  file_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_src_modules_collect_codometer_baseline_collect_codometer_baseline_utilities_ts
   file_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_src_modules_report_codometer_changes_report_codometer_changes_constants_ts
   file_src_modules_report_codometer_changes_report_codometer_changes_service_ts --> file_src_modules_report_codometer_changes_report_codometer_changes_types_ts
@@ -449,7 +484,6 @@ graph LR
   file_src_modules_run_affected_run_affected_command_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
   file_src_modules_run_affected_run_affected_command_unit_test_ts --> file_src_modules_run_affected_run_affected_command_ts
   file_src_modules_run_affected_run_affected_command_unit_test_ts --> file_src_modules_run_affected_run_affected_service_ts
-  file_src_modules_run_affected_run_affected_command_unit_test_ts --> file_testing_mocks_ts
   file_src_modules_run_affected_run_affected_module_ts --> file_src_modules_process_runner_process_runner_module_ts
   file_src_modules_run_affected_run_affected_module_ts --> file_src_modules_run_affected_run_affected_command_ts
   file_src_modules_run_affected_run_affected_module_ts --> file_src_modules_run_affected_run_affected_service_ts
@@ -481,6 +515,219 @@ graph LR
   file_src_modules_setup_codebase_setup_codebase_module_unit_test_ts --> file_src_modules_setup_codebase_setup_codebase_command_ts
   file_src_modules_setup_codebase_setup_codebase_module_unit_test_ts --> file_src_modules_setup_codebase_setup_codebase_module_ts
   file_src_modules_setup_codebase_setup_codebase_module_unit_test_ts --> file_src_modules_task_database_task_database_module_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_unit_test_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_unit_test_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_module_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_unit_test_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_unit_test_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_unit_test_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_unit_test_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_module_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_constants_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_types_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_unit_test_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_ts
+  file_src_modules_synchronization_modules_agent_instructions_agent_instructions_service_unit_test_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_command_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_command_unit_test_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_command_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_command_unit_test_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_constants_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_types_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_module_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_command_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_module_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_module_unit_test_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_command_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_module_unit_test_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_module_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_module_unit_test_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_constants_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_types_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_unit_test_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_ts
+  file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_service_unit_test_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_types_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_constants_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_types_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_types_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_constants_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_types_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_types_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_command_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_command_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_command_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_command_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_constants_integration_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_constants_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_module_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_module_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_module_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_command_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_module_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_constants_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_types_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_io_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_validators_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_constants_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_service_ts
+  file_src_modules_synchronization_modules_conventional_config_conventional_config_service_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_types_ts
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_ts --> file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_constants_ts
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_ts --> file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_types_ts
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_unit_test_ts --> file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_ts
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_module_ts --> file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_ts
+  file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_command_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_constants_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_command_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_service_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_command_unit_test_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_command_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_command_unit_test_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_service_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_module_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_command_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_module_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_service_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_module_unit_test_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_command_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_module_unit_test_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_module_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_module_unit_test_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_service_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_service_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_constants_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_service_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_types_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_service_unit_test_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_constants_ts
+  file_src_modules_synchronization_modules_lockfile_lockfile_service_unit_test_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_service_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_command_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_service_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_command_unit_test_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_command_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_command_unit_test_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_service_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_command_unit_test_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_types_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_module_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_command_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_module_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_service_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_service_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_constants_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_service_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_types_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_service_unit_test_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_constants_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_service_unit_test_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_service_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_service_unit_test_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_types_ts
+  file_src_modules_synchronization_modules_package_manifests_package_manifests_types_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_constants_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_command_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_constants_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_command_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_service_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_command_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_types_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_command_unit_test_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_command_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_command_unit_test_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_service_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_constants_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_types_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_module_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_command_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_module_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_service_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_service_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_constants_ts
+  file_src_modules_synchronization_modules_project_ports_project_ports_service_unit_test_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_service_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_command_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_command_unit_test_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_command_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_command_unit_test_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_module_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_command_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_module_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_module_unit_test_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_command_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_module_unit_test_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_module_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_module_unit_test_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_service_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_constants_ts
+  file_src_modules_synchronization_modules_readme_projects_readme_projects_service_unit_test_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_service_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_constants_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_service_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_unit_test_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_unit_test_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_service_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_module_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_module_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_service_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_module_unit_test_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_module_unit_test_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_module_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_module_unit_test_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_service_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_service_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_constants_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_service_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_types_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_service_unit_test_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_service_ts
+  file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_types_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_constants_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_ts --> file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_constants_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_ts --> file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_types_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_unit_test_ts --> file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_unit_test_ts --> file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_constants_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_unit_test_ts --> file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_types_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_constants_ts --> file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_types_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_module_ts --> file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_ts
+  file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_ts --> file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_constants_ts
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_ts --> file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_types_ts
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_ts
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_constants_ts
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_module_ts --> file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_ts
+  file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_synchronization_markers_service_unit_test_ts --> file_src_modules_synchronization_synchronization_markers_service_ts
+  file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_synchronization_synchronization_constants_ts
+  file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_synchronization_command_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_synchronization_synchronization_command_ts
+  file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_synchronization_synchronization_constants_ts
+  file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_synchronization_command_unit_test_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_module_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_synchronization_markers_service_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_synchronization_command_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_synchronization_constants_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_synchronization_module_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_agent_instructions_agent_instructions_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_catalog_manifests_catalog_manifests_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_conventional_config_conventional_config_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_devcontainer_configuration_devcontainer_configuration_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_lockfile_lockfile_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_package_manifests_package_manifests_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_project_ports_project_ports_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_readme_projects_readme_projects_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_skill_descriptions_skill_descriptions_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_skill_exclusions_skill_exclusions_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_modules_vscode_extensions_vscode_extensions_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_synchronization_markers_service_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_synchronization_command_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_synchronization_module_ts
+  file_src_modules_synchronization_synchronization_module_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
+  file_src_modules_synchronization_synchronization_service_ts --> file_src_modules_synchronization_synchronization_types_ts
+  file_src_modules_synchronization_synchronization_service_unit_test_ts --> file_src_modules_synchronization_synchronization_service_ts
   file_src_modules_task_database_modules_adopt_task_database_adopt_task_database_command_ts --> file_src_modules_task_database_task_database_service_ts
   file_src_modules_task_database_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_src_modules_task_database_modules_adopt_task_database_adopt_task_database_command_ts
   file_src_modules_task_database_modules_adopt_task_database_adopt_task_database_command_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
@@ -499,6 +746,16 @@ graph LR
   file_src_modules_task_database_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_src_modules_task_database_modules_keep_task_database_keep_task_database_command_ts
   file_src_modules_task_database_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_src_modules_task_database_modules_keep_task_database_keep_task_database_module_ts
   file_src_modules_task_database_modules_keep_task_database_keep_task_database_module_unit_test_ts --> file_src_modules_task_database_task_database_module_ts
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_command_ts --> file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_constants_ts
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_command_ts --> file_src_modules_task_database_task_database_service_ts
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_command_ts
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_command_unit_test_ts --> file_testing_mocks_ts
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_module_ts --> file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_command_ts
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_module_ts --> file_src_modules_task_database_task_database_module_ts
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_command_ts
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_module_ts
+  file_src_modules_task_database_modules_merge_task_cache_merge_task_cache_module_unit_test_ts --> file_src_modules_task_database_task_database_module_ts
   file_src_modules_task_database_modules_verify_task_database_verify_task_database_command_ts --> file_src_modules_task_database_task_database_service_ts
   file_src_modules_task_database_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_src_modules_task_database_modules_verify_task_database_verify_task_database_command_ts
   file_src_modules_task_database_modules_verify_task_database_verify_task_database_command_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
@@ -518,69 +775,5 @@ graph LR
   file_src_modules_task_database_task_database_service_unit_test_ts --> file_src_modules_task_database_task_database_service_ts
   file_src_modules_task_database_task_database_utilities_ts --> file_src_modules_task_database_task_database_constants_ts
   file_src_modules_task_database_task_database_utilities_unit_test_ts --> file_src_modules_task_database_task_database_utilities_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_module_ts --> file_src_modules_package_manifest_package_manifest_module_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_module_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts --> file_src_modules_package_manifest_package_manifest_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_constants_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_unit_test_ts --> file_src_modules_package_manifest_package_manifest_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_unit_test_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_module_ts --> file_src_modules_package_manifest_package_manifest_module_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_module_ts --> file_src_modules_process_runner_process_runner_module_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_module_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts --> file_src_modules_package_manifest_package_manifest_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_constants_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts --> file_src_modules_package_manifest_package_manifest_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_constants_ts --> file_src_modules_process_runner_process_runner_types_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_module_ts --> file_src_modules_process_runner_process_runner_module_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_module_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_constants_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_utilities_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_unit_test_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_constants_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_unit_test_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts
-  file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_utilities_unit_test_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_utilities_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_command_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_command_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_command_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_command_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts --> file_src_modules_process_runner_process_runner_types_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_process_runner_process_runner_module_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_module_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_module_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_module_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_command_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts --> file_src_modules_process_runner_process_runner_module_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_command_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_module_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_integration_types_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_process_runner_process_runner_types_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_service_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts --> file_src_modules_process_runner_process_runner_types_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_types_ts
-  file_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_unit_test_ts --> file_src_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts
-  file_testing_mocks_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_testing_mocks_ts --> file_src_modules_process_runner_process_runner_types_ts
 ```
 <!-- codependix:end name="codependix-file-imports" -->

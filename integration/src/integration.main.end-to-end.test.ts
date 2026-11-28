@@ -34,7 +34,6 @@ const COMMAND_NAMES = [
   "skill-descriptions",
   "skill-exclusions",
   "synchronization",
-  "upgrade-dependencies",
   "verify-task-database",
   "vscode-extensions",
 ];

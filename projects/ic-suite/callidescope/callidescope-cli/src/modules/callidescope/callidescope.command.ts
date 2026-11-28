@@ -165,7 +165,7 @@ export class CallidescopeCommand extends CommandRunner {
 
     // The format as it was typed rather than as it resolved: this line says
     // what the run was asked for, and an absent flag is part of that.
-    this.logger.debug("🔭 Starting a call-stack trace", undefined, {
+    this.logger.debug("🔬 Starting a call-stack trace", undefined, {
       format: resolvedOptions.format,
       workspaceRoot: run.workspaceRoot,
     });
@@ -225,7 +225,7 @@ export class CallidescopeCommand extends CommandRunner {
         })
       : [];
 
-    this.logger.info("🔭 Finished a call-stack trace", undefined, {
+    this.logger.info("🔬 Finished a call-stack trace", undefined, {
       deepStackCount: outcome.result.deepStacks.length,
       staleReportCount: stalePaths.length,
       wideCallableCount: outcome.result.wideCallables.length,

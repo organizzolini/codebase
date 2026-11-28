@@ -559,6 +559,17 @@
           "name": "openwiki"
         },
         {
+          "children": [
+            {
+              "ruleId": "kebab-case-folder"
+            },
+            {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "codebase"
+        },
+        {
           "ruleId": "any-file"
         }
       ],
@@ -1048,19 +1059,7 @@
         "name": "CHANGELOG.md"
       },
       {
-        "name": "callidescope.md"
-      },
-      {
         "name": "codependix-workspace-graph.json"
-      },
-      {
-        "name": "codependix.md"
-      },
-      {
-        "name": "codometer.md"
-      },
-      {
-        "name": "coinagerie.md"
       },
       {
         "name": "compliance",
@@ -1132,14 +1131,6 @@
           {
             "children": [
               {
-                "ruleId": "any-file"
-              }
-            ],
-            "name": "JimmyPaolini"
-          },
-          {
-            "children": [
-              {
                 "ruleId": "web-application-project"
               },
               {
@@ -1203,6 +1194,14 @@
               }
             ],
             "name": "ic-suite"
+          },
+          {
+            "children": [
+              {
+                "ruleId": "any-file"
+              }
+            ],
+            "name": "identity"
           },
           {
             "children": [

@@ -1,4 +1,4 @@
-# 🔭 Callidescope
+# 🔬 Callidescope
 
 [![npm](https://img.shields.io/npm/v/@callidescope/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/cli)
 
@@ -151,7 +151,7 @@ the report from a branch. `configuration:codometer` sits outside that list for t
 same reason. The depth gate is therefore named directly, alongside
 `lint-code` and inside the same `nx affected` invocation, in both places
 that gate: the
-[🔭 Callidescope Restrict](../../../../.github/workflows/continuous-integration.yml) check, so it
+[🔬 Callidescope Restrict](../../../../.github/workflows/continuous-integration.yml) check, so it
 runs on every pull request, and
 [`configuration/repository/lint-staged.config.ts`](../../../configuration/lint-staged.config.ts),
 so it runs on every commit. Depth reads source and needs no build, which is
@@ -165,8 +165,8 @@ not findings about the code at all, and neither waits to be asked:
 
 | Failure                                   | What it means                                                                                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `🔭 Rejected a project it could not read` | A project's tsconfig could not be parsed, or a named directory holds none at `projectTsconfigPath` |
-| `🔭 Traced nothing`                       | The run collected no callables at all                                                              |
+| `🔬 Rejected a project it could not read` | A project's tsconfig could not be parsed, or a named directory holds none at `projectTsconfigPath` |
+| `🔬 Traced nothing`                       | The run collected no callables at all                                                              |
 
 Both exist because the alternative is a green gate over a workspace nobody
 looked at. A run reports what it found, so a run that found nothing reports
@@ -258,13 +258,13 @@ would reach the 300 and leave 451 out. Neither set is drawn here — nothing in
 this workspace is over the depth limit — but they are the scale the cap is set
 against.
 
-The `## 🔭 Callidescope` section at the bottom of every package in this
+The `## 🔬 Callidescope` section at the bottom of every package in this
 repository is that package's own declaration rather than anything the run fans
 out. Each project's file names the document its section lands in, and the run
 publishes what it finds declared:
 
 ```ts
-write: { markdown: { heading: "## 🔭 Callidescope", path: "README.md" } }
+write: { markdown: { heading: "## 🔬 Callidescope", path: "README.md" } }
 ```
 
 Each section carries that project's stacks and findings rather than the

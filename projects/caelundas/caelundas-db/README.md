@@ -53,7 +53,7 @@ See [documentation/entity-relationship-diagram.md](documentation/entity-relation
 - [src/modules/database/database.service.ts](src/modules/database/database.service.ts): Database service
 - [documentation/entity-relationship-diagram.md](documentation/entity-relationship-diagram.md): Generated entity relationship diagram
 
-## 🌌 Caelundas Database
+## 🔭 Caelundas Database
 
 **The calendar's shape.** The Postgres schema for
 [caelundas-cli](../caelundas-cli/README.md) and caelundas-api: the TypeORM

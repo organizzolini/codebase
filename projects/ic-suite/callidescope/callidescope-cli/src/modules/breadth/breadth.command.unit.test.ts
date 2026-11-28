@@ -457,7 +457,7 @@ describe(BreadthCommand, () => {
     });
 
     expect(logger.error).toHaveBeenCalledExactlyOnceWith(
-      "🔭 Rejected the command line",
+      "🔬 Rejected the command line",
       undefined,
       { reason: error.message },
     );
@@ -483,7 +483,7 @@ describe(BreadthCommand, () => {
     });
 
     expect(logger.error).toHaveBeenCalledExactlyOnceWith(
-      "🔭 Rejected a project configuration",
+      "🔬 Rejected a project configuration",
       undefined,
       { reason: error.message },
     );
@@ -510,7 +510,7 @@ describe(BreadthCommand, () => {
     });
 
     expect(logger.error).toHaveBeenCalledExactlyOnceWith(
-      "🔭 Rejected a project it could not read",
+      "🔬 Rejected a project it could not read",
       undefined,
       { reason: error.message },
     );
@@ -578,7 +578,7 @@ describe(BreadthCommand, () => {
 
     expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected a callable address",
+      "🔬 Rejected a callable address",
       undefined,
       { problems: ['"a.ts#Foo.bar" resolved to nothing.'] },
     );

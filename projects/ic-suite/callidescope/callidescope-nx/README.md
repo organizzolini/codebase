@@ -1,4 +1,4 @@
-# 🔭🧬 Callidescope Nx
+# 🔬🧬 Callidescope Nx
 
 [![npm](https://img.shields.io/npm/v/@callidescope/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/nx)
 
@@ -201,7 +201,7 @@ What the Nx graph decides is which projects the run is **scoped to** rather
 than merely reaches. This executor writes nothing anywhere — it renders one
 report and prints it — so the distinction costs nothing here, and widening the
 selection changes only which projects seed the closure. It is the command-line
-host that acts on it: a `--write` run there publishes a `## 🔭 Callidescope`
+host that acts on it: a `--write` run there publishes a `## 🔬 Callidescope`
 section into a scoped project's `README.md` and leaves a reached one's to the
 run that is scoped to it. The graph also names dependencies no import closure
 can find — an implicit dependency, or an edge that exists only at run time.

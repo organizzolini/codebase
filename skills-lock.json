@@ -8,106 +8,89 @@
       "computedHash": "b344a85378eb5e5da192bceb0f9c0c15a4820a3ee8b5ad867e3a70ef3c691e3d"
     },
     "callidescope-configure": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-configure/SKILL.md",
-      "computedHash": "2610eb97066187aca409f998cb2084068b95ab6bc136873821c539b2f42d5f24"
+      "source": "./projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-configure",
+      "sourceType": "local",
+      "computedHash": "2bfd46ee92879935c7abe0e6e3ea3055dc23f009fa227e4892d6265007cfb11a"
     },
     "callidescope-trace": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace/SKILL.md",
-      "computedHash": "da719c0cdf35c46f45aa87dd4681cb35395be356bef90c2d5930f498f2198609"
+      "source": "./projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace",
+      "sourceType": "local",
+      "computedHash": "efd481f15faf1469b0afa1cd713873470b8de06d2497fffb9792e8aaa385ec9e"
     },
     "callidescope-triage": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-triage/SKILL.md",
-      "computedHash": "a8f54110b2263a3966930e22cec260c69216e019dc4cde2eaf6e70d167a81722"
+      "source": "./projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-triage",
+      "sourceType": "local",
+      "computedHash": "5c73b48d5e6255799126faa21170fb809a34c8e46945597f19e12689ba416506"
     },
     "codependix-configure": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/codependix/codependix-agents/skills/codependix-configure/SKILL.md",
-      "computedHash": "f9fe04a31862f1b331002cfed9f5c4ebd861b622bbc6b45c2ba29ddc513bbe19"
+      "source": "./projects/ic-suite/codependix/codependix-agents/skills/codependix-configure",
+      "sourceType": "local",
+      "computedHash": "f37a736ae795057aa84910727ea0794633c25dca60c16592137d566a86d161a4"
     },
     "codependix-export": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/codependix/codependix-agents/skills/codependix-export/SKILL.md",
-      "computedHash": "51e9df4a56da97f73b27d67673d0957272568251a0c3df66e1d49380904692c0"
+      "source": "./projects/ic-suite/codependix/codependix-agents/skills/codependix-export",
+      "sourceType": "local",
+      "computedHash": "ed2def94207a4bd67ab2c8e1b6963e0761726f1b4b945c26ba2a70a167fba3b2"
     },
     "codependix-navigate": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/codependix/codependix-agents/skills/codependix-navigate/SKILL.md",
-      "computedHash": "abf0a251e032447e850e178092a48cd5c15750867c8a59711f30ab553dfa2a60"
+      "source": "./projects/ic-suite/codependix/codependix-agents/skills/codependix-navigate",
+      "sourceType": "local",
+      "computedHash": "9e65d2b6ffe75fcb2b486162052b267c9ef0b960910d8693bf27161e8c78a3a9"
     },
     "codependix-triage": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/codependix/codependix-agents/skills/codependix-triage/SKILL.md",
-      "computedHash": "cc5af164a7be947e6160cf1e54847fc127718dcd63b173e7c183c162293a0b8a"
+      "source": "./projects/ic-suite/codependix/codependix-agents/skills/codependix-triage",
+      "sourceType": "local",
+      "computedHash": "e6328cfdb7ad6e43215f8e26a2b04c9e4409af414266ab222a688e707fb10451"
     },
     "codometer-configure": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/codometer/codometer-agents/skills/codometer-configure/SKILL.md",
-      "computedHash": "b90d160dae94ffc27693733d0e15abf6b8b001514c849533336af8eea598c15d"
+      "source": "./projects/ic-suite/codometer/codometer-agents/skills/codometer-configure",
+      "sourceType": "local",
+      "computedHash": "5dd243b4e79409082223015b1aae3d960181726372f03bd5596f7098f440611e"
     },
     "codometer-measure": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/codometer/codometer-agents/skills/codometer-measure/SKILL.md",
-      "computedHash": "4c84664aab798f6e75b1c72ad0179415d3969bb0fc8f2c398e24ba258dd76fb6"
+      "source": "./projects/ic-suite/codometer/codometer-agents/skills/codometer-measure",
+      "sourceType": "local",
+      "computedHash": "c4387a75415f2ccead75cf24cece8d54967d01f911dd42414b9ddbaa1755beec"
     },
     "codometer-triage": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/codometer/codometer-agents/skills/codometer-triage/SKILL.md",
-      "computedHash": "a9f32dc51bbc8dee3dff21c9410eaa8e3c6dae17ffc4166bb325b142c6a48e64"
+      "source": "./projects/ic-suite/codometer/codometer-agents/skills/codometer-triage",
+      "sourceType": "local",
+      "computedHash": "b1dd1230a7e912a73223baf332986c4df387dcc403d21ef2cbd1851faedf268f"
     },
     "coinagerie-collect": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-collect/SKILL.md",
-      "computedHash": "396d145143d3236c86a1133ded6f7ea107571cd2f0a8de0a5c974f4ba9e7a2df"
+      "source": "./projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-collect",
+      "sourceType": "local",
+      "computedHash": "579d954adca5a1b98b3eebb7e98f7ce6f12b0954191557ff898695ef7c199bd3"
     },
     "coinagerie-configure": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-configure/SKILL.md",
-      "computedHash": "8ee26609b215072de8c6b4308f40596c75efc91268155719eca2811eaa65c1f7"
+      "source": "./projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-configure",
+      "sourceType": "local",
+      "computedHash": "194a0d3723bdea695c1aed8157e88306ac99e89fc86d19e6053c9ccc2ba2ea19"
     },
     "coinagerie-define": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-define/SKILL.md",
-      "computedHash": "58b8c88e5e0ed7f6ffdd2b9443a9d22860f999b9a71ed7e51d058e60b2591cac"
+      "source": "./projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-define",
+      "sourceType": "local",
+      "computedHash": "31bb195c245089177e7be6ade31d6a6f2e36f83535b3ed35c1fb7e81f1d68f11"
     },
     "coinagerie-triage": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-triage/SKILL.md",
-      "computedHash": "262f6624084c053af04bc2bb2be228709ad984de8ca5e8b3187f931de25a6abb"
+      "source": "./projects/ic-suite/coinagerie/coinagerie-agents/skills/coinagerie-triage",
+      "sourceType": "local",
+      "computedHash": "4a56e8b21f8bed3a8efaf835f2e96a24959729fcc42a6733b5c96033dbb8909d"
     },
     "conformetry-configure": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/conformetry/conformetry-agents/skills/conformetry-configure/SKILL.md",
-      "computedHash": "a92f958d08ae1b4700a640ad51ac0d52b2f91862c5d0264a6ca88b755b36ea46"
+      "source": "./projects/ic-suite/conformetry/conformetry-agents/skills/conformetry-configure",
+      "sourceType": "local",
+      "computedHash": "3f3c53f6548ed0fe798c134f03e3e260c28638fedb8392073e0f53c64dc79ecc"
     },
     "conformetry-generate": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/conformetry/conformetry-agents/skills/conformetry-generate/SKILL.md",
-      "computedHash": "b1cb722b9d4ee1ef53dbf9a398481f6531e35405aca6e5d147e638d451786b87"
+      "source": "./projects/ic-suite/conformetry/conformetry-agents/skills/conformetry-generate",
+      "sourceType": "local",
+      "computedHash": "cbdc5a0610da423135219fe076cc8e6b025de245b5dc3a1b75dd112792930829"
     },
     "conformetry-validate": {
-      "source": "Organizzolini/codebase",
-      "sourceType": "github",
-      "skillPath": "projects/ic-suite/conformetry/conformetry-agents/skills/conformetry-validate/SKILL.md",
-      "computedHash": "067fa036de0ae8e774438178406455361426dd11144f60977ddbf52e55ac8b8f"
+      "source": "./projects/ic-suite/conformetry/conformetry-agents/skills/conformetry-validate",
+      "sourceType": "local",
+      "computedHash": "8f7712f6ab14f51a975b87d2c555a35a88294e631d48d63feb89c2a177833dd2"
     },
     "dispatching-parallel-agents": {
       "source": "obra/superpowers",

@@ -1,3 +1,27 @@
+## 0.0.99 (2026-11-26)
+
+### 💅 Refactors
+
+- **callidescope,caelundas:** ♻️ move callidescope to the microscope emoji and caelundas to the telescope ([#2618](https://github.com/organizzolini/codebase/pull/2618), [#2617](https://github.com/organizzolini/codebase/issues/2617))
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.97
+- Updated codependix-configuration to 0.0.99
+- Updated codependix-file-imports to 0.0.97
+- Updated codependix-nx-projects to 0.0.98
+- Updated codependix-core to 0.0.97
+
+## 0.0.98 (2026-11-26)
+
+### 🧱 Updated Dependencies
+
+- Updated codependix-nestjs-modules to 0.0.96
+- Updated codependix-configuration to 0.0.98
+- Updated codependix-file-imports to 0.0.96
+- Updated codependix-nx-projects to 0.0.97
+- Updated codependix-core to 0.0.96
+
 ## 0.0.97 (2026-11-25)
 
 ### 🚀 Features

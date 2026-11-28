@@ -325,9 +325,6 @@
         "setup-codebase": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts setup-codebase"
         },
-        "upgrade-dependencies": {
-          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts upgrade-dependencies"
-        },
         "verify-task-database": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register integration/src/integration.main.ts verify-task-database"
         },

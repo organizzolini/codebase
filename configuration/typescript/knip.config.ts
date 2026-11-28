@@ -122,8 +122,8 @@ const config: KnipConfig = {
   vite: { config: ["configuration/vite.config.{ts,mts}"] },
   vitest: { config: ["configuration/vitest.config.ts"] },
 
-  // JimmyPaolini is a GitHub profile page with no buildable code — skip analysis
-  ignoreWorkspaces: ["projects/JimmyPaolini", "projects/affirmancy"],
+  // identity is the GitHub profile README with no buildable code — skip analysis
+  ignoreWorkspaces: ["projects/identity", "projects/affirmancy"],
 
   workspaces: {
     // Root workspace: scripts, base configs, and Nx configuration files
@@ -151,7 +151,7 @@ const config: KnipConfig = {
         "**/*.spec.ts",
         "**/dist/**",
         "**/coverage/**",
-        "projects/JimmyPaolini/**",
+        "projects/identity/**",
         "pnpm-workspace.yaml", // Catalog dependencies are shared across workspace; knip would flag all as unused in root
         "configuration/ic-suite/conformetry-templates/**", // Generator templates are placeholder files, not executable workspace code
         "projects/ic-suite/codometer/codometer-examples/examples/compiled/**", // Stand-in build output, committed so a target example has something to measure

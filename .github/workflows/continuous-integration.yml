@@ -70,7 +70,7 @@ jobs:
             emoji: 💂
           - target: callidescope-restrict
             name: Callidescope Restrict
-            emoji: 🔭
+            emoji: 🔬
           - target: codependix-bound
             name: Codependix Bound
             emoji: 🕸️

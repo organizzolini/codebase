@@ -25,6 +25,9 @@ import {
 } from "./refresh-documentation.constants";
 import {
   classifyChanges,
+  countPages,
+  isComplete,
+  madeProgress,
   parseChangedPaths,
   renderSummary,
   retryDelay,
@@ -109,7 +112,7 @@ export class RefreshDocumentationService {
     return true;
   }
 
-  /** Writes the job summary and, after a successful run, the `wiki-changed` output. */
+  /** Writes the job summary and, after a clean run, the `wiki-changed` and page-count outputs. */
   private report(attempts: readonly OpenWikiAttempt[]): void {
     const change = attempts.some(({ succeeded }) => succeeded)
       ? this.classifyWikiChanges()
@@ -121,9 +124,11 @@ export class RefreshDocumentationService {
     );
 
     if (change !== undefined) {
+      const { refreshed, total } = countPages(attempts);
+
       this.appendToStepFile(
         STEP_OUTPUT_VARIABLE,
-        `wiki-changed=${String(change === "content")}\n`,
+        `wiki-changed=${String(change === "content")}\npages-refreshed=${String(refreshed)}\npages-total=${String(total)}\n`,
       );
     }
   }
@@ -156,27 +161,33 @@ export class RefreshDocumentationService {
     } catch (error: unknown) {
       process.stderr.write(`${String(error)}\n`);
 
-      return { pages: 0, rateLimitResetAt: undefined, succeeded: false };
+      return {
+        pages: 0,
+        rateLimitResetAt: undefined,
+        skipped: 0,
+        succeeded: false,
+        total: 0,
+      };
     }
 
     return { ...scanOutput(printed), succeeded: child.exitCode === 0 };
   }
 
-  /** Runs OpenWiki until it succeeds or the attempts run out, recording each. */
+  /** Runs OpenWiki until no page is skipped or the attempts run out; a retry resumes skipped pages. */
   private async runWithRetries(attempts: OpenWikiAttempt[]): Promise<boolean> {
     for (let attempt = 1; ; attempt++) {
       const result = await this.run();
 
       attempts.push(result);
 
-      if (result.succeeded) {
+      if (isComplete(result)) {
         return true;
       }
 
       const delay = retryDelay(attempt, result.rateLimitResetAt, Date.now());
 
       if (attempt === OPENWIKI_ATTEMPTS || delay === undefined) {
-        return false;
+        return madeProgress(attempts);
       }
 
       await setTimeout(delay);

@@ -1,4 +1,4 @@
-# 🛰️ Caelundas
+# 🔭 Caelundas
 
 **Turn the sky into a calendar.**
 

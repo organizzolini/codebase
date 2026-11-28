@@ -1,6 +1,6 @@
 ---
 name: codometer-measure
-description: Run a codometer measurement, decide where its report goes, or read a badge block or JSON report it produced. Use when running codometer or npx @codometer/cli, choosing --output-json/--output-markdown and --check flags, wiring codometer into a CI step, splicing a badge block into a README, or reading a codometer JSON report's metrics, limits, or failures. Covers the command-line host directly, without assuming any task runner.
+description: "Run a codometer measurement and read what it produced: the README badge block and the JSON report's metrics, limits, and failures. Use when running codometer, choosing --output-json, --output-markdown, or --check, deciding where a report goes, wiring codometer into CI, or splicing badges into a README."
 license: MIT
 ---
 
@@ -29,19 +29,21 @@ runner would resolve. If a workspace runs it per project, that iteration is the
 runner's job, not codometer's. `--inputs [globs...]` narrows a single run to
 exactly the globs given, running only `language` analysis over them, with no
 configured input — not even the built-in `codebase` one — active.
+A run that must leave a configured input out, such as a gate that runs before
+any build, names a configuration that does not declare it.
 
 ## Naming the configuration
 
 **`--config <path>` is required.** Codometer never searches for a configuration
 file and has no default one: a run without the flag is refused with an error
 naming it. The named file answers alone — nothing from any other file is folded
-into it — and a relative path is resolved against the working directory, then
-the repository root. In this repository the workspace file is
-`configuration/codometer.config.ts`; a project's own is its
+into it — and a relative path is resolved against the working directory alone. In this repository the workspace file is
+`configuration/ic-suite/codometer.config.ts`; a project's own is its
 `codometer.config.ts`. A configuration file is always read as a plain object — exporting a function is
 not recognized and falls back to an empty configuration.
 
-`.gitignore` is already in force through file discovery — a build directory or
+`.gitignore` is already in force through file discovery, including the ones
+above the measured folder up to the repository root — a build directory or
 virtual environment pruned by an ignore file needs no exclusion naming it
 again — and git itself is never invoked, so an unversioned directory measures
 the same way a repository does.
@@ -51,14 +53,14 @@ the same way a repository does.
 `--output-json`, `--output-markdown`, `--check`, and `--format` are asked for
 separately, and none of them turns another on:
 
-| Invocation | Writes | Fails on staleness | Fails on a breach |
-| ---------- | ------ | ------------------ | ------------------ |
-| `codometer --config <path>` | no | no | no |
-| `codometer --config <path> --check limits` | no | no | yes |
-| `codometer --config <path> --check reports` | no | yes | no |
-| `codometer --config <path> --check limits,reports` | no | yes | yes |
-| `codometer --config <path> --output-json` | yes | no | no |
-| `codometer --config <path> --output-json --check limits` | yes | no | yes, after writing |
+| Invocation                                               | Writes | Fails on staleness | Fails on a breach  |
+| -------------------------------------------------------- | ------ | ------------------ | ------------------ |
+| `codometer --config <path>`                              | no     | no                 | no                 |
+| `codometer --config <path> --check limits`               | no     | no                 | yes                |
+| `codometer --config <path> --check reports`              | no     | yes                | no                 |
+| `codometer --config <path> --check limits,reports`       | no     | yes                | yes                |
+| `codometer --config <path> --output-json`                | yes    | no                 | no                 |
+| `codometer --config <path> --output-json --check limits` | yes    | no                 | yes, after writing |
 
 `--output-json`/`--output-markdown` passed **bare** write wherever the
 resolved configuration's own output of that kind declares, and are refused
@@ -76,7 +78,9 @@ code says no.
 
 A **breach** and **staleness** are different findings, never reported as one. A
 `warn`-severity breach prints and leaves the exit code alone; a `fail`-severity
-breach exits `1`, and only where `--check limits` asked for a gate at all. For
+breach exits `1`, and only where `--check limits` (the source tree) or
+`--check weigh` (the declared builds, such as compiled output) asked for a gate
+at all. `--check limits` needs no build; `--check weigh` does. For
 what to do about either, reach for the `codometer-triage` skill.
 
 ```yaml
@@ -101,7 +105,14 @@ each breaching block was found:
       "metrics": [
         {
           "instances": null,
-          "limits": [{ "breached": false, "label": null, "severity": "fail", "value": 500 }],
+          "limits": [
+            {
+              "breached": false,
+              "label": null,
+              "severity": "fail",
+              "value": 500
+            }
+          ],
           "name": "codebase.typescript.interfaces",
           "path": "typescript.interfaces",
           "unit": null,
@@ -109,7 +120,9 @@ each breaching block was found:
         },
         {
           "instances": [{ "file": "src/main.ts", "line": 4, "measured": 214 }],
-          "limits": [{ "breached": true, "label": null, "severity": "fail", "value": 0 }],
+          "limits": [
+            { "breached": true, "label": null, "severity": "fail", "value": 0 }
+          ],
           "name": "codebase.custom.TypeScript Comment Budget",
           "path": "custom.TypeScript Comment Budget",
           "unit": null,

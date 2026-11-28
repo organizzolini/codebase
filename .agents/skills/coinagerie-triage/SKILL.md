@@ -1,6 +1,6 @@
 ---
 name: coinagerie-triage
-description: Use when coinagerie --check exits non-zero, when a run names missing or stale words, refuses a glossary it cannot parse, or rejects a configuration or command line, when a --write deleted a definition, when a glossary headword looks wrong or surprising, when a check passes locally and fails in CI, or before adding a word to exclude.words, narrowing include, or deleting a glossary block to make a failing check pass.
+description: "Act on a failed coinagerie check: missing or stale words, a glossary it cannot parse, a rejected configuration, or a --write that deleted a definition. Use when coinagerie --check exits non-zero or passes locally and fails in CI, or before excluding a word to make it pass."
 license: MIT
 ---
 
@@ -79,7 +79,7 @@ start over with every definition empty.
 - **Passes locally, fails in CI.** The scanned sets differ. Suspects: a
   generated or build folder present locally and ignored in CI, or the reverse;
   an uncommitted glossary or configuration; a different working directory. Run
-  a bare `coinagerie --format json` in both and compare.
+  `coinagerie --config <path> --format json` in both and compare.
 - **A cached pass survives an edit.** Under a task runner's cache, a file the
   configuration reads from elsewhere, such as a parent glossary, has to be
   declared as an input of the check.

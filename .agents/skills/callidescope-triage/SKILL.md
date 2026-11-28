@@ -1,6 +1,6 @@
 ---
 name: callidescope-triage
-description: Act on a callidescope run that failed — a per-project gate reporting a stack over that project's limit, a breadth gate, a gate that read none of its project's own files, a stale committed report, an unreadable tsconfig, a run that traced nothing, or a rejected command line or configuration. Use when callidescope or an inferred gate target exits non-zero, when a stack got deeper in a change, when deciding whether a failing gate is a code fix or a limit fix, when picking or moving a project's own maximumDepth or maximumBreadth, when a printed maximumDepth disagrees with the number a gate judged, when a committed report disagrees with a fresh run, when a declared entry-point address resolves to nothing or to several, when a traced project has no callidescope.config.ts of its own or one that leaves a field out, or before reaching for maximumDepth to make a failing check pass.
+description: "Act on a failed callidescope run: a stack or breadth over its limit, a stale committed report, a gate that read none of its project's files, or a rejected configuration. Use when callidescope or a gate target exits non-zero, or before changing a limit to make it pass."
 license: MIT
 ---
 
@@ -9,23 +9,23 @@ license: MIT
 Callidescope fails for a handful of distinct reasons, and reading which one
 occurred is most of the work. Separate them first:
 
-| The run said                              | It is                                                                                                                                           |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `🚨 [DEPTH n > limit]`                    | A **finding** about the code. Fix the layering                                                                                                  |
-| A breadth row over the limit              | A **finding**. Split the callable                                                                                                               |
-| `A configured destination is stale`       | **Drift**. Re-run `--write`                                                                                                                     |
-| `## Read nothing of its own (0 files)`    | A gate **judged a project whose own files it never read**. Its verdict means nothing                                                            |
-| `🔭 Rejected a project it could not read` | A `tsconfig.json` **is missing or did not parse**. The trace stopped there                                                                      |
-| `🔭 Traced nothing`                       | The run **saw no code at all**. Nothing below it means anything                                                                                 |
-| `🔭 Rejected the command line`            | A **mistake** in the flags. Nothing was traced                                                                                                  |
-| `🔭 Rejected a project configuration`     | One project's own `callidescope.config.ts` **was missing, incomplete, or refused** for a field only the workspace may set. Nothing was reported |
+| The run said                              | It is                                                                                                                                                       |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `🚨 [DEPTH n > limit]`                    | A **finding** about the code. Fix the layering                                                                                                              |
+| A breadth row over the limit              | A **finding**. Split the callable                                                                                                                           |
+| `A configured destination is stale`       | **Drift**. Re-run `--write`                                                                                                                                 |
+| `## Read nothing of its own (0 files)`    | A gate **judged a project whose own files it never read**. Its verdict means nothing                                                                        |
+| `🔬 Rejected a project it could not read` | A project's tsconfig **is missing at `projectTsconfigPath` or did not parse**. The trace stopped there                                                      |
+| `🔬 Traced nothing`                       | The run **saw no code at all**. Nothing below it means anything                                                                                             |
+| `🔬 Rejected the command line`            | A **mistake** in the flags. Nothing was traced                                                                                                              |
+| `🔬 Rejected a project configuration`     | One project's own configuration **was missing at the configured path, incomplete, or refused** for a field only the workspace may set. Nothing was reported |
 
 The bottom five all mean the run never produced a verdict on the code. None of
 them writes a destination, so a checkout is unchanged by any of them — and no
 finding, or absence of one, should be believed from a run that printed one.
 
 The `limits` command prints its own read failures under the same
-`🔭 Rejected a project configuration` headline, fixed the same way — see
+`🔬 Rejected a project configuration` headline, fixed the same way — see
 [A refused project configuration](#a-refused-project-configuration).
 
 ## A depth gate that failed
@@ -74,7 +74,7 @@ gate into headroom for the one project the finding is about.
 ### The summary's depth is not the project's depth
 
 The number to take is the one a **verdict** gives you, and never the one a
-summary line prints. A `🔭 Finished an analysis` log line reports
+summary line prints. A `🔬 Finished an analysis` log line reports
 `maximumDepthTraced`, and the name is literal: it reduces over the whole of a
 run's measurement, the entire dependency-widened trace, so it is the deepest
 stack anywhere the run reached rather than anywhere it was pointed. The
@@ -144,7 +144,7 @@ This run judged a project whose own code it never read:
 ```
 
 The run itself was not empty — the dependencies it traced were read — so this is
-narrower than `🔭 Traced nothing`: only the judged project's own sources went
+narrower than `🔬 Traced nothing`: only the judged project's own sources went
 missing. A gate fails on it and a `trace` prints it and passes, because a gate
 that never looked cannot tell a clean project from an unread one, where a trace
 decides nothing and is a report for a reader to open.
@@ -155,7 +155,7 @@ Two things to check, in this order:
    anchored to its root, so one written workspace-relative matches nothing, and
    one written too broadly matches everything. Check the run's `exclude` and
    `excludeFrom` for a pattern covering the whole project as well.
-2. **A project that no longer holds sources its `tsconfig.json` includes.** A
+2. **A project that no longer holds sources its tsconfig includes.** A
    moved or emptied source root reads exactly the same way.
 
 **Do not silence it by dropping the gate.** A project the workspace
@@ -171,7 +171,7 @@ write. The run names every file that drifted rather than stopping at the first.
 **Re-run `--write`. That is the entire fix.**
 
 ```bash
-npx callidescope --config configuration/callidescope.config.ts --write
+npx callidescope --config configuration/ic-suite/callidescope.config.ts --write
 ```
 
 Three things a stale report does _not_ mean:
@@ -197,7 +197,7 @@ Nothing was traced. The message lists the reasons; these are the ones to expect:
 - **`--config` is missing.** Every command that loads a configuration
   (`callidescope`, `depth`, `breadth`, `limits`) requires it, and nothing
   searches for a file or defaults one. Pass the workspace file, for example
-  `--config configuration/callidescope.config.ts`. Under Nx the same
+  `--config configuration/ic-suite/callidescope.config.ts`. Under Nx the same
   path is the plugin's `configurationPath` option in the `nx.json`
   registration, and the `configuration` option of a hand-written target; each
   is refused by name, in the same `ConfigurationPathRequiredError` wording.
@@ -244,7 +244,7 @@ Nothing was traced. The message lists the reasons; these are the ones to expect:
 
 ## A refused project configuration
 
-A `callidescope.config.ts` sitting at one traced project's own root — or the
+The file at `projectConfigurationPath` under one traced project's root — or the
 absence of one — was refused. Nothing was printed and no destination was
 touched, so the checkout is exactly as the run found it. `<project>` is the
 workspace-relative project root; an address the workspace file declared is
@@ -252,9 +252,10 @@ labelled `the workspace configuration` instead.
 
 **The project has no configuration file at all.**
 
-Every traced project's own `callidescope.config.ts` is required, not optional.
-A project with none is refused by name before anything is traced. The fix is
-to add one, spreading the workspace's `projectDefaults` export and overriding
+Every traced project's own file is required, not optional. A project with none
+at the path the workspace's `projectConfigurationPath` names is refused by name,
+with that path, before anything is traced. Nothing else is looked for, so the fix
+is to add one there (or correct the setting), spreading the workspace's `projectDefaults` export and overriding
 what it means to:
 
 ```ts
@@ -356,7 +357,7 @@ project's limit still seems not to have taken effect after the schema passed,
 ask what it actually resolved to rather than re-reading the file:
 
 ```bash
-npx callidescope limits --config configuration/callidescope.config.ts
+npx callidescope limits --config configuration/ic-suite/callidescope.config.ts
 ```
 
 The row for that project says the number and the file it came from.
@@ -371,9 +372,9 @@ the run's own `exclude` instead.
 
 ## A project it could not read
 
-One project's `tsconfig.json` is missing or did not parse, and the run stopped
+One project's tsconfig is missing or did not parse, and the run stopped
 there. The message carries the path and either the compiler's own diagnostic
-or that the directory holds no `tsconfig.json` at all. `depth` and `breadth`
+or that the directory holds no file at the workspace's `projectTsconfigPath`. `depth` and `breadth`
 raise this too, under the same headline: a lookup traces before it matches, so
 it can reach the same unreadable project a whole-workspace trace always
 could.
@@ -389,11 +390,11 @@ Two ways out, and which one is right depends on why the file does not parse:
 - **The configuration is broken by accident.** Fix it. The message carries the
   compiler's own diagnostic, which usually names the option.
 - **The configuration is broken on purpose.** Some repositories commit a
-  broken `tsconfig.json` as a fixture — this workspace has one in
+  broken tsconfig as a fixture — this workspace has one in
   `codependix-examples`, and repairing it would delete the only place that
   failure is demonstrated. Exclude the project instead, by adding its directory
   to an `excludeFrom` ignore file or an `exclude` glob. Exclusions are applied
-  to the `tsconfig.json` before it is opened, so this really does keep the run
+  to the tsconfig before it is opened, so this really does keep the run
   away from it. Excluding the project's _files_ does not: opening its
   configuration is the step that fails, and that happens first.
 
@@ -405,8 +406,8 @@ own emptiness. It is never a clean result. Work down this list:
 1. **Is the code excluded?** `exclude` globs are additive to the built-in
    defaults, and `excludeFrom` files are easy to forget. An exclusion broad
    enough to cover every project empties the run.
-2. **Is `--directories` pointed where you think?** It takes paths holding their
-   own `tsconfig.json`, not project names.
+2. **Is `--directories` pointed where you think?** It takes paths holding a
+   tsconfig at `projectTsconfigPath`, not project names.
 
 ## A run that found no stacks
 

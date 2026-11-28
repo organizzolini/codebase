@@ -23,7 +23,7 @@ import type {
   ProjectReport,
 } from "@callidescope/core";
 
-// 🔭 Fixture expectations
+// 🔬 Fixture expectations
 
 /** Where this repository's root sits, relative to this file. */
 const WORKSPACE_ROOT = path.resolve(

@@ -58,9 +58,9 @@ const callidescopeConfiguration: CallidescopeProjectConfiguration = {
     maximumDepth: 3,
   },
   write: {
-    /** The `## 🔭 Callidescope` section at the bottom of this project's guide. */
+    /** The `## 🔬 Callidescope` section at the bottom of this project's guide. */
     markdown: {
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       path: "README.md",
     },
     /** No diagram: the package around this one publishes the run's. */

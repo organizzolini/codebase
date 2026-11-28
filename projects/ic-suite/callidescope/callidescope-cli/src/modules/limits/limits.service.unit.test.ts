@@ -439,7 +439,7 @@ describe(LimitsService, () => {
     await service.list({ config: CONFIGURATION_PATH });
 
     expect(logger.info).toHaveBeenCalledWith(
-      "🔭 Listed every project's limits",
+      "🔬 Listed every project's limits",
       undefined,
       { declaringProjectCount: 2, projectCount: 2 },
     );

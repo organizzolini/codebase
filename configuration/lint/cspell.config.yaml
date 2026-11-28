@@ -45,7 +45,7 @@ ignorePaths:
   # `.codometerignore` and `.prettierignore` exclude the same directory.
   - "**/projects/meanderaw/meanderaw-cli/output/**"
   # cspell:ignore mermiad
-  # 🔭 Callidescope's example output. Traced JSDoc summaries are copied verbatim, so a deliberate
+  # 🔬 Callidescope's example output. Traced JSDoc summaries are copied verbatim, so a deliberate
   # misspelling such as `mermiad` is ignored here, since the source's ignore comment is not copied.
   - "**/projects/ic-suite/callidescope/callidescope-examples/output/**"
   # 🧩 Installed agent skills, one per entry in skills-lock.json. Their prose stays as upstream wrote it.

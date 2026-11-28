@@ -2,7 +2,8 @@ import { Module } from "@nestjs/common";
 
 import { LoggerModule } from "@codebase/observability";
 
-import { ProcessRunnerModule } from "../process-runner/process-runner.module";
+import { ProcessRunnerModule } from "../../../process-runner/process-runner.module";
+import { UpdateReuiSkillModule } from "../installed-skills/modules/update-reui-skill/update-reui-skill.module";
 
 import { UpgradeNodeModule } from "./modules/upgrade-node/upgrade-node.module";
 import { UpgradePnpmModule } from "./modules/upgrade-pnpm/upgrade-pnpm.module";
@@ -17,6 +18,7 @@ import { UpgradeDependenciesService } from "./upgrade-dependencies.service";
   imports: [
     LoggerModule,
     ProcessRunnerModule,
+    UpdateReuiSkillModule,
     UpgradeNodeModule,
     UpgradePnpmModule,
     UpgradePythonModule,

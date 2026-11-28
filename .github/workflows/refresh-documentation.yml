@@ -36,6 +36,9 @@ jobs:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       OPENWIKI_MAX_OUTPUT_TOKENS: "16384"
       OPENWIKI_PROVIDER_RETRY_ATTEMPTS: "12"
+      # OpenWiki skips a page whose worker fails without saying why. Debug mode
+      # prints the provider's error, so a skipped page leaves its cause in the log.
+      OPENWIKI_DEBUG: "1"
       OPENWIKI_TELEMETRY_DISABLED: "true"
       # Groups every OpenRouter request of this run in its Sessions view. The
       # OpenRouter client in OpenWiki reads this variable by itself.
@@ -54,8 +57,10 @@ jobs:
           nx-shas: "false"
 
       # Retries a rate-limited OpenWiki run after the wait OpenRouter reports,
-      # writes every attempt to the job summary, and publishes `wiki-changed`:
-      # false when only `.last-update.json` and `.page-manifest.json` changed.
+      # and a run that skipped pages, which the next attempt resumes. Writes every
+      # attempt to the job summary, and publishes `wiki-changed`, false when only
+      # `.last-update.json` and `.page-manifest.json` changed, with the
+      # `pages-refreshed` and `pages-total` counts.
       - name: 🧑‍🏫 Refresh Documentation
         id: refresh
         run: pnpm exec nx run documentation:refresh-documentation
@@ -102,6 +107,7 @@ jobs:
 
             - Install and run OpenWiki in repository code mode
             - Update documentation under `documentation/openwiki/`
+            - Refreshed ${{ steps.refresh.outputs.pages-refreshed }} of ${{ steps.refresh.outputs.pages-total }} pages; a skipped page is reconsidered on the next run
             - Reuse the existing scheduled + manual workflow entrypoint
             - Publish changes on `docs/documentation-refresh`
 

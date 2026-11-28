@@ -38,6 +38,11 @@ const createWorkspace = (): string => {
             "projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace/SKILL.md",
           source: "Organizzolini/codebase",
         },
+        "codometer-measure": {
+          source:
+            "./projects/ic-suite/codometer/codometer-agents/skills/codometer-measure",
+          sourceType: "local",
+        },
         "nx-workspace": {
           skillPath: "skills/nx-workspace/SKILL.md",
           source: "nrwl/nx",
@@ -66,6 +71,11 @@ const createWorkspace = (): string => {
     workspaceRoot,
     "projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace/SKILL.md",
     renderSkill("callidescope-trace", "Trace call stacks."),
+  );
+  writeWorkspaceFile(
+    workspaceRoot,
+    "projects/ic-suite/codometer/codometer-agents/skills/codometer-measure/SKILL.md",
+    renderSkill("codometer-measure", "Run a measurement."),
   );
   mkdirSync(path.join(workspaceRoot, ".agents/skills/empty-folder"));
   writeWorkspaceFile(workspaceRoot, ".agents/skills/README.md", "# Skills\n");
@@ -109,6 +119,7 @@ describe(SkillDescriptionsService, () => {
       expect(service.resolveAuthoredSkillPaths(workspaceRoot)).toStrictEqual([
         ".agents/skills/commit-code/SKILL.md",
         "projects/ic-suite/callidescope/callidescope-agents/skills/callidescope-trace/SKILL.md",
+        "projects/ic-suite/codometer/codometer-agents/skills/codometer-measure/SKILL.md",
       ]);
     });
 

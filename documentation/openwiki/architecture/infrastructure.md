@@ -5,7 +5,7 @@ description: Documents Docker Compose services (PostgreSQL, SearxNG, Open WebUI)
 tags: [infrastructure, deployment, kubernetes, helm, terraform, docker-compose, linode, github-actions, ci-cd]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-25T18:55:00.444Z
+    at: 2026-11-27T18:15:08.471Z
 sources:
   - id: openwiki-source-105f2705156f283beb3d513c
     resource: repo://.github/workflows/continuous-deployment.yml
@@ -39,7 +39,7 @@ sources:
     resource: repo://infrastructure/terraform/main.tf
   - id: openwiki-source-fee95c572f00c778206fb7e0
     resource: repo://infrastructure/terraform/openrouter/main.tf
-generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-27T18:15:08.471Z" }
 ---
 
 # Infrastructure & Deployment
@@ -54,7 +54,7 @@ The `infrastructure/` directory contains three independent deployment layers:
 |-------|------------|---------|
 | **Local services** | Docker Compose | PostgreSQL, SearxNG, Open WebUI for local development |
 | **Kubernetes workloads** | Helm (`kubernetes-job`) | Reusable chart for batch Jobs with optional PVC storage |
-| **Cluster & services provisioning** | Terraform | Four roots: Linode LKE cluster (`main.tf`), OpenRouter workspace/guardrail/key/preset (`openrouter/`), GitHub repository settings/ruleset/Actions variables/secrets (`github/`), Linode Object Storage buckets for Terraform state and shared Nx cache (`linode/`) |
+| **Cluster & services provisioning** | Terraform | Four roots: Linode LKE cluster (`main.tf`), OpenRouter workspace/guardrail/key/preset (`openrouter/`), GitHub repository settings, ruleset, Dependabot, Actions variables and secrets (`github/`), Linode Object Storage buckets for Terraform state and shared Nx cache (`linode/`) |
 
 These layers are orchestrated through Nx targets defined in `infrastructure/project.json`.
 
@@ -190,7 +190,7 @@ infrastructure/terraform/
 ├── main.tf                 # Linode LKE cluster (linode_lke_cluster)
 ├── variables.tf            # linode_token, linode_region, linode_kubernetes_engine_cluster_id
 ├── openrouter/             # OpenRouter workspace, API key, guardrail, ranked-model preset
-├── github/                 # GitHub repository settings, main ruleset, Actions variables and secrets
+├── github/                 # GitHub repository settings, main ruleset, Dependabot, Actions variables and secrets
 └── linode/                 # Object Storage buckets: Terraform state + shared Nx cache
 ```
 

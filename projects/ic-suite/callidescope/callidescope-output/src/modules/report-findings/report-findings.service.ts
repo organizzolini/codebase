@@ -34,7 +34,7 @@ export class ReportFindingsService {
       return false;
     }
 
-    this.logger.error(`🔭 Found call stacks too deep`, undefined, {
+    this.logger.error(`🔬 Found call stacks too deep`, undefined, {
       count: deepStacks.length,
       deepest: Math.max(...deepStacks.map((stack) => stack.depth)),
       entryPoints: deepStacks.map((stack) => stack.frames[0]?.displayName),
@@ -52,7 +52,7 @@ export class ReportFindingsService {
       return false;
     }
 
-    this.logger.error("🔭 Traced nothing", undefined, {
+    this.logger.error("🔬 Traced nothing", undefined, {
       projectCount: args.result.summary.projectCount,
     });
 
@@ -65,7 +65,7 @@ export class ReportFindingsService {
       return false;
     }
 
-    this.logger.error(`🔭 Found stale reports`, undefined, {
+    this.logger.error(`🔬 Found stale reports`, undefined, {
       paths: args.stalePaths,
     });
 
@@ -84,7 +84,7 @@ export class ReportFindingsService {
     }
 
     this.logger.error(
-      `🔭 Found callables calling too much directly`,
+      `🔬 Found callables calling too much directly`,
       undefined,
       {
         callables: wideCallables.map((finding) => finding.displayName),

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:d609a27d0db3d8ac74a2d733bce527fe92afc78507808c311b8b48b76beafbc2",
+  "pageVersion": "sha256:819a2efd758e672b84224138139b72b3dae56fc9e6a4dbc6342339b8d9c592aa",
   "claims": [
     {
       "id": "claim_986c274571a045fc861211e675ec86cf",
@@ -37,21 +37,11 @@
       ]
     },
     {
-      "id": "claim_12a32b4404814cc9ae3206227c628cf6",
-      "statement": "The continuous-integration workflow runs a 17-leg matrix (Static, Guard, Callidescope Restrict, Codependix Bound, Conformetry Validate, seven Test legs, Secure, Build, End to End IC Suite, Infrastructure, Devcontainer) on push to main, pull requests and the merge queue, with concurrency that cancels superseded PR runs.",
-      "evidence": [
-        {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L1-L155",
-          "version": "repo-lines-v1:sha256:560004fdbeff2dd6e8f0cd19d3aac7f95e8da62219d445fd4c8fad50b8986c7d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTU1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5MGM3OTk0ZjViNDJjYmFiNTYyYTQyNDRkZjVkZDVmOTc1N2NlZjdhNDExMWUwMDg3MzViYmZlODAzZWRlMmU2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwYjY4Y2NiZGM1OTc4ODI2YjcxM2JhN2JkYzhjNTFhMGFhMWVkYWNlMGFhMWEzNDdlMWU5MWNhYzk4NWQ1NWMwIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5ZTlkMDA5NzYwNzE1OGM4YzMwMDZkNDA2NjIzMGYyYjA5NGRhNmRhYzA4YzFmNWE3MzU5ODdhNTZhZWEzYjhmIn0"
-        }
-      ]
-    },
-    {
       "id": "claim_62a25c46ab8e44bdb8bf411443bea90a",
       "statement": "The continuous-integration workflow skips legs conditionally before checkout (detecting Terraform and devcontainer changes and superseded runs) so a leg pays only for what a change needs.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L155-L225",
+          "resource": "repo://.github/workflows/continuous-integration.yml#L163-L233",
           "version": "repo-lines-v1:sha256:4475bbfae3afacb2d95a45bf289885cc5a1d9d3ea2927086a695a87777690b5e:eyJzZWxlY3RlZExpbmVDb3VudCI6NzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiNjhjY2JkYzU5Nzg4MjZiNzEzYmE3YmRjOGM1MWEwYWExZWRhY2UwYWExYTM0N2UxZTkxY2FjOTg1ZDU1YzAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBiMzJiOTg3MjYzZGYyMTYzZTcyNmQ0OGI5MmY2Zjk2NTE0OGNiNmI2ZDI4MzE3OTE1MTRjOTM5ZjgzN2ExNDIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjYwZTk1NzM1ZGNiYjZhNjUyMDkyZjA2NjNjNWY4Y2Y1OWE5Y2RlOTQ3Nzg1YWQ0MGE2YTRhOTM5NjUxOWEzM2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY1MzAzZDE0NTZiMGE4NjQ2ZTY2MThhOTQ0YTJlOTkyYzI0ZDQ0ZTNiNTFlMDAxYjkyMGE1YjE4M2Y0MDg4MjAifQ"
         }
       ]
@@ -75,8 +65,8 @@
       "statement": "The push-releases job versions packages with Nx Release, builds all projects, regenerates committed output (call traces, dependency graphs, generator inventory, synchronized config, codometer measurements, coinagerie glossaries), tags the codebase via semantic-release (v<version> tag and GitHub release), tags packages as <project>@<version>, publishes to npm with provenance and to GitHub Packages, links packages on the Linked artifacts page, and attests builds with actions/attest.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L226-L396",
-          "version": "repo-lines-v1:sha256:3ba3b6c9ecf2cfcd41d1ec45edcd4d55a1014139320c194e2eac033a4d62f717:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcxLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlMTU4MGNmYjFiZTVlMzhmYTM1NDBmN2Q2ODU1Y2Q2ODA0YWQwZGE4ZWZlNTEwNDczZjU0YTBmNDc1NDUzMjAxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0M2E0N2NlOTI5MzkyMGU3MzRlOTY1ZDg4NTczN2ExYzVkM2FhMjM0OGQ4YTdjZTRkODFkZjgxMTBmZjMzNjZiIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlMzMzZTE0MTdkZWQyMTU5ZmY4OGZiOTM2MTFmMjA3MzdiOGM3OGZlZGZhOTBmOTEzY2I5Yjc4MGRhZWQ1ZjhhIn0"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L227-L395",
+          "version": "repo-lines-v1:sha256:af94dddd375450eebe88510db28a3ee717dead897e4bcf9063803182231627e0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTY5LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJlMTU4MGNmYjFiZTVlMzhmYTM1NDBmN2Q2ODU1Y2Q2ODA0YWQwZGE4ZWZlNTEwNDczZjU0YTBmNDc1NDUzMjAxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI0M2E0N2NlOTI5MzkyMGU3MzRlOTY1ZDg4NTczN2ExYzVkM2FhMjM0OGQ4YTdjZTRkODFkZjgxMTBmZjMzNjZiIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlMzMzZTE0MTdkZWQyMTU5ZmY4OGZiOTM2MTFmMjA3MzdiOGM3OGZlZGZhOTBmOTEzY2I5Yjc4MGRhZWQ1ZjhhIn0"
         }
       ]
     },
@@ -89,8 +79,8 @@
           "version": "repo-lines-v1:sha256:96b1466acf0de943cf2884f2731369cb977d885ecbc6ab10ec895bfd085d0486:eyJzZWxlY3RlZExpbmVDb3VudCI6MjMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQxYjA3MTFmNmVjNTA4ZDhkNmY3ODhlMDE5MjdiNjlkYWVmMTNhYzE1Njg5MDhiMTJlYjA4YWRmNWIzMGU0YjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkZDFlNTQ2MmU1NDcwZjkyYTQ0OGEzNGNmMmE3Y2Y4Y2FiNmNhNjJkZTUxZGYyMDVhOWIwZWEzOTdhZjAwNTkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjFjMzY5NjgzOTcwOTI2Y2Y2MTc4MjhjZTVlMGVlZDhiMDU5MmUzNmE2ZTNmOThjZTBhZDc0ZDlkNWY3ZDEzNjEifQ"
         },
         {
-          "resource": "repo://.github/workflows/continuous-deployment.yml#L240-L300",
-          "version": "repo-lines-v1:sha256:1529412c75698c37e18da1e38d83af51bd70275f27a6957286cb084488eaa0d0:eyJzZWxlY3RlZExpbmVDb3VudCI6NjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2MWZlMGU5NDcxZmZhNzYwNDJhNjdiZGMwMGY2YmQ1ZmU4YTkxNDViNTY0Mjk1ZDIyYzFiNTA2NzdkYTg4MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4MzY3YjllOTcxYmZjY2QwODhkZmQzYWFiYTJiMzdjNjNhNjRiOGQwZTYwNjIzNzI4MDQzNjU2YzAzMDRhZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1NjZjN2E4NmI2MzdjYTA2MWIxNTVhNDViODYzM2M5N2EwZDkxY2M2MjJmNmQ3ZWI3N2E2YjEwZTE0YmM3OTcifQ"
+          "resource": "repo://.github/workflows/continuous-deployment.yml#L241-L299",
+          "version": "repo-lines-v1:sha256:a4b0510c2084b2e8af02a128b74431fb13f1ba3478e4fe63fa32b58286bb601b:eyJzZWxlY3RlZExpbmVDb3VudCI6NTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2MWZlMGU5NDcxZmZhNzYwNDJhNjdiZGMwMGY2YmQ1ZmU4YTkxNDViNTY0Mjk1ZDIyYzFiNTA2NzdkYTg4MGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjQ4MzY3YjllOTcxYmZjY2QwODhkZmQzYWFiYTJiMzdjNjNhNjRiOGQwZTYwNjIzNzI4MDQzNjU2YzAzMDRhZTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg1NjZjN2E4NmI2MzdjYTA2MWIxNTVhNDViODYzM2M5N2EwZDkxY2M2MjJmNmQ3ZWI3N2E2YjEwZTE0YmM3OTcifQ"
         }
       ]
     },
@@ -109,20 +99,6 @@
       ]
     },
     {
-      "id": "claim_db9b8ff89a414304ae7256e13b43fa36",
-      "statement": "The release uses two versioning systems: Nx release owns independent ic-suite package versions (tagged <project>@<version> with per-package CHANGELOG.md), while semantic-release owns the single codebase version (tagged v<version> with GitHub releases shown in the README badge).",
-      "evidence": [
-        {
-          "resource": "repo://configuration/repository/release.config.cjs#L1-L40",
-          "version": "repo-lines-v1:sha256:9c9367a16b560e45e92fc11b9189f3f351ba00a79a5cfe56915ab369f6982033:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVhZjIyY2YwNzMyNTkyYzI0NzE0MWNiZTYxZWZhMTEwMTI2MTJmNWEzMTIyYjlhZjliYmFmNTJmNTcyNGQxOTQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE5M2FiODE0ZWQ4NjgzMTU4NjQ1NmMyY2M2M2I4MDE1ZTM4NTE1YTM4ODBkODBhMGQ2ODU1OTk3YzZjOGE2MDkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkMTA4NjE0ZmY2NzU1OTQ4OWQzZTAyZGIxZDZjYmRlNWUxODhhYmJlYjg0MGI2ZmVjNjJiOGVlMDcwNjM2MTgifQ"
-        },
-        {
-          "resource": "repo://documentation/development/release-process.md#L1-L16",
-          "version": "repo-lines-v1:sha256:5437ee9f7905c0789eacde00bbb982b42bff8c2a750613156f694579f54c33f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFhNjk4NzA3ZDQwM2U4ZmQ0MTJhNjk1YzMyNDY0MWFjYjc4ZWQ1NTc3ZjM5MzhiNDQ1OTdmMWMzY2Q0YzI5YTIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjhlYTYwMmE2YjU2YTdlMmVmYjE2Y2VlY2QxYTg5NTEwN2IxNTc4YjM3NGQ2NTcwOGFmNmFhOGFlMzM2MDc1ZTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        }
-      ]
-    },
-    {
       "id": "claim_b76bbb4aa82c49a1a2d88540485c7241",
       "statement": "The cleanup-codebase composite action saves the Nx cache and ESLint cache (the ESLint save always runs) so partial progress is kept even on timeout or cancellation, and uploads the PR cache as an artifact for merge group import.",
       "evidence": [
@@ -137,8 +113,8 @@
       "statement": "The refresh-documentation workflow runs weekly (Friday 8:18am UTC), configures OpenWiki for OpenRouter with the model from the OPENWIKI_MODEL_ID variable and 12 provider retries, runs documentation:refresh-documentation, and opens a signed PR on the docs/documentation-refresh branch.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/refresh-documentation.yml#L1-L127",
-          "version": "repo-lines-v1:sha256:a02e17c7e1d84cf0d39257de1207a579a3bc2f274ecce2b6104e48858961c8c0:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhNDhjMWZkMTg2ODUyOGYxOWU0ZjQ3MWI2MjA0ODcyMWMxMjIwOWZiY2Q2MGNkYjU4YzYzOGRjNzMzNDdmMmMyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkNzRlMzFjOTZkOGVhNTI5ODBkZmE1YzUzMzdhZDRlYzhmNTcyMWNiYjk1ZGQ2MTA1YzhmNDc4NzAyMTljZmU2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+          "resource": "repo://.github/workflows/refresh-documentation.yml#L1-L135",
+          "version": "repo-lines-v1:sha256:5132209fc524c20607b36fb4b3022314b674ca8dacad8b9eeb0cb16da7c02a34:eyJzZWxlY3RlZExpbmVDb3VudCI6MTM1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhNDhjMWZkMTg2ODUyOGYxOWU0ZjQ3MWI2MjA0ODcyMWMxMjIwOWZiY2Q2MGNkYjU4YzYzOGRjNzMzNDdmMmMyIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJkNzRlMzFjOTZkOGVhNTI5ODBkZmE1YzUzMzdhZDRlYzhmNTcyMWNiYjk1ZGQ2MTA1YzhmNDc4NzAyMTljZmU2IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
         }
       ]
     },
@@ -148,7 +124,7 @@
       "evidence": [
         {
           "resource": "repo://.github/workflows/upgrade-dependencies.yml#L1-L76",
-          "version": "repo-lines-v1:sha256:5e9e0babee3ed3e2484e9533938f3e858e44d0f4aa2f3be95516a01b42b06148:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxNTk5NmJjYjE5YjJkNDk1MGE2YzMyZTdjMzdmZDliZDQ1NWIwYWE4NmQwNTAxZGNmMTI0YTYxZDM0YTkwNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3NGUzMWM5NmQ4ZWE1Mjk4MGRmYTVjNTMzN2FkNGVjOGY1NzIxY2JiOTVkZDYxMDVjOGY0Nzg3MDIxOWNmZTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+          "version": "repo-lines-v1:sha256:5e0044d0ad076ac48902603113adcda34d2d9ba561d77c6781bc7e9205494fb5:eyJzZWxlY3RlZExpbmVDb3VudCI6NzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxNTk5NmJjYjE5YjJkNDk1MGE2YzMyZTdjMzdmZDliZDQ1NWIwYWE4NmQwNTAxZGNmMTI0YTYxZDM0YTkwNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3NGUzMWM5NmQ4ZWE1Mjk4MGRmYTVjNTMzN2FkNGVjOGY1NzIxY2JiOTVkZDYxMDVjOGY0Nzg3MDIxOWNmZTYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
         }
       ]
     },
@@ -167,14 +143,28 @@
       "statement": "The continuous-integration workflow shards test-code into one leg per project group (Test Codebase, Test Common, Test Affirmancy, Test Caelundas, Test IC Suite, Test Lexico, Test Meanderaw) so slow projects do not block faster ones; legs time out after 12 minutes unless they set their own.",
       "evidence": [
         {
+          "resource": "repo://.github/workflows/continuous-integration.yml#L49-L143",
+          "version": "repo-lines-v1:sha256:dc64e745f9deb284253b88099dc77e96796e6264fb84fddff15ef70acbb796f1:eyJzZWxlY3RlZExpbmVDb3VudCI6OTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZWVhY2E2M2ExODdjZjY0ZjBhNGMzM2MwMzMyZjg0OGQwMDZjYWI0ZTk3ZjZiOGRiYTIwMjYyNjI1OWVkNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2MTIzZDM3OWVlNjk2ZDRhZTRhOTBiN2RiYTU4ZGI1NzliMmNiY2M0Yzc2NzE5MmIwNmIwODlkNzY5MzU0MjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkYzQwY2RkNmYxNzgyZjBiNjYzMzdkMmEzZmQ1MGQ3M2U5ZmZkYzkxMDk4NGI4MzI0YWFhNDE5ZmU1NTE5YzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxNGJjYjZiMTJmNTMyNWM1OTdmZWUyNTgxNzQyMDhjNWNlMmJlYjFlMDQzMGI3ODRkMjBkOGM0NTFiZGQwOTAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8410368f55174a1f96952f07d3b7100f",
+      "statement": "The continuous-integration workflow runs a 19-leg matrix (Static, Guard, Callidescope Restrict, Codependix Bound, Diagram Entity Relationships, Codometer Limit, Conformetry Validate, seven Test legs for Codebase/Common/Affirmancy/Caelundas/IC Suite/Lexico/Meanderaw, Secure, Build, End to End IC Suite, Infrastructure, Devcontainer) on push to main, pull requests and the merge queue, with concurrency that cancels superseded PR runs.",
+      "evidence": [
+        {
+          "resource": "repo://.github/workflows/continuous-integration.yml#L1-L155",
+          "version": "repo-lines-v1:sha256:dd18b847024342178a12ce510630e50bb11288ec613dadc946d1d5caa3f5e09c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTU1LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI5MGM3OTk0ZjViNDJjYmFiNTYyYTQyNDRkZjVkZDVmOTc1N2NlZjdhNDExMWUwMDg3MzViYmZlODAzZWRlMmU2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI5MmVlMTU3YThjMTg4M2IyOWQ5NWRiODg5NTIxMTE4MjcxNzc0MDgwMTViOTE1MzE5YzA5ZWU2YTM0YWFjMjE3IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5ODZjMzQwYTMxOWYyNGJhODkzODFmNDk2ZmI4NDY2YjRjNDU2ZTJkNzkxYTNkZTljZTEzOTc5MjIxYzEwYzY3In0"
+        },
+        {
           "resource": "repo://.github/workflows/continuous-integration.yml#L49-L135",
-          "version": "repo-lines-v1:sha256:9f29babcf06bffe54cba520711a724f125ee52ac9130a510ab6a29948c818710:eyJzZWxlY3RlZExpbmVDb3VudCI6ODcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZWVhY2E2M2ExODdjZjY0ZjBhNGMzM2MwMzMyZjg0OGQwMDZjYWI0ZTk3ZjZiOGRiYTIwMjYyNjI1OWVkNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjM2MTIzZDM3OWVlNjk2ZDRhZTRhOTBiN2RiYTU4ZGI1NzliMmNiY2M0Yzc2NzE5MmIwNmIwODlkNzY5MzU0MjAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkYzQwY2RkNmYxNzgyZjBiNjYzMzdkMmEzZmQ1MGQ3M2U5ZmZkYzkxMDk4NGI4MzI0YWFhNDE5ZmU1NTE5YzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIxNGJjYjZiMTJmNTMyNWM1OTdmZWUyNTgxNzQyMDhjNWNlMmJlYjFlMDQzMGI3ODRkMjBkOGM0NTFiZGQwOTAifQ"
+          "version": "repo-lines-v1:sha256:50d48e2868e5fabea7da8dd91e0e2ab358757f9cb478a0b39b139fbd0f205f23:eyJzZWxlY3RlZExpbmVDb3VudCI6ODcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzZWVhY2E2M2ExODdjZjY0ZjBhNGMzM2MwMzMyZjg0OGQwMDZjYWI0ZTk3ZjZiOGRiYTIwMjYyNjI1OWVkNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ5YTBiYjI2NWI3M2ZkMWRlNmVlMWEyMDUyOTNjOWQ3NzNhMWRhODI3MjkzYjhlZTRkMDI3NTVjMTM1Nzg2NmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhkYzQwY2RkNmYxNzgyZjBiNjYzMzdkMmEzZmQ1MGQ3M2U5ZmZkYzkxMDk4NGI4MzI0YWFhNDE5ZmU1NTE5YzgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMzYzYWM3ZWIwNGVkMTllNjJiMzFhOThhMWYyOTlmNGIyZmQ3Mjg4ZjdlYmYxZjcxOTA5Y2NmZjMyNWFlMjYifQ"
         }
       ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-27T18:15:08.471Z"
   }
 }

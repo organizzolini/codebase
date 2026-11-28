@@ -89,7 +89,7 @@ function buildDestination(
   return {
     description: undefined,
     endMarker: "<!-- END -->",
-    heading: "## 🔭 Callidescope",
+    heading: "## 🔬 Callidescope",
     path: destinationPath,
     previewCount: 3,
     render: undefined,
@@ -477,7 +477,7 @@ describe(CallidescopeCommand, () => {
     expect(callidescopeService.trace).not.toHaveBeenCalled();
     expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected the command line",
+      "🔬 Rejected the command line",
       undefined,
       { reason: buildUnknownCommandMessage("deep") },
     );
@@ -487,7 +487,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.debug).toHaveBeenCalledWith(
-      "🔭 Starting a call-stack trace",
+      "🔬 Starting a call-stack trace",
       undefined,
       { format: undefined, workspaceRoot: process.cwd() },
     );
@@ -499,7 +499,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.info).toHaveBeenCalledWith(
-      "🔭 Finished a call-stack trace",
+      "🔬 Finished a call-stack trace",
       undefined,
       { deepStackCount: 1, staleReportCount: 0, wideCallableCount: 0 },
     );
@@ -510,7 +510,7 @@ describe(CallidescopeCommand, () => {
 
     const printed = output.stdout();
 
-    expect(printed).toContain("# 🔭 Callidescope");
+    expect(printed).toContain("# 🔬 Callidescope");
     expect(printed).toContain("| Measure | Value |");
   });
 
@@ -541,7 +541,7 @@ describe(CallidescopeCommand, () => {
     expect(exitCode()).toBe(1);
     expect(output.stdout()).toBe("");
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected the command line",
+      "🔬 Rejected the command line",
       undefined,
       {
         reasons: [
@@ -582,7 +582,7 @@ describe(CallidescopeCommand, () => {
     const destination = {
       description: undefined,
       endMarker: "<!-- END -->",
-      heading: "# 🔭 Callidescope",
+      heading: "# 🔬 Callidescope",
       path: "DIAGRAM.md",
       previewCount: 3,
       render: undefined,
@@ -614,7 +614,7 @@ describe(CallidescopeCommand, () => {
     const destination = {
       description: undefined,
       endMarker: "<!-- END -->",
-      heading: "# 🔭 Callidescope",
+      heading: "# 🔬 Callidescope",
       path: "DIAGRAM.md",
       previewCount: 3,
       render: undefined,
@@ -753,7 +753,7 @@ describe(CallidescopeCommand, () => {
     // other says the checkout has not caught up, and they are fixed
     // differently.
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Found call stacks too deep",
+      "🔬 Found call stacks too deep",
       undefined,
       expect.objectContaining({ count: 1, deepest: 9 }),
     );
@@ -783,7 +783,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { check: "breadth", config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Found callables calling too much directly",
+      "🔬 Found callables calling too much directly",
       undefined,
       expect.objectContaining({ count: 1, widest: 5 }),
     );
@@ -859,7 +859,7 @@ describe(CallidescopeCommand, () => {
 
     expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Found callables calling too much directly",
+      "🔬 Found callables calling too much directly",
       undefined,
       expect.objectContaining({ count: 1, widest: 5 }),
     );
@@ -883,7 +883,7 @@ describe(CallidescopeCommand, () => {
 
     await command.run([], { check: "depth", config: CONFIGURATION_PATH });
 
-    expect(logger.error).toHaveBeenCalledWith("🔭 Traced nothing", undefined, {
+    expect(logger.error).toHaveBeenCalledWith("🔬 Traced nothing", undefined, {
       projectCount: 0,
     });
   });
@@ -924,7 +924,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected a project it could not read",
+      "🔬 Rejected a project it could not read",
       undefined,
       {
         reason:
@@ -983,7 +983,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected a project configuration",
+      "🔬 Rejected a project configuration",
       undefined,
       {
         reason:
@@ -1016,7 +1016,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected a project configuration",
+      "🔬 Rejected a project configuration",
       undefined,
       {
         reason:
@@ -1053,7 +1053,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected a project configuration",
+      "🔬 Rejected a project configuration",
       undefined,
       {
         reason:
@@ -1094,7 +1094,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected a project configuration",
+      "🔬 Rejected a project configuration",
       undefined,
       {
         reason:
@@ -1135,7 +1135,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected a project configuration",
+      "🔬 Rejected a project configuration",
       undefined,
       {
         reason:
@@ -1156,7 +1156,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected a project configuration",
+      "🔬 Rejected a project configuration",
       undefined,
       {
         reason:
@@ -1186,7 +1186,7 @@ describe(CallidescopeCommand, () => {
     await command.run([], { config: CONFIGURATION_PATH });
 
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected a project configuration",
+      "🔬 Rejected a project configuration",
       undefined,
       {
         reason:
@@ -1259,7 +1259,7 @@ describe(CallidescopeCommand, () => {
 
     expect(exitCode()).toBe(1);
     expect(logger.error).toHaveBeenCalledWith(
-      "🔭 Rejected the command line",
+      "🔬 Rejected the command line",
       undefined,
       {
         reasons: [
@@ -1334,7 +1334,7 @@ describe(CallidescopeCommand, () => {
           markdown: {
             description: "What the run found.",
             endMarker: "<!-- END -->",
-            heading: "# 🔭 Configured",
+            heading: "# 🔬 Configured",
             path: "docs/report.md",
             previewCount: 3,
             render: undefined,
@@ -1358,7 +1358,7 @@ describe(CallidescopeCommand, () => {
     ).toStrictEqual({
       description: "What the run found.",
       endMarker: "<!-- END -->",
-      heading: "# 🔭 Configured",
+      heading: "# 🔬 Configured",
       path: "flagged.md",
       previewCount: 3,
       render: undefined,
@@ -1382,7 +1382,7 @@ describe(CallidescopeCommand, () => {
       expect(outputJsonService.sync).not.toHaveBeenCalled();
       expect(outputMarkdownService.sync).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledWith(
-        "🔭 Rejected the command line",
+        "🔬 Rejected the command line",
         undefined,
         {
           reasons: [
@@ -1426,7 +1426,7 @@ describe(CallidescopeCommand, () => {
           markdown: {
             description: undefined,
             endMarker: "<!-- END -->",
-            heading: "# 🔭 Callidescope",
+            heading: "# 🔬 Callidescope",
             path: "REPORT.md",
             previewCount: 3,
             render: undefined,

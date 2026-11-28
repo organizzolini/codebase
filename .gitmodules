@@ -1,4 +1,4 @@
-[submodule "projects/JimmyPaolini"]
-	path = projects/JimmyPaolini
+[submodule "projects/identity"]
+	path = projects/identity
 	url = https://github.com/JimmyPaolini/JimmyPaolini.git
   branch = main

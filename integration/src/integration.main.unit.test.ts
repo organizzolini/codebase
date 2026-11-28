@@ -108,10 +108,6 @@ vi.mock("./modules/synchronization/synchronization.module", () => ({
   SynchronizationModule: function SynchronizationModule() {},
 }));
 
-vi.mock("./modules/upgrade-dependencies/upgrade-dependencies.module", () => ({
-  UpgradeDependenciesModule: function UpgradeDependenciesModule() {},
-}));
-
 describe("main bootstrap", () => {
   const originalExitCode = process.exitCode;
 
