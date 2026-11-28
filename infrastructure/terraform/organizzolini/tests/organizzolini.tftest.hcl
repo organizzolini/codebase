@@ -117,17 +117,17 @@ run "nothing_outside_organizzolini_net_is_named" {
   }
 }
 
-run "the_caelundas_module_creates_the_namespace_and_serves_the_role" {
+run "the_caelundas_modules_create_the_namespace_and_serve_the_role" {
   command = plan
 
   assert {
-    condition     = module.caelundas_database.namespace == "caelundas"
-    error_message = "The caelundas module must create the caelundas namespace."
+    condition     = module.caelundas_namespace.name == "caelundas"
+    error_message = "The caelundas-api module must create the caelundas namespace."
   }
 
   assert {
     condition     = module.caelundas_database.role == "caelundas_username"
-    error_message = "The caelundas module must serve the caelundas_username role."
+    error_message = "The caelundas-db module must serve the caelundas_username role."
   }
 }
 

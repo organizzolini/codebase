@@ -1,10 +1,10 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "implicitDependencies": ["caelundas-db", "persistence"],
+  "implicitDependencies": ["caelundas-api", "caelundas-db", "persistence"],
   "name": "infrastructure",
   "projectType": "library",
   "sourceRoot": "infrastructure",
-  "tags": ["language:infrastructure", "type:package"],
+  "tags": ["language:infrastructure", "type:infrastructure"],
   "targets": {
     "compose-config": {
       "cache": false,

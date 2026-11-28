@@ -15,3 +15,7 @@ Serves the astronomical events `caelundas-cli` writes to the Caelundas Postgres 
 - `events/` — reads the calendar's events, tag facets, and dataset span (`EventsService`).
 - `health/` — the health check query every API here answers (`HealthService`).
 - `night-sky/` — serves the night sky (`NightSkyService`). It holds the stars and constellation figures in memory, read once at startup from the rows `caelundas-cli night-sky` ingests into Postgres, so no request pays to query them. Its inner modules build the picture: `astronomy/` (ecliptic, projection, and sidereal time), `drawing/` (stars, lines, colors, SVG, and view), and `options/` (the input and measurements a request carries).
+
+## Infrastructure
+
+`infrastructure/terraform/namespace` is the Terraform module that creates the `caelundas` namespace every Caelundas workload (api, web, cli, and the database Secret) runs in, since the Argo CD applications do not set `CreateNamespace`. The `organizzolini` root in the `infrastructure` project instantiates it.

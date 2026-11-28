@@ -538,6 +538,8 @@ const MODULE_BOUNDARIES = {
       onlyDependOnLibsWithTags: ["name:configuration", "name:observability"],
       sourceTag: "name:testing",
     },
+    // Infrastructure is `type:infrastructure`, not a package, so it is
+    // unconstrained and may depend on any project, applications too.
     {
       notDependOnLibsWithTags: ["type:application"],
       sourceTag: "type:package",

@@ -78,7 +78,7 @@ migrations/                              # The migrations, each with its .sql pa
 
 ## Infrastructure
 
-`infrastructure/terraform/database` is the Terraform module that creates the `caelundas` namespace every Caelundas workload runs in, generates the `caelundas_username` role's password, and writes it as the `caelundas-postgres` Secret in the platform namespace, where the postgres chart reads it, and in the `caelundas` namespace, where the apps do. The `organizzolini` root in the `infrastructure` project instantiates it.
+`infrastructure/terraform/database` is the Terraform module that generates the `caelundas_username` role's password and writes it as the `caelundas-postgres` Secret in the platform namespace, where the postgres chart reads it, and in the `caelundas` namespace, where the apps do. It takes both namespaces as input; `caelundas-api` owns the `caelundas` one. The `organizzolini` root in the `infrastructure` project instantiates it.
 
 ## Commands
 
