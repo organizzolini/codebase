@@ -22,7 +22,6 @@ import {
   TAG_FIELD_PREFIX,
   TAG_OPERATORS,
   TAG_OPTIONS_EDITOR,
-  TAG_ROOT_DESCRIPTIONS,
 } from "./event-filters.constants";
 
 import type {
@@ -118,14 +117,10 @@ export function createTagOptions(
 }
 
 /**
- * What a tag root means: its own description, or one derived from its name for a root added to the data.
+ * What a tag root means: its note from the tag data, or one derived from its name for a root with none.
  */
 export function describeRoot(facet: EventFacet): string {
-  return (
-    facet.note ??
-    TAG_ROOT_DESCRIPTIONS[facet.name] ??
-    `The ${facet.name.toLowerCase()} of the event`
-  );
+  return facet.note ?? `The ${facet.name.toLowerCase()} of the event`;
 }
 
 /**

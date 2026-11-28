@@ -1,6 +1,7 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
+import { findDayCell } from "../../../../../../testing/calendar/calendar-page";
 import {
   filterGroup,
   filterLink,
@@ -27,8 +28,6 @@ describe("calendar states", () => {
       expect(screen.queryByText("No events match the filters")).toBeNull();
     });
 
-    await expect(
-      screen.findByRole("button", { name: /^Mars Square Saturn/u }),
-    ).resolves.toBeDefined();
+    await expect(findDayCell("2026-04-10")).resolves.toBeDefined();
   });
 });

@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { serveCalendarApi } from "../../../../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../../../../testing/calendar/calendar-api";
 import { findFacets } from "../../../../calendar-display/events-calendar/components/events-api/events-api.utilities";
 
 import { ALL_TAGS_FIELD } from "./event-group-fields.constants";

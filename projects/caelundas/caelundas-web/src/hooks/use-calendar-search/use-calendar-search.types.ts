@@ -1,4 +1,6 @@
 import type { DateRangeValue } from "../../components/calendar-controls/calendar-date-picker/calendar-date-picker.types";
+import type { AllDayMode } from "../../components/calendar-display/events-calendar/components/calendar-grid/components/calendar-all-day/calendar-all-day.types";
+import type { DayOpener } from "../../components/calendar-display/events-calendar/components/calendar-month/calendar-month.types";
 import type {
   CalendarViewName,
   TimelineScale,
@@ -16,10 +18,12 @@ import type { CalendarSearch } from "./calendar-search.types";
  * The ways the page writes a change to the link.
  */
 export interface UseCalendarSearchResult {
+  handleAllDayModeChange: (mode: AllDayMode) => void;
   handleColorsChange: (enabled: boolean) => void;
   handleColumnsChange: (columns: readonly string[] | undefined) => void;
   handleCompareChange: (enabled: boolean) => void;
   handleDateChange: (date: Date) => void;
+  handleDayOpen: DayOpener;
   handleFilterChange: (filter: EventFilterQuery) => void;
   handleFoldChange: (fold: string | undefined) => void;
   handleGroupingChange: (grouping: EventGrouping) => void;

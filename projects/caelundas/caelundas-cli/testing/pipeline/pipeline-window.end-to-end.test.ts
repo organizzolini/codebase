@@ -59,6 +59,11 @@ describe(
       expect(storedInstants.some((event) => has(event, "Dissolving"))).toBe(
         false,
       );
+      // Moonrise and moonset bound the Moon Up and Moon Down spans, and stay beside them.
+      expect(stored.some((event) => has(event, "Moon Up"))).toBe(true);
+      expect(stored.some((event) => has(event, "Moon Down"))).toBe(true);
+      expect(storedInstants.some((event) => has(event, "Moonrise"))).toBe(true);
+      expect(storedInstants.some((event) => has(event, "Moonset"))).toBe(true);
       // Sunrise, solar noon and the exact aspects bound no span, so they stay.
       expect(storedInstants.some((event) => has(event, "Sunrise"))).toBe(true);
       expect(storedInstants.some((event) => has(event, "Solar Zenith"))).toBe(
@@ -283,7 +288,7 @@ describe(
       expect(covers(windowEnd)).toBe(true);
     });
 
-    it("pairs every moonrise and moonset in the window with a span the Moon is up", async () => {
+    it("pairs every moonrise and moonset in the window with a span the Moon is up and one it is down", async () => {
       expect.hasAssertions();
 
       const { events } = await runPipelineWindow(equinoxDay);
@@ -292,18 +297,63 @@ describe(
           event.start.isSame(event.end) &&
           (event.tags.includes("Moonrise") || event.tags.includes("Moonset")),
       );
-      const spans = events.filter((event) => event.tags.includes("Moon Up"));
-      const unpaired = crossings.filter(
-        (crossing) =>
-          !spans.some((span) =>
-            crossing.tags.includes("Moonrise")
-              ? span.start.isSame(crossing.start)
-              : span.end.isSame(crossing.start),
-          ),
-      );
+      const up = events.filter((event) => event.tags.includes("Moon Up"));
+      const down = events.filter((event) => event.tags.includes("Moon Down"));
+      const unpaired = crossings.filter((crossing) => {
+        const isRise = crossing.tags.includes("Moonrise");
+        const starts = isRise ? up : down;
+        const ends = isRise ? down : up;
+
+        return !(
+          starts.some((span) => span.start.isSame(crossing.start)) &&
+          ends.some((span) => span.end.isSame(crossing.start))
+        );
+      });
 
       expect(crossings.length).toBeGreaterThan(0);
       expect(unpaired.map((event) => event.summary)).toStrictEqual([]);
+    });
+
+    it("alternates the Moon being up and down, each span ending where the next begins", async () => {
+      expect.hasAssertions();
+
+      const { events } = await runPipelineWindow(equinoxDay);
+      const spans = events
+        .filter(
+          (event) =>
+            event.tags.includes("Moon Up") || event.tags.includes("Moon Down"),
+        )
+        .toSorted((first, second) => first.start.diff(second.start));
+      const kinds = spans.map((span) => span.tags.includes("Moon Up"));
+      const later = spans.slice(1);
+
+      expect(spans.length).toBeGreaterThan(2);
+      expect(later.map((_span, index) => kinds[index + 1])).toStrictEqual(
+        later.map((_span, index) => !kinds[index]),
+      );
+      expect(later.map((span) => span.start.valueOf())).toStrictEqual(
+        later.map((_span, index) => spans[index]?.end.valueOf()),
+      );
+    });
+
+    it("completes the Moon Up or Moon Down span the window opens and closes in, to its true start and end", async () => {
+      expect.hasAssertions();
+
+      const { events, input } = await runPipelineWindow(equinoxDay);
+      const windowStart = input.start.clone().tz(input.timezone).startOf("day");
+      const windowEnd = input.end.clone().tz(input.timezone).endOf("day");
+      const spans = events.filter(
+        (event) =>
+          event.tags.includes("Moon Up") || event.tags.includes("Moon Down"),
+      );
+      const across = (minute: moment.Moment): number =>
+        spans.filter(
+          (span) => span.start.isBefore(minute) && span.end.isAfter(minute),
+        ).length;
+
+      // The Moon is either up or down at an edge, so one span holds it, whole.
+      expect(across(windowStart)).toBe(1);
+      expect(across(windowEnd)).toBe(1);
     });
 
     it("splits the Sun's year at its sixteen points into pre- and post- intervals that meet", async () => {

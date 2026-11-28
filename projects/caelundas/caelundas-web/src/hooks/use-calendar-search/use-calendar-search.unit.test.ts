@@ -39,10 +39,12 @@ describe(useCalendarSearch, () => {
     const { result } = renderHook(() => useCalendarSearch("UTC"));
 
     expect(result.current).toStrictEqual({
+      handleAllDayModeChange: expect.any(Function),
       handleColorsChange: expect.any(Function),
       handleColumnsChange: expect.any(Function),
       handleCompareChange: expect.any(Function),
       handleDateChange: expect.any(Function),
+      handleDayOpen: expect.any(Function),
       handleFilterChange: expect.any(Function),
       handleFoldChange: expect.any(Function),
       handleGroupingChange: expect.any(Function),
@@ -67,6 +69,32 @@ describe(useCalendarSearch, () => {
       replace: false,
       search: { date: "2026-03-04" },
     });
+  });
+
+  it("opens the view below a day as a new entry, keeping the rest of the link", () => {
+    const { result } = renderHook(() => useCalendarSearch("UTC"));
+
+    result.current.handleDayOpen("week", "2026-03-12");
+
+    expect(readWritten()).toStrictEqual({
+      replace: false,
+      search: { date: "2026-03-12", days: undefined, view: "week" },
+    });
+  });
+
+  it("writes the all-day state in place, the groups as none", () => {
+    const { result } = renderHook(() => useCalendarSearch("UTC"));
+
+    result.current.handleAllDayModeChange("contracted");
+
+    expect(readWritten()).toStrictEqual({
+      replace: true,
+      search: { ad: "c" },
+    });
+
+    result.current.handleAllDayModeChange("grouped");
+
+    expect(readWritten().search.ad).toBeUndefined();
   });
 
   it("writes a setting in place", () => {

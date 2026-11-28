@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { findFixtureFacets } from "../../../../../../testing/calendar-facets";
+import { findFixtureFacets } from "../../../../../../testing/calendar/calendar-facets";
 import {
   createEventGroupFields,
   getDefaultGrouping,
@@ -167,9 +167,7 @@ describe(createColorScheme, () => {
     );
     const ingress = {
       ...event(["tag-other"]),
-      tags: [
-        { depth: 2, id: "ingress", name: "Ingress", path: "Sign / Ingress" },
-      ],
+      tags: [{ depth: 2, id: "ingress", name: "Stay", path: "Sign / Stay" }],
     };
 
     expect(scheme.colorOf(ingress)).toBe("#10b981");

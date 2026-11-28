@@ -6,6 +6,12 @@
   },
   "events": [
     {
+      "end": "2026-12-20T08:45:00Z",
+      "note": "The Moon is down from the USNO moonset (05:47 CET) to the USNO moonrise (09:45 CET) on 20 December",
+      "start": "2026-12-20T04:47:00Z",
+      "summary": "🌑 Moon Down"
+    },
+    {
       "note": "USNO 2026-12-20: Moon Set 05:47 CET (UTC+1)",
       "start": "2026-12-20T04:47:00Z",
       "summary": "🌙🔽 Moonset"

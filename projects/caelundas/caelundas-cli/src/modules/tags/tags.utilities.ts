@@ -28,9 +28,15 @@ export function classifyEvent(event: ClassifiableEvent): TagPath[] {
     }),
   ];
 
+  // Daylight and night are times of day, not twilights, though a twilight tag marks them.
+  const isDayOrNight = rawTags.has("Daylight") || rawTags.has("Night");
+  const twilight = tagPathKey([TAG_ROOT.daily, "Twilight"]);
+
   return pruneAncestorPaths([
-    ...[...rawTags].flatMap((rawTag) => mapRawTag(rawTag, maps)),
-    ...ingressPaths(event, rawTags),
+    ...[...rawTags]
+      .flatMap((rawTag) => mapRawTag(rawTag, maps))
+      .filter((path) => !isDayOrNight || tagPathKey(path) !== twilight),
+    ...ingressPaths(rawTags),
     ...eclipsePaths(rawTags),
     ...durationPaths(event),
     [TAG_ROOT.temporality, isInstant(event) ? "Perfective" : "Progressive"],
@@ -123,7 +129,7 @@ function durationPaths(event: ClassifiableEvent): TagPath[] {
   const minutes = (event.end.valueOf() - event.start.valueOf()) / 60_000;
   const unit = DURATION_UNITS.findLast(([, minimum]) => minutes >= minimum);
 
-  return [[TAG_ROOT.duration, unit?.[0] ?? "Minutes"]];
+  return [[TAG_ROOT.temporality, "Progressive", unit?.[0] ?? "Minutes"]];
 }
 
 /** An eclipse's kind, from the body eclipsed and the eclipse's type. */
@@ -151,35 +157,15 @@ function findRawTag(
   return names.find((name) => rawTags.has(name));
 }
 
-/** The kind of ingress an ingress event is, or of stay when it is a span. */
-function ingressKind(
-  event: ClassifiableEvent,
-  rawTags: ReadonlySet<string>,
-): string {
-  if (rawTags.has("Decan")) {
-    return isInstant(event) ? "Decan Ingress" : "Decan Transit";
-  }
-  if (rawTags.has("Peak")) {
-    return isInstant(event) ? "Peak Ingress" : "Peak Transit";
-  }
-  return isInstant(event) ? "Sign Ingress" : "Sign Transit";
-}
-
 /**
  * A plain sign ingress is an instant, where its stay is a span; a traditional planet's ingress also carries dignity.
  */
-function ingressPaths(
-  event: ClassifiableEvent,
-  rawTags: ReadonlySet<string>,
-): TagPath[] {
+function ingressPaths(rawTags: ReadonlySet<string>): TagPath[] {
   if (!rawTags.has("Ingress")) {
     return [];
   }
 
-  return [
-    [TAG_ROOT.sign, "Ingress", ingressKind(event, rawTags)],
-    ...dignityPaths(rawTags),
-  ];
+  return [[TAG_ROOT.sign, "Stay", stayKind(rawTags)], ...dignityPaths(rawTags)];
 }
 
 /** Whether an event is a single moment rather than a span. */
@@ -215,4 +201,12 @@ function pruneAncestorPaths(paths: readonly TagPath[]): TagPath[] {
     .filter(([key]) => !keys.some((other) => other.startsWith(`${key}\u0000`)))
     .toSorted(([a], [b]) => (a < b ? -1 : 1))
     .map(([, path]) => path);
+}
+
+/** The kind of stay an ingress event bounds or is: of a decan, of half a sign, or of the whole sign. */
+function stayKind(rawTags: ReadonlySet<string>): string {
+  if (rawTags.has("Decan")) {
+    return "Decan Stay";
+  }
+  return rawTags.has("Peak") ? "Half Stay" : "Full Sign";
 }

@@ -5,6 +5,9 @@ import type { SpanBoundaryRule } from "./progressive.types";
 /** Token for the finders of boundaries a window cuts off. */
 export const EDGE_EVENTS_FINDERS_TOKEN = "EDGE_EVENTS_FINDERS_TOKEN";
 
+/** Raw tags of instants that only build spans, so they are never stored: the stations. */
+export const SPAN_ONLY_INSTANT_TAGS: readonly string[] = ["Direction"];
+
 /** Instants of these families are dropped when a stored span bounds them. */
 export const SPAN_BOUNDARY_RULES: readonly SpanBoundaryRule[] = [
   {
@@ -59,12 +62,6 @@ export const SPAN_BOUNDARY_RULES: readonly SpanBoundaryRule[] = [
   },
   {
     edge: "either",
-    instants: ["Direction"],
-    name: "station",
-    spans: ["Retrogrades", "Directs"],
-  },
-  {
-    edge: "either",
     instants: ["Ingress"],
     name: "ingress",
     spans: ["Ingress"],
@@ -74,18 +71,6 @@ export const SPAN_BOUNDARY_RULES: readonly SpanBoundaryRule[] = [
     instants: ["Annual Solar Cycle"],
     name: "solar year point",
     spans: ["Annual Solar Cycle"],
-  },
-  {
-    edge: "start",
-    instants: ["Moonrise"],
-    name: "moonrise",
-    spans: ["Moon Up"],
-  },
-  {
-    edge: "end",
-    instants: ["Moonset"],
-    name: "moonset",
-    spans: ["Moon Up"],
   },
   {
     edge: "either",

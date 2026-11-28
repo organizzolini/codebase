@@ -19,13 +19,11 @@ const SHELF_GLOB = path.join(
 
 /** Novels under Fiction and under Classics, a shelf under two parents. */
 const FILE_TREE = [
-  "treeView-beta",
-  '    "Books/"',
-  '        "Fiction/"',
-  '            "Novels"',
-  '        "Classics/"',
-  '            "Novels"',
-  '    "Music"',
+  "Books",
+  "├── Fiction",
+  "│   └── Novels (also under Classics)",
+  "└── Classics",
+  "Music",
 ].join("\n");
 
 describe("render-tree-data on a graph whose nodes have several parents", () => {
@@ -77,7 +75,7 @@ describe("render-tree-data on a graph whose nodes have several parents", () => {
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('n0["Books"]');
       expect(result.stdout.match(/\["Novels"\]/gu)).toHaveLength(1);
-      expect(result.stdout).toContain("n1 --> n3");
+      expect(result.stdout).toContain('n1 --> n3["Novels"]');
       expect(result.stdout).toContain("n2 --> n3");
       expect(result.stderr).toBe("");
     },

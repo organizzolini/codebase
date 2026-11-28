@@ -16,8 +16,8 @@ import { CHIP_CLASS_NAME } from "../calendar-display-menu/calendar-display-menu.
 import { findToggledLeaf } from "../calendar-display-menu/calendar-display-menu.utilities";
 
 import {
+  LAYOUT_MENU_TITLE,
   LAYOUT_TREE_CLASS_NAME,
-  TITLE,
   VIEW_ICONS,
 } from "./calendar-layout-menu.constants";
 import {
@@ -82,7 +82,7 @@ export function CalendarLayoutMenu(
       className={className}
       data-testid="calendar-layout-menu"
     >
-      <ButtonGroup aria-label={TITLE}>
+      <ButtonGroup aria-label={LAYOUT_MENU_TITLE}>
         <Popover
           onOpenChange={setIsOpen}
           open={isOpen}
@@ -94,7 +94,7 @@ export function CalendarLayoutMenu(
                 variant="outline"
               >
                 <LayoutDashboard aria-hidden="true" />
-                {TITLE}
+                {LAYOUT_MENU_TITLE}
               </Button>
             }
           />

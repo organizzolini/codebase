@@ -264,14 +264,17 @@ own, or add `--page 1`, repeating `--page` for several, to draw only those. Or p
 [`tag-graph-data.md`](documentation/tag-graph-data.md) and
 [`constellation-graph-data.md`](documentation/constellation-graph-data.md)
 hold the diagrams of a local database, named `{entity}-{tree|graph}-data.md`,
-with the tag tree's `--diagram` between them. Regenerate them with the
+with the tag tree's `--diagram` between them. Each opens with an index of links and
+holds one small diagram per root group (a tag shared by several parents is drawn
+once, in orange, with all its parent edges), so none is one tall stack; the file tree
+is a plain text tree, a tag under several parents listed once and marked `(also under …)`. Regenerate them with the
 connection variables set (`render-tag-graph --args="--output-markdown
 projects/caelundas/caelundas-db/documentation/tag-graph-data.md --overwrite"` draws the edges):
 
 ```bash
 nx run caelundas-db:render-tag-tree --args="--diagram flowchart --output-markdown projects/caelundas/caelundas-db/documentation/tag-tree-flowchart-data.md --overwrite"
 nx run caelundas-db:render-tag-tree --args="--diagram filetree --output-markdown projects/caelundas/caelundas-db/documentation/tag-tree-filetree-data.md --overwrite"
-nx run caelundas-db:render-constellation-graph --args="--limit 31 --output-markdown projects/caelundas/caelundas-db/documentation/constellation-graph-data.md --overwrite"
+nx run caelundas-db:render-constellation-graph --args="--output-markdown projects/caelundas/caelundas-db/documentation/constellation-graph-data.md --overwrite"
 ```
 
 ## Drawing the metric expressions
@@ -287,7 +290,7 @@ command, which reads `metrics` and `metric_expressions` through
 marker block of
 [`metric-expressions.md`](documentation/metric-expressions.md): a table of every
 metric's slug, name, unit and expression in infix form, then one Mermaid
-flowchart per metric. Operators are hexagons, measures rectangles named with
+flowchart per unit, each metric a small subgraph in rows. Operators are hexagons, measures rectangles named with
 their slug, and metrics read by another metric stadiums; each
 edge to an operand carries its position. The prose around the markers is yours.
 The `check` configuration compares without writing, and like the rest of the

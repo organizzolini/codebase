@@ -225,6 +225,14 @@ describe(validateCalendarSearch, () => {
     ).toBe(getCalendarReloadKey({ metrics: ["EVENTS"] }));
   });
 
+  it("reads the all-day state as c or e, and keeps it out of what decides a reload", () => {
+    expect(validateCalendarSearch({ ad: "c" }).ad).toBe("c");
+    expect(validateCalendarSearch({ ad: "e" }).ad).toBe("e");
+    expect(validateCalendarSearch({ ad: "x" }).ad).toBeUndefined();
+    expect(validateCalendarSearch({}).ad).toBeUndefined();
+    expect(getCalendarReloadKey({ ad: "c" })).toBe(getCalendarReloadKey({}));
+  });
+
   it("reads the folded strips in the strips' order, ignoring what it does not know", () => {
     expect(validateCalendarSearch({ fold: "sort,select" }).fold).toBe(
       "select,sort",

@@ -290,6 +290,22 @@ export class DailyCyclesBuilderService {
   }
 
   /**
+   * Builds the span the Moon is below the horizon, from moonset to moonrise.
+   */
+  getMoonDownDurationEvent(
+    beginning: DetectedCalendarEvent,
+    ending: DetectedCalendarEvent,
+  ): DetectedCalendarEvent {
+    return {
+      description: "Moon Down (Moonset to Moonrise)",
+      end: ending.start,
+      start: beginning.start,
+      summary: "🌑 Moon Down",
+      tags: [...DailyCyclesBuilderService.lunarTags, "Moon Down"],
+    };
+  }
+
+  /**
    * Builds the span the Moon is above the horizon, from moonrise to moonset.
    */
   getMoonUpDurationEvent(

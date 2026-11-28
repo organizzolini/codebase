@@ -7,8 +7,8 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { readServedApi } from "../../../../testing/calendar-api";
-import { findToolbar } from "../../../../testing/calendar-page";
+import { readServedApi } from "../../../../testing/calendar/calendar-api";
+import { findToolbar } from "../../../../testing/calendar/calendar-page";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 import { getRouter } from "../../../router";
 import { NightSkyBackdropMount } from "../../calendar-appearance/night-sky-backdrop/night-sky-backdrop-mount";

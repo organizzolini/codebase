@@ -50,7 +50,6 @@ export interface FilterTags {
   readonly harmonic2: Tag;
   readonly harmonic6: Tag;
   readonly harmonic12: Tag;
-  readonly ingress: Tag;
   readonly luminary: Tag;
   readonly luminaryMoon: Tag;
   readonly major: Tag;
@@ -58,8 +57,9 @@ export interface FilterTags {
   readonly planet: Tag;
   readonly planetary: Tag;
   readonly sign: Tag;
-  readonly signIngress: Tag;
+  readonly signStay: Tag;
   readonly simple: Tag;
+  readonly stay: Tag;
 }
 
 /** The body of a GraphQL response: data, errors, or both. */
@@ -190,14 +190,14 @@ export async function seedFilterTags(
     tags.create({ name: "Major", parent: simple, slug: "major" }),
   );
   const sign = await tags.save(tags.create({ name: "Sign", slug: "sign" }));
-  const ingress = await tags.save(
-    tags.create({ name: "Ingress", parent: sign, slug: "ingress" }),
+  const stay = await tags.save(
+    tags.create({ name: "Stay", parent: sign, slug: "stay" }),
   );
-  const signIngress = await tags.save(
+  const signStay = await tags.save(
     tags.create({
-      name: "Sign Ingress",
-      parent: ingress,
-      slug: "sign-ingress",
+      name: "Full Sign",
+      parent: stay,
+      slug: "full-sign",
     }),
   );
   const planetary = await tags.save(
@@ -220,7 +220,7 @@ export async function seedFilterTags(
   );
   const given: [string, Tag[]][] = [
     ["Moon Conjunct Mars", [major, moon, luminaryMoon, harmonic2]],
-    ["Sun Enters Aries", [signIngress, harmonic12]],
+    ["Sun Enters Aries", [signStay, harmonic12]],
     ["Mars Retrograde", [direction]],
     ["Equinox Watch", [harmonic6]],
   ];
@@ -250,7 +250,6 @@ export async function seedFilterTags(
     harmonic2,
     harmonic6,
     harmonic12,
-    ingress,
     luminary,
     luminaryMoon,
     major,
@@ -258,8 +257,9 @@ export async function seedFilterTags(
     planet,
     planetary,
     sign,
-    signIngress,
+    signStay,
     simple,
+    stay,
   };
 }
 

@@ -5,6 +5,7 @@
 The words this project uses, regenerated with this project's `coinagerie-check:write` Nx target.
 
 - **abbreviate**: To write a duration's units by their short symbols, `8 y 11 mo 3 w`, rather than by name; every span under a day does, and a compact one always.
+- **ad**: The link parameter holding the all-day row's state, `c` for one slim row of counts and `e` for every event; the grouped state is the default and leaves it out.
 - **air**: One of the four sign elements used as a filter field, with a value of fire, earth, air or water.
 - **also**:
 - **altitude**: Height of a star above the horizon in degrees, where the pole observer sees altitude equal declination, shown by the night sky.
@@ -16,8 +17,10 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **aspect**: Angular relationship between two bodies, such as a conjunction or a harmonic, filtered and colored as a tag root.
 - **astraea**: Asteroid whose name the project does not use in code; it appears only in the glossary list here.
 - **astronomical**: Twilight stage, such as Astronomical Dawn or Dusk, that the calendar labels and draws with a glyph icon.
+- **autumnal**: Names the September equinox in the Yearly cycle tags, when the Sun crosses the celestial equator southward.
 - **average**:
 - **away**:
+- **band**: The strip under the month's weekday header that lists, as groups, the events running through every day of the month, so no day cell repeats them.
 - **beltane**: Cross-quarter festival date, which the calendar marks with a flower glyph and its own icon image.
 - **beneath**:
 - **benefic**:
@@ -52,6 +55,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **decile**: Aspect of 36 degrees, one tenth of the circle, drawn with its own decile-36 icon image in calendar glyphs.
 - **decuple**: Stellium label for a cluster of ten bodies, as the CLI's symbol map names it.
 - **degree**: Angle unit for all night sky coordinates, such as the 90-degree default vertical field and full turns.
+- **dominant**: The color most of a group's events share, which colors its chip when the color scheme gives its tag none.
 - **duodecuple**: Stellium label for a cluster of twelve bodies, as the CLI's symbol map names it.
 - **dusk**: Evening twilight stage, labeled Astronomical Dusk, Astronomical Twilight Evening or Civil Dusk, each with its own icon.
 - **earth**: Earth-centered reference in the Eclipse Frame filter, and the element name of earth signs in the Element filter.
@@ -59,6 +63,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ecliptic**: Yearly path the Sun appears to follow across the sky, drawn as a line with style keys for color and width.
 - **elongation**: Angular distance of a planet from the Sun, its stage shown by east or west arrow glyphs on the calendar.
 - **epoch**:
+- **equinox**: The moment the Sun crosses the celestial equator and day and night are near equal, a vernal or autumnal event in the Yearly cycle tags.
 - **eris**: Dwarf planet Eris, a body whose aspects the CLI's triple-aspect tests tag; the web app never names it.
 - **expandable**:
 - **few**:
@@ -89,6 +94,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **ixion**: A trans-Neptunian plutino dwarf planet, not named in any source or test file, so only the glossary records it.
 - **juno**: The asteroid symbol ⚵ mapped to juno-icon.svg in the event glyph table, so that body's events get an icon.
 - **jupiter**: The planet symbol ♃ mapped to jupiter-icon.svg in the event glyph table, and named in glyph test event titles.
+- **keyless**:
 - **kite**: An aspect pattern shape named in the focal body filter, whose emoji 🪁 maps to kite-icon.png.
 - **lack**:
 - **lammas**: The cross-quarter festival of early August, mapped to its PNG icon in the event glyph table.
@@ -135,7 +141,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **piece**:
 - **pisces**: Zodiac sign whose glyph maps to its own SVG icon, and a constellation listed in the sky menu.
 - **planet**:
-- **planetary**:
 - **plot**:
 - **pluto**: Dwarf-planet body whose glyph maps to its own SVG icon and appears in event names.
 - **pole**: The north celestial pole at the top of the night-sky view, where altitude equals declination.
@@ -170,12 +175,13 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **sizer**:
 - **sky**: The night-sky backdrop behind the calendar, also the old spelling of the skyfield link keys, which links still read.
 - **skyfield**: The prefix of every link key that sets the night-sky backdrop, such as skyfield.top, skyfield.lat and skyfield.lon.
-- **solar**:
+- **solstice**: The moment the Sun reaches its farthest north or south of the equator, a summer or winter event in the Yearly cycle tags.
 - **south**: The descending lunar node glyph, mapped to its own SVG icon beside the north node.
 - **square**: The 90-degree aspect, a harmonic-four pattern, shown in event names beside its glyph.
 - **star**: Celestial point in the night sky, as in the morning-star and evening-star icons and the sky backdrop.
 - **stellium**: Three or more bodies all in conjunction with one another, named by its count and given a glyph icon.
 - **subtotal**:
+- **summer**: Names the June solstice in the Yearly cycle tags, the Sun's northernmost point.
 - **sun**: Central body of the solar system, whose glyph and events label Sun-relative stages and twilight.
 - **taurus**: Zodiac sign of the bull, whose glyph maps to its own SVG icon, and a constellation in the sky menu.
 - **temporality**: Derived filter field classing an event as Instant or Duration, from whether its start equals its end.
@@ -192,6 +198,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **unmeasured**: Stand-in size used before a virtual list is measured, a 720 by 640 default height and width.
 - **unoffered**:
 - **uranus**: Ice giant body whose glyph maps to its own SVG icon in the glyph set.
+- **vernal**: Names the March equinox in the Yearly cycle tags, when the Sun crosses the celestial equator northward.
 - **vesta**: Asteroid body whose glyph maps to its own SVG icon in the event glyph set.
 - **vigintile**: A 18-degree aspect, a twentieth-harmonic division, which no code in this project uses.
 - **virgo**: Zodiac sign of the maiden, whose glyph maps to its own SVG icon, and a constellation in the sky menu.
@@ -200,6 +207,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **water**: Elemental class of a zodiac sign, one of fire, earth, air or water, offered as a filter value.
 - **weekday**: Calendar day of the week as a grouping and color field, such as Monday through Sunday.
 - **window**: A calendar layout the UI calls a View: agenda, day, three-day, week, month or timeline. The range of dates a view reads is a period.
+- **winter**: Names the December solstice in the Yearly cycle tags, the Sun's southernmost point.
 - **yod**: Compound aspect pattern, the Yod, a Compound Aspect variant in the color path tests.
 - **york**: Second word of the `America/New_York` time zone that tests render the calendar in.
 - **yule**: Seasonal festival event at the winter solstice, mapped to its own PNG icon in the glyph set.

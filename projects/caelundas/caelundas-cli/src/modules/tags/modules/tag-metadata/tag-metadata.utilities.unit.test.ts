@@ -26,12 +26,8 @@ function generatedPaths(): string[][] {
     }
   }
 
-  for (const kind of ["Decan", "Peak", "Sign"]) {
-    add(["Sign", "Ingress", `${kind} Ingress`]);
-  }
-
-  for (const kind of ["Decan", "Peak", "Sign"]) {
-    add(["Sign", "Ingress", `${kind} Transit`]);
+  for (const kind of ["Decan Stay", "Full Sign", "Half Stay"]) {
+    add(["Sign", "Stay", kind]);
   }
 
   for (const dignity of [
@@ -53,7 +49,7 @@ function generatedPaths(): string[][] {
   }
 
   for (const [unit] of DURATION_UNITS) {
-    add(["Duration", unit]);
+    add(["Temporality", "Progressive", unit]);
   }
 
   add(["Temporality", "Perfective"]);
@@ -66,6 +62,7 @@ describe("tag metadata", () => {
   describe(tagMenuFlags, () => {
     it("offers a tag in every menu unless it is excluded", () => {
       expect(tagMenuFlags(["Sign", "Aries"])).toStrictEqual({
+        isDefaultGroup: true,
         isFilterable: true,
         isGroupable: true,
         isSelectable: true,
@@ -75,6 +72,7 @@ describe("tag metadata", () => {
 
     it("keeps a header over one dimension's values out of the Filter menu only", () => {
       expect(tagMenuFlags(["Sign", "Element"])).toStrictEqual({
+        isDefaultGroup: true,
         isFilterable: false,
         isGroupable: true,
         isSelectable: true,
@@ -84,14 +82,14 @@ describe("tag metadata", () => {
 
     it("keeps a label over one dimension's spans or sides out of the Filter menu", () => {
       for (const path of [
-        ["Solar", "Annual Cycle", "Interval"],
+        ["Yearly", "Annual Cycle", "Interval"],
         ["Sign", "Peak"],
       ]) {
         expect(tagMenuFlags(path).isFilterable).toBe(false);
       }
 
       expect(
-        tagMenuFlags(["Solar", "Annual Cycle", "Interval", "Beltane Pre"])
+        tagMenuFlags(["Yearly", "Annual Cycle", "Interval", "Beltane Pre"])
           .isFilterable,
       ).toBe(true);
     });
@@ -111,8 +109,18 @@ describe("tag metadata", () => {
       expect(offered).toStrictEqual([]);
     });
 
+    it("leaves the attribute roots out of the default grouping, and nothing else", () => {
+      expect(
+        ["Body", "Temporality", "Sign", "Aspect", "Yearly"].filter(
+          (root) => !tagMenuFlags([root]).isDefaultGroup,
+        ),
+      ).toStrictEqual(["Body", "Temporality"]);
+      expect(tagMenuFlags(["Body", "Planet"]).isDefaultGroup).toBe(true);
+    });
+
     it("keeps Benefic out of the Sort and Select menus but in the Filter and Group menus", () => {
       expect(tagMenuFlags(["Body", "Planet", "Benefic"])).toStrictEqual({
+        isDefaultGroup: true,
         isFilterable: true,
         isGroupable: true,
         isSelectable: false,
@@ -124,8 +132,8 @@ describe("tag metadata", () => {
       const named = [
         ["Aspect", "Simple"],
         ["Aspect", "Simple", "Major"],
-        ["Daily", "Lunar Cycle"],
-        ["Daily", "Solar Cycle"],
+        ["Daily", "Daily Lunar"],
+        ["Daily", "Daily Solar"],
         ["Daily", "Twilight"],
         ["Eclipse", "Lunar"],
         ["Eclipse", "Solar"],
@@ -134,8 +142,10 @@ describe("tag metadata", () => {
         ["Planetary", "Direction"],
         ["Planetary", "Phase"],
         ["Planetary", "Synodic Stage"],
-        ["Solar", "Annual Cycle"],
-        ["Sign", "Ingress"],
+        ["Yearly", "Annual Cycle"],
+        ["Sign", "Stay", "Decan Stay"],
+        ["Sign", "Stay", "Full Sign"],
+        ["Sign", "Stay", "Half Stay"],
         ["Sign", "Aries"],
       ].filter((path) => !tagMenuFlags(path).isFilterable);
 
@@ -189,7 +199,7 @@ describe("tag metadata", () => {
     it("gives the Planet node its classes' planets beneath it", () => {
       expect(tagMetadata(["Body", "Planet"]).icon).toBe("earth");
       expect(
-        tagMetadata(["Body", "Planet", "Personal", "Venus"]),
+        tagMetadata(["Body", "Planet", "Inner", "Personal", "Venus"]),
       ).toStrictEqual({
         icon: "user",
         note: expect.any(String) as string,

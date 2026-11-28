@@ -1,5 +1,9 @@
 import { parseMetrics } from "../../components/calendar-display/calendar-metrics/calendar-metrics.utilities";
 import {
+  parseAllDayMode,
+  toAllDaySearch,
+} from "../../components/calendar-display/events-calendar/components/calendar-grid/components/calendar-all-day/calendar-all-day.utilities";
+import {
   parseCalendarView,
   parseTimelineScale,
 } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
@@ -34,6 +38,7 @@ export function getCalendarReloadKey(
 ): string {
   return JSON.stringify({
     ...readCalendarSearch(search),
+    ad: undefined,
     compare: undefined,
     fold: undefined,
     hideEmpty: undefined,
@@ -51,6 +56,7 @@ export function readCalendarSearch(
 
   return {
     ...readDisplaySearch(search),
+    ad: toAllDaySearch(parseAllDayMode(search["ad"]) ?? "grouped"),
     compare:
       search["compare"] === true || search["compare"] === "true"
         ? true

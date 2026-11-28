@@ -24,6 +24,12 @@ export const VENDORED_SURFACE_CLASS_NAMES = {
   timeGridHeader: "bg-background",
 } as const;
 
+/**
+ * Squares the clipped side of a long event's block.
+ */
+export const EDGE_CLASS_NAMES =
+  "[&_[data-slot=event-calendar-event]:has([data-edge=start])]:rounded-b-none [&_[data-slot=event-calendar-event]:has([data-edge=end])]:rounded-t-none";
+
 /** Buttons and event chips drawn solid over the sky. */
 export const OPAQUE_CLASS_NAMES = {
   buttons:

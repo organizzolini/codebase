@@ -8,6 +8,7 @@ import { TagIcon } from "../tag-icon/tag-icon";
 
 import {
   describeTagItems,
+  dropListedRows,
   nestTagItems,
   pickCandidates,
   toFieldItem,
@@ -49,8 +50,10 @@ export function createGroupItems(
       menu.flag,
     );
     const children = nestTagItems(
-      toTagItemRows(offered, describeTagItems(offered), menu.leaves),
-      menu.leaves,
+      dropListedRows(
+        toTagItemRows(offered, describeTagItems(offered), menu.leaves),
+        menu.leaves,
+      ),
     );
     const item = toFieldItem(field, children, menu.flag);
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { serveCalendarApi } from "../../../../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../../../../testing/calendar/calendar-api";
 import { EMPTY_EVENT_FILTER } from "../../../../calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.constants";
 
 import { loadCalendar } from "./calendar-loader.utilities";

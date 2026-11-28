@@ -14,6 +14,7 @@ import { TwilightsService } from "../perfective/modules/twilights/twilights.serv
 import {
   EDGE_EVENTS_FINDERS_TOKEN,
   SPAN_BOUNDARY_RULES,
+  SPAN_ONLY_INSTANT_TAGS,
 } from "./progressive.constants";
 
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
@@ -166,7 +167,7 @@ export class ProgressiveService {
 
   /**
    * The perfective events without instants a span in `spans` starts or ends
-   * on; others stay.
+   * on, and without the instants that only build spans; others stay.
    */
   withoutSpanBoundaries(
     perfectiveEvents: readonly DetectedCalendarEvent[],
@@ -179,13 +180,14 @@ export class ProgressiveService {
     return perfectiveEvents.filter(
       (event) =>
         !this.isInstant(event) ||
-        !SPAN_BOUNDARY_RULES.some((rule, index) => {
-          const ruleEdges = edges[index];
+        (!this.hasAnyTag(event, SPAN_ONLY_INSTANT_TAGS) &&
+          !SPAN_BOUNDARY_RULES.some((rule, index) => {
+            const ruleEdges = edges[index];
 
-          return (
-            ruleEdges !== undefined && this.isBoundary(event, rule, ruleEdges)
-          );
-        }),
+            return (
+              ruleEdges !== undefined && this.isBoundary(event, rule, ruleEdges)
+            );
+          })),
     );
   }
 }

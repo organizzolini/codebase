@@ -115,7 +115,6 @@ const PHASE_NOTES: Readonly<Record<string, string>> = {
   "Evening Rise": "The planet rises in the evening.",
   "Evening Set": "The planet sets in the evening.",
   "Evening Star": "The planet shows in the evening sky.",
-  "Evening Station": "The planet stops against the stars in the evening sky.",
   "Evening Visibility": "The span the planet is seen in the evening.",
   "Evening Widening":
     "The span from rise to greatest elongation, as the planet widens from the Sun.",
@@ -125,7 +124,6 @@ const PHASE_NOTES: Readonly<Record<string, string>> = {
   "Morning Rise": "The planet rises in the morning.",
   "Morning Set": "The planet sets in the morning.",
   "Morning Star": "The planet shows in the morning sky.",
-  "Morning Station": "The planet stops against the stars in the morning sky.",
   "Morning Visibility": "The span the planet is seen in the morning.",
   "Morning Widening":
     "The span from rise to greatest elongation, or Mars's opposition, as the planet widens from the Sun.",
@@ -145,7 +143,6 @@ const STAGE_NOTES: Readonly<Record<string, string>> = {
   Elongation: "The planet stands farthest from the Sun.",
   Opposition: "The planet is opposite the Sun.",
   "Rise and set": "The planet rises or sets with the Sun's light.",
-  Station: "The planet stops against the stars.",
   Visibility: "The span the planet is seen at one end of the day.",
   Widening:
     "The span the planet widens from the Sun, from rise to greatest elongation or opposition.",
@@ -164,8 +161,8 @@ const HEXADECAN_SIXTEENTHS: Readonly<Record<string, number>> = {
 
 /** Notes by path, for nodes that are not generated. */
 const PATH_NOTES: Readonly<Record<string, string>> = {
-  "Daily / Time of Day / Evening": "The twilight falls after the Sun has set.",
-  "Daily / Time of Day / Morning": "The twilight falls before the Sun rises.",
+  "Daily / Daily Solar / Daylight": "The Sun is above the horizon.",
+  "Daily / Daily Solar / Night": "The Sun is more than 18° below the horizon.",
   "Daily / Twilight / Astronomical Dawn":
     "The Sun is 18° below the horizon, rising: the sky begins to lighten.",
   "Daily / Twilight / Astronomical Dusk":
@@ -176,14 +173,12 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
     "The Sun is 6° below the horizon, rising: light enough to see outdoors.",
   "Daily / Twilight / Civil Dusk":
     "The Sun is 6° below the horizon, setting: lights are needed outdoors.",
-  "Daily / Twilight / Daylight": "The Sun is above the horizon.",
   "Daily / Twilight / Nautical Dawn":
     "The Sun is 12° below the horizon, rising: the horizon shows at sea.",
   "Daily / Twilight / Nautical Dusk":
     "The Sun is 12° below the horizon, setting: the sea horizon fades.",
   "Daily / Twilight / Nautical Twilight":
     "The span between 12° and 6° below the horizon.",
-  "Daily / Twilight / Night": "The Sun is more than 18° below the horizon.",
   "Eclipse / Lunar / Partial":
     "Only part of the Moon enters the Earth's shadow.",
   "Eclipse / Lunar / Total": "The whole Moon enters the Earth's shadow.",
@@ -229,13 +224,6 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
   "Sign / Dignity / Fall": "The planet sits opposite its exaltation: lowered.",
   "Sign / Dignity / Peregrine":
     "The planet holds no dignity or debility in the sign.",
-  "Sign / Ingress / Decan Ingress": "A body enters a new decan of a sign.",
-  "Sign / Ingress / Decan Transit": "A body's stay in one decan, a span.",
-  "Sign / Ingress / Peak Ingress": "A body reaches the midpoint of a sign.",
-  "Sign / Ingress / Peak Transit":
-    "A body's stay on one side of a sign's peak, a span.",
-  "Sign / Ingress / Sign Ingress": "A body enters a new sign, an instant.",
-  "Sign / Ingress / Sign Transit": "A body's stay in one sign, a span.",
   "Sign / Modality / Cardinal":
     "Signs that start a season: Aries, Cancer, Libra, Capricorn.",
   "Sign / Modality / Fixed":
@@ -246,33 +234,37 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
   "Sign / Peak / Before Peak": "The first fifteen degrees of a sign.",
   "Sign / Polarity / Negative": "Earth and water signs: receptive.",
   "Sign / Polarity / Positive": "Fire and air signs: outward.",
-  "Solar / Annual Cycle / Advancing": "The Sun's days are growing longer.",
-  "Solar / Annual Cycle / Aphelion": "The Earth is farthest from the Sun.",
-  "Solar / Annual Cycle / Cross-Quarter Day / Beltane":
+  "Sign / Stay / Decan Stay": "A body's stay in one decan of a sign, a span.",
+  "Sign / Stay / Full Sign": "A body's whole stay in one sign, a span.",
+  "Sign / Stay / Half Stay":
+    "A body's stay on one side of a sign's peak, a span.",
+  "Yearly / Annual Cycle / Advancing": "The Sun's days are growing longer.",
+  "Yearly / Annual Cycle / Aphelion": "The Earth is farthest from the Sun.",
+  "Yearly / Annual Cycle / Cross-Quarter Day / Beltane":
     "Midway from the spring equinox to the summer solstice.",
-  "Solar / Annual Cycle / Cross-Quarter Day / Imbolc":
+  "Yearly / Annual Cycle / Cross-Quarter Day / Imbolc":
     "Midway from the winter solstice to the spring equinox.",
-  "Solar / Annual Cycle / Cross-Quarter Day / Lammas":
+  "Yearly / Annual Cycle / Cross-Quarter Day / Lammas":
     "Midway from the summer solstice to the autumn equinox.",
-  "Solar / Annual Cycle / Cross-Quarter Day / Samhain":
+  "Yearly / Annual Cycle / Cross-Quarter Day / Samhain":
     "Midway from the autumn equinox to the winter solstice.",
-  "Solar / Annual Cycle / Equinox / Autumnal Equinox":
+  "Yearly / Annual Cycle / Equinox / Autumnal Equinox":
     "Day and night are equal, as the year turns toward winter.",
-  "Solar / Annual Cycle / Equinox / Vernal Equinox":
+  "Yearly / Annual Cycle / Equinox / Vernal Equinox":
     "Day and night are equal, as the year turns toward summer.",
-  "Solar / Annual Cycle / Perihelion": "The Earth is nearest the Sun.",
-  "Solar / Annual Cycle / Retreating": "The Sun's days are growing shorter.",
-  "Solar / Annual Cycle / Solstice / Summer Solstice":
+  "Yearly / Annual Cycle / Perihelion": "The Earth is nearest the Sun.",
+  "Yearly / Annual Cycle / Retreating": "The Sun's days are growing shorter.",
+  "Yearly / Annual Cycle / Solstice / Summer Solstice":
     "The longest day of the year.",
-  "Solar / Annual Cycle / Solstice / Winter Solstice":
+  "Yearly / Annual Cycle / Solstice / Winter Solstice":
     "The shortest day of the year.",
-  "Solar / Season / Autumn":
+  "Yearly / Season / Autumn":
     "The season from the autumn equinox to the winter solstice.",
-  "Solar / Season / Spring":
+  "Yearly / Season / Spring":
     "The season from the spring equinox to the summer solstice.",
-  "Solar / Season / Summer":
+  "Yearly / Season / Summer":
     "The season from the summer solstice to the autumn equinox.",
-  "Solar / Season / Winter":
+  "Yearly / Season / Winter":
     "The season from the winter solstice to the spring equinox.",
 };
 
@@ -297,7 +289,7 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
     Object.entries(HEXADECAN_SIXTEENTHS).map(
       ([name, sixteenths]) =>
         [
-          `Solar / Annual Cycle / Hexadecan / ${name} Hexadecan`,
+          `Yearly / Annual Cycle / Hexadecan / ${name} Hexadecan`,
           `The point ${String(sixteenths)}/16 of the way round the year.`,
         ] as const,
     ),
@@ -306,7 +298,7 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
     SOLAR_INTERVAL_NAMES.map(
       (name) =>
         [
-          `Solar / Annual Cycle / Interval / ${name}`,
+          `Yearly / Annual Cycle / Interval / ${name}`,
           name.startsWith("Post-")
             ? `From ${name.slice(5)} to the hexadecan after it.`
             : `From the hexadecan before ${name.slice(4)} to it.`,
@@ -341,9 +333,9 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
       ...[
         "Asteroid",
         "Luminary",
+        "Planet / Inner / Personal",
+        "Planet / Inner / Social",
         "Planet / Outer",
-        "Planet / Personal",
-        "Planet / Social",
         "Point",
       ].map((bodyClass) => [`Body / ${bodyClass} / ${name}`, note] as const),
     ]),

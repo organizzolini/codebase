@@ -1,8 +1,8 @@
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { readServedApi } from "../../../../testing/calendar-api";
-import { BUILDER_WAIT } from "../../../../testing/calendar-page";
+import { readServedApi } from "../../../../testing/calendar/calendar-api";
+import { BUILDER_WAIT } from "../../../../testing/calendar/calendar-page";
 import { getMetric } from "../../../../testing/metrics/metric-catalog";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 import { hideEmptyMetricGroups } from "../../../hooks/use-metric-layout/use-metric-layout.utilities";

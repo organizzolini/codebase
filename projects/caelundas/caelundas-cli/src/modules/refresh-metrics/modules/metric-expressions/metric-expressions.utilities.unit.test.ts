@@ -165,44 +165,80 @@ describe("metric expression utilities", () => {
       );
     const diagrams = diagramsOf(block);
 
-    it("draws a table row and a flowchart per metric", () => {
+    it("draws a table row linking its unit, and one diagram per unit", () => {
       expect(block).toMatch(
-        /\| Time counted +\| `total-time-percent` +\| none +\| `\(clipped-duration % of metric:total-duration\) − events` +\|/u,
+        /\| Time counted +\| `total-time-percent` +\| \[none\]\(#unit-none\) +\| `\(clipped-duration % of metric:total-duration\) − events` +\|/u,
       );
-      expect(diagrams).toHaveLength(2);
+      expect(block).toContain("\n## Unit none\n");
+      expect(diagrams).toHaveLength(1);
+    });
+
+    it("gives each unit its own diagram, in unit order", () => {
+      const trees = buildMetricExpressionTrees(
+        [
+          metric({
+            expressionId: "events-root",
+            name: "B",
+            slug: "b",
+            unit: "count",
+          }),
+          metric({
+            expressionId: "events-root",
+            name: "A",
+            slug: "a",
+            unit: "duration",
+          }),
+        ],
+        ROWS,
+      );
+      const units = renderMetricExpressionsBlock(trees);
+
+      expect(
+        [...units.matchAll(/^## Unit (\w+)$/gmu)].map(([, unit]) => unit),
+      ).toStrictEqual(["count", "duration"]);
+      expect(diagramsOf(units)).toHaveLength(2);
+    });
+
+    it("sets each metric in a subgraph, in rows of three", () => {
+      const [diagram = ""] = diagrams;
+
+      expect(diagram.startsWith("flowchart LR\n")).toBe(true);
+      expect(diagram).toContain(
+        '    subgraph m0["Events"]\n        direction TB',
+      );
+      expect(diagram).toContain('    subgraph m1["Time counted"]');
+      expect(diagram).toContain("    m0 ~~~ m1\n");
     });
 
     it("roots the diagram in the metric and shapes each node by its kind", () => {
-      const [, diagram = ""] = diagrams;
+      const [diagram = ""] = diagrams;
 
-      expect(diagram).toContain(
-        '    n0(["Time counted (total-time-percent)"])',
-      );
-      expect(diagram).toContain('    n1{{"− subtract"}}');
-      expect(diagram).toContain('    n2{{"% of percent"}}');
-      expect(diagram).toContain(
-        '    n3["Clipped duration (clipped-duration)"]',
-      );
-      expect(diagram).toContain('    n4(["Total duration (total-duration)"])');
-      expect(diagram).toContain('    n5["Events (events)"]');
-      expect(diagram).toContain("    class n0 root");
+      expect(diagram).toContain('m1n0(["Time counted (total-time-percent)"])');
+      expect(diagram).toContain('m1n1{{"− subtract"}}');
+      expect(diagram).toContain('m1n2{{"% of percent"}}');
+      expect(diagram).toContain('m1n3["Clipped duration (clipped-duration)"]');
+      expect(diagram).toContain('m1n4(["Total duration (total-duration)"])');
+      expect(diagram).toContain('m1n5["Events (events)"]');
+      expect(diagram).toContain("    class m1n0 root");
     });
 
     it("numbers operands only under an operator whose order matters", () => {
-      const [, diagram = ""] = diagrams;
+      const [diagram = ""] = diagrams;
 
-      expect(diagram).toContain("    n0 --> n1");
-      expect(diagram).toContain('    n1 -->|"1"| n2');
-      expect(diagram).toContain('    n1 -->|"2"| n5');
-      expect(diagram).toContain('    n2 -->|"1"| n3');
-      expect(diagram).toContain('    n2 -->|"2"| n4');
+      expect(diagram).toContain(
+        'm1n0(["Time counted (total-time-percent)"]) --> m1n1',
+      );
+      expect(diagram).toContain('m1n1 -->|"1"| m1n2{{"% of percent"}}');
+      expect(diagram).toContain('m1n1 -->|"2"| m1n5["Events (events)"]');
+      expect(diagram).toContain('m1n2 -->|"1"| m1n3');
+      expect(diagram).toContain('m1n2 -->|"2"| m1n4');
     });
 
     it("draws a lone measure as one node, without repeating the metric's name", () => {
-      const [lone = ""] = diagrams;
+      const [diagram = ""] = diagrams;
 
-      expect(lone).toContain('    n0["measure (events)"]');
-      expect(lone).not.toContain("n1");
+      expect(diagram).toContain('        m0n0["measure (events)"]\n');
+      expect(diagram).not.toContain("m0n1");
     });
 
     it("names a lone measure that differs from its metric by both", () => {
@@ -222,7 +258,7 @@ describe("metric expression utilities", () => {
       );
 
       expect(renderMetricExpressionsBlock(trees)).toContain(
-        '    n0["Clipped duration (clipped-duration)"]',
+        'm0n0["Clipped duration (clipped-duration)"]',
       );
     });
 
@@ -265,14 +301,14 @@ describe("metric expression utilities", () => {
       }
     });
 
-    it("declares every node once and draws edges only between declared nodes", () => {
+    it("declares every node once, where it first appears", () => {
       for (const source of diagrams) {
-        const declared = [...source.matchAll(/^ {4}(n\d+)[[({]/gmu)].map(
+        const declared = [...source.matchAll(/(m\d+n\d+)(?=[[({])/gu)].map(
           ([, id = ""]) => id,
         );
-        const used = [
-          ...source.matchAll(/^ {4}(n\d+) -->(?:\|"\d+"\|)? (n\d+)$/gmu),
-        ].flatMap(([, from = "", to = ""]) => [from, to]);
+        const used = [...source.matchAll(/\b(m\d+n\d+)\b/gu)].map(
+          ([, id = ""]) => id,
+        );
 
         expect(new Set(declared).size).toBe(declared.length);
         expect(used.filter((id) => !declared.includes(id))).toStrictEqual([]);
@@ -400,10 +436,10 @@ describe("metric expression utilities", () => {
         ]),
       );
 
-      expect(block).toContain('    n1{{"power"}}');
-      expect(block).toContain('    n3{{"+ add"}}');
-      expect(block).toContain("    n3 --> n4");
-      expect(block).not.toContain("n3 -->|");
+      expect(block).toContain('m0n1{{"power"}}');
+      expect(block).toContain('m0n3{{"+ add"}}');
+      expect(block).toContain('m0n3 --> m0n4["B (b)"]');
+      expect(block).not.toContain("-->|");
     });
   });
 });

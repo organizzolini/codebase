@@ -1,4 +1,4 @@
-import { CLUSTER_ID_PREFIX } from "../../../../../hooks/use-calendar-clusters/calendar-clusters.constants";
+import { CLUSTER_ID_PREFIX } from "../../../../../hooks/use-calendar-grid-renderers/hooks/use-calendar-clusters/calendar-clusters.constants";
 
 import { SPACES, WORD_START } from "./calendar-glyphs.constants";
 

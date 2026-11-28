@@ -116,25 +116,33 @@ testing/
   edge table: a row's `parentId` is its lowest parent id and `otherParentIds` the rest
   (`GraphTreeRow`), so the level-by-level read still finds every row by one parent and
   `buildTreeGraph`, the match walks, paging and the caps follow all of them. A node with
-  two parents is one node with two edges in the flowchart, and the file tree lists it under
-  each parent (a walk ends at a node it is already inside of, so a cycle cannot loop).
+  two parents is one node with two edges in the flowchart, and the file tree lists it once, under
+  the first parent that reaches it, marked `(also under X, Y)`.
 - **Tree matches:** the ancestor and descendant walks each join a row once, so a
   cycle ends them instead of looping.
-- **Mermaid:** `renderGraphMermaid` draws short node ids, escaped labels, and
-  styled roots and truncation nodes.
+- **Mermaid:** `renderGraphMermaid` draws short node ids and escaped labels, each node
+  declared once where it first appears, edges chained to every target of a source
+  (`n0 --> n1 & n2`), undirected edges as chained trails, one `class` line per style
+  (root, truncation, and `shared` for a directed node with several parents), and only the
+  `classDef`s used. It never reads a node twice, so 150,000 leaves cannot overflow the stack.
 - **File tree:** `--diagram filetree` (`render-tree-data` only; the plan's
   `diagram` defaults to `flowchart`) makes `RenderMermaidService` call
-  `renderGraphFileTree`, Mermaid's beta `treeView-beta` (needs Mermaid 11.14 or
-  later; Obsidian may not render it). It nests children under roots by edge
-  order, quotes labels, and marks a node with children with a trailing `/`
-  inside the quotes. It ignores edge labels, weights, markers, and direction,
-  and warns only on the 50,000-character limit, not the 500-edge flowchart one.
-  The grammar has no quote escape, so a label holding `"` uses single quotes.
+  `renderGraphFileTree`, a plain text tree in a `text` fence (`GraphMermaidRendering.language`),
+  not Mermaid. One line per node with `├──` guides; a first walk gives each node its one
+  place, so a node with several parents is marked `(also under X, Y)` and a cycle no root
+  reaches is listed as roots. It ignores edge labels, weights, markers, and direction, and
+  has no limit warnings.
 - **Neighborhoods:** with two or more weakly connected groups of nodes (edges
-  read as undirected), `renderGraphMermaid` wraps each in `subgraph nb<N>`,
-  titled by the label all its edges share (then drawn without it), else its
+  read as undirected), `renderGraphMermaid` wraps each in `subgraph nb<N>` (with
+  `direction` inside, rows of three joined by `~~~`), titled by the label all its edges
+  share (then drawn without it), else one to three distinct edge labels joined, else its
   first root's or first node's label. One neighborhood draws unchanged, and the
   `GraphModel` never carries them.
+- **Sections:** `RenderService` asks for `sections` only when `--output-markdown` is
+  given. `packNeighborhoods` packs neighborhoods in order into groups of at most 40 nodes,
+  each a small diagram in `GraphMermaidRendering.sections`; `renderGraphPagesMarkdown`
+  writes an index of links and a heading per section when there are two or more (limit
+  warnings are then per section). stdout always gets the one whole `diagram`.
 - **Checks before connecting:** column names and the `@Tree` pick are read from
   decorators first, so a bad flag or pick never reaches the database.
 - **Two forms of one decorator:** `@Graph()` and `@DirectedAcyclicGraph()` mark

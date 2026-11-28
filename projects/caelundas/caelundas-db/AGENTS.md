@@ -61,7 +61,7 @@ migrations/                              # The migrations, each with its .sql pa
 - **The tags are a directed acyclic graph.** `Tag` is `@Graph({ edge: "TagEdge", nodes: () => Tag })`,
   so `tag_edges` (`source_node` the parent, `target_node` the child, primary key the pair, cascading) is
   generated, never hand-written. A tag with no incoming edge is a root; a tag may have several parents
-  (Venus is under Planet / Personal and under Planet / Benefic, Aries under Sign / Sign, Fire, Cardinal and Positive). `tags.parent_id` and TypeORM's `@Tree` closure
+  (Venus is under Planet / Inner / Personal and under Planet / Benefic, Aries under Sign / Sign, Fire, Cardinal and Positive). `tags.parent_id` and TypeORM's `@Tree` closure
   table are gone. `tag_trees` is a materialized view, `(ancestor_id, descendant_id)` over a recursive
   walk of every path with the tag itself included and each pair once, refreshed first (concurrently) by
   `refreshMetrics`; read ancestors and descendants from it, never from a path. A `tag_edges_guard`
@@ -81,7 +81,8 @@ longitude)`; never insert an event without it. Its columns are `name`, `note`, `
   `boolean not null default true` each, one set per tag whatever number of parents it has. They never say what
   is valid: a saved link or preset that filters, groups, sorts or selects a tag whose flag is false still works.
   `caelundas-cli` declares them (`TAG_MENU_EXCLUSIONS`) and `TagsService` writes them on create and updates them
-  on a rerun.
+  on a rerun. `tags.is_default_group` (same type and default) says the tag is one of the defaults events group
+  by when no level is picked; the attribute roots Body and Temporality are false.
 - **Renames to know:** `stars.hip` is `hipparcos_number`; `constellations.zodiac` is
   `is_zodiac`; `constellation_edges` has `constellation_id` (its owner), and `source_node` and
   `target_node`, the `@Graph` decorator's defaults; it is a hand-written edge entity because the

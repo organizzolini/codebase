@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { SkeletonMonth } from "./skeleton-month";
 
@@ -26,5 +26,15 @@ describe(SkeletonMonth, () => {
     expect(days[0]?.children).toHaveLength(3);
     expect(days[3]?.children).toHaveLength(1);
     expect(days[0]?.querySelectorAll("button, a, input")).toHaveLength(0);
+  });
+
+  it("keys every bar apart, though a day may hold two of one width", () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    render(<SkeletonMonth />);
+
+    expect(spy).not.toHaveBeenCalled();
+
+    spy.mockRestore();
   });
 });

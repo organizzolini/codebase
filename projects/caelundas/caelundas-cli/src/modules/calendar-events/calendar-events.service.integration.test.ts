@@ -720,10 +720,12 @@ describe("calendar events service integration", () => {
       expect(parents.map(({ name }) => name)).toStrictEqual([
         "Benefic",
         "Personal",
+        "Planet",
       ]);
       expect(ancestors).toStrictEqual([
         "Benefic",
         "Body",
+        "Inner",
         "Personal",
         "Planet",
         "Venus",
@@ -758,6 +760,7 @@ describe("calendar events service integration", () => {
 
       expect(parents.map(({ name }) => name)).toStrictEqual([
         "Malefic",
+        "Planet",
         "Social",
       ]);
     });

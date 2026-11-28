@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { createElement, use } from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { serveCalendarApi } from "../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../testing/calendar/calendar-api";
 import { TableGroupsProvider } from "../../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider";
 import { TableGroupsContext } from "../../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider.constants";
 

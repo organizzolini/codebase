@@ -48,6 +48,33 @@ export function describeTagItems(offered: readonly OfferedValue[]): string[] {
 }
 
 /**
+ * Drops a repeated tag and the rows beneath it when a menu lists each tag once.
+ */
+export function dropListedRows(
+  rows: readonly TagItemRow[],
+  leaves: boolean,
+): TagItemRow[] {
+  const kept: TagItemRow[] = [];
+  const listed = new Set<string>();
+  let skipBelow: number | undefined;
+
+  for (const row of rows) {
+    if (skipBelow !== undefined && row.depth > skipBelow) {
+      continue;
+    }
+
+    skipBelow = !leaves && listed.has(row.id) ? row.depth : undefined;
+
+    if (skipBelow === undefined) {
+      listed.add(row.id);
+      kept.push(row);
+    }
+  }
+
+  return kept;
+}
+
+/**
  * Whether a row can be ticked: any but a folder, which only opens its tags.
  */
 export function isOfferedRow(node: Readonly<CascaderNode>): boolean {
@@ -55,24 +82,14 @@ export function isOfferedRow(node: Readonly<CascaderNode>): boolean {
 }
 
 /**
- * Nests rows depth first under each parent; a menu without leaves lists a tag once.
+ * Nests rows depth first under each parent.
  */
-export function nestTagItems(
-  rows: readonly TagItemRow[],
-  leaves: boolean,
-): CascaderNode[] {
+export function nestTagItems(rows: readonly TagItemRow[]): CascaderNode[] {
   const roots: CascaderNode[] = [];
   // The last row seen at each depth, which the next one deeper joins.
   const parents: CascaderNode[] = [];
-  const listed = new Set<string>();
 
   for (const row of rows) {
-    if (!leaves && listed.has(row.id)) {
-      continue;
-    }
-
-    listed.add(row.id);
-
     const parent = parents[row.depth - 1];
 
     if (parent === undefined) {

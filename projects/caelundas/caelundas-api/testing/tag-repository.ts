@@ -22,25 +22,27 @@ export interface TagRepository {
  */
 export function tagRepository(dataSource: DataSource): TagRepository {
   const tags = dataSource.getRepository(Tag);
-  const edges = dataSource.getRepository<{
-    sourceNode: string;
-    targetNode: string;
-  }>("TagEdge");
 
   return {
     create: (input) => input,
     findOneByOrFail: async (where) => tags.findOneByOrFail(where),
-    save: async ({ name, parent, parents = [], slug }) => {
-      const saved = await tags.save(tags.create({ name, slug }));
+    save: async ({ name, parent, parents = [], slug }) =>
+      // One transaction, as the name check runs when it commits, after the edges.
+      dataSource.transaction(async (manager) => {
+        const saved = await manager.save(tags.create({ name, slug }));
 
-      for (const above of [
-        ...(parent === undefined ? [] : [parent]),
-        ...parents,
-      ]) {
-        await edges.insert({ sourceNode: above.id, targetNode: saved.id });
-      }
+        for (const above of [
+          ...(parent === undefined ? [] : [parent]),
+          ...parents,
+        ]) {
+          await manager
+            .getRepository<{ sourceNode: string; targetNode: string }>(
+              "TagEdge",
+            )
+            .insert({ sourceNode: above.id, targetNode: saved.id });
+        }
 
-      return saved;
-    },
+        return saved;
+      }),
   };
 }

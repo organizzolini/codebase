@@ -2,16 +2,17 @@
 
 <!-- postgresql-erd:start -->
 
+[MetricExpression (14 tables)](#metricexpression-14-tables) · [ConstellationEdge (3 tables)](#constellationedge-3-tables) · [Standalone tables](#standalone-tables)
+
+## MetricExpression (14 tables)
+
 ```mermaid
 erDiagram
+  direction LR
   CalendarEventFact }o--|| Filter : filter
   CalendarEventFact }o--|| Measure : measure
   CalendarEventTag }o--|| CalendarEvent : calendarEvent
   CalendarEventTag }o--|| Tag : tag
-  Constellation ||--o{ ConstellationEdge : edges
-  ConstellationEdge }o--|| Constellation : constellation
-  ConstellationEdge }o--|| Star : source
-  ConstellationEdge }o--|| Star : target
   DimensionEdge }o--|| Dimension : source
   DimensionEdge }o--|| Dimension : target
   Filter }o--|| Group : group
@@ -24,8 +25,6 @@ erDiagram
   MetricExpression }o--|| Measure : measure
   MetricExpression }o--|| Metric : metric
   MetricExpression }o--|| MetricExpression : parent
-  Star ||--o{ ConstellationEdge : incomingEdges
-  Star ||--o{ ConstellationEdge : outgoingEdges
   Tag ||--o{ TagEdge : childEdges
   Tag ||--o{ TagEdge : parentEdges
   TagEdge }o--|| Tag : source
@@ -57,21 +56,6 @@ erDiagram
   CalendarEventTag {
     string calendarEventId PK "not nullable"
     string tagId PK "not nullable"
-  }
-  calendar_event_tag_sets["calendar_event_tag_sets (materialized view)"] {
-    array ancestorTagIds "not nullable"
-    string calendarEventId "not nullable"
-    array tagIds "not nullable"
-  }
-  Constellation {
-    string designation PK "not nullable"
-    boolean isZodiac "not nullable"
-    string name "not nullable"
-  }
-  ConstellationEdge {
-    string constellationId PK "not nullable"
-    int sourceNode PK "not nullable"
-    int targetNode PK "not nullable"
   }
   Dimension {
     string id PK "not nullable"
@@ -157,18 +141,12 @@ erDiagram
     date updatedAt "not nullable"
     string updatedBy "nullable"
   }
-  Star {
-    int hipparcosNumber PK "not nullable"
-    float colorIndex "not nullable"
-    float declinationDegrees "not nullable"
-    float magnitude "not nullable"
-    float rightAscensionHours "not nullable"
-  }
   Tag {
     string id PK "not nullable"
     date createdAt "not nullable"
     string createdBy "nullable"
     string icon "nullable"
+    boolean isDefaultGroup "not nullable"
     boolean isFilterable "not nullable"
     boolean isGroupable "not nullable"
     boolean isSelectable "not nullable"
@@ -184,13 +162,55 @@ erDiagram
     string source_node PK "not nullable"
     string target_node PK "not nullable"
   }
-  tag_trees["tag_trees (materialized view)"] {
-    string ancestorId "not nullable"
-    string descendantId "not nullable"
-  }
   metric_expressions_closure {
     string ancestor_id PK "not nullable"
     string descendant_id PK "not nullable"
+  }
+```
+
+## ConstellationEdge (3 tables)
+
+```mermaid
+erDiagram
+  direction LR
+  Constellation ||--o{ ConstellationEdge : edges
+  ConstellationEdge }o--|| Constellation : constellation
+  ConstellationEdge }o--|| Star : source
+  ConstellationEdge }o--|| Star : target
+  Star ||--o{ ConstellationEdge : incomingEdges
+  Star ||--o{ ConstellationEdge : outgoingEdges
+  Constellation {
+    string designation PK "not nullable"
+    boolean isZodiac "not nullable"
+    string name "not nullable"
+  }
+  ConstellationEdge {
+    string constellationId PK "not nullable"
+    int sourceNode PK "not nullable"
+    int targetNode PK "not nullable"
+  }
+  Star {
+    int hipparcosNumber PK "not nullable"
+    float colorIndex "not nullable"
+    float declinationDegrees "not nullable"
+    float magnitude "not nullable"
+    float rightAscensionHours "not nullable"
+  }
+```
+
+## Standalone tables
+
+```mermaid
+erDiagram
+  direction LR
+  calendar_event_tag_sets["calendar_event_tag_sets (materialized view)"] {
+    array ancestorTagIds "not nullable"
+    string calendarEventId "not nullable"
+    array tagIds "not nullable"
+  }
+  tag_trees["tag_trees (materialized view)"] {
+    string ancestorId "not nullable"
+    string descendantId "not nullable"
   }
 ```
 

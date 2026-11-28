@@ -5,13 +5,17 @@ import type { TagMenuFlag } from "./tag-metadata.types";
 // The menus only offer a tag, so a saved link to one still works. Filter
 // leaves out roots, headers over a dimension no preset or view filters by, and
 // Dignity's values, which belong to a planet and a sign together.
-// Group leaves out a header over a single tag. Sort and Select leave out
-// Benefic and Malefic.
+// Every tag is groupable: a leaf is how a user picks which tags become groups,
+// and a header groups by its children. Sort and Select leave out Benefic and
+// Malefic. The default grouping leaves out the attribute roots, which say what
+// an event involves or how long it lasts, not what kind of event it is: Body
+// and Temporality.
 
-/** Paths each menu leaves out, by flag; others keep all four. */
+/** Paths each menu, or the default grouping, leaves out by flag; others keep all. */
 export const TAG_MENU_EXCLUSIONS: Readonly<
   Record<TagMenuFlag, readonly string[]>
 > = {
+  isDefaultGroup: ["Body", "Temporality"],
   isFilterable: [
     "Aspect",
     "Aspect / Compound / Focal Body",
@@ -20,8 +24,6 @@ export const TAG_MENU_EXCLUSIONS: Readonly<
     "Aspect / Phase",
     "Body",
     "Daily",
-    "Daily / Time of Day",
-    "Duration",
     "Eclipse",
     "Eclipse / Frame",
     "Eclipse / Phase",
@@ -39,12 +41,13 @@ export const TAG_MENU_EXCLUSIONS: Readonly<
     "Sign / Modality",
     "Sign / Peak",
     "Sign / Polarity",
-    "Solar",
-    "Solar / Annual Cycle / Interval",
-    "Solar / Season",
+    "Sign / Stay",
+    "Yearly",
+    "Yearly / Annual Cycle / Interval",
+    "Yearly / Season",
     "Temporality",
   ],
-  isGroupable: ["Aspect / Compound / Sextuple", "Planetary / Phase / Martian"],
+  isGroupable: [],
   isSelectable: ["Body / Planet / Benefic", "Body / Planet / Malefic"],
   isSortable: ["Body / Planet / Benefic", "Body / Planet / Malefic"],
 };

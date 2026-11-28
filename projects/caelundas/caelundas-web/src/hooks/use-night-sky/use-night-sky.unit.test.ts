@@ -2,7 +2,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { HttpResponse } from "msw";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { serveCalendarApi } from "../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../testing/calendar/calendar-api";
 import { serveGraphqlApi } from "../../../testing/graphql-api";
 import { mockNightSkyQuery } from "../../graphql/generated/mocks";
 

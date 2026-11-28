@@ -384,6 +384,7 @@ describe(EventsService, () => {
       {
         icon: null,
         id: "planet",
+        isDefaultGroup: true,
         isFilterable: true,
         isGroupable: true,
         isSelectable: true,
@@ -398,6 +399,7 @@ describe(EventsService, () => {
             depth: 1,
             icon: null,
             id: "mars",
+            isDefaultGroup: true,
             isFilterable: false,
             isGroupable: true,
             isSelectable: true,
@@ -413,6 +415,7 @@ describe(EventsService, () => {
             depth: 2,
             icon: "rotate-ccw",
             id: "retrograde",
+            isDefaultGroup: true,
             isFilterable: true,
             isGroupable: true,
             isSelectable: true,
@@ -516,6 +519,43 @@ describe(EventsService, () => {
       "Aries / A",
       "Aries / B",
       "Taurus",
+    ]);
+  });
+
+  it("orders the roots by their rank, one with no rank after them by name", async () => {
+    expect.hasAssertions();
+
+    const root = (
+      id: string,
+      rank: number,
+    ): Record<string, number | string> => ({
+      count: "0",
+      depth: "0",
+      id,
+      name: id,
+      path_below_root: "",
+      rank,
+      root_id: id,
+      slug: id,
+      tag_rank: `00000:${id}`,
+    });
+
+    query.mockResolvedValueOnce([
+      root("aspect", 3),
+      root("zeta", 0),
+      root("sign", 1),
+      root("alpha", 0),
+      root("body", 2),
+    ]);
+
+    const facets = await service.findFacets();
+
+    expect(facets.map((facet) => facet.name)).toStrictEqual([
+      "sign",
+      "body",
+      "aspect",
+      "alpha",
+      "zeta",
     ]);
   });
 

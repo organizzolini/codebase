@@ -177,7 +177,8 @@ export class TagsService {
     const stored = known.flags.get(node.id);
 
     if (
-      stored?.isFilterable !== wanted.isFilterable ||
+      stored?.isDefaultGroup !== wanted.isDefaultGroup ||
+      stored.isFilterable !== wanted.isFilterable ||
       stored.isGroupable !== wanted.isGroupable ||
       stored.isSelectable !== wanted.isSelectable ||
       stored.isSortable !== wanted.isSortable
@@ -199,6 +200,7 @@ export class TagsService {
     const stored = await manager.getRepository(Tag).find({
       select: {
         id: true,
+        isDefaultGroup: true,
         isFilterable: true,
         isGroupable: true,
         isSelectable: true,
@@ -225,9 +227,22 @@ export class TagsService {
       ),
       flags: new Map(
         stored.map(
-          ({ id, isFilterable, isGroupable, isSelectable, isSortable }) => [
+          ({
             id,
-            { isFilterable, isGroupable, isSelectable, isSortable },
+            isDefaultGroup,
+            isFilterable,
+            isGroupable,
+            isSelectable,
+            isSortable,
+          }) => [
+            id,
+            {
+              isDefaultGroup,
+              isFilterable,
+              isGroupable,
+              isSelectable,
+              isSortable,
+            },
           ],
         ),
       ),

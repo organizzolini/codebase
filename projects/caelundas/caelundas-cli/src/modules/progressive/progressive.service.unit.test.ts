@@ -418,13 +418,6 @@ describe(ProgressiveService, () => {
       ["opposition", "Opposition", "Planetary Phase", "2026-01-01T00:00:00Z"],
       ["eclipse beginning", "Beginning", "Eclipse", "2026-01-01T00:00:00Z"],
       ["eclipse ending", "Ending", "Eclipse", "2026-01-02T00:00:00Z"],
-      [
-        "retrograde station",
-        "Direction",
-        "Retrogrades",
-        "2026-01-01T00:00:00Z",
-      ],
-      ["direct station", "Direction", "Directs", "2026-01-02T00:00:00Z"],
       ["ingress", "Ingress", "Ingress", "2026-01-01T00:00:00Z"],
       [
         "solar year point",
@@ -432,8 +425,6 @@ describe(ProgressiveService, () => {
         "Annual Solar Cycle",
         "2026-01-02T00:00:00Z",
       ],
-      ["moonrise", "Moonrise", "Moon Up", "2026-01-01T00:00:00Z"],
-      ["moonset", "Moonset", "Moon Up", "2026-01-02T00:00:00Z"],
       ["twilight boundary", "Twilight", "Twilight", "2026-01-01T00:00:00Z"],
     ])(
       "drops the %s instant a span of its family starts or ends on",
@@ -450,7 +441,7 @@ describe(ProgressiveService, () => {
       },
     );
 
-    it("keeps an instant no span has on its edge, such as a station whose span was not stored", () => {
+    it("drops a station whether or not a span has it on its edge, as stations only build spans", () => {
       const station = event("station", ["Direction"], "2026-01-05T00:00:00Z");
       const span = event(
         "span",
@@ -459,12 +450,17 @@ describe(ProgressiveService, () => {
         "2026-01-02T00:00:00Z",
       );
 
-      expect(kept([station], [span])).toStrictEqual(["station"]);
-      expect(kept([station], [])).toStrictEqual(["station"]);
+      expect(kept([station], [span])).toStrictEqual([]);
+      expect(kept([station], [])).toStrictEqual([]);
     });
 
-    it("keeps an instant on the edge of a span of another family", () => {
-      const station = event("station", ["Direction"], "2026-01-01T00:00:00Z");
+    it("keeps an instant no span has on its edge, and one on the edge of a span of another family", () => {
+      const stay = event("stay", ["Beginning"], "2026-01-05T00:00:00Z");
+      const ingress = event(
+        "ingress-edge",
+        ["Beginning"],
+        "2026-01-01T00:00:00Z",
+      );
       const span = event(
         "span",
         ["Ingress"],
@@ -472,7 +468,19 @@ describe(ProgressiveService, () => {
         "2026-01-02T00:00:00Z",
       );
 
-      expect(kept([station], [span])).toStrictEqual(["station"]);
+      expect(kept([stay], [])).toStrictEqual(["stay"]);
+      expect(kept([ingress], [span])).toStrictEqual(["ingress-edge"]);
+    });
+
+    it("keeps a span of retrograde or direct motion", () => {
+      const span = event(
+        "span",
+        ["Retrogrades", "Direction"],
+        "2026-01-01T00:00:00Z",
+        "2026-01-09T00:00:00Z",
+      );
+
+      expect(kept([span], [])).toStrictEqual(["span"]);
     });
 
     it("keeps an instant inside a span, such as an eclipse maximum or an exact aspect", () => {
@@ -495,10 +503,36 @@ describe(ProgressiveService, () => {
       ]);
     });
 
-    it("keeps a forming instant on a span's end and a moonrise on its end, since each sits on one edge only", () => {
+    it("keeps the moonrise and moonset a Moon Up or Moon Down span starts or ends on", () => {
+      const moonUp = event(
+        "up",
+        ["Moon Up"],
+        "2026-01-01T00:00:00Z",
+        "2026-01-02T00:00:00Z",
+      );
+      const moonDown = event(
+        "down",
+        ["Moon Down"],
+        "2026-01-02T00:00:00Z",
+        "2026-01-03T00:00:00Z",
+      );
+      const moonrise = event("moonrise", ["Moonrise"], "2026-01-01T00:00:00Z");
+      const moonset = event("moonset", ["Moonset"], "2026-01-02T00:00:00Z");
+      const nextMoonrise = event(
+        "next moonrise",
+        ["Moonrise"],
+        "2026-01-03T00:00:00Z",
+      );
+
+      expect(
+        kept([moonrise, moonset, nextMoonrise], [moonUp, moonDown]),
+      ).toStrictEqual(["moonrise", "moonset", "next moonrise"]);
+    });
+
+    it("keeps a forming instant on a span's end and an eclipse beginning on its end, since each sits on one edge only", () => {
       const span = event(
         "span",
-        ["Simple Aspect", "Moon Up"],
+        ["Simple Aspect", "Eclipse"],
         "2026-01-01T00:00:00Z",
         "2026-01-02T00:00:00Z",
       );
@@ -508,12 +542,16 @@ describe(ProgressiveService, () => {
         ["Dissolving"],
         "2026-01-01T00:00:00Z",
       );
-      const moonrise = event("moonrise", ["Moonrise"], "2026-01-02T00:00:00Z");
+      const beginning = event(
+        "beginning",
+        ["Beginning"],
+        "2026-01-02T00:00:00Z",
+      );
 
-      expect(kept([forming, dissolving, moonrise], [span])).toStrictEqual([
+      expect(kept([forming, dissolving, beginning], [span])).toStrictEqual([
         "forming",
         "dissolving",
-        "moonrise",
+        "beginning",
       ]);
     });
 

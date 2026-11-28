@@ -2,6 +2,7 @@ query Facets($period: PeriodInput, $filter: EventFilterGroupInput) {
   facets(period: $period, filter: $filter) {
     icon
     id
+    isDefaultGroup
     isFilterable
     isGroupable
     isSelectable
@@ -14,6 +15,7 @@ query Facets($period: PeriodInput, $filter: EventFilterGroupInput) {
       depth
       icon
       id
+      isDefaultGroup
       isFilterable
       isGroupable
       isSelectable

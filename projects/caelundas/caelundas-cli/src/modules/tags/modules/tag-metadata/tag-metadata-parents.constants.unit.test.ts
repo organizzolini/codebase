@@ -23,20 +23,32 @@ describe("tag extra parents", () => {
     ]);
   });
 
-  it("lists each fortunate planet under Benefic and each difficult one under Malefic, beside its reach", () => {
-    expect(parentsOf("Body / Planet / Personal / Venus")).toStrictEqual([
-      "Body / Planet / Benefic",
-    ]);
-    expect(parentsOf("Body / Planet / Social / Jupiter")).toStrictEqual([
-      "Body / Planet / Benefic",
-    ]);
-    expect(parentsOf("Body / Planet / Personal / Mars")).toStrictEqual([
+  it("lists every planet under Planet itself, and a fortunate or difficult one under Benefic or Malefic too", () => {
+    expect(parentsOf("Body / Planet / Inner / Personal / Venus")).toStrictEqual(
+      ["Body / Planet", "Body / Planet / Benefic"],
+    );
+    expect(parentsOf("Body / Planet / Inner / Social / Jupiter")).toStrictEqual(
+      ["Body / Planet", "Body / Planet / Benefic"],
+    );
+    expect(parentsOf("Body / Planet / Inner / Personal / Mars")).toStrictEqual([
+      "Body / Planet",
       "Body / Planet / Malefic",
     ]);
-    expect(parentsOf("Body / Planet / Social / Saturn")).toStrictEqual([
+    expect(parentsOf("Body / Planet / Inner / Social / Saturn")).toStrictEqual([
+      "Body / Planet",
       "Body / Planet / Malefic",
     ]);
-    expect(parentsOf("Body / Planet / Personal / Mercury")).toStrictEqual([]);
+    expect(
+      parentsOf("Body / Planet / Inner / Personal / Mercury"),
+    ).toStrictEqual(["Body / Planet"]);
+    expect(parentsOf("Body / Planet / Outer / Pluto")).toStrictEqual([
+      "Body / Planet",
+    ]);
+  });
+
+  it("leaves the Sun and the Moon under Luminary alone", () => {
+    expect(parentsOf("Body / Luminary / Sun")).toStrictEqual([]);
+    expect(parentsOf("Body / Luminary / Moon")).toStrictEqual([]);
   });
 
   it("lists every simple aspect under its nature and harmonic", () => {
@@ -68,11 +80,11 @@ describe("tag extra parents", () => {
 
   it("lists a solar point under its season", () => {
     expect(
-      parentsOf("Solar / Annual Cycle / Equinox / Vernal Equinox"),
-    ).toStrictEqual(["Solar / Season / Spring"]);
+      parentsOf("Yearly / Annual Cycle / Equinox / Vernal Equinox"),
+    ).toStrictEqual(["Yearly / Season / Spring"]);
     expect(
-      parentsOf("Solar / Annual Cycle / Cross-Quarter Day / Samhain"),
-    ).toStrictEqual(["Solar / Season / Autumn"]);
+      parentsOf("Yearly / Annual Cycle / Cross-Quarter Day / Samhain"),
+    ).toStrictEqual(["Yearly / Season / Autumn"]);
   });
 
   it("never lists a node under itself, a node beneath it or its own parent, nor twice under one parent", () => {

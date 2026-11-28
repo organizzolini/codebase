@@ -7,7 +7,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { findToolbar } from "../../../../testing/calendar-page";
+import { findToolbar } from "../../../../testing/calendar/calendar-page";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 import { getRouter } from "../../../router";
 

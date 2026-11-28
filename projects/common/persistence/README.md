@@ -306,6 +306,12 @@ data source's naming strategy, as in the database. When the entities cannot buil
 metadata alone, such as when a relation points at an entity no glob matched,
 only the derived tables are left out.
 
+The diagram is drawn left to right (`direction LR`). Tables joined by relations
+form a group, and when there are two or more groups the marker block opens with an
+index of links, then a `##` heading and a diagram per group, titled by its most
+related table, with the tables that have no relation together in a last
+`Standalone tables` group. One group is one diagram, as before.
+
 ## Moving data between databases
 
 The package is also a command line, `database`, that copies selected tables
@@ -437,14 +443,14 @@ Every option is shared by the three commands unless the table says otherwise;
 | `--page <n>`               | A page of `--limit` roots to draw, from 1; repeat for several, each its own diagram. Needs `--limit`                                                                                                  |
 | `--truncate-depth <n>`     | The deepest level drawn, a positive integer. Roots are level 1; the children below a cut level become one `… K more` node                                                                             |
 | `--truncate-breadth <n>`   | The most children drawn under one node, a positive integer, in sort order. The rest become one `… K more` node. Roots are never capped                                                                |
-| `--output-markdown <path>` | Writes the diagram as a fenced Mermaid block, creating its folders, with the warnings after the fence. The diagram is not printed                                                                     |
+| `--output-markdown <path>` | Writes the diagram as Markdown, creating its folders: a fenced block, or an index and a small diagram per section. Warnings last. Not printed                                                         |
 | `--output-json <path>`     | Writes the drawn graph as pretty JSON, creating its folders. The diagram is not printed                                                                                                               |
 | `--overwrite`              | Replaces an existing `--output-markdown` or `--output-json` file. Without it an existing file is refused and left unchanged                                                                           |
 | `--dry-run`                | Checks the options and output paths and lists the entity files it would read. It connects to no database and imports no entity file                                                                   |
 
 `--diagram <flowchart|filetree>` is `render-tree-data` only. `flowchart` (the
-default) draws the tree as a flowchart; `filetree` draws Mermaid's beta
-`treeView-beta` file tree. See [Drawing trees](#drawing-trees).
+default) draws the tree as a flowchart; `filetree` draws a plain text file tree,
+one line per node. See [Drawing trees](#drawing-trees).
 
 `--icon-field <name>`, `--note-field <name>` and `--rank-field <name>` are
 `render-tree-data` only, and name the entity properties a tree reads from,
@@ -658,18 +664,15 @@ joins titles each neighborhood with its own `@GraphLabel`.
   parent warns with its id and the count hidden.
 - Several `@Tree` entities without `--table` fail, naming each table, before
   any connection opens.
-- **`--diagram filetree`** draws the same tree as Mermaid's `treeView-beta`
-  diagram instead of a flowchart: roots at the top level, children nested by
-  indentation, quoted labels, and a trailing `/` on each node with children. A
-  truncation node shows as its `… K more` label. Filters, sorts, caps, paging
-  (with the same `## Page` headings), and the output flags work unchanged; edge
-  labels, weights, and styled roots are not drawn. Mermaid's quoted labels
-  have no escapes, so a label holding `"` is wrapped in single quotes with its
-  own `'` turned into `’`.
-- **`treeView-beta` is a beta diagram.** It needs Mermaid 11.14 or later, its
-  syntax may still change, and Obsidian may not render it yet. Only Mermaid's
-  50,000-character text limit warns for a filetree; the 500-edge limit is a
-  flowchart setting.
+- **`--diagram filetree`** draws the same tree as a plain text tree in a
+  `text` fence, not Mermaid: one line per node with `├──`, `└──` and `│` guides,
+  then the icon in brackets and the note after a dash. A node with several parents is
+  listed once, under the first parent that reaches it, and marked
+  `(also under X, Y)` with its other parents, so every node is one line. Nodes of
+  a cycle no root reaches are listed as roots. A truncation node shows as its
+  `… K more` label. Filters, sorts, caps, paging, and the output flags work
+  unchanged; edge labels, weights, and styled roots are not drawn, and there are
+  no limit warnings, since no Mermaid limit applies to text.
 
 ### Drawing directed acyclic graphs and graphs
 
@@ -714,18 +717,29 @@ diagram reaches 90% of either limit, and again when it passes one:
 
 The diagram is still drawn in full, and the warnings name the count and the
 limit. The edge count includes the truncation edges, and the character count is
-the length of the Mermaid text.
+the length of the Mermaid text. In a Markdown file written in sections, each
+section is its own diagram, so the limits are checked per section and a warning
+names the section.
 
 A capped parent gets one truncation node, labelled `… K more` with a dashed grey
 box, under the parent with id `<parent>/more`. Each one warns with the parent's
 id, the number hidden, and the cap that hid them. Roots are drawn with a heavy
-blue border. Node ids in the diagram are short positional ids, and labels are
+blue border, and a node with several parents in a directed graph with an orange
+one (class `shared`), its every parent edge drawn. Node ids in the diagram are short positional ids, and labels are
 escaped so a quote, pipe, angle bracket, hash, or backtick in a value cannot break the diagram.
 
-### Neighborhoods
+### Layout and sections
+
+A flowchart is compact: each node is declared once, with its label, where it
+first appears; each source's edges are chained to all its targets
+(`n0 --> n1 & n2 & n3`); an undirected graph chains its links into trails
+(`n0 --- n1 --- n2`); and each class is named on one `class` line, with only the
+`classDef`s the diagram uses. A tree of a hundred nodes takes about as many
+lines as it has parents.
 
 When a diagram holds two or more neighborhoods, each is wrapped in a Mermaid
-`subgraph` (`nb0`, `nb1`, and so on, in order of its first node). A
+`subgraph` (`nb0`, `nb1`, and so on, in order of its first node), set in rows of
+three with invisible `~~~` links, and each draws in the diagram's direction. A
 neighborhood is one weakly connected group of nodes: for tree data each
 separate tree of the forest, and for graph data each connected group, with
 edges read as undirected. A truncation node belongs to its parent's
@@ -736,11 +750,21 @@ them.
 The title is the label every edge of the neighborhood shares; those edges are
 then drawn without it, since the title says it already, which keeps a
 constellation's lines uncluttered. A truncation node's edge has no label and is
-not counted. Otherwise the title is the label of the
+not counted. Otherwise, when the edges carry one to three distinct labels, the
+title joins them, such as two constellations that share a star, and keeps the
+labels on the edges. Failing that, the title is the label of the
 neighborhood's first root, or of its first node. Weights stay on their edges.
 An edge's label may be the key of an owner row, shown as that row's
 `@GraphLabel` when the label column joins the owner by a relation, so the box
 reads "Ursa Major" and not "UMa".
+
+With `--output-markdown` (and in a text file tree) the neighborhoods are also
+packed, in order, into sections of at most 40 nodes, a larger neighborhood being
+a section of its own. A file of two or more sections opens with an index of
+links to them, then gives each a `##` heading, titled by its neighborhoods, and
+a diagram small enough to read on one screen. With several pages each page is a
+`##` heading and its sections `###`. The diagram printed on stdout is always
+the whole drawing in one piece.
 
 ### Known limits
 
@@ -773,70 +797,24 @@ nx run caelundas-db:render-tag-tree --args="--truncate-depth 2 --limit 3"
 
 The target and its connection variables are described in the
 [caelundas-db README](../../caelundas/caelundas-db/README.md#drawing-the-tag-tree).
-The output below is a real run against the local container, with the target's
-`--truncate-depth 2 --limit 3`:
+The output below is a real run against the local container, with
+`--truncate-depth 2 --truncate-breadth 3 --limit 1 --page 2`:
 
 ```mermaid
 flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
     classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5
-    n0["Aspect Harmonic"]
-    n1["Harmonic 4"]
-    n2["Aspect Nature"]
-    n3["Hard"]
-    n4["Body Class"]
-    n5["Asteroid"]
-    n6["Luminary"]
-    n7["Outer"]
-    n8["Personal"]
-    n9["Harmonic 3"]
-    n10["Soft"]
-    n11["Point"]
-    n12["Harmonic 6"]
-    n13["Harmonic 12"]
-    n14["Neutral"]
-    n15["Node"]
-    n16["Harmonic 1"]
-    n17["Harmonic 2"]
-    n18["Harmonic 10"]
-    n19["Social"]
-    n20["Harmonic 9"]
-    n21["Harmonic 5"]
-    n22["Harmonic 8"]
-    n23["Harmonic 7"]
-    n24["Harmonic 11"]
-    n0 --> n1
-    n2 --> n3
-    n4 --> n5
-    n4 --> n6
-    n4 --> n7
-    n4 --> n8
-    n0 --> n9
-    n2 --> n10
-    n4 --> n11
-    n0 --> n12
-    n0 --> n13
-    n2 --> n14
-    n4 --> n15
-    n0 --> n16
-    n0 --> n17
-    n0 --> n18
-    n4 --> n19
-    n0 --> n20
-    n0 --> n21
-    n0 --> n22
-    n0 --> n23
-    n0 --> n24
-    class n0 root
-    class n2 root
-    class n4 root
+    n1["Body<br/><i>globe · The bodies an event involves, grouped by class.</i>"] --> n0["Luminary<br/><i>sun-moon · The Sun and the Moon.</i>"] & n2["Planet<br/><i>earth · The planets, by how far they reach and by tradition's fortune.</i>"] & n3["Asteroid<br/><i>mountain · Asteroids and Chiron.</i>"] & n4["… 1 more"]
+    n0 --> n5["… 2 more"]
+    n2 --> n6["… 5 more"]
+    n3 --> n7["… 5 more"]
+    class n1 root
+    class n4,n5,n6,n7 truncation
 ```
 
-The three roots are the first three in primary-key order, and `--truncate-depth 2`
-draws their children without going deeper. A run with `--truncate-depth 2
---truncate-breadth 2` and no `--limit` cuts each parent to two children, adds
-`… K more` nodes, and writes one warning per cut to stderr; that run was made
-too, and its warnings were read from stderr.
+The page is the second root in primary-key order, and `--truncate-depth 2`
+draws its children without going deeper. The breadth cap keeps three
+children under Body, and each cut writes one warning to stderr.
 
 The directed acyclic graph and graph commands are shown with the illustrative entity above rather
 than a live run, since no local table holds edge rows.

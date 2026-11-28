@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   readServedApi,
   serveCalendarApi,
-} from "../../../../../../testing/calendar-api";
+} from "../../../../../../testing/calendar/calendar-api";
 import { CATALOG } from "../../../../../../testing/metrics/metric-catalog";
 import { useMetricCatalog } from "../../../../../hooks/use-metric-layout/hooks/use-metric-catalog/use-metric-catalog";
 

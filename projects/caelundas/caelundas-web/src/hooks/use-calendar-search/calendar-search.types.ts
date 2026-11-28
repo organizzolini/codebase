@@ -11,6 +11,10 @@ import type { GroupSort } from "../../components/calendar-query/calendar-group-s
  */
 export interface CalendarSearch {
   /**
+   * How much of the week and day's all-day row shows: `c` one slim row, `e` every event; the facet groups when absent.
+   */
+  ad?: "c" | "e" | undefined;
+  /**
    * `false` when events are drawn without their colors; colored when absent.
    */
   colors?: false | undefined;

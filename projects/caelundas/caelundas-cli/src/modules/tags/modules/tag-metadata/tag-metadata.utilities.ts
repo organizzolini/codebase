@@ -17,6 +17,7 @@ export function tagMenuFlags(path: readonly string[]): TagMenuFlags {
     !TAG_MENU_EXCLUSIONS[flag].includes(key);
 
   return {
+    isDefaultGroup: offers("isDefaultGroup"),
     isFilterable: offers("isFilterable"),
     isGroupable: offers("isGroupable"),
     isSelectable: offers("isSelectable"),

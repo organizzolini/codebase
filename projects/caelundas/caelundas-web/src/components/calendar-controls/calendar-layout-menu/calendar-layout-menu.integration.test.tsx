@@ -6,7 +6,7 @@ import {
   pickCalendarView,
   pickTimelineScale,
   readCalendarView,
-} from "../../../../testing/calendar-page";
+} from "../../../../testing/calendar/calendar-page";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 import { getRouter } from "../../../router";
 

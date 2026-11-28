@@ -78,6 +78,28 @@ describe("calendar-view-strip utilities", () => {
       ]);
     });
 
+    it("leaves out a view whose roots the data has but whose tags it lacks", () => {
+      const roots = [
+        "Aspect",
+        "Body",
+        "Daily",
+        "Eclipse",
+        "Lunar",
+        "Planetary",
+        "Retrograde",
+        "Sign",
+      ];
+      const resolved = resolveViews(
+        roots.map((name) => ({
+          id: name.toLowerCase(),
+          name,
+          values: [{ count: 1, depth: 1, id: "odd", name: "Odd", path: "Odd" }],
+        })),
+      );
+
+      expect(resolved.map((view) => view.id)).toStrictEqual(["all-events"]);
+    });
+
     it("groups and sorts by a root's own tags when the view names no path", () => {
       const resolved = resolveViews([
         {
@@ -105,6 +127,14 @@ describe("calendar-view-strip utilities", () => {
           values: [
             { count: 1, depth: 1, id: "aries", name: "Aries", path: "Aries" },
             { count: 1, depth: 1, id: "fire", name: "Fire", path: "Fire" },
+            { count: 1, depth: 1, id: "stay", name: "Stay", path: "Stay" },
+            {
+              count: 1,
+              depth: 2,
+              id: "whole",
+              name: "Full Sign",
+              path: "Stay / Full Sign",
+            },
           ],
         },
         {
@@ -116,6 +146,9 @@ describe("calendar-view-strip utilities", () => {
       const [signs] = resolved;
 
       expect(signs?.id).toBe("body-signs");
+      expect(signs?.filter).toMatchObject({
+        rules: [{ path: ["tag:zodiac"], value: ["whole"] }],
+      });
       expect(signs?.group).toStrictEqual([
         { field: "tag:zodiac", tags: ["aries"] },
         { field: "tag:body" },

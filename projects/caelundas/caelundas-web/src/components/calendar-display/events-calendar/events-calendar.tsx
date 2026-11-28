@@ -12,6 +12,7 @@ import { createColorScheme } from "./components/calendar-color-schemes/calendar-
 import { colorEvents } from "./components/calendar-colors/calendar-colors.utilities";
 import { CalendarGrid } from "./components/calendar-grid/calendar-grid";
 import {
+  EDGE_CLASS_NAMES,
   OPAQUE_CLASS_NAMES,
   VENDORED_SURFACE_CLASS_NAMES,
 } from "./components/calendar-views/calendar-surfaces.constants";
@@ -23,10 +24,12 @@ import type { DateRangeValue } from "../../calendar-controls/calendar-date-picke
 import type { EventFilterQuery } from "../../calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
 import type { EventGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
+import type { AllDayMode } from "./components/calendar-grid/components/calendar-all-day/calendar-all-day.types";
 import type {
   CalendarEventRecord,
   EventFacet,
 } from "./components/calendar-loader/calendar-records.types";
+import type { DayOpener } from "./components/calendar-month/calendar-month.types";
 import type {
   CalendarViewName,
   TimelineScale,
@@ -43,6 +46,10 @@ export interface EventsCalendarProperties {
    * How many days the table lists; a month's worth when absent.
    */
   agendaDays?: number | undefined;
+  /**
+   * How much of the week and day's all-day row shows; the groups when absent.
+   */
+  allDayMode?: AllDayMode | undefined;
   anchor: Date;
   className?: string;
   /**
@@ -88,6 +95,10 @@ export interface EventsCalendarProperties {
    */
   metrics?: readonly string[] | undefined;
   /**
+   * Called with the all-day row's new state.
+   */
+  onAllDayModeChange?: ((mode: AllDayMode) => void) | undefined;
+  /**
    * Called with the table's new columns.
    */
   onColumnsChange?:
@@ -97,6 +108,10 @@ export interface EventsCalendarProperties {
    * Called with the new day when the toolbar moves the calendar.
    */
   onDateChange: (date: Date) => void;
+  /**
+   * Called when a month's day or a week's day heading opens the view below it.
+   */
+  onDayOpen?: DayOpener | undefined;
   /**
    * Called with the days the toolbar's date picker applies; the title is plain text without it.
    */
@@ -171,10 +186,17 @@ export function EventsCalendar(
   );
 
   // 🏗 Setup
-  const groups = { grouping, hideEmpty: properties.hideEmpty };
-  // What every layout but the month's grid and the week's is handed alike.
+  const groups = {
+    facets,
+    groupColors,
+    grouping,
+    hideEmpty: properties.hideEmpty,
+    sort,
+  };
+  // What every layout is handed alike.
   const shared = {
     anchor,
+    className: "min-h-0 flex-1",
     onDateChange,
     onNavigationChange: handleNavigationChange,
     timeZone,
@@ -193,7 +215,7 @@ export function EventsCalendar(
       data-testid="events-calendar"
     >
       <div
-        className={`flex h-full flex-col ${VENDORED_SURFACE_CLASS_NAMES.gridCells} ${OPAQUE_CLASS_NAMES.buttons} ${OPAQUE_CLASS_NAMES.events} ${OPAQUE_CLASS_NAMES.ganttBars} ${OPAQUE_CLASS_NAMES.labels} ${OPAQUE_CLASS_NAMES.pills}`}
+        className={`flex h-full flex-col ${EDGE_CLASS_NAMES} ${VENDORED_SURFACE_CLASS_NAMES.gridCells} ${OPAQUE_CLASS_NAMES.buttons} ${OPAQUE_CLASS_NAMES.events} ${OPAQUE_CLASS_NAMES.ganttBars} ${OPAQUE_CLASS_NAMES.labels} ${OPAQUE_CLASS_NAMES.pills}`}
       >
         <CalendarToolbar
           compact={compact}
@@ -205,47 +227,40 @@ export function EventsCalendar(
           <CalendarTable
             {...shared}
             agendaDays={agendaDays}
-            className="min-h-0 flex-1"
             columns={columns}
             events={events}
-            facets={facets}
-            groupColors={groupColors}
             {...groups}
             onColumnsChange={onColumnsChange}
             onSortChange={onSortChange}
-            sort={sort}
           />
         ) : view === "timeline" ? (
           <CalendarTimeline
             {...shared}
-            className="min-h-0 flex-1"
             compact={compact}
             events={events}
-            facets={facets}
-            groupColors={groupColors}
             {...groups}
             scale={scale}
-            sort={sort}
           />
         ) : isMetricView(view) ? (
           <CalendarMetrics
             {...shared}
             agendaDays={agendaDays}
-            className="min-h-0 flex-1"
             compare={properties.compare}
             filter={properties.eventFilter}
-            groupColors={groupColors}
             {...groups}
             metrics={properties.metrics}
             onSortChange={onSortChange}
-            sort={sort}
             view={view}
           />
         ) : (
           <CalendarGrid
             {...shared}
+            allDayMode={properties.allDayMode}
             compact={compact}
             events={events}
+            {...groups}
+            onAllDayModeChange={properties.onAllDayModeChange}
+            onOpenDay={properties.onDayOpen}
             view={view}
           />
         )}

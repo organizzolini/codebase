@@ -1,11 +1,11 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { readServedApi } from "../../../../../../testing/calendar-api";
+import { readServedApi } from "../../../../../../testing/calendar/calendar-api";
 import {
   findToolbar,
   pickCalendarView,
-} from "../../../../../../testing/calendar-page";
+} from "../../../../../../testing/calendar/calendar-page";
 import { renderCalendarRoute } from "../../../../../../testing/render-route";
 
 /**

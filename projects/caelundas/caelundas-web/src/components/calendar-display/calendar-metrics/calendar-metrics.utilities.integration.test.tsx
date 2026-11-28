@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { readServedApi } from "../../../../testing/calendar-api";
+import { readServedApi } from "../../../../testing/calendar/calendar-api";
 import {
   BUILDER_TEST,
   BUILDER_WAIT,
@@ -9,7 +9,7 @@ import {
   findLayoutOption,
   pickCalendarView,
   readCalendarView,
-} from "../../../../testing/calendar-page";
+} from "../../../../testing/calendar/calendar-page";
 import { filterGroup, tagRule } from "../../../../testing/event-filters";
 import { CATALOG } from "../../../../testing/metrics/metric-catalog";
 import { renderCalendarRoute } from "../../../../testing/render-route";

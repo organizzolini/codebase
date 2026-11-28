@@ -7,8 +7,8 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { readServedApi } from "../../../../../../testing/calendar-api";
-import { BUILDER_WAIT } from "../../../../../../testing/calendar-page";
+import { readServedApi } from "../../../../../../testing/calendar/calendar-api";
+import { BUILDER_WAIT } from "../../../../../../testing/calendar/calendar-page";
 import {
   fieldRule,
   filterGroup,

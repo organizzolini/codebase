@@ -455,7 +455,6 @@ type CodeBlockLineRowProps = {
   domIdBase?: string
   startLine?: number
   onSelect?: (line: number, extend: boolean) => void
-  foldable?: boolean
   foldRegion?: CodeBlockFoldRegion
   folded?: boolean
   onToggleFold?: (start: number) => void
@@ -478,7 +477,6 @@ const CodeBlockLineRow = memo(function CodeBlockLineRow({
   domIdBase,
   startLine = 1,
   onSelect,
-  foldable,
   foldRegion,
   folded,
   onToggleFold,
@@ -1186,7 +1184,6 @@ function CodeBlock({
   const surfaceProps: CodeBlockSurfaceProps = {
     lines: renderedLines,
     gutterMax: lines[lines.length - 1]?.number ?? startLine,
-    foldable,
     gutterChannel,
     actionsSide,
     foldStarts,
@@ -1303,7 +1300,6 @@ type CodeBlockSurfaceProps = {
   toggleLine: (line: number, extend: boolean) => void
   visibleLines?: number
   gutterMax: number
-  foldable: boolean
   gutterChannel: boolean
   actionsSide: CodeBlockLineActionsSide
   foldStarts: Map<number, CodeBlockFoldRegion>
@@ -1333,7 +1329,6 @@ function CodeBlockSurface({
   toggleLine,
   visibleLines,
   gutterMax,
-  foldable,
   gutterChannel,
   actionsSide,
   foldStarts,
@@ -1657,7 +1652,6 @@ function CodeBlockSurface({
                 domIdBase={contentId}
                 startLine={startLine}
                 onSelect={toggleDisplayed}
-                foldable={foldable}
                 foldRegion={foldStarts.get(line.number - startLine + 1)}
                 folded={foldedSet.has(line.number - startLine + 1)}
                 onToggleFold={onToggleFold}

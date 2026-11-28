@@ -12,28 +12,6 @@ import {
 
 import type { FixtureDatabase } from "../../../../../testing/fixture-persistence";
 
-/** The fixture tree, drawn with its nodes in id order. */
-const TREE_DIAGRAM = [
-  "flowchart LR",
-  "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
-  "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
-  '    subgraph nb0["Work"]',
-  '        n0["Work"]',
-  '        n1["Email"]',
-  '        n2["Meetings"]',
-  '        n3["Inbox"]',
-  "        n0 --> n1",
-  "        n0 --> n2",
-  "        n1 --> n3",
-  "    end",
-  '    subgraph nb1["Errands"]',
-  '        n4["Errands"]',
-  "    end",
-  "    class n0 root",
-  "    class n4 root",
-  "",
-].join("\n");
-
 /** The entity files, one per storage type, each in its own glob. */
 const TREE_ENTITIES = path.join(
   import.meta.dirname,
@@ -67,30 +45,27 @@ const TREE_ROWS = [
   "INSERT INTO code_tags (code, note, parent_code) VALUES ('ops', NULL, NULL), ('ops-db', NULL, 'ops'), ('ops-web', NULL, 'ops')",
 ];
 
-/** The keyed tree, labeled by code, since it has no `name` column. */
-const KEYED_DIAGRAM = [
-  "flowchart LR",
-  "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
-  "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
-  '    n0["ops"]',
-  '    n1["ops-db"]',
-  '    n2["ops-web"]',
-  "    n0 --> n1",
-  "    n0 --> n2",
-  "    class n0 root",
-  "",
-].join("\n");
+/** The root style, emitted only when a root is drawn. */
+const ROOT_DEFINITION =
+  "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px";
 
-/** The header every drawn tree opens with, before its nodes and edges. */
-const DIAGRAM_HEADER = [
-  "flowchart LR",
-  "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
-  "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
-];
+/** The truncation style, emitted when a "… K more" node is drawn. */
+const TRUNCATION_DEFINITION =
+  "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5";
+
+/** Whether a `class` line in `lines` applies `name`. */
+const usesClass = (lines: readonly string[], name: string): boolean =>
+  lines.some((line) => line.startsWith("class ") && line.endsWith(` ${name}`));
 
 /** The diagram of `lines`, indented under the header, as stdout holds it. */
 const drawnDiagram = (lines: readonly string[]): string =>
-  [...DIAGRAM_HEADER, ...lines.map((line) => `    ${line}`), ""].join("\n");
+  [
+    "flowchart LR",
+    ...(usesClass(lines, "root") ? [ROOT_DEFINITION] : []),
+    ...(usesClass(lines, "truncation") ? [TRUNCATION_DEFINITION] : []),
+    ...lines.map((line) => `    ${line}`),
+    "",
+  ].join("\n");
 
 /** A `subgraph` block: its numbered id and title, then its indented lines. */
 const subgraph = (
@@ -99,9 +74,27 @@ const subgraph = (
   lines: readonly string[],
 ): string[] => [
   `subgraph nb${index}["${title}"]`,
+  "    direction LR",
   ...lines.map((line) => `    ${line}`),
   "end",
 ];
+
+/** The fixture tree, drawn as two neighborhoods in id order. */
+const TREE_DIAGRAM = drawnDiagram([
+  ...subgraph(0, "Work", [
+    'n0["Work"] --> n1["Email"] & n2["Meetings"]',
+    'n1 --> n3["Inbox"]',
+  ]),
+  ...subgraph(1, "Errands", ['n4["Errands"]']),
+  "nb0 ~~~ nb1",
+  "class n0,n4 root",
+]);
+
+/** The keyed tree, labeled by code, since it has no `name` column. */
+const KEYED_DIAGRAM = drawnDiagram([
+  'n0["ops"] --> n1["ops-db"] & n2["ops-web"]',
+  "class n0 root",
+]);
 
 describe("render-tree-data", () => {
   let source: FixtureDatabase;
@@ -239,7 +232,7 @@ describe("render-tree-data", () => {
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('n5["Stray"]');
-      expect(result.stdout).toContain("    class n5 root");
+      expect(result.stdout).toContain("class n0,n4,n5 root");
       expect(result.stdout).not.toContain("names parent");
       expect(result.stderr).toBe(
         "⚠️ Node 6 names parent 99, which no row has; drawn as a root\n",
@@ -320,10 +313,10 @@ describe("render-tree-data", () => {
       "--truncate-depth 1 keeps the roots and hides every child beneath them",
       ["--truncate-depth", "1"],
       [
-        ...subgraph(0, "Work", ['n0["Work"]', 'n2["… 2 more"]', "n0 --> n2"]),
+        ...subgraph(0, "Work", ['n0["Work"] --> n2["… 2 more"]']),
         ...subgraph(1, "Errands", ['n1["Errands"]']),
-        "class n0 root",
-        "class n1 root",
+        "nb0 ~~~ nb1",
+        "class n0,n1 root",
         "class n2 truncation",
       ],
       ["Node 1 hides 2 children beyond --truncate-depth 1"],
@@ -333,17 +326,12 @@ describe("render-tree-data", () => {
       ["--truncate-depth", "2"],
       [
         ...subgraph(0, "Work", [
-          'n0["Work"]',
-          'n1["Email"]',
-          'n2["Meetings"]',
-          'n4["… 1 more"]',
-          "n0 --> n1",
-          "n0 --> n2",
-          "n1 --> n4",
+          'n0["Work"] --> n1["Email"] & n2["Meetings"]',
+          'n1 --> n4["… 1 more"]',
         ]),
         ...subgraph(1, "Errands", ['n3["Errands"]']),
-        "class n0 root",
-        "class n3 root",
+        "nb0 ~~~ nb1",
+        "class n0,n3 root",
         "class n4 truncation",
       ],
       ["Node 2 hides 1 child beyond --truncate-depth 2"],
@@ -353,17 +341,12 @@ describe("render-tree-data", () => {
       ["--truncate-breadth", "1"],
       [
         ...subgraph(0, "Work", [
-          'n0["Work"]',
-          'n1["Email"]',
-          'n2["Inbox"]',
-          'n4["… 1 more"]',
-          "n0 --> n1",
-          "n1 --> n2",
-          "n0 --> n4",
+          'n0["Work"] --> n1["Email"] & n4["… 1 more"]',
+          'n1 --> n2["Inbox"]',
         ]),
         ...subgraph(1, "Errands", ['n3["Errands"]']),
-        "class n0 root",
-        "class n3 root",
+        "nb0 ~~~ nb1",
+        "class n0,n3 root",
         "class n4 truncation",
       ],
       ["Node 1 hides 1 child beyond --truncate-breadth 1"],
@@ -373,19 +356,13 @@ describe("render-tree-data", () => {
       ["--truncate-depth", "2", "--truncate-breadth", "1"],
       [
         ...subgraph(0, "Work", [
-          'n0["Work"]',
-          'n1["Email"]',
-          'n3["… 1 more"]',
-          'n4["… 1 more"]',
-          "n0 --> n1",
-          "n0 --> n3",
-          "n1 --> n4",
+          'n0["Work"] --> n1["Email"] & n3["… 1 more"]',
+          'n1 --> n4["… 1 more"]',
         ]),
         ...subgraph(1, "Errands", ['n2["Errands"]']),
-        "class n0 root",
-        "class n2 root",
-        "class n3 truncation",
-        "class n4 truncation",
+        "nb0 ~~~ nb1",
+        "class n0,n2 root",
+        "class n3,n4 truncation",
       ],
       [
         "Node 1 hides 1 child beyond --truncate-breadth 1",
@@ -398,15 +375,7 @@ describe("render-tree-data", () => {
       const result = await runRender(["--entities", LIST_GLOB, ...caps]);
 
       expect(result.exitCode).toBe(0);
-      expect(result.stdout).toBe(
-        [
-          "flowchart LR",
-          "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
-          "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
-          ...lines.map((line) => `    ${line}`),
-          "",
-        ].join("\n"),
-      );
+      expect(result.stdout).toBe(drawnDiagram(lines));
       expect(result.stderr).toBe(
         warnings.map((warning) => `⚠️ ${warning}\n`).join(""),
       );
@@ -418,31 +387,19 @@ describe("render-tree-data", () => {
     [
       "--filter name=Inbox keeps the match and its ancestors, not its siblings",
       ["--filter", "name=Inbox"],
-      [
-        'n0["Work"]',
-        'n1["Email"]',
-        'n2["Inbox"]',
-        "n0 --> n1",
-        "n1 --> n2",
-        "class n0 root",
-      ],
+      ['n0["Work"] --> n1["Email"]', 'n1 --> n2["Inbox"]', "class n0 root"],
     ],
     [
       "--filter name~=ting keeps the rows whose name contains the text",
       ["--filter", "name~=ting"],
-      ['n0["Work"]', 'n1["Meetings"]', "n0 --> n1", "class n0 root"],
+      ['n0["Work"] --> n1["Meetings"]', "class n0 root"],
     ],
     [
       "--filter name!=Errands drops only the rows named Errands and keeps the rest",
       ["--filter", "name!=Errands"],
       [
-        'n0["Work"]',
-        'n1["Email"]',
-        'n2["Meetings"]',
-        'n3["Inbox"]',
-        "n0 --> n1",
-        "n0 --> n2",
-        "n1 --> n3",
+        'n0["Work"] --> n1["Email"] & n2["Meetings"]',
+        'n1 --> n3["Inbox"]',
         "class n0 root",
       ],
     ],
@@ -450,13 +407,8 @@ describe("render-tree-data", () => {
       "--filter id<3 keeps each match with its ancestors and its whole subtree",
       ["--filter", "id<3"],
       [
-        'n0["Work"]',
-        'n1["Email"]',
-        'n2["Meetings"]',
-        'n3["Inbox"]',
-        "n0 --> n1",
-        "n0 --> n2",
-        "n1 --> n3",
+        'n0["Work"] --> n1["Email"] & n2["Meetings"]',
+        'n1 --> n3["Inbox"]',
         "class n0 root",
       ],
     ],
@@ -468,19 +420,12 @@ describe("render-tree-data", () => {
     [
       "--filter name=Meetings keeps the match and its root, as an equal-text match",
       ["--filter", "name=Meetings"],
-      ['n0["Work"]', 'n1["Meetings"]', "n0 --> n1", "class n0 root"],
+      ['n0["Work"] --> n1["Meetings"]', "class n0 root"],
     ],
     [
       "--filter name=Email keeps the match's ancestors and its children, but not its siblings",
       ["--filter", "name=Email"],
-      [
-        'n0["Work"]',
-        'n1["Email"]',
-        'n2["Inbox"]',
-        "n0 --> n1",
-        "n1 --> n2",
-        "class n0 root",
-      ],
+      ['n0["Work"] --> n1["Email"]', 'n1 --> n2["Inbox"]', "class n0 root"],
     ],
     [
       "several --filter flags combine with AND",
@@ -491,13 +436,8 @@ describe("render-tree-data", () => {
       "--truncate-depth applies to the filtered tree, truncating what the filter kept",
       ["--filter", "name!=Errands", "--truncate-depth", "2"],
       [
-        'n0["Work"]',
-        'n1["Email"]',
-        'n2["Meetings"]',
-        'n3["… 1 more"]',
-        "n0 --> n1",
-        "n0 --> n2",
-        "n1 --> n3",
+        'n0["Work"] --> n1["Email"] & n2["Meetings"]',
+        'n1 --> n3["… 1 more"]',
         "class n0 root",
         "class n3 truncation",
       ],
@@ -507,17 +447,12 @@ describe("render-tree-data", () => {
       ["--sort", "name:desc"],
       [
         ...subgraph(0, "Work", [
-          'n0["Work"]',
-          'n1["Meetings"]',
-          'n2["Inbox"]',
-          'n4["Email"]',
-          "n0 --> n1",
-          "n4 --> n2",
-          "n0 --> n4",
+          'n0["Work"] --> n1["Meetings"] & n4["Email"]',
+          'n4 --> n2["Inbox"]',
         ]),
         ...subgraph(1, "Errands", ['n3["Errands"]']),
-        "class n0 root",
-        "class n3 root",
+        "nb0 ~~~ nb1",
+        "class n0,n3 root",
       ],
     ],
     [
@@ -525,17 +460,12 @@ describe("render-tree-data", () => {
       ["--sort", "name"],
       [
         ...subgraph(0, "Work", [
-          'n0["Email"]',
-          'n2["Inbox"]',
-          'n3["Meetings"]',
-          'n4["Work"]',
-          "n4 --> n0",
-          "n0 --> n2",
-          "n4 --> n3",
+          'n4["Work"] --> n0["Email"] & n3["Meetings"]',
+          'n0 --> n2["Inbox"]',
         ]),
         ...subgraph(1, "Errands", ['n1["Errands"]']),
-        "class n1 root",
-        "class n4 root",
+        "nb0 ~~~ nb1",
+        "class n4,n1 root",
       ],
     ],
   ])(
@@ -575,18 +505,12 @@ describe("render-tree-data", () => {
         drawnDiagram([
           ...subgraph(0, "Email", ['n0["Email"]']),
           ...subgraph(1, "Work", [
-            'n1["Email"]',
-            'n3["Inbox"]',
-            'n4["Meetings"]',
-            'n5["Work"]',
-            "n5 --> n1",
-            "n1 --> n3",
-            "n5 --> n4",
+            'n5["Work"] --> n1["Email"] & n4["Meetings"]',
+            'n1 --> n3["Inbox"]',
           ]),
           ...subgraph(2, "Errands", ['n2["Errands"]']),
-          "class n0 root",
-          "class n2 root",
-          "class n5 root",
+          "nb0 ~~~ nb1 ~~~ nb2",
+          "class n0,n5,n2 root",
         ]),
       );
     },
@@ -725,13 +649,8 @@ describe("render-tree-data", () => {
 
     /** The Work subtree, the first root in id order. */
     const WORK_DIAGRAM = drawnDiagram([
-      'n0["Work"]',
-      'n1["Email"]',
-      'n2["Meetings"]',
-      'n3["Inbox"]',
-      "n0 --> n1",
-      "n0 --> n2",
-      "n1 --> n3",
+      'n0["Work"] --> n1["Email"] & n2["Meetings"]',
+      'n1 --> n3["Inbox"]',
       "class n0 root",
     ]);
 
@@ -820,13 +739,8 @@ describe("render-tree-data", () => {
       expect(first.stdout).toBe(ERRANDS_DIAGRAM);
       expect(second.stdout).toBe(
         drawnDiagram([
-          'n0["Email"]',
-          'n1["Inbox"]',
-          'n2["Meetings"]',
-          'n3["Work"]',
-          "n3 --> n0",
-          "n0 --> n1",
-          "n3 --> n2",
+          'n3["Work"] --> n0["Email"] & n2["Meetings"]',
+          'n0 --> n1["Inbox"]',
           "class n3 root",
         ]),
       );
@@ -856,11 +770,8 @@ describe("render-tree-data", () => {
 
       expect(first.stdout).toBe(
         drawnDiagram([
-          'n0["Work"]',
-          'n1["Email"]',
-          'n2["Inbox"]',
-          "n0 --> n1",
-          "n1 --> n2",
+          'n0["Work"] --> n1["Email"]',
+          'n1 --> n2["Inbox"]',
           "class n0 root",
         ]),
       );

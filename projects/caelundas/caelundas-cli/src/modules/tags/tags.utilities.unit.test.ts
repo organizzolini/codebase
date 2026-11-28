@@ -59,21 +59,22 @@ describe("tags utilities", () => {
       "gives a span of %s minutes the %s duration, and only that one",
       (minutes, unit) => {
         const end = moment.utc(AT).add(minutes, "minutes").toISOString();
-        const durations = under(classify(["Astronomy"], end), "Duration");
+        const durations = under(classify(["Astronomy"], end), "Temporality");
 
-        expect(durations).toStrictEqual([["Duration", unit]]);
+        expect(durations).toStrictEqual([["Temporality", "Progressive", unit]]);
       },
     );
 
     it("gives an instant no duration", () => {
-      expect(under(classify(["Astronomy"]), "Duration")).toStrictEqual([]);
+      expect(under(classify(["Astronomy"]), "Temporality")).toStrictEqual([
+        ["Temporality", "Perfective"],
+      ]);
     });
 
-    it("files an event under Progressive and a Duration together", () => {
+    it("files a span under the unit of its duration, beneath Progressive", () => {
       const paths = classify(["Astronomy"], LATER);
 
-      expect(paths).toContainEqual(["Temporality", "Progressive"]);
-      expect(paths).toContainEqual(["Duration", "Days"]);
+      expect(paths).toContainEqual(["Temporality", "Progressive", "Days"]);
     });
 
     it("falls back to a root named for an unmapped raw tag", () => {
@@ -104,8 +105,8 @@ describe("tags utilities", () => {
         ["Aspect", "Simple", "Major", "Conjunct"],
       ]);
       expect(under(paths, "Body")).toStrictEqual([
-        ["Body", "Planet", "Personal", "Mars"],
-        ["Body", "Planet", "Personal", "Venus"],
+        ["Body", "Planet", "Inner", "Personal", "Mars"],
+        ["Body", "Planet", "Inner", "Personal", "Venus"],
       ]);
     });
 
@@ -114,7 +115,6 @@ describe("tags utilities", () => {
         "Compound Aspect",
         "Triple Aspect",
         "T Square",
-        "Forming",
         "Moon",
         "Lilith",
         "Mercury",
@@ -126,7 +126,6 @@ describe("tags utilities", () => {
         ["Aspect", "Compound", "Triple", "T Square"],
         ["Aspect", "Harmonic", "Harmonic 4"],
         ["Aspect", "Nature", "Hard"],
-        ["Aspect", "Phase", "Forming"],
       ]);
     });
 
@@ -143,7 +142,7 @@ describe("tags utilities", () => {
       const paths = classify(["Ingress", "Mars", "Aries"]);
 
       expect(under(paths, "Body")).toStrictEqual([
-        ["Body", "Planet", "Personal", "Mars"],
+        ["Body", "Planet", "Inner", "Personal", "Mars"],
       ]);
       expect(under(paths, "Sign")).toContainEqual(["Sign", "Aries"]);
     });
@@ -167,8 +166,8 @@ describe("tags utilities", () => {
 
     it.each([
       ["Sun", "Luminary"],
-      ["Mercury", "Planet", "Personal"],
-      ["Saturn", "Planet", "Social"],
+      ["Mercury", "Planet", "Inner", "Personal"],
+      ["Saturn", "Planet", "Inner", "Social"],
       ["Pluto", "Planet", "Outer"],
       ["Chiron", "Asteroid"],
       ["North Lunar Node", "Point"],
@@ -279,7 +278,6 @@ describe("tags utilities", () => {
       ["Venusian", "Venus", "Inferior Conjunction", "Conjunction"],
       ["Mercurian", "Mercury", "Eastern Brightest", "Brightest"],
       ["Mercurian", "Mercury", "Morning Rise", "Rise and set"],
-      ["Martian", "Mars", "Evening Station", "Station"],
       ["Martian", "Mars", "Morning Widening", "Widening"],
       ["Martian", "Mars", "Evening Closing", "Closing"],
     ])(
@@ -298,7 +296,7 @@ describe("tags utilities", () => {
           ["Planetary", "Synodic Stage", planet, stage],
         ]);
         expect(under(paths, "Body")).toStrictEqual([
-          ["Body", "Planet", "Personal", planet],
+          ["Body", "Planet", "Inner", "Personal", planet],
         ]);
       },
     );
@@ -341,16 +339,14 @@ describe("tags utilities", () => {
     });
 
     it.each([
-      [["Ingress", "Mars", "Aries"], AT, "Sign Ingress"],
-      [["Ingress", "Mars", "Aries"], LATER, "Sign Transit"],
-      [["Ingress", "Decan", "Mars", "Aries"], AT, "Decan Ingress"],
-      [["Ingress", "Decan", "Mars", "Aries"], LATER, "Decan Transit"],
-      [["Ingress", "Peak", "Mars", "Aries"], LATER, "Peak Transit"],
-      [["Ingress", "Peak", "Mars", "Aries"], AT, "Peak Ingress"],
-    ])("files %j ending at %s as a %s", (tags, end, kind) => {
+      [["Ingress", "Mars", "Aries"], AT, "Full Sign"],
+      [["Ingress", "Mars", "Aries"], LATER, "Full Sign"],
+      [["Ingress", "Decan", "Mars", "Aries"], LATER, "Decan Stay"],
+      [["Ingress", "Peak", "Mars", "Aries"], LATER, "Half Stay"],
+    ])("files %j ending at %s as a %s stay", (tags, end, kind) => {
       expect(under(classify(tags, end), "Sign")).toContainEqual([
         "Sign",
-        "Ingress",
+        "Stay",
         kind,
       ]);
     });
@@ -383,15 +379,7 @@ describe("tags utilities", () => {
       [["After Peak"], ["Sign", "Peak", "After Peak"]],
       [
         ["Annual Solar Cycle", "Spring"],
-        ["Solar", "Season", "Spring"],
-      ],
-      [
-        ["Direction", "Retrograde"],
-        ["Planetary", "Direction", "Station Retrograde"],
-      ],
-      [
-        ["Direction", "Direct"],
-        ["Planetary", "Direction", "Station Direct"],
+        ["Yearly", "Season", "Spring"],
       ],
       [
         ["Twilight", "Civil Dawn"],
@@ -399,43 +387,43 @@ describe("tags utilities", () => {
       ],
       [
         ["Daily Solar Cycle", "Solar"],
-        ["Daily", "Solar Cycle"],
+        ["Daily", "Daily Solar"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar"],
-        ["Daily", "Lunar Cycle"],
+        ["Daily", "Daily Lunar"],
       ],
       [
         ["Daily Solar Cycle", "Solar", "Sunrise"],
-        ["Daily", "Solar Cycle", "Rise"],
+        ["Daily", "Daily Solar", "Rise"],
       ],
       [
         ["Daily Solar Cycle", "Solar", "Sunset"],
-        ["Daily", "Solar Cycle", "Set"],
+        ["Daily", "Daily Solar", "Set"],
       ],
       [
         ["Daily Solar Cycle", "Solar", "Solar Zenith"],
-        ["Daily", "Solar Cycle", "Zenith"],
+        ["Daily", "Daily Solar", "Zenith"],
       ],
       [
         ["Daily Solar Cycle", "Solar", "Solar Nadir"],
-        ["Daily", "Solar Cycle", "Nadir"],
+        ["Daily", "Daily Solar", "Nadir"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Moonrise"],
-        ["Daily", "Lunar Cycle", "Rise"],
+        ["Daily", "Daily Lunar", "Rise"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Moonset"],
-        ["Daily", "Lunar Cycle", "Set"],
+        ["Daily", "Daily Lunar", "Set"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Lunar Zenith"],
-        ["Daily", "Lunar Cycle", "Zenith"],
+        ["Daily", "Daily Lunar", "Zenith"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Lunar Nadir"],
-        ["Daily", "Lunar Cycle", "Nadir"],
+        ["Daily", "Daily Lunar", "Nadir"],
       ],
       [
         ["Lunar Apsides", "Lunar", "Apogee"],
@@ -451,19 +439,23 @@ describe("tags utilities", () => {
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Moon Up"],
-        ["Daily", "Lunar Cycle", "Moon Up"],
+        ["Daily", "Daily Lunar", "Moon Up"],
+      ],
+      [
+        ["Daily Lunar Cycle", "Lunar", "Moon Down"],
+        ["Daily", "Daily Lunar", "Moon Down"],
       ],
       [
         ["Annual Solar Cycle", "Solar", "Post-Beltane", "Spring"],
-        ["Solar", "Annual Cycle", "Interval", "Post-Beltane"],
+        ["Yearly", "Annual Cycle", "Interval", "Post-Beltane"],
       ],
       [
         ["Annual Solar Cycle", "Solar", "Pre-Vernal Equinox", "Winter"],
-        ["Solar", "Annual Cycle", "Interval", "Pre-Vernal Equinox"],
+        ["Yearly", "Annual Cycle", "Interval", "Pre-Vernal Equinox"],
       ],
       [
         ["Annual Solar Cycle", "Solar", "Post-Beltane", "Spring"],
-        ["Solar", "Season", "Spring"],
+        ["Yearly", "Season", "Spring"],
       ],
       [
         ["Planetary Phase", "Venusian", "Evening Widening"],
@@ -475,7 +467,7 @@ describe("tags utilities", () => {
       ],
       [
         ["Annual Solar Cycle", "Solar", "Perihelion"],
-        ["Solar", "Annual Cycle", "Perihelion"],
+        ["Yearly", "Annual Cycle", "Perihelion"],
       ],
       [
         ["Monthly Lunar Cycle", "Lunar", "Waxing Gibbous"],
@@ -499,16 +491,15 @@ describe("tags utilities", () => {
     );
 
     it.each([
-      [AT, "Perfective"],
-      [LATER, "Progressive"],
-    ])("tags an event ending at %s as %s", (end, temporality) => {
+      [AT, ["Temporality", "Perfective"]],
+      [LATER, ["Temporality", "Progressive", "Days"]],
+    ])("tags an event ending at %s as %j", (end, temporality) => {
       expect(
         under(classify(["Twilight", "Night"], end), "Temporality"),
-      ).toStrictEqual([["Temporality", temporality]]);
+      ).toStrictEqual([temporality]);
     });
 
     it.each([
-      [["Simple Aspect", "Trine", "Forming"], "Aspect", "Forming"],
       [["Compound Aspect", "Kite", "Perfective"], "Aspect", "Exact"],
       [
         ["Eclipse", "Solar", "Annular", "Geocentric", "Beginning"],
@@ -532,8 +523,8 @@ describe("tags utilities", () => {
       [["Annual Solar Cycle", "Solar", "Beltane"], "Spring"],
       [["Annual Solar Cycle", "Solar", "Winter Solstice"], "Winter"],
     ])("tags %j with the %s season", (tags, season) => {
-      expect(under(classify(tags), "Solar")).toContainEqual([
-        "Solar",
+      expect(under(classify(tags), "Yearly")).toContainEqual([
+        "Yearly",
         "Season",
         season,
       ]);
@@ -543,16 +534,35 @@ describe("tags utilities", () => {
       expect(
         under(
           classify(["Annual Solar Cycle", "Solar", "Vernal Equinox"]),
-          "Solar",
+          "Yearly",
         ),
-      ).toContainEqual(["Solar", "Annual Cycle", "Equinox", "Vernal Equinox"]);
+      ).toContainEqual(["Yearly", "Annual Cycle", "Equinox", "Vernal Equinox"]);
+    });
+
+    it("files daylight and night under Daily Solar, not under Twilight, which a twilight span keeps, and drops the morning and evening", () => {
+      expect(
+        under(classify(["Twilight", "Daylight"], LATER), "Daily"),
+      ).toStrictEqual([["Daily", "Daily Solar", "Daylight"]]);
+      expect(
+        under(
+          classify(["Twilight", "Astronomical Twilight", "Morning"], LATER),
+          "Daily",
+        ),
+      ).toStrictEqual([["Daily", "Twilight", "Astronomical Twilight"]]);
+    });
+
+    it("gives a station no tag, as stations only build the periods", () => {
+      expect(classify(["Direction", "Retrograde", "Mars"])).toStrictEqual([
+        ["Body", "Planet", "Inner", "Personal", "Mars"],
+        ["Temporality", "Perfective"],
+      ]);
     });
 
     it("keeps only the deepest node of each branch, each once", () => {
       const paths = classify(["Twilight", "Night", "Night", "Twilight"]);
 
       expect(paths).toStrictEqual([
-        ["Daily", "Twilight", "Night"],
+        ["Daily", "Daily Solar", "Night"],
         ["Temporality", "Perfective"],
       ]);
     });
@@ -576,12 +586,15 @@ describe("tags utilities", () => {
 
   describe(tagRank, () => {
     it.each([
-      [["Aspect"], 1],
-      [["Temporality"], 10],
+      [["Sign"], 1],
+      [["Aspect"], 3],
+      [["Yearly"], 7],
+      [["Temporality"], 9],
+      [["Temporality", "Progressive", "Centuries"], 9],
       [["Sign", "Aries"], 1],
       [["Sign", "Pisces"], 12],
       [["Body", "Luminary", "Moon"], 2],
-      [["Daily", "Solar Cycle", "Nadir"], 4],
+      [["Daily", "Daily Solar", "Nadir"], 4],
     ])("places %j at %i among its siblings", (path, rank) => {
       expect(tagRank(path)).toBe(rank);
     });
@@ -599,7 +612,7 @@ describe("tags utilities", () => {
   describe(tagSlug, () => {
     it.each([
       ["Aspect", "aspect"],
-      ["Sign Ingress", "sign-ingress"],
+      ["Sign Stay", "sign-stay"],
       ["Sign / Sign", "sign-sign"],
       ["  --Mars's  Retrograde!! ", "mars-s-retrograde"],
       ["Decan 2", "decan-2"],

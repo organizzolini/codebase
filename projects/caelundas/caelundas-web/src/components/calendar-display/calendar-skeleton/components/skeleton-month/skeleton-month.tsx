@@ -56,9 +56,9 @@ export function SkeletonMonth(
             className="flex min-w-0 flex-col gap-1 overflow-hidden border-e border-b p-1"
             data-testid="skeleton-month-day"
           >
-            {bars.map((width) => (
+            {bars.map(({ key, width }) => (
               <Skeleton
-                key={`${id}-${width}`}
+                key={key}
                 className={`h-5 shrink-0 ${width}`}
               />
             ))}

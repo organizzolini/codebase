@@ -9,6 +9,7 @@ import {
   specialtyAspects,
 } from "../../../caelundas/caelundas.constants";
 import {
+  BODY_CLASS_BY_BODY,
   FORTUNE_BY_PLANET,
   KIND_AND_SEASON_BY_SOLAR_CYCLE_POINT,
   NATURE_AND_HARMONIC_BY_ASPECT,
@@ -52,7 +53,7 @@ const PATTERN_ENTRIES = COMPOUND_CLASSES.flatMap(
 );
 
 /**
- * Other parents of a tag, by its path, each as a path: the sign groups of a sign, the nature and harmonic of an aspect, the fortune of a planet and the season of a solar point. Events carry the child already, so a group only counts through it.
+ * Other parents of a tag, by its path, each as a path; events carry the child, so a group counts through it.
  */
 export const TAG_EXTRA_PARENTS: Readonly<
   Record<string, readonly (readonly [string, ...string[]])[]>
@@ -71,18 +72,26 @@ export const TAG_EXTRA_PARENTS: Readonly<
   ...PATTERN_ENTRIES,
   ...bodies.flatMap((body) => {
     const fortune = FORTUNE_BY_PLANET[body];
+    const parents: TagPath[] = [
+      ...(BODY_CLASS_BY_BODY[body][0] === "Planet"
+        ? [[TAG_ROOT.body, "Planet"] as const]
+        : []),
+      ...(fortune === undefined
+        ? []
+        : [[TAG_ROOT.body, "Planet", fortune] as const]),
+    ];
 
-    return fortune === undefined
+    return parents.length === 0
       ? []
       : bodyPaths(body).map((path): [string, readonly TagPath[]] => [
           path.join(" / "),
-          [[TAG_ROOT.body, "Planet", fortune]],
+          parents,
         ]);
   }),
   ...Object.entries(KIND_AND_SEASON_BY_SOLAR_CYCLE_POINT).map(
     ([name, [kind, season]]): [string, readonly TagPath[]] => [
-      [TAG_ROOT.solar, "Annual Cycle", kind, name].join(" / "),
-      [[TAG_ROOT.solar, "Season", season]],
+      [TAG_ROOT.yearly, "Annual Cycle", kind, name].join(" / "),
+      [[TAG_ROOT.yearly, "Season", season]],
     ],
   ),
 ]);

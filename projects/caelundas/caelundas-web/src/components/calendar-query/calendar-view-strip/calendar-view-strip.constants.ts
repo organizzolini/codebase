@@ -33,8 +33,8 @@ const SIGNS: readonly string[] = [
 /** The views, in menu order. */
 export const VIEWS: readonly ViewDefinition[] = [
   {
-    description: "Which sign each body is in: sign ingresses and transits.",
-    filter: [{ paths: SIGNS, root: "Sign" }],
+    description: "Which sign each body is in: its whole stay there.",
+    filter: [{ paths: ["Stay / Full Sign"], root: "Sign" }],
     group: [{ paths: SIGNS, root: "Sign" }, { root: "Body" }],
     icon: "stars",
     id: "body-signs",
@@ -64,7 +64,7 @@ export const VIEWS: readonly ViewDefinition[] = [
   {
     description: "The Sun's and Moon's days: rises, sets, and the twilights.",
     filter: [
-      { paths: ["Solar Cycle", "Lunar Cycle", "Twilight"], root: "Daily" },
+      { paths: ["Daily Solar", "Daily Lunar", "Twilight"], root: "Daily" },
     ],
     group: [{ root: "Daily" }],
     icon: "sunrise",

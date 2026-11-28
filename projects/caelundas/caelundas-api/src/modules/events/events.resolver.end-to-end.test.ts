@@ -313,5 +313,35 @@ describe("events resolver end-to-end suite", () => {
         },
       ]);
     });
+
+    it("tells whether a root or a tag is one of the defaults events group by, true unless the tag says otherwise", async () => {
+      expect.hasAssertions();
+
+      const repository = tagRepository(application.database.dataSource);
+      const planet = await repository.findOneByOrFail({ name: "Planet" });
+      const mars = await repository.findOneByOrFail({ name: "Mars" });
+
+      await application.database.dataSource
+        .getRepository("Tag")
+        .update(planet.id, { isDefaultGroup: false });
+
+      const { facets } = (await query(`
+        { facets { name isDefaultGroup values { path isDefaultGroup } } }
+      `)) as {
+        facets: {
+          isDefaultGroup: boolean;
+          name: string;
+          values: { isDefaultGroup: boolean; path: string }[];
+        }[];
+      };
+      const root = facets.find(({ name }) => name === "Planet");
+
+      expect(mars.name).toBe("Mars");
+      expect(root?.isDefaultGroup).toBe(false);
+      expect(root?.values.map((value) => value.isDefaultGroup)).toStrictEqual([
+        true,
+        true,
+      ]);
+    });
   });
 });

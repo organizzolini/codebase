@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  dropListedRows,
   isOfferedRow,
+  nestTagItems,
   toRowValues,
   toTaggedIds,
 } from "./calendar-group-strip-items.utilities";
@@ -185,5 +187,45 @@ describe("tag items", () => {
         "benefic",
       ]);
     });
+  });
+
+  it("never promotes the rows beneath a repeated tag to the level above it", () => {
+    const node = (label: string): CascaderNode => ({ label, value: label });
+    const rows = [
+      { depth: 1, id: "a", node: node("A") },
+      { depth: 2, id: "s", node: node("S") },
+      { depth: 1, id: "b", node: node("B") },
+      { depth: 2, id: "s", node: node("S again") },
+      { depth: 3, id: "t", node: node("T") },
+    ];
+    const nested = nestTagItems(dropListedRows(rows, false));
+
+    expect(nested.map((item) => item.label)).toStrictEqual(["A", "B"]);
+    expect(nested[0]?.children?.map((item) => item.label)).toStrictEqual(["S"]);
+    expect(nested[1]?.children).toBeUndefined();
+  });
+
+  it("holds the units of a root the menu leaves out in its folder, listing none at the top level", () => {
+    const fields = createEventGroupFields([
+      {
+        id: "duration",
+        isGroupable: false,
+        name: "Duration",
+        values: [
+          { count: 2, depth: 1, id: "hours", name: "Hours", path: "Hours" },
+          { count: 1, depth: 1, id: "days", name: "Days", path: "Days" },
+        ],
+      },
+    ]);
+    const [tag] = createGroupItems(fields, GROUP);
+    const [duration] = tag?.children ?? [];
+
+    expect(tag?.children).toHaveLength(1);
+    expect(duration?.label).toBe("Duration");
+    expect(isOfferedRow(duration ?? NO_NODE)).toBe(false);
+    expect(duration?.children?.map((item) => item.label)).toStrictEqual([
+      "Hours",
+      "Days",
+    ]);
   });
 });

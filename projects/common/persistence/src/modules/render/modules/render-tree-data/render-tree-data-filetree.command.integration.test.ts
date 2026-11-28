@@ -29,12 +29,11 @@ const LIST_GLOB = path.join(
 
 /** The fixture tree as a file tree. */
 const FILE_TREE = [
-  "treeView-beta",
-  '    "Work/"',
-  '        "Email/"',
-  '            "Inbox"',
-  '        "Meetings"',
-  '    "Errands"',
+  "Work",
+  "├── Email",
+  "│   └── Inbox",
+  "└── Meetings",
+  "Errands",
 ].join("\n");
 
 describe("render-tree-data --diagram filetree", () => {
@@ -83,7 +82,7 @@ describe("render-tree-data --diagram filetree", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   it(
-    "draws the tree as a treeView-beta file tree on stdout",
+    "draws the tree as a text file tree on stdout",
     async () => {
       const result = await runRender(["--diagram", "filetree"]);
 
@@ -118,12 +117,11 @@ describe("render-tree-data --diagram filetree", () => {
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toBe(
         [
-          "treeView-beta",
-          '    "Work/"',
-          '        "Email/"',
-          '            "Inbox"',
-          '        "… 1 more"',
-          '    "Errands"',
+          "Work",
+          "├── Email",
+          "│   └── Inbox",
+          "└── … 1 more",
+          "Errands",
           "",
         ].join("\n"),
       );
@@ -133,7 +131,7 @@ describe("render-tree-data --diagram filetree", () => {
   );
 
   it(
-    "writes each --limit page under its heading in a fenced mermaid block",
+    "writes each --limit page under its heading in a fenced text block",
     async () => {
       const file = path.join(directory, "tree.md");
 
@@ -149,21 +147,22 @@ describe("render-tree-data --diagram filetree", () => {
       expect(result.exitCode).toBe(0);
       expect(fs.readFileSync(file, "utf8")).toBe(
         [
+          "- [Page 1 of 2](#page-1-of-2): [Work](#page-1-of-2)",
+          "- [Page 2 of 2](#page-2-of-2): [Errands](#page-2-of-2)",
+          "",
           "## Page 1 of 2",
           "",
-          "```mermaid",
-          "treeView-beta",
-          '    "Work/"',
-          '        "Email/"',
-          '            "Inbox"',
-          '        "Meetings"',
+          "```text",
+          "Work",
+          "├── Email",
+          "│   └── Inbox",
+          "└── Meetings",
           "```",
           "",
           "## Page 2 of 2",
           "",
-          "```mermaid",
-          "treeView-beta",
-          '    "Errands"',
+          "```text",
+          "Errands",
           "```",
           "",
         ].join("\n"),

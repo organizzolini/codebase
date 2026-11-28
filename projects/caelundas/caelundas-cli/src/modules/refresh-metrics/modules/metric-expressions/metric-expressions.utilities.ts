@@ -2,6 +2,7 @@
 
 import {
   METRIC_EXPRESSIONS_CLASS_DEFINITIONS,
+  METRIC_EXPRESSIONS_COLUMNS,
   METRIC_EXPRESSIONS_END_ANCHOR,
   METRIC_EXPRESSIONS_OPERATOR_SYMBOLS,
   METRIC_EXPRESSIONS_ORDERED_OPERATORS,
@@ -72,11 +73,13 @@ export function infixOf(node: MetricExpressionNode, isRoot = true): string {
 
 /**
  * The generated block of the Markdown file: a table of the metrics and their
- * infix expressions, then one Mermaid flowchart per metric.
+ * infix expressions, each linking to its section, then one `##` section per
+ * unit holding a small flowchart of that unit's metrics in rows.
  */
 export function renderMetricExpressionsBlock(
   trees: readonly MetricExpressionTree[],
 ): string {
+  const units = [...new Set(trees.map(({ unit }) => unit))].toSorted();
   return [
     METRIC_EXPRESSIONS_START_ANCHOR,
     "",
@@ -87,21 +90,19 @@ export function renderMetricExpressionsBlock(
       ...trees.map(({ expression, name, slug, unit }) => [
         name,
         `\`${slug}\``,
-        unit,
+        `[${unit}](#${unitSlug(unit)})`,
         `\`${infixOf(expression)}\``,
       ]),
     ]),
-    "",
-    "## Diagrams",
-    "",
-    ...trees.flatMap((tree) => [
-      `### ${tree.name}`,
+    ...units.flatMap((unit) => [
+      "",
+      `## Unit ${unit}`,
       "",
       "```mermaid",
-      ...renderFlowchart(tree),
+      ...renderFlowchart(trees.filter((tree) => tree.unit === unit)),
       "```",
-      "",
     ]),
+    "",
     METRIC_EXPRESSIONS_END_ANCHOR,
   ].join("\n");
 }
@@ -132,7 +133,7 @@ export function spliceMetricExpressionsMarkdown(
   return [...lines.slice(0, start), block, ...lines.slice(end + 1)].join("\n");
 }
 
-/** A node's id and quoted label, in its class's shape. */
+/** A node's declaration: its id and quoted label, in its class's shape. */
 function declarationOf({
   className,
   id,
@@ -143,35 +144,59 @@ function declarationOf({
   return `${id}${open}"${label}"${close}`;
 }
 
-/** An edge, labelled only when it carries an operand position. */
-function edgeOf(from: string, to: string, position?: number): string {
-  return position === undefined
-    ? `${from} --> ${to}`
-    : `${from} -->|"${String(position)}"| ${to}`;
-}
-
 /** Adds the node, then its operands, numbering them when their order matters. */
 function entriesOf(
   node: MetricExpressionNode,
   parent: MetricExpressionParent,
   entries: MetricExpressionEntry[],
 ): void {
-  const id = `n${String(entries.length)}`;
+  const id = `${parent.prefix}n${String(entries.length)}`;
   entries.push({
     className: node.kind,
-    edge: edgeOf(parent.id, id, parent.position),
     id,
     label: labelOf(node),
+    parent: parent.id,
+    position: parent.position,
   });
   if (node.kind !== "operator") return;
   const isOrdered = METRIC_EXPRESSIONS_ORDERED_OPERATORS.has(node.operator);
   node.children.forEach((child, index) => {
     entriesOf(
       child,
-      { id, position: isOrdered ? index + 1 : undefined },
+      {
+        id,
+        position: isOrdered ? index + 1 : undefined,
+        prefix: parent.prefix,
+      },
       entries,
     );
   });
+}
+
+/** A metric's nodes: its root, then its expression, or only its measure when that is all it reads. */
+function entriesOfMetric(
+  { expression, name, slug }: MetricExpressionTree,
+  prefix: string,
+): MetricExpressionEntry[] {
+  const entries: MetricExpressionEntry[] = [];
+  if (expression.kind === "measure") {
+    const isRepeat = expression.name.toLowerCase() === name.toLowerCase();
+    entries.push({
+      className: "measure",
+      id: `${prefix}n0`,
+      label: labelOf(
+        isRepeat ? { ...expression, name: "measure" } : expression,
+      ),
+    });
+  } else {
+    entries.push({
+      className: "root",
+      id: `${prefix}n0`,
+      label: labelOf({ kind: "metric", name, slug }),
+    });
+    entriesOf(expression, { id: `${prefix}n0`, prefix }, entries);
+  }
+  return entries;
 }
 
 /** A node's text, with no HTML: `"` becomes `'` and angle brackets go. */
@@ -205,6 +230,34 @@ function metricNodeOf(expression: MetricExpression): MetricExpressionNode {
   return { kind: "metric", name: expression.metric?.name ?? slug, slug };
 }
 
+/** One line per operator naming its operands: each node declared where it first appears, operands with one position chained with `&`. */
+function nodeLines(entries: readonly MetricExpressionEntry[]): string[] {
+  const declared = new Set<string>();
+  const reference = (entry: MetricExpressionEntry): string => {
+    if (declared.has(entry.id)) return entry.id;
+    declared.add(entry.id);
+    return declarationOf(entry);
+  };
+  const lines: string[] = [];
+  for (const parent of entries) {
+    const children = entries.filter((entry) => entry.parent === parent.id);
+    if (children.length === 0) continue;
+    const from = reference(parent);
+    const positions = [...new Set(children.map(({ position }) => position))];
+    for (const [index, position] of positions.entries()) {
+      const label = position === undefined ? "" : `|"${String(position)}"|`;
+      const targets = children
+        .filter((child) => child.position === position)
+        .map((child) => reference(child))
+        .join(" & ");
+      lines.push(`${index === 0 ? from : parent.id} -->${label} ${targets}`);
+    }
+  }
+  const [first] = entries;
+  if (lines.length === 0 && first !== undefined) lines.push(reference(first));
+  return lines;
+}
+
 /** One node of the expression, with its operands under it in position order. */
 function nodeOf(
   expression: MetricExpression,
@@ -235,43 +288,43 @@ function plainText(text: string): string {
 }
 
 /**
- * The metric as a flowchart: over its expression, or only its measure when
- * that is all it reads.
+ * The metrics as one flowchart: a subgraph each, top to bottom inside, laid out
+ * in rows. Every node is declared once where it first appears, operands of a
+ * parent chained after it, and each class named on one line.
  */
-function renderFlowchart({
-  expression,
-  name,
-  slug,
-}: MetricExpressionTree): string[] {
-  const entries: MetricExpressionEntry[] = [];
-  if (expression.kind === "measure") {
-    const isRepeat = expression.name.toLowerCase() === name.toLowerCase();
-    entries.push({
-      className: "measure",
-      id: "n0",
-      label: labelOf(
-        isRepeat ? { ...expression, name: "measure" } : expression,
-      ),
-    });
-  } else {
-    entries.push({
-      className: "root",
-      id: "n0",
-      label: labelOf({ kind: "metric", name, slug }),
-    });
-    entriesOf(expression, { id: "n0" }, entries);
+function renderFlowchart(trees: readonly MetricExpressionTree[]): string[] {
+  const body: string[] = [];
+  const classes = new Map<string, string[]>();
+  const subgraphs: string[] = [];
+  for (const [index, tree] of trees.entries()) {
+    const entries = entriesOfMetric(tree, `m${String(index)}`);
+    for (const { className, id } of entries) {
+      classes.set(className, [...(classes.get(className) ?? []), id]);
+    }
+    const id = `m${String(index)}`;
+    subgraphs.push(id);
+    body.push(
+      `    subgraph ${id}["${plainText(tree.name)}"]`,
+      "        direction TB",
+      ...nodeLines(entries).map((line) => `        ${line}`),
+      "    end",
+    );
+  }
+  for (let row = 0; row < subgraphs.length; row += METRIC_EXPRESSIONS_COLUMNS) {
+    const cells = subgraphs.slice(row, row + METRIC_EXPRESSIONS_COLUMNS);
+    if (cells.length > 1) body.push(`    ${cells.join(" ~~~ ")}`);
   }
 
   return [
-    "flowchart TB",
+    "flowchart LR",
     ...METRIC_EXPRESSIONS_CLASS_DEFINITIONS.map((line) => `    ${line}`),
-    ...entries.map((entry) => `    ${declarationOf(entry)}`),
-    ...entries.flatMap(({ edge }) =>
-      edge === undefined ? [] : [`    ${edge}`],
+    ...body,
+    ...[...classes].map(
+      ([className, ids]) => `    class ${ids.join(",")} ${className}`,
     ),
-    ...entries.map(({ className, id }) => `    class ${id} ${className}`),
   ];
 }
+
 /** A Markdown table with its columns padded to the widest cell. */
 function renderTable(rows: readonly (readonly string[])[]): string[] {
   const [header = [], ...body] = rows;
@@ -286,4 +339,9 @@ function renderTable(rows: readonly (readonly string[])[]): string[] {
     `| ${widths.map((width) => "-".repeat(width)).join(" | ")} |`,
     ...body.map((row) => line(row)),
   ];
+}
+
+/** The anchor GitHub gives the heading `## Unit <unit>`. */
+function unitSlug(unit: string): string {
+  return `unit-${unit.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-")}`;
 }

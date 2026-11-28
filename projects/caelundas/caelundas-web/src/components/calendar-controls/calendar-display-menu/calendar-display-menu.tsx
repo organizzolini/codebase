@@ -14,9 +14,9 @@ import { QueryCascader } from "../../calendar-query/query-cascader/query-cascade
 
 import {
   CHIP_CLASS_NAME,
+  DISPLAY_MENU_TITLE,
   SYMBOL_CHOICES,
   SYMBOLS_BRANCH,
-  TITLE,
   TREE_CLASS_NAME,
 } from "./calendar-display-menu.constants";
 import {
@@ -93,7 +93,7 @@ export function CalendarDisplayMenu(
       className={className}
       data-testid="calendar-display-menu"
     >
-      <ButtonGroup aria-label={TITLE}>
+      <ButtonGroup aria-label={DISPLAY_MENU_TITLE}>
         <Popover
           onOpenChange={handleOpenChange}
           open={isOpen}
@@ -105,7 +105,7 @@ export function CalendarDisplayMenu(
                 variant="outline"
               >
                 <SlidersHorizontal aria-hidden="true" />
-                {TITLE}
+                {DISPLAY_MENU_TITLE}
               </Button>
             }
           />

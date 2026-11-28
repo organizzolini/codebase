@@ -25,7 +25,7 @@ function renderStrip(
   sort: readonly GroupSort[] | undefined,
   options: Readonly<{
     metrics?: readonly string[];
-    view?: "charts" | "timeline" | "totals" | "week";
+    view?: "charts" | "day" | "month" | "timeline" | "totals" | "week";
   }> = {},
 ): {
   onSortChange: ReturnType<
@@ -78,11 +78,14 @@ describe(CalendarSortStrip, () => {
     expect(strip.className).toContain("[&>[data-line-start]]:border-l!");
   });
 
-  it("draws nothing outside the timeline, which orders by time", () => {
-    renderStrip(NO_SORT, { view: "week" });
+  it.each(["month", "week", "day"] as const)(
+    "draws on the %s, ordering its groups",
+    (view) => {
+      renderStrip(NO_SORT, { view });
 
-    expect(screen.queryByTestId("calendar-sort-strip")).toBeNull();
-  });
+      expect(screen.getByTestId("calendar-sort-strip")).toBeDefined();
+    },
+  );
 
   it("shows a default Tags chip while nothing is sorted", () => {
     renderStrip(NO_SORT);

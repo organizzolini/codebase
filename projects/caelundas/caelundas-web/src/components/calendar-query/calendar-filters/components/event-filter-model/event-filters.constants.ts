@@ -71,18 +71,3 @@ export const NUMBER_OPERATORS = {
   neq: "neq",
   notBetween: "not_between",
 } as const;
-
-/**
- * What each tag root means; unlisted roots show their name.
- */
-export const TAG_ROOT_DESCRIPTIONS: Readonly<Record<string, string>> = {
-  Aspect: "Angles between bodies, and the patterns they form.",
-  Body: "The bodies an event involves, grouped by class.",
-  Daily: "Events that repeat every day.",
-  Eclipse: "Solar and lunar eclipses.",
-  Lunar: "The Moon's month and orbit.",
-  Planetary: "The planets' own cycles.",
-  Sign: "The signs and what they imply.",
-  Solar: "The Sun's year.",
-  Temporality: "Whether an event is an instant or progresses over time.",
-};

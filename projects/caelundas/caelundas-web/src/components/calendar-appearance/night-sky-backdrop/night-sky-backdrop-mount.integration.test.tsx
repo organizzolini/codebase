@@ -1,7 +1,7 @@
 import { act, cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { readServedApi } from "../../../../testing/calendar-api";
+import { readServedApi } from "../../../../testing/calendar/calendar-api";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 import { setReducedMotion } from "../../../../testing/viewport";
 import { getRouter } from "../../../router";

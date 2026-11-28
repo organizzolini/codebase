@@ -7,7 +7,7 @@ import {
 } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { serveCalendarApi } from "../../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../../testing/calendar/calendar-api";
 import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 
 import { CalendarCharts } from "./calendar-charts";

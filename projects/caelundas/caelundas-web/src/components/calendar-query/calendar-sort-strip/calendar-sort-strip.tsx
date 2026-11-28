@@ -12,7 +12,6 @@ import {
 import { useMetricCatalog } from "../../../hooks/use-metric-layout/hooks/use-metric-catalog/use-metric-catalog";
 import { useStripLines } from "../../../hooks/use-strip-lines/use-strip-lines";
 import { BUTTON_STRIP_CLASS_NAME } from "../../../hooks/use-strip-lines/use-strip-lines.constants";
-import { isMetricView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
 import { createEventGroupFields } from "../calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { StripFoldSection } from "../calendar-group-strip/components/strip-fold-button/strip-fold-section";
 import { QueryCascader } from "../query-cascader/query-cascader";
@@ -82,9 +81,8 @@ export function CalendarSortStrip(
   } = properties;
 
   // 🪝 Hooks
-  const isShown = view === "timeline" || view === "table" || isMetricView(view);
   const { catalog } = useMetricCatalog();
-  const { reference } = useStripLines(isShown);
+  const { reference } = useStripLines(true);
   const fields = useMemo(() => createEventGroupFields(facets), [facets]);
   const items = useMemo(
     () => createViewSortItems(view, { columns, fields, metrics }, catalog),
@@ -100,9 +98,6 @@ export function CalendarSortStrip(
   // ♻️ Lifecycle
 
   // 🏁 Early Returns
-  if (!isShown) {
-    return null;
-  }
 
   // 🎨 Markup
   return (

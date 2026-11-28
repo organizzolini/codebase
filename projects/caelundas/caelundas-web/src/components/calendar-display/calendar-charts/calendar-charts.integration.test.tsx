@@ -4,13 +4,13 @@ import { describe, expect, it, vi } from "vitest";
 import {
   readServedApi,
   serveCalendarApi,
-} from "../../../../testing/calendar-api";
+} from "../../../../testing/calendar/calendar-api";
 import {
   BUILDER_TEST,
   BUILDER_WAIT,
   findToolbar,
   pickCalendarView,
-} from "../../../../testing/calendar-page";
+} from "../../../../testing/calendar/calendar-page";
 import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 import { TableGroupsProvider } from "../calendar-table/components/table-groups-provider/table-groups-provider";

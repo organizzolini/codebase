@@ -186,7 +186,7 @@ export type FacetsQueryVariables = Exact<{
 }>;
 
 
-export type FacetsQuery = { facets: Array<{ icon: string | null, id: string, isFilterable: boolean, isGroupable: boolean, isSelectable: boolean, isSortable: boolean, name: string, note: string | null, values: Array<{ alsoUnder: Array<string>, count: number, depth: number, icon: string | null, id: string, isFilterable: boolean, isGroupable: boolean, isSelectable: boolean, isSortable: boolean, name: string, note: string | null, path: string }> }> };
+export type FacetsQuery = { facets: Array<{ icon: string | null, id: string, isDefaultGroup: boolean, isFilterable: boolean, isGroupable: boolean, isSelectable: boolean, isSortable: boolean, name: string, note: string | null, values: Array<{ alsoUnder: Array<string>, count: number, depth: number, icon: string | null, id: string, isDefaultGroup: boolean, isFilterable: boolean, isGroupable: boolean, isSelectable: boolean, isSortable: boolean, name: string, note: string | null, path: string }> }> };
 
 export type NightSkyQueryVariables = Exact<{
   input: NightSkyInput;

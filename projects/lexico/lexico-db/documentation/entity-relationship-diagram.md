@@ -4,6 +4,7 @@
 
 ```mermaid
 erDiagram
+  direction LR
   AdjectivalForm }o--|| lexemes : lexeme
   AdjectivalForm ||--o{ word_forms : wordForms
   AdjectiveInflection ||--|| lexemes : lexeme

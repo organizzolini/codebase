@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { findToolbar } from "../../../../testing/calendar-page";
+import { findToolbar } from "../../../../testing/calendar/calendar-page";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 
 // Tested through the `/` route, as the page uses it; each test needs seconds on a loaded runner.

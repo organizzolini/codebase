@@ -10,7 +10,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   readServedApi,
   serveCalendarApi,
-} from "../../../../testing/calendar-api";
+} from "../../../../testing/calendar/calendar-api";
 import {
   CATALOG,
   MetricCatalogFixture,

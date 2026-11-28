@@ -8,7 +8,7 @@ export const TAG_ROOT_ORDER: readonly string[] = [
   "Body",
   "Sign",
   "Planetary",
-  "Solar",
+  "Yearly",
   "Lunar",
   "Daily",
   "Eclipse",

@@ -5,7 +5,7 @@ import type { LucideIcon } from "lucide-react";
 
 // ♟️ Constants
 
-export const TITLE = "Display";
+export const DISPLAY_MENU_TITLE = "Display";
 
 /** A chip styled like the buttons beside it. */
 export const CHIP_CLASS_NAME = "bg-background dark:bg-input/30";

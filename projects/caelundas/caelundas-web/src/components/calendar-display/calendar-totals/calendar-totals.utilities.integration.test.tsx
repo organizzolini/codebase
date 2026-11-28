@@ -1,8 +1,8 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { readServedApi } from "../../../../testing/calendar-api";
-import { BUILDER_WAIT } from "../../../../testing/calendar-page";
+import { readServedApi } from "../../../../testing/calendar/calendar-api";
+import { BUILDER_WAIT } from "../../../../testing/calendar/calendar-page";
 import { CATALOG } from "../../../../testing/metrics/metric-catalog";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 

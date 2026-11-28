@@ -95,7 +95,7 @@ aspect is in orb, the weeks a planet is retrograde.
 A perfective event is an instant: a boundary that starts or ends something, or
 a point inside it. A progressive event is the span between a start boundary and
 an end boundary. It classifies as `Temporality / Progressive`, and an instant as
-`Temporality / Perfective`. A progressive event also carries one `Duration` tag, the
+`Temporality / Perfective`. A progressive event is filed under one unit tag directly beneath `Progressive`, the
 largest unit its length reaches (see `DURATION_UNITS` in `tags/tag-dimensions.constants.ts`):
 `Minutes` from 1 minute (a shorter span too), `Hours` from 60 minutes, `Days` from 24 hours,
 `Weeks` from 7 days, `Months` from 30 days, `Quarters` from 91 days, `Years` from 365 days,
@@ -123,6 +123,7 @@ largest unit its length reaches (see `DURATION_UNITS` in `tags/tag-dimensions.co
 | Solar advancing and retreating                   | Aphelion or perihelion                  | The other                          | Completed    |
 | Twilight, Daylight, and Night                    | Dawn or dusk                            | The next boundary                  | Completed    |
 | Moon up                                          | Moonrise                                | Moonset                            | Completed    |
+| Moon down                                        | Moonset                                 | Moonrise                           | Completed    |
 
 #### Which instants are stored
 
@@ -141,15 +142,15 @@ whose span was not stored stays.
 | Mercury, Venus, Mars rise and set; the elongations   | Visibility, widening and closing                             |
 | Mars opposition                                      | Mars widening and closing                                    |
 | Eclipse begin and end                                | Eclipse, in each frame                                       |
-| Retrograde and direct stations                       | Retrograde period and direct period                          |
 | Sign, decan, and peak ingresses                      | Stay in a sign, a decan, or on a side of the peak            |
 | The sixteen points of the year, perihelion, aphelion | Season, interval of the year, solar advancing and retreating |
-| Moonrise and moonset                                 | Moon up                                                      |
 | Civil, nautical, and astronomical dawn and dusk      | Twilight, Daylight, and Night                                |
 
-These stay, because they last no time and no span starts or ends on them: exact
-aspects, eclipse maximum, brightest, solar and lunar zenith and nadir, and sunrise
-and sunset.
+Stations are never stored, with or without a span: they only build the retrograde and direct periods
+(`SPAN_ONLY_INSTANT_TAGS`). These stay, because they last no time and no span starts or ends on them: exact
+aspects, eclipse maximum, brightest, solar and lunar zenith and nadir, sunrise
+and sunset, and moonrise and moonset, which bound both the Moon up and the Moon
+down span and are kept beside them.
 
 An upsert does not delete a row a run stops generating, so the instants earlier
 runs stored stay until they are pruned. After a run that stores the spans,
@@ -200,8 +201,8 @@ sweep uses on the minutes around that change, so both name the same minute:
 - **Solar apsides**: a day-long probe for the sign of the Sun's radial speed.
 - **Twilights, daylight, and night**: a ten-minute probe for the Sun's band
   (below -18°, -18° to -12°, -12° to -6°, above -6°) to change.
-- **Moon up**: a half-hour probe for the Moon's upper limb to clear the
-  horizon or not.
+- **Moon up and Moon down**: a half-hour probe for the Moon's upper limb to
+  clear the horizon or not; the moonrise or moonset it finds completes either.
 - **Mercury and Venus**: a twelve-hour probe for the planet to leave or enter
   6° of the Sun, on either side; and for the greatest elongation, the search
   narrows by thirds to where its separation from the Sun peaks between the
@@ -292,7 +293,7 @@ pairwise conjunct bodies with three or more members.
   A retrograde re-entry across a sign boundary does not fire a peak ingress.
 - **Sign transit** is a body's stay in one sign, from its sign ingress to the
   next one, named like `Moon in Taurus`. It carries the ingress, sign, and body
-  tags, and classifies as `Sign / Ingress / Sign Transit` and `Temporality /
+  tags, and classifies as `Sign / Stay / Full Sign` and `Temporality /
 Progressive`, so filtering by body, sign, or progressive finds it. A
   retrograde re-entry starts a new stay in the sign it left. Every body that has
   sign ingresses gets one, so a body is always in a sign.
@@ -300,9 +301,9 @@ Progressive`, so filtering by body, sign, or progressive finds it. A
 Aries`, and **peak transit** its stay in the first or second 15° of a sign,
   before or after the peak, named like `Sun in first half of Aries`. A decan
   transit runs between sign and decan ingresses, a peak transit between sign
-  and peak ingresses, and each classifies as `Sign / Ingress / Decan Transit`
-  or `Peak Transit`, with the decan or `Sign / Peak / Before Peak` or `After
-Peak` beneath it. Each slice is read from the ephemeris at
+  and peak ingresses, and each classifies as `Sign / Stay / Decan Stay`
+  or `Half Stay`, with the decan or `Sign / Peak / Before Peak` or `After
+Peak` beside it. Each slice is read from the ephemeris at
   the change, not from the tags, since a retrograde body leaving a sign enters
   its last decan, and the second half, not the first.
 - **Window edges.** See Window edges above: the stay in progress at the window
@@ -373,17 +374,17 @@ the event, not as a node with two parents, so an Aries event carries
 `Sign / Aries`, `Sign / Element / Fire`, `Sign / Modality /
 Cardinal` and `Sign / Polarity / Positive` side by side:
 
-| Root          | Its nodes                                                                                                                                                                                                                                                                               |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Body`        | Every body under its class: `Luminary`, `Planet` (holding `Personal`, `Social` and `Outer`), `Asteroid` or `Point`                                                                                                                                                                      |
-| `Sign`        | `Sign`, `Element`, `Modality`, `Polarity`, `Decan`, a traditional planet's `Dignity` in the sign it enters, and the `Ingress` kinds                                                                                                                                                     |
-| `Solar`       | The `Annual Cycle` (solstices, equinoxes, cross-quarter days, hexadecans, apsides, and the sixteen `Interval`s) and its `Season`                                                                                                                                                        |
-| `Lunar`       | The `Monthly Cycle`, with the Moon's phases, and its `Apsides`, with `Advancing` and `Retreating`                                                                                                                                                                                       |
-| `Daily`       | The `Solar Cycle` and `Lunar Cycle` of a day, each with its `Rise`, `Set`, `Zenith` and `Nadir` (and the Moon's `Moon Up` span), its `Twilight` events and spans, and `Time of Day`                                                                                                     |
-| `Planetary`   | `Direction` (stations and retrograde periods), `Phase` (`Mercurian`, `Venusian` and `Martian`) and `Synodic Stage`, a node for each of `Mercury`, `Venus` and `Mars` holding that planet's own stages (`Widening`, `Closing` and so on, one tag a planet, so planets share stage names) |
-| `Eclipse`     | `Solar` and `Lunar` by type (`Total`, `Partial`, `Annular`), with their `Frame` (`Geocentric` or `Topocentric`) and `Phase`                                                                                                                                                             |
-| `Duration`    | `Minutes`, `Hours`, `Days`, `Weeks`, `Months`, `Quarters`, `Years`, `Decades` and `Centuries`: the largest unit a span reaches (1 minute, 60 minutes, 24 hours, 7 days, 30 days, 91 days, 365 days, 3,650 days, 36,500 days), none for an instant                                       |
-| `Temporality` | `Perfective`, an instant in time, or `Progressive`, progressing over a duration of time                                                                                                                                                                                                 |
+| Root          | Its nodes                                                                                                                                                                                                                                                                                                                                          |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Sign`        | The twelve signs, and `Element`, `Modality`, `Polarity`, `Decan`, `Peak`, a traditional planet's `Dignity` in the sign it enters, and the `Ingress` kinds                                                                                                                                                                                          |
+| `Body`        | Every body under its class: `Luminary`, `Planet` (holding `Inner`, which holds `Personal` and `Social`, then `Outer`, `Benefic` and `Malefic`, and each planet directly), `Asteroid` or `Point`                                                                                                                                                    |
+| `Aspect`      | `Simple` (`Major`, `Minor` and `Specialty`) and `Compound` (`Triple`, `Quadruple`, `Quintuple`, `Sextuple` and `Stellium`) aspects by name, with their `Nature`, `Harmonic` (`Harmonic 1` to `Harmonic 12`) and `Phase` (`Exact`, the only phase stored); a compound pattern's `Focal Body` sits under `Compound`                                  |
+| `Lunar`       | The `Monthly Cycle`, with the Moon's phases, and its `Apsides`, with `Advancing` and `Retreating`                                                                                                                                                                                                                                                  |
+| `Planetary`   | `Direction` (the retrograde and direct periods), `Phase` (`Mercurian`, `Venusian` and `Martian`) and `Synodic Stage`, a node for each of `Mercury`, `Venus` and `Mars` holding that planet's own stages (`Widening`, `Closing` and so on, one tag a planet, so planets share stage names)                                                          |
+| `Daily`       | The `Daily Solar` and `Daily Lunar` cycles of a day, each with its `Rise`, `Set`, `Zenith` and `Nadir` (and the Moon's `Moon Up` and `Moon Down` spans), its `Twilight` events and spans, and its `Daylight` and `Night` (under `Daily Solar`)                                                                                                     |
+| `Yearly`      | The `Annual Cycle` (solstices, equinoxes, cross-quarter days, hexadecans, apsides, and the sixteen `Interval`s) and its `Season`                                                                                                                                                                                                                   |
+| `Eclipse`     | `Solar` and `Lunar` by type (`Total`, `Partial`, `Annular`), with their `Frame` (`Geocentric` or `Topocentric`) and `Phase`                                                                                                                                                                                                                        |
+| `Temporality` | `Perfective`, an instant in time, or `Progressive`, progressing over a duration of time, holding `Minutes`, `Hours`, `Days`, `Weeks`, `Months`, `Quarters`, `Years`, `Decades` and `Centuries`: the largest unit a span reaches (1 minute, 60 minutes, 24 hours, 7 days, 30 days, 91 days, 365 days, 3,650 days, 36,500 days), none for an instant |
 
 Mars is full at opposition rather than at a superior conjunction, so its full
 and opposition events take an `Opposition` synodic stage of their own; a phase
@@ -398,7 +399,7 @@ and a `rank`, its place among its siblings from `tags/modules/tag-metadata/tag-m
 first created.
 
 An event links only to the deepest node of each branch it is classified
-under, and carries the nodes above through the tag trees view; a node declared under several parents (`TAG_EXTRA_PARENTS`, such as Venus under Planet / Benefic as well as Planet / Personal, Aries under Fire, Cardinal and Positive as well as Sign, or a square under Hard and Harmonic 4) is one node with an edge from each, so an event carrying it is under every parent.
+under, and carries the nodes above through the tag trees view; a node declared under several parents (`TAG_EXTRA_PARENTS`, such as Venus under Planet / Benefic as well as Planet / Inner / Personal, Aries under Fire, Cardinal and Positive as well as Sign, or a square under Hard and Harmonic 4) is one node with an edge from each, so an event carrying it is under every parent.
 
 Coordinates are `numeric(9, 6)`: the driver returns them as strings, such as
 `"39.949309"`, and a number is written fixed to six decimals, so the natural key
@@ -438,7 +439,7 @@ that reads them are in
 [`caelundas-db`'s `metrics-facts.md`](../caelundas-db/documentation/metrics-facts.md).
 
 The `metric-expressions` command, a child module of `refresh-metrics`, draws each
-metric's expression tree from the database as a Mermaid flowchart in the marker block of a
+metric's expression tree from the database as a small Mermaid subgraph, grouped by unit, in the marker block of a
 Markdown file, with a table of the expressions in infix form. Run it through
 `nx run caelundas-db:metric-expressions` (add `:check` to compare without writing), which
 writes

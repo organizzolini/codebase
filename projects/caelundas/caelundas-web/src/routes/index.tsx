@@ -12,6 +12,7 @@ import { CalendarError } from "../components/calendar-display/calendar-error/cal
 import { MetricCatalogProvider } from "../components/calendar-display/calendar-metrics/components/metric-catalog-provider/metric-catalog-provider";
 import { CalendarSkeleton } from "../components/calendar-display/calendar-skeleton/calendar-skeleton";
 import { TableGroupsProvider } from "../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider";
+import { parseAllDayMode } from "../components/calendar-display/events-calendar/components/calendar-grid/components/calendar-all-day/calendar-all-day.utilities";
 import { loadedKeys } from "../components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.constants";
 import { loadCalendar } from "../components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.utilities";
 import {
@@ -135,17 +136,11 @@ function IndexPage(): ReactNode {
   const menu = { className: "contents", timeZone, view };
 
   // 💪 Handlers
-  const {
-    handleColumnsChange,
-    handleDateChange,
-    handleFilterChange,
-    handleFoldChange,
-    handleGroupingChange,
-    handleMetricsChange,
-    handleRangeChange,
-    handleSortChange,
-    handleViewPresetChange,
-  } = useCalendarSearch(timeZone, facets, Route.useLoaderData().unoffered);
+  const handlers = useCalendarSearch(
+    timeZone,
+    facets,
+    Route.useLoaderData().unoffered,
+  );
   const agendaDays = search.days ?? AGENDA_DAY_COUNT;
 
   // ♻️ Lifecycle
@@ -170,6 +165,7 @@ function IndexPage(): ReactNode {
             <TableGroupsProvider className="contents">
               <EventsCalendar
                 agendaDays={agendaDays}
+                allDayMode={parseAllDayMode(search.ad)}
                 anchor={anchor}
                 className="min-h-0 flex-1"
                 colors={search.colors !== false}
@@ -191,13 +187,13 @@ function IndexPage(): ReactNode {
                     isDefaultGrouping={search.group === undefined}
                     layout={<CalendarLayoutMenu {...menu} />}
                     metrics={search.metrics}
-                    onColumnsChange={handleColumnsChange}
-                    onFilterChange={handleFilterChange}
-                    onFoldChange={handleFoldChange}
-                    onGroupingChange={handleGroupingChange}
-                    onMetricsChange={handleMetricsChange}
-                    onSortChange={handleSortChange}
-                    onViewChange={handleViewPresetChange}
+                    onColumnsChange={handlers.handleColumnsChange}
+                    onFilterChange={handlers.handleFilterChange}
+                    onFoldChange={handlers.handleFoldChange}
+                    onGroupingChange={handlers.handleGroupingChange}
+                    onMetricsChange={handlers.handleMetricsChange}
+                    onSortChange={handlers.handleSortChange}
+                    onViewChange={handlers.handleViewPresetChange}
                     presets={presets}
                     sort={search.sort}
                     view={view}
@@ -206,12 +202,14 @@ function IndexPage(): ReactNode {
                 grouping={grouping}
                 hideEmpty={search.hideEmpty === true}
                 metrics={search.metrics}
-                onColumnsChange={handleColumnsChange}
-                onDateChange={handleDateChange}
+                onAllDayModeChange={handlers.handleAllDayModeChange}
+                onColumnsChange={handlers.handleColumnsChange}
+                onDateChange={handlers.handleDateChange}
+                onDayOpen={handlers.handleDayOpen}
                 onRangeChange={(range) => {
-                  handleRangeChange(view, range);
+                  handlers.handleRangeChange(view, range);
                 }}
-                onSortChange={handleSortChange}
+                onSortChange={handlers.handleSortChange}
                 scale={search.scale}
                 sort={search.sort}
                 timeZone={timeZone}
@@ -226,9 +224,9 @@ function IndexPage(): ReactNode {
           className="pointer-events-none absolute inset-x-0 top-1/3 z-40 flex justify-center px-4"
           emptiness={emptiness}
           onClearFilters={() => {
-            handleFilterChange(EMPTY_EVENT_FILTER);
+            handlers.handleFilterChange(EMPTY_EVENT_FILTER);
           }}
-          onJump={handleDateChange}
+          onJump={handlers.handleDateChange}
           period={CALENDAR_VIEW_PERIODS[view]}
         />
       )}

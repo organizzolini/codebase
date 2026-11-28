@@ -10,6 +10,7 @@ function facet(id: string, name: string, paths: string[]): EventFacetEntity {
   return {
     icon: null,
     id,
+    isDefaultGroup: true,
     isFilterable: true,
     isGroupable: true,
     isSelectable: true,
@@ -23,6 +24,7 @@ function facet(id: string, name: string, paths: string[]): EventFacetEntity {
       depth: path.split(" / ").length,
       icon: null,
       id: `${id}:${path}`,
+      isDefaultGroup: true,
       isFilterable: true,
       isGroupable: true,
       isSelectable: true,
@@ -41,7 +43,7 @@ const FACETS = [
   facet("aspect", "Aspect", ["Simple / Major"]),
   facet("body", "Body", ["Luminary / Moon", "Luminary / Sun"]),
   facet("planetary", "Planetary", ["Direction"]),
-  facet("sign", "Sign", ["Ingress / Sign Ingress"]),
+  facet("sign", "Sign", ["Stay / Full Sign"]),
 ];
 
 describe(PresetsService, () => {
@@ -75,7 +77,7 @@ describe(PresetsService, () => {
               {
                 operator: "is_any_of",
                 path: ["tag:sign"],
-                values: ["sign:Ingress / Sign Ingress"],
+                values: ["sign:Stay / Full Sign"],
               },
               { path: ["tag:body"] },
             ],

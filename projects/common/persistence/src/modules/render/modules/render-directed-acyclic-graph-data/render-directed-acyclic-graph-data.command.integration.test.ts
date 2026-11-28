@@ -49,47 +49,43 @@ const DIRECTED_ACYCLIC_GRAPH_ROWS = [
   "INSERT INTO graph_links (id, source, target) VALUES (1, 'A', 'B')",
 ];
 
-/** The two lines every diagram opens with after its direction. */
-const CLASS_DEFINITIONS = [
-  "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
-  "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
-];
+/** The class definitions a diagram declares, for the classes it uses. */
+const ROOT_DEFINITION =
+  "classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px";
+const SHARED_DEFINITION =
+  "classDef shared fill:#fff4e5,stroke:#e8710a,stroke-width:2px";
+const TRUNCATION_DEFINITION =
+  "classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5";
 
 /** The diagram of `lines`, indented under the header, as stdout holds it. */
 const drawnDiagram = (lines: readonly string[]): string =>
-  [
-    "flowchart TB",
-    ...CLASS_DEFINITIONS,
-    ...lines.map((line) => `    ${line}`),
-    "",
-  ].join("\n");
+  ["flowchart TB", ...lines.map((line) => `    ${line}`), ""].join("\n");
 
-/** A `subgraph` block: its numbered id and title, then its indented lines. */
+/** A `subgraph` block: its id, title, direction and lines. */
 const subgraph = (
   index: number,
   title: string,
   lines: readonly string[],
 ): string[] => [
   `subgraph nb${index}["${title}"]`,
+  "    direction TB",
   ...lines.map((line) => `    ${line}`),
   "end",
 ];
 
-/** The diamond, its edges in source then target order. */
+/** The diamond, its edges chained per source. */
 const DIAMOND_LINES = [
-  ...subgraph(0, "Audit", ['n0["Audit"]', 'n1["Report"]', "n0 --> n1"]),
+  ROOT_DEFINITION,
+  SHARED_DEFINITION,
+  ...subgraph(0, "Audit", ['n0["Audit"] --> n1["Report"]']),
   ...subgraph(1, "Plan", [
-    'n2["Build"]',
-    'n3["Ship"]',
-    'n4["Design"]',
-    'n5["Plan"]',
-    "n2 --> n3",
-    "n4 --> n3",
-    "n5 --> n2",
-    "n5 --> n4",
+    'n2["Build"] --> n3["Ship"]',
+    'n4["Design"] --> n3',
+    'n5["Plan"] --> n2 & n4',
   ]),
-  "class n0 root",
-  "class n5 root",
+  "nb0 ~~~ nb1",
+  "class n0,n5 root",
+  "class n3 shared",
 ];
 
 describe("render-directed-acyclic-graph-data", () => {
@@ -163,7 +159,7 @@ describe("render-directed-acyclic-graph-data", () => {
 
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toContain('n5 -->|"needs (2.5)"| n4');
-      expect(result.stdout).toContain("n5 --> n2");
+      expect(result.stdout).toContain('n5["Plan"] --> n2');
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   );
@@ -181,11 +177,9 @@ describe("render-directed-acyclic-graph-data", () => {
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toBe(
         drawnDiagram([
-          'n0["1"]',
-          'n1["2"]',
-          'n2["3"]',
-          "n0 --> n1",
-          "n1 --> n2",
+          ROOT_DEFINITION,
+          'n0["1"] --> n1["2"]',
+          'n1 --> n2["3"]',
           "class n0 root",
         ]),
       );
@@ -287,23 +281,18 @@ describe("render-directed-acyclic-graph-data", () => {
         );
         expect(result.stdout).toBe(
           drawnDiagram([
-            ...subgraph(0, "Audit", [
-              'n0["Audit"]',
-              'n1["Report"]',
-              "n0 --> n1",
-            ]),
+            ROOT_DEFINITION,
+            SHARED_DEFINITION,
+            ...subgraph(0, "Audit", ['n0["Audit"] --> n1["Report"]']),
             ...subgraph(1, "Build", [
-              'n2["Build"]',
-              'n3["Ship"]',
-              'n4["Design"]',
-              'n5["Plan"]',
-              "n2 --> n3",
-              "n4 --> n3",
-              "n5 --> n2",
-              "n5 --> n4",
+              'n2["Build"] --> n3["Ship"]',
+              'n4["Design"] --> n3',
+              'n5["Plan"] --> n2 & n4',
               "n3 --> n5",
             ]),
+            "nb0 ~~~ nb1",
             "class n0 root",
+            "class n3 shared",
           ]),
         );
       },
@@ -323,7 +312,7 @@ describe("render-directed-acyclic-graph-data", () => {
         expect(result.stderr).toBe(
           "⚠️ Node Solo has an edge to itself: a @DirectedAcyclicGraph must have no cycle\n",
         );
-        expect(result.stdout).toContain("n6 --> n6");
+        expect(result.stdout).toContain('n6["Solo"] --> n6');
       },
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
     );
@@ -367,11 +356,8 @@ describe("render-directed-acyclic-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Plan"]',
-            'n1["Build"]',
-            'n2["Design"]',
-            "n0 --> n1",
-            "n0 --> n2",
+            ROOT_DEFINITION,
+            'n0["Plan"] --> n1["Build"] & n2["Design"]',
             "class n0 root",
           ]),
         );
@@ -395,9 +381,8 @@ describe("render-directed-acyclic-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Audit"]',
-            'n1["Report"]',
-            'n0 -->|"5"| n1',
+            ROOT_DEFINITION,
+            'n0["Audit"] -->|"5"| n1["Report"]',
             "class n0 root",
           ]),
         );
@@ -418,23 +403,17 @@ describe("render-directed-acyclic-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
+            ROOT_DEFINITION,
+            SHARED_DEFINITION,
             ...subgraph(0, "Plan", [
-              'n0["Build"]',
-              'n1["Ship"]',
-              'n2["Design"]',
-              'n5["Plan"]',
-              "n0 --> n1",
-              "n2 --> n1",
-              "n5 --> n2",
-              "n5 --> n0",
+              'n0["Build"] --> n1["Ship"]',
+              'n2["Design"] --> n1',
+              'n5["Plan"] --> n2 & n0',
             ]),
-            ...subgraph(1, "Audit", [
-              'n3["Audit"]',
-              'n4["Report"]',
-              "n3 --> n4",
-            ]),
-            "class n3 root",
-            "class n5 root",
+            ...subgraph(1, "Audit", ['n3["Audit"] --> n4["Report"]']),
+            "nb0 ~~~ nb1",
+            "class n5,n3 root",
+            "class n1 shared",
           ]),
         );
       },
@@ -472,26 +451,17 @@ describe("render-directed-acyclic-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            ...subgraph(0, "Audit", [
-              'n0["Audit"]',
-              'n1["Report"]',
-              "n0 --> n1",
-            ]),
+            ROOT_DEFINITION,
+            TRUNCATION_DEFINITION,
+            ...subgraph(0, "Audit", ['n0["Audit"] --> n1["Report"]']),
             ...subgraph(1, "Plan", [
-              'n2["Build"]',
-              'n3["Design"]',
-              'n4["Plan"]',
-              'n5["… 1 more"]',
-              'n6["… 1 more"]',
-              "n4 --> n2",
-              "n4 --> n3",
-              "n2 --> n5",
-              "n3 --> n6",
+              'n4["Plan"] --> n2["Build"] & n3["Design"]',
+              'n2 --> n5["… 1 more"]',
+              'n3 --> n6["… 1 more"]',
             ]),
-            "class n0 root",
-            "class n4 root",
-            "class n5 truncation",
-            "class n6 truncation",
+            "nb0 ~~~ nb1",
+            "class n0,n4 root",
+            "class n5,n6 truncation",
           ]),
         );
         expect(result.stderr).toBe(
@@ -535,22 +505,15 @@ describe("render-directed-acyclic-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            ...subgraph(0, "Audit", [
-              'n0["Audit"]',
-              'n1["Report"]',
-              "n0 --> n1",
-            ]),
+            ROOT_DEFINITION,
+            TRUNCATION_DEFINITION,
+            ...subgraph(0, "Audit", ['n0["Audit"] --> n1["Report"]']),
             ...subgraph(1, "Plan", [
-              'n2["Build"]',
-              'n3["Ship"]',
-              'n4["Plan"]',
-              'n5["… 1 more"]',
-              "n2 --> n3",
-              "n4 --> n2",
-              "n4 --> n5",
+              'n2["Build"] --> n3["Ship"]',
+              'n4["Plan"] --> n2 & n5["… 1 more"]',
             ]),
-            "class n0 root",
-            "class n4 root",
+            "nb0 ~~~ nb1",
+            "class n0,n4 root",
             "class n5 truncation",
           ]),
         );
@@ -578,15 +541,13 @@ describe("render-directed-acyclic-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Build"]',
-            'n1["Ship"]',
-            'n2["Design"]',
-            'n3["Plan"]',
-            "n0 --> n1",
-            "n2 --> n1",
-            "n3 --> n0",
-            "n3 --> n2",
+            ROOT_DEFINITION,
+            SHARED_DEFINITION,
+            'n0["Build"] --> n1["Ship"]',
+            'n2["Design"] --> n1',
+            'n3["Plan"] --> n0 & n2',
             "class n3 root",
+            "class n1 shared",
           ]),
         );
       },
@@ -606,7 +567,7 @@ describe("render-directed-acyclic-graph-data", () => {
         ]);
 
         expect(result.exitCode).toBe(0);
-        expect(result.stdout).toBe(drawnDiagram([]));
+        expect(result.stdout).toBe("flowchart TB\n");
         expect(result.stderr).toBe(
           "⚠️ Page 3 with --limit 1 is past the last root: the graph has 2 roots in total, so nothing is drawn\n",
         );
@@ -634,10 +595,8 @@ describe("render-directed-acyclic-graph-data", () => {
       expect(result.exitCode).toBe(0);
       expect(result.stdout).toBe(
         drawnDiagram([
-          'n0["Audit"]',
-          'n1["Report"]',
-          "n0 --> n0",
-          "n0 --> n1",
+          ROOT_DEFINITION,
+          'n0["Audit"] --> n0 & n1["Report"]',
           "class n0 root",
         ]),
       );

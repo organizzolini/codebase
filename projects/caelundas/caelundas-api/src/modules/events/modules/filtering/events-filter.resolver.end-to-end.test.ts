@@ -148,7 +148,7 @@ describe("events filtering end-to-end suite", () => {
     it("matches an event carrying the tag or any tag beneath it", async () => {
       expect.hasAssertions();
 
-      const { aspect, direction, ingress, major, simple } = tags;
+      const { aspect, direction, major, simple, stay } = tags;
 
       await expect(
         keepWhere(tagRule(aspect, "is_any_of", [major.id])),
@@ -158,7 +158,7 @@ describe("events filtering end-to-end suite", () => {
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
       await expect(
         keepWhere(
-          tagRule(aspect, "is_any_of", [simple.id, ingress.id, direction.id]),
+          tagRule(aspect, "is_any_of", [simple.id, stay.id, direction.id]),
         ),
       ).resolves.toStrictEqual([
         MARS_RETROGRADE,
@@ -170,13 +170,13 @@ describe("events filtering end-to-end suite", () => {
     it("requires all of the picked tags for has_all_of", async () => {
       expect.hasAssertions();
 
-      const { aspect, major, moon, signIngress } = tags;
+      const { aspect, major, moon, signStay } = tags;
 
       await expect(
         keepWhere(tagRule(aspect, "has_all_of", [major.id, moon.id])),
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
       await expect(
-        keepWhere(tagRule(aspect, "has_all_of", [major.id, signIngress.id])),
+        keepWhere(tagRule(aspect, "has_all_of", [major.id, signStay.id])),
       ).resolves.toStrictEqual([]);
     });
 
@@ -624,7 +624,7 @@ describe("events filtering end-to-end suite", () => {
                 negated: false,
                 operator: "is_any_of",
                 path: [`tag:${tags.sign.id}`],
-                values: [tags.signIngress.id],
+                values: [tags.signStay.id],
               },
               notTheMoon,
             ],

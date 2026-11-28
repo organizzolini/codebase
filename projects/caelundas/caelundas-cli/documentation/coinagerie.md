@@ -216,6 +216,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **star**: Catalog star from the Hipparcos-keyed table, placed as a vertex of constellation figure lines by the night-sky module.
 - **station**: Stationary point where a planet's longitude speed passes zero, recorded as morning or evening station events by the retrogrades module.
 - **stellium**: Group of three or more bodies that are all in conjunction within the 8 degree orb, detected as maximal cliques by the stellium module.
+- **subgraph**:
 - **subtend**: Function that returns the angle a body of given radius subtends at a distance, used for parallax and semidiameter in eclipse test utilities.
 - **summer**: Season of the annual solar cycle from the summer solstice to the autumnal equinox, tagged on solstice and related events.
 - **sun**: The Sun body, the subject of solar events, and the reference body for twilight, sunrise, sunset, and eclipse geometry.
@@ -229,7 +230,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **tilt**: Inclination of the Moon's shadow track relative to the ecliptic, a parameter of the eclipse geometry tests.
 - **topocentric**: Describes positions and rise times seen from the observer's location rather than Earth's centre, used for horizon and local eclipse events.
 - **totality**: Phase of a total eclipse when the Sun or Moon is fully covered, classified by the eclipse calculation and classification services.
-- **transit**: A body's stay in one sign, decan, or side of a sign's peak, from its ingress to the next change, stored as a span tagged Sign, Decan, or Peak Transit.
+- **transit**: A body's stay in one sign, decan, or side of a sign's peak, from its ingress to the next change, stored as a span tagged Stay: Sign, Decan, or Half.
 - **tredecile**: Specialty aspect at exactly 108 degrees, detected by the specialty-aspects module from the harmonic division of the circle.
 - **trine**: Major aspect at exactly 120 degrees of separation, one of the five major aspects and the base of grand trine patterns.
 - **tropical**: Describes the zodiac measured from the March equinox, in twelve 30 degree signs starting at Aries.

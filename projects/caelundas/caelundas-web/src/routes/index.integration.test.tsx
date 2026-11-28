@@ -3,15 +3,22 @@ import { describe, expect, it, vi } from "vitest";
 
 import { renderRoute } from "@codebase/testing/react";
 
-import { readServedApi, serveCalendarApi } from "../../testing/calendar-api";
-import { DAG_FIXTURE_TAGS } from "../../testing/calendar-fixture";
+import {
+  readServedApi,
+  serveCalendarApi,
+} from "../../testing/calendar/calendar-api";
+import { DAG_FIXTURE_TAGS } from "../../testing/calendar/calendar-fixture";
 import {
   BUILDER_TEST,
   BUILDER_WAIT,
   findDisplayOption,
   findDisplayRow,
+  findMonthEvent,
+  findMonthEvents,
   findToolbar,
-} from "../../testing/calendar-page";
+  queryMonthEvent,
+  queryMonthEvents,
+} from "../../testing/calendar/calendar-page";
 import {
   fieldRule,
   filterGroup,
@@ -84,23 +91,20 @@ describe("index", () => {
   it("shows each event at its time in the observer's zone", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
 
-    const event = await screen.findByRole("button", {
-      name: /^Mars Conjunct Venus, 10:20\sAM/u,
-    });
+    const event = await findMonthEvent(/^Mars Conjunct Venus/u);
 
     expect(
       within(event).getByText(
         "Aspect / Simple / Major / Conjunct; Body / Mars; Body / Venus. Instant",
       ),
     ).toBeDefined();
+    expect(event.closest("li")?.textContent).toContain("10:20");
   });
 
   it("tells a span apart from an instant by its derived duration", async () => {
     await renderCalendarRoute("/?date=2026-03-01");
 
-    const [span] = await screen.findAllByRole("button", {
-      name: /^Mercury Retrograde/u,
-    });
+    const [span] = await findMonthEvents(/^Mercury Retrograde/u);
 
     expect(span).toBeDefined();
     expect(
@@ -120,9 +124,7 @@ describe("index", () => {
     await expect(
       screen.findByRole("grid", { name: "April 2026" }),
     ).resolves.toBeDefined();
-    await expect(
-      screen.findByRole("button", { name: /^Mars Square Saturn/u }),
-    ).resolves.toBeDefined();
+    await expect(findMonthEvent(/^Mars Square Saturn/u)).resolves.toBeDefined();
   });
 
   it("offers the covered dates for a month outside the data", async () => {
@@ -150,9 +152,7 @@ describe("index", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Go to Jun 21, 2026" }));
 
-    await expect(
-      screen.findByRole("button", { name: /^Sun Ingress Cancer/u }),
-    ).resolves.toBeDefined();
+    await expect(findMonthEvent(/^Sun Ingress Cancer/u)).resolves.toBeDefined();
   });
 
   it("says when a month inside the data holds no events", async () => {
@@ -228,17 +228,11 @@ describe("index", () => {
     );
 
     await expect(
-      screen.findByRole("button", { name: /^Venus Ingress Aries/u }),
+      findMonthEvent(/^Venus Ingress Aries/u),
     ).resolves.toBeDefined();
-    expect(
-      screen.getByRole("button", { name: /^Mars Conjunct Venus/u }),
-    ).toBeDefined();
-    expect(
-      screen.queryByRole("button", { name: /^Sun Ingress Aries/u }),
-    ).toBeNull();
-    expect(screen.queryAllByRole("button", { name: /^Mercury/u })).toHaveLength(
-      0,
-    );
+    expect(queryMonthEvent(/^Mars Conjunct Venus/u) ?? undefined).toBeDefined();
+    expect(queryMonthEvent(/^Sun Ingress Aries/u)).toBeNull();
+    expect(queryMonthEvents(/^Mercury/u)).toHaveLength(0);
   });
 
   it("filters by a parent a tag sits under besides its first, which holds the tag's events", async () => {
@@ -251,14 +245,10 @@ describe("index", () => {
     );
 
     await expect(
-      screen.findByRole("button", { name: /^Venus Ingress Aries/u }),
+      findMonthEvent(/^Venus Ingress Aries/u),
     ).resolves.toBeDefined();
-    expect(
-      screen.getByRole("button", { name: /^Mars Conjunct Venus/u }),
-    ).toBeDefined();
-    expect(
-      screen.queryByRole("button", { name: /^Sun Ingress Aries/u }),
-    ).toBeNull();
+    expect(queryMonthEvent(/^Mars Conjunct Venus/u) ?? undefined).toBeDefined();
+    expect(queryMonthEvent(/^Sun Ingress Aries/u)).toBeNull();
   });
 
   it("keeps the filters when moving to another month", async () => {
@@ -278,9 +268,7 @@ describe("index", () => {
     await expect(
       screen.findByText("No events match the filters"),
     ).resolves.toBeDefined();
-    expect(
-      screen.queryByRole("button", { name: /^Mars Square Saturn/u }),
-    ).toBeNull();
+    expect(queryMonthEvent(/^Mars Square Saturn/u)).toBeNull();
   });
 
   it("does not blame the filters for a month with no events at all", async () => {
@@ -314,11 +302,9 @@ describe("index", () => {
     );
 
     await expect(
-      screen.findByRole("button", { name: /^Venus Ingress Aries/u }),
+      findMonthEvent(/^Venus Ingress Aries/u),
     ).resolves.toBeDefined();
-    expect(
-      screen.queryByRole("button", { name: /^Mars Conjunct Venus/u }),
-    ).toBeNull();
+    expect(queryMonthEvent(/^Mars Conjunct Venus/u)).toBeNull();
   });
 
   it("ignores a filter in the link that does not parse", async () => {
@@ -326,9 +312,7 @@ describe("index", () => {
       filterLink("2026-03-01", { combinator: "xor", type: "group" }),
     );
 
-    await expect(
-      screen.findByRole("button", { name: /^Sun Ingress Aries/u }),
-    ).resolves.toBeDefined();
+    await expect(findMonthEvent(/^Sun Ingress Aries/u)).resolves.toBeDefined();
   });
 
   it("ignores the rules that are not finished", async () => {
@@ -339,9 +323,7 @@ describe("index", () => {
       ),
     );
 
-    await expect(
-      screen.findByRole("button", { name: /^Sun Ingress Aries/u }),
-    ).resolves.toBeDefined();
+    await expect(findMonthEvent(/^Sun Ingress Aries/u)).resolves.toBeDefined();
     expect(screen.queryByText("No events match the filters")).toBeNull();
   });
 
@@ -384,12 +366,8 @@ describe("index", () => {
 
       // Both at once, so the skeleton a slow reload shows cannot pass for it.
       await waitFor(() => {
-        expect(
-          screen.getAllByRole("button", { name: /^Mercury Retrograde/u }),
-        ).not.toHaveLength(0);
-        expect(
-          screen.queryByRole("button", { name: /^Sun Ingress Aries/u }),
-        ).toBeNull();
+        expect(queryMonthEvents(/^Mercury Retrograde/u)).not.toHaveLength(0);
+        expect(queryMonthEvent(/^Sun Ingress Aries/u)).toBeNull();
       }, BUILDER_WAIT);
     },
   );
@@ -430,7 +408,7 @@ describe("index", () => {
       // Read afresh, since a slow reload may have drawn a new toolbar.
       await waitFor(() => {
         expect(
-          screen.getByRole("button", { name: /^Mars Conjunct Venus/u }),
+          queryMonthEvent(/^Mars Conjunct Venus/u) ?? undefined,
         ).toBeDefined();
         expect(
           screen.getByRole("button", { name: "Filter, 1 active" }),
@@ -504,12 +482,88 @@ describe("index", () => {
       ),
     );
 
-    await expect(
-      screen.findByRole("button", { name: /^Sun Ingress Aries/u }),
-    ).resolves.toBeDefined();
-    expect(
-      screen.queryByRole("button", { name: /^Mars Conjunct Venus/u }),
-    ).toBeNull();
+    await expect(findMonthEvent(/^Sun Ingress Aries/u)).resolves.toBeDefined();
+    expect(queryMonthEvent(/^Mars Conjunct Venus/u)).toBeNull();
+  });
+
+  it("opens the week from a month's day and the day from the week's heading, keeping the rest of the link", async () => {
+    await renderCalendarRoute("/?date=2026-03-04&symbols=emojis");
+    const router = getRenderedRouter();
+
+    fireEvent.click(
+      await screen.findByRole("button", {
+        name: "Open the week of 2026-03-12",
+      }),
+    );
+
+    await waitFor(() => {
+      expect(router.state.location.search).toMatchObject({
+        date: "2026-03-12",
+        symbols: "emojis",
+        view: "week",
+      });
+    });
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Open 2026-03-12" }),
+    );
+
+    await waitFor(() => {
+      expect(router.state.location.search).toMatchObject({
+        date: "2026-03-12",
+        symbols: "emojis",
+        view: "day",
+      });
+    });
+  });
+
+  it("opens a day's level from its right-click menu, keeping the rest of the link", async () => {
+    await renderCalendarRoute("/?date=2026-03-04&symbols=emojis&ad=c");
+    const router = getRenderedRouter();
+
+    fireEvent.contextMenu(
+      await screen.findByRole("button", {
+        name: "Open the week of 2026-03-12",
+      }),
+    );
+    fireEvent.click(await screen.findByRole("menuitem", { name: "Open day" }));
+
+    await waitFor(() => {
+      expect(router.state.location.search).toMatchObject({
+        ad: "c",
+        date: "2026-03-12",
+        symbols: "emojis",
+        view: "day",
+      });
+    });
+
+    fireEvent.contextMenu(
+      await screen.findByRole("button", { name: "Open 2026-03-12" }),
+    );
+    fireEvent.click(
+      await screen.findByRole("menuitem", { name: "Open month" }),
+    );
+
+    await waitFor(() => {
+      expect(router.state.location.search).toMatchObject({
+        date: "2026-03-12",
+        view: "month",
+      });
+    });
+  });
+
+  it("keeps the all-day state in the link, and never loads again for it", async () => {
+    await renderCalendarRoute("/?view=week&date=2026-03-04");
+    const router = getRenderedRouter();
+    const api = readServedApi();
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: /^All day: grouped/u }),
+    );
+    await screen.findByRole("button", { name: /^All day: every event/u });
+
+    expect(router.state.location.search).toMatchObject({ ad: "e" });
+    expect(api.requests.events).toHaveLength(1);
   });
 
   describe("sky link parameters", () => {

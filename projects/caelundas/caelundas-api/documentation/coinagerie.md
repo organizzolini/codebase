@@ -35,7 +35,6 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **harmonic**: A numbered aspect family, such as Harmonic 6, whose trailing number filters can compare.
 - **hipparco**:
 - **horizon**: The line where the sky meets the ground; also the `astronomy-engine` function a unit test checks positions with.
-- **ingress**: A body's entry into a zodiac sign, a tag that filter tests select events by.
 - **instant**: An event whose start and end are equal, the `Instant` value of the temporality field.
 - **j2000**: The standard astronomical epoch of 1 January 2000, whose Julian day the sidereal-time calculation counts from.
 - **julian**: The Julian day, a continuous count of days that the sidereal-time calculation converts timestamps into.

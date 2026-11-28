@@ -38,10 +38,14 @@ export function createTagIcons(
 }
 
 /**
- * The symbol of a tag with no icon, by the last name of its label; none when unknown.
+ * The symbol of a tag by the last name of its label, or of its body for "Sun Focal"; none when unknown.
  */
 export function getTagGlyph(label: string): string | undefined {
-  return GLYPH_BY_TAG_NAME[label.split(" / ").at(-1) ?? label];
+  const name = label.split(" / ").at(-1) ?? label;
+
+  return (
+    GLYPH_BY_TAG_NAME[name] ?? GLYPH_BY_TAG_NAME[name.replace(/ Focal$/u, "")]
+  );
 }
 
 /**

@@ -15,6 +15,15 @@
 
 -- Then refresh the facts: nx run caelundas-cli:start:refresh-metrics
 
+-- Forming, dissolving and the stations are no longer tags: they build the spans
+-- and are never stored. A table from before still has their events, so delete
+-- them while their tags exist, then drop the tags:
+--
+--   delete from calendar_events where id in (
+--     select c.calendar_event_id from calendar_event_tags as c
+--     inner join tags as t on c.tag_id = t.id
+--     where t."name" in ('Station Retrograde', 'Station Direct', 'Forming', 'Dissolving'));
+
 -- The families are `SPAN_BOUNDARY_RULES` in `progressive.constants.ts`, by the
 -- tag paths the raw tags classify under. The edge is the end of the span the
 -- instant sits on: `start`, `end` or `either`.
@@ -42,8 +51,6 @@ with recursive tag_paths (id, tag_path) as (
 
 rules (rule_family, instant_paths, edge, span_paths) as (
     values
-    ('aspect forming', array['Aspect / Phase / Forming'], 'start', array['Aspect / Simple', 'Aspect / Compound']),
-    ('aspect dissolving', array['Aspect / Phase / Dissolving'], 'end', array['Aspect / Simple', 'Aspect / Compound']),
     ('moon phase', array['Lunar / Monthly Cycle'], 'either', array['Lunar / Monthly Cycle']),
     ('lunar apsis', array['Lunar / Apsides'], 'either', array['Lunar / Apsides']),
     (
@@ -58,16 +65,8 @@ rules (rule_family, instant_paths, edge, span_paths) as (
     ),
     ('eclipse beginning', array['Eclipse / Phase / Beginning'], 'start', array['Eclipse / Frame']),
     ('eclipse ending', array['Eclipse / Phase / Ending'], 'end', array['Eclipse / Frame']),
-    (
-        'station',
-        array['Planetary / Direction / Station Retrograde', 'Planetary / Direction / Station Direct'],
-        'either',
-        array['Planetary / Direction / Retrograde Period', 'Planetary / Direction / Direct Period']
-    ),
-    ('ingress', array['Zodiac'], 'either', array['Zodiac']),
-    ('solar year point', array['Solar / Annual Cycle'], 'either', array['Solar / Annual Cycle']),
-    ('moonrise', array['Daily / Lunar Cycle / Rise'], 'start', array['Daily / Lunar Cycle']),
-    ('moonset', array['Daily / Lunar Cycle / Set'], 'end', array['Daily / Lunar Cycle']),
+    ('ingress', array['Sign / Stay'], 'either', array['Sign / Stay']),
+    ('solar year point', array['Yearly / Annual Cycle'], 'either', array['Yearly / Annual Cycle']),
     ('twilight boundary', array['Daily / Twilight'], 'either', array['Daily / Twilight'])
 ),
 

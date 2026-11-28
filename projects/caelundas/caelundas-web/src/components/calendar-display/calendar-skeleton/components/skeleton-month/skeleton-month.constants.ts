@@ -23,7 +23,11 @@ export const WEEKDAY_KEYS = listKeys("weekday", DAYS_PER_WEEK);
 
 export const CELLS = listKeys("cell", WEEKS * DAYS_PER_WEEK).map(
   (id, index) => ({
-    bars: DAY_BARS[index % DAY_BARS.length] ?? [],
+    // Each bar is keyed by its place, since a day may hold two of one width.
+    bars: (DAY_BARS[index % DAY_BARS.length] ?? []).map((width, position) => ({
+      key: `${id}-bar-${String(position)}`,
+      width,
+    })),
     id,
   }),
 );

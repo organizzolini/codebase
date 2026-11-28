@@ -287,5 +287,11 @@ describe("database utilities", () => {
     it("leaves entities it cannot list as they are", () => {
       expect(withGeneratedEntities([])).toStrictEqual([]);
     });
+
+    it("leaves entities given as a map of classes unchanged", () => {
+      const entities = { Network, Station };
+
+      expect(withGeneratedEntities(entities)).toBe(entities);
+    });
   });
 });

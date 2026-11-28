@@ -8,7 +8,31 @@ import {
   splicePostgresqlErdMarkdown,
 } from "../../index";
 
+import { renderPostgresqlErdSections } from "./postgresql-erd-sections.utilities";
+
 import type { PostgresqlErdModel } from "../../index";
+
+/** Stands in for the Mermaid renderer: names the tables drawn. */
+function draw(model: PostgresqlErdModel): string {
+  return `erDiagram\n  %% ${model.entities.map(({ name }) => name).join(" ")}`;
+}
+
+/** An entity with the given relations, each a many-to-one to a table name. */
+function table(
+  name: string,
+  ...targets: string[]
+): PostgresqlErdModel["entities"][number] {
+  return {
+    columns: [],
+    name,
+    relations: targets.map((target) => ({
+      cardinality: "many-to-one" as const,
+      name: target,
+      target,
+    })),
+    tableName: name,
+  };
+}
 
 describe("postgresql ERD utilities", () => {
   it("reads exported entities, their columns, and many-to-one relations", async () => {
@@ -157,6 +181,7 @@ describe("postgresql ERD utilities", () => {
       expect(renderPostgresqlErdModel(model)).toBe(
         [
           "erDiagram",
+          "  direction LR",
           "  sources ||--|| ErdOneToOne : oneToOne",
           "  sources ||--o{ ErdOneToMany : oneToMany",
           "  sources }o--|| ErdManyToOne : manyToOne",
@@ -205,6 +230,7 @@ describe("postgresql ERD utilities", () => {
       expect(renderPostgresqlErdModel(model)).toBe(
         [
           "erDiagram",
+          "  direction LR",
           "  examples {",
           '    string id PK "not nullable"',
           '    string description "nullable"',
@@ -277,6 +303,7 @@ describe("postgresql ERD utilities", () => {
       "",
       "```mermaid",
       "erDiagram",
+      "  direction LR",
       "  ErdExample",
       "```",
       "",
@@ -338,6 +365,7 @@ describe("postgresql ERD utilities", () => {
       "",
       "```mermaid",
       "erDiagram",
+      "  direction LR",
       "  ErdExample",
       "```",
       "",
@@ -562,5 +590,96 @@ describe("postgresql ERD utilities", () => {
         entities: [{ columns: "invalid", name: "ErdDepartment" }],
       }),
     ).toThrow(/unrecognized key/i);
+  });
+
+  describe(renderPostgresqlErdSections, () => {
+    it("draws one fenced diagram when the tables are one group", () => {
+      expect(
+        renderPostgresqlErdSections(
+          { entities: [table("a", "b"), table("b")] },
+          draw,
+        ),
+      ).toStrictEqual(["```mermaid\nerDiagram\n  %% a b\n```"]);
+    });
+
+    it("splits groups of related tables under linked headings, standalone tables last", () => {
+      const lines = renderPostgresqlErdSections(
+        {
+          entities: [
+            table("a", "b", "c"),
+            table("b"),
+            table("c"),
+            table("lone"),
+            table("x", "y"),
+            table("y"),
+            table("single"),
+          ],
+        },
+        draw,
+      );
+
+      expect(lines[0]).toBe(
+        "[a (3 tables)](#a-3-tables) · [x (2 tables)](#x-2-tables) · [Standalone tables](#standalone-tables)",
+      );
+      expect(lines).toContain("## a (3 tables)");
+      expect(lines).toContain("## x (2 tables)");
+      expect(lines).toContain("## Standalone tables");
+      expect(lines.join("\n")).toContain("  %% lone single");
+    });
+
+    it("joins tables through a relation to an entity named by its class, and keeps name-only targets with their source", () => {
+      const owner = { ...table("owners", "Gadget"), name: "Owner" };
+      const lines = renderPostgresqlErdSections(
+        {
+          entities: [
+            owner,
+            { name: "Gadget" },
+            table("other", "Elsewhere"),
+            { name: "Elsewhere" },
+          ],
+        },
+        draw,
+      );
+
+      expect(lines.join("\n")).toContain("  %% Owner Gadget\n");
+      expect(lines.join("\n")).toContain("  %% other Elsewhere\n");
+    });
+
+    it("groups a table with the target of a relation to a table no entity describes", () => {
+      const lines = renderPostgresqlErdSections(
+        { entities: [table("a", "ghost"), table("b", "ghost"), table("c")] },
+        draw,
+      );
+
+      expect(lines[0]).toBe(
+        "[a (2 tables)](#a-2-tables) · [Standalone tables](#standalone-tables)",
+      );
+    });
+
+    it("titles a table that relates only to itself by its name", () => {
+      const lines = renderPostgresqlErdSections(
+        { entities: [table("a", "a"), table("b", "c"), table("c")] },
+        draw,
+      );
+
+      expect(lines[0]).toBe("[a](#a) · [b (2 tables)](#b-2-tables)");
+    });
+
+    it("titles a group by its most related table", () => {
+      const lines = renderPostgresqlErdSections(
+        {
+          entities: [
+            table("a", "hub"),
+            table("b", "hub"),
+            table("hub"),
+            table("p", "q"),
+            table("q"),
+          ],
+        },
+        draw,
+      );
+
+      expect(lines[0]).toContain("[hub (3 tables)]");
+    });
   });
 });

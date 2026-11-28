@@ -154,4 +154,55 @@ describe("graph tree service, read in batches", () => {
       4,
     );
   });
+
+  describe("a tree whose rows carry an icon, a note, and a rank", () => {
+    const glob = path.join(
+      import.meta.dirname,
+      "../../../../../testing/fixtures/ranked/ranked-tag.entity.ts",
+    );
+    const fields = { icon: "icon", note: "note", rank: "rank" };
+
+    beforeEach(async () => {
+      for (const statement of [
+        "DROP TABLE IF EXISTS ranked_tags",
+        "CREATE TABLE ranked_tags (id integer PRIMARY KEY, name text NOT NULL, icon text, note text, rank integer NOT NULL, parent_id integer)",
+        "INSERT INTO ranked_tags (id, name, icon, note, rank, parent_id) VALUES (1, 'Zulu', 'star', 'last by name', 2, NULL), (2, 'Alpha', NULL, NULL, 3, NULL), (3, 'Mike', NULL, NULL, 1, NULL)",
+      ]) {
+        await source.query(statement);
+      }
+    }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
+
+    it(
+      "draws the icon and note of a row and orders siblings by their rank",
+      async () => {
+        const graph = await loadTree(glob, { fields });
+
+        expect(graph.nodes.map(({ label }) => label)).toStrictEqual([
+          "Mike",
+          "Zulu",
+          "Alpha",
+        ]);
+        expect(graph.nodes.find(({ label }) => label === "Zulu")).toMatchObject(
+          { icon: "star", note: "last by name" },
+        );
+      },
+      INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+    );
+
+    it(
+      "keeps the row order when no column has the rank property",
+      async () => {
+        const graph = await loadTree(glob, {
+          fields: { ...fields, rank: "missing" },
+        });
+
+        expect(graph.nodes.map(({ label }) => label)).toStrictEqual([
+          "Zulu",
+          "Alpha",
+          "Mike",
+        ]);
+      },
+      INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
+    );
+  });
 });

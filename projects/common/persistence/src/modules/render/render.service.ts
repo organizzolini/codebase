@@ -125,6 +125,7 @@ export class RenderService {
           this.renderMermaid.render(graph, {
             diagram: plan.diagram,
             direction: drawing.direction,
+            sections: plan.outputs.markdown !== undefined,
           }),
         );
       }

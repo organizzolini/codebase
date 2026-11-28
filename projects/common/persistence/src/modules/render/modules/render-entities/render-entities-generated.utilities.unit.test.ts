@@ -357,6 +357,27 @@ describe("generated edge entities", () => {
       );
     });
 
+    it("names a thrown value that is not an Error as its text", () => {
+      expect(() => {
+        @Graph({
+          edge: "TextEdge",
+          nodes: () => {
+            const thrown: unknown = "not an error";
+            throw thrown;
+          },
+        })
+        class Texted {
+          @PrimaryColumn({ type: "text" })
+          id!: string;
+        }
+        return Texted;
+      }).toThrow(
+        new RenderEntitiesEdgeError(
+          "@Graph edge TextEdge of Texted could not read its nodes() entity: not an error; import it before the graph, with no import cycle",
+        ),
+      );
+    });
+
     it("refuses a class that generates two edges", () => {
       expect(() => {
         @Graph({ edge: "TwiceEdgeTwo", nodes: () => Station })

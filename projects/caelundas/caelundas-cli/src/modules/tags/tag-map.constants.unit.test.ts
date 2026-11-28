@@ -132,11 +132,14 @@ const DETECTOR_TAG_SETS: readonly (readonly string[])[] = [
     "Solar",
     point,
   ]),
-  ...["Moonrise", "Moonset", "Lunar Zenith", "Lunar Nadir"].map((point) => [
-    "Daily Lunar Cycle",
-    "Lunar",
-    point,
-  ]),
+  ...[
+    "Moonrise",
+    "Moonset",
+    "Lunar Zenith",
+    "Lunar Nadir",
+    "Moon Up",
+    "Moon Down",
+  ].map((point) => ["Daily Lunar Cycle", "Lunar", point]),
   ...["Apogee", "Perigee"].map((name) => ["Lunar Apsides", "Lunar", name]),
   ...aspects.flatMap((aspect) =>
     ["Forming", "Perfective", "Dissolving"].map((phase) => [
@@ -190,11 +193,7 @@ const DETECTOR_TAG_SETS: readonly (readonly string[])[] = [
       ]),
     ]),
   ),
-  ...BODIES.flatMap((body) => [
-    ["Retrogrades", body],
-    ["Direction", body, "Retrograde"],
-    ["Direction", body, "Direct"],
-  ]),
+  ...BODIES.flatMap((body) => [["Retrogrades", body]]),
 ];
 
 describe("tag map vocabulary", () => {

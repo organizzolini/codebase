@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   readServedApi,
   serveCalendarApi,
-} from "../../../../testing/calendar-api";
+} from "../../../../testing/calendar/calendar-api";
 import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 
 import { EventsCalendar } from "./events-calendar";
@@ -142,14 +142,14 @@ describe(EventsCalendar, () => {
         {
           depth: 2,
           id: "tag-zodiac-ingress",
-          name: "Sign Ingress",
-          path: "Sign / Ingress / Sign Ingress",
+          name: "Sign",
+          path: "Sign / Stay / Sign",
         },
       ],
       timezone: "America/New_York",
     };
 
-    function renderMonth(colors: boolean): void {
+    function renderWeek(colors: boolean): void {
       renderWithCatalog(
         <EventsCalendar
           anchor={new Date("2026-03-20T12:00:00.000Z")}
@@ -159,13 +159,13 @@ describe(EventsCalendar, () => {
           grouping={[]}
           onDateChange={() => {}}
           timeZone="America/New_York"
-          view="month"
+          view="week"
         />,
       );
     }
 
     it("draws each event in the color of its kind", () => {
-      renderMonth(true);
+      renderWeek(true);
 
       const chip = document.querySelector<HTMLElement>(
         "[data-slot='event-calendar-event']",
@@ -175,7 +175,7 @@ describe(EventsCalendar, () => {
     });
 
     it("draws events in the default color with colors off", () => {
-      renderMonth(false);
+      renderWeek(false);
 
       const chip = document.querySelector<HTMLElement>(
         "[data-slot='event-calendar-event']",

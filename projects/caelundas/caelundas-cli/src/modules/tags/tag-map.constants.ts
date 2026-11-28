@@ -61,7 +61,7 @@ const SIMPLE_ASPECT: TagPath = [TAG_ROOT.aspect, "Simple"];
 const COMPOUND_ASPECT: TagPath = [TAG_ROOT.aspect, "Compound"];
 
 /** The annual solar cycle's node, with its points beneath it. */
-const ANNUAL_CYCLE: TagPath = [TAG_ROOT.solar, "Annual Cycle"];
+const ANNUAL_CYCLE: TagPath = [TAG_ROOT.yearly, "Annual Cycle"];
 
 /** The class of simple aspect each simple aspect name belongs to. */
 const ASPECT_CLASSES = [
@@ -91,7 +91,7 @@ const MONTHLY_CYCLE: TagPath = [TAG_ROOT.lunar, "Monthly Cycle"];
 /** The planets' apparent direction, with stations and retrograde spans beneath it. */
 const DIRECTION: TagPath = [TAG_ROOT.planetary, "Direction"];
 
-/** The twilight node, with every event and span of it beneath. */
+/** The twilight node, with its dawns, dusks and twilight spans beneath. */
 const TWILIGHT: TagPath = [TAG_ROOT.daily, "Twilight"];
 
 /** Names of every twilight event and span. */
@@ -101,11 +101,9 @@ const TWILIGHT_NAMES = [
   "Astronomical Twilight",
   "Civil Dawn",
   "Civil Dusk",
-  "Daylight",
   "Nautical Dawn",
   "Nautical Dusk",
   "Nautical Twilight",
-  "Night",
 ];
 
 /** The kinds of eclipse, as the eclipse detector tags them. */
@@ -121,6 +119,7 @@ const DAILY_CYCLES = [
       ["Lunar Zenith", "Zenith"],
       ["Lunar Nadir", "Nadir"],
       ["Moon Up", "Moon Up"],
+      ["Moon Down", "Moon Down"],
     ],
   ],
   [
@@ -167,11 +166,11 @@ export const SHARED_TAG_MAP: TagMap = {
   ...mapNone(["Lunar", "Solar"]),
 };
 
-/** The phase of an aspect: forming, exact, or separating. */
-const ASPECT_PHASE_TAG_MAP: TagMap = mapEach(
-  ["Dissolving", "Forming", "Perfective"],
-  (name) => [TAG_ROOT.aspect, "Phase", name === "Perfective" ? "Exact" : name],
-);
+/** An aspect's phase: only exact is stored, as forming and dissolving bound its span. */
+const ASPECT_PHASE_TAG_MAP: TagMap = {
+  ...mapNone(["Dissolving", "Forming"]),
+  Perfective: one([TAG_ROOT.aspect, "Phase", "Exact"]),
+};
 
 /** Simple aspects by class and name, with nature, harmonic, phase. */
 const SIMPLE_ASPECT_TAG_MAP: TagMap = mergeTagMaps(
@@ -254,11 +253,8 @@ const PLANETARY_PHASE_TAG_MAPS: Readonly<Record<string, TagMap>> = {
 export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   ...PLANETARY_PHASE_TAG_MAPS,
   "Compound Aspect": COMPOUND_ASPECT_TAG_MAP,
-  Direction: {
-    Direct: one([...DIRECTION, "Station Direct"]),
-    Direction: one(DIRECTION),
-    Retrograde: one([...DIRECTION, "Station Retrograde"]),
-  },
+  // Stations only build the periods, so none is stored and none is a tag.
+  Direction: mapNone(["Direct", "Direction", "Retrograde"]),
   Directs: {
     Directs: one([...DIRECTION, "Direct Period"]),
   },
@@ -287,15 +283,16 @@ export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
   Twilight: {
     Twilight: one(TWILIGHT),
     ...mapEach(TWILIGHT_NAMES, (name) => [...TWILIGHT, name]),
-    ...mapEach(["Evening", "Morning"], (name) => [
+    ...mapEach(["Daylight", "Night"], (name) => [
       TAG_ROOT.daily,
-      "Time of Day",
+      "Daily Solar",
       name,
     ]),
+    ...mapNone(["Evening", "Morning"]),
   },
   ...Object.fromEntries(
     DAILY_CYCLES.map(([name, points]): [string, TagMap] => {
-      const cycle: TagPath = [TAG_ROOT.daily, name.replace(/^Daily /u, "")];
+      const cycle: TagPath = [TAG_ROOT.daily, name.replace(/ Cycle$/u, "")];
       return [
         name,
         {
@@ -317,7 +314,7 @@ export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
       (name) => [...ANNUAL_CYCLE, name],
     ),
     ...mapEach(["Autumn", "Spring", "Summer", "Winter"], (name) => [
-      TAG_ROOT.solar,
+      TAG_ROOT.yearly,
       "Season",
       name,
     ]),
@@ -332,7 +329,7 @@ export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
           name,
           [
             [...ANNUAL_CYCLE, kind, name],
-            [TAG_ROOT.solar, "Season", season],
+            [TAG_ROOT.yearly, "Season", season],
           ],
         ],
       ),

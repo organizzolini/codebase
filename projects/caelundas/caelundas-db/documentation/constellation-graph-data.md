@@ -1,1412 +1,599 @@
-## Page 1 of 2
+[Pegasus, Andromeda](#pegasus-andromeda) · [Cetus](#cetus-cassiopeia) · [Cassiopeia](#cetus-cassiopeia) · [Pisces](#pisces-sculptor-triangulum-aries) · [Sculptor](#pisces-sculptor-triangulum-aries) · [Triangulum](#pisces-sculptor-triangulum-aries) · [Aries](#pisces-sculptor-triangulum-aries) · [Eridanus](#eridanus) · [Perseus](#perseus-fornax) · [Fornax](#perseus-fornax) · [Taurus, Auriga](#taurus-auriga-camelopardalis-caelum) · [Camelopardalis](#taurus-auriga-camelopardalis-caelum) · [Caelum](#taurus-auriga-camelopardalis-caelum) · [Orion](#orion-lepus-columba) · [Lepus](#orion-lepus-columba) · [Columba](#orion-lepus-columba) · [Gemini](#gemini-lynx-canis-major-monoceros) · [Lynx](#gemini-lynx-canis-major-monoceros) · [Canis Major](#gemini-lynx-canis-major-monoceros) · [Monoceros](#gemini-lynx-canis-major-monoceros) · [Puppis, Pyxis](#puppis-pyxis-canis-minor-ursa-major) · [Canis Minor](#puppis-pyxis-canis-minor-ursa-major) · [Ursa Major](#puppis-pyxis-canis-minor-ursa-major) · [Hydra](#hydra-cancer-antlia-vela-sextans) · [Cancer](#hydra-cancer-antlia-vela-sextans) · [Antlia](#hydra-cancer-antlia-vela-sextans) · [Vela](#hydra-cancer-antlia-vela-sextans) · [Sextans](#hydra-cancer-antlia-vela-sextans) · [Leo](#leo-leo-minor-crater-virgo) · [Leo Minor](#leo-leo-minor-crater-virgo) · [Crater](#leo-leo-minor-crater-virgo) · [Virgo](#leo-leo-minor-crater-virgo) · [Corvus](#corvus-draco-canes-venatici-coma-berenices-boötes) · [Draco](#corvus-draco-canes-venatici-coma-berenices-boötes) · [Canes Venatici](#corvus-draco-canes-venatici-coma-berenices-boötes) · [Coma Berenices](#corvus-draco-canes-venatici-coma-berenices-boötes) · [Boötes](#corvus-draco-canes-venatici-coma-berenices-boötes) · [Centaurus](#centaurus-ursa-minor-libra-lupus-corona-borealis) · [Ursa Minor](#centaurus-ursa-minor-libra-lupus-corona-borealis) · [Libra](#centaurus-ursa-minor-libra-lupus-corona-borealis) · [Lupus](#centaurus-ursa-minor-libra-lupus-corona-borealis) · [Corona Borealis](#centaurus-ursa-minor-libra-lupus-corona-borealis) · [Serpens, Ophiuchus](#serpens-ophiuchus) · [Scorpius](#scorpius-hercules) · [Hercules](#scorpius-hercules) · [Sagittarius](#sagittarius-scutum-lyra) · [Scutum](#sagittarius-scutum-lyra) · [Lyra](#sagittarius-scutum-lyra) · [Corona Austrina](#corona-austrina-aquila-vulpecula-cygnus-sagitta) · [Aquila](#corona-austrina-aquila-vulpecula-cygnus-sagitta) · [Vulpecula](#corona-austrina-aquila-vulpecula-cygnus-sagitta) · [Cygnus](#corona-austrina-aquila-vulpecula-cygnus-sagitta) · [Sagitta](#corona-austrina-aquila-vulpecula-cygnus-sagitta) · [Capricornus](#capricornus-cepheus-delphinus-aquarius) · [Cepheus](#capricornus-cepheus-delphinus-aquarius) · [Delphinus](#capricornus-cepheus-delphinus-aquarius) · [Aquarius](#capricornus-cepheus-delphinus-aquarius) · [Microscopium](#microscopium-equuleus-piscis-austrinus-grus-lacerta) · [Equuleus](#microscopium-equuleus-piscis-austrinus-grus-lacerta) · [Piscis Austrinus](#microscopium-equuleus-piscis-austrinus-grus-lacerta) · [Grus](#microscopium-equuleus-piscis-austrinus-grus-lacerta) · [Lacerta](#microscopium-equuleus-piscis-austrinus-grus-lacerta)
+
+## Pegasus, Andromeda
 
 ```mermaid
 flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
-    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5
-    subgraph nb0["1067"]
-        n0["677"]
-        n1["1067"]
-        n2["113963"]
-        n5["2912"]
-        n6["116631"]
-        n7["3031"]
-        n8["3092"]
-        n12["3693"]
-        n13["3881"]
-        n14["5434"]
-        n16["4436"]
-        n17["4463"]
-        n19["7607"]
-        n20["5447"]
-        n29["9640"]
-        n308["109176"]
-        n309["107354"]
-        n310["109410"]
-        n311["112158"]
-        n312["109427"]
-        n313["107315"]
-        n314["112029"]
-        n315["113881"]
-        n316["112440"]
-        n317["112447"]
-        n318["112748"]
-        n319["113726"]
-        n320["116805"]
-        n321["116584"]
-        n322["117221"]
-        n0 ---|"Pegasus"| n1
-        n1 ---|"Pegasus"| n2
-        n5 ---|"Andromeda"| n6
-        n7 ---|"Andromeda"| n8
-        n8 ---|"Andromeda"| n0
-        n8 ---|"Andromeda"| n5
-        n12 ---|"Andromeda"| n7
-        n13 ---|"Andromeda"| n14
-        n16 ---|"Andromeda"| n13
-        n17 ---|"Andromeda"| n12
-        n14 ---|"Andromeda"| n19
-        n20 ---|"Andromeda"| n8
-        n20 ---|"Andromeda"| n16
-        n29 ---|"Andromeda"| n20
-        n308 ---|"Pegasus"| n309
-        n310 ---|"Pegasus"| n311
-        n312 ---|"Pegasus"| n313
-        n314 ---|"Pegasus"| n312
-        n311 ---|"Pegasus"| n315
-        n316 ---|"Pegasus"| n308
-        n317 ---|"Pegasus"| n314
-        n318 ---|"Pegasus"| n316
-        n315 ---|"Pegasus"| n0
-        n315 ---|"Pegasus"| n318
-        n2 ---|"Pegasus"| n317
-        n2 ---|"Pegasus"| n315
-        n6 ---|"Andromeda"| n319
-        n6 ---|"Andromeda"| n320
-        n320 ---|"Andromeda"| n321
-        n320 ---|"Andromeda"| n322
-    end
-    subgraph nb1["Cetus"]
-        n3["1562"]
-        n4["5364"]
-        n11["3419"]
-        n18["6537"]
-        n21["8645"]
-        n23["8102"]
-        n32["10826"]
-        n33["11484"]
-        n34["12828"]
-        n35["12093"]
-        n36["12387"]
-        n37["12706"]
-        n42["13954"]
-        n56["14135"]
-        n3 --- n4
-        n11 --- n3
-        n4 --- n18
-        n18 --- n21
-        n23 --- n11
-        n21 --- n23
-        n32 --- n21
-        n33 --- n34
-        n35 --- n33
-        n36 --- n32
-        n37 --- n35
-        n37 --- n36
-        n34 --- n42
-        n42 --- n56
-        n56 --- n37
-    end
-    subgraph nb2["Cassiopeia"]
-        n9["3179"]
-        n10["746"]
-        n15["4427"]
-        n22["6686"]
-        n26["8886"]
-        n9 --- n10
-        n15 --- n9
-        n22 --- n15
-        n26 --- n22
-    end
-    subgraph nb3["Triangulum"]
-        n24["8796"]
-        n25["10064"]
-        n31["10670"]
-        n24 --- n25
-        n25 --- n31
-        n31 --- n24
-    end
-    subgraph nb4["Aries"]
-        n27["8903"]
-        n28["8832"]
-        n30["9884"]
-        n46["13209"]
-        n27 --- n28
-        n30 --- n27
-        n46 --- n30
-    end
-    subgraph nb5["Eridanus"]
-        n38["12770"]
-        n39["12843"]
-        n43["14146"]
-        n50["13701"]
-        n51["13847"]
-        n52["12486"]
-        n57["15474"]
-        n63["16611"]
-        n64["15510"]
-        n70["16537"]
-        n71["17651"]
-        n73["16870"]
-        n75["17378"]
-        n79["17593"]
-        n80["21393"]
-        n81["17874"]
-        n87["18543"]
-        n92["19587"]
-        n93["20042"]
-        n97["20535"]
-        n103["21444"]
-        n106["22109"]
-        n126["23875"]
-        n38 --- n39
-        n39 --- n43
-        n50 --- n38
-        n51 --- n52
-        n43 --- n57
-        n57 --- n63
-        n64 --- n51
-        n70 --- n50
-        n63 --- n71
-        n73 --- n64
-        n75 --- n70
-        n79 --- n75
-        n71 --- n80
-        n81 --- n73
-        n87 --- n79
-        n92 --- n87
-        n93 --- n81
-        n97 --- n93
-        n80 --- n97
-        n103 --- n92
-        n106 --- n103
-        n126 --- n106
-    end
-    subgraph nb6["Perseus"]
-        n40["12777"]
-        n41["8068"]
-        n47["13268"]
-        n48["13531"]
-        n49["14632"]
-        n53["13879"]
-        n54["13949"]
-        n55["14576"]
-        n58["14328"]
-        n59["14354"]
-        n60["14817"]
-        n61["14668"]
-        n65["15863"]
-        n72["16826"]
-        n74["17358"]
-        n76["17448"]
-        n77["18246"]
-        n78["17529"]
-        n85["18614"]
-        n86["18532"]
-        n89["19167"]
-        n90["19812"]
-        n91["19343"]
-        n40 --- n41
-        n47 --- n48
-        n48 --- n49
-        n53 --- n54
-        n54 --- n55
-        n58 --- n47
-        n59 --- n53
-        n55 --- n60
-        n49 --- n40
-        n49 --- n61
-        n61 --- n55
-        n60 --- n59
-        n65 --- n58
-        n72 --- n65
-        n74 --- n72
-        n76 --- n77
-        n78 --- n74
-        n77 --- n85
-        n86 --- n78
-        n85 --- n86
-        n89 --- n90
-        n91 --- n74
-        n90 --- n91
-    end
-    subgraph nb7["Fornax"]
-        n44["13147"]
-        n45["9677"]
-        n62["14879"]
-        n44 --- n45
-        n62 --- n44
-    end
-    subgraph nb8["15900"]
-        n66["15900"]
-        n67["16852"]
-        n68["16083"]
-        n69["18907"]
-        n88["18724"]
-        n94["20205"]
-        n95["20455"]
-        n96["20889"]
-        n98["25428"]
-        n99["20894"]
-        n102["21421"]
-        n116["23015"]
-        n120["23416"]
-        n121["23453"]
-        n125["23767"]
-        n132["24608"]
-        n136["28380"]
-        n141["26451"]
-        n153["28358"]
-        n154["28360"]
-        n66 ---|"Taurus"| n67
-        n68 ---|"Taurus"| n66
-        n68 ---|"Taurus"| n69
-        n88 ---|"Taurus"| n68
-        n94 ---|"Taurus"| n88
-        n94 ---|"Taurus"| n95
-        n95 ---|"Taurus"| n96
-        n96 ---|"Taurus"| n98
-        n99 ---|"Taurus"| n94
-        n102 ---|"Taurus"| n99
-        n116 ---|"Auriga"| n98
-        n120 ---|"Auriga"| n121
-        n125 ---|"Auriga"| n116
-        n132 ---|"Auriga"| n120
-        n132 ---|"Auriga"| n125
-        n98 ---|"Auriga"| n136
-        n141 ---|"Taurus"| n102
-        n153 ---|"Auriga"| n132
-        n154 ---|"Auriga"| n132
-        n154 ---|"Auriga"| n153
-        n136 ---|"Auriga"| n154
-    end
-    subgraph nb9["Camelopardalis"]
-        n82["17884"]
-        n83["16228"]
-        n84["17959"]
-        n111["22783"]
-        n112["29997"]
-        n117["23040"]
-        n118["23522"]
-        n161["33694"]
-        n82 --- n83
-        n84 --- n82
-        n111 --- n84
-        n111 --- n112
-        n117 --- n118
-        n118 --- n111
-        n112 --- n161
-    end
-    subgraph nb10["Caelum"]
-        n100["21060"]
-        n101["21770"]
-        n104["21861"]
-        n105["23595"]
-        n100 --- n101
-        n101 --- n104
-        n104 --- n105
-    end
-    subgraph nb11["Orion"]
-        n107["22449"]
-        n108["22509"]
-        n109["22845"]
-        n110["22549"]
-        n113["22797"]
-        n114["22957"]
-        n115["23607"]
-        n119["23123"]
-        n122["24010"]
-        n130["24436"]
-        n131["25281"]
-        n133["25930"]
-        n134["25336"]
-        n135["26207"]
-        n139["27989"]
-        n140["26311"]
-        n144["26727"]
-        n145["27366"]
-        n150["27913"]
-        n151["28716"]
-        n155["28614"]
-        n156["29426"]
-        n158["29038"]
-        n107 --- n108
-        n108 --- n109
-        n110 --- n107
-        n113 --- n110
-        n109 --- n114
-        n114 --- n115
-        n119 --- n113
-        n115 --- n122
-        n130 --- n131
-        n131 --- n133
-        n134 --- n109
-        n134 --- n135
-        n133 --- n134
-        n135 --- n139
-        n140 --- n133
-        n144 --- n140
-        n144 --- n145
-        n150 --- n151
-        n139 --- n134
-        n139 --- n144
-        n155 --- n139
-        n151 --- n156
-        n158 --- n150
-        n156 --- n155
-    end
-    subgraph nb12["Lepus"]
-        n123["23685"]
-        n124["25606"]
-        n127["24305"]
-        n128["24845"]
-        n129["24327"]
-        n137["27072"]
-        n138["25985"]
-        n146["27654"]
-        n147["27288"]
-        n152["28103"]
-        n157["28910"]
-        n123 --- n124
-        n127 --- n123
-        n127 --- n128
-        n129 --- n127
-        n124 --- n137
-        n138 --- n127
-        n137 --- n146
-        n147 --- n138
-        n152 --- n147
-        n157 --- n152
-    end
-    subgraph nb13["Columba"]
-        n142["26634"]
-        n143["25859"]
-        n148["27628"]
-        n149["28328"]
-        n164["30277"]
-        n142 --- n143
-        n148 --- n142
-        n148 --- n149
-        n164 --- n148
-    end
-    subgraph nb14["Gemini"]
-        n159["29655"]
-        n160["30343"]
-        n167["32246"]
-        n173["31681"]
-        n174["32362"]
-        n177["34693"]
-        n188["34088"]
-        n189["36850"]
-        n192["35550"]
-        n193["35350"]
-        n196["37826"]
-        n198["36962"]
-        n159 --- n160
-        n160 --- n167
-        n173 --- n174
-        n167 --- n177
-        n188 --- n173
-        n177 --- n189
-        n192 --- n188
-        n192 --- n193
-        n189 --- n196
-        n198 --- n192
-        n196 --- n198
-    end
-    subgraph nb15["Lynx"]
-        n162["30060"]
-        n163["33449"]
-        n183["36145"]
-        n195["41075"]
-        n210["44248"]
-        n227["45688"]
-        n231["45860"]
-        n162 --- n163
-        n163 --- n183
-        n183 --- n195
-        n195 --- n210
-        n210 --- n227
-        n227 --- n231
-    end
-    subgraph nb16["Canis Major"]
-        n165["30324"]
-        n166["32349"]
-        n178["33347"]
-        n179["33977"]
-        n181["33160"]
-        n182["34045"]
-        n184["33579"]
-        n185["30122"]
-        n186["33856"]
-        n187["34444"]
-        n194["35904"]
-        n165 --- n166
-        n166 --- n178
-        n166 --- n179
-        n181 --- n178
-        n178 --- n182
-        n184 --- n185
-        n186 --- n184
-        n179 --- n187
-        n182 --- n181
-        n187 --- n186
-        n194 --- n187
-    end
-    subgraph nb17["Monoceros"]
-        n168["30419"]
-        n169["31216"]
-        n170["30867"]
-        n171["29651"]
-        n172["31978"]
-        n180["32578"]
-        n190["34769"]
-        n202["37447"]
-        n203["39863"]
-        n168 --- n169
-        n170 --- n171
-        n169 --- n172
-        n180 --- n168
-        n190 --- n170
-        n190 --- n180
-        n202 --- n203
-        n203 --- n190
-    end
-    subgraph nb18["31685"]
-        n175["31685"]
-        n176["35264"]
-        n191["36917"]
-        n197["37229"]
-        n199["38170"]
-        n204["37677"]
-        n205["38070"]
-        n206["38835"]
-        n207["39757"]
-        n208["39429"]
-        n209["42515"]
-        n216["42828"]
-        n220["43409"]
-        n175 ---|"Puppis"| n176
-        n176 ---|"Puppis"| n191
-        n191 ---|"Puppis"| n197
-        n197 ---|"Puppis"| n199
-        n204 ---|"Puppis"| n191
-        n205 ---|"Puppis"| n204
-        n199 ---|"Puppis"| n205
-        n199 ---|"Puppis"| n206
-        n206 ---|"Puppis"| n207
-        n208 ---|"Pyxis"| n209
-        n207 ---|"Puppis"| n208
-        n209 ---|"Pyxis"| n216
-        n216 ---|"Pyxis"| n220
-    end
-    subgraph nb19["Canis Minor"]
-        n200["37279"]
-        n201["36188"]
-        n200 --- n201
-    end
-    subgraph nb20["Ursa Major"]
-        n211["41704"]
-        n212["48319"]
-        n228["44471"]
-        n229["46853"]
-        n238["46733"]
-        n239["44127"]
-        n240["53910"]
-        n242["48402"]
-        n266["58001"]
-        n267["54061"]
-        n268["54539"]
-        n269["50372"]
-        n270["50801"]
-        n283["57399"]
-        n284["55219"]
-        n287["59774"]
-        n291["62956"]
-        n296["65378"]
-        n302["67301"]
-        n211 --- n212
-        n228 --- n229
-        n238 --- n211
-        n229 --- n239
-        n212 --- n240
-        n242 --- n229
-        n240 --- n242
-        n240 --- n266
-        n267 --- n238
-        n267 --- n240
-        n268 --- n269
-        n268 --- n270
-        n283 --- n268
-        n283 --- n284
-        n266 --- n283
-        n266 --- n287
-        n287 --- n267
-        n287 --- n291
-        n291 --- n296
-        n296 --- n302
-    end
-    subgraph nb21["Hydra"]
-        n213["42313"]
-        n214["43109"]
-        n215["42402"]
-        n217["42799"]
-        n223["43234"]
-        n224["43813"]
-        n225["45336"]
-        n230["47431"]
-        n232["46390"]
-        n233["48356"]
-        n241["49841"]
-        n254["51069"]
-        n259["52943"]
-        n263["56343"]
-        n278["57936"]
-        n286["64962"]
-        n301["68895"]
-        n306["72571"]
-        n213 --- n214
-        n215 --- n213
-        n217 --- n215
-        n214 --- n223
-        n214 --- n224
-        n223 --- n217
-        n224 --- n225
-        n225 --- n230
-        n232 --- n233
-        n230 --- n232
-        n233 --- n241
-        n241 --- n254
-        n254 --- n259
-        n259 --- n263
-        n263 --- n278
-        n278 --- n286
-        n286 --- n301
-        n301 --- n306
-    end
-    subgraph nb22["Cancer"]
-        n218["42806"]
-        n219["43100"]
-        n221["42911"]
-        n222["40526"]
-        n226["44066"]
-        n218 --- n219
-        n221 --- n222
-        n221 --- n218
-        n226 --- n221
-    end
-    subgraph nb23["Antlia"]
-        n234["46515"]
-        n235["51172"]
-        n260["53502"]
-        n234 --- n235
-        n235 --- n260
-    end
-    subgraph nb24["Vela"]
-        n236["46651"]
-        n237["44816"]
-        n255["50191"]
-        n236 --- n237
-        n255 --- n236
-    end
-    subgraph nb25["Sextans"]
-        n243["48437"]
-        n244["51362"]
-        n252["49641"]
-        n262["51437"]
-        n243 --- n244
-        n252 --- n243
-        n244 --- n262
-    end
-    subgraph nb26["Leo"]
-        n245["48455"]
-        n246["47908"]
-        n247["49583"]
-        n248["50583"]
-        n253["49669"]
-        n256["50335"]
-        n257["54872"]
-        n272["57632"]
-        n273["54879"]
-        n245 --- n246
-        n247 --- n248
-        n253 --- n247
-        n256 --- n245
-        n248 --- n256
-        n248 --- n257
-        n257 --- n272
-        n273 --- n253
-        n272 --- n273
-    end
-    subgraph nb27["Leo Minor"]
-        n249["49593"]
-        n250["46952"]
-        n251["51056"]
-        n258["53229"]
-        n261["51233"]
-        n249 --- n250
-        n249 --- n251
-        n251 --- n258
-        n261 --- n249
-        n258 --- n261
-    end
-    subgraph nb28["Crater"]
-        n264["53740"]
-        n265["54682"]
-        n271["55598"]
-        n274["55282"]
-        n275["55705"]
-        n276["55687"]
-        n277["57283"]
-        n279["56633"]
-        n280["58188"]
-        n264 --- n265
-        n265 --- n271
-        n274 --- n264
-        n274 --- n275
-        n271 --- n275
-        n276 --- n274
-        n275 --- n277
-        n279 --- n276
-        n277 --- n280
-    end
-    subgraph nb29["Virgo"]
-        n281["57380"]
-        n282["57757"]
-        n285["60129"]
-        n293["61941"]
-        n295["64238"]
-        n297["63090"]
-        n298["63608"]
-        n299["65474"]
-        n300["66249"]
-        n303["69701"]
-        n304["68520"]
-        n305["72220"]
-        n307["71957"]
-        n281 --- n282
-        n282 --- n285
-        n285 --- n293
-        n293 --- n295
-        n297 --- n293
-        n298 --- n297
-        n295 --- n299
-        n295 --- n300
-        n299 --- n303
-        n300 --- n304
-        n304 --- n305
-        n303 --- n307
-    end
-    subgraph nb30["Corvus"]
-        n288["59199"]
-        n289["59316"]
-        n290["59803"]
-        n292["60965"]
-        n294["61359"]
-        n288 --- n289
-        n289 --- n290
-        n290 --- n292
-        n292 --- n294
-        n294 --- n289
-    end
+    n0["677"] ---|"Pegasus"| n1["1067"] ---|"Pegasus"| n2["113963"] ---|"Pegasus"| n589["112447"] ---|"Pegasus"| n586["112029"] ---|"Pegasus"| n565["109427"] ---|"Pegasus"| n566["107315"]
+    n5["2912"] ---|"Andromeda"| n6["116631"] ---|"Andromeda"| n606["113726"]
+    n7["3031"] ---|"Andromeda"| n8["3092"] ---|"Andromeda"| n0 ---|"Pegasus"| n587["113881"] ---|"Pegasus"| n564["112158"] ---|"Pegasus"| n563["109410"]
+    n8 ---|"Andromeda"| n5
+    n12["3693"] ---|"Andromeda"| n7
+    n15["3881"] ---|"Andromeda"| n16["5434"] ---|"Andromeda"| n24["7607"]
+    n18["4436"] ---|"Andromeda"| n15
+    n19["4463"] ---|"Andromeda"| n12
+    n25["5447"] ---|"Andromeda"| n8
+    n25 ---|"Andromeda"| n18
+    n45["9640"] ---|"Andromeda"| n25
+    n560["109176"] ---|"Pegasus"| n561["107354"]
+    n588["112440"] ---|"Pegasus"| n560
+    n591["112748"] ---|"Pegasus"| n588
+    n587 ---|"Pegasus"| n591
+    n2 ---|"Pegasus"| n587
+    n6 ---|"Andromeda"| n607["116805"] ---|"Andromeda"| n609["116584"]
+    n607 ---|"Andromeda"| n610["117221"]
     class n1 root
-    class n9 root
-    class n25 root
-    class n32 root
-    class n40 root
-    class n44 root
-    class n46 root
-    class n52 root
-    class n66 root
-    class n83 root
-    class n100 root
-    class n107 root
-    class n123 root
-    class n143 root
-    class n159 root
-    class n162 root
-    class n171 root
-    class n175 root
-    class n185 root
-    class n201 root
-    class n211 root
-    class n213 root
-    class n222 root
-    class n234 root
-    class n237 root
-    class n243 root
-    class n246 root
-    class n250 root
-    class n264 root
-    class n281 root
-    class n288 root
 ```
 
-## Page 2 of 2
+## Cetus, Cassiopeia
 
 ```mermaid
 flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
-    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5
-    subgraph nb0["Pisces"]
-        n0["3786"]
-        n1["118268"]
-        n4["4906"]
-        n5["5571"]
-        n6["7097"]
-        n7["5586"]
-        n8["6193"]
-        n9["5737"]
-        n10["5742"]
-        n11["7007"]
-        n12["8198"]
-        n13["7884"]
-        n14["9487"]
-        n15["8833"]
-        n276["114971"]
-        n277["113889"]
-        n278["115738"]
-        n283["115227"]
-        n285["116928"]
-        n286["115830"]
-        n287["116771"]
-        n288["117245"]
-        n0 --- n1
-        n4 --- n0
-        n5 --- n6
-        n7 --- n8
-        n9 --- n4
-        n10 --- n5
-        n10 --- n7
-        n8 --- n10
-        n11 --- n9
-        n6 --- n12
-        n13 --- n11
-        n12 --- n14
-        n15 --- n13
-        n14 --- n15
-        n276 --- n277
-        n276 --- n278
-        n283 --- n276
-        n278 --- n285
-        n286 --- n283
-        n287 --- n286
-        n285 --- n288
-        n288 --- n287
-        n1 --- n287
+    subgraph nb1["Cetus"]
+        direction LR
+        n3["1562"] --- n4["5364"] --- n23["6537"] --- n32["8645"] --- n37["8102"] --- n11["3419"] --- n3
+        n48["10826"] --- n32
+        n49["11484"] --- n50["12828"] --- n58["13954"] --- n72["14135"] --- n53["12706"] --- n51["12093"] --- n49
+        n52["12387"] --- n48
+        n53 --- n52
     end
-    subgraph nb1["Sculptor"]
-        n2["4577"]
-        n3["117452"]
-        n281["115102"]
-        n282["116231"]
-        n2 --- n3
-        n281 --- n282
-        n3 --- n281
+    subgraph nb2["Cassiopeia"]
+        direction LR
+        n9["3179"] --- n10["746"]
+        n17["4427"] --- n9
+        n33["6686"] --- n17
+        n42["8886"] --- n33
     end
-    subgraph nb2["Draco"]
-        n16["61281"]
-        n17["56211"]
-        n30["68756"]
-        n54["75458"]
-        n82["78527"]
-        n91["80331"]
-        n111["83895"]
-        n119["85670"]
-        n120["85829"]
-        n122["87585"]
-        n131["87833"]
-        n132["94376"]
-        n140["89908"]
-        n141["89937"]
-        n175["97433"]
-        n16 --- n17
-        n30 --- n16
-        n54 --- n30
-        n82 --- n54
-        n91 --- n82
-        n111 --- n91
-        n119 --- n120
-        n120 --- n122
-        n122 --- n131
-        n122 --- n132
-        n131 --- n119
-        n140 --- n111
-        n140 --- n141
-        n132 --- n140
-        n132 --- n175
+    nb1 ~~~ nb2
+    class n48,n9 root
+```
+
+## Pisces, Sculptor, Triangulum, Aries
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb3["Pisces"]
+        direction LR
+        n13["3786"] --- n14["118268"] --- n608["116771"] --- n605["115830"] --- n602["115227"] --- n595["114971"] --- n596["113889"]
+        n22["4906"] --- n13
+        n26["5571"] --- n27["7097"] --- n35["8198"] --- n38["9487"] --- n41["8833"] --- n36["7884"] --- n34["7007"] --- n30["5737"] --- n22
+        n28["5586"] --- n29["6193"] --- n31["5742"] --- n26
+        n31 --- n28
+        n595 --- n597["115738"] --- n604["116928"] --- n611["117245"] --- n608
     end
-    subgraph nb3["Canes Venatici"]
-        n18["63121"]
-        n19["61317"]
-        n18 --- n19
+    subgraph nb4["Sculptor"]
+        direction LR
+        n20["4577"] --- n21["117452"] --- n600["115102"] --- n601["116231"]
     end
-    subgraph nb4["Coma Berenices"]
-        n20["64241"]
-        n21["64394"]
-        n22["60742"]
-        n20 --- n21
-        n21 --- n22
+    subgraph nb5["Triangulum"]
+        direction LR
+        n39["8796"] --- n40["10064"] --- n47["10670"] --- n39
     end
-    subgraph nb5["Boötes"]
-        n23["67275"]
-        n24["67927"]
-        n29["69673"]
-        n32["69481"]
-        n33["70497"]
-        n34["71053"]
-        n35["71795"]
-        n36["69732"]
-        n37["71075"]
-        n38["73555"]
-        n40["72105"]
-        n46["74666"]
-        n23 --- n24
-        n24 --- n29
-        n32 --- n33
-        n29 --- n34
-        n29 --- n35
-        n36 --- n32
-        n33 --- n36
-        n34 --- n37
-        n37 --- n36
-        n37 --- n38
-        n40 --- n29
-        n38 --- n46
-        n46 --- n40
+    subgraph nb6["Aries"]
+        direction LR
+        n43["8903"] --- n44["8832"]
+        n46["9884"] --- n43
+        n62["13209"] --- n46
     end
-    subgraph nb6["Centaurus"]
-        n25["67464"]
-        n26["65109"]
-        n27["68933"]
-        n28["67472"]
-        n31["71352"]
-        n39["73334"]
-        n25 --- n26
-        n25 --- n27
-        n28 --- n25
-        n27 --- n31
-        n31 --- n39
+    nb3 ~~~ nb4 ~~~ nb5
+    class n596,n600,n40,n62 root
+```
+
+## Eridanus
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    n54["12770"] --- n55["12843"] --- n59["14146"] --- n73["15474"] --- n79["16611"] --- n87["17651"] --- n96["21393"] --- n113["20535"] --- n109["20042"] --- n97["17874"] --- n89["16870"] --- n80["15510"] --- n67["13847"] --- n68["12486"]
+    n66["13701"] --- n54
+    n86["16537"] --- n66
+    n91["17378"] --- n86
+    n95["17593"] --- n91
+    n103["18543"] --- n95
+    n108["19587"] --- n103
+    n119["21444"] --- n108
+    n122["22109"] --- n119
+    n142["23875"] --- n122
+    class n68 root
+```
+
+## Perseus, Fornax
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb8["Perseus"]
+        direction LR
+        n56["12777"] --- n57["8068"]
+        n63["13268"] --- n64["13531"] --- n65["14632"] --- n56
+        n69["13879"] --- n70["13949"] --- n71["14576"] --- n76["14817"] --- n75["14354"] --- n69
+        n74["14328"] --- n63
+        n65 --- n77["14668"] --- n71
+        n81["15863"] --- n74
+        n88["16826"] --- n81
+        n90["17358"] --- n88
+        n92["17448"] --- n93["18246"] --- n101["18614"] --- n102["18532"] --- n94["17529"] --- n90 --- n107["19343"] --- n106["19812"] --- n105["19167"]
     end
-    subgraph nb7["Ursa Minor"]
-        n41["72607"]
-        n42["77055"]
-        n48["75097"]
-        n68["79822"]
-        n69["82080"]
-        n105["85822"]
-        n121["11767"]
-        n41 --- n42
-        n48 --- n41
-        n42 --- n68
-        n42 --- n69
-        n68 --- n48
-        n69 --- n105
-        n105 --- n121
+    subgraph nb9["Fornax"]
+        direction LR
+        n60["13147"] --- n61["9677"]
+        n78["14879"] --- n60
     end
-    subgraph nb8["Libra"]
-        n43["72622"]
-        n44["74785"]
-        n45["76333"]
-        n47["73714"]
-        n62["76470"]
-        n63["76600"]
-        n43 --- n44
-        n43 --- n45
-        n47 --- n43
-        n44 --- n45
-        n45 --- n62
-        n62 --- n63
+    nb8 ~~~ nb9
+    class n56,n60 root
+```
+
+## Taurus, Auriga, Camelopardalis, Caelum
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb10["Taurus, Auriga"]
+        direction LR
+        n82["15900"] ---|"Taurus"| n83["16852"]
+        n84["16083"] ---|"Taurus"| n82
+        n84 ---|"Taurus"| n85["18907"]
+        n104["18724"] ---|"Taurus"| n84
+        n110["20205"] ---|"Taurus"| n104
+        n110 ---|"Taurus"| n111["20455"] ---|"Taurus"| n112["20889"] ---|"Taurus"| n114["25428"] ---|"Auriga"| n132["23015"] ---|"Auriga"| n141["23767"] ---|"Auriga"| n148["24608"] ---|"Auriga"| n136["23416"] ---|"Auriga"| n137["23453"]
+        n115["20894"] ---|"Taurus"| n110
+        n118["21421"] ---|"Taurus"| n115
+        n114 ---|"Auriga"| n152["28380"] ---|"Auriga"| n170["28360"] ---|"Auriga"| n148 ---|"Auriga"| n169["28358"] ---|"Auriga"| n170
+        n157["26451"] ---|"Taurus"| n118
     end
-    subgraph nb9["Lupus"]
-        n49["75141"]
-        n50["73273"]
-        n51["76297"]
-        n52["75177"]
-        n53["75264"]
-        n61["78384"]
-        n64["76705"]
-        n75["77634"]
-        n79["78918"]
-        n49 --- n50
-        n49 --- n51
-        n52 --- n49
-        n53 --- n51
-        n51 --- n61
-        n64 --- n52
-        n75 --- n64
-        n61 --- n79
+    subgraph nb11["Camelopardalis"]
+        direction LR
+        n98["17884"] --- n99["16228"]
+        n100["17959"] --- n98
+        n127["22783"] --- n100
+        n127 --- n128["29997"] --- n177["33694"]
+        n133["23040"] --- n134["23522"] --- n127
     end
-    subgraph nb10["Corona Borealis"]
-        n55["75695"]
-        n56["76267"]
-        n57["76127"]
-        n58["76952"]
-        n67["77512"]
-        n73["78159"]
-        n76["78493"]
-        n55 --- n56
-        n57 --- n55
-        n56 --- n58
-        n58 --- n67
-        n67 --- n73
-        n73 --- n76
+    subgraph nb12["Caelum"]
+        direction LR
+        n116["21060"] --- n117["21770"] --- n120["21861"] --- n121["23595"]
     end
-    subgraph nb11["76276"]
-        n59["76276"]
-        n60["77070"]
-        n65["76852"]
-        n66["77450"]
-        n70["77622"]
-        n71["77233"]
-        n72["78072"]
-        n74["79593"]
-        n85["79882"]
-        n86["81377"]
-        n92["80343"]
-        n93["80473"]
-        n94["80569"]
-        n97["80883"]
-        n98["80894"]
-        n101["84012"]
-        n109["83000"]
-        n112["84970"]
-        n113["86263"]
-        n117["85423"]
-        n123["86032"]
-        n125["88048"]
-        n128["86742"]
-        n130["87108"]
-        n135["88404"]
-        n136["89962"]
-        n144["92946"]
-        n59 ---|"Serpens"| n60
-        n65 ---|"Serpens"| n66
-        n60 ---|"Serpens"| n70
-        n71 ---|"Serpens"| n59
-        n71 ---|"Serpens"| n65
-        n66 ---|"Serpens"| n72
-        n70 ---|"Serpens"| n74
-        n72 ---|"Serpens"| n71
-        n74 ---|"Ophiuchus"| n85
-        n85 ---|"Ophiuchus"| n86
-        n92 ---|"Ophiuchus"| n93
-        n94 ---|"Ophiuchus"| n92
-        n97 ---|"Ophiuchus"| n74
-        n98 ---|"Ophiuchus"| n94
-        n86 ---|"Ophiuchus"| n98
-        n86 ---|"Ophiuchus"| n101
-        n109 ---|"Ophiuchus"| n97
-        n109 ---|"Ophiuchus"| n86
-        n101 ---|"Ophiuchus"| n112
-        n101 ---|"Serpens"| n113
-        n112 ---|"Ophiuchus"| n117
-        n123 ---|"Ophiuchus"| n109
-        n113 ---|"Serpens"| n125
-        n128 ---|"Ophiuchus"| n101
-        n128 ---|"Ophiuchus"| n123
-        n130 ---|"Ophiuchus"| n128
-        n125 ---|"Ophiuchus"| n130
-        n125 ---|"Serpens"| n135
-        n135 ---|"Serpens"| n136
-        n136 ---|"Serpens"| n144
+    nb10 ~~~ nb11 ~~~ nb12
+    class n82,n99,n116 root
+```
+
+## Orion, Lepus, Columba
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb13["Orion"]
+        direction LR
+        n123["22449"] --- n124["22509"] --- n125["22845"] --- n130["22957"] --- n131["23607"] --- n138["24010"]
+        n126["22549"] --- n123
+        n129["22797"] --- n126
+        n135["23123"] --- n129
+        n146["24436"] --- n147["25281"] --- n149["25930"] --- n150["25336"] --- n125
+        n150 --- n151["26207"] --- n155["27989"] --- n150
+        n156["26311"] --- n149
+        n160["26727"] --- n156
+        n160 --- n161["27366"]
+        n166["27913"] --- n167["28716"] --- n172["29426"] --- n171["28614"] --- n155 --- n160
+        n174["29038"] --- n166
     end
-    subgraph nb12["Scorpius"]
-        n77["78265"]
-        n78["78401"]
-        n80["78820"]
-        n81["80112"]
-        n88["80763"]
-        n95["81266"]
-        n100["82396"]
-        n106["82514"]
-        n107["82729"]
-        n108["84143"]
-        n114["86228"]
-        n124["87073"]
-        n126["86670"]
-        n127["85927"]
-        n77 --- n78
-        n78 --- n80
-        n78 --- n81
-        n81 --- n88
-        n88 --- n95
-        n95 --- n100
-        n100 --- n106
-        n106 --- n107
-        n107 --- n108
-        n108 --- n114
-        n114 --- n124
-        n126 --- n127
-        n124 --- n126
+    subgraph nb14["Lepus"]
+        direction LR
+        n139["23685"] --- n140["25606"] --- n153["27072"] --- n162["27654"]
+        n143["24305"] --- n139
+        n143 --- n144["24845"]
+        n145["24327"] --- n143 --- n154["25985"] --- n163["27288"] --- n168["28103"] --- n173["28910"]
     end
-    subgraph nb13["Hercules"]
-        n83["79101"]
-        n84["77760"]
-        n87["79992"]
-        n89["80170"]
-        n90["80816"]
-        n96["81693"]
-        n99["81126"]
-        n102["81833"]
-        n103["83207"]
-        n104["84380"]
-        n110["84379"]
-        n115["84345"]
-        n116["86974"]
-        n118["85112"]
-        n129["87933"]
-        n133["87808"]
-        n134["88794"]
-        n83 --- n84
-        n87 --- n83
-        n89 --- n90
-        n90 --- n96
-        n99 --- n87
-        n96 --- n102
-        n96 --- n103
-        n102 --- n99
-        n102 --- n104
-        n103 --- n110
-        n115 --- n90
-        n110 --- n116
-        n104 --- n103
-        n118 --- n104
-        n116 --- n129
-        n133 --- n118
-        n129 --- n134
+    subgraph nb15["Columba"]
+        direction LR
+        n158["26634"] --- n159["25859"]
+        n164["27628"] --- n158
+        n164 --- n165["28328"]
+        n180["30277"] --- n164
     end
-    subgraph nb14["Sagittarius"]
-        n137["88635"]
-        n138["90185"]
-        n139["89642"]
-        n142["89931"]
-        n143["90496"]
-        n145["93506"]
-        n146["89341"]
-        n155["92041"]
-        n159["92761"]
-        n160["92855"]
-        n162["93683"]
-        n163["93085"]
-        n166["93864"]
-        n168["94141"]
-        n174["94820"]
-        n176["94643"]
-        n179["95168"]
-        n180["95176"]
-        n181["95241"]
-        n182["95347"]
-        n183["95477"]
-        n189["96465"]
-        n199["98032"]
-        n200["98412"]
-        n202["98066"]
-        n137 --- n138
-        n139 --- n138
-        n142 --- n137
-        n142 --- n143
-        n138 --- n142
-        n138 --- n145
-        n143 --- n146
-        n155 --- n142
-        n155 --- n143
-        n159 --- n160
-        n160 --- n155
-        n160 --- n162
-        n163 --- n159
-        n145 --- n155
-        n145 --- n166
-        n162 --- n163
-        n162 --- n168
-        n166 --- n160
-        n168 --- n174
-        n176 --- n160
-        n174 --- n179
-        n179 --- n180
-        n181 --- n182
-        n182 --- n145
-        n183 --- n176
-        n189 --- n183
-        n199 --- n200
-        n202 --- n189
-        n200 --- n202
+    nb13 ~~~ nb14 ~~~ nb15
+    class n123,n139,n159 root
+```
+
+## Gemini, Lynx, Canis Major, Monoceros
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb16["Gemini"]
+        direction LR
+        n175["29655"] --- n176["30343"] --- n183["32246"] --- n193["34693"] --- n205["36850"] --- n212["37826"] --- n214["36962"] --- n208["35550"] --- n204["34088"] --- n189["31681"] --- n190["32362"]
+        n208 --- n209["35350"]
     end
-    subgraph nb15["Scutum"]
-        n147["90595"]
-        n148["91117"]
-        n149["92175"]
-        n152["91726"]
-        n147 --- n148
-        n148 --- n149
-        n152 --- n147
-        n149 --- n152
+    subgraph nb17["Lynx"]
+        direction LR
+        n178["30060"] --- n179["33449"] --- n199["36145"] --- n211["41075"] --- n226["44248"] --- n243["45688"] --- n247["45860"]
     end
-    subgraph nb16["Lyra"]
-        n150["91262"]
-        n151["91971"]
-        n153["91926"]
-        n154["92791"]
-        n158["92420"]
-        n161["93194"]
-        n150 --- n151
-        n153 --- n150
-        n151 --- n153
-        n151 --- n154
-        n158 --- n151
-        n154 --- n161
-        n161 --- n158
+    subgraph nb18["Canis Major"]
+        direction LR
+        n181["30324"] --- n182["32349"] --- n194["33347"] --- n197["33160"] --- n198["34045"] --- n194
+        n182 --- n195["33977"] --- n203["34444"] --- n202["33856"] --- n200["33579"] --- n201["30122"]
+        n210["35904"] --- n203
     end
-    subgraph nb17["Corona Austrina"]
-        n156["92382"]
-        n157["90982"]
-        n164["93174"]
-        n165["93825"]
-        n167["93542"]
-        n171["94114"]
-        n172["94005"]
-        n173["94160"]
-        n156 --- n157
-        n164 --- n165
-        n167 --- n156
-        n165 --- n171
-        n172 --- n167
-        n171 --- n173
-        n173 --- n172
+    subgraph nb19["Monoceros"]
+        direction LR
+        n184["30419"] --- n185["31216"] --- n188["31978"]
+        n186["30867"] --- n187["29651"]
+        n196["32578"] --- n184
+        n206["34769"] --- n186
+        n206 --- n196
+        n218["37447"] --- n219["39863"] --- n206
     end
-    subgraph nb18["Aquila"]
-        n169["93747"]
-        n170["97649"]
-        n184["95501"]
-        n185["93805"]
-        n194["97278"]
-        n196["98036"]
-        n197["97804"]
-        n201["99473"]
-        n169 --- n170
-        n184 --- n169
-        n184 --- n185
-        n194 --- n170
-        n170 --- n184
-        n170 --- n196
-        n197 --- n184
-        n196 --- n201
-        n201 --- n197
+    nb16 ~~~ nb17 ~~~ nb18
+    class n175,n178,n201,n187 root
+```
+
+## Puppis, Pyxis, Canis Minor, Ursa Major
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb20["Puppis, Pyxis"]
+        direction LR
+        n191["31685"] ---|"Puppis"| n192["35264"] ---|"Puppis"| n207["36917"] ---|"Puppis"| n213["37229"] ---|"Puppis"| n215["38170"] ---|"Puppis"| n221["38070"] ---|"Puppis"| n220["37677"] ---|"Puppis"| n207
+        n215 ---|"Puppis"| n222["38835"] ---|"Puppis"| n223["39757"] ---|"Puppis"| n224["39429"] ---|"Pyxis"| n225["42515"] ---|"Pyxis"| n232["42828"] ---|"Pyxis"| n236["43409"]
     end
-    subgraph nb19["Vulpecula"]
-        n177["94703"]
-        n178["95771"]
-        n186["97886"]
-        n198["98543"]
-        n205["99874"]
-        n177 --- n178
-        n178 --- n186
-        n186 --- n198
-        n198 --- n205
+    subgraph nb21["Canis Minor"]
+        direction LR
+        n216["37279"] --- n217["36188"]
     end
-    subgraph nb20["Cygnus"]
-        n187["95853"]
-        n188["94779"]
-        n193["97165"]
-        n203["98110"]
-        n204["95947"]
-        n209["100453"]
-        n217["102098"]
-        n221["102488"]
-        n231["104732"]
-        n187 --- n188
-        n193 --- n187
-        n203 --- n204
-        n209 --- n193
-        n209 --- n203
-        n217 --- n209
-        n221 --- n209
-        n231 --- n221
+    subgraph nb22["Ursa Major"]
+        direction LR
+        n227["41704"] --- n228["48319"] --- n256["53910"] --- n258["48402"] --- n245["46853"] --- n244["44471"]
+        n254["46733"] --- n227
+        n245 --- n255["44127"]
+        n256 --- n282["58001"] --- n299["57399"] --- n284["54539"] --- n285["50372"]
+        n283["54061"] --- n254
+        n283 --- n256
+        n284 --- n286["50801"]
+        n299 --- n300["55219"]
+        n282 --- n303["59774"] --- n283
+        n303 --- n307["62956"] --- n314["65378"] --- n325["67301"]
     end
-    subgraph nb21["Sagitta"]
-        n190["96757"]
-        n191["97365"]
-        n192["96837"]
-        n195["98337"]
-        n190 --- n191
-        n192 --- n191
-        n191 --- n195
+    nb20 ~~~ nb21 ~~~ nb22
+    class n191,n217,n227 root
+```
+
+## Hydra, Cancer, Antlia, Vela, Sextans
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb23["Hydra"]
+        direction LR
+        n229["42313"] --- n230["43109"] --- n239["43234"] --- n233["42799"] --- n231["42402"] --- n229
+        n230 --- n240["43813"] --- n241["45336"] --- n246["47431"] --- n248["46390"] --- n249["48356"] --- n257["49841"] --- n270["51069"] --- n275["52943"] --- n279["56343"] --- n294["57936"] --- n302["64962"] --- n324["68895"] --- n337["72571"]
     end
-    subgraph nb22["Capricornus"]
-        n206["100027"]
-        n207["100345"]
-        n208["101027"]
-        n210["102485"]
-        n220["102978"]
-        n227["105881"]
-        n230["104139"]
-        n237["105515"]
-        n238["107556"]
-        n243["106985"]
-        n206 --- n207
-        n207 --- n208
-        n208 --- n210
-        n210 --- n220
-        n220 --- n227
-        n230 --- n206
-        n237 --- n230
-        n227 --- n238
-        n243 --- n237
-        n238 --- n243
+    subgraph nb24["Cancer"]
+        direction LR
+        n234["42806"] --- n235["43100"]
+        n237["42911"] --- n238["40526"]
+        n237 --- n234
+        n242["44066"] --- n237
     end
-    subgraph nb23["Cepheus"]
-        n211["101093"]
-        n212["102422"]
-        n219["105199"]
-        n236["107259"]
-        n239["106032"]
-        n240["112724"]
-        n244["109857"]
-        n253["109492"]
-        n254["110991"]
-        n272["116727"]
-        n211 --- n212
-        n212 --- n219
-        n219 --- n236
-        n239 --- n219
-        n239 --- n240
-        n236 --- n244
-        n253 --- n254
-        n244 --- n253
-        n254 --- n240
-        n240 --- n272
-        n272 --- n239
+    subgraph nb25["Antlia"]
+        direction LR
+        n250["46515"] --- n251["51172"] --- n276["53502"]
     end
-    subgraph nb24["Delphinus"]
-        n213["101421"]
-        n214["101769"]
-        n215["101958"]
-        n216["102531"]
-        n218["102281"]
-        n213 --- n214
-        n214 --- n215
-        n215 --- n216
-        n218 --- n214
-        n216 --- n218
+    subgraph nb26["Vela"]
+        direction LR
+        n252["46651"] --- n253["44816"]
+        n271["50191"] --- n252
     end
-    subgraph nb25["Aquarius"]
-        n222["102618"]
-        n223["103045"]
-        n228["106278"]
-        n241["109074"]
-        n242["109139"]
-        n248["110003"]
-        n249["110395"]
-        n260["110960"]
-        n264["110672"]
-        n265["111497"]
-        n270["112961"]
-        n274["115033"]
-        n279["114341"]
-        n280["116901"]
-        n284["115438"]
-        n222 --- n223
-        n223 --- n228
-        n228 --- n241
-        n228 --- n242
-        n241 --- n248
-        n241 --- n249
-        n249 --- n260
-        n260 --- n264
-        n260 --- n265
-        n265 --- n270
-        n270 --- n274
-        n274 --- n279
-        n274 --- n280
-        n284 --- n274
+    subgraph nb27["Sextans"]
+        direction LR
+        n259["48437"] --- n260["51362"] --- n278["51437"]
+        n268["49641"] --- n259
     end
-    subgraph nb26["Microscopium"]
-        n224["102693"]
-        n225["105382"]
-        n226["102831"]
-        n229["103738"]
-        n235["105140"]
-        n224 --- n225
-        n226 --- n224
-        n229 --- n226
-        n235 --- n229
-        n225 --- n235
+    nb23 ~~~ nb24 ~~~ nb25
+    nb26 ~~~ nb27
+    class n229,n238,n250,n253,n259 root
+```
+
+## Leo, Leo Minor, Crater, Virgo
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb28["Leo"]
+        direction LR
+        n261["48455"] --- n262["47908"]
+        n263["49583"] --- n264["50583"] --- n272["50335"] --- n261
+        n269["49669"] --- n263
+        n264 --- n273["54872"] --- n288["57632"] --- n289["54879"] --- n269
     end
-    subgraph nb27["Equuleus"]
-        n232["104858"]
-        n233["104521"]
-        n234["104987"]
-        n232 --- n233
-        n234 --- n232
+    subgraph nb29["Leo Minor"]
+        direction LR
+        n265["49593"] --- n266["46952"]
+        n265 --- n267["51056"] --- n274["53229"] --- n277["51233"] --- n265
     end
-    subgraph nb28["Piscis Austrinus"]
-        n245["107380"]
-        n246["107608"]
-        n247["109285"]
-        n252["111954"]
-        n269["111188"]
-        n271["113368"]
-        n273["112948"]
-        n275["113246"]
-        n245 --- n246
-        n246 --- n247
-        n247 --- n245
-        n247 --- n252
-        n269 --- n247
-        n252 --- n271
-        n273 --- n269
-        n275 --- n273
-        n271 --- n275
+    subgraph nb30["Crater"]
+        direction LR
+        n280["53740"] --- n281["54682"] --- n287["55598"] --- n291["55705"] --- n290["55282"] --- n280
+        n292["55687"] --- n290
+        n291 --- n293["57283"] --- n296["58188"]
+        n295["56633"] --- n292
     end
-    subgraph nb29["Grus"]
-        n250["109111"]
-        n251["108085"]
-        n257["109908"]
-        n266["110997"]
-        n250 --- n251
-        n257 --- n250
-        n266 --- n257
+    subgraph nb31["Virgo"]
+        direction LR
+        n297["57380"] --- n298["57757"] --- n301["60129"] --- n309["61941"] --- n313["64238"] --- n319["65474"] --- n326["69701"] --- n343["71957"]
+        n315["63090"] --- n309
+        n318["63608"] --- n315
+        n313 --- n320["66249"] --- n327["68520"] --- n335["72220"]
     end
-    subgraph nb30["Lacerta"]
-        n255["109754"]
-        n256["109937"]
-        n258["110351"]
-        n259["111104"]
-        n261["110538"]
-        n262["111169"]
-        n263["110609"]
-        n267["111022"]
-        n268["111944"]
-        n255 --- n256
-        n258 --- n259
-        n261 --- n262
-        n263 --- n261
-        n267 --- n258
-        n267 --- n263
-        n259 --- n255
-        n259 --- n268
-        n262 --- n267
-        n268 --- n267
+    nb28 ~~~ nb29 ~~~ nb30
+    class n262,n266,n280,n297 root
+```
+
+## Corvus, Draco, Canes Venatici, Coma Berenices, Boötes
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb32["Corvus"]
+        direction LR
+        n304["59199"] --- n305["59316"] --- n306["59803"] --- n308["60965"] --- n310["61359"] --- n305
     end
-    class n17 root
-    class n19 root
-    class n22 root
-    class n23 root
-    class n26 root
-    class n43 root
-    class n50 root
-    class n55 root
-    class n59 root
-    class n77 root
-    class n84 root
-    class n121 root
-    class n137 root
-    class n147 root
-    class n150 root
-    class n157 root
-    class n169 root
-    class n177 root
-    class n190 root
-    class n206 root
-    class n209 root
-    class n211 root
-    class n213 root
-    class n222 root
-    class n224 root
-    class n233 root
-    class n245 root
-    class n251 root
-    class n255 root
-    class n277 root
-    class n281 root
+    subgraph nb33["Draco"]
+        direction LR
+        n311["61281"] --- n312["56211"]
+        n336["68756"] --- n311
+        n362["75458"] --- n336
+        n390["78527"] --- n362
+        n399["80331"] --- n390
+        n419["83895"] --- n399
+        n427["85670"] --- n428["85829"] --- n430["87585"] --- n439["87833"] --- n427
+        n430 --- n440["94376"] --- n448["89908"] --- n419
+        n448 --- n449["89937"]
+        n440 --- n483["97433"]
+    end
+    subgraph nb34["Canes Venatici"]
+        direction LR
+        n316["63121"] --- n317["61317"]
+    end
+    subgraph nb35["Coma Berenices"]
+        direction LR
+        n321["64241"] --- n322["64394"] --- n323["60742"]
+    end
+    subgraph nb36["Boötes"]
+        direction LR
+        n328["67275"] --- n329["67927"] --- n334["69673"] --- n341["71053"] --- n345["71075"] --- n344["69732"] --- n339["69481"] --- n340["70497"] --- n344
+        n334 --- n342["71795"]
+        n345 --- n346["73555"] --- n354["74666"] --- n348["72105"] --- n334
+    end
+    nb32 ~~~ nb33 ~~~ nb34
+    nb35 ~~~ nb36
+    class n304,n312,n317,n323,n328 root
+```
+
+## Centaurus, Ursa Minor, Libra, Lupus, Corona Borealis
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb37["Centaurus"]
+        direction LR
+        n330["67464"] --- n331["65109"]
+        n330 --- n332["68933"] --- n338["71352"] --- n347["73334"]
+        n333["67472"] --- n330
+    end
+    subgraph nb38["Ursa Minor"]
+        direction LR
+        n349["72607"] --- n350["77055"] --- n376["79822"] --- n356["75097"] --- n349
+        n350 --- n377["82080"] --- n413["85822"] --- n429["11767"]
+    end
+    subgraph nb39["Libra"]
+        direction LR
+        n351["72622"] --- n352["74785"] --- n353["76333"] --- n351 --- n355["73714"]
+        n353 --- n370["76470"] --- n371["76600"]
+    end
+    subgraph nb40["Lupus"]
+        direction LR
+        n357["75141"] --- n358["73273"]
+        n357 --- n359["76297"] --- n361["75264"]
+        n360["75177"] --- n357
+        n359 --- n369["78384"] --- n387["78918"]
+        n372["76705"] --- n360
+        n383["77634"] --- n372
+    end
+    subgraph nb41["Corona Borealis"]
+        direction LR
+        n363["75695"] --- n364["76267"] --- n366["76952"] --- n375["77512"] --- n381["78159"] --- n384["78493"]
+        n365["76127"] --- n363
+    end
+    nb37 ~~~ nb38 ~~~ nb39
+    nb40 ~~~ nb41
+    class n331,n429,n351,n358,n363 root
+```
+
+## Serpens, Ophiuchus
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    n367["76276"] ---|"Serpens"| n368["77070"] ---|"Serpens"| n378["77622"] ---|"Serpens"| n382["79593"] ---|"Ophiuchus"| n393["79882"] ---|"Ophiuchus"| n394["81377"] ---|"Ophiuchus"| n406["80894"] ---|"Ophiuchus"| n402["80569"] ---|"Ophiuchus"| n400["80343"] ---|"Ophiuchus"| n401["80473"]
+    n373["76852"] ---|"Serpens"| n374["77450"] ---|"Serpens"| n380["78072"] ---|"Serpens"| n379["77233"] ---|"Serpens"| n367
+    n379 ---|"Serpens"| n373
+    n405["80883"] ---|"Ophiuchus"| n382
+    n394 ---|"Ophiuchus"| n409["84012"] ---|"Ophiuchus"| n420["84970"] ---|"Ophiuchus"| n425["85423"]
+    n417["83000"] ---|"Ophiuchus"| n405
+    n417 ---|"Ophiuchus"| n394
+    n409 ---|"Serpens"| n421["86263"] ---|"Serpens"| n433["88048"] ---|"Ophiuchus"| n438["87108"] ---|"Ophiuchus"| n436["86742"] ---|"Ophiuchus"| n409
+    n431["86032"] ---|"Ophiuchus"| n417
+    n436 ---|"Ophiuchus"| n431
+    n433 ---|"Serpens"| n443["88404"] ---|"Serpens"| n444["89962"] ---|"Serpens"| n452["92946"]
+    class n367 root
+```
+
+## Scorpius, Hercules
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb43["Scorpius"]
+        direction LR
+        n385["78265"] --- n386["78401"] --- n388["78820"]
+        n386 --- n389["80112"] --- n396["80763"] --- n403["81266"] --- n408["82396"] --- n414["82514"] --- n415["82729"] --- n416["84143"] --- n422["86228"] --- n432["87073"] --- n434["86670"] --- n435["85927"]
+    end
+    subgraph nb44["Hercules"]
+        direction LR
+        n391["79101"] --- n392["77760"]
+        n395["79992"] --- n391
+        n397["80170"] --- n398["80816"] --- n404["81693"] --- n410["81833"] --- n407["81126"] --- n395
+        n404 --- n411["83207"] --- n418["84379"] --- n424["86974"] --- n437["87933"] --- n442["88794"]
+        n410 --- n412["84380"] --- n411
+        n423["84345"] --- n398
+        n426["85112"] --- n412
+        n441["87808"] --- n426
+    end
+    nb43 ~~~ nb44
+    class n385,n392 root
+```
+
+## Sagittarius, Scutum, Lyra
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb45["Sagittarius"]
+        direction LR
+        n445["88635"] --- n446["90185"] --- n447["89642"]
+        n450["89931"] --- n445
+        n450 --- n451["90496"] --- n454["89341"]
+        n446 --- n450 --- n463["92041"] --- n451
+        n446 --- n453["93506"] --- n463 --- n468["92855"] --- n467["92761"] --- n471["93085"] --- n470["93683"] --- n468 --- n474["93864"] --- n453 --- n490["95347"] --- n489["95241"]
+        n470 --- n476["94141"] --- n482["94820"] --- n487["95168"] --- n488["95176"]
+        n484["94643"] --- n468
+        n491["95477"] --- n484
+        n497["96465"] --- n491
+        n507["98032"] --- n508["98412"] --- n510["98066"] --- n497
+    end
+    subgraph nb46["Scutum"]
+        direction LR
+        n455["90595"] --- n456["91117"] --- n457["92175"] --- n460["91726"] --- n455
+    end
+    subgraph nb47["Lyra"]
+        direction LR
+        n458["91262"] --- n459["91971"] --- n461["91926"] --- n458
+        n459 --- n462["92791"] --- n469["93194"] --- n466["92420"] --- n459
+    end
+    nb45 ~~~ nb46 ~~~ nb47
+    class n445,n455,n458 root
+```
+
+## Corona Austrina, Aquila, Vulpecula, Cygnus, Sagitta
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb48["Corona Austrina"]
+        direction LR
+        n464["92382"] --- n465["90982"]
+        n472["93174"] --- n473["93825"] --- n479["94114"] --- n481["94160"] --- n480["94005"] --- n475["93542"] --- n464
+    end
+    subgraph nb49["Aquila"]
+        direction LR
+        n477["93747"] --- n478["97649"] --- n502["97278"]
+        n492["95501"] --- n477
+        n492 --- n493["93805"]
+        n478 --- n492 --- n505["97804"] --- n509["99473"] --- n504["98036"] --- n478
+    end
+    subgraph nb50["Vulpecula"]
+        direction LR
+        n485["94703"] --- n486["95771"] --- n494["97886"] --- n506["98543"] --- n513["99874"]
+    end
+    subgraph nb51["Cygnus"]
+        direction LR
+        n495["95853"] --- n496["94779"]
+        n501["97165"] --- n495
+        n511["98110"] --- n512["95947"]
+        n517["100453"] --- n501
+        n517 --- n511
+        n525["102098"] --- n517 --- n529["102488"] --- n539["104732"]
+    end
+    subgraph nb52["Sagitta"]
+        direction LR
+        n498["96757"] --- n499["97365"] --- n500["96837"]
+        n499 --- n503["98337"]
+    end
+    nb48 ~~~ nb49 ~~~ nb50
+    nb51 ~~~ nb52
+    class n465,n477,n485,n517,n498 root
+```
+
+## Capricornus, Cepheus, Delphinus, Aquarius
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb53["Capricornus"]
+        direction LR
+        n514["100027"] --- n515["100345"] --- n516["101027"] --- n518["102485"] --- n528["102978"] --- n535["105881"] --- n546["107556"] --- n551["106985"] --- n545["105515"] --- n538["104139"] --- n514
+    end
+    subgraph nb54["Cepheus"]
+        direction LR
+        n519["101093"] --- n520["102422"] --- n527["105199"] --- n544["107259"] --- n552["109857"] --- n567["109492"] --- n568["110991"] --- n548["112724"] --- n547["106032"] --- n527
+        n548 --- n590["116727"] --- n547
+    end
+    subgraph nb55["Delphinus"]
+        direction LR
+        n521["101421"] --- n522["101769"] --- n523["101958"] --- n524["102531"] --- n526["102281"] --- n522
+    end
+    subgraph nb56["Aquarius"]
+        direction LR
+        n530["102618"] --- n531["103045"] --- n536["106278"] --- n549["109074"] --- n556["110003"]
+        n536 --- n550["109139"]
+        n549 --- n557["110395"] --- n574["110960"] --- n578["110672"]
+        n574 --- n579["111497"] --- n584["112961"] --- n593["115033"] --- n598["114341"]
+        n593 --- n599["116901"]
+        n603["115438"] --- n593
+    end
+    nb53 ~~~ nb54 ~~~ nb55
+    class n514,n519,n521,n530 root
+```
+
+## Microscopium, Equuleus, Piscis Austrinus, Grus, Lacerta
+
+```mermaid
+flowchart LR
+    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
+    subgraph nb57["Microscopium"]
+        direction LR
+        n532["102693"] --- n533["105382"] --- n543["105140"] --- n537["103738"] --- n534["102831"] --- n532
+    end
+    subgraph nb58["Equuleus"]
+        direction LR
+        n540["104858"] --- n541["104521"]
+        n542["104987"] --- n540
+    end
+    subgraph nb59["Piscis Austrinus"]
+        direction LR
+        n553["107380"] --- n554["107608"] --- n555["109285"] --- n553
+        n555 --- n562["111954"] --- n585["113368"] --- n594["113246"] --- n592["112948"] --- n583["111188"] --- n555
+    end
+    subgraph nb60["Grus"]
+        direction LR
+        n558["109111"] --- n559["108085"]
+        n571["109908"] --- n558
+        n580["110997"] --- n571
+    end
+    subgraph nb61["Lacerta"]
+        direction LR
+        n569["109754"] --- n570["109937"]
+        n572["110351"] --- n573["111104"] --- n569
+        n575["110538"] --- n576["111169"] --- n581["111022"] --- n572
+        n577["110609"] --- n575
+        n581 --- n577
+        n573 --- n582["111944"] --- n581
+    end
+    nb57 ~~~ nb58 ~~~ nb59
+    nb60 ~~~ nb61
+    class n532,n541,n553,n559,n569 root
 ```

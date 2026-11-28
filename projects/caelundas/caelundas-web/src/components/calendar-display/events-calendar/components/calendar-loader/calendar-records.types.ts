@@ -68,6 +68,7 @@ export interface EventFacet {
   /**
    * Whether each menu offers the root; every menu does when absent.
    */
+  isDefaultGroup?: boolean;
   isFilterable?: boolean;
   isGroupable?: boolean;
   isSelectable?: boolean;
@@ -107,6 +108,7 @@ export interface EventFacetValue {
   /**
    * Whether each menu offers the tag; a saved link to it works either way, and every menu offers it when absent.
    */
+  isDefaultGroup?: boolean;
   isFilterable?: boolean;
   isGroupable?: boolean;
   isSelectable?: boolean;

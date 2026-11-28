@@ -79,10 +79,7 @@ describe("render-directed-acyclic-graph-data, over a generated edge entity", () 
         [
           "flowchart TB",
           "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
-          "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
-          '    n0["Compile"]',
-          '    n1["Test"]',
-          "    n0 --> n1",
+          '    n0["Compile"] --> n1["Test"]',
           "    class n0 root",
           "",
         ].join("\n"),

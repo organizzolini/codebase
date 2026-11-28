@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { serveCalendarApi } from "../../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../../testing/calendar/calendar-api";
 import { stubChartSize } from "../../../../testing/chart-size";
 import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 import { CalendarGroupStrip } from "../../calendar-query/calendar-group-strip/calendar-group-strip";

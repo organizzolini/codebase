@@ -32,6 +32,19 @@ export function formatCalendarDay(day: string): string {
 }
 
 /**
+ * Writes a day's heading in a zone, such as "Wed 25".
+ */
+export function formatDayHeading(day: Date, timeZone: string): string {
+  const weekday = day.toLocaleDateString("en-US", {
+    timeZone,
+    weekday: "short",
+  });
+  const date = day.toLocaleDateString("en-US", { day: "numeric", timeZone });
+
+  return `${weekday} ${date}`;
+}
+
+/**
  * Names a duration in days, hours and minutes, skipping zero units; "Instant" for no duration.
  */
 export function formatDuration(minutes: number): string {

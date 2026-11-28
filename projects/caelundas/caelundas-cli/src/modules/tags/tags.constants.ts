@@ -7,13 +7,12 @@ export const TAG_ROOT = {
   aspect: "Aspect",
   body: "Body",
   daily: "Daily",
-  duration: "Duration",
   eclipse: "Eclipse",
   lunar: "Lunar",
   planetary: "Planetary",
   sign: "Sign",
-  solar: "Solar",
   temporality: "Temporality",
+  yearly: "Yearly",
 } as const;
 
 /** Raw tags every detector attaches, which tell no event apart from another. */

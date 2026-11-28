@@ -1,18 +1,21 @@
 // 🏷️ Types
 
-/** One node of a diagram, with the edge from its parent. */
+/** One node of a diagram, with the parent it hangs from. */
 export interface MetricExpressionEntry {
   /** The node's Mermaid class. */
   readonly className: "measure" | "metric" | "operator" | "root";
-
-  /** The edge from its parent, none for the first node. */
-  readonly edge?: string;
 
   /** Its id, unique in the diagram. */
   readonly id: string;
 
   /** Its plain-text label. */
   readonly label: string;
+
+  /** The id of the parent it hangs from, none for the first node. */
+  readonly parent?: string;
+
+  /** The operand position the edge shows, when the parent's order matters. */
+  readonly position?: number | undefined;
 }
 
 /** One node of a metric's expression, with its operands in position order. */
@@ -55,6 +58,9 @@ export interface MetricExpressionParent {
 
   /** The operand position, when the parent's order matters. */
   readonly position?: number | undefined;
+
+  /** The prefix of every id in the metric's subgraph. */
+  readonly prefix: string;
 }
 
 /** The `metric-expressions` command's options. */

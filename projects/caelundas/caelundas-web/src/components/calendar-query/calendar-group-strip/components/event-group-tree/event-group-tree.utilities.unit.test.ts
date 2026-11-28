@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { serveCalendarApi } from "../../../../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../../../../testing/calendar/calendar-api";
 import {
   findEvents,
   findFacets,

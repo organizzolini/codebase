@@ -153,7 +153,6 @@ describe(TwilightsBuilderService, () => {
 
       expect(event.description).toBe("Astronomical Twilight (Morning)");
       expect(event.tags).toContain("Astronomical Twilight");
-      expect(event.tags).toContain("Morning");
     });
 
     it("builds Astronomical Twilight (Evening) duration event", () => {
@@ -166,7 +165,6 @@ describe(TwilightsBuilderService, () => {
 
       expect(event.description).toBe("Astronomical Twilight (Evening)");
       expect(event.tags).toContain("Astronomical Twilight");
-      expect(event.tags).toContain("Evening");
     });
 
     it("builds Nautical Twilight (Evening) duration event", () => {
@@ -179,7 +177,6 @@ describe(TwilightsBuilderService, () => {
 
       expect(event.description).toBe("Nautical Twilight (Evening)");
       expect(event.tags).toContain("Nautical Twilight");
-      expect(event.tags).toContain("Evening");
     });
   });
 });

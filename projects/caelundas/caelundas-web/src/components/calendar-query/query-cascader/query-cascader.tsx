@@ -6,7 +6,12 @@ import { useScrollExpandedToTop } from "../../../hooks/use-tag-picker/hooks/use-
 
 import { QueryCascaderPanel } from "./components/query-cascader-panel/query-cascader-panel";
 import { LABELS, NOTHING } from "./query-cascader.constants";
-import { resolveSelectable, toExpansion } from "./query-cascader.utilities";
+import {
+  findFullBranches,
+  resolveSelectable,
+  settleFullBranches,
+  toExpansion,
+} from "./query-cascader.utilities";
 
 import type { CascaderActionItem, CascaderNode } from "@codebase/presentation";
 import type { ReactNode } from "react";
@@ -86,6 +91,15 @@ export function QueryCascader(
   const { reference } = useScrollExpandedToTop();
 
   // 🏗 Setup
+  const selection = resolveSelectable(cascade, selectable);
+  const isOffered = (node: CascaderNode): boolean =>
+    typeof selection === "function"
+      ? selection(node)
+      : selection === "any" || (node.children ?? []).length === 0;
+  // A branch with every row beneath it ticked shows ticked, whatever else it says.
+  const full = multiple
+    ? findFullBranches(items, value, isOffered)
+    : new Set<string>();
   const panel = (
     <QueryCascaderPanel
       mode={mode}
@@ -128,10 +142,10 @@ export function QueryCascader(
           items={[...items]}
           mode={mode}
           onValueChange={(next) => {
-            onValueChange(next);
+            onValueChange(settleFullBranches(next, full, { isOffered, items }));
           }}
-          selectable={resolveSelectable(cascade, selectable)}
-          value={[...value]}
+          selectable={selection}
+          value={[...value, ...full]}
           multiple
         >
           {panel}

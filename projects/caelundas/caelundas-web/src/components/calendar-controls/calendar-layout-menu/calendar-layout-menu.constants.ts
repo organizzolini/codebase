@@ -19,7 +19,7 @@ import type { LucideIcon } from "lucide-react";
 
 // ♟️ Constants
 
-export const TITLE = "Layout";
+export const LAYOUT_MENU_TITLE = "Layout";
 
 /** Indents nested rows by depth. */
 export const LAYOUT_TREE_CLASS_NAME = [

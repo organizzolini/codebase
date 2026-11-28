@@ -20,6 +20,12 @@ export class EventFacetEntity {
   id!: string;
 
   @Field(() => Boolean, {
+    description:
+      "Whether the root is one of the defaults events group by when no level is picked.",
+  })
+  isDefaultGroup!: boolean;
+
+  @Field(() => Boolean, {
     description: "Whether the Filter menu offers the root as a value.",
   })
   isFilterable!: boolean;

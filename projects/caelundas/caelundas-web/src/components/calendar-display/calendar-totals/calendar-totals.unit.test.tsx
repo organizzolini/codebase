@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { serveCalendarApi } from "../../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../../testing/calendar/calendar-api";
 import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 
 import { CalendarTotals } from "./calendar-totals";

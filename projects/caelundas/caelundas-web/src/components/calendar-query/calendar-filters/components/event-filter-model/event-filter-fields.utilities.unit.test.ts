@@ -2,9 +2,9 @@ import { render, screen } from "@testing-library/react";
 import { createElement } from "react";
 import { describe, expect, it } from "vitest";
 
-import { serveCalendarApi } from "../../../../../../testing/calendar-api";
-import { findFixtureFacets } from "../../../../../../testing/calendar-facets";
-import { FIXTURE_TAGS } from "../../../../../../testing/calendar-fixture";
+import { serveCalendarApi } from "../../../../../../testing/calendar/calendar-api";
+import { findFixtureFacets } from "../../../../../../testing/calendar/calendar-facets";
+import { FIXTURE_TAGS } from "../../../../../../testing/calendar/calendar-fixture";
 import { findFacets } from "../../../../calendar-display/events-calendar/components/events-api/events-api.utilities";
 
 import {
@@ -243,14 +243,14 @@ describe(createEventFilterFields, () => {
     }
   });
 
-  it("describes a known root in its own words and a new one by its name", async () => {
+  it("describes a root without a note by its name", async () => {
     const fields = createEventFilterFields(
       await findFixtureFacets({ tags: MOTION_TAGS }),
     );
     const describe = (label: string): string | undefined =>
       fields.find((field) => field.label === label)?.description;
 
-    expect(describe("Body")).toContain("bodies");
+    expect(describe("Body")).toBe("The body of the event");
     expect(describe("Element")).toBe("The element of the event");
 
     // Motion is a root the app knows too; a root it does not know is described
@@ -286,7 +286,7 @@ describe(createEventFilterFields, () => {
       ],
     };
 
-    it("describes a root by its own note before a canned one", () => {
+    it("describes a root by its own note", () => {
       expect(describeRoot(facet)).toBe("The bodies an event involves.");
     });
 

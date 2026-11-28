@@ -36,6 +36,12 @@ export class EventFacetValueEntity {
 
   @Field(() => Boolean, {
     description:
+      "Whether the tag is one of the defaults events group by when no level is picked.",
+  })
+  isDefaultGroup!: boolean;
+
+  @Field(() => Boolean, {
+    description:
       "Whether the Filter menu offers the tag as a value; a filter on it still works when false.",
   })
   isFilterable!: boolean;

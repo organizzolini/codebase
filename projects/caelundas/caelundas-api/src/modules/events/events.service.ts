@@ -85,6 +85,7 @@ export class EventsService {
     return {
       icon: row.icon,
       id: row.id,
+      isDefaultGroup: row.is_default_group,
       isFilterable: row.is_filterable,
       isGroupable: row.is_groupable,
       isSelectable: row.is_selectable,
@@ -106,10 +107,22 @@ export class EventsService {
     const levelsByPath = new Map<string, RankedName[]>();
     const parentPaths = this.collectParents(rows);
 
+    // Roots in their rank, as the data orders them; one with no rank follows by name.
+    const roots = rows
+      .filter((row) => row.depth === 0)
+      .toSorted(
+        (left, right) =>
+          (left.rank === 0 ? Infinity : left.rank) -
+            (right.rank === 0 ? Infinity : right.rank) ||
+          left.name.localeCompare(right.name),
+      );
+
+    for (const root of roots) {
+      facets.set(root.id, this.toFacetRoot(root));
+    }
+
     for (const row of rows) {
-      if (row.depth === 0) {
-        facets.set(row.id, this.toFacetRoot(row));
-      } else {
+      if (row.depth !== 0) {
         levelsByPath.set(
           `${row.id}\u0000${row.path_below_root}`,
           this.toRankedLevels(row.tag_rank),
@@ -149,6 +162,7 @@ export class EventsService {
       depth: row.depth,
       icon: row.icon,
       id: row.id,
+      isDefaultGroup: row.is_default_group,
       isFilterable: row.is_filterable,
       isGroupable: row.is_groupable,
       isSelectable: row.is_selectable,

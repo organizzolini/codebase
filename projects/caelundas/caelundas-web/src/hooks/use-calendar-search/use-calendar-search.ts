@@ -2,6 +2,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
 
 import { toWindowSearch } from "../../components/calendar-controls/calendar-date-picker/calendar-date-picker.utilities";
+import { toAllDaySearch } from "../../components/calendar-display/events-calendar/components/calendar-grid/components/calendar-all-day/calendar-all-day.utilities";
 import { formatCalendarDate } from "../../components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities";
 import { createEventGroupFields } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import {
@@ -53,6 +54,9 @@ export function useCalendarSearch(
 
   // 🎁 Result
   return {
+    handleAllDayModeChange: (mode) => {
+      updateSearch({ ad: toAllDaySearch(mode) }, true);
+    },
     handleColorsChange: (enabled) => {
       updateSearch({ colors: enabled ? undefined : false }, true);
     },
@@ -76,6 +80,10 @@ export function useCalendarSearch(
     },
     handleDateChange: (date) => {
       updateSearch({ date: formatCalendarDate(date, timeZone) });
+    },
+    handleDayOpen: (view, day) => {
+      // A new history entry, so back returns to the view above; everything else in the link stays.
+      updateSearch({ date: day, days: undefined, view });
     },
     handleFilterChange: (filter) => {
       updateSearch({ filter }, true);

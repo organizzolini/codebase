@@ -28,6 +28,10 @@ export class Tag extends PostgresqlUpdatableEntity {
   @Column("text", { nullable: true })
   icon?: null | string;
 
+  /** Whether events group by the tag when no level is picked. */
+  @Column("boolean", { default: true })
+  isDefaultGroup!: boolean;
+
   /** Whether the Filter menu offers the tag as a value. */
   @Column("boolean", { default: true })
   isFilterable!: boolean;

@@ -26,6 +26,9 @@ export const METRIC_EXPRESSIONS_CLASS_DEFINITIONS = [
   "classDef root fill:#fbd774,stroke:#b06000,stroke-width:3px,color:#111",
 ] as const;
 
+/** How many metric subgraphs sit side by side in a row. */
+export const METRIC_EXPRESSIONS_COLUMNS = 3;
+
 /** The operators whose operand order changes the result. */
 export const METRIC_EXPRESSIONS_ORDERED_OPERATORS: ReadonlySet<string> =
   new Set(["divide", "percent", "subtract"]);

@@ -39,7 +39,7 @@ flows one way:
 
 Tests run on the mocked API: `serveGraphqlApi(...handlers)` from
 `testing/graphql-api.ts` registers the generated MSW handlers on the shared
-server in `testing/setup.ts`, with fixtures from `testing/calendar-api.ts`.
+server in `testing/setup.ts`, with fixtures from `testing/calendar/calendar-api.ts`.
 
 ## GraphQL Code Generation
 
@@ -85,7 +85,7 @@ src/
     use-night-sky/               # The night sky's link overrides, settings, and request
 testing/
   graphql-api.ts                 # Serves generated MSW handlers over the shared server
-  calendar-api.ts, calendar-fixture.ts
+  calendar/calendar-api.ts, calendar/calendar-fixture.ts
                                  # Fixtures the mocked API answers with
 ```
 
@@ -130,7 +130,7 @@ renders through that same function.
 
 The views' route tests live in `src/components/calendar-display/events-calendar/components/calendar-views/calendar-views.utilities.integration.test.tsx`, beside
 the route's own, only to keep each file under the line limit; shared steps
-live in `testing/calendar-page.ts`.
+live in `testing/calendar/calendar-page.ts`.
 
 ## Layout
 
@@ -212,10 +212,35 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   view, so the focus on its view selector survives it: each view reports how
   it moves (`onNavigationChange`), because only a child of the vendored
   calendar or Gantt can read that, and the toolbar calls the latest report.
-- A month cell's "+N more" list is the app's own, windowed by
+- A busy `+N more` list is the app's own, windowed by
   `VirtualList` over the pure functions in
   `src/components/calendar-display/virtual-list/calendar-virtual-window.utilities.ts`. An event is listed once, on
   the day it begins, or on the first day for one already under way.
+- The month is drawn by the app (`CalendarMonth`), not the vendored calendar,
+  which is handed no events for it. An "All month" band under the weekday
+  header lists the events running through every day of the month once; the
+  day cells do not repeat them, and grow downward with their groups. The week
+  and day views keep the vendored time grid and replace its all-day row
+  (`CalendarAllDay`) and day headings through its render props.
+- Busy cells show **facet groups**, never per-event bars or kind counters:
+  `groupCalendarEvents` puts each event under one group, so a cell's counts add
+  up. With the default Tags grouping it is the event's first tag root
+  whose facet has `isDefaultGroup` (the data flags Body and
+  Temporality out; `getDefaultRoots`), because every root-level group overlapped
+  (3.5 groups an event) and Temporality held every event; with a grouping the link names it is
+  the first key of its first level. Chips show the group's icon, name and count
+  and open in place; the Sort strip's sorts order the groups and the events in
+  them (`sortCalendarGroups`, no metric sorts). The week and day's all-day row
+  has three states, kept in the `ad` link parameter (`c` one slim row of counts,
+  `e` every event, none the groups), which a reload ignores. A cluster in the
+  hour grid is a group chip that opens in place.
+- A long event also draws, in the hour grid, a block from its start to midnight
+  on its first day and one from midnight to its end on its last
+  (`addEdgeBlocks`); the days between show it in the all-day row alone. The
+  clipped side of a block is squared off, with no marker.
+- Only a day's number opens the view below it: a month's day number opens its
+  week, a week's day heading its day (`onDayOpen`), keeping every other link
+  parameter; the day view has nothing below.
 - Each load reads only the days the view shows plus a day either side
   (`getViewWindows` in `src/components/calendar-display/events-calendar/components/calendar-window/calendar-window.utilities.ts`), through a cache
   keyed by window and filter. The table lists 30 days from the one it opens on, or
@@ -231,8 +256,8 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   each tag ticked becomes a group of the events under it, so several tags are
   one pick; with none ticked it groups by the root's first level, and a link
   from before tags could be picked still names a `depth`. A level may instead
-  be a year, quarter, month, week, day, weekday, hour, or hour
-  read in each event's own zone; how long an event lasts is the Duration tag root, whose units (Minutes to Centuries) are picked like any tag, and a link from before that names the retired duration bucket field has the level dropped.
+  be a year, quarter, month, week, day, weekday, or hour
+  read in each event's own zone; how long an event lasts is the unit tags beneath Temporality / Progressive (Minutes to Centuries), picked like any tag, and a link from before that names the retired duration bucket field has the level dropped.
   `toEventGroupingInput` in `src/components/calendar-query/calendar-group-by/` turns a grouping
   into the query's grouping input, and the API returns each event's group keys
   in its `groups`; `buildEventGroups` builds the tree from them. An event

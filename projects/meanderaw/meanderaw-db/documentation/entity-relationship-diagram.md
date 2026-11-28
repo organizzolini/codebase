@@ -2,14 +2,15 @@
 
 <!-- postgresql-erd:start -->
 
+[meander\_characteristics (3 tables)](#meander_characteristics-3-tables) · [Standalone tables](#standalone-tables)
+
+## meander\_characteristics (3 tables)
+
 ```mermaid
 erDiagram
+  direction LR
   meander_characteristics }o--|| characteristics : characteristic
   meander_characteristics }o--|| meanders : meander
-  aggregate_markers {
-    int id PK "not nullable"
-    int meanderCount "not nullable"
-  }
   characteristics {
     int id PK "not nullable"
     string category "not nullable"
@@ -21,25 +22,6 @@ erDiagram
     int meanderCount "not nullable"
     string name "not nullable"
     string valueType "not nullable"
-  }
-  characteristic_pair_counts {
-    int characteristicId PK "not nullable"
-    int otherCharacteristicId PK "not nullable"
-    float otherValue PK "not nullable"
-    float value PK "not nullable"
-    int meanderCount "not nullable"
-  }
-  characteristic_shape_counts {
-    int characteristicId PK "not nullable"
-    int columns PK "not nullable"
-    int rows PK "not nullable"
-    float value PK "not nullable"
-    int meanderCount "not nullable"
-  }
-  characteristic_value_counts {
-    int characteristicId PK "not nullable"
-    float value PK "not nullable"
-    int meanderCount "not nullable"
   }
   meanders {
     string id PK "not nullable"
@@ -59,6 +41,36 @@ erDiagram
     int characteristicId PK "not nullable"
     string meanderId PK "not nullable"
     float value "not nullable"
+  }
+```
+
+## Standalone tables
+
+```mermaid
+erDiagram
+  direction LR
+  aggregate_markers {
+    int id PK "not nullable"
+    int meanderCount "not nullable"
+  }
+  characteristic_pair_counts {
+    int characteristicId PK "not nullable"
+    int otherCharacteristicId PK "not nullable"
+    float otherValue PK "not nullable"
+    float value PK "not nullable"
+    int meanderCount "not nullable"
+  }
+  characteristic_shape_counts {
+    int characteristicId PK "not nullable"
+    int columns PK "not nullable"
+    int rows PK "not nullable"
+    float value PK "not nullable"
+    int meanderCount "not nullable"
+  }
+  characteristic_value_counts {
+    int characteristicId PK "not nullable"
+    float value PK "not nullable"
+    int meanderCount "not nullable"
   }
   shape_counts {
     int columns PK "not nullable"

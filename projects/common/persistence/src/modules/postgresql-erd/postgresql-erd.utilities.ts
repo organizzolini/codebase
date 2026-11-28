@@ -8,6 +8,7 @@ import { z } from "zod";
 import { withGeneratedEdges } from "../render/modules/render-entities/render-entities-generated.utilities";
 
 import { readPostgresqlErdDerivedTables } from "./postgresql-erd-metadata.utilities";
+import { renderPostgresqlErdSections } from "./postgresql-erd-sections.utilities";
 import {
   POSTGRESQL_ERD_END_ANCHOR,
   POSTGRESQL_ERD_ENTITY_CLASS_SCHEMA,
@@ -112,7 +113,9 @@ export function renderPostgresqlErdModel(model: PostgresqlErdModel): string {
       : `  ${renderMermaidEntityName(entity.name)}`,
   );
 
-  return ["erDiagram", ...relationships, ...definitions].join("\n");
+  return ["erDiagram", "  direction LR", ...relationships, ...definitions].join(
+    "\n",
+  );
 }
 
 /**
@@ -123,13 +126,10 @@ export function splicePostgresqlErdMarkdown(
   content: string | undefined,
   model: PostgresqlErdModel,
 ): string {
-  const rendered = renderPostgresqlErdModel(model);
   const block = [
     POSTGRESQL_ERD_START_ANCHOR,
     "",
-    "```mermaid",
-    rendered,
-    "```",
+    ...renderPostgresqlErdSections(model, renderPostgresqlErdModel),
     "",
     POSTGRESQL_ERD_END_ANCHOR,
   ].join("\n");

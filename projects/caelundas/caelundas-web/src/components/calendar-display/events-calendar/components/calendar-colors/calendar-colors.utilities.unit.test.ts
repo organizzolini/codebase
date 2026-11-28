@@ -52,9 +52,9 @@ describe("calendar colors", () => {
           "Aspect / Simple / Minor / Quincunx",
           "Aspect / Simple / Specialty / Novile",
           "Aspect / Compound / Triple / Yod",
-          "Daily / Solar Cycle",
-          "Daily / Lunar Cycle",
-          "Sign / Ingress / Sign Ingress",
+          "Daily / Daily Solar",
+          "Daily / Daily Lunar",
+          "Sign / Stay / Sign",
           "Daily / Twilight / Civil Dawn",
         ].map((path) => getEventColor(eventWith([path]))),
       );

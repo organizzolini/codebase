@@ -46,6 +46,25 @@ describe("tag-pill-label utilities", () => {
       expect(getTagGlyph("Planet / Venus")).toBe("♀");
     });
 
+    it("gives a focal body the symbol of its body", () => {
+      expect(getTagGlyph("Sun Focal")).toBe("☀️");
+      expect(getTagGlyph("Aspect / Compound / Focal Body / Venus Focal")).toBe(
+        "♀",
+      );
+    });
+
+    it("gives the lunar nodes, the days of the Sun's year and the compound aspects their symbols", () => {
+      expect(getTagGlyph("North Lunar Node")).toBe("☊");
+      expect(getTagGlyph("South Lunar Node")).toBe("☋");
+      expect(getTagGlyph("Vernal Equinox")).toBe("🌸");
+      expect(getTagGlyph("Beltane")).toBe("🌼");
+      expect(getTagGlyph("First Hexadecan")).toBe("🌳");
+      expect(getTagGlyph("T Square")).toBe("⊤");
+      expect(getTagGlyph("Grand Trine")).toBe("△");
+      expect(getTagGlyph("Triple")).toBe("✨");
+      expect(getTagGlyph("Stellium")).toBe("🎆");
+    });
+
     it("gives nothing for a tag with no known symbol", () => {
       expect(getTagGlyph("Retrograde Period")).toBeUndefined();
     });

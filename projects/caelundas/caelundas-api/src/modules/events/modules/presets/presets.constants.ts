@@ -37,7 +37,7 @@ const LONG_CYCLES: PresetGroup = {
     {
       operator: TAG_OPERATORS.isAnyOf,
       paths: ["Annual Cycle"],
-      root: "Solar",
+      root: "Yearly",
     },
   ],
 };
@@ -49,10 +49,10 @@ const MAJOR_ASPECTS: PresetRule = {
   root: "Aspect",
 };
 
-/** Sign ingresses, as a rule. */
-const SIGN_INGRESSES: PresetRule = {
+/** A planet's whole stay in a sign, as a rule. */
+const SIGN_STAYS: PresetRule = {
   operator: TAG_OPERATORS.isAnyOf,
-  paths: ["Ingress / Sign Ingress"],
+  paths: ["Stay / Full Sign"],
   root: "Sign",
 };
 
@@ -60,7 +60,7 @@ const SIGN_INGRESSES: PresetRule = {
 export const PRESETS: readonly Preset[] = [
   {
     description:
-      "Major aspects between the planets, sign ingresses, stations, eclipses and the long cycles, without the Moon's fast changes. About ten events a day.",
+      "Major aspects between the planets, planets in signs, eclipses and the long cycles, without the Moon's fast changes. About ten events a day.",
     filter: {
       combinator: EventFilterCombinator.OR,
       rules: [
@@ -70,7 +70,7 @@ export const PRESETS: readonly Preset[] = [
         },
         {
           combinator: EventFilterCombinator.AND,
-          rules: [SIGN_INGRESSES, WITHOUT_THE_MOON],
+          rules: [SIGN_STAYS, WITHOUT_THE_MOON],
         },
         LONG_CYCLES,
       ],
@@ -124,13 +124,13 @@ export const PRESETS: readonly Preset[] = [
   },
   {
     description:
-      "A planet entering a sign, a decan, or the peak of a sign: the ingresses and the transits between them.",
+      "A planet's stay in a sign, in a decan of one, or in half of one.",
     filter: {
       combinator: EventFilterCombinator.AND,
       rules: [
         {
           operator: TAG_OPERATORS.isAnyOf,
-          paths: ["Ingress"],
+          paths: ["Stay"],
           root: "Sign",
         },
       ],
@@ -153,7 +153,7 @@ export const PRESETS: readonly Preset[] = [
       rules: [
         {
           operator: TAG_OPERATORS.isAnyOf,
-          paths: ["Solar Cycle", "Lunar Cycle", "Twilight"],
+          paths: ["Daily Solar", "Daily Lunar", "Twilight"],
           root: "Daily",
         },
       ],

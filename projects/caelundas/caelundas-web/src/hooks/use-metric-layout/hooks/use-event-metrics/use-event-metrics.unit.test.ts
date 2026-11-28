@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { serveCalendarApi } from "../../../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../../../testing/calendar/calendar-api";
 
 import { useEventMetrics } from "./use-event-metrics";
 

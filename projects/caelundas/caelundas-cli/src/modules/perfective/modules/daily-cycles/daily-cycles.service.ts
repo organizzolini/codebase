@@ -150,7 +150,8 @@ export class DailyCyclesService {
   }
 
   /**
-   * Pairs each moonrise with the moonset after it into the span the Moon is up.
+   * Pairs each moonrise with the moonset after it into the span the Moon is up,
+   * and each moonset with the moonrise after it into the span it is down.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const crossings = _.sortBy(
@@ -164,16 +165,33 @@ export class DailyCyclesService {
     return crossings.slice(0, -1).flatMap((beginning, index) => {
       const ending = crossings[index + 1];
 
-      return ending !== undefined &&
+      if (ending === undefined) {
+        return [];
+      }
+      if (
         beginning.tags.includes("Moonrise") &&
         ending.tags.includes("Moonset")
-        ? [
-            this.dailyCyclesBuilderService.getMoonUpDurationEvent(
-              beginning,
-              ending,
-            ),
-          ]
-        : [];
+      ) {
+        return [
+          this.dailyCyclesBuilderService.getMoonUpDurationEvent(
+            beginning,
+            ending,
+          ),
+        ];
+      }
+      if (
+        beginning.tags.includes("Moonset") &&
+        ending.tags.includes("Moonrise")
+      ) {
+        return [
+          this.dailyCyclesBuilderService.getMoonDownDurationEvent(
+            beginning,
+            ending,
+          ),
+        ];
+      }
+
+      return [];
     });
   }
 

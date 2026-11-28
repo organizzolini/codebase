@@ -2,7 +2,7 @@ SET lock_timeout = '10s';
 
 SET statement_timeout = '5min';
 
-CREATE TABLE "tags" ("id" uuid NOT NULL DEFAULT uuidv7(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "created_by" uuid, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_by" uuid, "icon" text, "is_filterable" boolean NOT NULL DEFAULT true, "is_groupable" boolean NOT NULL DEFAULT true, "is_selectable" boolean NOT NULL DEFAULT true, "is_sortable" boolean NOT NULL DEFAULT true, "name" text NOT NULL, "note" text, "rank" smallint NOT NULL DEFAULT '0', "slug" text NOT NULL, CONSTRAINT "PK_e7dc17249a1148a1970748eda99" PRIMARY KEY ("id")); COMMENT ON COLUMN "tags"."id" IS 'Primary key, a uuidv7 the database assigns on insert'; COMMENT ON COLUMN "tags"."created_at" IS 'Timestamp when the record was created'; COMMENT ON COLUMN "tags"."created_by" IS 'Identifier of the user or process that created the record'; COMMENT ON COLUMN "tags"."updated_at" IS 'Timestamp when the record was last updated'; COMMENT ON COLUMN "tags"."updated_by" IS 'Identifier of the user or process that last updated the record';
+CREATE TABLE "tags" ("id" uuid NOT NULL DEFAULT uuidv7(), "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "created_by" uuid, "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updated_by" uuid, "icon" text, "is_default_group" boolean NOT NULL DEFAULT true, "is_filterable" boolean NOT NULL DEFAULT true, "is_groupable" boolean NOT NULL DEFAULT true, "is_selectable" boolean NOT NULL DEFAULT true, "is_sortable" boolean NOT NULL DEFAULT true, "name" text NOT NULL, "note" text, "rank" smallint NOT NULL DEFAULT '0', "slug" text NOT NULL, CONSTRAINT "PK_e7dc17249a1148a1970748eda99" PRIMARY KEY ("id")); COMMENT ON COLUMN "tags"."id" IS 'Primary key, a uuidv7 the database assigns on insert'; COMMENT ON COLUMN "tags"."created_at" IS 'Timestamp when the record was created'; COMMENT ON COLUMN "tags"."created_by" IS 'Identifier of the user or process that created the record'; COMMENT ON COLUMN "tags"."updated_at" IS 'Timestamp when the record was last updated'; COMMENT ON COLUMN "tags"."updated_by" IS 'Identifier of the user or process that last updated the record';
 
 CREATE INDEX "tags_slug" ON "tags"  ("slug");
 
@@ -295,7 +295,6 @@ INSERT INTO "group_dimensions" ("group_id", "dimension_id") VALUES
 ('01a215c3-1002-7000-8000-000000000005', '01a215c3-1000-7000-8000-000000000005'),
 ('01a215c3-1002-7000-8000-000000000006', '01a215c3-1000-7000-8000-000000000006'),
 ('01a215c3-1002-7000-8000-000000000007', '01a215c3-1000-7000-8000-000000000007');
-
 
 CREATE FUNCTION "expand_keys"(keys text[]) RETURNS TABLE (key text) LANGUAGE plpgsql IMMUTABLE PARALLEL SAFE ROWS 2 AS $$ BEGIN IF cardinality(keys) = 0 THEN key := NULL; RETURN NEXT; ELSE RETURN QUERY SELECT unnest(keys); END IF; END $$;
 
