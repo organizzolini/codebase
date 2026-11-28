@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:aa827de8fe32a1b9a5e2486c083a4778453333324ddc9cffbfc00fded8921cdf",
+  "pageVersion": "sha256:556deb9e14d233502cd867c512fe0e3a21386a2876b0b0adf7d3fba08f3dcee1",
   "claims": [
     {
       "id": "claim_ff5540c9dcf54d78959182fda4d52e17",
@@ -16,7 +16,7 @@
         },
         {
           "resource": "repo://infrastructure/terraform/github/main.tf",
-          "version": "repo-file-v1:sha256:42fc0d312f7cf2c82ac5758ed9945920b10be9a26b0d04980d8ff247f51c149f"
+          "version": "repo-file-v1:sha256:ec596a173e21c5a6f442794fb8b8cff6598159f3e9c0908023fdb59bfbc437f6"
         },
         {
           "resource": "repo://infrastructure/terraform/linode/main.tf",
@@ -219,6 +219,6 @@
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-25T18:55:00.444Z"
+    "at": "2026-11-27T18:15:08.471Z"
   }
 }
