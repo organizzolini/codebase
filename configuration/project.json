@@ -435,6 +435,7 @@
       }
     },
     "guard-code": {},
+    "hadolint": {},
     "jscpd": {
       "cache": true,
       "configurations": {

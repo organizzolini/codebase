@@ -17,22 +17,6 @@
     },
     "format-code": {},
     "guard-code": {},
-    "hadolint": {
-      "cache": true,
-      "description": "Lint every Dockerfile in the repository (found with git ls-files) with hadolint and the shared configuration/lint/hadolint.yaml, which ignores no rule. Part of lint-code. Requires hadolint on PATH.",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{workspaceRoot}/**/*Dockerfile*",
-        "{workspaceRoot}/configuration/lint/hadolint.yaml",
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "hadolint --config configuration/lint/hadolint.yaml $(git ls-files -- '*Dockerfile*')",
-        "cwd": "{workspaceRoot}"
-      }
-    },
     "lint-code": {},
     "markdown-lint": {},
     "open-webui": {

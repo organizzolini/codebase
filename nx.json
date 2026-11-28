@@ -559,6 +559,27 @@
       "executor": "nx:noop",
       "inputs": ["default"]
     },
+    "hadolint": [
+      {
+        "cache": true,
+        "description": "Lint every Dockerfile in the repository (found with git ls-files) with hadolint and the shared configuration/lint/hadolint.yaml, which ignores no rule. Part of lint-code. Defined in nx.json for the configuration project, which holds the repository-wide lint tools and their configuration. Requires hadolint on PATH.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:name:configuration"]
+        },
+        "inputs": [
+          "{workspaceRoot}/**/*Dockerfile*",
+          "{workspaceRoot}/configuration/lint/hadolint.yaml",
+          {
+            "externalDependencies": []
+          }
+        ],
+        "options": {
+          "command": "hadolint --config configuration/lint/hadolint.yaml $(git ls-files -- '*Dockerfile*')",
+          "cwd": "{workspaceRoot}"
+        }
+      }
+    ],
     "knip": [
       {
         "cache": true,
@@ -674,7 +695,7 @@
         "tflint",
         "zizmor"
       ],
-      "description": "Aggregator for lint-code. `compose-config`, `hadolint`, `terraform-format`, and `terraform-validate` are defined only by the infrastructure project, `helm-lint` and `helm-test` only by the deployment project, `kubeconform`, `kube-linter`, `pluto`, and `tflint` only by the integration project, and `actionlint` and `zizmor` only by the configuration project, so Nx skips them everywhere else. They shell out to helm, docker compose, and the tools the setup-codebase action installs (kubeconform, kube-linter, pluto, tflint, hadolint, actionlint), which the devcontainer ships too; compose-config creates the gitignored root .env from .env.default when it is missing. The Kubernetes tools read the one rendering the deployment project's `helm-render` writes, and kubeconform fetches its CRD schemas over the network.",
+      "description": "Aggregator for lint-code. `compose-config`, `terraform-format`, and `terraform-validate` are defined only by the infrastructure project, `helm-lint` and `helm-test` only by the deployment project, `kubeconform`, `kube-linter`, `pluto`, and `tflint` only by the integration project, and `actionlint`, `hadolint`, and `zizmor` only by the configuration project, so Nx skips them everywhere else. They shell out to helm, docker compose, and the tools the setup-codebase action installs (kubeconform, kube-linter, pluto, tflint, hadolint, actionlint), which the devcontainer ships too; compose-config creates the gitignored root .env from .env.default when it is missing. The Kubernetes tools read the one rendering the deployment project's `helm-render` writes, and kubeconform fetches its CRD schemas over the network.",
       "executor": "nx:noop",
       "inputs": ["default"]
     },

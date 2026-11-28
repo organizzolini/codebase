@@ -150,7 +150,7 @@ argocd app diff --core <name>                 # the live-versus-desired diff, re
 
 ## Kubernetes Deployment
 
-See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `hadolint`, `terraform-validate` (validate and test), and `compose-config` of this project run in CI as part of `lint-code`, as do `deployment:helm-lint`, `deployment:helm-test`, and the linters of the `integration` project (`kubeconform`, `kube-linter`, `pluto`, `tflint`), in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
+See [README.md](README.md) for the Helm deploy commands and the `nx run infrastructure:*` targets. `terraform-validate` (validate and test) and `compose-config` of this project run in CI as part of `lint-code`, as do `deployment:helm-lint`, `deployment:helm-test`, and the linters of the `integration` project (`kubeconform`, `kube-linter`, `pluto`, `tflint`), in the Lint leg of [continuous-integration.yml](../../.github/workflows/continuous-integration.yml).
 
 ## Linters
 
@@ -161,7 +161,7 @@ The `helm-lint` and `helm-render` commands, and targets, of the `deployment` pro
 - **pluto**: a removed API fails, a deprecated one prints and passes.
 - **integration:trivy-config**: also scans the rendered manifests at CRITICAL and HIGH. Fix the chart; never add a trivyignore entry.
 - **tflint**: `terraform/.tflint.hcl` enables the bundled terraform ruleset (`preset = "all"`). The `github` root's `outputs.tf` holds only a comment, since `terraform_standard_module_structure` wants every root to declare where its outputs go.
-- **hadolint**: `configuration/lint/hadolint.yaml` (the `configuration` project) ignores no rule: the Dockerfile pins `tini`, builds on the full Node image so no `apt-get` runs in the install stage, and starts with `node main.js` under `tini`, with no shell.
+- **hadolint** (configuration project): `configuration/lint/hadolint.yaml` ignores no rule: the Dockerfile pins `tini`, builds on the full Node image so no `apt-get` runs in the install stage, and starts with `node main.js` under `tini`, with no shell.
 - **actionlint** and **zizmor** (configuration project): `.github/actionlint.yaml` and `.github/zizmor.yml` record every ignored message and changed rule with its reason.
 
 A failure prints the tool's own message with the file and line; the rendered file name is the release, so open `dist/deployment/helm-render/<release>.yaml` to see what was linted.
