@@ -597,6 +597,8 @@ export default [
       // which ESLint does not read. Anchored to the root: a `**/` prefix would
       // also match the path of a checkout that is itself one of them.
       ".claude/worktrees/**",
+      // The `.worktrees/` checkouts of this repository, the same way.
+      ".worktrees/**",
       "**/vite.config.*.timestamp*",
       "**/vitest.config.*.timestamp*",
       "**/codometer-report.json",
