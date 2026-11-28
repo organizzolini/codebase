@@ -1,4 +1,4 @@
-import { getEventRowHeight } from "../../calendar-display/calendar-agenda/calendar-agenda.utilities";
+import { getEventRowHeight } from "../calendar-event-row/calendar-event-row.utilities";
 
 import type { CalendarEventRecord } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 

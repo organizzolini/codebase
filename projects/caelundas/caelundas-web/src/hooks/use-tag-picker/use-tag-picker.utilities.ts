@@ -1,3 +1,7 @@
+import { readFolder } from "../../components/calendar-query/filter-tag-editor/event-filter-tag-tree.utilities";
+
+import type { FilterOption } from "@codebase/presentation";
+
 // 🔏 Private Functions
 
 // 🌎 Public Functions
@@ -15,4 +19,20 @@ export function focusSibling(element: HTMLElement, step: number): void {
   const index = rows.indexOf(element);
 
   rows[index === -1 ? 0 : index + step]?.focus();
+}
+
+/**
+ * The options that are tags to pick, leaving out the folders that only open.
+ */
+export function withoutFolders(items: readonly FilterOption[]): FilterOption[] {
+  const tags: FilterOption[] = [];
+
+  // A loop rather than a callback keeps the call stacks shallow.
+  for (const item of items) {
+    if (!readFolder(item)) {
+      tags.push(item);
+    }
+  }
+
+  return tags;
 }

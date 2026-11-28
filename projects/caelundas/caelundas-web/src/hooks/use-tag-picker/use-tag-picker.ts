@@ -8,7 +8,7 @@ import {
 } from "../../components/calendar-query/filter-tag-editor/event-filter-tag-tree.utilities";
 
 import { KEY_ACTIONS } from "./use-tag-picker.constants";
-import { focusSibling } from "./use-tag-picker.utilities";
+import { focusSibling, withoutFolders } from "./use-tag-picker.utilities";
 
 import type { TagTreeRow } from "../../components/calendar-query/filter-tag-editor/event-filter-tag-tree.types";
 import type {
@@ -44,7 +44,8 @@ export function useTagPicker(
 
   // 🏗 Setup
   const searching = options.query !== "";
-  const rows = toTagTreeRows(searching ? options.items : tree, {
+  // A search lists the tags that can be picked, never the folders over them.
+  const rows = toTagTreeRows(searching ? withoutFolders(options.items) : tree, {
     expanded,
     selected,
     showAll: searching,
@@ -116,7 +117,11 @@ export function useTagPicker(
         handleOpen(id, true);
       },
       toggle: () => {
-        handleToggle(id);
+        if (row.isFolder) {
+          handleOpen(id, !row.isExpanded);
+        } else {
+          handleToggle(id);
+        }
       },
       up: () => {
         focusSibling(event.currentTarget, -1);

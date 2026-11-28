@@ -1,7 +1,7 @@
 import { TAG_OPERATORS } from "../filtering/modules/query-building/event-filter-fields.constants";
 import { EventFilterCombinator } from "../filtering/modules/rules/event-filter-combinator.entities";
 
-import type { Preset, PresetRule } from "./presets.types";
+import type { Preset, PresetGroup, PresetRule } from "./presets.types";
 
 // ♟️ Constants
 
@@ -11,45 +11,76 @@ export const DEFAULT_PRESET_ID = "highlights";
 /** Tags a Moon-free preset drops, since lunar aspects change often. */
 const WITHOUT_THE_MOON: PresetRule = {
   operator: TAG_OPERATORS.isNoneOf,
-  paths: ["Moon"],
-  root: "Planet",
+  paths: ["Luminary / Moon"],
+  root: "Body",
 };
 
-/** Long cycles, few enough to read without a filter. */
-const LONG_CYCLES: PresetRule = {
-  operator: TAG_OPERATORS.isAnyOf,
-  paths: [
-    "Direction",
-    "Planetary Phase",
-    "Eclipse",
-    "Cycle / Monthly Lunar Cycle",
-    "Cycle / Annual Solar Cycle",
-    "Cycle / Lunar Apsides",
+/** Long cycles, few enough to read without a filter, across four roots. */
+const LONG_CYCLES: PresetGroup = {
+  combinator: EventFilterCombinator.OR,
+  rules: [
+    {
+      operator: TAG_OPERATORS.isAnyOf,
+      paths: ["Direction", "Phase"],
+      root: "Planetary",
+    },
+    {
+      operator: TAG_OPERATORS.isAnyOf,
+      paths: ["Solar", "Lunar"],
+      root: "Eclipse",
+    },
+    {
+      operator: TAG_OPERATORS.isAnyOf,
+      paths: ["Monthly Cycle", "Apsides"],
+      root: "Lunar",
+    },
+    {
+      operator: TAG_OPERATORS.isAnyOf,
+      paths: [
+        "Solstice",
+        "Equinox",
+        "Cross-Quarter Day",
+        "Hexadecan",
+        "Interval",
+        "Perihelion",
+        "Aphelion",
+        "Advancing",
+        "Retreating",
+      ],
+      root: "Yearly",
+    },
   ],
-  root: "Type",
+};
+
+/** Major aspects, as a rule. */
+const MAJOR_ASPECTS: PresetRule = {
+  operator: TAG_OPERATORS.isAnyOf,
+  paths: ["Simple / Major"],
+  root: "Aspect",
+};
+
+/** A planet's whole stay in a sign, as a rule. */
+const SIGN_STAYS: PresetRule = {
+  operator: TAG_OPERATORS.isAnyOf,
+  paths: ["Stay / Full Sign"],
+  root: "Ingress",
 };
 
 /** Presets in menu order; missing tags are skipped, not fatal. */
 export const PRESETS: readonly Preset[] = [
   {
     description:
-      "Major aspects between the planets, sign ingresses, stations, eclipses and the long cycles, without the Moon's fast changes. About ten events a day.",
+      "Major aspects between the planets, planets in signs, eclipses and the long cycles, without the Moon's fast changes. About ten events a day.",
     filter: {
       combinator: EventFilterCombinator.OR,
       rules: [
         {
           combinator: EventFilterCombinator.AND,
-          rules: [
-            {
-              operator: TAG_OPERATORS.isAnyOf,
-              paths: [
-                "Aspect / Simple Aspect / Major Aspect",
-                "Ingress / Sign Ingress",
-              ],
-              root: "Type",
-            },
-            WITHOUT_THE_MOON,
-          ],
+          rules: [MAJOR_ASPECTS, WITHOUT_THE_MOON],
+        },
+        {
+          combinator: EventFilterCombinator.AND,
+          rules: [SIGN_STAYS, WITHOUT_THE_MOON],
         },
         LONG_CYCLES,
       ],
@@ -62,14 +93,7 @@ export const PRESETS: readonly Preset[] = [
       "Conjunctions, sextiles, squares, trines and oppositions between planets, without the Moon.",
     filter: {
       combinator: EventFilterCombinator.AND,
-      rules: [
-        {
-          operator: TAG_OPERATORS.isAnyOf,
-          paths: ["Aspect / Simple Aspect / Major Aspect"],
-          root: "Type",
-        },
-        WITHOUT_THE_MOON,
-      ],
+      rules: [MAJOR_ASPECTS, WITHOUT_THE_MOON],
     },
     id: "major-aspects",
     name: "Major aspects",
@@ -82,8 +106,8 @@ export const PRESETS: readonly Preset[] = [
       rules: [
         {
           operator: TAG_OPERATORS.isAnyOf,
-          paths: ["Aspect"],
-          root: "Type",
+          paths: ["Simple", "Compound"],
+          root: "Aspect",
         },
         WITHOUT_THE_MOON,
       ],
@@ -99,8 +123,8 @@ export const PRESETS: readonly Preset[] = [
       rules: [
         {
           operator: TAG_OPERATORS.isAnyOf,
-          paths: ["Aspect / Compound Aspect"],
-          root: "Type",
+          paths: ["Compound"],
+          root: "Aspect",
         },
         WITHOUT_THE_MOON,
       ],
@@ -110,14 +134,14 @@ export const PRESETS: readonly Preset[] = [
   },
   {
     description:
-      "A planet entering a sign, a decan, or the peak of a sign: the ingresses and the transits between them.",
+      "A planet's stay in a sign, in a decan of one, or in half of one.",
     filter: {
       combinator: EventFilterCombinator.AND,
       rules: [
         {
           operator: TAG_OPERATORS.isAnyOf,
-          paths: ["Ingress"],
-          root: "Type",
+          paths: ["Stay"],
+          root: "Ingress",
         },
       ],
     },
@@ -139,12 +163,8 @@ export const PRESETS: readonly Preset[] = [
       rules: [
         {
           operator: TAG_OPERATORS.isAnyOf,
-          paths: [
-            "Cycle / Daily Solar Cycle",
-            "Cycle / Daily Lunar Cycle",
-            "Twilight",
-          ],
-          root: "Type",
+          paths: ["Solar", "Lunar", "Twilight"],
+          root: "Daily",
         },
       ],
     },

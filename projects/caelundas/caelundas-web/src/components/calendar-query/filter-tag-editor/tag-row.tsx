@@ -5,7 +5,10 @@ import { Checkbox } from "@codebase/presentation";
 import {
   INDENT_REM,
   INDETERMINATE_CLASS_NAME,
+  TAG_NOTE,
 } from "./filter-tag-editor.constants";
+import { describeHandle, showsPickCount } from "./filter-tag-editor.utilities";
+import { TagRowDetail } from "./tag-row-detail";
 
 import type { TagTreeRow } from "./event-filter-tag-tree.types";
 import type { KeyboardEvent, ReactNode } from "react";
@@ -36,6 +39,7 @@ export function TagRow(properties: Readonly<TagRowProperties>): ReactNode {
   // 🏗 Setup
   const { item } = row;
   const checked = row.state === "checked";
+  const note = TAG_NOTE.safeParse(item.data).data?.note;
 
   // 💪 Handlers
 
@@ -54,7 +58,11 @@ export function TagRow(properties: Readonly<TagRowProperties>): ReactNode {
         aria-selected={checked}
         className="hover:bg-accent focus-visible:bg-accent flex w-full cursor-default items-center gap-1 rounded-md py-1 pr-2 text-sm outline-hidden"
         onClick={() => {
-          onToggle(item.value);
+          if (row.isFolder) {
+            onOpenChange(item.value, !row.isExpanded);
+          } else {
+            onToggle(item.value);
+          }
         }}
         onKeyDown={(event) => {
           onKeyDown(event, row);
@@ -66,7 +74,7 @@ export function TagRow(properties: Readonly<TagRowProperties>): ReactNode {
         {row.hasChildren ? (
           <button
             aria-expanded={row.isExpanded}
-            aria-label={`${row.isExpanded ? "Collapse" : "Expand"} ${row.name}`}
+            aria-label={describeHandle(row)}
             className="text-muted-foreground hover:bg-muted flex size-5 shrink-0 items-center justify-center rounded-sm"
             onClick={(event) => {
               event.stopPropagation();
@@ -93,15 +101,28 @@ export function TagRow(properties: Readonly<TagRowProperties>): ReactNode {
             className="size-5 shrink-0"
           />
         )}
-        <Checkbox
-          aria-hidden="true"
-          checked={checked}
-          className={INDETERMINATE_CLASS_NAME}
-          indeterminate={row.state === "partial"}
-          tabIndex={-1}
-        />
-        <span className="min-w-0 grow truncate">{row.name}</span>
-        {row.hasChildren && !row.isExpanded && row.selectedBelow > 0 ? (
+        {row.isFolder ? null : (
+          <Checkbox
+            aria-hidden="true"
+            checked={checked}
+            className={INDETERMINATE_CLASS_NAME}
+            indeterminate={row.state === "partial"}
+            tabIndex={-1}
+          />
+        )}
+        {item.icon === undefined ? null : (
+          <span className="text-muted-foreground flex shrink-0 items-center">
+            {item.icon}
+          </span>
+        )}
+        <span className="flex min-w-0 grow flex-col">
+          <span className="truncate">{row.name}</span>
+          <TagRowDetail
+            item={item}
+            note={note}
+          />
+        </span>
+        {showsPickCount(row) ? (
           <span className="bg-primary text-primary-foreground shrink-0 rounded-full px-1.5 text-xs tabular-nums">
             {row.selectedBelow}
           </span>

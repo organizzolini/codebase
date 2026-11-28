@@ -1,3 +1,5 @@
+import { TAG_ALSO_UNDER, TAG_FOLDER } from "./filter-tag-editor.constants";
+
 import type {
   TagCheckState,
   TagOptionData,
@@ -77,10 +79,24 @@ export function getTagStates(
 }
 
 /**
+ * Reads the other parents of a tag listed under several, as paths from the root; none for a tag with one.
+ */
+export function readAlsoUnder(item: FilterOption): readonly string[] {
+  return TAG_ALSO_UNDER.safeParse(item.data).data?.alsoUnder ?? [];
+}
+
+/**
  * Reads how deep a tag option sits, 0 for one with no depth.
  */
 export function readDepth(item: FilterOption): number {
   return readData(item)?.depth ?? 0;
+}
+
+/**
+ * Whether a tag option is a folder: listed to open its tags, but not offered to pick.
+ */
+export function readFolder(item: FilterOption): boolean {
+  return TAG_FOLDER.safeParse(item.data).data?.folder === true;
 }
 
 /**
@@ -101,9 +117,10 @@ export function toggleTag(
   const covered = coverLeaves(items, selected, shape);
   const wasFull = fillFromLeaves(shape, covered)[index] ?? false;
 
-  for (let leaf = index; leaf < numberAt(shape.end, index); leaf += 1) {
-    covered[leaf] = shape.leaf[leaf] === true && !wasFull;
-  }
+  setLeavesById({ items, shape }, covered, {
+    ids: leafIdsIn(items, shape, index),
+    value: !wasFull,
+  });
 
   return readPicks(items, shape, fillFromLeaves(shape, covered));
 }
@@ -187,14 +204,21 @@ function coverLeaves(
   let coveredUntil = 0;
 
   for (const [index, item] of items.entries()) {
-    const picked = selected.includes(item.value);
-
-    if (picked) {
+    if (selected.includes(item.value)) {
       coveredUntil = Math.max(coveredUntil, numberAt(shape.end, index));
     }
 
     covered.push(shape.leaf[index] === true && index < coveredUntil);
   }
+
+  // A tag listed under two parents is one tag, so what covers it in one place covers it in every place.
+  const ids = new Set(
+    items
+      .filter((_item, index) => covered[index] === true)
+      .map(({ value }) => value),
+  );
+
+  setLeavesById({ items, shape }, covered, { ids, value: true });
 
   return covered;
 }
@@ -225,6 +249,50 @@ function fillFromLeaves(
   }
 
   return full;
+}
+
+/**
+ * Whether the leaves of the pick at `index` are all taken by another pick that takes more, or the same and comes first.
+ */
+function isTakenIn(
+  leaves: readonly ReadonlySet<string>[],
+  index: number,
+): boolean {
+  const mine = leaves[index] ?? new Set<string>();
+
+  // Loops rather than callbacks, which would count as more frames.
+  for (const [other, theirs] of leaves.entries()) {
+    let holds = other !== index;
+
+    for (const leaf of mine) {
+      holds = holds && theirs.has(leaf);
+    }
+
+    if (holds && (theirs.size > mine.size || other < index)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * The tags with none beneath them in the subtree at an index, by id.
+ */
+function leafIdsIn(
+  items: readonly FilterOption[],
+  shape: TagShape,
+  index: number,
+): Set<string> {
+  const ids = new Set<string>();
+
+  for (let at = index; at < (shape.end[index] ?? index + 1); at += 1) {
+    if (shape.leaf[at] === true) {
+      ids.add(items[at]?.value ?? "");
+    }
+  }
+
+  return ids;
 }
 
 /**
@@ -294,26 +362,49 @@ function readName(item: FilterOption): string {
 }
 
 /**
- * The fewest tags that cover every full tag: a full tag stands for every tag
- * beneath it, which are skipped.
+ * The fewest tags that cover every full tag, one another pick takes in dropped.
  */
 function readPicks(
   items: readonly FilterOption[],
   shape: TagShape,
   full: readonly boolean[],
 ): string[] {
-  const picks: string[] = [];
+  const picks: number[] = [];
+  const leaves: Set<string>[] = [];
+  const kept = new Set<string>();
 
   for (let at = 0; at < items.length;) {
     if (full[at]) {
-      picks.push(items[at]?.value ?? "");
+      picks.push(at);
+      leaves.push(leafIdsIn(items, shape, at));
       at = shape.end[at] ?? at + 1;
     } else {
       at += 1;
     }
   }
 
-  return picks;
+  for (const [index, at] of picks.entries()) {
+    if (!isTakenIn(leaves, index)) {
+      kept.add(items[at]?.value ?? "");
+    }
+  }
+
+  return [...kept];
+}
+
+/**
+ * Sets every leaf listed under one of `ids` to `value`: a tag under two parents is one tag, wherever it is listed.
+ */
+function setLeavesById(
+  tags: Readonly<{ items: readonly FilterOption[]; shape: TagShape }>,
+  covered: boolean[],
+  change: Readonly<{ ids: ReadonlySet<string>; value: boolean }>,
+): void {
+  for (const [at, item] of tags.items.entries()) {
+    if (tags.shape.leaf[at] === true && change.ids.has(item.value)) {
+      covered[at] = change.value;
+    }
+  }
 }
 
 /**
@@ -335,6 +426,7 @@ function toTagTreeRow(
     depth,
     hasChildren,
     isExpanded,
+    isFolder: readFolder(item),
     item,
     name: readName(item),
     selectedBelow: 0,

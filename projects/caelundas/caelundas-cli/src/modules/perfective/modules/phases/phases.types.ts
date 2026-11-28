@@ -5,6 +5,11 @@ import type {
   IlluminationEphemeris,
   IlluminationEphemerisBody,
 } from "../../../ephemeris/ephemeris.types";
+import type {
+  ELONGATION_PLANETS,
+  ELONGATION_SIDES,
+  MARS_PLANET,
+} from "./phases.constants";
 import type { Moment } from "moment-timezone";
 
 /**
@@ -66,6 +71,20 @@ export interface ElongationLongitudeArguments {
   previousLatitudeSun: number;
   previousLongitudePlanet: number;
   previousLongitudeSun: number;
+}
+
+/** One half of an apparition, between two points. */
+export interface ElongationSpanKind {
+  /** The tag of the point the span begins at. */
+  from: string;
+  /** The planet whose apparition it is. */
+  planet: (typeof ELONGATION_PLANETS)[number] | typeof MARS_PLANET;
+  /** The side of the Sun the apparition is on. */
+  side: (typeof ELONGATION_SIDES)[number];
+  /** Widening or closing. */
+  stage: string;
+  /** The tag of the point the span ends at. */
+  to: string;
 }
 
 /** Arguments used to sample current ephemeris values. */

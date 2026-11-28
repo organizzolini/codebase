@@ -41,6 +41,7 @@ describe(RenderOptionsService, () => {
         },
         diagram: "flowchart",
         entities: ["src/**/*.entity.ts"],
+        fields: { icon: "icon", note: "note", rank: "rank" },
         filters: [],
         outputs: { json: undefined, markdown: undefined, overwrite: false },
         paging: undefined,

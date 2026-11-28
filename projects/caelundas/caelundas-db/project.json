@@ -56,6 +56,24 @@
     "knip": {},
     "lint-code": {},
     "markdown-lint": {},
+    "metric-expressions": {
+      "cache": false,
+      "configurations": {
+        "check": {
+          "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/caelundas-cli.main.ts metric-expressions --output-markdown ../caelundas-db/documentation/metric-expressions.md --check"
+        },
+        "write": {
+          "command": "SWC_NODE_PROJECT=configuration/tsconfig.json node --import @swc-node/register/esm-register src/caelundas-cli.main.ts metric-expressions --output-markdown ../caelundas-db/documentation/metric-expressions.md"
+        }
+      },
+      "defaultConfiguration": "write",
+      "description": "Draw the metric expression trees from the local database as one Mermaid flowchart per metric, with a table of their infix expressions, in documentation/metric-expressions.md, through the caelundas-cli metric-expressions command; the check configuration fails when the file differs. Export CAELUNDAS_POSTGRES_* first",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}/projects/caelundas/caelundas-cli"
+      },
+      "outputs": ["{projectRoot}/documentation/metric-expressions.md"]
+    },
     "migration": {
       "options": {
         "module": "src/modules/database"
@@ -69,7 +87,16 @@
       "description": "Draw the caelundas constellation figures as a Mermaid flowchart from the local database, one subgraph per constellation titled with its name; pass --args=\"--limit 8 --output-markdown constellations.md\" for the filter, sort, paging and output options",
       "executor": "nx:run-commands",
       "options": {
-        "command": "SWC_NODE_PROJECT=projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register projects/common/persistence/src/persistence.main.ts render-graph-data --source-uri \"postgresql://${CAELUNDAS_POSTGRES_USERNAME:?set CAELUNDAS_POSTGRES_USERNAME}:${CAELUNDAS_POSTGRES_PASSWORD:?set CAELUNDAS_POSTGRES_PASSWORD}@${CAELUNDAS_POSTGRES_HOST:-localhost}:${CAELUNDAS_POSTGRES_PORT:-5432}/${CAELUNDAS_POSTGRES_DATABASE:?set CAELUNDAS_POSTGRES_DATABASE}\" --schema \"${CAELUNDAS_POSTGRES_SCHEMA:-caelundas}\" --entities 'projects/caelundas/caelundas-db/src/**/constellation.entity.ts' --table constellations {args}",
+        "command": "SWC_NODE_PROJECT=projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register projects/common/persistence/src/persistence.main.ts render-graph-data --source-uri \"postgresql://${CAELUNDAS_POSTGRES_USERNAME:?set CAELUNDAS_POSTGRES_USERNAME}:${CAELUNDAS_POSTGRES_PASSWORD:?set CAELUNDAS_POSTGRES_PASSWORD}@${CAELUNDAS_POSTGRES_HOST:-localhost}:${CAELUNDAS_POSTGRES_PORT:-5432}/${CAELUNDAS_POSTGRES_DATABASE:?set CAELUNDAS_POSTGRES_DATABASE}\" --schema \"${CAELUNDAS_POSTGRES_SCHEMA:-caelundas}\" --entities 'projects/caelundas/caelundas-db/src/**/night-sky/*.entity.ts' --table constellation_edges {args}",
+        "cwd": "{workspaceRoot}"
+      }
+    },
+    "render-tag-graph": {
+      "cache": false,
+      "description": "Draw the caelundas tag graph, one arrow from each tag to each tag beneath it, as a Mermaid flowchart from the local database with the render-graph-data command; a tag under two parents has two arrows into it; pass --args=\"--limit 8 --output-markdown tags.md\" for the filter, sort, paging and output options",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "SWC_NODE_PROJECT=projects/common/persistence/configuration/tsconfig.json node --import @swc-node/register/esm-register projects/common/persistence/src/persistence.main.ts render-graph-data --source-uri \"postgresql://${CAELUNDAS_POSTGRES_USERNAME:?set CAELUNDAS_POSTGRES_USERNAME}:${CAELUNDAS_POSTGRES_PASSWORD:?set CAELUNDAS_POSTGRES_PASSWORD}@${CAELUNDAS_POSTGRES_HOST:-localhost}:${CAELUNDAS_POSTGRES_PORT:-5432}/${CAELUNDAS_POSTGRES_DATABASE:?set CAELUNDAS_POSTGRES_DATABASE}\" --schema \"${CAELUNDAS_POSTGRES_SCHEMA:-caelundas}\" --entities 'projects/caelundas/caelundas-db/src/**/tag.entity.ts' --table tags {args}",
         "cwd": "{workspaceRoot}"
       }
     },

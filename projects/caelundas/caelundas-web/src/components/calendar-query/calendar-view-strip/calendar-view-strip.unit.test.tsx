@@ -4,39 +4,42 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { EMPTY_EVENT_FILTER } from "../calendar-filters/components/event-filter-model/event-filter-tree.constants";
 
 import { CalendarViewStrip } from "./calendar-view-strip";
+import { resolveViews } from "./calendar-view-strip.utilities";
 
 import type { EventFilterQuery } from "../calendar-filters/components/event-filter-model/event-filters.types";
+import type { ViewSelection } from "./calendar-view-strip.types";
 
-const PRESET = {
-  description: "Every ingress.",
-  filter: {
-    combinator: "and" as const,
-    id: "planet-sign-events-0",
-    rules: [
+const FACETS = [
+  {
+    id: "lunar",
+    name: "Lunar",
+    values: [
       {
-        id: "planet-sign-events-0-0",
-        operator: "is_any_of",
-        path: ["tag:tag-type"],
-        type: "rule" as const,
-        value: ["tag-ingress"],
+        count: 4,
+        depth: 1,
+        id: "monthly",
+        name: "Monthly Cycle",
+        path: "Monthly Cycle",
       },
     ],
-    type: "group" as const,
   },
-  id: "planet-sign-events",
-  name: "Planet-sign events",
-};
+];
 
-function renderStrip(query: EventFilterQuery): {
-  onSelect: ReturnType<typeof vi.fn<(filter: EventFilterQuery) => void>>;
-} {
-  const onSelect = vi.fn<(filter: EventFilterQuery) => void>();
+const [LUNAR] = resolveViews(FACETS);
+
+function renderStrip(
+  query: EventFilterQuery,
+  selection?: Pick<ViewSelection, "group" | "sort">,
+): { onSelect: ReturnType<typeof vi.fn<(next: ViewSelection) => void>> } {
+  const onSelect = vi.fn<(next: ViewSelection) => void>();
 
   render(
     <CalendarViewStrip
+      facets={FACETS}
+      group={selection?.group}
       onSelect={onSelect}
-      presets={[PRESET]}
       query={query}
+      sort={selection?.sort}
     />,
   );
 
@@ -53,9 +56,11 @@ describe(CalendarViewStrip, () => {
     render(
       <CalendarViewStrip
         className="calendar-view-strip"
+        facets={FACETS}
+        group={undefined}
         onSelect={() => {}}
-        presets={[PRESET]}
         query={EMPTY_EVENT_FILTER}
+        sort={undefined}
       />,
     );
 
@@ -64,58 +69,69 @@ describe(CalendarViewStrip, () => {
     );
   });
 
-  it("names the preset the filter tree matches", () => {
-    renderStrip(PRESET.filter);
+  it("names the view the filter, group and sort match", () => {
+    renderStrip(LUNAR?.filter ?? EMPTY_EVENT_FILTER, {
+      group: LUNAR?.group,
+      sort: LUNAR?.sort,
+    });
 
     expect(screen.getByRole("group", { name: "Saved view" }).textContent).toBe(
-      "ViewPlanet-sign events",
+      "ViewLunar Phases",
     );
   });
 
-  it("names all events when nothing is filtered", () => {
+  it("names All Events when nothing is filtered, grouped or sorted", () => {
     renderStrip(EMPTY_EVENT_FILTER);
 
     expect(screen.getByRole("group", { name: "Saved view" }).textContent).toBe(
-      "ViewAll events",
+      "ViewAll Events",
     );
   });
 
-  it("names a filter that matches no preset Custom", () => {
-    renderStrip({
-      ...PRESET.filter,
-      rules: [{ ...PRESET.filter.rules[0], value: ["tag-other"] }],
-    } as EventFilterQuery);
+  it("names a change away from a view Custom", () => {
+    renderStrip(LUNAR?.filter ?? EMPTY_EVENT_FILTER);
 
     expect(screen.getByRole("group", { name: "Saved view" }).textContent).toBe(
       "ViewCustom",
     );
   });
 
-  it("applies the preset picked from the searchable list", async () => {
+  it("applies the filter, group and sort of the view picked", async () => {
     const { onSelect } = renderStrip(EMPTY_EVENT_FILTER);
 
     fireEvent.click(screen.getByRole("button", { name: "View" }));
     fireEvent.click(
-      await screen.findByRole("treeitem", { name: /Planet-sign/u }),
+      await screen.findByRole("treeitem", { name: /Lunar Phases/u }),
     );
 
-    expect(onSelect).toHaveBeenCalledWith(PRESET.filter);
+    expect(onSelect).toHaveBeenCalledWith({
+      filter: LUNAR?.filter,
+      group: LUNAR?.group,
+      sort: LUNAR?.sort,
+    });
   });
 
-  it("clears the filter when All events is picked", async () => {
-    const { onSelect } = renderStrip(PRESET.filter);
+  it("clears all three when All Events is picked", async () => {
+    const { onSelect } = renderStrip(LUNAR?.filter ?? EMPTY_EVENT_FILTER, {
+      group: LUNAR?.group,
+      sort: LUNAR?.sort,
+    });
 
     fireEvent.click(screen.getByRole("button", { name: "View" }));
     fireEvent.click(
-      await screen.findByRole("treeitem", { name: /All events/u }),
+      await screen.findByRole("treeitem", { name: /All Events/u }),
     );
 
-    expect(onSelect).toHaveBeenCalledWith(EMPTY_EVENT_FILTER);
+    expect(onSelect).toHaveBeenCalledWith({
+      filter: EMPTY_EVENT_FILTER,
+      group: undefined,
+      sort: undefined,
+    });
   });
 
   it("opens its list from the chip as well as the button", async () => {
-    renderStrip(PRESET.filter);
-    fireEvent.click(screen.getByRole("button", { name: "Planet-sign events" }));
+    renderStrip(EMPTY_EVENT_FILTER);
+    fireEvent.click(screen.getByRole("button", { name: "All Events" }));
 
     await expect(screen.findByTestId("query-cascader")).resolves.toBeDefined();
   });

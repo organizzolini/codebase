@@ -159,16 +159,16 @@ export const symbolBySextupleAspect = {
 
 /** Maps stelliums (3+ planets together) to emoji. */
 export const symbolByStellium = {
-  "decuple stellium": "☀️",
-  "duodecuple stellium": "🔥",
-  "nonuple stellium": "🔆",
+  "decuple stellium": "❇️",
+  "duodecuple stellium": "🎆",
+  "nonuple stellium": "✳️",
   "octuple stellium": "✴️",
   "quadruple stellium": "🌟",
   "quintuple stellium": "⭐",
   "septuple stellium": "🌠",
   "sextuple stellium": "💫",
   "triple stellium": "✨",
-  "undecuple stellium": "🌞",
+  "undecuple stellium": "🎇",
 } as const;
 
 // 🔁 Orbital Directions
@@ -239,7 +239,6 @@ export const symbolByVenusianPhase = {
 
   "morning rise": "🌄↥",
   "morning set": "🌄↧",
-  "morning station": "🌄⏹️",
   "western brightest": "🔆",
   "western elongation": "⬅️📏",
 
@@ -250,7 +249,6 @@ export const symbolByVenusianPhase = {
   "eastern elongation": "📏➡️",
   "evening rise": "🌇↥",
   "evening set": "🌇↧",
-  "evening station": "🌇⏹️",
 } as const;
 
 // ☿️ Mercurian Phases
@@ -287,7 +285,6 @@ export const symbolByMartianPhase = {
   "morning first": "🌄🌖",
   "morning rise": "🌄↥",
   "morning set": "🌄↧",
-  "morning station": "🌄⏹️",
 
   "evening star": "🌇🌟",
   full: "🌕",
@@ -298,5 +295,4 @@ export const symbolByMartianPhase = {
   "evening last": "🌇🌘",
   "evening rise": "🌇↥",
   "evening set": "🌇↧",
-  "evening station": "🌇⏹️",
 } as const;

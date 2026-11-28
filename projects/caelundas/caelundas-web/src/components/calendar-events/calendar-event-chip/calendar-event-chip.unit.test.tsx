@@ -9,14 +9,13 @@ import type { CalendarEventRecord } from "../../calendar-display/events-calendar
 
 const EVENT: CalendarEventRecord = {
   color: null,
-  description: "Mars perfective square Saturn",
   durationMinutes: 0,
   end: new Date("2026-03-03T10:00:00.000Z"),
   groups: [],
   id: "event-mars-square-saturn",
-  location: null,
+  name: "♂ □ ♄ Mars perfective square Saturn",
+  note: "Mars perfective square Saturn",
   start: new Date("2026-03-03T10:00:00.000Z"),
-  summary: "♂ □ ♄ Mars perfective square Saturn",
   tags: [],
   timezone: "America/New_York",
 };
@@ -49,14 +48,15 @@ describe(CalendarEventChip, () => {
   it("spells out the name and description for a screen reader", () => {
     render(
       <CalendarEventChip
-        description="Type / Aspect. Instant"
+        description="Aspect / Simple. Instant"
         event={EVENT}
       />,
     );
 
     expect(
-      screen.getByText("Mars perfective square Saturn. Type / Aspect. Instant")
-        .className,
+      screen.getByText(
+        "Mars perfective square Saturn. Aspect / Simple. Instant",
+      ).className,
     ).toBe("sr-only");
   });
 
@@ -64,7 +64,7 @@ describe(CalendarEventChip, () => {
     render(
       <CalendarEventChip
         description="Duration"
-        event={{ ...EVENT, description: "", summary: "Mars Retrograde" }}
+        event={{ ...EVENT, name: "Mars Retrograde", note: "" }}
       />,
     );
 
@@ -106,7 +106,7 @@ describe(CalendarEventChip, () => {
 
     rerender(
       <CalendarEventChip
-        event={{ ...EVENT, description: "", summary: "Mars Retrograde" }}
+        event={{ ...EVENT, name: "Mars Retrograde", note: "" }}
       />,
     );
 

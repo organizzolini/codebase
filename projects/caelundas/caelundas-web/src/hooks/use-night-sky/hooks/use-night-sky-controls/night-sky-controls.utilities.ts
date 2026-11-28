@@ -51,22 +51,22 @@ export function toConstellationsChange(
   words: readonly string[],
 ): SkySearchChange {
   if (words.length === 1 && words[0] === "all") {
-    return { "sky.constellations": undefined };
+    return { "skyfield.constellations": undefined };
   }
 
   return {
-    "sky.constellations": words.length === 0 ? "none" : words.join(","),
+    "skyfield.constellations": words.length === 0 ? "none" : words.join(","),
   };
 }
 
 // 🌎 Public Functions
 
 /**
- * The change that hides the ecliptic, with `sky.ecliptic=false`, or removes
+ * The change that hides the ecliptic, with `skyfield.ecliptic=false`, or removes
  * the key to draw it, its default.
  */
 export function toEclipticChange(visible: boolean): SkySearchChange {
-  return { "sky.ecliptic": visible ? undefined : false };
+  return { "skyfield.ecliptic": visible ? undefined : false };
 }
 
 /** Shows or hides one constellation's figure among those chosen, renaming the choice tersely: `all`, the zodiac plus others, or each name. */
@@ -112,11 +112,11 @@ export function toSkyParameterChange(
 }
 
 /**
- * The change that shows the sky, by removing `sky`, or hides it with
- * `sky=off`.
+ * The change that shows the sky, by removing `skyfield`, or hides it with
+ * `skyfield=off`.
  */
 export function toVisibilityChange(visible: boolean): SkySearchChange {
-  return { sky: visible ? undefined : "off" };
+  return { skyfield: visible ? undefined : "off" };
 }
 
 /**

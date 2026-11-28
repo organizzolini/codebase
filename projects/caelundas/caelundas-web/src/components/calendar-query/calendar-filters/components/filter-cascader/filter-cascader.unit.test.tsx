@@ -70,4 +70,66 @@ describe(FilterCascader, () => {
       }),
     );
   });
+
+  it("removes the rule when its last value is unchecked", async () => {
+    const onQueryChange = vi.fn<(query: EventFilterQuery) => void>();
+
+    render(
+      <FilterCascader
+        fields={FIELDS}
+        onQueryChange={onQueryChange}
+        query={{
+          combinator: "and",
+          id: "root",
+          rules: [
+            {
+              id: "tag:type-picked",
+              operator: "is_any_of",
+              path: ["tag:type"],
+              type: "rule",
+              value: ["ingress"],
+            },
+          ],
+          type: "group",
+        }}
+      />,
+    );
+    fireEvent.click(screen.getByText("Type"));
+    fireEvent.click(await screen.findByText("Ingress"));
+
+    expect(onQueryChange).toHaveBeenCalledWith(
+      expect.objectContaining({ rules: [] }),
+    );
+  });
+
+  it("lists a Date item that opens the picker, when it is given a way to", () => {
+    const onDateOpen = vi.fn<() => void>();
+
+    render(
+      <FilterCascader
+        fields={FIELDS}
+        onDateOpen={onDateOpen}
+        onQueryChange={() => {}}
+        query={EMPTY_EVENT_FILTER}
+      />,
+    );
+
+    expect(screen.getByText("The days the view shows")).toBeDefined();
+
+    fireEvent.click(screen.getByText("Date"));
+
+    expect(onDateOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it("has no Date item without one", () => {
+    render(
+      <FilterCascader
+        fields={FIELDS}
+        onQueryChange={() => {}}
+        query={EMPTY_EVENT_FILTER}
+      />,
+    );
+
+    expect(screen.queryByText("Date")).toBeNull();
+  });
 });

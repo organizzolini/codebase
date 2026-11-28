@@ -19,6 +19,10 @@ import { WindowsService } from "./modules/windows/windows.service";
 import type { EntityManager } from "typeorm";
 
 const query = vi.fn<EntityManager["query"]>();
+const transaction = vi.fn(
+  async (run: (manager: { query: typeof query }) => Promise<unknown>) =>
+    run({ query }),
+);
 
 describe(EventsService, () => {
   let service: EventsService;
@@ -34,7 +38,7 @@ describe(EventsService, () => {
         EventGroupingService,
         PresetsService,
         WindowsService,
-        { provide: getEntityManagerToken(), useValue: { query } },
+        { provide: getEntityManagerToken(), useValue: { query, transaction } },
       ],
     }));
   });
@@ -121,22 +125,21 @@ describe(EventsService, () => {
 
     query.mockResolvedValueOnce([
       {
-        color: null,
-        description: "Mars stations retrograde",
         duration_minutes: 90,
         end,
         id: "event-1",
-        location: null,
+        name: "Mars Retrograde",
+        note: "Mars stations retrograde",
         start,
         start_local_day: "2026-03-04",
         start_local_hour: 22,
-        summary: "Mars Retrograde",
         tags: [
           {
             depth: 2,
             id: "tag-1",
             name: "Retrograde",
             path: "Planet / Mars / Retrograde",
+            slug: "retrograde",
           },
         ],
         timezone: "America/New_York",
@@ -150,23 +153,22 @@ describe(EventsService, () => {
       }),
     ).resolves.toStrictEqual([
       {
-        color: null,
-        description: "Mars stations retrograde",
         durationMinutes: 90,
         end,
         groups: [],
         id: "event-1",
-        location: null,
+        name: "Mars Retrograde",
+        note: "Mars stations retrograde",
         start,
         startLocalDay: "2026-03-04",
         startLocalHour: 22,
-        summary: "Mars Retrograde",
         tags: [
           {
             depth: 2,
             id: "tag-1",
             name: "Retrograde",
             path: "Planet / Mars / Retrograde",
+            slug: "retrograde",
           },
         ],
         timezone: "America/New_York",
@@ -231,18 +233,16 @@ describe(EventsService, () => {
 
     query.mockResolvedValueOnce([
       {
-        color: null,
-        description: "Mars stations retrograde",
         duration_minutes: 90,
         end: day,
         group_0: [{ key: "2026", label: null, path: null }],
         group_1: [],
         id: "event-1",
-        location: null,
+        name: "Mars Retrograde",
+        note: "Mars stations retrograde",
         start: day,
         start_local_day: "2026-03-04",
         start_local_hour: 22,
-        summary: "Mars Retrograde",
         tags: [],
         timezone: "America/New_York",
       },
@@ -265,14 +265,16 @@ describe(EventsService, () => {
           },
         ],
       },
-      [
-        { field: "year", tags: [] },
-        { field: "tag:0199b1a0-0000-7000-8000-000000000002", tags: [] },
-      ],
+      {
+        grouping: [
+          { field: "year", tags: [] },
+          { field: "tag:0199b1a0-0000-7000-8000-000000000002", tags: [] },
+        ],
+      },
     );
 
     expect(events.at(0)?.groups).toStrictEqual([
-      [{ key: "2026", label: null, path: null }],
+      [{ key: "2026", label: null, path: null, rank: null }],
       [],
     ]);
     expect(query).toHaveBeenLastCalledWith(
@@ -345,12 +347,32 @@ describe(EventsService, () => {
       name,
       path_below_root,
       root_id,
+      slug: name.toLowerCase(),
+      tag_rank: [root_id, ...path_below_root.split(" / ").filter(Boolean)]
+        .map((level) => `00000:${level}`)
+        .join(" / "),
     });
 
     query.mockResolvedValueOnce([
       row("planet", "Planet", "0", "planet", "", "0"),
-      row("mars", "Mars", "1", "planet", "Mars", "2"),
-      row("retrograde", "Retrograde", "2", "planet", "Mars / Retrograde", "1"),
+      {
+        ...row("mars", "Mars", "1", "planet", "Mars", "2"),
+        is_filterable: false,
+        is_sortable: false,
+      },
+      {
+        ...row(
+          "retrograde",
+          "Retrograde",
+          "2",
+          "planet",
+          "Mars / Retrograde",
+          "1",
+        ),
+        icon: "rotate-ccw",
+        note: "Moving backward.",
+        parent_path: "planet / Mars",
+      },
     ]);
 
     await expect(
@@ -360,16 +382,48 @@ describe(EventsService, () => {
       }),
     ).resolves.toStrictEqual([
       {
+        icon: null,
         id: "planet",
+        isDefaultGroup: true,
+        isFilterable: true,
+        isGroupable: true,
+        isSelectable: true,
+        isSortable: true,
         name: "Planet",
+        note: null,
+        slug: "planet",
         values: [
-          { count: 2, depth: 1, id: "mars", name: "Mars", path: "Mars" },
           {
+            alsoUnder: [],
+            count: 2,
+            depth: 1,
+            icon: null,
+            id: "mars",
+            isDefaultGroup: true,
+            isFilterable: false,
+            isGroupable: true,
+            isSelectable: true,
+            isSortable: false,
+            name: "Mars",
+            note: null,
+            path: "Mars",
+            slug: "mars",
+          },
+          {
+            alsoUnder: [],
             count: 1,
             depth: 2,
+            icon: "rotate-ccw",
             id: "retrograde",
+            isDefaultGroup: true,
+            isFilterable: true,
+            isGroupable: true,
+            isSelectable: true,
+            isSortable: true,
             name: "Retrograde",
+            note: "Moving backward.",
             path: "Mars / Retrograde",
+            slug: "retrograde",
           },
         ],
       },
@@ -394,6 +448,10 @@ describe(EventsService, () => {
       name: path_below_root,
       path_below_root,
       root_id: "harmonic",
+      slug: path_below_root.toLowerCase().replaceAll(" ", "-"),
+      tag_rank: ["harmonic", ...path_below_root.split(" / ").filter(Boolean)]
+        .map((level) => `00000:${level}`)
+        .join(" / "),
     });
 
     query.mockResolvedValueOnce([
@@ -409,6 +467,150 @@ describe(EventsService, () => {
       "Harmonic 1",
       "Harmonic 2",
       "Harmonic 10",
+    ]);
+  });
+
+  it("orders siblings by their rank before their names, under each parent", async () => {
+    expect.hasAssertions();
+
+    const row = (
+      id: string,
+      name: string,
+      rank: number,
+      parent: string,
+      path: string,
+    ): Record<string, number | string> => ({
+      count: "1",
+      depth: path.split(" / ").length,
+      id,
+      name,
+      path_below_root: path,
+      rank,
+      root_id: "sign",
+      slug: name.toLowerCase(),
+      tag_rank: [
+        "00000:Sign",
+        ...(parent === "aries" ? ["00001:Aries"] : []),
+        `0000${String(rank)}:${name}`,
+      ].join(" / "),
+    });
+
+    query.mockResolvedValueOnce([
+      {
+        count: "0",
+        depth: "0",
+        id: "sign",
+        name: "Sign",
+        path_below_root: "",
+        root_id: "sign",
+        slug: "sign",
+        tag_rank: "00000:Sign",
+      },
+      row("taurus", "Taurus", 2, "sign", "Taurus"),
+      row("aries", "Aries", 1, "sign", "Aries"),
+      row("b", "B", 2, "aries", "Aries / B"),
+      row("a", "A", 1, "aries", "Aries / A"),
+    ]);
+
+    const [facet] = await service.findFacets();
+
+    expect(facet?.values.map((value) => value.path)).toStrictEqual([
+      "Aries",
+      "Aries / A",
+      "Aries / B",
+      "Taurus",
+    ]);
+  });
+
+  it("orders the roots by their rank, one with no rank after them by name", async () => {
+    expect.hasAssertions();
+
+    const root = (
+      id: string,
+      rank: number,
+    ): Record<string, number | string> => ({
+      count: "0",
+      depth: "0",
+      id,
+      name: id,
+      path_below_root: "",
+      rank,
+      root_id: id,
+      slug: id,
+      tag_rank: `00000:${id}`,
+    });
+
+    query.mockResolvedValueOnce([
+      root("aspect", 3),
+      root("zeta", 0),
+      root("sign", 1),
+      root("alpha", 0),
+      root("body", 2),
+    ]);
+
+    const facets = await service.findFacets();
+
+    expect(facets.map((facet) => facet.name)).toStrictEqual([
+      "sign",
+      "body",
+      "aspect",
+      "alpha",
+      "zeta",
+    ]);
+  });
+
+  it("lists a tag with two parents once a path, each naming where else it sits", async () => {
+    expect.hasAssertions();
+
+    const row = (
+      id: string,
+      depth: string,
+      path: string,
+      parentPath: null | string,
+      rank: string,
+    ): Record<string, null | string> => ({
+      count: "4",
+      depth,
+      id,
+      name: path.split(" / ").at(-1) ?? "Body",
+      parent_id:
+        parentPath === null ? null : (parentPath.split(" / ").at(-1) ?? null),
+      parent_path: parentPath,
+      path_below_root: path,
+      root_id: "body",
+      slug: "x",
+      tag_rank: rank,
+    });
+
+    query.mockResolvedValueOnce([
+      row("body", "0", "", null, "00000:Body"),
+      row("planet", "1", "Planet", "Body", "00000:Body / 00002:Planet"),
+      row(
+        "venus",
+        "2",
+        "Planet / Venus",
+        "Body / Planet",
+        "00000:Body / 00002:Planet / 00001:Venus",
+      ),
+      row("benefic", "1", "Benefic", "Body", "00000:Body / 00003:Benefic"),
+      row(
+        "venus",
+        "2",
+        "Benefic / Venus",
+        "Body / Benefic",
+        "00000:Body / 00003:Benefic / 00002:Venus",
+      ),
+    ]);
+
+    const [facet] = await service.findFacets();
+
+    expect(
+      facet?.values.map(({ alsoUnder, id, path }) => [id, path, alsoUnder]),
+    ).toStrictEqual([
+      ["planet", "Planet", []],
+      ["venus", "Planet / Venus", ["Body / Benefic"]],
+      ["benefic", "Benefic", []],
+      ["venus", "Benefic / Venus", ["Body / Planet"]],
     ]);
   });
 
@@ -439,9 +641,11 @@ describe(EventsService, () => {
         count: "0",
         depth: "0",
         id: "planetary",
-        name: "Type",
+        name: "Planetary",
         path_below_root: "",
         root_id: "planetary",
+        slug: "planetary",
+        tag_rank: "00000:Planetary",
       },
       {
         count: "3",
@@ -450,6 +654,8 @@ describe(EventsService, () => {
         name: "Direction",
         path_below_root: "Direction",
         root_id: "planetary",
+        slug: "direction",
+        tag_rank: "00000:Planetary / 00000:Direction",
       },
     ]);
 

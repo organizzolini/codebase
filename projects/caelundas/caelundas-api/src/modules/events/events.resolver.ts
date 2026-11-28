@@ -15,6 +15,7 @@ import { EventGroupingEntity } from "./modules/grouping/event-grouping.entities"
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
 import { PresetEntity } from "./modules/presets/preset.entities";
 import { DEFAULT_PRESET_ID } from "./modules/presets/presets.constants";
+import { TagFlagsService } from "./modules/tag-flags/tag-flags.service";
 import { PeriodInput } from "./modules/windows/period-input.entities";
 import { WindowsArguments } from "./modules/windows/windows-arguments.entities";
 import { WindowsEntity } from "./modules/windows/windows.entities";
@@ -32,6 +33,7 @@ export class EventsResolver {
     @Inject(EventGroupingService)
     private readonly groupingService: EventGroupingService,
     @Inject(EventsService) private readonly eventsService: EventsService,
+    @Inject(TagFlagsService) private readonly tagFlagsService: TagFlagsService,
   ) {}
   // 🔎 Queries
 
@@ -87,10 +89,21 @@ export class EventsResolver {
     })
     grouping?: EventGroupingEntity | null,
   ): Promise<CalendarEventEntity[]> {
+    const clean = await this.tagFlagsService.sanitize({
+      colorBy: grouping?.colorBy,
+      filter,
+      levels: grouping?.levels,
+    });
+
     return this.eventsService.findEvents(
       period,
-      this.filterService.parse(filter),
-      this.groupingService.parse(grouping),
+      this.filterService.parse(clean.filter),
+      {
+        grouping: this.groupingService.parse({
+          colorBy: clean.colorBy,
+          levels: clean.levels,
+        }),
+      },
     );
   }
 
@@ -112,9 +125,11 @@ export class EventsResolver {
     })
     filter?: EventFilterGroupEntity | null,
   ): Promise<EventFacetEntity[]> {
+    const clean = await this.tagFlagsService.sanitize({ filter });
+
     return this.eventsService.findFacets(
       period,
-      this.filterService.parse(filter),
+      this.filterService.parse(clean.filter),
     );
   }
 

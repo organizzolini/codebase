@@ -109,7 +109,6 @@ export class TwilightsBuilderService {
       tags: [
         ...TwilightsBuilderService.twilightBaseTags,
         "Astronomical Twilight",
-        "Evening",
       ],
     };
   }
@@ -129,7 +128,6 @@ export class TwilightsBuilderService {
       tags: [
         ...TwilightsBuilderService.twilightBaseTags,
         "Astronomical Twilight",
-        "Morning",
       ],
     };
   }
@@ -162,11 +160,7 @@ export class TwilightsBuilderService {
       end: ending.start,
       start: beginning.start,
       summary: "🌉 Nautical Twilight (Evening)",
-      tags: [
-        ...TwilightsBuilderService.twilightBaseTags,
-        "Nautical Twilight",
-        "Evening",
-      ],
+      tags: [...TwilightsBuilderService.twilightBaseTags, "Nautical Twilight"],
     };
   }
 
@@ -182,11 +176,7 @@ export class TwilightsBuilderService {
       end: ending.start,
       start: beginning.start,
       summary: "🌅 Nautical Twilight (Morning)",
-      tags: [
-        ...TwilightsBuilderService.twilightBaseTags,
-        "Nautical Twilight",
-        "Morning",
-      ],
+      tags: [...TwilightsBuilderService.twilightBaseTags, "Nautical Twilight"],
     };
   }
 

@@ -59,7 +59,7 @@ export function CalendarEventRow(
       data-testid="calendar-event-row"
     >
       <article
-        aria-label={`${record.summary}, ${time}`}
+        aria-label={`${record.name}, ${time}`}
         className="flex h-full items-center gap-3 border-b px-4 py-2"
       >
         <span className="text-muted-foreground w-20 shrink-0 text-xs tabular-nums">

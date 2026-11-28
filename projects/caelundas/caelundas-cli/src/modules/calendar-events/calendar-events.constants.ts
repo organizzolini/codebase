@@ -4,20 +4,18 @@ import { POSTGRES_MAXIMUM_PARAMETERS } from "../../caelundas-cli.constants";
 
 /** Columns an upsert binds; the database assigns id and stamps. */
 export const CALENDAR_EVENT_INSERT_COLUMNS = [
-  "color",
-  "description",
   "end",
   "latitude",
-  "location",
   "longitude",
+  "name",
+  "note",
   "start",
-  "summary",
   "timezone",
 ] as const;
 
 /** The columns that identify an event, which a conflicting upsert matches on. */
 export const CALENDAR_EVENT_CONFLICT_COLUMNS = [
-  "summary",
+  "name",
   "start",
   "end",
   "latitude",
@@ -27,9 +25,7 @@ export const CALENDAR_EVENT_CONFLICT_COLUMNS = [
 /** The database columns a conflicting upsert overwrites; `created_at` is kept. */
 export const CALENDAR_EVENT_UPDATE_COLUMNS = [
   "updated_at",
-  "color",
-  "description",
-  "location",
+  "note",
   "timezone",
 ] as const;
 

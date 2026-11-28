@@ -12,6 +12,7 @@ import {
   RENDER_OPTION_MESSAGES,
   RENDER_SORT_PATTERN,
   RENDER_SORT_SCHEMA,
+  RENDER_TREE_FIELDS,
   renderOptionsDiagramMessage,
   RenderOptionsError,
   renderOptionsFilterSyntaxMessage,
@@ -26,6 +27,7 @@ import type {
   GraphPaging,
   GraphPlan,
   GraphSort,
+  GraphTreeFields,
 } from "./render-options.types";
 
 /**
@@ -52,21 +54,51 @@ export function parseGraphDiagram(value: string | undefined): GraphDiagram {
 }
 
 /**
- * How the graph is drawn: the diagram and the two caps, validated together.
+ * How the graph is drawn: the diagram, the two caps and the tree fields, validated together.
  * @throws RenderOptionsError on a bad diagram or cap.
  */
 export function parseGraphDrawing({
   diagram,
+  iconField,
+  noteField,
+  rankField,
   truncateBreadth,
   truncateDepth,
-}: Pick<GraphOptions, "diagram" | "truncateBreadth" | "truncateDepth">): Pick<
+}: Pick<
+  GraphOptions,
+  | "diagram"
+  | "iconField"
+  | "noteField"
+  | "rankField"
+  | "truncateBreadth"
+  | "truncateDepth"
+>): Pick<
   GraphPlan,
-  "diagram" | "truncateBreadth" | "truncateDepth"
+  "diagram" | "fields" | "truncateBreadth" | "truncateDepth"
 > {
   return {
     diagram: parseGraphDiagram(diagram),
+    fields: parseGraphFields({ iconField, noteField, rankField }),
     truncateBreadth: positiveIntegerFlag("--truncate-breadth", truncateBreadth),
     truncateDepth: positiveIntegerFlag("--truncate-depth", truncateDepth),
+  };
+}
+
+/**
+ * The entity properties a tree's icons, notes and sibling rank are read from, each its default when its flag is absent or blank.
+ */
+export function parseGraphFields({
+  iconField,
+  noteField,
+  rankField,
+}: Pick<
+  GraphOptions,
+  "iconField" | "noteField" | "rankField"
+>): GraphTreeFields {
+  return {
+    icon: namedField(iconField, RENDER_TREE_FIELDS.icon),
+    note: namedField(noteField, RENDER_TREE_FIELDS.note),
+    rank: namedField(rankField, RENDER_TREE_FIELDS.rank),
   };
 }
 
@@ -199,4 +231,12 @@ export function requireGraphOptions({
     throw new RenderOptionsError(RENDER_OPTION_MESSAGES.schema);
   }
   return { entities, schema, sourceUri };
+}
+
+/**
+ * A field name, trimmed, or its default when it is absent or blank.
+ */
+function namedField(value: string | undefined, fallback: string): string {
+  const trimmed = value?.trim() ?? "";
+  return trimmed === "" ? fallback : trimmed;
 }

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import {
   ButtonGroup,
@@ -10,19 +10,28 @@ import {
 } from "@codebase/presentation";
 
 import { useFilterQuery } from "../../../hooks/use-filter-query/use-filter-query";
+import { useStripLines } from "../../../hooks/use-strip-lines/use-strip-lines";
+import { OpenDatePickerContext } from "../../calendar-controls/calendar-date-picker/calendar-date-picker.constants";
 import { CalendarNavigationSlot } from "../../calendar-controls/calendar-navigation-group/calendar-navigation-slot.constants";
 
 import {
   EDITORS,
+  FILTER_HEAD_CLASS_NAME,
   STRIP_CLASS_NAME,
   TABLET_QUERY,
   TITLE,
 } from "./calendar-filters.constants";
-import { renderFiltersButton } from "./calendar-filters.utilities";
+import {
+  createDateOpener,
+  deriveFilterStrip,
+  renderFiltersButton,
+  renderFoldButton,
+} from "./calendar-filters.utilities";
 import { countActiveEventFilterRules } from "./components/event-filter-model/event-filter-tree.utilities";
 import { FilterCascader } from "./components/filter-cascader/filter-cascader";
 import { FilterChipRow } from "./components/filter-chip-row/filter-chip-row";
 
+import type { StripFold } from "../calendar-group-strip/components/strip-fold-button/strip-fold-button.types";
 import type {
   EventFilterField,
   EventFilterQuery,
@@ -38,6 +47,12 @@ export interface CalendarFiltersProperties {
   className?: string;
   fields: readonly EventFilterField[];
   filter: EventFilterQuery | undefined;
+  /** How the strip folds; it does not when absent. */
+  fold?: StripFold | undefined;
+  /**
+   * The fields the Filters list offers, when fewer than `fields`; filters already on the others stay.
+   */
+  offeredFields?: readonly EventFilterField[];
   /**
    * Called with every edit to write back to the link: the whole tree, empty
    * once nothing is left.
@@ -62,6 +77,8 @@ export function CalendarFilters(
     className,
     fields,
     filter,
+    fold,
+    offeredFields,
     onFilterChange,
     presets = [],
   } = properties;
@@ -69,6 +86,10 @@ export function CalendarFilters(
   // 🪝 Hooks
   const isTablet = useMediaQuery(TABLET_QUERY);
   const navigation = useContext(CalendarNavigationSlot);
+  const openDatePicker = useContext(OpenDatePickerContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const { reference: stripReference } = useStripLines();
+
   const { handleQueryChange, query } = useFilterQuery(
     filter,
     presets,
@@ -77,7 +98,15 @@ export function CalendarFilters(
   const activeCount = countActiveEventFilterRules(query);
 
   // 🏗 Setup
-  const isAttached = navigation !== null || (isTablet && activeCount > 0);
+  // The chips are left out below a tablet, so nothing is folded there.
+  const { folded, hasChipsAfter, names } = deriveFilterStrip(query, {
+    activeCount,
+    fields,
+    fold,
+    isTablet,
+  });
+  const isAttached =
+    navigation !== null || folded !== undefined || hasChipsAfter;
 
   // 💪 Handlers
 
@@ -88,43 +117,55 @@ export function CalendarFilters(
   // 🎨 Markup
   return (
     <div
+      ref={stripReference}
       className={className}
       data-testid="calendar-filters"
     >
       <div
         className={STRIP_CLASS_NAME}
         data-attached={isAttached ? "" : undefined}
-        data-joined={isTablet && activeCount > 0 ? "" : undefined}
       >
-        <ButtonGroup aria-label="Filter">
-          <Popover>
-            <PopoverTrigger
-              render={renderFiltersButton(activeCount, isAttached)}
-            />
-            <PopoverContent
-              align="start"
-              aria-label={TITLE}
-              className="w-auto max-w-[95vw] overflow-x-auto p-0"
-              sideOffset={8}
+        <div
+          className={FILTER_HEAD_CLASS_NAME}
+          data-strip-item=""
+        >
+          <ButtonGroup aria-label="Filter">
+            <Popover
+              onOpenChange={setIsOpen}
+              open={isOpen}
             >
-              <FilterCascader
-                fields={fields}
-                onQueryChange={handleQueryChange}
-                query={query}
+              <PopoverTrigger
+                render={renderFiltersButton(activeCount, isAttached)}
               />
-            </PopoverContent>
-          </Popover>
-        </ButtonGroup>
-        {navigation}
+              <PopoverContent
+                align="start"
+                aria-label={TITLE}
+                className="w-80 max-w-[90vw] p-0"
+                sideOffset={8}
+              >
+                <FilterCascader
+                  fields={fields}
+                  offered={offeredFields}
+                  onDateOpen={createDateOpener(openDatePicker, setIsOpen)}
+                  onQueryChange={handleQueryChange}
+                  query={query}
+                />
+              </PopoverContent>
+            </Popover>
+          </ButtonGroup>
+          {navigation}
+          {renderFoldButton(folded, names, hasChipsAfter)}
+        </div>
         {isTablet ? (
           <Filters<EventFilterValue>
             editors={EDITORS}
             fields={[...fields]}
+            onFold={fold?.onFold}
             onQueryChange={handleQueryChange}
             query={query}
             size="sm"
           >
-            <FilterChipRow />
+            <FilterChipRow isFolded={folded !== undefined} />
           </Filters>
         ) : null}
       </div>

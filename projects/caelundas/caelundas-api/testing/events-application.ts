@@ -9,12 +9,14 @@ import {
   CaelundasDatabaseModule,
   CaelundasDatabaseService,
   CalendarEventTag,
-  Tag,
+  type Tag,
 } from "@codebase/caelundas-db";
 import { startDatabaseTestingModule } from "@codebase/persistence/testing";
 
 import { environmentSchema } from "../src/caelundas-api.constants";
 import { EventsModule } from "../src/modules/events/events.module";
+
+import { tagRepository } from "./tag-repository";
 
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
 import type { INestApplication } from "@nestjs/common";
@@ -42,18 +44,22 @@ export interface EventsApplication {
 /** The tags {@link seedFilterTags} adds, by name. */
 export interface FilterTags {
   readonly aspect: Tag;
+  readonly body: Tag;
   readonly direction: Tag;
   readonly harmonic: Tag;
   readonly harmonic2: Tag;
   readonly harmonic6: Tag;
   readonly harmonic12: Tag;
   readonly ingress: Tag;
+  readonly luminary: Tag;
+  readonly luminaryMoon: Tag;
   readonly major: Tag;
   readonly moon: Tag;
   readonly planet: Tag;
-  readonly signIngress: Tag;
+  readonly planetary: Tag;
+  readonly signStay: Tag;
   readonly simple: Tag;
-  readonly type: Tag;
+  readonly stay: Tag;
 }
 
 /** The body of a GraphQL response: data, errors, or both. */
@@ -62,8 +68,8 @@ export type GraphqlResponse = z.infer<typeof graphqlResponseSchema>;
 /** One event of the fixture, as the entities take it. */
 interface SeedEvent {
   readonly end: string;
+  readonly name: string;
   readonly start: string;
-  readonly summary: string;
   readonly tags: readonly Tag[];
   readonly timezone: string;
 }
@@ -75,53 +81,54 @@ interface SeedEvent {
 export async function seedEvents(
   database: DatabaseTestingModule,
 ): Promise<Record<string, Tag>> {
-  const tags = database.dataSource.getTreeRepository(Tag);
-  const planet = await tags.save(tags.create({ name: "Planet" }));
-  const mars = await tags.save(tags.create({ name: "Mars", parent: planet }));
+  const tags = tagRepository(database.dataSource);
+  const planet = await tags.save(
+    tags.create({ name: "Planet", slug: "planet" }),
+  );
+  const mars = await tags.save(
+    tags.create({ name: "Mars", parent: planet, slug: "mars" }),
+  );
   const retrograde = await tags.save(
-    tags.create({ name: "Retrograde", parent: mars }),
+    tags.create({ name: "Retrograde", parent: mars, slug: "retrograde" }),
   );
-  const aspect = await tags.save(tags.create({ name: "Aspect" }));
+  const aspect = await tags.save(
+    tags.create({ name: "Aspect", slug: "aspect" }),
+  );
   const conjunct = await tags.save(
-    tags.create({ name: "Conjunct", parent: aspect }),
+    tags.create({ name: "Conjunct", parent: aspect, slug: "conjunct" }),
   );
-  const phase = await tags.save(tags.create({ name: "Phase" }));
+  const phase = await tags.save(
+    tags.create({ name: "Phase", parent: aspect, slug: "phase" }),
+  );
   const forming = await tags.save(
-    tags.create({ name: "Forming", parent: phase }),
+    tags.create({ name: "Forming", parent: phase, slug: "forming" }),
   );
   const events: SeedEvent[] = [
     {
       end: "2026-03-05T05:00:00.000Z",
+      name: "Mars Retrograde",
       start: "2026-03-05T03:30:00.000Z",
-      summary: "Mars Retrograde",
       tags: [retrograde],
       timezone: "America/New_York",
     },
     {
       end: "2026-03-10T12:00:00.000Z",
+      name: "Moon Conjunct Mars",
       start: "2026-03-10T12:00:00.000Z",
-      summary: "Moon Conjunct Mars",
       tags: [conjunct],
       timezone: "America/New_York",
     },
     {
-      end: "2026-03-10T12:00:00.000Z",
-      start: "2026-03-10T12:00:00.000Z",
-      summary: "Moon Conjunct Mars Forming",
-      tags: [conjunct, forming],
-      timezone: "America/New_York",
-    },
-    {
       end: "2026-03-20T09:00:00.000Z",
+      name: "Sun Enters Aries",
       start: "2026-03-20T09:00:00.000Z",
-      summary: "Sun Enters Aries",
       tags: [],
       timezone: "America/New_York",
     },
     {
       end: "2026-03-21T00:00:00.000Z",
+      name: "Equinox Watch",
       start: "2026-03-20T22:00:00.000Z",
-      summary: "Equinox Watch",
       tags: [],
       timezone: "Europe/London",
     },
@@ -130,12 +137,12 @@ export async function seedEvents(
   for (const seed of events) {
     const [event] = await database.dataSource.query<[{ id: string }]>(
       `insert into calendar_events
-         (summary, description, "start", "end", latitude, longitude, timezone)
+         (name, note, "start", "end", latitude, longitude, timezone)
        values ($1, $2, $3, $4, 40.7128, -74.006, $5)
        returning id`,
       [
-        seed.summary,
-        `${seed.summary} description`,
+        seed.name,
+        `${seed.name} description`,
         seed.start,
         seed.end,
         seed.timezone,
@@ -151,7 +158,7 @@ export async function seedEvents(
 
   await database.module
     .get(CaelundasDatabaseService)
-    .refreshReadModel(database.dataSource.manager);
+    .refreshMetrics(database.dataSource.manager);
 
   return { aspect, conjunct, forming, mars, phase, planet, retrograde };
 }
@@ -163,47 +170,67 @@ export async function seedEvents(
 export async function seedFilterTags(
   database: DatabaseTestingModule,
 ): Promise<FilterTags> {
-  const tags = database.dataSource.getTreeRepository(Tag);
+  const tags = tagRepository(database.dataSource);
   const planet = await tags.findOneByOrFail({ name: "Planet" });
-  const moon = await tags.save(tags.create({ name: "Moon", parent: planet }));
-  const type = await tags.save(tags.create({ name: "Type" }));
-  const aspect = await tags.save(tags.create({ name: "Aspect", parent: type }));
+  const aspect = await tags.findOneByOrFail({ name: "Aspect" });
+  const moon = await tags.save(
+    tags.create({ name: "Moon", parent: planet, slug: "moon" }),
+  );
+  const body = await tags.save(tags.create({ name: "Body", slug: "body" }));
+  const luminary = await tags.save(
+    tags.create({ name: "Luminary", parent: body, slug: "luminary" }),
+  );
+  const luminaryMoon = await tags.save(
+    tags.create({ name: "Moon", parent: luminary, slug: "moon" }),
+  );
   const simple = await tags.save(
-    tags.create({ name: "Simple Aspect", parent: aspect }),
+    tags.create({ name: "Simple", parent: aspect, slug: "simple" }),
   );
   const major = await tags.save(
-    tags.create({ name: "Major Aspect", parent: simple }),
+    tags.create({ name: "Major", parent: simple, slug: "major" }),
   );
   const ingress = await tags.save(
-    tags.create({ name: "Ingress", parent: type }),
+    tags.create({ name: "Ingress", slug: "ingress" }),
   );
-  const signIngress = await tags.save(
-    tags.create({ name: "Sign Ingress", parent: ingress }),
+  const stay = await tags.save(
+    tags.create({ name: "Stay", parent: ingress, slug: "stay" }),
+  );
+  const signStay = await tags.save(
+    tags.create({
+      name: "Full Sign",
+      parent: stay,
+      slug: "full-sign",
+    }),
+  );
+  const planetary = await tags.save(
+    tags.create({ name: "Planetary", slug: "planetary" }),
   );
   const direction = await tags.save(
-    tags.create({ name: "Direction", parent: type }),
+    tags.create({ name: "Direction", parent: planetary, slug: "direction" }),
   );
-  const harmonic = await tags.save(tags.create({ name: "Aspect Harmonic" }));
+  const harmonic = await tags.save(
+    tags.create({ name: "Harmonic", parent: aspect, slug: "harmonic" }),
+  );
   const harmonic2 = await tags.save(
-    tags.create({ name: "Harmonic 2", parent: harmonic }),
+    tags.create({ name: "Harmonic 2", parent: harmonic, slug: "harmonic-2" }),
   );
   const harmonic6 = await tags.save(
-    tags.create({ name: "Harmonic 6", parent: harmonic }),
+    tags.create({ name: "Harmonic 6", parent: harmonic, slug: "harmonic-6" }),
   );
   const harmonic12 = await tags.save(
-    tags.create({ name: "Harmonic 12", parent: harmonic }),
+    tags.create({ name: "Harmonic 12", parent: harmonic, slug: "harmonic-12" }),
   );
   const given: [string, Tag[]][] = [
-    ["Moon Conjunct Mars", [major, moon, harmonic2]],
-    ["Sun Enters Aries", [signIngress, harmonic12]],
+    ["Moon Conjunct Mars", [major, moon, luminaryMoon, harmonic2]],
+    ["Sun Enters Aries", [signStay, harmonic12]],
     ["Mars Retrograde", [direction]],
     ["Equinox Watch", [harmonic6]],
   ];
 
-  for (const [summary, eventTags] of given) {
+  for (const [name, eventTags] of given) {
     const [event] = await database.dataSource.query<[{ id: string }]>(
-      `select id from calendar_events where "summary" = $1`,
-      [summary],
+      `select id from calendar_events where "name" = $1`,
+      [name],
     );
 
     for (const tag of eventTags) {
@@ -215,22 +242,26 @@ export async function seedFilterTags(
 
   await database.module
     .get(CaelundasDatabaseService)
-    .refreshReadModel(database.dataSource.manager);
+    .refreshMetrics(database.dataSource.manager);
 
   return {
     aspect,
+    body,
     direction,
     harmonic,
     harmonic2,
     harmonic6,
     harmonic12,
     ingress,
+    luminary,
+    luminaryMoon,
     major,
     moon,
     planet,
-    signIngress,
+    planetary,
+    signStay,
     simple,
-    type,
+    stay,
   };
 }
 

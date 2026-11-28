@@ -77,7 +77,7 @@ describe(AnnualSolarCycleEventsService, () => {
 
       const event = service.buildBeltaneEvent(timestamp);
 
-      expect(event.summary).toBe("🐦‍🔥 Beltane");
+      expect(event.summary).toBe("🌼 Beltane");
       expect(event.description).toBe("Beltane");
       expect(event.tags).toContain("Annual Solar Cycle");
     });

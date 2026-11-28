@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+import {
+  EVENTS_LOCAL_SQL,
+  TAG_INFO_SQL,
+} from "./modules/filtering/modules/query-building/event-filter-sql.constants";
+
 // ♟️ Constants
 
 /** What a filter argument keeps, written once for both queries. */
@@ -35,19 +40,18 @@ export const datasetRowSchema = z.object({
   timezone: z.string(),
 });
 
-/** Events overlapping a period, minus aspect forming and dissolving instants. */
+/** Events overlapping a period, with tags and group keys. */
 export const EVENTS_IN_PERIOD_SQL = `
+  with ${TAG_INFO_SQL}
   select
     e.id,
-    e.color,
-    e.description,
     e.duration_minutes,
     e."end",
-    e."location",
+    e."name",
+    e.note,
     e."start",
     e.start_local_day,
     e.start_local_hour,
-    e."summary",
     e.timezone,
     coalesce(
       (
@@ -56,25 +60,22 @@ export const EVENTS_IN_PERIOD_SQL = `
             'depth', t.tag_depth,
             'id', t.tag_id,
             'name', t.tag_name,
-            'path', t.tag_path
+            'path', t.tag_path,
+            'slug', et_tag.slug
           )
           order by t.tag_path collate "C"
         )
-        from calendar_event_tag_nodes t
-        where t.calendar_event_id = e.id and t.is_direct
+        from calendar_event_tags et
+        join tag_paths t on t.tag_id = et.tag_id
+        join tags et_tag on et_tag.id = et.tag_id
+        where et.calendar_event_id = e.id
       ),
       '[]'::json
     ) as tags {groups}
-  from calendar_event_derived_times e
+  from ${EVENTS_LOCAL_SQL} e
   where e."start" < $1::timestamptz and e."end" >= $2::timestamptz
-    and not exists (
-      select 1
-      from calendar_event_tag_nodes n
-      where n.calendar_event_id = e.id
-        and n.tag_path in ('Phase / Forming', 'Phase / Dissolving')
-    )
     {filter}
-  order by e."start", e."summary" collate "C", e.id
+  order by e."start", e."name" collate "C", e.id
 `;
 
 /** A tag an event carries, as {@link EVENTS_IN_PERIOD_SQL} gathers it. */
@@ -83,6 +84,7 @@ export const tagSchema = z.object({
   id: z.string(),
   name: z.string(),
   path: z.string(),
+  slug: z.string(),
 });
 
 /** The group keys of one level, gathered into a `group_<level>` column. */
@@ -91,65 +93,93 @@ export const groupKeysSchema = z.array(
     key: z.string(),
     label: z.string().nullable(),
     path: z.string().nullable(),
+    rank: z.string().nullish().default(null),
   }),
 );
 
 /** One row of the events query; grouping columns are read apart. */
 export const eventRowSchema = z.looseObject({
-  color: z.string().nullable(),
-  description: z.string(),
   duration_minutes: z.number(),
   end: z.date(),
   id: z.string(),
-  location: z.string().nullable(),
+  name: z.string(),
+  note: z.string(),
   start: z.date(),
   start_local_day: z.string(),
   start_local_hour: z.number(),
-  summary: z.string(),
   tags: z.array(tagSchema),
   timezone: z.string(),
 });
 
 /** Every tag with its root, path, and count of matching events. */
 export const FACETS_SQL = `
-  with in_period as (
+  with ${TAG_INFO_SQL},
+  in_period as (
     select e.id
-    from calendar_event_derived_times e
+    from ${EVENTS_LOCAL_SQL} e
     where e."start" < coalesce($1::timestamptz, 'infinity')
       and e."end" >= coalesce($2::timestamptz, '-infinity')
       {filter}
   ),
   tag_counts as (
-    select t.tag_id, count(*) as count
-    from calendar_event_tag_nodes t
-    join in_period w on w.id = t.calendar_event_id
-    group by t.tag_id
+    select z.tag_id, count(*) as count
+    from (
+      select distinct c.ancestor_id as tag_id, et.calendar_event_id
+      from calendar_event_tags et
+      join in_period w on w.id = et.calendar_event_id
+      join tag_trees c on c.descendant_id = et.tag_id
+    ) z
+    group by z.tag_id
   )
   select
-    n.id,
-    n."name",
-    n.depth,
-    n.root_id,
-    substr(n."path", length(r."name") + length(' / ') + 1) as path_below_root,
-    coalesce(c.count, 0) as count
-  from tag_nodes n
-  join tag_nodes r on r.id = n.root_id
-  left join tag_counts c on c.tag_id = n.id
-  order by n."path" collate "C"
+    n.tag_id as id,
+    n.tag_name as "name",
+    n.tag_depth as depth,
+    n.tag_root_id as root_id,
+    substr(n.tag_path, length(r."name") + length(' / ') + 1) as path_below_root,
+    case when n.tag_depth > 0
+      then substr(n.tag_path, 1, length(n.tag_path) - length(n.tag_name) - length(' / '))
+    end as parent_path,
+    n.tag_rank,
+    n.tag_parent_id as parent_id,
+    coalesce(c.count, 0) as count,
+    t.icon,
+    t.is_default_group,
+    t.is_filterable,
+    t.is_groupable,
+    t.is_selectable,
+    t.is_sortable,
+    t.note,
+    t.rank,
+    t.slug
+  from tag_paths n
+  join tags t on t.id = n.tag_id
+  join tags r on r.id = n.tag_root_id
+  left join tag_counts c on c.tag_id = n.tag_id
+  order by n.tag_path collate "C"
 `;
 
 /** One row of {@link FACETS_SQL}; Postgres answers counts as text. */
 export const facetRowSchema = z.object({
   count: z.coerce.number(),
   depth: z.coerce.number(),
+  icon: z.string().nullish().default(null),
   id: z.string(),
+  is_default_group: z.boolean().default(true),
+  is_filterable: z.boolean().default(true),
+  is_groupable: z.boolean().default(true),
+  is_selectable: z.boolean().default(true),
+  is_sortable: z.boolean().default(true),
   name: z.string(),
+  note: z.string().nullish().default(null),
+  parent_id: z.string().nullish().default(null),
+  parent_path: z.string().nullish().default(null),
   path_below_root: z.string(),
+  rank: z.coerce.number().default(0),
   root_id: z.string(),
+  slug: z.string(),
+  tag_rank: z.string(),
 });
 
 /** Compares text counting digits as numbers: "Harmonic 2" precedes "Harmonic 10". */
 export const NATURAL_COLLATOR = new Intl.Collator("en-US", { numeric: true });
-
-/** What separates the names in a tag's path. */
-export const PATH_SEPARATOR = " / ";

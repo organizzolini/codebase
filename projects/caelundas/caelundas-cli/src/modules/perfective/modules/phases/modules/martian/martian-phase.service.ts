@@ -4,19 +4,8 @@ import _ from "lodash";
 import { LoggerService } from "@codebase/observability";
 
 import { symbolByMartianPhase } from "../../../../../caelundas/symbol-caelundas.constants";
-import { ProgressiveUtilitiesService } from "../../../../../progressive/progressive-utilities.service";
 import {
-  EVENING_RISE_TAG,
-  EVENING_SET_TAG,
-  MARS_EVENING_VISIBILITY_DESCRIPTION,
-  MARS_EVENING_VISIBILITY_PAIR_LABEL,
-  MARS_EVENING_VISIBILITY_SUMMARY,
-  MARS_MORNING_VISIBILITY_DESCRIPTION,
-  MARS_MORNING_VISIBILITY_PAIR_LABEL,
-  MARS_MORNING_VISIBILITY_SUMMARY,
   MARTIAN_TAG,
-  MORNING_RISE_TAG,
-  MORNING_SET_TAG,
   PHASE_EVENT_BASE_TAGS,
   PHASE_EVENT_TIMEZONE,
 } from "../../phases.constants";
@@ -41,7 +30,6 @@ export class MartianPhaseService {
   constructor(
     private readonly logger: LoggerService,
     private readonly phaseCalculationService: PhaseCalculationService,
-    private readonly progressiveUtilitiesService: ProgressiveUtilitiesService,
   ) {
     this.logger.setContext(MartianPhaseService.name);
   }
@@ -67,6 +55,7 @@ export class MartianPhaseService {
       [this.phaseCalculationService.isMorningSet(parameters), "morning set"],
       [this.phaseCalculationService.isEveningRise(parameters), "evening rise"],
       [this.phaseCalculationService.isEveningSet(parameters), "evening set"],
+      [this.phaseCalculationService.isOpposition(parameters), "opposition"],
     ];
     for (const [condition, phase] of checks) {
       if (condition) {
@@ -79,8 +68,8 @@ export class MartianPhaseService {
   // 🌎 Public Methods
 
   /**
-   * Creates a Martian phase event; Mars has no elongation or brightness maxima,
-   * as it can reach 180° from the Sun.
+   * Creates a Martian phase event; Mars has no elongation maximum, as it
+   * reaches 180° from the Sun, at opposition.
    */
   buildMartianPhaseEvent(
     args: BuildPlanetPhaseEventArguments<MartianPhase>,
@@ -113,70 +102,6 @@ export class MartianPhaseService {
   }
 
   /**
-   * Derives mars evening visibility duration event.
-   */
-  getMarsEveningVisibilityDurationEvent(
-    beginning: DetectedCalendarEvent,
-    ending: DetectedCalendarEvent,
-  ): DetectedCalendarEvent {
-    return {
-      description: MARS_EVENING_VISIBILITY_DESCRIPTION,
-      end: ending.start,
-      start: beginning.start,
-      summary: MARS_EVENING_VISIBILITY_SUMMARY,
-      tags: [...MartianPhaseService.tags, MARTIAN_TAG, "Evening Visibility"],
-    };
-  }
-
-  /**
-   * Derives mars morning visibility duration event.
-   */
-  getMarsMorningVisibilityDurationEvent(
-    beginning: DetectedCalendarEvent,
-    ending: DetectedCalendarEvent,
-  ): DetectedCalendarEvent {
-    return {
-      description: MARS_MORNING_VISIBILITY_DESCRIPTION,
-      end: ending.start,
-      start: beginning.start,
-      summary: MARS_MORNING_VISIBILITY_SUMMARY,
-      tags: [...MartianPhaseService.tags, MARTIAN_TAG, "Morning Visibility"],
-    };
-  }
-
-  /**
-   * Derives martian evening progressive events.
-   */
-  getMartianEveningProgressiveEvents(
-    events: DetectedCalendarEvent[],
-  ): DetectedCalendarEvent[] {
-    const pairs = this.progressiveUtilitiesService.pairProgressiveEvents(
-      this.phaseCalculationService.filterByTag(events, EVENING_RISE_TAG),
-      this.phaseCalculationService.filterByTag(events, EVENING_SET_TAG),
-      MARS_EVENING_VISIBILITY_PAIR_LABEL,
-    );
-    return pairs.map(([beginning, ending]) =>
-      this.getMarsEveningVisibilityDurationEvent(beginning, ending),
-    );
-  }
-
-  /**
-   * Derives martian morning progressive events.
-   */
-  getMartianMorningProgressiveEvents(
-    events: DetectedCalendarEvent[],
-  ): DetectedCalendarEvent[] {
-    const pairs = this.progressiveUtilitiesService.pairProgressiveEvents(
-      this.phaseCalculationService.filterByTag(events, MORNING_RISE_TAG),
-      this.phaseCalculationService.filterByTag(events, MORNING_SET_TAG),
-      MARS_MORNING_VISIBILITY_PAIR_LABEL,
-    );
-    return pairs.map(([beginning, ending]) =>
-      this.getMarsMorningVisibilityDurationEvent(beginning, ending),
-    );
-  }
-
-  /**
    * Produces Martian phase events for one minute using precomputed phase parameters.
    */
   getMartianPhaseEvents(
@@ -197,17 +122,5 @@ export class MartianPhaseService {
     });
 
     return this.detectMartianPhases(parameters, minute);
-  }
-
-  /**
-   * Derives martian phase progressive events.
-   */
-  getMartianPhaseProgressiveEvents(
-    events: DetectedCalendarEvent[],
-  ): DetectedCalendarEvent[] {
-    return [
-      ...this.getMartianMorningProgressiveEvents(events),
-      ...this.getMartianEveningProgressiveEvents(events),
-    ];
   }
 }

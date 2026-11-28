@@ -59,10 +59,7 @@ describe(PerfectiveService, () => {
   };
   const aspectsMock = {
     detect: vi.fn<AspectsService["detect"]>(),
-    seed: vi.fn<AspectsService["seed"]>(() => ({
-      aspectBodies: [],
-      events: [],
-    })),
+    seed: vi.fn<AspectsService["seed"]>(() => []),
   };
   const eclipsesMock = { detect: vi.fn<EclipsesService["detect"]>() };
   const retrogradesMock = { detect: vi.fn<RetrogradesService["detect"]>() };
@@ -230,7 +227,7 @@ describe(PerfectiveService, () => {
         distanceEphemerisByBody: { moon: moonDistanceEphemeris } as never,
       });
       aspectsMock.detect.mockReturnValue({ aspectBodies: [], events: [] });
-      aspectsMock.seed.mockReturnValue({ aspectBodies: [], events: [] });
+      aspectsMock.seed.mockReturnValue([]);
       for (const subMock of [
         eclipsesMock,
         retrogradesMock,
@@ -259,23 +256,13 @@ describe(PerfectiveService, () => {
       const seededAspectBodies: AspectBodies[] = [
         { aspect: "square", bodies: ["mars", "pluto"] },
       ];
-      const seededEvent = {
-        description: "Mars, Mercury, Pluto t-square forming",
-        end: firstMinute,
-        start: firstMinute,
-        summary: "seeded compound forming",
-        tags: ["Astronomy", "Astrology", "Compound Aspect", "Forming"],
-      } satisfies DetectedCalendarEvent;
 
       datetimeMock.generateDates.mockReturnValue([firstDate, secondDate]);
       ephemerisAggMock.getEphemerides.mockReturnValue(emptyEphemerides);
       datetimeMock.generateMinutes
         .mockReturnValueOnce([firstMinute])
         .mockReturnValueOnce([secondDayMinute]);
-      aspectsMock.seed.mockReturnValueOnce({
-        aspectBodies: seededAspectBodies,
-        events: [seededEvent],
-      });
+      aspectsMock.seed.mockReturnValueOnce(seededAspectBodies);
       aspectsMock.detect.mockReturnValue({ aspectBodies: [], events: [] });
       for (const subMock of [
         eclipsesMock,
@@ -302,7 +289,7 @@ describe(PerfectiveService, () => {
           previousAspectBodies: seededAspectBodies,
         }),
       );
-      expect(result).toStrictEqual([seededEvent]);
+      expect(result).toStrictEqual([]);
     });
 
     it("runs only the detector families the caller names", () => {

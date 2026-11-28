@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 
+import { Network } from "../../../testing/fixtures/graphs/generated/network.entity";
+import { Station } from "../../../testing/fixtures/graphs/generated/station.entity";
+
 import { PluralSnakeNamingStrategy } from "./postgresql.constants";
 import {
   assertPostgresEnvironmentKeys,
@@ -9,6 +12,7 @@ import {
   postgresDataSourceOptions,
   postgresEnvironment,
   postgresEnvironmentSchema,
+  withGeneratedEntities,
 } from "./postgresql.utilities";
 
 import type { PostgresConnection } from "./postgresql.types";
@@ -269,6 +273,25 @@ describe("database utilities", () => {
       expect(() =>
         postgresEnvironmentSchema({ project: "fixture-api" }),
       ).toThrow(/fixture-api/);
+    });
+  });
+
+  describe(withGeneratedEntities, () => {
+    it("lists the edge a graph entity generates beside the entities given", () => {
+      const entities = withGeneratedEntities([Network, Station]);
+
+      expect(entities).toHaveLength(3);
+      expect(entities).toContain(Network);
+    });
+
+    it("leaves entities it cannot list as they are", () => {
+      expect(withGeneratedEntities([])).toStrictEqual([]);
+    });
+
+    it("leaves entities given as a map of classes unchanged", () => {
+      const entities = { Network, Station };
+
+      expect(withGeneratedEntities(entities)).toBe(entities);
     });
   });
 });

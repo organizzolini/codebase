@@ -1,11 +1,12 @@
 import { z } from "zod";
 
+import { toMetricSlug } from "../../components/calendar-display/calendar-metrics/calendar-metrics.utilities";
 import { MAXIMUM_AGENDA_DAYS } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
 import { MAXIMUM_GROUP_DEPTH } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.constants";
 
 export const calendarDateSchema = z.iso.date();
 
-// The agenda lists up to a year at a time, so a link can never ask for the
+// The table lists up to a year at a time, so a link can never ask for the
 // whole dataset at once.
 export const agendaDaysSchema = z
   .number()
@@ -25,6 +26,12 @@ export const groupLevelSchema = z.object({
     .transform((depth) => groupDepthSchema.safeParse(depth).data)
     .optional(),
   field: z.string().min(1),
+  // The tag whose children the level groups by; anything but an id is
+  // forgotten, which groups by the root's own.
+  parent: z
+    .unknown()
+    .transform((parent) => z.string().min(1).safeParse(parent).data)
+    .optional(),
   // Anything but a list of ids is forgotten, like a depth out of range.
   tags: z
     .unknown()
@@ -65,7 +72,29 @@ export const skySearchValueSchema = z.union([
 
 export const groupSortSchema = z.object({
   direction: z.enum(["asc", "desc"]),
-  key: z.enum(["count", "first", "name"]),
+  key: z.enum([
+    "count",
+    "duration",
+    "end",
+    "first",
+    "metric",
+    "name",
+    "order",
+    "start",
+    "tag",
+  ]),
+  // The metric a `metric` sort orders by, an old name read as its slug; anything but a slug is forgotten.
+  metric: z
+    .unknown()
+    .transform((metric) => toMetricSlug(metric))
+    .optional(),
+  // The tag a `tag` sort ranks by; anything but an id is forgotten.
+  tag: z
+    .unknown()
+    .transform((tag) => z.string().min(1).safeParse(tag).data)
+    .optional(),
 });
 
 export const groupSortsSchema = z.array(groupSortSchema);
+
+export const columnsSchema = z.array(z.string().min(1));

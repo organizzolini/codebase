@@ -113,7 +113,9 @@ jobs:
             shard: caelundas
             # A cold run (no cached test output) takes 8 to 12 minutes, so the
             # default 12 cancels it on any change that invalidates the cache.
-            timeout-minutes: 15
+            # Temporary 30: the web and CLI suites exceeded 15 on a 4 vCPU
+            # runner; lower it once they are faster.
+            timeout-minutes: 30
           - target: test-code
             name: Test IC Suite
             emoji: 🧑‍🔬

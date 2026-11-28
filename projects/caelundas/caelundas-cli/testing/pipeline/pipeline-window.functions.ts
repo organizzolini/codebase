@@ -6,6 +6,7 @@ import { ProgressiveService } from "../../src/modules/progressive/progressive.se
 
 import { PipelineWindowModule } from "./pipeline-window.module";
 
+import type { DetectedCalendarEvent } from "../../src/modules/calendar-events/calendar-events.types";
 import type {
   PipelineWindow,
   PipelineWindowOptions,
@@ -57,15 +58,26 @@ async function sweep(
     const perfective = context
       .get(PerfectiveService)
       .detect(input, families ? { families } : {});
-    const progressive = context.get(ProgressiveService).detect(perfective);
+    const progressive = context
+      .get(ProgressiveService)
+      .detect(perfective, input);
+
+    const byStart = (
+      first: DetectedCalendarEvent,
+      second: DetectedCalendarEvent,
+    ): number => first.start.valueOf() - second.start.valueOf();
 
     return {
-      events: [...perfective, ...progressive].toSorted(
-        (a, b) => a.start.valueOf() - b.start.valueOf(),
-      ),
+      events: [...perfective, ...progressive].toSorted(byStart),
       input,
       perfective,
       progressive,
+      stored: [
+        ...context
+          .get(ProgressiveService)
+          .withoutSpanBoundaries(perfective, progressive),
+        ...progressive,
+      ].toSorted(byStart),
     };
   } finally {
     await context.close();

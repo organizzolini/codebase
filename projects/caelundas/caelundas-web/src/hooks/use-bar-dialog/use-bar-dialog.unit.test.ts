@@ -10,14 +10,13 @@ import type { GanttOccurrence } from "@codebase/presentation";
 
 const RECORD: CalendarEventRecord = {
   color: null,
-  description: "Mars enters Aries",
   durationMinutes: 0,
   end: new Date(Date.UTC(2026, 2, 4)),
   groups: [],
   id: "a",
-  location: null,
+  name: "♂️ → ♈ Mars enters Aries",
+  note: "Mars enters Aries",
   start: new Date(Date.UTC(2026, 2, 4)),
-  summary: "♂️ → ♈ Mars enters Aries",
   tags: [],
   timezone: "UTC",
 };

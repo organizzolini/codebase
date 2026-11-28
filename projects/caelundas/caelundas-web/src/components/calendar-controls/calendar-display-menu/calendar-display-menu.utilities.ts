@@ -1,10 +1,9 @@
 import {
-  CalendarClock,
+  EyeOff,
   Galaxy,
-  Layers,
+  GitCompareArrows,
   Palette,
-  Ruler,
-  Shapes,
+  Sparkles,
 } from "lucide-react";
 import { createElement } from "react";
 
@@ -13,37 +12,25 @@ import {
   toEclipticChange,
   toVisibilityChange,
 } from "../../../hooks/use-night-sky/hooks/use-night-sky-controls/night-sky-controls.utilities";
-import {
-  CALENDAR_VIEW_LABELS,
-  CALENDAR_VIEWS,
-  TIMELINE_SCALE_LABELS,
-  TIMELINE_SCALES,
-} from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.constants";
-import { parseCalendarView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
-import { toGroupLevel } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
+import { isMetricView } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.utilities";
+import { hasGroupRows } from "../../calendar-query/calendar-group-strip/calendar-group-strip.utilities";
 
 import {
-  CALENDAR_BRANCH,
   CONSTELLATION_CHOICES,
-  DEFAULT_COLOR_BY,
-  NO_COLOR,
-  SCALE_BRANCH,
+  DISPLAY_DESCRIPTIONS,
+  SYMBOL_CHOICES,
+  SYMBOLS_BRANCH,
 } from "./calendar-display-menu.constants";
 import {
   applySkyLeaf,
   createSkyItems,
   toSkyValue,
 } from "./calendar-display-sky.utilities";
-import {
-  SCALE_ICONS,
-  VIEW_ICONS,
-} from "./components/display-radios/display-radios.constants";
 
 import type { UseCalendarDisplayResult } from "../../../hooks/use-calendar-display/use-calendar-display.types";
 import type { SkySearchChange } from "../../../hooks/use-night-sky/hooks/use-night-sky-controls/night-sky-controls.types";
 import type { ConstellationListing } from "../../../hooks/use-night-sky/night-sky.types";
 import type { CalendarViewName } from "../../calendar-display/events-calendar/components/calendar-views/calendar-views.types";
-import type { EventGroupField } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { DisplayChoices } from "./calendar-display-menu.types";
 import type { CascaderNode } from "@codebase/presentation";
 import type { LucideIcon } from "lucide-react";
@@ -57,12 +44,11 @@ export function applyDisplayLeaf(
   leaf: string,
   context: Readonly<{
     choices: DisplayChoices;
-    fields: readonly EventGroupField[];
     handlers: UseCalendarDisplayResult["handlers"];
     onSkyChange: (change: SkySearchChange) => void;
   }>,
 ): void {
-  const { choices, fields, handlers, onSkyChange } = context;
+  const { choices, handlers, onSkyChange } = context;
   const skyContext = {
     listing: choices.listing,
     onSkyChange,
@@ -72,29 +58,11 @@ export function applyDisplayLeaf(
   const group = colon === -1 ? leaf : leaf.slice(0, colon);
   const value = colon === -1 ? "" : leaf.slice(colon + 1);
   const actions: Readonly<Record<string, () => void>> = {
-    calendar: () => {
-      const view = parseCalendarView(value);
-
-      if (view !== undefined) {
-        handlers.handleViewChange(view);
-      }
+    colors: () => {
+      handlers.handleColorsChange(!choices.colors);
     },
-    clusters: () => {
-      handlers.handleClustersChange(!choices.clusters);
-    },
-    colorBy: () => {
-      if (value === NO_COLOR) {
-        handlers.handleColorsChange(false);
-
-        return;
-      }
-
-      const field = fields.find((candidate) => candidate.id === value);
-
-      handlers.handleColorsChange(true);
-      handlers.handleColorByChange(
-        field === undefined ? undefined : toGroupLevel(field),
-      );
+    compare: () => {
+      handlers.handleCompareChange(!choices.compare);
     },
     constellation: () => {
       applySkyLeaf(group, value, skyContext);
@@ -108,12 +76,8 @@ export function applyDisplayLeaf(
         onSkyChange(toConstellationsChange(choice.words));
       }
     },
-    scale: () => {
-      const scale = TIMELINE_SCALES.find((candidate) => candidate === value);
-
-      if (scale !== undefined) {
-        handlers.handleScaleChange(scale);
-      }
+    hideEmpty: () => {
+      handlers.handleHideEmptyChange(!choices.hideEmpty);
     },
     setting: () => {
       applySkyLeaf(group, value, skyContext);
@@ -138,80 +102,56 @@ export function applyDisplayLeaf(
 // 🌎 Public Functions
 
 /**
- * The nested choices: each part of how the calendar looks, with its own icon; the scale only where the timeline has one.
+ * The nested choices: each part of how the calendar looks, with its own icon.
  */
 export function createDisplayItems(
-  fields: readonly EventGroupField[],
   choices: Readonly<{
     listing: readonly ConstellationListing[];
-    view: CalendarViewName;
+    view?: CalendarViewName;
   }>,
 ): CascaderNode[] {
-  const { view } = choices;
-  const scale: CascaderNode[] =
-    view === "timeline"
+  return describeItems([
+    {
+      children: (["glyphs", "emojis"] as const).map((symbols) => ({
+        icon: toIcon(SYMBOL_CHOICES[symbols].icon),
+        label: SYMBOL_CHOICES[symbols].label,
+        radio: true,
+        value: `symbols:${symbols}`,
+      })),
+      icon: toIcon(Sparkles),
+      label: "Symbols",
+      value: SYMBOLS_BRANCH,
+    },
+    {
+      icon: toIcon(Palette),
+      label: "Colors",
+      value: "colors",
+    },
+    ...(isMetricView(choices.view)
       ? [
           {
-            children: TIMELINE_SCALES.map((value) => ({
-              icon: toIcon(SCALE_ICONS[value]),
-              label: TIMELINE_SCALE_LABELS[value],
-              value: `scale:${value}`,
-            })),
-            icon: toIcon(Ruler),
-            label: "Scale",
-            value: SCALE_BRANCH,
+            icon: toIcon(GitCompareArrows),
+            label: "Compare to previous period",
+            value: "compare",
           },
         ]
-      : [];
-
-  return [
-    {
-      children: CALENDAR_VIEWS.map((value) => ({
-        icon: toIcon(VIEW_ICONS[value]),
-        label: CALENDAR_VIEW_LABELS[value],
-        value: `calendar:${value}`,
-      })),
-      icon: toIcon(CalendarClock),
-      label: "Calendar",
-      value: CALENDAR_BRANCH,
-    },
-    ...scale,
-    {
-      children: [
-        { label: "Glyphs", value: "symbols:glyphs" },
-        { label: "Emojis", value: "symbols:emojis" },
-      ],
-      icon: toIcon(Shapes),
-      label: "Symbols",
-      value: "branch:symbols",
-    },
-    {
-      children: [{ label: "Group similar events", value: "clusters" }],
-      icon: toIcon(Layers),
-      label: "Crowded days",
-      value: "branch:crowded",
-    },
-    {
-      children: [
-        { label: "None", value: `colorBy:${NO_COLOR}` },
-        { label: "Event kind", value: `colorBy:${DEFAULT_COLOR_BY}` },
-        ...fields.map((field) => ({
-          description: field.description,
-          label: field.label,
-          value: `colorBy:${field.id}`,
-        })),
-      ],
-      icon: toIcon(Palette),
-      label: "Color",
-      value: "branch:color",
-    },
+      : []),
+    ...(choices.view !== undefined && hasGroupRows(choices.view)
+      ? [
+          {
+            icon: toIcon(EyeOff),
+            label: "Hide empty groups",
+            value: "hideEmpty",
+          },
+        ]
+      : []),
     {
       children: createSkyItems(choices.listing),
       icon: toIcon(Galaxy),
-      label: "Sky",
+      label: "Skyfield",
       value: "branch:sky",
     },
-  ];
+  ]);
 }
 
 /**
@@ -239,18 +179,45 @@ export function findToggledLeaf(
 }
 
 /**
+ * Whether a row can be picked: every one but the branches that only group.
+ */
+export function isDisplayChoice(node: Readonly<CascaderNode>): boolean {
+  return !node.value.startsWith("branch:");
+}
+
+/**
  * What to tick in the list for the choices the link makes.
  */
 export function toDisplayValue(choices: DisplayChoices): string[] {
   return [
-    `calendar:${choices.view}`,
-    ...(choices.view === "timeline" ? [`scale:${choices.scale}`] : []),
     `symbols:${choices.symbols}`,
-    ...(choices.clusters ? ["clusters"] : []),
-    `colorBy:${choices.colors ? (choices.colorBy?.field ?? DEFAULT_COLOR_BY) : NO_COLOR}`,
+    ...(choices.colors ? ["colors"] : []),
+    ...(choices.compare && isMetricView(choices.view) ? ["compare"] : []),
+    ...(choices.hideEmpty && hasGroupRows(choices.view) ? ["hideEmpty"] : []),
     `constellations:${describeConstellations(choices.sky.constellations)}`,
     ...toSkyValue(choices.sky, choices.listing),
   ];
+}
+
+/**
+ * The nodes with a description beneath each, from its value unless it has one.
+ */
+function describeItems(nodes: readonly CascaderNode[]): CascaderNode[] {
+  const described: CascaderNode[] = [];
+
+  for (const node of nodes) {
+    const description = node.description ?? DISPLAY_DESCRIPTIONS[node.value];
+
+    described.push({
+      ...node,
+      ...(description === undefined ? {} : { description }),
+      ...(node.children === undefined
+        ? {}
+        : { children: describeItems(node.children) }),
+    });
+  }
+
+  return described;
 }
 
 /**

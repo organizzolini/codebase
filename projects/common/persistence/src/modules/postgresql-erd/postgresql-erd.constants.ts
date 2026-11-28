@@ -9,6 +9,9 @@ export const POSTGRESQL_ERD_OPTION_MESSAGES = {
 } as const;
 export const POSTGRESQL_ERD_END_ANCHOR = "<!-- postgresql-erd:end -->";
 export const POSTGRESQL_ERD_START_ANCHOR = "<!-- postgresql-erd:start -->";
+
+/** The heading of the section that gathers every table with no relation. */
+export const POSTGRESQL_ERD_STANDALONE_TITLE = "Standalone tables";
 export const POSTGRESQL_ERD_RELATION_SYMBOLS: Record<
   "many-to-many" | "many-to-one" | "one-to-many" | "one-to-one",
   string
@@ -17,6 +20,10 @@ export const POSTGRESQL_ERD_RELATION_SYMBOLS: Record<
   "many-to-one": "}o--||",
   "one-to-many": "||--o{",
   "one-to-one": "||--||",
+};
+export const POSTGRESQL_ERD_VIEW_TITLES: Partial<Record<string, string>> = {
+  "materialized-view": "materialized view",
+  view: "view",
 };
 export const POSTGRESQL_ERD_TYPE_MAP: Record<string, string> = {
   bigint: "int",
@@ -74,6 +81,9 @@ const postgresqlErdRelationSchema = z.object({
 
 const postgresqlErdEntityDetailsSchema = z.object({
   columns: z.array(postgresqlErdColumnSchema),
+  kind: z
+    .enum(["closure-table", "join-table", "materialized-view", "view"])
+    .optional(),
   name: z.string(),
   relations: z.array(postgresqlErdRelationSchema),
   tableName: z.string(),

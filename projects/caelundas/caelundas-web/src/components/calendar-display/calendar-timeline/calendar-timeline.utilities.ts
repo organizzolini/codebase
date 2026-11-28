@@ -1,28 +1,37 @@
 import { createElement } from "react";
 
 import { getEventLabel } from "../../calendar-events/event-glyphs/components/calendar-glyphs/calendar-glyphs.utilities";
+import { pruneEmptyEventGroups } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-prune.utilities";
 import {
   buildEventGroups,
   sortEventGroups,
 } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.utilities";
+import { createNodeColors } from "../calendar-table/components/table-group-row/table-group-row.utilities";
 
 import {
   ALL_EVENTS_ROW,
+  COUNT_COLUMN_WIDTH,
   COUNT_PILL_CLASS_NAME,
   TIMELINE_VIEWPORT,
 } from "./calendar-timeline.constants";
+import { TimelineRowLabel } from "./components/timeline-row-label/timeline-row-label";
 import { getVisibleTimelineRows } from "./components/timeline-window/calendar-timeline-window.utilities";
 
 import type {
   EventGroupField,
   EventGrouping,
+  EventGroupNode,
 } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
-import type { GroupSort } from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
+import type {
+  GroupSort,
+  TagRanks,
+} from "../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CalendarEventRecord } from "../events-calendar/components/calendar-loader/calendar-records.types";
 import type {
   PendingGroup,
   RowLayout,
   TimelineBar,
+  TimelineGroup,
   TimelineRows,
 } from "./calendar-timeline.types";
 import type { TimelineRowBox } from "./components/timeline-window/calendar-timeline-window.types";
@@ -31,10 +40,41 @@ import type {
   GanttEvent,
   GanttResource,
 } from "@codebase/presentation";
+import type { ReactNode } from "react";
 
 // 🔏 Private Functions
 
 // 🌎 Public Functions
+
+/**
+ * A renderer of the rows' names, each led by its icon, tinted with its group's color, and a group's a caret toggle.
+ */
+export function createRowLabelRenderer(
+  groups: ReadonlyMap<string, TimelineGroup>,
+  levelIcons: readonly (string | undefined)[],
+  onToggle: (id: string) => void,
+): (properties: {
+  collapsed: boolean;
+  isGroup: boolean;
+  resource: GanttResource;
+}) => ReactNode {
+  return ({ collapsed, isGroup, resource }) => {
+    const group = groups.get(resource.id);
+
+    return createElement(TimelineRowLabel, {
+      collapsed,
+      color: group?.color,
+      fallback: group?.fallback,
+      icon: group === undefined ? undefined : levelIcons[group.level],
+      onToggle:
+        isGroup && group !== undefined
+          ? () => onToggle(resource.id)
+          : undefined,
+      tagId: group?.key ?? undefined,
+      title: resource.title,
+    });
+  };
+}
 
 /**
  * The tree panel's one extra column: how many distinct events each row
@@ -55,7 +95,7 @@ export function toCountColumns(
           : createElement("span", { className: COUNT_PILL_CLASS_NAME }, count);
       },
       title: "Events",
-      width: 88,
+      width: COUNT_COLUMN_WIDTH,
     },
   ];
 }
@@ -66,51 +106,58 @@ export function toTimelineRows(
   grouping: EventGrouping,
   options: Readonly<{
     fields: readonly EventGroupField[];
+    /**
+     * Leaves out groups with no events; shown when absent.
+     */
+    hideEmpty?: boolean | undefined;
+    ranks?: TagRanks | undefined;
     sort?: readonly GroupSort[] | undefined;
+    /**
+     * Colors by tag id; absent when colors are off.
+     */
+    tagColors?: ReadonlyMap<string, string> | undefined;
   }>,
 ): TimelineRows {
-  const { fields, sort } = options;
+  const { fields, hideEmpty = false, ranks, sort, tagColors } = options;
 
   if (grouping.length === 0) {
-    return {
-      counts: new Map([[ALL_EVENTS_ROW.id, events.length]]),
-      events: events.map((record) => toGanttEvent(record, ALL_EVENTS_ROW.id)),
-      resources: [{ ...ALL_EVENTS_ROW }],
-    };
+    return toUngroupedRows(events);
   }
 
-  const resources: GanttResource[] = [];
-  const layout: RowLayout = { children: new Map(), members: new Map() };
-  const bars: GanttEvent<TimelineBar>[] = [];
-  // Depth first without recursion, so the stack stays flat.
-  const pending: PendingGroup[] = sortEventGroups(
+  const sorted = sortEventGroups(
     buildEventGroups(events, grouping, fields),
     sort,
-  )
-    .toReversed()
-    .map((node) => ({ node, parent: { children: resources, id: "" } }));
+    ranks,
+  );
+  // Colored before any group is left out, so the ones that stay keep theirs.
+  const roots = hideEmpty ? pruneEmptyEventGroups(sorted) : sorted;
+  const layout: RowLayout = {
+    children: new Map(),
+    colors:
+      tagColors === undefined ? undefined : createNodeColors(sorted, tagColors),
+    counts: new Map(),
+    groups: new Map(),
+    members: new Map(),
+  };
+  const resources: GanttResource[] = [];
+  const bars: GanttEvent<TimelineBar>[] = [];
+  // Depth first without recursion, so the stack stays flat.
+  const pending = toPending(roots, { children: resources, id: "" });
 
   for (let group = pending.pop(); group !== undefined; group = pending.pop()) {
     const row = placeGroupRows(group, layout);
 
     if (group.node.children.length === 0) {
-      bars.push(
-        ...group.node.events.map((record) => toGanttEvent(record, row.id)),
-      );
+      bars.push(...toLeafBars(row, group.node.events));
     } else {
-      pending.push(
-        ...group.node.children
-          .toReversed()
-          .map((node) => ({ node, parent: row })),
-      );
+      pending.push(...toPending(group.node.children, row));
     }
   }
 
   return {
-    counts: new Map(
-      [...layout.members.entries()].map(([id, ids]) => [id, ids.size] as const),
-    ),
+    counts: layout.counts,
     events: bars,
+    groups: layout.groups,
     resources,
   };
 }
@@ -175,6 +222,17 @@ export function watchVisibleRows(
 }
 
 /**
+ * Adds the row a leaf group's events are drawn on, beneath the group's own, with no name or count.
+ */
+function addEventsRow(row: PendingGroup["parent"]): { id: string } {
+  const id = `${row.id}:events`;
+
+  row.children.push({ children: [], id, title: "" });
+
+  return { id };
+}
+
+/**
  * Finds or adds one group's path rows under its parent, noting the group's events; a row with nothing nested stays a plain row.
  */
 function placeGroupRows(
@@ -186,11 +244,10 @@ function placeGroupRows(
 
   for (const [index, name] of node.path.entries()) {
     const id = `${parent.id}/${String(node.level)}:${node.path.slice(0, index + 1).join(" / ")}`;
-    let children = layout.children.get(id);
+    const children = layout.children.get(id) ?? [];
     const ids = layout.members.get(id) ?? new Set<string>();
 
-    if (children === undefined) {
-      children = [];
+    if (!layout.children.has(id)) {
       row.children.push({ children, id, title: name });
       layout.children.set(id, children);
     }
@@ -200,6 +257,8 @@ function placeGroupRows(
     }
 
     layout.members.set(id, ids);
+    layout.counts.set(id, ids.size);
+    layout.groups.set(id, toTimelineGroup(node, index, layout.colors));
     row = { children, id };
   }
 
@@ -251,5 +310,69 @@ function toGanttEvent(
     start: record.start,
     title: getEventLabel(record).glyphs,
     ...(record.color === null ? {} : { color: record.color }),
+  };
+}
+
+/**
+ * The bars of a leaf group's events, on a row of their own beneath the group's.
+ */
+function toLeafBars(
+  row: PendingGroup["parent"],
+  events: readonly CalendarEventRecord[],
+): GanttEvent<TimelineBar>[] {
+  const eventsRow = addEventsRow(row);
+  const bars: GanttEvent<TimelineBar>[] = [];
+
+  for (const record of events) {
+    bars.push(toGanttEvent(record, eventsRow.id));
+  }
+
+  return bars;
+}
+
+/**
+ * The groups still to lay out under a row, the last first, so the stack pops them in order.
+ */
+function toPending(
+  nodes: readonly EventGroupNode[],
+  parent: PendingGroup["parent"],
+): PendingGroup[] {
+  return nodes.toReversed().map((node) => ({ node, parent }));
+}
+
+/**
+ * What a group row knows of its group: its tag and fallback only on the last row of a deep tag's path.
+ */
+function toTimelineGroup(
+  node: EventGroupNode,
+  index: number,
+  colors: ReadonlyMap<string, string> | undefined,
+): TimelineGroup {
+  const last = index === node.path.length - 1;
+
+  return {
+    color: colors?.get(node.id),
+    fallback: last && node.key === null,
+    key: last ? node.key : null,
+    level: node.level,
+  };
+}
+
+/**
+ * Every event on the one row an ungrouped timeline has.
+ */
+function toUngroupedRows(events: readonly CalendarEventRecord[]): TimelineRows {
+  const bars: GanttEvent<TimelineBar>[] = [];
+
+  // A loop rather than a mapping callback keeps the call stacks shallow.
+  for (const record of events) {
+    bars.push(toGanttEvent(record, ALL_EVENTS_ROW.id));
+  }
+
+  return {
+    counts: new Map([[ALL_EVENTS_ROW.id, events.length]]),
+    events: bars,
+    groups: new Map(),
+    resources: [{ ...ALL_EVENTS_ROW }],
   };
 }

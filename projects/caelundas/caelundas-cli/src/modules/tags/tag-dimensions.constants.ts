@@ -1,8 +1,9 @@
 // ♟️ Constants
 import type { Aspect, Body, Sign } from "../caelundas/caelundas.types";
+import type { TagElement } from "./tags.types";
 
 /** Element of each sign, also carried by events in it. */
-export const ELEMENT_BY_SIGN: Record<Sign, string> = {
+export const ELEMENT_BY_SIGN: Record<Sign, TagElement> = {
   aquarius: "Air",
   aries: "Fire",
   cancer: "Water",
@@ -34,7 +35,7 @@ export const MODALITY_BY_SIGN: Record<Sign, string> = {
 };
 
 /** Element polarity: fire and air positive; earth and water negative. */
-export const POLARITY_BY_ELEMENT: Readonly<Record<string, string>> = {
+export const POLARITY_BY_ELEMENT: Readonly<Record<TagElement, string>> = {
   Air: "Positive",
   Earth: "Negative",
   Fire: "Positive",
@@ -111,6 +112,14 @@ export const SIGNS_BY_DIGNITY_BY_PLANET: Readonly<
   ],
 };
 
+/** Which of tradition's two fortunes a planet is, so it also sits under that group. */
+export const FORTUNE_BY_PLANET: Readonly<Partial<Record<Body, string>>> = {
+  jupiter: "Benefic",
+  mars: "Malefic",
+  saturn: "Malefic",
+  venus: "Benefic",
+};
+
 /** Synodic stage each Mercury, Venus, or Mars phase marks. */
 export const SYNODIC_STAGE_BY_PHASE: Readonly<Record<string, string>> = {
   brightest: "Brightest",
@@ -118,20 +127,22 @@ export const SYNODIC_STAGE_BY_PHASE: Readonly<Record<string, string>> = {
   "eastern brightest": "Brightest",
   "eastern elongation": "Elongation",
   "epimethian conjunction": "Conjunction",
+  "evening closing": "Closing",
   "evening last": "Rise and set",
   "evening rise": "Rise and set",
   "evening set": "Rise and set",
   "evening star": "Visibility",
-  "evening station": "Station",
   "evening visibility": "Visibility",
+  "evening widening": "Widening",
   full: "Conjunction",
   "inferior conjunction": "Conjunction",
+  "morning closing": "Closing",
   "morning first": "Rise and set",
   "morning rise": "Rise and set",
   "morning set": "Rise and set",
   "morning star": "Visibility",
-  "morning station": "Station",
   "morning visibility": "Visibility",
+  "morning widening": "Widening",
   new: "Conjunction",
   opposition: "Opposition",
   "promethian conjunction": "Conjunction",
@@ -146,28 +157,28 @@ export const MARTIAN_SYNODIC_STAGE_BY_PHASE: Readonly<Record<string, string>> =
     full: "Opposition",
   };
 
-/** Class of each body, also carried by events involving it. */
-export const BODY_CLASS_BY_BODY: Record<Body, string> = {
-  ceres: "Asteroid",
-  chiron: "Asteroid",
-  juno: "Asteroid",
-  jupiter: "Social",
-  lilith: "Point",
-  "lunar apogee": "Point",
-  "lunar perigee": "Point",
-  mars: "Personal",
-  mercury: "Personal",
-  moon: "Luminary",
-  neptune: "Outer",
-  "north lunar node": "Node",
-  pallas: "Asteroid",
-  pluto: "Outer",
-  saturn: "Social",
-  "south lunar node": "Node",
-  sun: "Luminary",
-  uranus: "Outer",
-  venus: "Personal",
-  vesta: "Asteroid",
+/** Where each body sits beneath Body: its class, and a planet's kind. */
+export const BODY_CLASS_BY_BODY: Record<Body, readonly string[]> = {
+  ceres: ["Asteroid"],
+  chiron: ["Asteroid"],
+  juno: ["Asteroid"],
+  jupiter: ["Planet", "Inner", "Social"],
+  lilith: ["Point"],
+  "lunar apogee": ["Point"],
+  "lunar perigee": ["Point"],
+  mars: ["Planet", "Inner", "Personal"],
+  mercury: ["Planet", "Inner", "Personal"],
+  moon: ["Luminary"],
+  neptune: ["Planet", "Outer"],
+  "north lunar node": ["Point"],
+  pallas: ["Asteroid"],
+  pluto: ["Planet", "Outer"],
+  saturn: ["Planet", "Inner", "Social"],
+  "south lunar node": ["Point"],
+  sun: ["Luminary"],
+  uranus: ["Planet", "Outer"],
+  venus: ["Planet", "Inner", "Personal"],
+  vesta: ["Asteroid"],
 };
 
 /**
@@ -214,3 +225,25 @@ export const NATURE_AND_HARMONIC_BY_PATTERN: Readonly<
   "T Square": ["Hard", 4],
   Yod: ["Neutral", 12],
 };
+
+const MINUTES_PER_HOUR = 60;
+const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR;
+const MINUTES_PER_YEAR = 365 * MINUTES_PER_DAY;
+
+/**
+ * Duration units, shortest first, with the minutes that reach each.
+ */
+export const DURATION_UNITS: readonly (readonly [
+  name: string,
+  minimumMinutes: number,
+])[] = [
+  ["Minutes", 1],
+  ["Hours", MINUTES_PER_HOUR],
+  ["Days", MINUTES_PER_DAY],
+  ["Weeks", 7 * MINUTES_PER_DAY],
+  ["Months", 30 * MINUTES_PER_DAY],
+  ["Quarters", 91 * MINUTES_PER_DAY],
+  ["Years", MINUTES_PER_YEAR],
+  ["Decades", 10 * MINUTES_PER_YEAR],
+  ["Centuries", 100 * MINUTES_PER_YEAR],
+];

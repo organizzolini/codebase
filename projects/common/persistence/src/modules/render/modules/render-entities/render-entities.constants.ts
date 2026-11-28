@@ -6,6 +6,7 @@ import type {
   GraphEdgeKind,
   GraphEdgeRecord,
   GraphGeneratedEdge,
+  GraphGeneratedOptionalName,
 } from "./render-entities.types";
 import type { NamingStrategyInterface } from "typeorm";
 
@@ -19,6 +20,16 @@ export const COMMAND_OF_KIND: Readonly<Record<GraphEdgeKind, string>> = {
 export const RENDER_ENTITIES_GENERATED_MARK = Symbol.for(
   "@codebase/persistence/generated-edge-graph",
 );
+
+/** The properties a generated edge names its columns by, by default. */
+export const RENDER_ENTITIES_GENERATED_COLUMNS = {
+  sourceColumn: "sourceNode",
+  targetColumn: "targetNode",
+} as const;
+
+/** The optional names an unset option leaves to their defaults. */
+export const RENDER_ENTITIES_OPTIONAL_NAMES: readonly GraphGeneratedOptionalName[] =
+  ["sourceColumn", "table", "targetColumn"];
 
 /** The naming strategy every database connection of this package uses. */
 export const RENDER_ENTITIES_NAMING: NamingStrategyInterface =

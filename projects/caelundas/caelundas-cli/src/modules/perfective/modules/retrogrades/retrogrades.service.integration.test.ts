@@ -8,6 +8,7 @@ import {
   retrogradeBodies,
 } from "../../../caelundas/caelundas.constants";
 import { EphemerisModule } from "../../../ephemeris/ephemeris.module";
+import { BoundarySearchModule } from "../../../ephemeris/modules/boundary-search/boundary-search.module";
 import { MathService } from "../../../ephemeris/modules/math/math.service";
 import { ProgressiveUtilitiesService } from "../../../progressive/progressive-utilities.service";
 
@@ -91,7 +92,7 @@ function createRetrogradeEphemeris(
 describe("retrogrades.events integration", () => {
   beforeAll(async () => {
     const { instance } = await buildTestingModule(RetrogradesService, {
-      imports: [EphemerisModule],
+      imports: [BoundarySearchModule, EphemerisModule],
       providers: [MathService, ProgressiveUtilitiesService],
     });
     service = instance;

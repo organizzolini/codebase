@@ -3,7 +3,7 @@ import { Fragment } from "react";
 
 import { Button } from "@codebase/presentation";
 
-import { ChipMenu } from "../../../chip-menu/chip-menu";
+import { ChipMenu } from "../../../calendar-group-strip/components/chip-menu/chip-menu";
 
 import type { GroupSort } from "../../../calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { ReactNode } from "react";
@@ -13,19 +13,37 @@ import type { ReactNode } from "react";
 /** A sort's name, direction, flip handler, and optional menu moves. */
 export interface SortChipProperties {
   direction: GroupSort["direction"];
+  /**
+   * The symbol that leads the name.
+   */
+  icon?: ReactNode;
   label: string;
   onFlip: () => void;
   onMoveLeft?: (() => void) | undefined;
   onMoveRight?: (() => void) | undefined;
+  onOnly?: (() => void) | undefined;
   onRemove?: (() => void) | undefined;
+  /**
+   * The full tag path, for the tooltip.
+   */
+  title?: string | undefined;
 }
 
 // 🧩 Component
 
 /** Renders one sort as its name and direction, which flip when pressed, with an ellipsis menu to move or remove it. */
 export function SortChip(properties: Readonly<SortChipProperties>): ReactNode {
-  const { direction, label, onFlip, onMoveLeft, onMoveRight, onRemove } =
-    properties;
+  const {
+    direction,
+    icon,
+    label,
+    onFlip,
+    onMoveLeft,
+    onMoveRight,
+    onOnly,
+    onRemove,
+    title,
+  } = properties;
 
   // 🪝 Hooks
 
@@ -48,8 +66,10 @@ export function SortChip(properties: Readonly<SortChipProperties>): ReactNode {
           onFlip();
         }}
         size="sm"
+        title={title}
         variant="outline"
       >
+        {icon}
         {label}
         {isAscending ? (
           <ArrowUp aria-hidden="true" />
@@ -57,14 +77,14 @@ export function SortChip(properties: Readonly<SortChipProperties>): ReactNode {
           <ArrowDown aria-hidden="true" />
         )}
       </Button>
-      {onRemove === undefined ? null : (
-        <ChipMenu
-          label={label}
-          onMoveLeft={onMoveLeft}
-          onMoveRight={onMoveRight}
-          onRemove={onRemove}
-        />
-      )}
+      <ChipMenu
+        label={title ?? label}
+        onMoveLeft={onMoveLeft}
+        onMoveRight={onMoveRight}
+        onOnly={onOnly}
+        onRemove={onRemove}
+        onReverse={onFlip}
+      />
     </Fragment>
   );
 }

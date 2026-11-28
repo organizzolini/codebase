@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { useContext } from "react";
 import { describe, expect, it } from "vitest";
 
+import { OpenDatePickerContext } from "../calendar-date-picker/calendar-date-picker.constants";
 import { CalendarNavigationSlot } from "../calendar-navigation-group/calendar-navigation-slot.constants";
 
 import { CalendarToolbar } from "./calendar-toolbar";
@@ -34,6 +35,25 @@ function follows(first: Element, second: Element): boolean {
   return (
     (first.compareDocumentPosition(second) & Node.DOCUMENT_POSITION_FOLLOWING) >
     0
+  );
+}
+
+/**
+ * A control, as the Filter list's Date item is, that asks the toolbar to open the picker.
+ */
+function OpenPickerButton(): ReactNode {
+  const open = useContext(OpenDatePickerContext);
+
+  return (
+    <>
+      <button
+        onClick={open ?? undefined}
+        type="button"
+      >
+        Open dates
+      </button>
+      {useContext(CalendarNavigationSlot)}
+    </>
   );
 }
 
@@ -155,5 +175,38 @@ describe(CalendarToolbar, () => {
     );
 
     expect(screen.getByRole("heading").className).toBe(first);
+  });
+
+  it("opens the date picker when a control inside it asks", () => {
+    render(
+      <CalendarToolbar
+        datePicker={{
+          onApply: () => {},
+          range: { from: "2026-03-01", to: "2026-03-31" },
+          timeZone: "UTC",
+        }}
+        filters={<OpenPickerButton />}
+        navigation={NAVIGATION}
+      />,
+    );
+
+    expect(screen.queryByTestId("date-picker-panel")).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Open dates" }));
+
+    expect(screen.getByTestId("date-picker-panel")).toBeDefined();
+  });
+
+  it("offers no way to open a picker it was not given", () => {
+    render(
+      <CalendarToolbar
+        filters={<OpenPickerButton />}
+        navigation={NAVIGATION}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Open dates" }));
+
+    expect(screen.queryByTestId("date-picker-panel")).toBeNull();
   });
 });

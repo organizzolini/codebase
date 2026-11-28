@@ -10,7 +10,9 @@ import { EventFilterParametersService } from "./modules/filtering/modules/query-
 import { EventFilterCombinator } from "./modules/filtering/modules/rules/event-filter-combinator.entities";
 import { EventFilterNumbersService } from "./modules/filtering/modules/values/event-filter-numbers.service";
 import { EventFilterValuesService } from "./modules/filtering/modules/values/event-filter-values.service";
+import { MAXIMUM_GROUP_LEVELS } from "./modules/grouping/event-grouping.constants";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
+import { TagFlagsService } from "./modules/tag-flags/tag-flags.service";
 import { CalendarWindow } from "./modules/windows/calendar-window.entities";
 
 import type { EventsDatasetEntity } from "./events.entities";
@@ -18,6 +20,13 @@ import type { CalendarEventEntity } from "./modules/calendar-event/calendar-even
 import type { EventFacetEntity } from "./modules/facets/event-facet.entities";
 import type { ResolvedPreset } from "./modules/presets/presets.types";
 
+const sanitize = vi.fn<(inputs: unknown) => Promise<unknown>>(
+  async (inputs) => {
+    await Promise.resolve();
+
+    return inputs;
+  },
+);
 const describeDataset = vi.fn<() => Promise<EventsDatasetEntity | null>>();
 const findPresets = vi.fn<() => Promise<ResolvedPreset[]>>();
 const findFacets =
@@ -38,6 +47,7 @@ describe(EventsResolver, () => {
         EventFilterService,
         EventFilterValuesService,
         EventGroupingService,
+        { provide: TagFlagsService, useValue: { sanitize } },
         {
           provide: EventsService,
           useValue: {
@@ -61,6 +71,7 @@ describe(EventsResolver, () => {
         EventFilterService,
         EventFilterValuesService,
         EventGroupingService,
+        { provide: TagFlagsService, useValue: { sanitize } },
         { provide: EventsService, useValue: {} },
       ],
     });
@@ -100,7 +111,7 @@ describe(EventsResolver, () => {
         start: new Date("2026-03-01T00:00:00Z"),
       },
       null,
-      [],
+      { grouping: [] },
     );
   });
 
@@ -134,7 +145,9 @@ describe(EventsResolver, () => {
     await resolver.events(period, filter);
     await resolver.facets(period, filter);
 
-    expect(findEvents).toHaveBeenLastCalledWith(period, parsed, []);
+    expect(findEvents).toHaveBeenLastCalledWith(period, parsed, {
+      grouping: [],
+    });
     expect(findFacets).toHaveBeenLastCalledWith(period, parsed);
     await expect(
       resolver.events(period, {
@@ -158,19 +171,18 @@ describe(EventsResolver, () => {
       levels: [{ field: "year" }, { depth: 2, field: "tag:root", tags: ["a"] }],
     });
 
-    expect(findEvents).toHaveBeenLastCalledWith(period, null, [
-      { field: "year", tags: [] },
-      { depth: 2, field: "tag:root", tags: ["a"] },
-      { field: "hour", tags: [] },
-    ]);
+    expect(findEvents).toHaveBeenLastCalledWith(period, null, {
+      grouping: [
+        { field: "year", tags: [] },
+        { depth: 2, field: "tag:root", tags: ["a"] },
+        { field: "hour", tags: [] },
+      ],
+    });
     await expect(
       resolver.events(period, null, {
-        levels: [
-          { field: "year" },
-          { field: "month" },
-          { field: "day" },
-          { field: "hour" },
-        ],
+        levels: Array.from({ length: MAXIMUM_GROUP_LEVELS + 1 }, () => ({
+          field: "year",
+        })),
       }),
     ).rejects.toThrow(/too_big/u);
   });

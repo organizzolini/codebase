@@ -757,7 +757,7 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-      } as DetectedCalendarEvent;
+      };
       const dissolvingEvent = {
         description: "dissolving",
         end: moment.utc("2024-03-21T13:00:00.000Z"),
@@ -774,7 +774,7 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-      } as DetectedCalendarEvent;
+      };
       const sortBySpy = vi
         .spyOn(_, "sortBy")
         .mockReturnValue([formingEvent, undefined, dissolvingEvent]);
@@ -806,7 +806,7 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-      } as DetectedCalendarEvent;
+      };
       const dissolvingEvent = {
         description: "dissolving",
         end: moment.utc("2024-03-21T13:00:00.000Z"),
@@ -823,14 +823,14 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-      } as DetectedCalendarEvent;
+      };
       const progressiveEvent = {
         description: "progressive",
         end: moment.utc("2024-03-21T13:00:00.000Z"),
         start: moment.utc("2024-03-21T12:00:00.000Z"),
         summary: "progressive",
         tags: ["Sextuple Aspect", "Hexagram"],
-      } as DetectedCalendarEvent;
+      };
       const groupedSpy = vi
         .spyOn(composerService, "groupSextupleEventsByKey")
         .mockReturnValue({ hexagram: [formingEvent, dissolvingEvent] });
@@ -861,7 +861,7 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-      } as DetectedCalendarEvent;
+      };
       const nonDissolvingEvent = {
         description: "perfective",
         end: moment.utc("2024-03-21T13:00:00.000Z"),
@@ -878,7 +878,7 @@ describe(SextupleAspectsService, () => {
           "Venus",
           "Saturn",
         ],
-      } as DetectedCalendarEvent;
+      };
       const groupedSpy = vi
         .spyOn(composerService, "groupSextupleEventsByKey")
         .mockReturnValue({ hexagram: [formingEvent, nonDissolvingEvent] });

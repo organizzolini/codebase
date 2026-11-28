@@ -30,7 +30,7 @@ vi.mock(import("@tanstack/react-router"), () => ({
 
 describe(useNightSkySettings, () => {
   it("returns its result", () => {
-    router.search = { "sky.lat": 51.5 };
+    router.search = { "skyfield.lat": 51.5 };
 
     const { result } = renderHook(() => useNightSkySettings());
 
@@ -50,18 +50,35 @@ describe(useNightSkySettings, () => {
     const { result } = renderHook(() => useNightSkySettings());
 
     act(() => {
-      result.current.change({ "sky.lat": 60, "sky.top": undefined });
+      result.current.change({ "skyfield.lat": 60, "skyfield.top": undefined });
     });
 
     const [options] = router.navigate.mock.lastCall ?? [];
 
     expect(options?.replace).toBe(true);
     expect(
-      options?.search({ date: "2026-03-01", "sky.top": "#102040" }),
+      options?.search({ date: "2026-03-01", "skyfield.top": "#102040" }),
     ).toStrictEqual({
       date: "2026-03-01",
-      "sky.lat": 60,
-      "sky.top": undefined,
+      "skyfield.lat": 60,
+      "skyfield.top": undefined,
+    });
+  });
+
+  it("drops the old sky keys a link still carries when it writes", () => {
+    const { result } = renderHook(() => useNightSkySettings());
+
+    act(() => {
+      result.current.change({ "skyfield.lat": 60 });
+    });
+
+    const [options] = router.navigate.mock.lastCall ?? [];
+
+    const previous = { sky: "off", "sky.lat": 10, "skyfield.lon": 5 };
+
+    expect(options?.search(previous)).toStrictEqual({
+      "skyfield.lat": 60,
+      "skyfield.lon": 5,
     });
   });
 });

@@ -12,6 +12,34 @@ export const RENDER_DIAGRAM_OPTION = {
   flags: "--diagram <flowchart|filetree>",
 } as const;
 
+/** Where a tree's icons, notes and rank are read from. */
+export const RENDER_TREE_FIELDS = {
+  icon: "icon",
+  note: "note",
+  rank: "rank",
+} as const;
+
+/** Flag and help text of `--icon-field`, which only the tree command takes. */
+export const RENDER_ICON_FIELD_OPTION = {
+  description:
+    "Entity property holding a row's lucide icon slug, drawn after its name; default icon. Left out when the entity has no such property",
+  flags: "--icon-field <name>",
+} as const;
+
+/** Flag and help text of `--note-field`, which only the tree command takes. */
+export const RENDER_NOTE_FIELD_OPTION = {
+  description:
+    "Entity property holding a row's note, drawn beneath its name in a flowchart and after it in a file tree; default note. Left out when the entity has no such property",
+  flags: "--note-field <name>",
+} as const;
+
+/** Flag and help text of `--rank-field`, which only the tree command takes. */
+export const RENDER_RANK_FIELD_OPTION = {
+  description:
+    "Entity property holding a row's place among its siblings, lowest first, ties by name; default rank. Used when no --sort is given, and left out when the entity has no such property",
+  flags: "--rank-field <name>",
+} as const;
+
 /** The diagrams `--diagram` names; the first is the default. */
 export const RENDER_DIAGRAM_SCHEMA = z
   .enum(["flowchart", "filetree"])

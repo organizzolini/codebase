@@ -1,6 +1,11 @@
 import { bodyFromDisplayName, isSign } from "../caelundas/caelundas.types";
 
-import { SIGNS_BY_DIGNITY_BY_PLANET } from "./tag-dimensions.constants";
+import { TAG_EXTRA_PARENTS } from "./modules/tag-metadata/tag-metadata-parents.constants";
+import { TAG_CHILD_RANKS } from "./modules/tag-metadata/tag-metadata-rank.constants";
+import {
+  DURATION_UNITS,
+  SIGNS_BY_DIGNITY_BY_PLANET,
+} from "./tag-dimensions.constants";
 import {
   CONTEXT_TAG_MAPS,
   ECLIPSE_TYPE_NAMES,
@@ -23,12 +28,29 @@ export function classifyEvent(event: ClassifiableEvent): TagPath[] {
     }),
   ];
 
+  // Daylight and night are times of day, not twilights, though a twilight tag marks them.
+  const isDayOrNight = rawTags.has("Daylight") || rawTags.has("Night");
+  const twilight = tagPathKey([TAG_ROOT.daily, "Twilight"]);
+
   return pruneAncestorPaths([
-    ...[...rawTags].flatMap((rawTag) => mapRawTag(rawTag, maps)),
-    ...ingressPaths(event, rawTags),
+    ...[...rawTags]
+      .flatMap((rawTag) => mapRawTag(rawTag, maps))
+      .filter((path) => !isDayOrNight || tagPathKey(path) !== twilight),
+    ...ingressPaths(rawTags),
     ...eclipsePaths(rawTags),
-    [TAG_ROOT.temporality, isInstant(event) ? "Instant" : "Duration"],
+    ...durationPaths(event),
+    [TAG_ROOT.temporality, isInstant(event) ? "Perfective" : "Progressive"],
   ]);
+}
+
+/** The key an edge is told apart by: its parent and child ids. */
+export function tagEdgeKey(parentId: string, childId: string): string {
+  return `${parentId}\u0000${childId}`;
+}
+
+/** The other parents the node at `path` sits under, each as a path; none for most nodes. */
+export function tagExtraParents(path: TagPath): readonly TagPath[] {
+  return TAG_EXTRA_PARENTS[path.join(" / ")] ?? [];
 }
 
 /**
@@ -41,6 +63,35 @@ export function tagNodeKey(parentId: null | string, name: string): string {
 /** The key a path is told apart by: its names, in order. */
 export function tagPathKey(path: TagPath): string {
   return path.join("\u0000");
+}
+
+/**
+ * Where a node sits among its siblings: its place, from 1, in its parent's list in `TAG_CHILD_RANKS`, or 0 when it is not listed.
+ */
+export function tagRank(path: readonly string[]): number {
+  const siblings = TAG_CHILD_RANKS[path.slice(0, -1).join(" / ")];
+  const index = siblings?.indexOf(path.at(-1) ?? "") ?? -1;
+
+  return index + 1;
+}
+
+/**
+ * A tag name as its `tags.slug` column holds it: lowercase, runs of other
+ * characters as one `-`, trimmed. Throws when nothing is left.
+ */
+export function tagSlug(name: string): string {
+  const slug = name
+    .toLowerCase()
+    .replaceAll(/[^a-z\d]+/gu, "-")
+    .replaceAll(/^-|-$/gu, "");
+
+  if (slug === "") {
+    throw new Error(
+      `🚫 The tag name "${name}" has no letters or digits to slug.`,
+    );
+  }
+
+  return slug;
 }
 
 /**
@@ -64,7 +115,21 @@ function dignityPaths(rawTags: ReadonlySet<string>): TagPath[] {
     "Peregrine",
   ];
 
-  return [[TAG_ROOT.dignity, dignity]];
+  return [[TAG_ROOT.sign, "Dignity", dignity]];
+}
+
+/**
+ * The unit a span lasts, the largest of `DURATION_UNITS` it reaches, Minutes for less; an instant has none.
+ */
+function durationPaths(event: ClassifiableEvent): TagPath[] {
+  if (isInstant(event)) {
+    return [];
+  }
+
+  const minutes = (event.end.valueOf() - event.start.valueOf()) / 60_000;
+  const unit = DURATION_UNITS.findLast(([, minimum]) => minutes >= minimum);
+
+  return [[TAG_ROOT.temporality, "Progressive", unit?.[0] ?? "Minutes"]];
 }
 
 /** An eclipse's kind, from the body eclipsed and the eclipse's type. */
@@ -75,13 +140,12 @@ function eclipsePaths(rawTags: ReadonlySet<string>): TagPath[] {
     return [];
   }
 
-  const eclipse = `${body} Eclipse`;
   const eclipseType = findRawTag(rawTags, ECLIPSE_TYPE_NAMES);
 
   return [
     eclipseType === undefined
-      ? [TAG_ROOT.type, "Eclipse", eclipse]
-      : [TAG_ROOT.type, "Eclipse", eclipse, `${eclipseType} ${eclipse}`],
+      ? [TAG_ROOT.eclipse, body]
+      : [TAG_ROOT.eclipse, body, eclipseType],
   ];
 }
 
@@ -93,33 +157,16 @@ function findRawTag(
   return names.find((name) => rawTags.has(name));
 }
 
-/** The kind of ingress an ingress event is. */
-function ingressKind(
-  event: ClassifiableEvent,
-  rawTags: ReadonlySet<string>,
-): string {
-  if (rawTags.has("Decan")) {
-    return "Decan Ingress";
-  }
-  if (rawTags.has("Peak")) {
-    return "Peak Ingress";
-  }
-  return isInstant(event) ? "Sign Ingress" : "Sign Transit";
-}
-
 /**
  * A plain sign ingress is an instant, where its stay is a span; a traditional planet's ingress also carries dignity.
  */
-function ingressPaths(
-  event: ClassifiableEvent,
-  rawTags: ReadonlySet<string>,
-): TagPath[] {
+function ingressPaths(rawTags: ReadonlySet<string>): TagPath[] {
   if (!rawTags.has("Ingress")) {
     return [];
   }
 
   return [
-    [TAG_ROOT.type, "Ingress", ingressKind(event, rawTags)],
+    [TAG_ROOT.ingress, "Stay", stayKind(rawTags)],
     ...dignityPaths(rawTags),
   ];
 }
@@ -133,13 +180,16 @@ function isInstant(event: ClassifiableEvent): boolean {
  * Paths a raw tag stands for in the maps that apply, or a root named for itself when none knows it.
  */
 function mapRawTag(rawTag: string, maps: readonly TagMap[]): TagPath[] {
-  const known = maps.filter((map) => Object.hasOwn(map, rawTag));
+  const known = maps
+    .filter((map) => Object.hasOwn(map, rawTag))
+    .map((map) => map[rawTag])
+    .filter((paths) => paths !== undefined);
 
   if (known.length === 0) {
     return [[rawTag]];
   }
 
-  return known.flatMap((map) => map[rawTag] ?? []);
+  return known.flat();
 }
 
 /**
@@ -154,4 +204,12 @@ function pruneAncestorPaths(paths: readonly TagPath[]): TagPath[] {
     .filter(([key]) => !keys.some((other) => other.startsWith(`${key}\u0000`)))
     .toSorted(([a], [b]) => (a < b ? -1 : 1))
     .map(([, path]) => path);
+}
+
+/** The kind of stay an ingress event bounds or is: of a decan, of half a sign, or of the whole sign. */
+function stayKind(rawTags: ReadonlySet<string>): string {
+  if (rawTags.has("Decan")) {
+    return "Decan Stay";
+  }
+  return rawTags.has("Peak") ? "Half Stay" : "Full Sign";
 }

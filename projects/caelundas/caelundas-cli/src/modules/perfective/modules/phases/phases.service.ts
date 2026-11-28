@@ -2,11 +2,11 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
+import { ElongationSpansService } from "./modules/elongation/elongation-spans.service";
 import { MartianPhaseService } from "./modules/martian/martian-phase.service";
 import { MercurianPhaseService } from "./modules/mercurian/mercurian-phase.service";
 import { VenusianPhaseService } from "./modules/venusian/venusian-phase.service";
 import {
-  MARTIAN_TAG,
   MERCURIAN_TAG,
   PLANETARY_PHASE_TAG,
   VENUSIAN_TAG,
@@ -32,6 +32,7 @@ export class PhasesService {
     private readonly venusianPhaseService: VenusianPhaseService,
     private readonly mercurianPhaseService: MercurianPhaseService,
     private readonly martianPhaseService: MartianPhaseService,
+    private readonly elongationSpansService: ElongationSpansService,
   ) {
     this.logger.setContext(PhasesService.name);
   }
@@ -81,46 +82,24 @@ export class PhasesService {
   }
 
   /**
-   * Pairs planetary rise and set events into visibility spans: morning-star and
-   * evening-star periods.
+   * Pairs planetary rise and set events into visibility spans, and the
+   * widening and closing halves of each apparition, Mars's at opposition.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
-    const progressiveEvents: DetectedCalendarEvent[] = [];
-
-    // Filter to planetary phase events
     const planetaryPhaseEvents = events.filter((event) =>
       event.tags.includes(PLANETARY_PHASE_TAG),
     );
-
-    // Process Venus phases
-    const venusianPhaseEvents = planetaryPhaseEvents.filter((event) =>
-      event.tags.includes(VENUSIAN_TAG),
-    );
-    progressiveEvents.push(
+    const byPlanet = (marker: string): DetectedCalendarEvent[] =>
+      planetaryPhaseEvents.filter((event) => event.tags.includes(marker));
+    const progressiveEvents = [
       ...this.venusianPhaseService.getVenusianPhaseProgressiveEvents(
-        venusianPhaseEvents,
+        byPlanet(VENUSIAN_TAG),
       ),
-    );
-
-    // Process Mercury phases
-    const mercurianPhaseEvents = planetaryPhaseEvents.filter((event) =>
-      event.tags.includes(MERCURIAN_TAG),
-    );
-    progressiveEvents.push(
       ...this.mercurianPhaseService.getMercurianPhaseProgressiveEvents(
-        mercurianPhaseEvents,
+        byPlanet(MERCURIAN_TAG),
       ),
-    );
-
-    // Process Mars phases
-    const martianPhaseEvents = planetaryPhaseEvents.filter((event) =>
-      event.tags.includes(MARTIAN_TAG),
-    );
-    progressiveEvents.push(
-      ...this.martianPhaseService.getMartianPhaseProgressiveEvents(
-        martianPhaseEvents,
-      ),
-    );
+      ...this.elongationSpansService.detectProgressive(planetaryPhaseEvents),
+    ];
 
     this.logger.debug(
       "🔍 Detected progressive planetary phase events",

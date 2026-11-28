@@ -2,19 +2,30 @@ import { Fragment } from "react";
 
 import { ButtonGroupText } from "@codebase/presentation";
 
-import { ChipMenu } from "../../../chip-menu/chip-menu";
 import { CHIP_CLASS_NAME } from "../../calendar-group-strip.constants";
+import { ChipMenu } from "../chip-menu/chip-menu";
 
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
-/** A level's name, its possible moves, and its remove handler. */
+/** A level's name, its possible moves, and its optional remove. */
 export interface GroupLevelChipProperties {
+  /**
+   * The symbol that leads the name.
+   */
+  icon?: ReactNode;
   label: string;
+  onCollapseAll?: (() => void) | undefined;
+  onExpandAll?: (() => void) | undefined;
   onMoveLeft?: (() => void) | undefined;
   onMoveRight?: (() => void) | undefined;
-  onRemove: () => void;
+  onOnly?: (() => void) | undefined;
+  onRemove?: (() => void) | undefined;
+  /**
+   * The full tag path, for the tooltip and menu.
+   */
+  title?: string | undefined;
 }
 
 // 🧩 Component
@@ -25,7 +36,17 @@ export interface GroupLevelChipProperties {
 export function GroupLevelChip(
   properties: Readonly<GroupLevelChipProperties>,
 ): ReactNode {
-  const { label, onMoveLeft, onMoveRight, onRemove } = properties;
+  const {
+    icon,
+    label,
+    onCollapseAll,
+    onExpandAll,
+    onMoveLeft,
+    onMoveRight,
+    onOnly,
+    onRemove,
+    title,
+  } = properties;
 
   // 🪝 Hooks
 
@@ -40,11 +61,20 @@ export function GroupLevelChip(
   // 🎨 Markup
   return (
     <Fragment>
-      <ButtonGroupText className={CHIP_CLASS_NAME}>{label}</ButtonGroupText>
+      <ButtonGroupText
+        className={CHIP_CLASS_NAME}
+        title={title}
+      >
+        {icon}
+        {label}
+      </ButtonGroupText>
       <ChipMenu
-        label={label}
+        label={title ?? label}
+        onCollapseAll={onCollapseAll}
+        onExpandAll={onExpandAll}
         onMoveLeft={onMoveLeft}
         onMoveRight={onMoveRight}
+        onOnly={onOnly}
         onRemove={onRemove}
       />
     </Fragment>

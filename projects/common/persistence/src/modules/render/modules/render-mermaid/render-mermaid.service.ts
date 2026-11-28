@@ -35,7 +35,7 @@ export class RenderMermaidService {
     options?: GraphMermaidOptions,
   ): GraphMermaidRendering {
     return options?.diagram === "filetree"
-      ? renderGraphFileTree(graph)
+      ? renderGraphFileTree(graph, options)
       : renderGraphMermaid(graph, options);
   }
 }

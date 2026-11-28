@@ -1,22 +1,17 @@
-import {
-  act,
-  fireEvent,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
+import { act, fireEvent, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { readServedApi } from "../../../../../../testing/calendar-api";
+import { readServedApi } from "../../../../../../testing/calendar/calendar-api";
 import {
   createBusyEvents,
   FIXTURE_EVENTS,
-} from "../../../../../../testing/calendar-fixture";
+} from "../../../../../../testing/calendar/calendar-fixture";
 import {
+  findDayCell,
   findToolbar,
   pickCalendarView,
   readCalendarView,
-} from "../../../../../../testing/calendar-page";
+} from "../../../../../../testing/calendar/calendar-page";
 import { renderCalendarRoute } from "../../../../../../testing/render-route";
 import { setViewportWidth } from "../../../../../../testing/viewport";
 
@@ -35,10 +30,6 @@ function withBusyEvents(
 // follows the other integration suites'.
 vi.setConfig({ testTimeout: 30_000 });
 
-// The agenda's own behavior is tested ungrouped; grouping it has its own
-// tests.
-const UNGROUPED = "&group=%5B%5D";
-
 // The views are tested through the `/` route, the way the page uses them;
 // they live apart from the route's own tests only to keep each file short.
 describe("calendar views", () => {
@@ -56,7 +47,6 @@ describe("calendar views", () => {
 
   it.each([
     { hidden: "Venus", link: "/?view=day&date=2026-03-20", shown: "Sun" },
-    { hidden: "Sun", link: "/?view=three-day&date=2026-03-24", shown: "Venus" },
   ])("shows only the days $link names", async ({ hidden, link, shown }) => {
     await renderCalendarRoute(link);
 
@@ -72,90 +62,40 @@ describe("calendar views", () => {
     ).toBeNull();
   });
 
-  it("lists the next days' events by day in the agenda", async () => {
-    await renderCalendarRoute(`/?view=agenda&date=2026-03-04${UNGROUPED}`);
-
-    const agenda = await screen.findByRole("region", { name: "Agenda" });
-    const days = within(agenda).getAllByRole("heading", { level: 3 });
-
-    expect(days.map((day) => day.textContent)).toStrictEqual([
-      "Wednesday, March 4, 2026",
-      "Friday, March 20, 2026",
-      "Wednesday, March 25, 2026",
-    ]);
-    expect(
-      within(agenda)
-        .getAllByRole("article")
-        .map((event) => event.getAttribute("aria-label")),
-    ).toStrictEqual([
-      "Mercury Retrograde, ongoing",
-      "Mars Conjunct Venus, 10:20 AM",
-      "Sun Ingress Aries, 10:46 AM",
-      "Venus Ingress Aries, 11:12 PM",
-    ]);
-  });
-
-  it("renders only the agenda rows on screen", async () => {
-    await renderCalendarRoute(
-      `/?view=agenda&date=2026-03-10${UNGROUPED}&clusters=false`,
-      { api: withBusyEvents("2026-03-10T14:00:00.000Z", 500) },
-    );
-
-    const agenda = await screen.findByRole("region", { name: "Agenda" });
-    const shown = within(agenda).getAllByRole("article");
-
-    expect(shown[1]?.getAttribute("aria-label")).toBe("Busy Event 1, 10:00 AM");
-    expect(shown.length).toBeGreaterThan(5);
-    expect(shown.length).toBeLessThan(50);
-  });
-
-  it("gathers similar agenda events under a row that opens", async () => {
-    await renderCalendarRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
-      api: withBusyEvents("2026-03-10T14:00:00.000Z", 500),
-    });
-
-    const agenda = await screen.findByRole("region", { name: "Agenda" });
-    const toggle = await within(agenda).findByRole("button", {
-      expanded: false,
-    });
-
-    expect(within(agenda).getAllByRole("article").length).toBeLessThan(10);
-
-    fireEvent.click(toggle);
-
-    await waitFor(() => {
-      expect(
-        within(agenda).getAllByRole("button", { expanded: true }),
-      ).toContain(toggle);
-    });
-  });
-
   it("opens a busy day's overflow as a windowed list", async () => {
     await renderCalendarRoute("/?date=2026-03-01", {
       api: withBusyEvents("2026-03-12T14:00:00.000Z", 400),
     });
 
-    fireEvent.click(await screen.findByRole("button", { name: /more/u }));
+    // Each group of the day opens in place, then the groups nested in it; the busy one's rows end in "+N more".
+    const cell = await findDayCell("2026-03-12");
+
+    for (let pass = 0; pass < 8; pass += 1) {
+      for (const chip of within(cell).getAllByTestId("calendar-group-chip")) {
+        if (chip.getAttribute("aria-expanded") === "false") {
+          fireEvent.click(chip);
+        }
+      }
+    }
+
+    fireEvent.click(
+      await within(cell).findByRole("button", { name: /more$/u }),
+    );
 
     const list = await screen.findByRole("region", {
       name: "Events on Thursday, March 12, 2026",
     });
     const shown = within(list).getAllByRole("article");
 
-    expect(shown[0]?.getAttribute("aria-label")).toBe(
-      "Mercury Retrograde, ongoing",
-    );
-    expect(shown[1]?.getAttribute("aria-label")).toBe("Busy Event 1, 10:00 AM");
+    expect(shown[0]?.getAttribute("aria-label")).toMatch(/^Busy Event/u);
     expect(shown.length).toBeLessThan(50);
   });
 
-  it("opens on the agenda on a phone and on the month wider", async () => {
+  it("opens on the table on a phone and on the month wider", async () => {
     setViewportWidth(375);
     await renderCalendarRoute("/?date=2026-03-04");
 
-    await expect(
-      screen.findByRole("region", { name: "Agenda" }),
-    ).resolves.toBeDefined();
+    await expect(screen.findByTestId("calendar-table")).resolves.toBeDefined();
 
     act(() => {
       setViewportWidth(1280);
@@ -164,20 +104,36 @@ describe("calendar views", () => {
     await expect(
       screen.findByRole("grid", { name: "March 2026" }),
     ).resolves.toBeDefined();
-    expect(screen.queryByRole("region", { name: "Agenda" })).toBeNull();
+    expect(screen.queryByTestId("calendar-table")).toBeNull();
   });
 
   it("keeps the view the link names whatever the width", async () => {
     setViewportWidth(375);
-    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
+    await renderCalendarRoute("/?view=week&date=2026-03-04");
 
-    await screen.findByRole("region", { name: "Agenda" });
+    await screen.findByRole("button", { name: /^Mars Conjunct Venus/u });
     act(() => {
       setViewportWidth(1280);
     });
 
-    expect(screen.getByRole("region", { name: "Agenda" })).toBeDefined();
+    expect(screen.queryByTestId("calendar-table")).toBeNull();
     expect(screen.queryByRole("grid", { name: "March 2026" })).toBeNull();
+  });
+
+  it("opens a link to the retired agenda view as the table", async () => {
+    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
+
+    await expect(screen.findByTestId("calendar-table")).resolves.toBeDefined();
+    await expect(readCalendarView()).resolves.toBe("Table");
+  });
+
+  it("opens a link to the retired three-day view as the week", async () => {
+    await renderCalendarRoute("/?view=three-day&date=2026-03-04");
+
+    await expect(
+      screen.findByRole("button", { name: /^Mars Conjunct Venus, 10:20\sAM/u }),
+    ).resolves.toBeDefined();
+    await expect(readCalendarView()).resolves.toBe("Week");
   });
 
   it("picks a view from the toolbar's menu on a phone", async () => {
@@ -194,16 +150,11 @@ describe("calendar views", () => {
   it.each([
     { end: "2026-04-16", link: "month&date=2026-03-04", start: "2026-02-21" },
     { end: "2026-03-09", link: "week&date=2026-03-04", start: "2026-02-28" },
-    {
-      end: "2026-03-08",
-      link: "three-day&date=2026-03-04",
-      start: "2026-03-03",
-    },
     { end: "2026-03-06", link: "day&date=2026-03-04", start: "2026-03-03" },
-    { end: "2026-04-04", link: "agenda&date=2026-03-04", start: "2026-03-03" },
+    { end: "2026-04-04", link: "table&date=2026-03-04", start: "2026-03-03" },
     {
       end: "2026-06-03",
-      link: "agenda&date=2026-03-04&days=90",
+      link: "table&date=2026-03-04&days=90",
       start: "2026-03-03",
     },
   ])("reads only the days the $link view shows", async (expected) => {
@@ -218,32 +169,11 @@ describe("calendar views", () => {
     ]);
   });
 
-  it("never reads more than a year of agenda at once", async () => {
-    await renderCalendarRoute("/?view=agenda&date=2026-03-04&days=2557");
+  it("never reads more than a year of the table at once", async () => {
+    await renderCalendarRoute("/?view=table&date=2026-03-04&days=2557");
     const api = readServedApi();
 
     expect(api.requests.events[0]?.period.end).toBe("2026-04-04T00:00:00.000Z");
-  });
-
-  it("loads later events into the agenda on request", async () => {
-    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
-
-    const agenda = await screen.findByRole("region", { name: "Agenda" });
-
-    expect(
-      within(agenda).queryByRole("article", { name: /^Mars Square Saturn/u }),
-    ).toBeNull();
-
-    fireEvent.click(
-      within(agenda).getByRole("button", { name: "Show later events" }),
-    );
-
-    await expect(
-      within(agenda).findByRole("article", { name: /^Mars Square Saturn/u }),
-    ).resolves.toBeDefined();
-    expect(
-      within(agenda).getByRole("article", { name: /^Mars Conjunct Venus/u }),
-    ).toBeDefined();
   });
 
   it("keeps the calendar on screen while a slow move reloads", async () => {
@@ -260,9 +190,7 @@ describe("calendar views", () => {
 
     expect(screen.queryByRole("status", { name: "Loading events" })).toBeNull();
     expect(screen.getByRole("grid", { name: "April 2026" })).toBeDefined();
-    await expect(
-      screen.findByRole("button", { name: /^Mars Square Saturn/u }),
-    ).resolves.toBeDefined();
+    await expect(findDayCell("2026-04-10")).resolves.toBeDefined();
   });
 
   it("falls back to the month for a view it does not know", async () => {
@@ -270,20 +198,6 @@ describe("calendar views", () => {
 
     await expect(
       screen.findByRole("grid", { name: "March 2026" }),
-    ).resolves.toBeDefined();
-  });
-
-  it("loads later events into the agenda when scrolled to its end", async () => {
-    await renderCalendarRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
-      api: withBusyEvents("2026-03-10T14:00:00.000Z", 60),
-    });
-
-    const agenda = await screen.findByRole("region", { name: "Agenda" });
-
-    fireEvent.scroll(agenda, { target: { scrollTop: 100_000 } });
-
-    await expect(
-      within(agenda).findByRole("article", { name: /^Mars Square Saturn/u }),
     ).resolves.toBeDefined();
   });
 
@@ -295,19 +209,6 @@ describe("calendar views", () => {
     ).resolves.toBeDefined();
   });
 
-  it("stops offering later events at a year", async () => {
-    await renderCalendarRoute("/?view=agenda&date=2026-03-04&days=366");
-
-    const agenda = await screen.findByRole("region", { name: "Agenda" });
-
-    expect(
-      within(agenda).getByRole("article", { name: /^Sun Ingress Cancer/u }),
-    ).toBeDefined();
-    expect(
-      within(agenda).queryByRole("button", { name: "Show later events" }),
-    ).toBeNull();
-  });
-
   it("reads a window already seen only once", async () => {
     await renderCalendarRoute("/?date=2026-03-04");
     const api = readServedApi();
@@ -315,7 +216,7 @@ describe("calendar views", () => {
     const toolbar = await findToolbar();
 
     fireEvent.click(within(toolbar).getByRole("button", { name: /Next/u }));
-    await screen.findByRole("button", { name: /^Mars Square Saturn/u });
+    await findDayCell("2026-04-10");
     fireEvent.click(within(toolbar).getByRole("button", { name: /Previous/u }));
     await screen.findByRole("grid", { name: "March 2026" });
 
@@ -349,28 +250,6 @@ describe("calendar views", () => {
     });
 
     expect(screen.queryByText("No events this month")).toBeNull();
-    await expect(
-      screen.findByRole("button", { name: /^Mars Square Saturn/u }),
-    ).resolves.toBeDefined();
-  });
-
-  it("keeps extending the agenda each time it is scrolled to its end", async () => {
-    await renderCalendarRoute(`/?view=agenda&date=2026-03-10${UNGROUPED}`, {
-      api: withBusyEvents("2026-03-10T14:00:00.000Z", 60),
-    });
-    const api = readServedApi();
-
-    const agenda = await screen.findByRole("region", { name: "Agenda" });
-
-    for (const count of [2, 3, 4]) {
-      fireEvent.scroll(agenda, { target: { scrollTop: 100_000 + count } });
-      await waitFor(() => {
-        expect(api.requests.events).toHaveLength(count);
-      });
-    }
-
-    await expect(
-      within(agenda).findByRole("article", { name: /^Sun Ingress Cancer/u }),
-    ).resolves.toBeDefined();
+    await expect(findDayCell("2026-04-10")).resolves.toBeDefined();
   });
 });

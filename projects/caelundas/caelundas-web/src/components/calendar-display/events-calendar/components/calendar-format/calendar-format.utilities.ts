@@ -32,6 +32,19 @@ export function formatCalendarDay(day: string): string {
 }
 
 /**
+ * Writes a day's heading in a zone, such as "Wed 25".
+ */
+export function formatDayHeading(day: Date, timeZone: string): string {
+  const weekday = day.toLocaleDateString("en-US", {
+    timeZone,
+    weekday: "short",
+  });
+  const date = day.toLocaleDateString("en-US", { day: "numeric", timeZone });
+
+  return `${weekday} ${date}`;
+}
+
+/**
  * Names a duration in days, hours and minutes, skipping zero units; "Instant" for no duration.
  */
 export function formatDuration(minutes: number): string {
@@ -60,18 +73,22 @@ export function formatEventSpan(
   end: Date,
   timeZone: string,
 ): string {
-  const write = (date: Date): string =>
-    date
-      .toLocaleString("en-US", {
-        day: "numeric",
-        hour: "numeric",
-        minute: "2-digit",
-        month: "short",
-        timeZone,
-      })
-      .replaceAll(" ", " ");
+  return `${formatEventStamp(start, timeZone)} – ${formatEventStamp(end, timeZone)}`;
+}
 
-  return `${write(start)} – ${write(end)}`;
+/**
+ * Writes the day and time of one moment in a zone, such as "Mar 4, 2:03 AM".
+ */
+export function formatEventStamp(date: Date, timeZone: string): string {
+  return date
+    .toLocaleString("en-US", {
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      month: "short",
+      timeZone,
+    })
+    .replaceAll(" ", " ");
 }
 
 /**
@@ -85,4 +102,15 @@ export function formatEventTime(date: Date, timeZone: string): string {
       timeZone,
     })
     .replaceAll(" ", " ");
+}
+
+/**
+ * Writes when an event is in its own zone: an instant's day and time, or its span and duration.
+ */
+export function formatEventWhen(event: CalendarEventRecord): string {
+  if (event.durationMinutes === 0) {
+    return formatEventStamp(event.start, event.timezone);
+  }
+
+  return `${formatEventSpan(event.start, event.end, event.timezone)} · ${formatDuration(event.durationMinutes)}`;
 }

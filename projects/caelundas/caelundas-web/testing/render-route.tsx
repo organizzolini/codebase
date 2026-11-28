@@ -10,7 +10,7 @@ import {
   type CalendarApi,
   type CalendarApiOptions,
   serveCalendarApi,
-} from "./calendar-api";
+} from "./calendar/calendar-api";
 
 // The real root renders a whole `<html>` document, which cannot mount inside
 // the `<div>` a test renders into, so routes are rendered under a bare root.

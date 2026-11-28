@@ -142,7 +142,7 @@ export class EventFilterCalendarFieldsService {
   }
 
   /**
-   * Keeps events whose summary or description contains the text, ignoring
+   * Keeps events whose name or note contains the text, ignoring
    * case. Wildcards match literally.
    */
   private compileTextRule(
@@ -166,7 +166,7 @@ export class EventFilterCalendarFieldsService {
       parameters,
       `%${text.replaceAll(/[\\%_]/gu, String.raw`\$&`)}%`,
     );
-    const sql = String.raw`(lower(e."summary") like lower(${pattern}::text) escape '\' or lower(e.description) like lower(${pattern}::text) escape '\')`;
+    const sql = String.raw`(lower(e."name") like lower(${pattern}::text) escape '\' or lower(e.note) like lower(${pattern}::text) escape '\')`;
 
     return operator === CALENDAR_OPERATORS.contains ? sql : `(not ${sql})`;
   }

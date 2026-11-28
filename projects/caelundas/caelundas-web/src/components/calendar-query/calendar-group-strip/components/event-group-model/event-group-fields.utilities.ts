@@ -1,22 +1,34 @@
+import { createElement } from "react";
+
+import { TagLead } from "../../../../calendar-events/tag-lead/tag-lead";
 import {
+  createRootIcon,
   createTagOptions,
   describeRoot,
+  listOfferedValues,
 } from "../../../calendar-filters/components/event-filter-model/event-filter-fields.utilities";
 import { TAG_FIELD_PREFIX } from "../../../calendar-filters/components/event-filter-model/event-filters.constants";
+import { readDepth } from "../../../filter-tag-editor/event-filter-tag-tree.utilities";
+import { TagIcon } from "../../../tag-icon/tag-icon";
 
-import { DEFAULT_GROUP_ROOTS } from "./event-group-fields.constants";
+import { ALL_MENUS, ALL_TAGS_FIELD } from "./event-group-fields.constants";
 import {
   DERIVED_GROUP_DESCRIPTIONS,
+  DERIVED_GROUP_ICONS,
   DERIVED_GROUP_LABELS,
   DERIVED_GROUP_ORDER,
-  MAXIMUM_GROUP_LEVELS,
 } from "./event-groups.constants";
 
-import type { EventFacet } from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
+import type {
+  EventFacet,
+  EventFacetValue,
+} from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type {
   EventGroupField,
   EventGrouping,
   EventGroupLevel,
+  GroupNodeOption,
+  ResolvedGroupLevel,
 } from "./event-groups.types";
 
 /**
@@ -40,43 +52,85 @@ export function createEventGroupFields(
 
     tagFields.push({
       description: describeRoot(facet),
+      icon: createRootIcon(facet),
       id: `${TAG_FIELD_PREFIX}${facet.id}`,
       label: facet.name,
       levels: levels.map((names) => [...new Set(names)]),
-      options: createTagOptions(facet),
+      menus: {
+        isFilterable: facet.isFilterable !== false,
+        isGroupable: facet.isGroupable !== false,
+        isSelectable: facet.isSelectable !== false,
+        isSortable: facet.isSortable !== false,
+      },
+      nodes: listGroupNodes(facet.values),
+      options: createTagOptions(facet, listOfferedValues(facet.values)),
+      values: facet.values,
     });
   }
 
   const derivedFields = DERIVED_GROUP_ORDER.map((id) => ({
     description: DERIVED_GROUP_DESCRIPTIONS[id],
+    icon: createElement(TagIcon, { name: DERIVED_GROUP_ICONS[id] }),
     id,
     label: DERIVED_GROUP_LABELS[id],
     levels: [],
+    menus: ALL_MENUS,
+    nodes: [],
     options: [],
+    values: [],
   }));
 
   return [...tagFields, ...derivedFields];
 }
 
 /**
- * The grouping a view starts with when the link names none, from its default roots the data has; only agenda and timeline are grouped.
+ * The grouping every view starts with when the link names none: the tag roots, then each depth of tags beneath them.
  */
 export function getDefaultGrouping(
-  view: string,
   fields: readonly EventGroupField[],
 ): EventGrouping {
-  const roots: readonly string[] =
-    view === "agenda" || view === "timeline" ? DEFAULT_GROUP_ROOTS[view] : [];
+  const roots: string[] = [];
+  // The tags at each depth beneath a root, across every root; depth 1 first.
+  const beneath: string[][] = [];
 
+  // Loops rather than filter callbacks keep the call stacks shallow.
+  for (const field of fields) {
+    if (field.id.startsWith(TAG_FIELD_PREFIX)) {
+      roots.push(field.id.slice(TAG_FIELD_PREFIX.length));
+
+      for (const option of field.options) {
+        const depth = readDepth(option);
+
+        beneath[depth] = [...(beneath[depth] ?? []), option.value];
+      }
+    }
+  }
+
+  if (roots.length === 0) {
+    return [];
+  }
+
+  const grouping: EventGroupLevel[] = [{ field: ALL_TAGS_FIELD, tags: roots }];
+
+  for (const [index, tags] of beneath.entries()) {
+    grouping.push({ depth: index + 1, field: ALL_TAGS_FIELD, tags });
+  }
+
+  return grouping;
+}
+
+/**
+ * Every tag root as a level of its own, in order: what the Group menu ticks while the link names none.
+ */
+export function getRootGrouping(
+  fields: readonly EventGroupField[],
+): EventGrouping {
   const grouping: EventGroupLevel[] = [];
 
-  // Loops rather than mapping callbacks keep the call stacks shallow.
-  for (const root of roots) {
-    for (const field of fields) {
-      if (field.label === root && field.id.startsWith(TAG_FIELD_PREFIX)) {
-        grouping.push({ depth: 1, field: field.id });
-        break;
-      }
+  // A loop rather than a filter callback keeps the call stacks shallow.
+  for (const field of fields) {
+    if (field.id.startsWith(TAG_FIELD_PREFIX)) {
+      grouping.push({ field: field.id });
     }
   }
 
@@ -84,7 +138,7 @@ export function getDefaultGrouping(
 }
 
 /**
- * Keeps the levels naming a field the data has, at most {@link MAXIMUM_GROUP_LEVELS} and each field once.
+ * Keeps the levels that make sense: a field the data has, repeating only straight after itself one tag deeper.
  */
 export function resolveEventGrouping(
   grouping: EventGrouping,
@@ -94,13 +148,10 @@ export function resolveEventGrouping(
 
   for (const level of grouping) {
     const field = fields.find((candidate) => candidate.id === level.field);
+    const next = field === undefined ? undefined : resolveLevel(level, field);
 
-    if (
-      field !== undefined &&
-      resolved.length < MAXIMUM_GROUP_LEVELS &&
-      !resolved.some((kept) => kept.field === field.id)
-    ) {
-      resolved.push(resolveLevel(level, field));
+    if (next !== undefined && isAllowed(next, resolved)) {
+      resolved.push(next.level);
     }
   }
 
@@ -117,35 +168,97 @@ export function toGroupLevel(field: EventGroupField): EventGroupLevel {
 }
 
 /**
- * Brings one level within its field: a derived field takes no options, a tag field takes its picked tags or a depth.
+ * Whether a level may follow those kept: not a repeat, and a field used before only straight after itself.
+ */
+function isAllowed(
+  next: ResolvedGroupLevel,
+  resolved: readonly EventGroupLevel[],
+): boolean {
+  let used = false;
+  // Whether the run of the field ending the kept levels holds a level whose
+  // tag the new one sits beneath, siblings included; another field ends a run.
+  let refines = false;
+
+  // One loop rather than helpers or callbacks, each of which would count as
+  // one more frame.
+  for (const kept of resolved) {
+    if (kept.field !== next.level.field) {
+      refines = false;
+      continue;
+    }
+
+    used = true;
+
+    if (kept.parent === next.level.parent) {
+      return false;
+    }
+
+    refines ||= (kept.parent ?? null) === next.above;
+  }
+
+  return !used || refines;
+}
+
+/**
+ * The tags with tags beneath them, from a root's tags in tree order, each with the note and icon to show.
+ */
+function listGroupNodes(values: readonly EventFacetValue[]): GroupNodeOption[] {
+  const nodes: GroupNodeOption[] = [];
+  // The last tag seen at each depth, which the next one deeper sits beneath.
+  const above: string[] = [];
+
+  for (const [index, value] of values.entries()) {
+    above[value.depth] = value.id;
+
+    if ((values[index + 1]?.depth ?? 0) > value.depth) {
+      nodes.push({
+        count: value.count,
+        depth: value.depth,
+        icon: createElement(TagLead, {
+          icon: value.icon ?? undefined,
+          id: value.id,
+          label: value.name,
+        }),
+        id: value.id,
+        name: value.name,
+        ...(typeof value.note === "string" ? { note: value.note } : {}),
+        parentId: above[value.depth - 1] ?? null,
+        path: value.path,
+      });
+    }
+  }
+
+  return nodes;
+}
+
+/**
+ * Brings a level within its field: a derived field takes no parent, a tag field a parent it has.
  */
 function resolveLevel(
   level: EventGroupLevel,
   field: EventGroupField,
-): EventGroupLevel {
-  if (field.levels.length === 0) {
-    return { field: field.id };
+): ResolvedGroupLevel | undefined {
+  if (field.levels.length === 0 || level.parent === undefined) {
+    return {
+      above: undefined,
+      level: {
+        field: field.id,
+        ...(level.tags === undefined || field.levels.length === 0
+          ? {}
+          : { tags: level.tags }),
+      },
+    };
   }
 
-  const known = new Set<string>();
-
-  // A loop rather than a mapping callback keeps the call stacks shallow.
-  for (const option of field.options) {
-    known.add(option.value);
-  }
-
-  const tags: string[] = [];
-
-  for (const tag of new Set(level.tags)) {
-    if (known.has(tag)) {
-      tags.push(tag);
+  // A loop rather than a callback, which would count as one more frame.
+  for (const node of field.nodes) {
+    if (node.id === level.parent) {
+      return {
+        above: node.parentId,
+        level: { field: field.id, parent: level.parent },
+      };
     }
   }
 
-  return tags.length > 0
-    ? { field: field.id, tags }
-    : {
-        depth: Math.min(Math.max(level.depth ?? 1, 1), field.levels.length),
-        field: field.id,
-      };
+  return undefined;
 }

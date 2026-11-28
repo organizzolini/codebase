@@ -17,6 +17,7 @@ import {
 } from "./night-sky.constants";
 
 import type { NightSkyInput } from "../../graphql/generated/operations";
+import type { CalendarSearch } from "../use-calendar-search/calendar-search.types";
 import type { WindowSize } from "./hooks/use-window-size/use-window-size.types";
 import type { FieldOfViewMeasurements } from "./night-sky.types";
 import type { NightSkyDrawing, NightSkyOverrides } from "./use-night-sky.types";
@@ -24,7 +25,7 @@ import type { NightSkyDrawing, NightSkyOverrides } from "./use-night-sky.types";
 // 🔏 Private Functions
 
 /**
- * What to warn of once about a link: each `sky.line*` key it ignored, then
+ * What to warn of once about a link: each `skyfield.line*` key it ignored, then
  * each constellation it names that has no figure.
  */
 export function describeNightSkyProblems(
@@ -92,6 +93,19 @@ export function normalizeConstellationName(name: string): string {
 }
 
 /**
+ * A link without the old `sky` spelling of the skyfield keys, so a write leaves only the new.
+ */
+export function omitOldSkyKeys(
+  search: Partial<CalendarSearch>,
+): Partial<CalendarSearch> {
+  return Object.fromEntries(
+    Object.entries(search).filter(
+      ([key]) => key !== "sky" && !key.startsWith("sky."),
+    ),
+  );
+}
+
+/**
  * Reads the backdrop's settings from the link; a key that does not parse falls back to its default.
  */
 export function readNightSkyOverrides(
@@ -99,63 +113,61 @@ export function readNightSkyOverrides(
 ): NightSkyOverrides {
   return {
     backgroundBottomColor: normalizeHexadecimalColor(
-      search["sky.bottom"],
+      search["skyfield.bottom"],
       DEFAULT_OPTIONS.backgroundBottomColor,
     ),
     backgroundTopColor: normalizeHexadecimalColor(
-      search["sky.top"],
+      search["skyfield.top"],
       DEFAULT_OPTIONS.backgroundTopColor,
     ),
     bottomAltitudeDegrees: readNumber(
-      search["sky.altBottom"],
+      search["skyfield.altBottom"],
       z.number().min(MINIMUM_BOTTOM_ALTITUDE_DEGREES).max(89),
       DEFAULT_OPTIONS.bottomAltitudeDegrees,
     ),
-    constellations: readConstellationNames(search["sky.constellations"]),
-    debug: z.boolean().catch(DEFAULT_OPTIONS.debug).parse(search["sky.debug"]),
+    constellations: readConstellationNames(search["skyfield.constellations"]),
+    debug: z
+      .boolean()
+      .catch(DEFAULT_OPTIONS.debug)
+      .parse(search["skyfield.debug"]),
     ecliptic: z
       .boolean()
       .catch(DEFAULT_OPTIONS.ecliptic)
-      .parse(search["sky.ecliptic"]),
+      .parse(search["skyfield.ecliptic"]),
     faintestMagnitude: readNumber(
-      search["sky.maxMag"],
+      search["skyfield.maxMag"],
       z.number().min(-2).max(12),
       DEFAULT_OPTIONS.faintestMagnitude,
     ),
     ...readStrokes(search),
     latitudeDegrees: readNumber(
-      search["sky.lat"],
+      search["skyfield.lat"],
       z.number().min(-90).max(90),
       DEFAULT_OBSERVER.latitudeDegrees,
     ),
     longitudeDegrees: readNumber(
-      search["sky.lon"],
+      search["skyfield.lon"],
       z.number().min(-360).max(360),
       DEFAULT_OBSERVER.longitudeDegrees,
     ),
-    off: search["sky"] === "off",
+    off: search["skyfield"] === "off",
     pixelsPerSecond: readNumber(
-      search["sky.pixelsPerSecond"],
+      search["skyfield.pixelsPerSecond"],
       z.number().positive().max(1000),
       DEFAULT_OPTIONS.pixelsPerSecond,
     ),
     skyOpacity: clampNumber(
-      search["sky.opacity"],
+      search["skyfield.opacity"],
       OPACITY_RANGE,
       DEFAULT_OPTIONS.skyOpacity,
     ),
     starScale: readNumber(
-      search["sky.starScale"],
+      search["skyfield.starScale"],
       z.number().positive().max(10),
       DEFAULT_OPTIONS.starScale,
     ),
-    surfaceOpacity: clampNumber(
-      search["sky.surfaceOpacity"],
-      OPACITY_RANGE,
-      DEFAULT_OPTIONS.surfaceOpacity,
-    ),
     verticalFieldOfViewDegrees: readNumber(
-      search["sky.vFov"],
+      search["skyfield.vFov"],
       z.number().positive().max(90),
       DEFAULT_OPTIONS.verticalFieldOfViewDegrees,
     ),
@@ -182,7 +194,7 @@ export function subscribeToReducedMotion(onChange: () => void): () => void {
 export function toNightSkyDrawing(
   overrides: NightSkyOverrides,
 ): NightSkyDrawing {
-  const { skyOpacity: _sky, surfaceOpacity: _surface, ...drawing } = overrides;
+  const { skyOpacity: _sky, ...drawing } = overrides;
 
   return drawing;
 }
@@ -244,14 +256,14 @@ function isFiniteNumber(value: unknown): value is number {
 
 /**
  * Whether a value is text of three or six hexadecimal digits, with or
- * without the `#`, as `sky.top` and `sky.bottom` take.
+ * without the `#`, as `skyfield.top` and `skyfield.bottom` take.
  */
 function isHexadecimalColor(value: unknown): boolean {
   return typeof value === "string" && COLOR_DIGITS_PATTERN.test(value);
 }
 
 /**
- * Reads `sky.constellations`: a comma list of names, `all`, `zodiac` or `none`; absent means all of them, `none` or empty no figure.
+ * Reads `skyfield.constellations`: a comma list of names, `all`, `zodiac` or `none`; absent means all of them, `none` or empty no figure.
  */
 function readConstellationNames(value: unknown): readonly string[] {
   if (typeof value !== "string") {
@@ -282,7 +294,7 @@ function readNumber(
  */
 function readStroke(
   search: Readonly<Record<string, unknown>>,
-  prefix: "sky.ecliptic" | "sky.line",
+  prefix: "skyfield.ecliptic" | "skyfield.line",
   fallback: { color: string; opacity: number; width: number },
 ): { color: string; opacity: number; rejected: string[]; width: number } {
   const [colorKey, opacityKey, widthKey] = [
@@ -326,12 +338,12 @@ function readStrokes(
   | "lineWidth"
   | "rejectedKeys"
 > {
-  const line = readStroke(search, "sky.line", {
+  const line = readStroke(search, "skyfield.line", {
     color: DEFAULT_OPTIONS.lineColor,
     opacity: DEFAULT_OPTIONS.lineOpacity,
     width: DEFAULT_OPTIONS.lineWidth,
   });
-  const ecliptic = readStroke(search, "sky.ecliptic", {
+  const ecliptic = readStroke(search, "skyfield.ecliptic", {
     color: DEFAULT_OPTIONS.eclipticColor,
     opacity: DEFAULT_OPTIONS.eclipticOpacity,
     width: DEFAULT_OPTIONS.eclipticWidth,

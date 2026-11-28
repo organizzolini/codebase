@@ -512,7 +512,14 @@ const CascaderItem = React.memo(function CascaderItem({
 
   // Extracted because tree mode renders it INLINE at the head of the row. It
   // reads `data-selected` off the ROW, so it also works on the trail rows.
-  const checkbox = (
+  const checkbox = node.radio ? (
+    <span
+      data-slot="cascader-item-radio"
+      className="border-input in-data-[selected]:border-primary flex size-4 shrink-0 items-center justify-center rounded-full border transition-colors"
+    >
+      <span className="bg-primary size-2 rounded-full opacity-0 in-data-[selected]:opacity-100" />
+    </span>
+  ) : (
     <span
       data-slot="cascader-item-checkbox"
       className="border-input in-data-[selected]:bg-primary in-data-[selected]:border-primary in-data-[selected]:text-primary-foreground in-data-[indeterminate]:bg-primary in-data-[indeterminate]:border-primary in-data-[indeterminate]:text-primary-foreground flex size-4 shrink-0 items-center justify-center rounded-[4px] border transition-colors"
@@ -589,19 +596,10 @@ const CascaderItem = React.memo(function CascaderItem({
         />
       ) : null}
 
-      {/* Tree + multi-select: the box leads the row, and an unselectable row
-          still reserves its width. */}
-      {leadingCheckbox ? (
-        selectable ? (
-          checkbox
-        ) : (
-          <span
-            data-slot="cascader-item-checkbox-spacer"
-            aria-hidden="true"
-            className="size-4 shrink-0"
-          />
-        )
-      ) : null}
+      {/* Tree + multi-select: the box leads the row. An unselectable row has
+          none and reserves nothing, so it reads as a folder: caret, icon,
+          label. */}
+      {leadingCheckbox && selectable ? checkbox : null}
 
       {node.icon ? (
         <span

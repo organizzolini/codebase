@@ -2,7 +2,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { HttpResponse } from "msw";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { serveCalendarApi } from "../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../testing/calendar/calendar-api";
 import { serveGraphqlApi } from "../../../testing/graphql-api";
 import { mockNightSkyQuery } from "../../graphql/generated/mocks";
 
@@ -66,7 +66,7 @@ describe(useNightSky, () => {
 
   it("returns its result", () => {
     serveCalendarApi();
-    router.search = { sky: "off" };
+    router.search = { skyfield: "off" };
 
     const { result } = renderHook(() => useNightSky());
 
@@ -75,7 +75,7 @@ describe(useNightSky, () => {
 
   it("draws nothing for a latitude the northern view cannot show", () => {
     const api = serveCalendarApi();
-    router.search = { "sky.lat": 0 };
+    router.search = { "skyfield.lat": 0 };
 
     const { result } = renderHook(() => useNightSky());
 
@@ -86,7 +86,10 @@ describe(useNightSky, () => {
   it("asks the API for the sky the link describes, the size of the window", async () => {
     const api = serveCalendarApi();
 
-    const sky = await renderSky({ "sky.lat": 51.5, "sky.pixelsPerSecond": 9 });
+    const sky = await renderSky({
+      "skyfield.lat": 51.5,
+      "skyfield.pixelsPerSecond": 9,
+    });
 
     expect(sky).toContain("<svg");
     expect(api.requests.nightSky).toHaveLength(1);
@@ -112,7 +115,7 @@ describe(useNightSky, () => {
       expect(result.current.sky).toBeDefined();
     });
 
-    router.search = { "sky.opacity": 0.3, "sky.surfaceOpacity": 0.5 };
+    router.search = { "skyfield.opacity": 0.3 };
     rerender();
 
     expect(api.requests.nightSky).toHaveLength(1);
@@ -121,7 +124,7 @@ describe(useNightSky, () => {
   it("asks for none when the link names no figure", async () => {
     const api = serveCalendarApi();
 
-    await renderSky({ "sky.constellations": "" });
+    await renderSky({ "skyfield.constellations": "" });
 
     expect(api.requests.nightSky[0]?.constellations).toStrictEqual(["none"]);
   });
@@ -149,7 +152,7 @@ describe(useNightSky, () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     serveCalendarApi();
-    await renderSky({ "sky.constellations": "zodiac,narnia,narnia" });
+    await renderSky({ "skyfield.constellations": "zodiac,narnia,narnia" });
 
     await waitFor(() => {
       expect(warn).toHaveBeenCalledWith(
@@ -166,15 +169,15 @@ describe(useNightSky, () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const api = serveCalendarApi();
 
-    await renderSky({ "sky.lineColor": "pink" });
+    await renderSky({ "skyfield.lineColor": "pink" });
 
     expect(api.requests.nightSky[0]?.lineColor).toBe("#ffffff");
     expect(
       warn.mock.calls.filter(([message]) =>
-        String(message).includes("sky.lineColor"),
+        String(message).includes("skyfield.lineColor"),
       ),
     ).toStrictEqual([
-      ["The night sky ignored sky.lineColor, whose value does not parse"],
+      ["The night sky ignored skyfield.lineColor, whose value does not parse"],
     ]);
   });
 
@@ -206,7 +209,7 @@ describe(useNightSky, () => {
         }),
       ),
     );
-    await renderSky({ "sky.vFov": 90 });
+    await renderSky({ "skyfield.vFov": 90 });
 
     await waitFor(() => {
       expect(warn).toHaveBeenCalledWith(

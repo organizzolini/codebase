@@ -3,10 +3,7 @@ import type {
   TimelineScale,
 } from "../../components/calendar-display/events-calendar/components/calendar-views/calendar-views.types";
 import type { EventFilterQuery } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filters.types";
-import type {
-  EventGrouping,
-  EventGroupLevel,
-} from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { EventGrouping } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
 import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 
 /**
@@ -14,24 +11,27 @@ import type { GroupSort } from "../../components/calendar-query/calendar-group-s
  */
 export interface CalendarSearch {
   /**
-   * `false` when the views of hours leave events unmerged; merged when
-   * absent.
+   * How much of the week and day's all-day row shows: `c` one slim row, `e` every event; the facet groups when absent.
    */
-  clusters?: false | undefined;
-  /**
-   * What events are colored by, a level like a grouping's; colored by type, kind by kind, when absent.
-   */
-  color?: EventGroupLevel | undefined;
+  ad?: "c" | "e" | undefined;
   /**
    * `false` when events are drawn without their colors; colored when absent.
    */
   colors?: false | undefined;
   /**
+   * The columns the table shows, first first: `name`, `start`, `end`, or a tag's id; its default columns when absent.
+   */
+  columns?: readonly string[] | undefined;
+  /**
+   * `true` when the metric layouts also measure the period before, to show the change; off when absent.
+   */
+  compare?: true | undefined;
+  /**
    * The day the calendar shows, as `YYYY-MM-DD`; today when absent.
    */
   date?: string | undefined;
   /**
-   * How many days the agenda lists, grown as it scrolls; a month's worth
+   * How many days the table lists, grown as it scrolls; a month's worth
    * when absent.
    */
   days?: number | undefined;
@@ -40,10 +40,22 @@ export interface CalendarSearch {
    */
   filter?: EventFilterQuery | undefined;
   /**
-   * The levels the agenda and the timeline group events by, outermost
+   * The folded query strips, comma-separated (`select,group`); none folded when absent.
+   */
+  fold?: string | undefined;
+  /**
+   * The levels the table and the timeline group events by, outermost
    * first, empty for none; each view's default when absent.
    */
   group?: EventGrouping | undefined;
+  /**
+   * `true` to leave out groups with no events; shown when absent.
+   */
+  hideEmpty?: true | undefined;
+  /**
+   * The metrics the metric layouts measure, first first; each layout's defaults when absent.
+   */
+  metrics?: readonly string[] | undefined;
   /**
    * The span the timeline shows at once; a month when absent.
    */
@@ -51,27 +63,26 @@ export interface CalendarSearch {
   /**
    * The night sky backdrop's overrides, named here so search validation keeps them.
    */
-  sky?: SkySearchValue | undefined;
-  "sky.altBottom"?: SkySearchValue | undefined;
-  "sky.bottom"?: SkySearchValue | undefined;
-  "sky.constellations"?: SkySearchValue | undefined;
-  "sky.debug"?: SkySearchValue | undefined;
-  "sky.ecliptic"?: SkySearchValue | undefined;
-  "sky.eclipticColor"?: SkySearchValue | undefined;
-  "sky.eclipticOpacity"?: SkySearchValue | undefined;
-  "sky.eclipticWidth"?: SkySearchValue | undefined;
-  "sky.lat"?: SkySearchValue | undefined;
-  "sky.lineColor"?: SkySearchValue | undefined;
-  "sky.lineOpacity"?: SkySearchValue | undefined;
-  "sky.lineWidth"?: SkySearchValue | undefined;
-  "sky.lon"?: SkySearchValue | undefined;
-  "sky.maxMag"?: SkySearchValue | undefined;
-  "sky.opacity"?: SkySearchValue | undefined;
-  "sky.pixelsPerSecond"?: SkySearchValue | undefined;
-  "sky.starScale"?: SkySearchValue | undefined;
-  "sky.surfaceOpacity"?: SkySearchValue | undefined;
-  "sky.top"?: SkySearchValue | undefined;
-  "sky.vFov"?: SkySearchValue | undefined;
+  skyfield?: SkySearchValue | undefined;
+  "skyfield.altBottom"?: SkySearchValue | undefined;
+  "skyfield.bottom"?: SkySearchValue | undefined;
+  "skyfield.constellations"?: SkySearchValue | undefined;
+  "skyfield.debug"?: SkySearchValue | undefined;
+  "skyfield.ecliptic"?: SkySearchValue | undefined;
+  "skyfield.eclipticColor"?: SkySearchValue | undefined;
+  "skyfield.eclipticOpacity"?: SkySearchValue | undefined;
+  "skyfield.eclipticWidth"?: SkySearchValue | undefined;
+  "skyfield.lat"?: SkySearchValue | undefined;
+  "skyfield.lineColor"?: SkySearchValue | undefined;
+  "skyfield.lineOpacity"?: SkySearchValue | undefined;
+  "skyfield.lineWidth"?: SkySearchValue | undefined;
+  "skyfield.lon"?: SkySearchValue | undefined;
+  "skyfield.maxMag"?: SkySearchValue | undefined;
+  "skyfield.opacity"?: SkySearchValue | undefined;
+  "skyfield.pixelsPerSecond"?: SkySearchValue | undefined;
+  "skyfield.starScale"?: SkySearchValue | undefined;
+  "skyfield.top"?: SkySearchValue | undefined;
+  "skyfield.vFov"?: SkySearchValue | undefined;
   /**
    * How the timeline orders its groups, the first sort first; by the first group's name when absent.
    */

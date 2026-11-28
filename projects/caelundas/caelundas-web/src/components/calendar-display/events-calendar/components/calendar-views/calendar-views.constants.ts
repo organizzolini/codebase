@@ -6,10 +6,11 @@ import { z } from "zod";
 export const CALENDAR_VIEWS = [
   "month",
   "week",
-  "three-day",
   "day",
-  "agenda",
   "timeline",
+  "table",
+  "charts",
+  "totals",
 ] as const;
 
 /**
@@ -18,11 +19,12 @@ export const CALENDAR_VIEWS = [
 export const CALENDAR_VIEW_LABELS: Readonly<
   Record<(typeof CALENDAR_VIEWS)[number], string>
 > = {
-  agenda: "Agenda",
+  charts: "Charts",
   day: "Day",
   month: "Month",
-  "three-day": "3 Days",
+  table: "Table",
   timeline: "Timeline",
+  totals: "Totals",
   week: "Week",
 };
 
@@ -32,21 +34,27 @@ export const CALENDAR_VIEW_LABELS: Readonly<
 export const CALENDAR_VIEW_PERIODS: Readonly<
   Record<(typeof CALENDAR_VIEWS)[number], string>
 > = {
-  agenda: "in these days",
+  charts: "in these days",
   day: "this day",
   month: "this month",
-  "three-day": "in these three days",
+  table: "in these days",
   timeline: "in this period",
+  totals: "in these days",
   week: "this week",
 };
 
 /**
- * How many days the agenda lists from the day it opens on.
+ * The layouts that measure the table's days instead of listing them.
+ */
+export const METRIC_VIEWS = ["charts", "totals"] as const;
+
+/**
+ * How many days the table lists from the day it opens on.
  */
 export const AGENDA_DAY_COUNT = 30;
 
 /**
- * The most days the agenda lists at once.
+ * The most days the table lists at once.
  */
 export const MAXIMUM_AGENDA_DAYS = 366;
 
@@ -79,8 +87,14 @@ export const TIMELINE_SCALE_LABELS: Readonly<
  */
 export const DEFAULT_TIMELINE_SCALE: (typeof TIMELINE_SCALES)[number] = "month";
 
-export const THREE_DAYS = 3;
-
 export const calendarViewSchema = z.enum(CALENDAR_VIEWS);
+
+/**
+ * Retired view names and the views they open.
+ */
+export const RETIRED_VIEWS: Readonly<Record<string, string>> = {
+  agenda: "table",
+  "three-day": "week",
+};
 
 export const timelineScaleSchema = z.enum(TIMELINE_SCALES);

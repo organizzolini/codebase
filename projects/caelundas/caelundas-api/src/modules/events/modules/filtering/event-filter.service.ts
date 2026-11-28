@@ -131,9 +131,9 @@ export class EventFilterService {
       }
     }
 
-    const matching = EVENT_TAGS_MATCHING_SQL.replace("{tags}", () =>
-      this.parametersService.bind(parameters, known),
-    );
+    const matching = (
+      parameters.tagsMatching ?? EVENT_TAGS_MATCHING_SQL
+    ).replace("{tags}", () => this.parametersService.bind(parameters, known));
 
     if (operator === TAG_OPERATORS.hasAllOf) {
       const count = this.parametersService.bind(parameters, tagIds.length);
@@ -147,18 +147,23 @@ export class EventFilterService {
   }
 
   /**
-   * Compiles the filter tree to boolean SQL, numbering placeholders after
-   * `offset`. Unfinished rules are dropped; an empty tree is `null`.
+   * Compiles the filter tree to boolean SQL after `offset`, reading tags from
+   * `tagsMatching` if given. Unfinished rules drop; an empty tree is `null`.
    */
   public compile(
     filter: EventFilterGroup | null | undefined,
     offset: number,
+    tagsMatching?: string,
   ): CompiledEventFilter | null {
     if (filter === null || filter === undefined) {
       return null;
     }
 
-    const parameters: EventFilterParameters = { offset, values: [] };
+    const parameters: EventFilterParameters = {
+      offset,
+      tagsMatching,
+      values: [],
+    };
     const sql = this.compileGroup(filter, parameters);
 
     return sql === null ? null : { parameters: parameters.values, sql };

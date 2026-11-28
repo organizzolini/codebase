@@ -26,14 +26,14 @@ const DDL = [
   "CREATE TABLE stations (number integer PRIMARY KEY, title text)",
   "CREATE TABLE pipelines (code text PRIMARY KEY, title text NOT NULL)",
   "CREATE TABLE jobs (code text PRIMARY KEY, name text NOT NULL)",
-  "CREATE TABLE pipeline_dependencies (pipeline_code text NOT NULL REFERENCES pipelines (code), from_code text NOT NULL REFERENCES jobs (code), to_code text NOT NULL REFERENCES jobs (code), PRIMARY KEY (pipeline_code, from_code, to_code))",
+  "CREATE TABLE pipeline_dependencies (from_code text NOT NULL REFERENCES jobs (code), to_code text NOT NULL REFERENCES jobs (code), PRIMARY KEY (from_code, to_code))",
 ];
 
 /** Two jobs, one waiting for the other. */
 const ROWS = [
   "INSERT INTO pipelines (code, title) VALUES ('P', 'Build')",
   "INSERT INTO jobs (code, name) VALUES ('a', 'Compile'), ('b', 'Test')",
-  "INSERT INTO pipeline_dependencies (pipeline_code, from_code, to_code) VALUES ('P', 'a', 'b')",
+  "INSERT INTO pipeline_dependencies (from_code, to_code) VALUES ('a', 'b')",
 ];
 
 describe("render-directed-acyclic-graph-data, over a generated edge entity", () => {
@@ -79,10 +79,7 @@ describe("render-directed-acyclic-graph-data, over a generated edge entity", () 
         [
           "flowchart TB",
           "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
-          "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
-          '    n0["Compile"]',
-          '    n1["Test"]',
-          '    n0 -->|"Build"| n1',
+          '    n0["Compile"] --> n1["Test"]',
           "    class n0 root",
           "",
         ].join("\n"),

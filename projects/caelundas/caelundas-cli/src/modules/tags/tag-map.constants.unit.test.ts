@@ -22,6 +22,7 @@ import {
 import { eclipseTypeLabelByType } from "../perfective/modules/eclipses/eclipses.constants";
 import { DECAN_TAG_BY_DECAN } from "../perfective/modules/ingresses/ingresses.constants";
 
+import { mapPlanetaryPhases } from "./tag-map.functions";
 import { TAG_ROOT } from "./tags.constants";
 import { classifyEvent } from "./tags.utilities";
 
@@ -31,6 +32,12 @@ const AT = "2026-03-20T12:00:00Z";
 const BASE = ["Astronomy", "Astrology"];
 const ROOTS = new Set<string>(Object.values(TAG_ROOT));
 const VISIBILITY = ["Evening Visibility", "Morning Visibility"];
+const HALVES = [
+  "Evening Closing",
+  "Evening Widening",
+  "Morning Closing",
+  "Morning Widening",
+];
 
 /** The paths an instant with these raw tags is classified under. */
 function classify(tags: readonly string[]): TagPath[] {
@@ -41,10 +48,19 @@ function classify(tags: readonly string[]): TagPath[] {
   });
 }
 
+/** Each planet's phases and the spans its apparition makes. */
 const PLANETARY_PHASES = [
-  ["Venusian", Object.keys(symbolByVenusianPhase)],
-  ["Mercurian", Object.keys(symbolByMercurianPhase)],
-  ["Martian", Object.keys(symbolByMartianPhase)],
+  ["Venusian", Object.keys(symbolByVenusianPhase), [...VISIBILITY, ...HALVES]],
+  [
+    "Mercurian",
+    Object.keys(symbolByMercurianPhase),
+    [...VISIBILITY, ...HALVES],
+  ],
+  [
+    "Martian",
+    Object.keys(symbolByMartianPhase),
+    ["Evening Closing", "Morning Widening"],
+  ],
 ] as const;
 
 const COMPOUND_PATTERNS = [
@@ -64,10 +80,12 @@ const SIGNS = signs.map((sign) => _.startCase(sign));
 
 /** Raw tags for each event kind a detector emits. */
 const DETECTOR_TAG_SETS: readonly (readonly string[])[] = [
-  ...PLANETARY_PHASES.flatMap(([marker, phases]) =>
-    [...phases.map((phase) => _.startCase(phase)), ...VISIBILITY].map(
-      (phase) => ["Planetary Phase", marker, phase],
-    ),
+  ...PLANETARY_PHASES.flatMap(([marker, phases, spans]) =>
+    [...phases.map((phase) => _.startCase(phase)), ...spans].map((phase) => [
+      "Planetary Phase",
+      marker,
+      phase,
+    ]),
   ),
   ...lunarPhases.map((phase) => [
     "Monthly Lunar Cycle",
@@ -109,8 +127,19 @@ const DETECTOR_TAG_SETS: readonly (readonly string[])[] = [
     "Vernal Equinox",
     "Winter Solstice",
   ].map((name) => ["Annual Solar Cycle", "Solar", name]),
-  ["Daily Solar Cycle", "Solar"],
-  ["Daily Lunar Cycle", "Lunar"],
+  ...["Sunrise", "Sunset", "Solar Zenith", "Solar Nadir"].map((point) => [
+    "Daily Solar Cycle",
+    "Solar",
+    point,
+  ]),
+  ...[
+    "Moonrise",
+    "Moonset",
+    "Lunar Zenith",
+    "Lunar Nadir",
+    "Moon Up",
+    "Moon Down",
+  ].map((point) => ["Daily Lunar Cycle", "Lunar", point]),
   ...["Apogee", "Perigee"].map((name) => ["Lunar Apsides", "Lunar", name]),
   ...aspects.flatMap((aspect) =>
     ["Forming", "Perfective", "Dissolving"].map((phase) => [
@@ -164,11 +193,7 @@ const DETECTOR_TAG_SETS: readonly (readonly string[])[] = [
       ]),
     ]),
   ),
-  ...BODIES.flatMap((body) => [
-    ["Retrogrades", body],
-    ["Direction", body, "Retrograde"],
-    ["Direction", body, "Direct"],
-  ]),
+  ...BODIES.flatMap((body) => [["Retrogrades", body]]),
 ];
 
 describe("tag map vocabulary", () => {
@@ -198,12 +223,15 @@ describe("tag map vocabulary", () => {
     ]
       .map((pattern) => _.startCase(pattern))
       .filter((pattern) => {
-        const roots = new Set(
-          classify(["Compound Aspect", pattern]).map(([root]) => root),
-        );
+        const paths = classify(["Compound Aspect", pattern]);
         return (
-          !roots.has(TAG_ROOT.aspectNature) ||
-          !roots.has(TAG_ROOT.aspectHarmonic)
+          !paths.some(
+            ([root, branch]) => root === TAG_ROOT.aspect && branch === "Nature",
+          ) ||
+          !paths.some(
+            ([root, branch]) =>
+              root === TAG_ROOT.aspect && branch === "Harmonic",
+          )
         );
       });
 
@@ -215,17 +243,35 @@ describe("tag map vocabulary", () => {
     (phase) => {
       expect(
         classify(["Planetary Phase", "Martian", phase]).filter(
-          ([root]) => root === TAG_ROOT.synodicStage,
+          ([, branch]) => branch === "Synodic Stage",
         ),
-      ).toStrictEqual([[TAG_ROOT.synodicStage, "Opposition"]]);
+      ).toStrictEqual([
+        [TAG_ROOT.planetary, "Synodic Stage", "Mars", "Opposition"],
+      ]);
     },
   );
 
   it("keeps Venus full at a conjunction", () => {
     expect(
       classify(["Planetary Phase", "Venusian", "Full"]).filter(
-        ([root]) => root === TAG_ROOT.synodicStage,
+        ([, branch]) => branch === "Synodic Stage",
       ),
-    ).toStrictEqual([[TAG_ROOT.synodicStage, "Conjunction"]]);
+    ).toStrictEqual([
+      [TAG_ROOT.planetary, "Synodic Stage", "Venus", "Conjunction"],
+    ]);
+  });
+
+  it("takes a phase's own name for its stage when none is mapped for it", () => {
+    const map = mapPlanetaryPhases({
+      marker: "Venusian",
+      phases: ["odd phase"],
+      planet: "Venus",
+      planetPaths: [],
+    });
+
+    expect(map["Odd Phase"]).toStrictEqual([
+      [TAG_ROOT.planetary, "Phase", "Venusian", "Venusian Odd Phase"],
+      [TAG_ROOT.planetary, "Synodic Stage", "Venus", "Odd Phase"],
+    ]);
   });
 });

@@ -42,6 +42,26 @@ describe(focusSibling, () => {
     expect(document.activeElement).toBe(second);
   });
 
+  it("looks among the siblings when the list is not the tag editor", () => {
+    const parent = document.createElement("div");
+    const first = createRow(parent, "aspect");
+    const second = createRow(parent, "trine");
+
+    document.body.replaceChildren(parent);
+    focusSibling(first, 1);
+
+    expect(document.activeElement).toBe(second);
+  });
+
+  it("does nothing for an element with no list", () => {
+    const orphan = document.createElement("div");
+
+    document.body.replaceChildren();
+    focusSibling(orphan, 1);
+
+    expect(document.activeElement).toBe(document.body);
+  });
+
   it("moves focus from outside the rows to the first row", () => {
     const { first, list } = renderRows();
     const search = document.createElement("input");

@@ -24,20 +24,20 @@ const DDL = [
   "DROP TABLE IF EXISTS network_lines, networks, stations, pipeline_dependencies, pipelines, jobs",
   "CREATE TABLE networks (code text PRIMARY KEY, title text NOT NULL)",
   "CREATE TABLE stations (number integer PRIMARY KEY, title text)",
-  "CREATE TABLE network_lines (network_code text NOT NULL REFERENCES networks (code) ON DELETE CASCADE, from_number integer NOT NULL REFERENCES stations (number) ON DELETE CASCADE, to_number integer NOT NULL REFERENCES stations (number) ON DELETE CASCADE, PRIMARY KEY (network_code, from_number, to_number))",
+  "CREATE TABLE network_lines (source_node integer NOT NULL REFERENCES stations (number) ON DELETE CASCADE, target_node integer NOT NULL REFERENCES stations (number) ON DELETE CASCADE, PRIMARY KEY (source_node, target_node))",
   "CREATE TABLE pipelines (code text PRIMARY KEY, title text NOT NULL)",
   "CREATE TABLE jobs (code text PRIMARY KEY, name text NOT NULL)",
-  "CREATE TABLE pipeline_dependencies (pipeline_code text NOT NULL REFERENCES pipelines (code), from_code text NOT NULL REFERENCES jobs (code), to_code text NOT NULL REFERENCES jobs (code), PRIMARY KEY (pipeline_code, from_code, to_code))",
+  "CREATE TABLE pipeline_dependencies (from_code text NOT NULL REFERENCES jobs (code), to_code text NOT NULL REFERENCES jobs (code), PRIMARY KEY (from_code, to_code))",
 ];
 
-/** Two lines of two networks, and a station with no title. */
+/** Three lines of two neighborhoods, and a station with no title. */
 const ROWS = [
-  "INSERT INTO networks (code, title) VALUES ('N', 'North line'), ('S', 'South line')",
+  "INSERT INTO networks (code, title) VALUES ('N', 'North line')",
   "INSERT INTO stations (number, title) VALUES (1, 'Alpha'), (2, 'Beta'), (3, 'Gamma'), (4, 'Delta'), (5, NULL)",
-  "INSERT INTO network_lines (network_code, from_number, to_number) VALUES ('N', 1, 2), ('N', 2, 3), ('S', 4, 5)",
+  "INSERT INTO network_lines (source_node, target_node) VALUES (1, 2), (2, 3), (4, 5)",
   "INSERT INTO pipelines (code, title) VALUES ('P', 'Build')",
   "INSERT INTO jobs (code, name) VALUES ('a', 'Compile'), ('b', 'Test')",
-  "INSERT INTO pipeline_dependencies (pipeline_code, from_code, to_code) VALUES ('P', 'a', 'b')",
+  "INSERT INTO pipeline_dependencies (from_code, to_code) VALUES ('a', 'b')",
 ];
 
 describe("render-graph-data, over a generated edge entity", () => {
@@ -74,7 +74,7 @@ describe("render-graph-data, over a generated edge entity", () => {
   }, INTEGRATION_TEST_TIMEOUT_MILLISECONDS);
 
   it(
-    "titles each neighborhood with its graph's label and each node with its own, keeping the id of a node with none",
+    "labels each node with its own label, keeping the id of a node with none, and titles each neighborhood by its first node",
     async () => {
       const result = await runRender(["--entities", NETWORK_GLOB]);
 
@@ -83,21 +83,16 @@ describe("render-graph-data, over a generated edge entity", () => {
         [
           "flowchart LR",
           "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
-          "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
-          '    subgraph nb0["North line"]',
-          '        n0["Alpha"]',
-          '        n1["Beta"]',
-          '        n2["Gamma"]',
-          "        n0 --- n1",
-          "        n1 --- n2",
+          '    subgraph nb0["Alpha"]',
+          "        direction LR",
+          '        n0["Alpha"] --- n1["Beta"] --- n2["Gamma"]',
           "    end",
-          '    subgraph nb1["South line"]',
-          '        n3["Delta"]',
-          '        n4["5"]',
-          "        n3 --- n4",
+          '    subgraph nb1["Delta"]',
+          "        direction LR",
+          '        n3["Delta"] --- n4["5"]',
           "    end",
-          "    class n0 root",
-          "    class n3 root",
+          "    nb0 ~~~ nb1",
+          "    class n0,n3 root",
           "",
         ].join("\n"),
       );
@@ -113,7 +108,7 @@ describe("render-graph-data, over a generated edge entity", () => {
         "--entities",
         NETWORK_GLOB,
         "--filter",
-        "networkCode=S",
+        "sourceNode=4",
       ]);
 
       expect(result.exitCode).toBe(0);
@@ -140,7 +135,7 @@ describe("render-graph-data, over a generated edge entity", () => {
       ]);
 
       expect(picked.exitCode).toBe(0);
-      expect(picked.stdout).toContain('subgraph nb0["North line"]');
+      expect(picked.stdout).toContain('n0["Alpha"]');
       expect(refused.exitCode).toBe(1);
       expect(refused.stderr).toContain(
         "pipelines is not drawn by render-graph-data; use render-directed-acyclic-graph-data instead",
@@ -160,7 +155,7 @@ describe("render-graph-data, over a generated edge entity", () => {
       ]);
 
       expect(result.exitCode).toBe(0);
-      expect(result.stdout).toContain('subgraph nb0["North line"]');
+      expect(result.stdout).toContain('n0["Alpha"]');
     },
     INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
   );

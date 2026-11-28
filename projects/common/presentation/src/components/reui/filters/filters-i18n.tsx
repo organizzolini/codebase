@@ -66,6 +66,8 @@ export const DEFAULT_FILTER_LABELS: FilterLabels = {
   negate: "Negate",
   convertToAdvanced: "Advanced editor",
   remove: "Remove",
+  only: "Only",
+  fold: "Fold",
   chipMenu: (fieldLabel) => `${fieldLabel} filter options`,
   filtersLabel: "Filters",
   filterLabel: (condition) => condition,

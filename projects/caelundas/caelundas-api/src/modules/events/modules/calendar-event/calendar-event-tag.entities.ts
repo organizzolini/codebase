@@ -22,4 +22,9 @@ export class CalendarEventTagEntity {
     description: "Every name from the root down to this tag, joined by ' / '.",
   })
   path!: string;
+
+  @Field(() => String, {
+    description: "The tag's name as a slug, unique among its siblings.",
+  })
+  slug!: string;
 }

@@ -18,7 +18,7 @@ describe(toPreset, () => {
               {
                 negated: true,
                 operator: "is_none_of",
-                path: ["tag:tag-planet"],
+                path: ["tag:tag-body"],
                 values: ["tag-moon"],
               },
             ],
@@ -28,7 +28,7 @@ describe(toPreset, () => {
           {
             negated: false,
             operator: "is_any_of",
-            path: ["tag:tag-type"],
+            path: ["tag:tag-aspect"],
             values: ["tag-ingress"],
           },
         ],
@@ -46,7 +46,7 @@ describe(toPreset, () => {
           {
             id: "planet-sign-events-0-0",
             operator: "is_any_of",
-            path: ["tag:tag-type"],
+            path: ["tag:tag-aspect"],
             type: "rule",
             value: ["tag-ingress"],
           },
@@ -58,7 +58,7 @@ describe(toPreset, () => {
                 id: "planet-sign-events-0-1-0",
                 negated: true,
                 operator: "is_none_of",
-                path: ["tag:tag-planet"],
+                path: ["tag:tag-body"],
                 type: "rule",
                 value: ["tag-moon"],
               },
@@ -80,7 +80,7 @@ describe(toPreset, () => {
         {
           negated: false,
           operator: "is_any_of",
-          path: ["tag:tag-type"],
+          path: ["tag:tag-aspect"],
           values: ["tag-ingress"],
         },
       ],
@@ -100,7 +100,7 @@ describe(toPreset, () => {
       rules: [
         {
           operator: "is_any_of",
-          path: ["tag:tag-type"],
+          path: ["tag:tag-aspect"],
           values: ["tag-ingress"],
         },
       ],
@@ -145,7 +145,7 @@ describe(toPreset, () => {
               {
                 negated: false,
                 operator: "is_any_of",
-                path: ["tag:tag-type"],
+                path: ["tag:tag-aspect"],
                 values: ["tag-ingress"],
               },
             ],

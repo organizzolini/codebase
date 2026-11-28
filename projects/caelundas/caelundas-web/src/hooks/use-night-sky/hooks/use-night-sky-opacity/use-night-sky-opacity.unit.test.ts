@@ -22,20 +22,14 @@ describe(useNightSkyOpacity, () => {
 
     const { result } = renderHook(() => useNightSkyOpacity());
 
-    expect(result.current).toStrictEqual({
-      skyOpacity: 0.6,
-      surfaceOpacity: 0.7,
-    });
+    expect(result.current).toStrictEqual({ skyOpacity: 0.25 });
   });
 
   it("returns what the link sets", () => {
-    router.search = { "sky.opacity": 0.2, "sky.surfaceOpacity": 0.4 };
+    router.search = { "skyfield.opacity": 0.2 };
 
     const { result } = renderHook(() => useNightSkyOpacity());
 
-    expect(result.current).toStrictEqual({
-      skyOpacity: 0.2,
-      surfaceOpacity: 0.4,
-    });
+    expect(result.current).toStrictEqual({ skyOpacity: 0.2 });
   });
 });

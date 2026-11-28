@@ -27,14 +27,13 @@ function bar(row: string, minute: number, length = 0): GanttEvent<TimelineBar> {
       records: [
         {
           color: null,
-          description: id,
           durationMinutes: length,
           end,
           groups: [],
           id,
-          location: null,
+          name: id,
+          note: id,
           start,
-          summary: id,
           tags: [],
           timezone: "UTC",
         },

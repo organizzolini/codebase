@@ -85,7 +85,7 @@ export class DailyCyclesBuilderService {
       description,
       logger: this.logger,
       summary,
-      tags: DailyCyclesBuilderService.lunarTags,
+      tags: [...DailyCyclesBuilderService.lunarTags, "Lunar Nadir"],
       timezone: "America/New_York",
     });
   }
@@ -103,7 +103,7 @@ export class DailyCyclesBuilderService {
       description,
       logger: this.logger,
       summary,
-      tags: DailyCyclesBuilderService.lunarTags,
+      tags: [...DailyCyclesBuilderService.lunarTags, "Lunar Zenith"],
       timezone: "America/New_York",
     });
   }
@@ -121,7 +121,7 @@ export class DailyCyclesBuilderService {
       description,
       logger: this.logger,
       summary,
-      tags: DailyCyclesBuilderService.lunarTags,
+      tags: [...DailyCyclesBuilderService.lunarTags, "Moonrise"],
       timezone: "America/New_York",
     });
   }
@@ -139,7 +139,7 @@ export class DailyCyclesBuilderService {
       description,
       logger: this.logger,
       summary,
-      tags: DailyCyclesBuilderService.lunarTags,
+      tags: [...DailyCyclesBuilderService.lunarTags, "Moonset"],
       timezone: "America/New_York",
     });
   }
@@ -157,7 +157,7 @@ export class DailyCyclesBuilderService {
       description,
       logger: this.logger,
       summary,
-      tags: DailyCyclesBuilderService.solarTags,
+      tags: [...DailyCyclesBuilderService.solarTags, "Solar Nadir"],
       timezone: "America/New_York",
     });
   }
@@ -175,7 +175,7 @@ export class DailyCyclesBuilderService {
       description,
       logger: this.logger,
       summary,
-      tags: DailyCyclesBuilderService.solarTags,
+      tags: [...DailyCyclesBuilderService.solarTags, "Solar Zenith"],
       timezone: "America/New_York",
     });
   }
@@ -193,7 +193,7 @@ export class DailyCyclesBuilderService {
       description,
       logger: this.logger,
       summary,
-      tags: DailyCyclesBuilderService.solarTags,
+      tags: [...DailyCyclesBuilderService.solarTags, "Sunrise"],
       timezone: "America/New_York",
     });
   }
@@ -211,7 +211,7 @@ export class DailyCyclesBuilderService {
       description,
       logger: this.logger,
       summary,
-      tags: DailyCyclesBuilderService.solarTags,
+      tags: [...DailyCyclesBuilderService.solarTags, "Sunset"],
       timezone: "America/New_York",
     });
   }
@@ -286,6 +286,38 @@ export class DailyCyclesBuilderService {
       current: clearanceAt(minute),
       next: clearanceAt(minute.clone().add(1, "minute")),
       previous: clearanceAt(minute.clone().subtract(1, "minute")),
+    };
+  }
+
+  /**
+   * Builds the span the Moon is below the horizon, from moonset to moonrise.
+   */
+  getMoonDownDurationEvent(
+    beginning: DetectedCalendarEvent,
+    ending: DetectedCalendarEvent,
+  ): DetectedCalendarEvent {
+    return {
+      description: "Moon Down (Moonset to Moonrise)",
+      end: ending.start,
+      start: beginning.start,
+      summary: "🌑 Moon Down",
+      tags: [...DailyCyclesBuilderService.lunarTags, "Moon Down"],
+    };
+  }
+
+  /**
+   * Builds the span the Moon is above the horizon, from moonrise to moonset.
+   */
+  getMoonUpDurationEvent(
+    beginning: DetectedCalendarEvent,
+    ending: DetectedCalendarEvent,
+  ): DetectedCalendarEvent {
+    return {
+      description: "Moon Up (Moonrise to Moonset)",
+      end: ending.start,
+      start: beginning.start,
+      summary: "🌙 Moon Up",
+      tags: [...DailyCyclesBuilderService.lunarTags, "Moon Up"],
     };
   }
 

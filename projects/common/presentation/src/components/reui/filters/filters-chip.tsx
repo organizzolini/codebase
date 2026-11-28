@@ -36,6 +36,7 @@ import {
 } from "@/components/reui/filters/filters-operators"
 import {
   findFilterNode,
+  flattenFilterRules,
   isFilterGroup,
 } from "@/components/reui/filters/filters-query"
 import type {
@@ -56,6 +57,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -69,7 +71,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { ChevronRightIcon, CornerDownRightIcon, CopyIcon, ArrowLeftRightIcon, LayersIcon, SlidersHorizontalIcon, Trash2Icon, XIcon, EllipsisVerticalIcon } from "lucide-react"
+import { ChevronRightIcon, CornerDownRightIcon, CopyIcon, CrosshairIcon, FoldHorizontalIcon, ArrowLeftRightIcon, LayersIcon, SlidersHorizontalIcon, Trash2Icon, XIcon, EllipsisVerticalIcon } from "lucide-react"
 
 /** Which part of the chip a pointer or key is aimed at. No `field`: the chip's
  *  attribute segment is display only, and only the builder re-picks one. */
@@ -769,14 +771,20 @@ export function FilterRuleMenuItems({
   /** Offer "Wrap in condition group". Off for the chip row, which cannot draw
    *  a group; on in the builder, the only way to nest without dragging. */
   allowGrouping = false,
+  /** A required rule: its menu offers neither Fold nor Remove. */
+  required = false,
 }: {
   ruleId: string
+  required?: boolean
   allowGrouping?: boolean
 }) {
   const actions = useFilterActions()
   // Gated here as well as at the trigger, because this is EXPORTED: a consumer
   // composing their own menu gets rows that say they are unavailable.
   const locked = isFilterLocked(actions)
+  const others = flattenFilterRules(actions.getQuery()).filter(
+    (rule) => rule.id !== ruleId
+  )
   return (
     /* Every row leads with an icon. `IconPlaceholder` because the source ships
        under five icon sets; no size class, because each style already sizes an
@@ -826,6 +834,26 @@ export function FilterRuleMenuItems({
         </DropdownMenuItem>
       ) : null}
       <DropdownMenuItem
+        disabled={locked || others.length === 0}
+        onClick={() => {
+          for (const other of others) actions.removeNode(other.id)
+        }}
+      >
+        <CrosshairIcon aria-hidden="true" />
+        <span className={FILTER_MENU_LABEL_CLASS}>{actions.labels.only}</span>
+      </DropdownMenuItem>
+      {/* Offered by the consumer's `onFold`; changes no query, so not gated on
+          `locked`, like the convert row. */}
+      {actions.fold && !required ? (
+        <DropdownMenuItem onClick={() => actions.fold?.()}>
+          <FoldHorizontalIcon aria-hidden="true" />
+          <span className={FILTER_MENU_LABEL_CLASS}>{actions.labels.fold}</span>
+        </DropdownMenuItem>
+      ) : null}
+      {required ? null : (
+        <>
+          <DropdownMenuSeparator />
+      <DropdownMenuItem
         variant="destructive"
         disabled={locked}
         onClick={() => actions.removeNode(ruleId)}
@@ -834,6 +862,8 @@ export function FilterRuleMenuItems({
         <Trash2Icon aria-hidden="true" />
         <span className={FILTER_MENU_LABEL_CLASS}>{actions.labels.remove}</span>
       </DropdownMenuItem>
+        </>
+      )}
     </>
   )
 }
@@ -841,12 +871,18 @@ export function FilterRuleMenuItems({
 export interface FilterChipProps<V = unknown> {
   rule: FilterRule<V>
   index: number
+  /** Not removable or foldable, like the calendar's date range. */
+  required?: boolean
 }
 
 /** One filter, as a chip. Memoization means something here: the actions
  *  context is stable, the focus store is subscribed to a boolean and the query
  *  shares structure, so editing one filter of forty re-renders one chip. */
-function FilterChipImpl<V, O>({ rule, index }: FilterChipProps<V>) {
+function FilterChipImpl<V, O>({
+  rule,
+  index,
+  required = false,
+}: FilterChipProps<V>) {
   const actions = useFilterActions<V, O>()
   const render = useFilterRender<V, O>()
   const focusStore = useFilterFocusStore()
@@ -1047,7 +1083,7 @@ function FilterChipImpl<V, O>({ rule, index }: FilterChipProps<V>) {
               /* The same surface the three text segments force. Styles whose
                  outline button is transparent in dark (sera, luma, rhea) left
                  the kebab as a notch in an otherwise filled pill. */
-              className="bg-background dark:bg-input/30"
+              className="bg-background w-5 dark:bg-input/30"
               aria-label={actions.labels.chipMenu(field.label)}
               onPointerDown={() => focusSegment("menu")}
             />
@@ -1062,7 +1098,7 @@ function FilterChipImpl<V, O>({ rule, index }: FilterChipProps<V>) {
           align="end"
           className={cn(FILTER_MENU_CLASS, actions.menuClassName)}
         >
-          <FilterRuleMenuItems ruleId={rule.id} />
+          <FilterRuleMenuItems ruleId={rule.id} required={required} />
         </DropdownMenuContent>
       </DropdownMenu>
     </ButtonGroup>

@@ -51,43 +51,41 @@ const GRAPH_ROWS = [
   "INSERT INTO step_links (id, source, target) VALUES (1, 1, 2), (2, 2, 3)",
 ];
 
-/** The two lines every diagram opens with after its direction. */
-const CLASS_DEFINITIONS = [
-  "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
-  "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
-];
+/** The class definitions a diagram declares, for the classes it uses. */
+const ROOT_DEFINITION =
+  "classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px";
+const SHARED_DEFINITION =
+  "classDef shared fill:#fff4e5,stroke:#e8710a,stroke-width:2px";
+const TRUNCATION_DEFINITION =
+  "classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5";
 
 /** The diagram of `lines`, indented under its header, as stdout holds it. */
 const drawnDiagram = (lines: readonly string[], direction = "LR"): string =>
-  [
-    `flowchart ${direction}`,
-    ...CLASS_DEFINITIONS,
-    ...lines.map((line) => `    ${line}`),
-    "",
-  ].join("\n");
+  [`flowchart ${direction}`, ...lines.map((line) => `    ${line}`), ""].join(
+    "\n",
+  );
 
-/** A `subgraph` block: its numbered id and title, then its indented lines. */
+/** A `subgraph` block: its id, title, direction and lines. */
 const subgraph = (
   index: number,
   title: string,
   lines: readonly string[],
 ): string[] => [
   `subgraph nb${index}["${title}"]`,
+  "    direction LR",
   ...lines.map((line) => `    ${line}`),
   "end",
 ];
 
-/** The directed diamond, its edges in source then target order. */
+/** The directed diamond, its edges chained per source. */
 const DIAMOND_LINES = [
-  'n0["Hub"]',
-  'n1["North"]',
-  'n2["South"]',
-  'n3["Far"]',
-  "n0 --> n1",
-  "n0 --> n2",
-  "n1 --> n3",
+  ROOT_DEFINITION,
+  SHARED_DEFINITION,
+  'n0["Hub"] --> n1["North"] & n2["South"]',
+  'n1 --> n3["Far"]',
   "n2 --> n3",
   "class n0 root",
+  "class n3 shared",
 ];
 
 describe("render-graph-data", () => {
@@ -154,10 +152,11 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            ...subgraph(0, "A", ['n0["A"]', 'n1["B"]', "n0 --- n1"]),
-            ...subgraph(1, "X", ['n2["Y"]', 'n3["X"]', "n2 --- n3"]),
-            "class n0 root",
-            "class n3 root",
+            ROOT_DEFINITION,
+            ...subgraph(0, "A", ['n0["A"] --- n1["B"]']),
+            ...subgraph(1, "X", ['n2["Y"] --- n3["X"]']),
+            "nb0 ~~~ nb1",
+            "class n0,n3 root",
           ]),
         );
         expect(result.stderr).toBe("");
@@ -176,7 +175,7 @@ describe("render-graph-data", () => {
         const result = await runRender(["--entities", ROUTE_GLOB]);
 
         expect(result.exitCode).toBe(0);
-        expect(result.stdout).toContain('n0 -->|"needs (2.5)"| n1');
+        expect(result.stdout).toContain('n0["Hub"] -->|"needs (2.5)"| n1');
         expect(result.stdout).toContain('n0 -->|"3"| n2');
       },
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
@@ -197,7 +196,9 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toContain('    subgraph nb0["main"]\n');
         expect(result.stdout).toContain('    subgraph nb1["side"]\n');
-        expect(result.stdout).toContain("        n0 --> n1\n");
+        expect(result.stdout).toContain(
+          '        n0["Hub"] --> n1["North"] & n2["South"]\n',
+        );
         expect(result.stdout).not.toContain('|"main"|');
         expect(result.stdout).not.toContain('|"side"|');
       },
@@ -216,13 +217,9 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Far"]',
-            'n1["Hub"]',
-            'n2["North"]',
-            'n3["South"]',
-            "n0 --> n1",
-            "n1 --> n2",
-            "n1 --> n3",
+            ROOT_DEFINITION,
+            'n0["Far"] --> n1["Hub"]',
+            'n1 --> n2["North"] & n3["South"]',
             "n2 --> n0",
             "n3 --> n0",
             "class n0 root",
@@ -252,10 +249,8 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Loop"]',
-            'n1["Tail"]',
-            "n0 --> n0",
-            "n0 --> n1",
+            ROOT_DEFINITION,
+            'n0["Loop"] --> n0 & n1["Tail"]',
             "class n0 root",
           ]),
         );
@@ -285,7 +280,7 @@ describe("render-graph-data", () => {
         ]);
 
         expect(result.exitCode).toBe(0);
-        expect(result.stdout).toBe(drawnDiagram([]));
+        expect(result.stdout).toBe("flowchart LR\n");
         expect(result.stderr).toContain(
           "Page 2 with --limit 1 is past the last root: the graph has 1 root in total, so nothing is drawn",
         );
@@ -310,16 +305,11 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            ...subgraph(0, "A", [
-              'n0["A"]',
-              'n1["B"]',
-              'n2["C"]',
-              "n0 --- n1",
-              "n1 --- n2",
-            ]),
-            ...subgraph(1, "X", ['n3["Y"]', 'n4["X"]', "n3 --- n4"]),
-            "class n0 root",
-            "class n4 root",
+            ROOT_DEFINITION,
+            ...subgraph(0, "A", ['n0["A"] --- n1["B"] --- n2["C"]']),
+            ...subgraph(1, "X", ['n3["Y"] --- n4["X"]']),
+            "nb0 ~~~ nb1",
+            "class n0,n4 root",
           ]),
         );
         expect(result.stderr).toBe("");
@@ -339,10 +329,11 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            ...subgraph(0, "A", ['n0["A"]', 'n1["B"]', "n0 --- n1"]),
-            ...subgraph(1, "X", ['n2["Y"]', 'n3["X"]', "n2 --- n3"]),
-            "class n0 root",
-            "class n3 root",
+            ROOT_DEFINITION,
+            ...subgraph(0, "A", ['n0["A"] --- n1["B"]']),
+            ...subgraph(1, "X", ['n2["Y"] --- n3["X"]']),
+            "nb0 ~~~ nb1",
+            "class n0,n3 root",
           ]),
         );
       },
@@ -364,11 +355,8 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Hub"]',
-            'n1["North"]',
-            'n2["South"]',
-            "n0 --> n1",
-            "n0 --> n2",
+            ROOT_DEFINITION,
+            'n0["Hub"] --> n1["North"] & n2["South"]',
             "class n0 root",
           ]),
         );
@@ -389,15 +377,13 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Hub"]',
-            'n1["South"]',
-            'n2["North"]',
-            'n3["Far"]',
-            "n0 --> n1",
-            "n0 --> n2",
-            "n2 --> n3",
+            ROOT_DEFINITION,
+            SHARED_DEFINITION,
+            'n0["Hub"] --> n1["South"] & n2["North"]',
+            'n2 --> n3["Far"]',
             "n1 --> n3",
             "class n0 root",
+            "class n3 shared",
           ]),
         );
       },
@@ -417,18 +403,13 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Hub"]',
-            'n1["North"]',
-            'n2["South"]',
-            'n3["… 1 more"]',
-            'n4["… 1 more"]',
-            "n0 --> n1",
-            "n0 --> n2",
-            "n1 --> n3",
-            "n2 --> n4",
+            ROOT_DEFINITION,
+            TRUNCATION_DEFINITION,
+            'n0["Hub"] --> n1["North"] & n2["South"]',
+            'n1 --> n3["… 1 more"]',
+            'n2 --> n4["… 1 more"]',
             "class n0 root",
-            "class n3 truncation",
-            "class n4 truncation",
+            "class n3,n4 truncation",
           ]),
         );
         expect(result.stderr).toContain(
@@ -451,13 +432,10 @@ describe("render-graph-data", () => {
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
           drawnDiagram([
-            'n0["Hub"]',
-            'n1["North"]',
-            'n2["Far"]',
-            'n3["… 1 more"]',
-            "n0 --> n1",
-            "n1 --> n2",
-            "n0 --> n3",
+            ROOT_DEFINITION,
+            TRUNCATION_DEFINITION,
+            'n0["Hub"] --> n1["North"] & n3["… 1 more"]',
+            'n1 --> n2["Far"]',
             "class n0 root",
             "class n3 truncation",
           ]),
@@ -480,7 +458,11 @@ describe("render-graph-data", () => {
 
         expect(result.exitCode).toBe(0);
         expect(result.stdout).toBe(
-          drawnDiagram(['n0["Y"]', 'n1["X"]', "n0 --- n1", "class n1 root"]),
+          drawnDiagram([
+            ROOT_DEFINITION,
+            'n0["Y"] --- n1["X"]',
+            "class n1 root",
+          ]),
         );
       },
       INTEGRATION_TEST_TIMEOUT_MILLISECONDS,
@@ -499,7 +481,7 @@ describe("render-graph-data", () => {
         ]);
 
         expect(result.exitCode).toBe(0);
-        expect(result.stdout).toBe(drawnDiagram([]));
+        expect(result.stdout).toBe("flowchart LR\n");
         expect(result.stderr).toContain(
           "Page 3 with --limit 1 is past the last root: the graph has 2 roots in total, so nothing is drawn",
         );

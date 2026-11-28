@@ -15,6 +15,13 @@ export default mergeConfig(
         exclude: ["src/**/*.entity.ts", "src/**/*.test.ts"],
         include: ["src/**/*.ts"],
       },
+      /**
+       * Thirty seconds per test, where Vitest's default is five: ephemeris
+       * tests ran 15 to 30 times slower on a loaded CI runner. Temporary,
+       * until the Caelundas suites run faster there; a heavier test names
+       * its own.
+       */
+      testTimeout: 30_000,
     },
   }),
 );

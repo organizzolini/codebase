@@ -26,4 +26,11 @@ export class EventGroupKeyEntity {
     nullable: true,
   })
   path!: null | string;
+
+  @Field(() => String, {
+    description:
+      "What sorts the group among its siblings as its tag is meant to read: each ancestor tag's rank, zero-padded, then its name, from the root down, joined by ' / '; null for a derived value.",
+    nullable: true,
+  })
+  rank!: null | string;
 }

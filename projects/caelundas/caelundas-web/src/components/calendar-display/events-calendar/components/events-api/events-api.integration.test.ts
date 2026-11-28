@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { serveGraphqlApi } from "../../../../../../testing/graphql-api";
 import {
   mockDatasetQuery,
+  mockEventMetricsQuery,
   mockEventsQuery,
   mockFacetsQuery,
   mockNightSkyQuery,
@@ -21,6 +22,7 @@ import {
 
 import {
   describeDataset,
+  findEventMetrics,
   findEvents,
   findFacets,
   findPresets,
@@ -72,6 +74,45 @@ describe("events api", () => {
       events: [],
     });
     expect(received).toStrictEqual(variables);
+  });
+
+  it("reads the metrics of a period, grouped, with the previous period's", async () => {
+    expect.hasAssertions();
+
+    let received: unknown;
+    const values = [{ metric: "events" as const, previous: 4, value: 5 }];
+    const answer = {
+      groups: [
+        {
+          children: [],
+          id: "/0:2026",
+          isPreview: false,
+          key: "2026",
+          label: "2026",
+          level: 0,
+          path: null,
+          rank: "2026",
+          values,
+        },
+      ],
+      timezone: "UTC",
+      total: values,
+    };
+    serveGraphqlApi(
+      mockEventMetricsQuery(({ variables }) => {
+        received = variables;
+        return HttpResponse.json({ data: { eventMetrics: answer } });
+      }),
+    );
+    const input = {
+      compareToPrevious: true,
+      grouping: [{ field: "year" }],
+      metrics: ["events" as const],
+      period,
+    };
+
+    await expect(findEventMetrics(input)).resolves.toStrictEqual(answer);
+    expect(received).toStrictEqual({ input });
   });
 
   it("reads the facets", async () => {
@@ -184,17 +225,15 @@ describe("events api", () => {
           data: {
             events: [
               {
-                color: null,
-                description: "d",
                 durationMinutes: 0,
                 end: period.start,
-                groups: [[{ key: "k", label: "L", path: null }]],
+                groups: [[{ key: "k", label: "L", path: null, rank: null }]],
                 id: "e1",
-                location: null,
+                name: "s",
+                note: "d",
                 start: period.start,
                 startLocalDay: "2026-01-01",
                 startLocalHour: 0,
-                summary: "s",
                 tags: [{ depth: 1, id: "t", name: "T", path: "R / T" }],
                 timezone: "UTC",
               },
@@ -220,7 +259,7 @@ describe("events api", () => {
     });
     expect(event?.start).toStrictEqual(new Date(period.start));
     expect(event?.groups).toStrictEqual([
-      [{ key: "k", label: "L", path: null }],
+      [{ key: "k", label: "L", path: null, rank: null }],
     ]);
   });
 
@@ -282,7 +321,7 @@ describe("events api", () => {
         agendaDays: 7,
         anchor: new Date(period.start),
         scale: "quarter",
-        view: "three-day",
+        view: "day",
       }),
     ).resolves.toStrictEqual({
       read: { end: new Date(period.end), start: new Date(period.start) },
@@ -292,7 +331,7 @@ describe("events api", () => {
       agendaDays: 7,
       anchor: "2026-01-01T00:00:00.000Z",
       scale: "QUARTER",
-      window: "THREE_DAY",
+      window: "DAY",
     });
   });
 });

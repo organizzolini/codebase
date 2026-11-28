@@ -1,5 +1,11 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
+import {
+  readServedApi,
+  serveCalendarApi,
+} from "../../../../testing/calendar/calendar-api";
+import { renderWithCatalog } from "../../../../testing/metrics/metric-catalog";
 
 import { EventsCalendar } from "./events-calendar";
 
@@ -32,7 +38,7 @@ describe(EventsCalendar, () => {
       onDateChange: () => {},
       timeZone: "America/New_York",
     };
-    const { rerender } = render(
+    const { rerender } = renderWithCatalog(
       <EventsCalendar
         {...properties}
         view="month"
@@ -63,12 +69,45 @@ describe(EventsCalendar, () => {
     expect(screen.getByTestId("calendar-toolbar")).toBe(toolbar);
   });
 
+  it.each([
+    ["charts", "calendar-charts"],
+    ["totals", "calendar-totals"],
+  ] as const)(
+    "draws the %s layout, and keeps the toolbar, over the table's days",
+    async (view, testId) => {
+      serveCalendarApi();
+      renderWithCatalog(
+        <EventsCalendar
+          anchor={new Date("2026-03-01T12:00:00.000Z")}
+          events={[]}
+          facets={[]}
+          grouping={[{ field: "tag:body" }]}
+          metrics={["events"]}
+          onDateChange={() => {}}
+          timeZone="America/New_York"
+          view={view}
+          compare
+        />,
+      );
+
+      expect(screen.getByTestId(testId)).toBeDefined();
+      expect(screen.getByTestId("calendar-toolbar")).toBeDefined();
+
+      await waitFor(() => {
+        expect(readServedApi().requests.metrics[0]).toMatchObject({
+          compareToPrevious: true,
+          metrics: ["events"],
+        });
+      });
+    },
+  );
+
   it.each(["month", "timeline"] as const)(
     "moves the %s view from the toolbar's buttons",
     (view) => {
       const onDateChange = vi.fn<(date: Date) => void>();
 
-      render(
+      renderWithCatalog(
         <EventsCalendar
           anchor={new Date("2026-03-15T12:00:00.000Z")}
           events={[]}
@@ -92,27 +131,26 @@ describe(EventsCalendar, () => {
   describe("colors", () => {
     const INGRESS = {
       color: null,
-      description: "The Sun enters Aries",
       durationMinutes: 0,
       end: new Date("2026-03-20T14:46:00.000Z"),
       groups: [],
       id: "event-ingress",
-      location: null,
+      name: "Sun Ingress Aries",
+      note: "The Sun enters Aries",
       start: new Date("2026-03-20T14:46:00.000Z"),
-      summary: "Sun Ingress Aries",
       tags: [
         {
           depth: 2,
-          id: "tag-sign-ingress",
-          name: "Sign Ingress",
-          path: "Type / Ingress / Sign Ingress",
+          id: "tag-zodiac-ingress",
+          name: "Sign",
+          path: "Ingress / Stay / Full Sign",
         },
       ],
       timezone: "America/New_York",
     };
 
-    function renderMonth(colors: boolean): void {
-      render(
+    function renderWeek(colors: boolean): void {
+      renderWithCatalog(
         <EventsCalendar
           anchor={new Date("2026-03-20T12:00:00.000Z")}
           colors={colors}
@@ -121,13 +159,13 @@ describe(EventsCalendar, () => {
           grouping={[]}
           onDateChange={() => {}}
           timeZone="America/New_York"
-          view="month"
+          view="week"
         />,
       );
     }
 
     it("draws each event in the color of its kind", () => {
-      renderMonth(true);
+      renderWeek(true);
 
       const chip = document.querySelector<HTMLElement>(
         "[data-slot='event-calendar-event']",
@@ -137,7 +175,7 @@ describe(EventsCalendar, () => {
     });
 
     it("draws events in the default color with colors off", () => {
-      renderMonth(false);
+      renderWeek(false);
 
       const chip = document.querySelector<HTMLElement>(
         "[data-slot='event-calendar-event']",

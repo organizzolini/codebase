@@ -13,6 +13,7 @@ export type TagCheckState = "checked" | "partial" | "unchecked";
 export interface TagOptionData {
   depth: number;
   name: string;
+  note?: string;
 }
 
 /**
@@ -33,6 +34,10 @@ export interface TagTreeRow {
    */
   hasChildren: boolean;
   isExpanded: boolean;
+  /**
+   * Whether the tag only opens: its menu leaves it out, but tags beneath it are offered.
+   */
+  isFolder: boolean;
   item: FilterOption;
   name: string;
   /**

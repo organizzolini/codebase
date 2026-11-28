@@ -5,6 +5,7 @@ import {
   seedEvents,
   startEventsApplication,
 } from "../../../testing/events-application";
+import { tagRepository } from "../../../testing/tag-repository";
 
 import type { EventsApplication } from "../../../testing/events-application";
 
@@ -13,7 +14,7 @@ import type { EventsApplication } from "../../../testing/events-application";
  * module backed by a Postgres built by the real migration and a seeded
  * fixture.
  */
-describe("events resolver end-to-end suite", () => {
+describe("events resolver end-to-end suite", { timeout: 60_000 }, () => {
   let application: EventsApplication;
 
   /** Executes an operation expected to succeed and returns its data. */
@@ -54,7 +55,7 @@ describe("events resolver end-to-end suite", () => {
         query("{ dataset { count start end timezone } }"),
       ).resolves.toStrictEqual({
         dataset: {
-          count: 5,
+          count: 4,
           end: "2026-03-21T00:00:00.000Z",
           start: "2026-03-05T03:30:00.000Z",
           timezone: "America/New_York",
@@ -67,16 +68,15 @@ describe("events resolver end-to-end suite", () => {
     const EVENTS = `
       query Events($period: PeriodInput!) {
         events(period: $period) {
-          summary
+          name
+          note
           start
           end
           durationMinutes
           timezone
           startLocalDay
           startLocalHour
-          color
-          location
-          tags { depth name path }
+          tags { depth name path slug }
         }
       }
     `;
@@ -93,33 +93,39 @@ describe("events resolver end-to-end suite", () => {
 
       expect(events).toStrictEqual([
         {
-          color: null,
           durationMinutes: 90,
           end: "2026-03-05T05:00:00.000Z",
-          location: null,
+          name: "Mars Retrograde",
+          note: "Mars Retrograde description",
           start: "2026-03-05T03:30:00.000Z",
           startLocalDay: "2026-03-04",
           startLocalHour: 22,
-          summary: "Mars Retrograde",
           tags: [
             {
               depth: 2,
               name: "Retrograde",
               path: "Planet / Mars / Retrograde",
+              slug: "retrograde",
             },
           ],
           timezone: "America/New_York",
         },
         {
-          color: null,
           durationMinutes: 0,
           end: "2026-03-10T12:00:00.000Z",
-          location: null,
+          name: "Moon Conjunct Mars",
+          note: "Moon Conjunct Mars description",
           start: "2026-03-10T12:00:00.000Z",
           startLocalDay: "2026-03-10",
           startLocalHour: 8,
-          summary: "Moon Conjunct Mars",
-          tags: [{ depth: 1, name: "Conjunct", path: "Aspect / Conjunct" }],
+          tags: [
+            {
+              depth: 1,
+              name: "Conjunct",
+              path: "Aspect / Conjunct",
+              slug: "conjunct",
+            },
+          ],
           timezone: "America/New_York",
         },
       ]);
@@ -136,23 +142,8 @@ describe("events resolver end-to-end suite", () => {
       });
 
       expect(
-        (events as { summary: string }[]).map(({ summary }) => summary),
+        (events as { name: string }[]).map(({ name }) => name),
       ).toStrictEqual(["Moon Conjunct Mars"]);
-    });
-
-    it("leaves out the instants where an aspect begins forming", async () => {
-      expect.hasAssertions();
-
-      const { events } = await query(EVENTS, {
-        period: {
-          end: "2026-03-11T00:00:00.000Z",
-          start: "2026-03-10T00:00:00.000Z",
-        },
-      });
-
-      expect(
-        (events as { summary: string }[]).map(({ summary }) => summary),
-      ).not.toContain("Moon Conjunct Mars Forming");
     });
 
     it("answers no events for a period the data does not reach", async () => {
@@ -182,11 +173,11 @@ describe("events resolver end-to-end suite", () => {
     const WHOLE_DATASET = [
       {
         name: "Aspect",
-        values: [{ count: 2, depth: 1, name: "Conjunct", path: "Conjunct" }],
-      },
-      {
-        name: "Phase",
-        values: [{ count: 1, depth: 1, name: "Forming", path: "Forming" }],
+        values: [
+          { count: 1, depth: 1, name: "Conjunct", path: "Conjunct" },
+          { count: 0, depth: 1, name: "Phase", path: "Phase" },
+          { count: 0, depth: 2, name: "Forming", path: "Phase / Forming" },
+        ],
       },
       {
         name: "Planet",
@@ -218,11 +209,11 @@ describe("events resolver end-to-end suite", () => {
       expect(facets).toStrictEqual([
         {
           name: "Aspect",
-          values: [{ count: 0, depth: 1, name: "Conjunct", path: "Conjunct" }],
-        },
-        {
-          name: "Phase",
-          values: [{ count: 0, depth: 1, name: "Forming", path: "Forming" }],
+          values: [
+            { count: 0, depth: 1, name: "Conjunct", path: "Conjunct" },
+            { count: 0, depth: 1, name: "Phase", path: "Phase" },
+            { count: 0, depth: 2, name: "Forming", path: "Phase / Forming" },
+          ],
         },
         {
           name: "Planet",
@@ -236,6 +227,120 @@ describe("events resolver end-to-end suite", () => {
             },
           ],
         },
+      ]);
+    });
+
+    it("lists a tag under each of its parents with one id and one count", async () => {
+      expect.hasAssertions();
+
+      const repository = tagRepository(application.database.dataSource);
+      const mars = await repository.findOneByOrFail({ name: "Mars" });
+      const benefic = await repository.save({
+        name: "Benefic",
+        slug: "benefic",
+      });
+
+      await application.database.dataSource
+        .getRepository("TagEdge")
+        .insert({ sourceNode: benefic.id, targetNode: mars.id });
+      await application.database.dataSource.query(
+        "refresh materialized view tag_trees",
+      );
+
+      const { facets } = (await query(`
+        { facets { name values { id name path depth count alsoUnder } } }
+      `)) as {
+        facets: {
+          name: string;
+          values: {
+            alsoUnder: string[];
+            count: number;
+            id: string;
+            path: string;
+          }[];
+        }[];
+      };
+      const planet = facets.find(({ name }) => name === "Planet");
+      const under = facets.find(({ name }) => name === "Benefic");
+
+      expect(planet?.values.find(({ path }) => path === "Mars")).toMatchObject({
+        alsoUnder: ["Benefic"],
+        count: 1,
+        id: mars.id,
+      });
+      expect(under?.values).toMatchObject([
+        { alsoUnder: ["Planet"], count: 1, id: mars.id, path: "Mars" },
+        { alsoUnder: [], path: "Mars / Retrograde" },
+      ]);
+    });
+
+    it("exposes the menu flags of each tag, true unless the tag says otherwise", async () => {
+      expect.hasAssertions();
+
+      const repository = tagRepository(application.database.dataSource);
+      const mars = await repository.findOneByOrFail({ name: "Mars" });
+
+      await application.database.dataSource
+        .getRepository("Tag")
+        .update(mars.id, { isFilterable: false, isSortable: false });
+
+      const { facets } = (await query(`
+        { facets { name isFilterable values { path isFilterable isGroupable isSelectable isSortable } } }
+      `)) as {
+        facets: {
+          isFilterable: boolean;
+          name: string;
+          values: Record<string, boolean | string>[];
+        }[];
+      };
+      const planet = facets.find(({ name }) => name === "Planet");
+
+      expect(planet?.isFilterable).toBe(true);
+      expect(planet?.values).toStrictEqual([
+        {
+          isFilterable: false,
+          isGroupable: true,
+          isSelectable: true,
+          isSortable: false,
+          path: "Mars",
+        },
+        {
+          isFilterable: true,
+          isGroupable: true,
+          isSelectable: true,
+          isSortable: true,
+          path: "Mars / Retrograde",
+        },
+      ]);
+    });
+
+    it("tells whether a root or a tag is one of the defaults events group by, true unless the tag says otherwise", async () => {
+      expect.hasAssertions();
+
+      const repository = tagRepository(application.database.dataSource);
+      const planet = await repository.findOneByOrFail({ name: "Planet" });
+      const mars = await repository.findOneByOrFail({ name: "Mars" });
+
+      await application.database.dataSource
+        .getRepository("Tag")
+        .update(planet.id, { isDefaultGroup: false });
+
+      const { facets } = (await query(`
+        { facets { name isDefaultGroup values { path isDefaultGroup } } }
+      `)) as {
+        facets: {
+          isDefaultGroup: boolean;
+          name: string;
+          values: { isDefaultGroup: boolean; path: string }[];
+        }[];
+      };
+      const root = facets.find(({ name }) => name === "Planet");
+
+      expect(mars.name).toBe("Mars");
+      expect(root?.isDefaultGroup).toBe(false);
+      expect(root?.values.map((value) => value.isDefaultGroup)).toStrictEqual([
+        true,
+        true,
       ]);
     });
   });

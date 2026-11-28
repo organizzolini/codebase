@@ -10,7 +10,7 @@ export const familyBySummaryPattern: readonly (readonly [
   DetectorFamily,
 ])[] = [
   [/Eclipse/u, "eclipses"],
-  [/Sunrise|Sunset|Moonrise|Moonset|Zenith/u, "dailyCycles"],
+  [/Sunrise|Sunset|Moonrise|Moonset|Moon (?:Up|Down)|Zenith/u, "dailyCycles"],
   [/Daylight|Night|Civil|Nautical|Astronomical Twilight/u, "twilights"],
   [/ingress/u, "ingresses"],
   [/Apogee|Perigee|Full Moon|New Moon|Quarter Moon/u, "lunarCycle"],

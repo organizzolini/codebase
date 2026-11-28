@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { serveCalendarApi } from "../../../../../../testing/calendar-api";
+import { serveCalendarApi } from "../../../../../../testing/calendar/calendar-api";
 import { EMPTY_EVENT_FILTER } from "../../../../calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.constants";
 
 import { loadCalendar } from "./calendar-loader.utilities";
@@ -16,7 +16,7 @@ const HIGHLIGHTS = {
       {
         negated: false,
         operator: "is_any_of",
-        path: ["tag:tag-type"],
+        path: ["tag:tag-aspect"],
         values: ["tag-retrograde"],
       },
     ],
@@ -72,7 +72,7 @@ describe(loadCalendar, () => {
           {
             id: "rule",
             operator: "is_any_of",
-            path: ["tag:tag-planet"],
+            path: ["tag:tag-body"],
             type: "rule",
             value: ["tag-venus"],
           },
@@ -87,7 +87,7 @@ describe(loadCalendar, () => {
       rules: [
         {
           operator: "is_any_of",
-          path: ["tag:tag-planet"],
+          path: ["tag:tag-body"],
           values: ["tag-venus"],
         },
       ],
@@ -171,49 +171,53 @@ describe(loadCalendar, () => {
     });
   });
 
-  it("reads the keys an event is colored by after its grouping's, for a color in the link", async () => {
+  it("resolves the link's grouping on every view, a month's included, which colors its events", async () => {
     const api = serveCalendarApi();
     const data = await loadCalendar({
       ...MARCH,
-      color: { depth: 1, field: "tag:tag-planet" },
       filter: EMPTY_EVENT_FILTER,
+      group: [{ field: "tag:tag-body" }],
     });
     const conjunction = data.events.find(
       (event) => event.id === "event-mars-conjunct-venus",
     );
 
-    expect(data.colorBy).toStrictEqual({ depth: 1, field: "tag:tag-planet" });
-    expect(data.grouping).toStrictEqual([]);
+    expect(data.grouping).toStrictEqual([{ field: "tag:tag-body" }]);
     expect(api.requests.events[0]?.grouping).toStrictEqual({
-      colorBy: { depth: 1, field: "tag:tag-planet" },
+      levels: [{ field: "tag:tag-body" }],
     });
     expect(
       conjunction?.groups[0]?.map(({ key }) => key).toSorted(),
     ).toStrictEqual(["tag-mars", "tag-venus"]);
   });
 
-  it("colors by nothing in particular without a color, or for a field the data lacks", async () => {
+  it("falls back to every tag root when the link's grouping names only fields the data lacks, or none", async () => {
     serveCalendarApi();
 
-    await expect(
-      loadCalendar(MARCH).then((data) => data.colorBy),
-    ).resolves.toBeUndefined();
-    await expect(
-      loadCalendar({
-        ...MARCH,
-        color: { field: "tag:tag-missing" },
-      }).then((data) => data.colorBy),
-    ).resolves.toBeUndefined();
+    const fallback = await loadCalendar(MARCH);
+    const missing = await loadCalendar({
+      ...MARCH,
+      group: [{ field: "tag:tag-missing" }],
+    });
+    const none = await loadCalendar({ ...MARCH, group: [] });
+
+    expect(fallback.grouping.length).toBeGreaterThan(1);
+    expect(missing.grouping).toStrictEqual(fallback.grouping);
+    expect(none.grouping).toStrictEqual(fallback.grouping);
   });
 
-  it("reads the agenda's events with its default grouping, and the month's with none", async () => {
+  it("resolves every tag root on every view, and reads the month's events by the first alone", async () => {
     const api = serveCalendarApi();
+    const timeline = await loadCalendar({
+      date: "2026-03-15",
+      view: "timeline",
+    });
+    const month = await loadCalendar(MARCH);
 
-    await loadCalendar({ date: "2026-03-15", view: "agenda" });
-    await loadCalendar(MARCH);
-
-    expect(api.requests.events[0]?.grouping?.levels?.length).toBeGreaterThan(0);
-    expect(api.requests.events[1]?.grouping).toBeNull();
+    expect(month.grouping).toStrictEqual(timeline.grouping);
+    expect(month.grouping.length).toBeGreaterThan(1);
+    expect(api.requests.events[0]?.grouping?.levels?.length).toBeGreaterThan(1);
+    expect(api.requests.events[1]?.grouping?.levels).toHaveLength(1);
   });
 
   it("asks the API for the window the view shows around the day", async () => {
@@ -222,7 +226,7 @@ describe(loadCalendar, () => {
       date: "2026-03-15",
       days: 10,
       scale: "week",
-      view: "agenda",
+      view: "table",
     });
 
     expect(api.requests.windows).toStrictEqual([

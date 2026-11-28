@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
+import _ from "lodash";
 
 import { LoggerService } from "@codebase/observability";
 
@@ -10,10 +11,12 @@ import {
   PROGRESSIVE_ASPECT_DETECTORS_TOKEN,
   SIMPLE_ASPECT_DETECTORS_TOKEN,
 } from "./aspects.constants";
+import { AspectEdgesService } from "./modules/calculation/aspect-edges.service";
 
 import type { Aspect, Body } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../ephemeris/ephemeris.types";
+import type { SweepWindow } from "../ephemeris/modules/boundary-search/boundary-search.types";
 import type {
   AspectBodies,
   CompositeAspectDetector,
@@ -41,6 +44,7 @@ export class AspectsService {
     private readonly compositeAspectDetectors: CompositeAspectDetector[],
     @Inject(PROGRESSIVE_ASPECT_DETECTORS_TOKEN)
     private readonly progressiveAspectDetectors: ProgressiveAspectDetector[],
+    private readonly aspectEdgesService: AspectEdgesService,
     private readonly logger: LoggerService,
   ) {
     this.logger.setContext(AspectsService.name);
@@ -100,6 +104,41 @@ export class AspectsService {
     return [...eventsByKey.values()];
   }
 
+  /**
+   * Replays the simple aspects' boundaries in order, detecting the compound
+   * events each registry change makes outside the window or at a clipped edge.
+   */
+  private detectCompoundEdges(
+    boundaries: DetectedCalendarEvent[],
+    edgeEvents: DetectedCalendarEvent[],
+    window: SweepWindow,
+  ): DetectedCalendarEvent[] {
+    const isEdge = new Set(edgeEvents);
+    const byMinute = _.groupBy(
+      boundaries.filter(
+        (event) =>
+          event.tags.includes("Simple Aspect") &&
+          (event.tags.includes("Forming") || event.tags.includes("Dissolving")),
+      ),
+      (event) => event.start.valueOf(),
+    );
+    let registry: AspectBodies[] = [];
+
+    return Object.entries(byMinute)
+      .toSorted(([first], [second]) => Number(first) - Number(second))
+      .flatMap(([, changes]) => {
+        const minute = changes[0]?.start;
+        const previous = registry;
+        registry = this.computeAspectBodies(previous, changes);
+
+        return minute === undefined ||
+          (minute.isBetween(window.start, window.end, undefined, "[]") &&
+            !changes.some((change) => isEdge.has(change)))
+          ? []
+          : this.detectCompositeAspects(registry, minute, previous);
+      });
+  }
+
   /** Runs all simple-aspect detectors for a minute and flattens their detected events. */
   private detectSimpleAspects(
     coordinateEphemerisByBody: Record<Body, CoordinateEphemeris>,
@@ -119,17 +158,9 @@ export class AspectsService {
     normalizedTags: string[],
     lowercaseBodies: string[],
   ): Body[] {
-    const eventBodies: Body[] = [];
-    for (const tag of normalizedTags) {
-      const bodyIndex = lowercaseBodies.indexOf(tag);
-      if (bodyIndex !== -1) {
-        const body = bodies[bodyIndex];
-        if (body) {
-          eventBodies.push(body);
-        }
-      }
-    }
-    return eventBodies;
+    return normalizedTags.flatMap((tag) =>
+      bodies.filter((_body, index) => lowercaseBodies[index] === tag),
+    );
   }
 
   /** Creates an order-insensitive compound key for a body pair and aspect type. */
@@ -219,14 +250,31 @@ export class AspectsService {
   }
 
   /**
-   * Pairs forming and dissolving events into duration events, delegating to each
-   * aspect type's detector.
+   * Pairs forming and dissolving events into spans; given the sweep window,
+   * first completes the aspects it cuts off.
    */
-  detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
+  detectProgressive(
+    events: DetectedCalendarEvent[],
+    window?: SweepWindow,
+  ): DetectedCalendarEvent[] {
+    const simpleEdges =
+      window === undefined
+        ? []
+        : this.aspectEdgesService.complete(events, window);
+    const withSimpleEdges = [...events, ...simpleEdges];
+    // A compound begins at the latest forming of its aspects and ends at the
+    // earliest dissolving, so the boundaries just found make its edges.
+    const completed =
+      window === undefined
+        ? events
+        : [
+            ...withSimpleEdges,
+            ...this.detectCompoundEdges(withSimpleEdges, simpleEdges, window),
+          ];
     const progressiveEvents: DetectedCalendarEvent[] = [];
     for (const progressiveAspectDetector of this.progressiveAspectDetectors) {
       progressiveEvents.push(
-        ...progressiveAspectDetector.detectProgressive(events),
+        ...progressiveAspectDetector.detectProgressive(completed),
       );
     }
     this.logger.debug("🔍 Detected progressive aspect events", undefined, {
@@ -236,21 +284,16 @@ export class AspectsService {
   }
 
   /**
-   * For a sweep starting at `minute`, aspects already in orb and composites they
-   * make count as forming; no simple-aspect events are emitted.
+   * The aspects already in orb when a sweep starts at `minute`; a compound they
+   * make began when its last aspect formed.
    */
-  seed(args: SimpleAspectDetectorArguments): {
-    aspectBodies: AspectBodies[];
-    events: DetectedCalendarEvent[];
-  } {
+  seed(args: SimpleAspectDetectorArguments): AspectBodies[] {
     const aspectBodies = this.simpleAspectDetectors.flatMap(
       (simpleAspectDetector) => simpleAspectDetector.detectActive(args),
     );
-    const events = this.detectCompositeAspects(aspectBodies, args.minute, []);
     this.logger.debug("🌱 Seeded the active aspects", undefined, {
       aspects: aspectBodies.length,
-      events: events.length,
     });
-    return { aspectBodies, events };
+    return aspectBodies;
   }
 }

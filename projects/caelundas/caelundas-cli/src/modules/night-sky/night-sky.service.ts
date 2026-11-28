@@ -19,8 +19,8 @@ import type { EntityManager, EntityTarget, ObjectLiteral } from "typeorm";
  * Rewrites the night sky's tables, `stars`, `constellations` and the edges of
  * their figures, from the downloaded HYG catalog and d3-celestial's
  * constellations and figures, in one transaction, so a reader never sees a
- * half-written sky. A constellation is saved with its `edges`, which its
- * generated edge entity stores.
+ * half-written sky. A constellation is saved with its `edges`, which
+ * `ConstellationEdge` stores under its designation.
  */
 @Injectable()
 export class NightSkyService {
@@ -65,9 +65,7 @@ export class NightSkyService {
   }
 
   /**
-   * Empties the constellations, whose edges go with them, and the stars, then
-   * writes the stars and each constellation with its edges, which refer to
-   * the stars.
+   * Replaces the stars, then each constellation with its edges.
    */
   private async replace(
     manager: EntityManager,

@@ -1,29 +1,19 @@
 import { fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { readServedApi } from "../../../../../../testing/calendar-api";
+import { readServedApi } from "../../../../../../testing/calendar/calendar-api";
 import {
+  BUILDER_WAIT,
   findToolbar,
   pickCalendarView,
-} from "../../../../../../testing/calendar-page";
+} from "../../../../../../testing/calendar/calendar-page";
 import { renderCalendarRoute } from "../../../../../../testing/render-route";
 
 /**
- * The agenda's headings at one level, as they read.
+ * The table's address for a day grouped by levels, with the grouping as a JSON search parameter.
  */
-async function findAgendaHeadings(level: number): Promise<string[]> {
-  const agenda = await screen.findByRole("region", { name: "Agenda" });
-
-  return within(agenda)
-    .getAllByRole("heading", { level })
-    .map((heading) => heading.textContent);
-}
-
-/**
- * The agenda's address for a day grouped by levels, with the grouping as a JSON search parameter.
- */
-function groupedAgendaLink(date: string, grouping: unknown): string {
-  return `/?view=agenda&date=${date}&group=${encodeURIComponent(JSON.stringify(grouping))}`;
+function groupedLink(date: string, grouping: unknown): string {
+  return `/?view=table&date=${date}&group=${encodeURIComponent(JSON.stringify(grouping))}`;
 }
 
 /**
@@ -54,14 +44,37 @@ async function readGrouping(): Promise<string> {
 vi.setConfig({ testTimeout: 30_000 });
 
 describe("event grouping", () => {
-  it("groups the agenda by type unless told otherwise", async () => {
-    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
+  it("starts the table grouped by Tags unless told otherwise", async () => {
+    await renderCalendarRoute("/?view=table&date=2026-03-04");
 
-    await expect(readGrouping()).resolves.toBe("GroupType");
+    await expect(readGrouping()).resolves.toBe("GroupTags");
+  });
+
+  it("starts the table with the tag roots as its first rows, then the tags beneath each", async () => {
+    await renderCalendarRoute("/?view=table&date=2026-03-04");
+    const api = readServedApi();
+
+    await waitFor(() => {
+      expect(
+        api.requests.events
+          .at(-1)
+          ?.grouping?.levels?.map((level) => level.depth),
+      ).toStrictEqual([undefined, 1, 2, 3]);
+    });
+
+    // The roots head the rows, and the first is open to the tags beneath it.
+    await expect(
+      screen.findByRole("button", { name: "Sign" }),
+    ).resolves.toBeDefined();
+    await expect(
+      screen.findByRole("button", { name: "Simple" }),
+    ).resolves.toBeDefined();
   });
 
   it("reads the events again with the grouping picked", async () => {
-    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
+    await renderCalendarRoute(
+      groupedLink("2026-03-04", [{ field: "tag:tag-aspect" }]),
+    );
     const api = readServedApi();
 
     fireEvent.click(within(await openGroupBy()).getByText("Element"));
@@ -70,131 +83,63 @@ describe("event grouping", () => {
       expect(api.requests.events.at(-1)?.grouping?.levels).toHaveLength(2);
     });
 
-    expect(api.requests.events.at(-1)?.grouping?.levels?.[1]).toStrictEqual({
-      depth: 1,
+    expect(api.requests.events.at(-1)?.grouping?.levels?.[1]).toMatchObject({
       field: "tag:tag-element",
     });
 
     await waitFor(async () => {
-      await expect(readGrouping()).resolves.toBe("GroupTypeElement");
-    });
-  });
-
-  it("sections the agenda by type, counting each group's events", async () => {
-    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
-
-    await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
-      "Aspect 1 event",
-      "Ingress 2 events",
-      "Retrograde 1 event",
-    ]);
-    await expect(findAgendaHeadings(4)).resolves.toContain(
-      "Friday, March 20, 2026",
-    );
-  });
-
-  it("lists a two-planet event under each planet but counts it once", async () => {
-    await renderCalendarRoute(
-      groupedAgendaLink("2026-03-04", [
-        { depth: 1, field: "tag:tag-type" },
-        { depth: 1, field: "tag:tag-planet" },
-      ]),
-    );
-
-    await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
-      "Aspect 1 event",
-      "Ingress 2 events",
-      "Retrograde 1 event",
-    ]);
-    await expect(findAgendaHeadings(4)).resolves.toStrictEqual([
-      "Mars 1 event",
-      "Venus 1 event",
-      "Sun 1 event",
-      "Venus 1 event",
-      "Mercury 1 event",
-    ]);
-    expect(
-      within(screen.getByRole("region", { name: "Agenda" })).getAllByRole(
-        "article",
-        {
-          name: /^Mars Conjunct Venus/u,
-        },
-      ),
-    ).toHaveLength(2);
-  });
-
-  it("groups by a period, in time order", async () => {
-    await renderCalendarRoute(
-      groupedAgendaLink("2026-03-04", [{ field: "weekday" }]),
-    );
-
-    await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
-      "Wednesday 2 events",
-      "Thursday 1 event",
-      "Friday 1 event",
-    ]);
+      await expect(readGrouping()).resolves.toBe("GroupAspectElement");
+    }, BUILDER_WAIT);
   });
 
   it("restores the grouping a link holds", async () => {
     await renderCalendarRoute(
-      groupedAgendaLink("2026-03-04", [
-        { depth: 1, field: "tag:tag-planet" },
-        { depth: 2, field: "tag:tag-type" },
+      groupedLink("2026-03-04", [
+        { field: "tag:tag-body" },
+        { field: "tag:tag-aspect", parent: "tag-simple" },
       ]),
     );
 
-    await expect(readGrouping()).resolves.toBe("GroupPlanetType");
-    await expect(findAgendaHeadings(4)).resolves.toContain(
-      "Major Aspect 1 event",
-    );
+    await expect(readGrouping()).resolves.toBe("GroupBodySimple");
   });
 
-  it("keeps the grouping picked in the link", async () => {
-    await renderCalendarRoute("/?view=agenda&date=2026-03-04");
-
-    fireEvent.click(
-      within(await findToolbar()).getByRole("button", { name: "Type options" }),
+  it("returns to the Tags chip when the last level is removed from the link", async () => {
+    await renderCalendarRoute(
+      groupedLink("2026-03-04", [{ field: "tag:tag-aspect" }]),
     );
-    fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
-    fireEvent.click(within(await openGroupBy()).getByText("Month"));
-
-    await expect(findAgendaHeadings(3)).resolves.toStrictEqual([
-      "February 2026 1 event",
-      "March 2026 3 events",
-    ]);
 
     fireEvent.click(
-      within(await findToolbar()).getByRole("button", {
-        name: "Month options",
+      await within(await findToolbar()).findByRole("button", {
+        name: "Aspect options",
       }),
     );
     fireEvent.click(await screen.findByRole("menuitem", { name: "Remove" }));
 
     await waitFor(async () => {
-      await expect(readGrouping()).resolves.toBe("Group");
-    });
+      await expect(readGrouping()).resolves.toBe("GroupTags");
+    }, BUILDER_WAIT);
   });
 
   it.each([
-    { expected: "GroupType", group: "not-a-grouping" },
+    { expected: "GroupTags", group: "not-a-grouping" },
     {
       expected: "GroupMonth",
       group: [{ field: "tag:tag-moon" }, { field: "month" }],
     },
     {
-      expected: "GroupTypeMonth",
+      expected: "GroupAspectMonth",
       group: [
-        { depth: 0, field: "tag:tag-type" },
+        { depth: 0, field: "tag:tag-aspect" },
         { field: 7 },
         { field: "month" },
       ],
     },
     {
-      expected: "GroupElementMonthPlanet",
+      expected: "GroupElementMonthBodyHour",
       group: [
         { field: "tag:tag-element" },
         { field: "month" },
-        { field: "tag:tag-planet" },
+        { field: "tag:tag-body" },
         { field: "hour" },
       ],
     },
@@ -202,17 +147,15 @@ describe("event grouping", () => {
     "falls back quietly from a stale grouping to $expected",
     async ({ expected, group }) => {
       await renderCalendarRoute(
-        `/?view=agenda&date=2026-03-04&group=${encodeURIComponent(JSON.stringify(group))}`,
+        `/?view=table&date=2026-03-04&group=${encodeURIComponent(JSON.stringify(group))}`,
       );
 
       await expect(readGrouping()).resolves.toBe(expected);
     },
   );
 
-  it("carries the grouping from the agenda to the timeline", async () => {
-    await renderCalendarRoute(
-      groupedAgendaLink("2026-03-04", [{ field: "month" }]),
-    );
+  it("carries the grouping from the table to the timeline", async () => {
+    await renderCalendarRoute(groupedLink("2026-03-04", [{ field: "month" }]));
 
     await pickCalendarView("Timeline");
 
@@ -223,13 +166,31 @@ describe("event grouping", () => {
     await expect(readGrouping()).resolves.toBe("GroupMonth");
   });
 
-  it("offers grouping only in the views that group", async () => {
+  it.each(["Charts", "Totals"])(
+    "keeps a closed group closed through the %s layout and back to the table",
+    async (layout) => {
+      await renderCalendarRoute("/?view=table&date=2026-03-04");
+
+      const simple = await screen.findByRole("button", { name: "Simple" });
+
+      fireEvent.click(simple);
+      await waitFor(() => {
+        expect(simple.getAttribute("aria-expanded")).toBe("false");
+      });
+
+      await pickCalendarView(layout);
+      await screen.findByTestId(`calendar-${layout.toLowerCase()}`);
+      await pickCalendarView("Table");
+
+      const back = await screen.findByRole("button", { name: "Simple" });
+
+      expect(back.getAttribute("aria-expanded")).toBe("false");
+    },
+  );
+
+  it("colors the month by the first group, shown as Tags", async () => {
     await renderCalendarRoute("/?view=month&date=2026-03-04");
 
-    await findToolbar();
-
-    expect(
-      within(await findToolbar()).queryByRole("group", { name: "Group" }),
-    ).toBeNull();
+    await expect(readGrouping()).resolves.toBe("GroupTags");
   });
 });

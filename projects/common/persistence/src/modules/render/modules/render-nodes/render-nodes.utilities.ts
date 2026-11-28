@@ -19,13 +19,23 @@ import type {
 import type { RenderNodesLabels } from "./render-nodes.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
-/** The distinct edge labels, which a generated graph's edges carry as their graph's key. */
+/** The distinct edge labels, each the key of the row that titles its neighborhood. */
 export function edgeLabels(graph: GraphModel): string[] {
   const labels = new Set<string>();
   for (const { label } of graph.edges) {
     if (label !== undefined) labels.add(label);
   }
   return [...labels];
+}
+
+/** The entity the relation over column `property` of `metadata` joins, or `undefined` when it has none. */
+export function joinedMetadata(
+  metadata: EntityMetadata,
+  property: string,
+): EntityMetadata | undefined {
+  return metadata.relations.find(({ joinColumns }) =>
+    joinColumns.some((column) => column.propertyName === property),
+  )?.inverseEntityMetadata;
 }
 
 /**

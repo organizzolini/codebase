@@ -1,6 +1,9 @@
 import _ from "lodash";
 
+import { bodyDisplayName } from "../caelundas/caelundas.types";
+
 import {
+  BODY_CLASS_BY_BODY,
   ELEMENT_BY_SIGN,
   MODALITY_BY_SIGN,
   POLARITY_BY_ELEMENT,
@@ -8,11 +11,16 @@ import {
 } from "./tag-dimensions.constants";
 import { TAG_ROOT } from "./tags.constants";
 
-import type { Sign } from "../caelundas/caelundas.types";
+import type { Body, Sign } from "../caelundas/caelundas.types";
 import type { TagMap, TagPath } from "./tags.types";
 
+/** The one node a body's raw tag stands for, under its class. */
+export function bodyPaths(body: Body): readonly TagPath[] {
+  return [[TAG_ROOT.body, ...BODY_CLASS_BY_BODY[body], bodyDisplayName(body)]];
+}
+
 /**
- * Maps each class under `parent`, and each name in it, to its node; names are title-cased.
+ * Maps each class under `parent`, and each name in it, to its node, title-cased.
  */
 export function mapClasses(
   parent: TagPath,
@@ -20,7 +28,10 @@ export function mapClasses(
 ): TagMap {
   return Object.fromEntries(
     classes.flatMap(([className, names]) => {
-      const classPath: TagPath = [...parent, className];
+      const classPath: TagPath = [
+        ...parent,
+        className.replace(/ Aspect$/u, ""),
+      ];
       return [
         [className, one(classPath)],
         ...Object.entries(
@@ -55,16 +66,17 @@ export function mapNone(names: readonly string[]): TagMap {
 }
 
 /**
- * Raw tags of one planet's phase events, keyed by the marker tag such as `Venusian`; phases take their stage from `stageByPhase` where needed.
+ * Raw tags of one planet's phase events, keyed by the marker tag such as `Venusian`; each stage sits under its planet, so planets share stage names.
  */
 export function mapPlanetaryPhases(args: {
   marker: string;
   phases: readonly string[];
+  planet: string;
   planetPaths: readonly TagPath[];
   stageByPhase?: Readonly<Record<string, string>>;
 }): TagMap {
-  const { marker, phases, planetPaths, stageByPhase = {} } = args;
-  const markerPath: TagPath = [TAG_ROOT.type, "Planetary Phase", marker];
+  const { marker, phases, planet, planetPaths, stageByPhase = {} } = args;
+  const markerPath: TagPath = [TAG_ROOT.planetary, "Phase", marker];
 
   return {
     [marker]: [markerPath, ...planetPaths],
@@ -80,7 +92,7 @@ export function mapPlanetaryPhases(args: {
           name,
           [
             [...markerPath, leaf],
-            [TAG_ROOT.synodicStage, stage],
+            [TAG_ROOT.planetary, "Synodic Stage", planet, stage],
           ],
         ];
       }),
@@ -101,14 +113,14 @@ export function mergeTagMaps(...maps: readonly TagMap[]): TagMap {
   return Object.fromEntries(merged);
 }
 
-/** The nodes an aspect's nature and harmonic stand for, as roots of their own. */
+/** The nodes an aspect's nature and harmonic stand for; both sit under Aspect. */
 export function natureAndHarmonicPaths([nature, harmonic]: readonly [
   string,
   number,
 ]): readonly TagPath[] {
   return [
-    [TAG_ROOT.aspectNature, nature],
-    [TAG_ROOT.aspectHarmonic, `Harmonic ${String(harmonic)}`],
+    [TAG_ROOT.aspect, "Nature", nature],
+    [TAG_ROOT.aspect, "Harmonic", `Harmonic ${String(harmonic)}`],
   ];
 }
 
@@ -118,16 +130,16 @@ export function one(path: TagPath): readonly TagPath[] {
 }
 
 /**
- * The nodes a sign stands for: the sign itself, and beside it, as roots of
- * their own, the element, modality and polarity it implies.
+ * The nodes a sign stands for: the sign itself, and beside it, in the Sign root,
+ * the element, modality and polarity it implies.
  */
 export function signPaths(sign: Sign): readonly TagPath[] {
   const element = ELEMENT_BY_SIGN[sign];
 
   return [
-    [TAG_ROOT.sign, _.startCase(sign)],
-    [TAG_ROOT.element, element],
-    [TAG_ROOT.modality, MODALITY_BY_SIGN[sign]],
-    [TAG_ROOT.polarity, POLARITY_BY_ELEMENT[element] ?? element],
+    [TAG_ROOT.sign, "Zodiac", _.startCase(sign)],
+    [TAG_ROOT.sign, "Element", element],
+    [TAG_ROOT.sign, "Modality", MODALITY_BY_SIGN[sign]],
+    [TAG_ROOT.sign, "Polarity", POLARITY_BY_ELEMENT[element]],
   ];
 }

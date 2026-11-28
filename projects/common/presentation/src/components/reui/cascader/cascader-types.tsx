@@ -11,6 +11,8 @@ export interface CascaderNode<T = unknown> {
   value: string
   label: string
   icon?: React.ReactNode
+  /** Drawn as a round radio, not a box, in a multi-select tree. */
+  radio?: boolean
   description?: string
   children?: CascaderNode<T>[]
   /** Declares a branch before load; async nodes read as leaves without it. */

@@ -1,23 +1,21 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
 
-import {
-  GraphIncomingEdges,
-  GraphLabel,
-  GraphOutgoingEdges,
-} from "@codebase/persistence";
+import { GraphLabel } from "@codebase/persistence";
 
 import { createBigintTransformer } from "../../database.utilities";
 
-import type { ConstellationEdge } from "./constellation.entity";
+import type { ConstellationEdge } from "./constellation-edge.entity";
 import type { Relation } from "typeorm";
 
 /**
  * One row of the `stars` table: a star of the HYG catalog the night sky draws,
  * keyed by its Hipparcos number, at J2000.
+ *
+ * Its color index, magnitude and coordinates are Postgres `real`s, 4-byte floats.
  */
 @Entity()
 export class Star {
-  /** The B−V color index, which sets the star's color. */
+  /** The B−V color index (blue minus visual magnitude): −0.3 hot, +2 red. */
   @Column("real")
   colorIndex!: number;
 
@@ -28,10 +26,10 @@ export class Star {
   /** The Hipparcos catalog number, which constellation edges refer to. */
   @GraphLabel()
   @PrimaryColumn({ transformer: createBigintTransformer(), type: "bigint" })
-  hip!: number;
+  hipparcosNumber!: number;
 
   /** The edges of constellation figures that end at the star. */
-  @GraphIncomingEdges("ConstellationEdge")
+  @OneToMany("ConstellationEdge", "target")
   incomingEdges?: Relation<ConstellationEdge>[];
 
   /** The apparent visual magnitude. */
@@ -39,7 +37,7 @@ export class Star {
   magnitude!: number;
 
   /** The edges of constellation figures that start at the star. */
-  @GraphOutgoingEdges("ConstellationEdge")
+  @OneToMany("ConstellationEdge", "source")
   outgoingEdges?: Relation<ConstellationEdge>[];
 
   /** The right ascension in hours. */

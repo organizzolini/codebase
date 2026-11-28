@@ -1,7 +1,11 @@
+import { CalendarDays } from "lucide-react";
 import { useMemo } from "react";
 
+import { toTaggedIds } from "../../../calendar-group-strip/calendar-group-strip-items.utilities";
 import { QueryCascader } from "../../../query-cascader/query-cascader";
+import { keepHiddenValues } from "../../../query-cascader/query-cascader.utilities";
 
+import { TAG_PARENT_VALUE } from "./filter-cascader.constants";
 import {
   createFilterItems,
   isValue,
@@ -23,20 +27,56 @@ import type { ReactNode } from "react";
 export interface FilterCascaderProperties {
   className?: string;
   fields: readonly EventFilterField[];
+  /**
+   * The fields offered to pick from, when fewer than `fields`; filters already on the others stay.
+   */
+  offered?: readonly EventFilterField[] | undefined;
+  /**
+   * Opens the picker of the days the view shows, as a Date item below the list; no such item when absent.
+   */
+  onDateOpen?: (() => void) | undefined;
   onQueryChange: (query: EventFilterQuery) => void;
   query: EventFilterQuery;
 }
 
 // 🧩 Component
 
-/** Renders a searchable Cascader of attributes to filter by, each opening to its values; every ticked value narrows the calendar. */
+/** Renders the searchable tree of attributes to filter by, each expanding to its values; every ticked value narrows the calendar. */
 export function FilterCascader(
   properties: Readonly<FilterCascaderProperties>,
 ): ReactNode {
-  const { className, fields, onQueryChange, query } = properties;
+  const {
+    className,
+    fields,
+    offered = fields,
+    onDateOpen,
+    onQueryChange,
+    query,
+  } = properties;
 
   // 🪝 Hooks
-  const items = useMemo(() => createFilterItems(fields), [fields]);
+  const items = useMemo(() => createFilterItems(offered), [offered]);
+  const actions = useMemo(
+    () =>
+      onDateOpen === undefined
+        ? []
+        : [
+            {
+              icon: <CalendarDays aria-hidden="true" />,
+              label: (
+                <span className="flex flex-col">
+                  Date
+                  <span className="text-xs text-muted-foreground">
+                    The days the view shows
+                  </span>
+                </span>
+              ),
+              onSelect: onDateOpen,
+              value: "date",
+            },
+          ],
+    [onDateOpen],
+  );
 
   // 🏗 Setup
 
@@ -53,10 +93,22 @@ export function FilterCascader(
       data-testid="filter-cascader"
     >
       <QueryCascader
+        actions={actions}
+        cascade={false}
+        defaultExpanded={[TAG_PARENT_VALUE]}
         items={items}
-        mode="drill"
+        mode="tree"
         onValueChange={(next) => {
-          onQueryChange(toFilterQuery(next, fields, query));
+          const current = toFilterValue(fields, query);
+
+          // A tag under several parents is one tag: a click on any of its rows ticks or clears them all.
+          onQueryChange(
+            toFilterQuery(
+              toTaggedIds(keepHiddenValues(next, current, items), current),
+              fields,
+              query,
+            ),
+          );
         }}
         placeholder="Search attributes"
         selectable={isValue}

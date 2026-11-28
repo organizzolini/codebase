@@ -15,11 +15,22 @@ describe(SkeletonBody, () => {
     expect(screen.getByTestId("skeleton-body").className).toBe("skeleton-body");
   });
 
-  it("draws a grid of six weeks for the month", () => {
+  it("draws six weeks of seven days for the month", () => {
     render(<SkeletonBody view="month" />);
 
-    expect(
-      screen.getByTestId("skeleton-body").querySelectorAll(".grid > *"),
-    ).toHaveLength(42);
+    expect(screen.getAllByTestId("skeleton-month-day")).toHaveLength(42);
+  });
+
+  it.each([
+    ["table", "skeleton-table"],
+    ["timeline", "skeleton-timeline"],
+    ["charts", "skeleton-bars"],
+    ["totals", "skeleton-cards"],
+    ["week", "skeleton-columns"],
+    ["day", "skeleton-columns"],
+  ] as const)("draws the %s view's own stand-in", (view, testId) => {
+    render(<SkeletonBody view={view} />);
+
+    expect(screen.getByTestId(testId)).toBeDefined();
   });
 });

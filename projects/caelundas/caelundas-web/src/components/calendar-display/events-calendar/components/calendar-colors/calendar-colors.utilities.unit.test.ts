@@ -15,14 +15,13 @@ function eventWith(
 ): CalendarEventRecord {
   return {
     color,
-    description: "",
     durationMinutes: 0,
     end: new Date("2026-03-01T00:00:00Z"),
     groups: [],
     id: paths.join("|"),
-    location: null,
+    name: "An event",
+    note: "",
     start: new Date("2026-03-01T00:00:00Z"),
-    summary: "An event",
     tags: paths.map((path, index) => ({
       depth: path.split(" / ").length - 1,
       id: `tag-${String(index)}`,
@@ -39,24 +38,24 @@ describe("calendar colors", () => {
       expect(
         getEventColor(
           eventWith([
-            "Type / Aspect / Simple Aspect / Major Aspect / Square",
-            "Planet / Mars",
+            "Aspect / Simple / Major / Square",
+            "Body / Planet / Personal / Mars",
           ]),
         ),
-      ).toBe(colorOf("Type / Aspect / Simple Aspect / Major Aspect"));
+      ).toBe(colorOf("Aspect / Simple / Major"));
     });
 
     it("separates the kinds of aspect and the kinds of cycle", () => {
       const colors = new Set(
         [
-          "Type / Aspect / Simple Aspect / Major Aspect / Trine",
-          "Type / Aspect / Simple Aspect / Minor Aspect / Quincunx",
-          "Type / Aspect / Simple Aspect / Specialty Aspect / Novile",
-          "Type / Aspect / Compound Aspect / Triple Aspect / Yod",
-          "Type / Cycle / Daily Solar Cycle",
-          "Type / Cycle / Daily Lunar Cycle",
-          "Type / Ingress / Sign Ingress",
-          "Type / Twilight / Civil Dawn",
+          "Aspect / Simple / Major / Trine",
+          "Aspect / Simple / Minor / Quincunx",
+          "Aspect / Simple / Specialty / Novile",
+          "Aspect / Compound / Triple / Yod",
+          "Daily / Solar",
+          "Daily / Lunar",
+          "Ingress / Stay / Full Sign",
+          "Daily / Twilight / Civil Dawn",
         ].map((path) => getEventColor(eventWith([path]))),
       );
 
@@ -66,28 +65,32 @@ describe("calendar colors", () => {
 
     it("takes the most specific rule when several apply", () => {
       expect(
-        getEventColor(
-          eventWith(["Type / Aspect", "Type / Aspect / Compound Aspect / Yod"]),
-        ),
-      ).toBe(colorOf("Type / Aspect / Compound Aspect"));
+        getEventColor(eventWith(["Aspect", "Aspect / Compound / Yod"])),
+      ).toBe(colorOf("Aspect / Compound"));
     });
 
     it("does not take a tag whose name only starts like a rule's", () => {
-      expect(getEventColor(eventWith(["Type / Ingressive"]))).toBeNull();
+      expect(getEventColor(eventWith(["Sign / Ingressive"]))).toBeNull();
     });
 
-    it("falls back to the color the data gives, or none", () => {
-      expect(getEventColor(eventWith(["Planet / Mars"], "#123456"))).toBe(
-        "#123456",
-      );
-      expect(getEventColor(eventWith(["Planet / Mars"]))).toBeNull();
+    it("gives none for an event no kind rule covers, whatever color it carries", () => {
+      expect(
+        getEventColor(
+          eventWith(["Body / Planet / Personal / Mars"], "#123456"),
+        ),
+      ).toBeNull();
+      expect(
+        getEventColor(eventWith(["Body / Planet / Personal / Mars"])),
+      ).toBeNull();
     });
 
     it("colors a retrograde period by its own rule", () => {
-      expect(getEventColor(eventWith(["Type / Retrograde Period"]))).toBe(
-        colorOf("Type / Retrograde Period"),
-      );
-      expect(colorOf("Type / Retrograde Period")).not.toBeNull();
+      expect(
+        getEventColor(eventWith(["Planetary / Direction / Retrograde Period"])),
+      ).toBe(colorOf("Planetary / Direction / Retrograde Period"));
+      expect(
+        colorOf("Planetary / Direction / Retrograde Period"),
+      ).not.toBeNull();
     });
 
     it("gives every rule a distinct color and path", () => {
@@ -102,14 +105,14 @@ describe("calendar colors", () => {
 
   describe(colorEvents, () => {
     const events = [
-      eventWith(["Type / Direction"], "#123456"),
-      eventWith(["Planet / Mars"]),
+      eventWith(["Planetary / Direction"], "#123456"),
+      eventWith(["Body / Planet / Personal / Mars"]),
     ];
 
     it("colors each event when enabled", () => {
       expect(
         colorEvents(events, true).map((event) => event.color),
-      ).toStrictEqual([colorOf("Type / Direction"), null]);
+      ).toStrictEqual([colorOf("Planetary / Direction"), null]);
     });
 
     it("leaves every event uncolored when disabled, the data's color too", () => {

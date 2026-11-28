@@ -1,28 +1,47 @@
 import {
   calendarViewSchema,
-  THREE_DAYS,
+  METRIC_VIEWS,
+  RETIRED_VIEWS,
   timelineScaleSchema,
 } from "./calendar-views.constants";
 
-import type { CalendarViewName, TimelineScale } from "./calendar-views.types";
+import type {
+  CalendarViewName,
+  GridViewName,
+  MetricViewName,
+  TimelineScale,
+} from "./calendar-views.types";
 import type { CalendarView } from "@codebase/presentation";
 
 /**
- * The view to show when the link names none: the agenda, which reads at a
+ * The view to show when the link names none: the table, which reads at a
  * phone's width, or the whole month on anything wider.
  */
 export function getDefaultCalendarView(isWide: boolean): CalendarViewName {
-  return isWide ? "month" : "agenda";
+  return isWide ? "month" : "table";
 }
 
 /**
- * Reads a value as a view, or nothing when it names none, such as a stale
- * link's or an unpressed toggle's.
+ * Whether a view measures the events, drawing metrics and not the events.
+ */
+export function isMetricView(
+  view: CalendarViewName | undefined,
+): view is MetricViewName {
+  return (
+    view !== undefined && (METRIC_VIEWS as readonly string[]).includes(view)
+  );
+}
+
+/**
+ * Reads a value as a view, or nothing; a retired view's name opens its replacement.
  */
 export function parseCalendarView(
   value: unknown,
 ): CalendarViewName | undefined {
-  return calendarViewSchema.safeParse(value).data;
+  const name =
+    typeof value === "string" ? (RETIRED_VIEWS[value] ?? value) : value;
+
+  return calendarViewSchema.safeParse(name).data;
 }
 
 /**
@@ -33,17 +52,8 @@ export function parseTimelineScale(value: unknown): TimelineScale | undefined {
 }
 
 /**
- * The calendar's view for one of the app's, and its day count for the N-day view; the timeline has none.
+ * The calendar's view for one of the app's; the table, timeline and metric layouts have none.
  */
-export function toEventCalendarView(
-  view: Exclude<CalendarViewName, "timeline">,
-): {
-  dayCount: number;
-  view: CalendarView;
-} {
-  if (view === "three-day") {
-    return { dayCount: THREE_DAYS, view: "days" };
-  }
-
-  return { dayCount: THREE_DAYS, view };
+export function toEventCalendarView(view: GridViewName): CalendarView {
+  return view;
 }

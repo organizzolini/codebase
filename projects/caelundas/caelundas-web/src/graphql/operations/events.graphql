@@ -4,20 +4,19 @@ query Events(
   $grouping: EventGroupingInput
 ) {
   events(period: $period, filter: $filter, grouping: $grouping) {
-    color
-    description
+    note
     durationMinutes
     end
     id
-    location
     start
     startLocalDay
     startLocalHour
-    summary
+    name
     timezone
     groups {
       key
       label
+      rank
       path
     }
     tags {

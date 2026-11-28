@@ -1,20 +1,13 @@
 import { createMock } from "@golevelup/ts-vitest";
 import { getDataSourceToken } from "@nestjs/typeorm";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { READ_MODEL_STATEMENTS } from "./database.constants";
 import { DatabaseService } from "./database.service";
+import { METRICS_REFRESH_STATEMENTS } from "./modules/metrics/calendar-event-facts.constants";
 
 import type { EntityManager } from "typeorm";
-
-/** Whether TypeORM's `transaction` was given its callback first, with no isolation level. */
-function isTransactionCallback(
-  value: unknown,
-): value is (transaction: EntityManager) => Promise<unknown> {
-  return typeof value === "function";
-}
 
 describe(DatabaseService, () => {
   const dataSource = { isInitialized: true };
@@ -46,27 +39,25 @@ describe(DatabaseService, () => {
     expect(service.isConnected()).toBe(false);
   });
 
-  it("runs every read model statement in order inside one transaction", async () => {
+  it("refreshes the tag trees and the tag sets first, then rebuilds the facts, each through the manager it is given", async () => {
     const manager = createMock<EntityManager>();
 
-    vi.mocked(manager.transaction).mockImplementation(
-      async (
-        callbackOrLevel: unknown,
-        maybeCallback?: (transaction: EntityManager) => Promise<unknown>,
-      ) => {
-        const callback = isTransactionCallback(callbackOrLevel)
-          ? callbackOrLevel
-          : maybeCallback;
+    await service.refreshMetrics(manager);
 
-        await callback?.(manager);
-      },
+    expect(manager.query).toHaveBeenCalledTimes(
+      METRICS_REFRESH_STATEMENTS.length,
+    );
+    expect(manager.query).toHaveBeenNthCalledWith(
+      1,
+      "refresh materialized view concurrently tag_trees",
+    );
+    expect(manager.query).toHaveBeenNthCalledWith(
+      2,
+      "refresh materialized view concurrently calendar_event_tag_sets",
     );
 
-    await service.refreshReadModel(manager);
-
-    expect(manager.transaction).toHaveBeenCalledTimes(1);
-    expect(vi.mocked(manager.query).mock.calls).toStrictEqual(
-      READ_MODEL_STATEMENTS.map((statement) => [statement]),
-    );
+    for (const [index, statement] of METRICS_REFRESH_STATEMENTS.entries()) {
+      expect(manager.query).toHaveBeenNthCalledWith(index + 1, statement);
+    }
   });
 });

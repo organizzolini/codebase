@@ -19,7 +19,7 @@ describe(toEventFilterInput, () => {
       toEventFilterInput(
         filterGroup(
           "or",
-          tagRule("planet", "is_any_of", ["mars"]),
+          tagRule("body", "is_any_of", ["mars"]),
           fieldRule("hour", "between", [22, 23]),
           fieldRule("duration-minutes", "gt", 90),
           fieldRule("text", "contains", "ingress"),
@@ -30,7 +30,7 @@ describe(toEventFilterInput, () => {
       rules: [
         {
           operator: "is_any_of",
-          path: ["tag:tag-planet"],
+          path: ["tag:tag-body"],
           values: ["tag-mars"],
         },
         { operator: "between", path: ["hour"], values: ["22", "23"] },
@@ -45,8 +45,8 @@ describe(toEventFilterInput, () => {
       toEventFilterInput(
         filterGroup(
           "and",
-          filterGroup("or", tagRule("planet", "is_any_of", ["sun"])),
-          { ...tagRule("type", "is_any_of", ["aspect"]), negated: true },
+          filterGroup("or", tagRule("body", "is_any_of", ["sun"])),
+          { ...tagRule("aspect", "is_any_of", ["simple"]), negated: true },
         ),
       ),
     ).toStrictEqual({
@@ -57,7 +57,7 @@ describe(toEventFilterInput, () => {
           rules: [
             {
               operator: "is_any_of",
-              path: ["tag:tag-planet"],
+              path: ["tag:tag-body"],
               values: ["tag-sun"],
             },
           ],
@@ -67,8 +67,8 @@ describe(toEventFilterInput, () => {
         {
           negated: true,
           operator: "is_any_of",
-          path: ["tag:tag-type"],
-          values: ["tag-aspect"],
+          path: ["tag:tag-aspect"],
+          values: ["tag-simple"],
         },
       ],
     });
@@ -77,10 +77,10 @@ describe(toEventFilterInput, () => {
   it("leaves out the rules that are not finished, and the groups they empty", () => {
     const unfinished = filterGroup(
       "and",
-      fieldRule("tag:tag-planet", "", ["tag-mars"]),
-      fieldRule("tag:tag-planet", "is_any_of", []),
-      fieldRule("tag:tag-planet", "is_any_of", undefined),
-      fieldRule("tag:tag-planet", "is_any_of", [null]),
+      fieldRule("tag:tag-body", "", ["tag-mars"]),
+      fieldRule("tag:tag-body", "is_any_of", []),
+      fieldRule("tag:tag-body", "is_any_of", undefined),
+      fieldRule("tag:tag-body", "is_any_of", [null]),
       fieldRule("hour", "between", [22, null]),
       fieldRule("text", "contains", ""),
       filterGroup("or"),
@@ -91,8 +91,8 @@ describe(toEventFilterInput, () => {
       toEventFilterInput(
         filterGroup(
           "or",
-          fieldRule("tag:tag-planet", "is_any_of", []),
-          tagRule("planet", "is_any_of", ["saturn"]),
+          fieldRule("tag:tag-body", "is_any_of", []),
+          tagRule("body", "is_any_of", ["saturn"]),
         ),
       ),
     ).toStrictEqual({
@@ -100,7 +100,7 @@ describe(toEventFilterInput, () => {
       rules: [
         {
           operator: "is_any_of",
-          path: ["tag:tag-planet"],
+          path: ["tag:tag-body"],
           values: ["tag-saturn"],
         },
       ],
@@ -109,13 +109,13 @@ describe(toEventFilterInput, () => {
 
   it("writes a lone rule as a group of one", () => {
     expect(
-      toEventFilterInput(tagRule("planet", "is_none_of", ["moon"])),
+      toEventFilterInput(tagRule("body", "is_none_of", ["moon"])),
     ).toStrictEqual({
       combinator: "AND",
       rules: [
         {
           operator: "is_none_of",
-          path: ["tag:tag-planet"],
+          path: ["tag:tag-body"],
           values: ["tag-moon"],
         },
       ],
@@ -127,7 +127,7 @@ describe(toEventFilterInput, () => {
       toEventFilterInput(
         filterGroup(
           "or",
-          filterGroup("and", tagRule("planet", "is_any_of", ["sun"])),
+          filterGroup("and", tagRule("body", "is_any_of", ["sun"])),
         ),
       ),
     ).toStrictEqual({
@@ -138,7 +138,7 @@ describe(toEventFilterInput, () => {
           rules: [
             {
               operator: "is_any_of",
-              path: ["tag:tag-planet"],
+              path: ["tag:tag-body"],
               values: ["tag-sun"],
             },
           ],

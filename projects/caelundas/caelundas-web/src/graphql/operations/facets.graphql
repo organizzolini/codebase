@@ -1,12 +1,27 @@
 query Facets($period: PeriodInput, $filter: EventFilterGroupInput) {
   facets(period: $period, filter: $filter) {
+    icon
     id
+    isDefaultGroup
+    isFilterable
+    isGroupable
+    isSelectable
+    isSortable
     name
+    note
     values {
+      alsoUnder
       count
       depth
+      icon
       id
+      isDefaultGroup
+      isFilterable
+      isGroupable
+      isSelectable
+      isSortable
       name
+      note
       path
     }
   }

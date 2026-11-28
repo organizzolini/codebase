@@ -1,5 +1,6 @@
 import { Input } from "@codebase/presentation";
 
+import { useScrollExpandedToTop } from "../../../hooks/use-tag-picker/hooks/use-scroll-expanded-to-top/use-scroll-expanded-to-top";
 import { useTagPicker } from "../../../hooks/use-tag-picker/use-tag-picker";
 
 import { TagRow } from "./tag-row";
@@ -38,6 +39,7 @@ export function FilterTagEditor(
     handleToggle,
     rows,
   } = useTagPicker(properties);
+  const { reference } = useScrollExpandedToTop();
 
   // 🏗 Setup
 
@@ -50,6 +52,7 @@ export function FilterTagEditor(
   // 🎨 Markup
   return (
     <div
+      ref={reference}
       className={className}
       data-testid="filter-tag-editor"
     >
@@ -68,11 +71,12 @@ export function FilterTagEditor(
           aria-label={field.label}
           aria-multiselectable="true"
           className="max-h-72 overflow-y-auto"
+          data-scroll-list=""
           role="listbox"
         >
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <TagRow
-              key={row.item.value}
+              key={`${row.item.value}:${String(index)}`}
               onKeyDown={handleOptionKeyDown}
               onOpenChange={handleOpen}
               onToggle={handleToggle}

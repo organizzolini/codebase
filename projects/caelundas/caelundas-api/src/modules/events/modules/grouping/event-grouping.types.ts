@@ -7,9 +7,17 @@ export interface CompiledEventGrouping {
   sql: string;
 }
 
+/** Each level's source of keys, and the $n placeholder values they bind. */
+export interface EventGroupingSources {
+  parameters: unknown[];
+  sources: string[];
+}
+
 /** A grouping level: its field, and tags or a depth. */
 export interface EventGroupLevel {
   depth?: number | undefined;
   field: string;
+  /** The tag whose children the level groups by, in place of the root's own. */
+  parent?: string | undefined;
   tags: string[];
 }

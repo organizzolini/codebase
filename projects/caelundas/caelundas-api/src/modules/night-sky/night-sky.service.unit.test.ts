@@ -23,7 +23,7 @@ import { NightSkyService } from "./night-sky.service";
 const DUBHE: Star = {
   colorIndex: 0.6,
   declinationDegrees: 61.7,
-  hip: 54_061,
+  hipparcosNumber: 54_061,
   magnitude: 1.8,
   rightAscensionHours: 11.06,
 };
@@ -31,7 +31,7 @@ const DUBHE: Star = {
 const ALIOTH: Star = {
   colorIndex: 0.3,
   declinationDegrees: 56.4,
-  hip: 62_956,
+  hipparcosNumber: 62_956,
   magnitude: 1.77,
   rightAscensionHours: 12.9,
 };
@@ -40,14 +40,14 @@ const STARS: Star[] = [
   {
     colorIndex: 1.2,
     declinationDegrees: 19.2,
-    hip: 69_673,
+    hipparcosNumber: 69_673,
     magnitude: -0.05,
     rightAscensionHours: 14.26,
   },
   {
     colorIndex: 0,
     declinationDegrees: -16.7,
-    hip: 32_349,
+    hipparcosNumber: 32_349,
     magnitude: -1.46,
     rightAscensionHours: 6.75,
   },
@@ -59,15 +59,15 @@ const URSA_MAJOR: Constellation = {
   designation: "UMa",
   edges: [
     {
-      constellationDesignation: "UMa",
-      fromHip: 54_061,
+      constellationId: "UMa",
       source: DUBHE,
+      sourceNode: 54_061,
       target: ALIOTH,
-      toHip: 62_956,
+      targetNode: 62_956,
     },
   ],
+  isZodiac: false,
   name: "Ursa Major",
-  zodiac: false,
 };
 
 /** Answers star and constellation reads with the fixtures above. */

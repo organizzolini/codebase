@@ -70,6 +70,11 @@ export interface FilterActionsContextValue<V = unknown, O = unknown> {
    *  has no route to the query at all. */
   convertToAdvanced: (() => void) | undefined
 
+  /** Turns on the chip kebab's "Fold" row: present means offered. Like
+   *  `convertToAdvanced` it changes no query, so it skips the mutation
+   *  boundary and is handed no setter. */
+  fold: (() => void) | undefined
+
   /** Path shortening, published so BOTH chromes render the same path. */
   pathCollapse: FilterPathCollapse
   maxPathSegments: number

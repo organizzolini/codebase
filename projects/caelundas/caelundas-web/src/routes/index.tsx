@@ -6,9 +6,13 @@ import {
 import { type ReactNode, useMemo, useSyncExternalStore } from "react";
 
 import { CalendarDisplayMenu } from "../components/calendar-controls/calendar-display-menu/calendar-display-menu";
+import { CalendarLayoutMenu } from "../components/calendar-controls/calendar-layout-menu/calendar-layout-menu";
 import { CalendarEmpty } from "../components/calendar-display/calendar-empty/calendar-empty";
 import { CalendarError } from "../components/calendar-display/calendar-error/calendar-error";
+import { MetricCatalogProvider } from "../components/calendar-display/calendar-metrics/components/metric-catalog-provider/metric-catalog-provider";
 import { CalendarSkeleton } from "../components/calendar-display/calendar-skeleton/calendar-skeleton";
+import { TableGroupsProvider } from "../components/calendar-display/calendar-table/components/table-groups-provider/table-groups-provider";
+import { parseAllDayMode } from "../components/calendar-display/events-calendar/components/calendar-grid/components/calendar-all-day/calendar-all-day.utilities";
 import { loadedKeys } from "../components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.constants";
 import { loadCalendar } from "../components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.utilities";
 import {
@@ -27,8 +31,11 @@ import {
   CalendarSymbolsContext,
   DEFAULT_CALENDAR_SYMBOLS,
 } from "../components/calendar-events/event-glyphs/calendar-symbols.constants";
+import { TagIconsProvider } from "../components/calendar-events/tag-icons-provider/tag-icons-provider";
 import { EMPTY_EVENT_FILTER } from "../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.constants";
+import { createEventGroupFields } from "../components/calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { CalendarQueryControls } from "../components/calendar-query/calendar-query-controls/calendar-query-controls";
+import { dropUnofferedTags } from "../hooks/use-calendar-search/calendar-search-flags.utilities";
 import {
   getCalendarReloadKey,
   readCalendarSearch,
@@ -62,7 +69,17 @@ export const Route = createFileRoute("/")({
       loadedKeys.current = getCalendarReloadKey(location.search);
     }
 
-    return loadCalendar(validateCalendarSearch(location.search));
+    const search = validateCalendarSearch(location.search);
+    const loaded = await loadCalendar(search);
+
+    // What the link names that the menus leave out; the page drops it from the link.
+    return {
+      ...loaded,
+      unoffered: dropUnofferedTags(
+        search,
+        createEventGroupFields(loaded.facets),
+      ),
+    };
   },
 });
 
@@ -90,10 +107,10 @@ function IndexError(properties: Readonly<ErrorComponentProps>): ReactNode {
 /**
  * Renders the landing page's heading.
  */
-// The calendar fills the viewport in the data's zone; the view the link names wins, else a phone opens on agenda, wider on month.
+// The calendar fills the viewport in the data's zone; the view the link names wins, else a phone opens on the table, wider on month.
 function IndexPage(): ReactNode {
   // 🪝 Hooks
-  const { colorBy, dataset, emptiness, events, facets, grouping, presets } =
+  const { dataset, emptiness, events, facets, filter, grouping, presets } =
     Route.useLoaderData();
   // The calendar's own search only: structural sharing hands back the same
   // object when a sky key alone changed, so the page is not rendered again.
@@ -116,19 +133,15 @@ function IndexPage(): ReactNode {
   // 🏗 Setup
   const view = search.view ?? getDefaultCalendarView(isWide);
   const timeZone = readTimeZone(dataset);
+  const menu = { className: "contents", timeZone, view };
 
   // 💪 Handlers
-  const {
-    getShowLater,
-    handleDateChange,
-    handleFilterChange,
-    handleGroupingChange,
-    handleSortChange,
-  } = useCalendarSearch(timeZone);
-  // The agenda grows a month at a time, up to a year, in place: the link
-  // is replaced rather than pushed, and the rows already listed stay put.
+  const handlers = useCalendarSearch(
+    timeZone,
+    facets,
+    Route.useLoaderData().unoffered,
+  );
   const agendaDays = search.days ?? AGENDA_DAY_COUNT;
-  const handleShowLater = getShowLater(agendaDays);
 
   // ♻️ Lifecycle
 
@@ -144,56 +157,76 @@ function IndexPage(): ReactNode {
       <CalendarSymbolsContext
         value={search.symbols ?? DEFAULT_CALENDAR_SYMBOLS}
       >
-        <EventsCalendar
-          agendaDays={agendaDays}
-          anchor={anchor}
-          className="min-h-0 flex-1"
-          clusters={search.clusters !== false}
-          colorBy={colorBy}
-          colors={search.colors !== false}
-          compact={!isWide}
-          events={events}
-          facets={facets}
-          filters={
-            <CalendarQueryControls
-              className="contents"
-              display={
-                <CalendarDisplayMenu
-                  className="contents"
-                  colorBy={colorBy}
-                  facets={facets}
-                  timeZone={timeZone}
-                  view={view}
-                />
-              }
-              facets={facets}
-              filter={search.filter}
-              grouping={grouping}
-              onFilterChange={handleFilterChange}
-              onGroupingChange={handleGroupingChange}
-              onSortChange={handleSortChange}
-              presets={presets}
-              sort={search.sort}
-              view={view}
-            />
-          }
-          grouping={grouping}
-          onDateChange={handleDateChange}
-          onShowLater={handleShowLater}
-          scale={search.scale}
-          sort={search.sort}
-          timeZone={timeZone}
-          view={view}
-        />
+        <MetricCatalogProvider className="contents">
+          <TagIconsProvider
+            className="contents"
+            facets={facets}
+          >
+            <TableGroupsProvider className="contents">
+              <EventsCalendar
+                agendaDays={agendaDays}
+                allDayMode={parseAllDayMode(search.ad)}
+                anchor={anchor}
+                className="min-h-0 flex-1"
+                colors={search.colors !== false}
+                columns={search.columns}
+                compact={!isWide}
+                compare={search.compare === true}
+                eventFilter={filter}
+                events={events}
+                facets={facets}
+                filters={
+                  <CalendarQueryControls
+                    className="contents"
+                    columns={search.columns}
+                    display={<CalendarDisplayMenu {...menu} />}
+                    facets={facets}
+                    filter={search.filter}
+                    fold={search.fold}
+                    grouping={grouping}
+                    isDefaultGrouping={search.group === undefined}
+                    layout={<CalendarLayoutMenu {...menu} />}
+                    metrics={search.metrics}
+                    onColumnsChange={handlers.handleColumnsChange}
+                    onFilterChange={handlers.handleFilterChange}
+                    onFoldChange={handlers.handleFoldChange}
+                    onGroupingChange={handlers.handleGroupingChange}
+                    onMetricsChange={handlers.handleMetricsChange}
+                    onSortChange={handlers.handleSortChange}
+                    onViewChange={handlers.handleViewPresetChange}
+                    presets={presets}
+                    sort={search.sort}
+                    view={view}
+                  />
+                }
+                grouping={grouping}
+                hideEmpty={search.hideEmpty === true}
+                metrics={search.metrics}
+                onAllDayModeChange={handlers.handleAllDayModeChange}
+                onColumnsChange={handlers.handleColumnsChange}
+                onDateChange={handlers.handleDateChange}
+                onDayOpen={handlers.handleDayOpen}
+                onRangeChange={(range) => {
+                  handlers.handleRangeChange(view, range);
+                }}
+                onSortChange={handlers.handleSortChange}
+                scale={search.scale}
+                sort={search.sort}
+                timeZone={timeZone}
+                view={view}
+              />
+            </TableGroupsProvider>
+          </TagIconsProvider>
+        </MetricCatalogProvider>
       </CalendarSymbolsContext>
       {emptiness === null || isReloading ? null : (
         <CalendarEmpty
           className="pointer-events-none absolute inset-x-0 top-1/3 z-40 flex justify-center px-4"
           emptiness={emptiness}
           onClearFilters={() => {
-            handleFilterChange(EMPTY_EVENT_FILTER);
+            handlers.handleFilterChange(EMPTY_EVENT_FILTER);
           }}
-          onJump={handleDateChange}
+          onJump={handlers.handleDateChange}
           period={CALENDAR_VIEW_PERIODS[view]}
         />
       )}

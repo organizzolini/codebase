@@ -1,26 +1,30 @@
-import { NATURAL_COLLATOR, PATH_SEPARATOR } from "../../events.constants";
+import { NATURAL_COLLATOR } from "../../events.constants";
+
+import type { RankedName } from "./natural-order.types";
 
 // 🌎 Public Functions
 
 /**
- * Orders paths alphanumerically, a name at a time, so a parent comes before the names beneath it and "Harmonic 2" before "Harmonic 10".
+ * Orders paths level by level, by `rank` then name with digits as numbers, so "Harmonic 2" precedes "Harmonic 10".
  */
-export function compareNaturalPaths(left: string, right: string): number {
-  const rightNames = right.split(PATH_SEPARATOR);
-
-  for (const [index, name] of left.split(PATH_SEPARATOR).entries()) {
-    const other = rightNames[index];
+export function compareRankedPaths(
+  left: readonly RankedName[],
+  right: readonly RankedName[],
+): number {
+  for (const [index, { name, rank }] of left.entries()) {
+    const other = right[index];
 
     if (other === undefined) {
       return 1;
     }
 
-    const result = NATURAL_COLLATOR.compare(name, other);
+    const result =
+      rank - other.rank || NATURAL_COLLATOR.compare(name, other.name);
 
     if (result !== 0) {
       return result;
     }
   }
 
-  return left.split(PATH_SEPARATOR).length === rightNames.length ? 0 : -1;
+  return left.length === right.length ? 0 : -1;
 }

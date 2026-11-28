@@ -1,5 +1,5 @@
 import moment from "moment-timezone";
-import { In } from "typeorm";
+import { In, Like } from "typeorm";
 import {
   afterAll,
   afterEach,
@@ -21,6 +21,10 @@ import {
   DATABASE_TIMEOUT_MILLISECONDS,
   startCaelundasDatabase,
 } from "../../../testing/support/database";
+import { findStoredEvents } from "../../../testing/support/stored-events.utilities";
+import { tagRepository } from "../../../testing/support/tag-repository";
+import { TagsService } from "../tags/tags.service";
+import { classifyEvent, tagSlug } from "../tags/tags.utilities";
 
 import { CALENDAR_EVENT_BATCH_SIZE } from "./calendar-events.constants";
 import { CalendarEventsModule } from "./calendar-events.module";
@@ -28,7 +32,7 @@ import { CalendarEventsService } from "./calendar-events.service";
 
 import type { DetectedCalendarEvent } from "./calendar-events.types";
 import type { DatabaseTestingModule } from "@codebase/persistence/testing";
-import type { Repository, TreeRepository } from "typeorm";
+import type { Repository } from "typeorm";
 
 const philadelphia = {
   latitude: 39.949_309,
@@ -63,14 +67,14 @@ function tagged(
   return { ...event(summary, start), tags: eventTags };
 }
 
-/** Thirty seconds: insert batches take over five seconds on CI. */
-const BULK_UPSERT_TIMEOUT_MILLISECONDS = 30_000;
+/** Two minutes: one upsert of over a batch of events took 23 s on a loaded CI run (temporary). */
+const BULK_UPSERT_TIMEOUT_MILLISECONDS = 120_000;
 
 describe("calendar events service integration", () => {
   let database: DatabaseTestingModule;
   let service: CalendarEventsService;
   let repository: Repository<CalendarEvent>;
-  let tags: TreeRepository<Tag>;
+  let tags: Repository<Tag>;
 
   beforeAll(async () => {
     database = await startCaelundasDatabase([
@@ -79,7 +83,7 @@ describe("calendar events service integration", () => {
     ]);
     service = database.module.get(CalendarEventsService);
     repository = database.repository(CalendarEvent);
-    tags = database.dataSource.getTreeRepository(Tag);
+    tags = database.repository(Tag);
   }, DATABASE_TIMEOUT_MILLISECONDS);
 
   afterEach(() => {
@@ -97,78 +101,163 @@ describe("calendar events service integration", () => {
       [event("Stored", "2026-01-10T00:00:00Z")],
       philadelphia,
     );
-    const [row] = await repository.findBy({ summary: "Stored" });
+    const [row] = await repository.findBy({ name: "Stored" });
 
     expect(row?.latitude).toBe("39.949309");
     expect(row?.longitude).toBe("-75.171690");
   });
 
-  it("rewrites the read model caelundas-web queries after every upsert", async () => {
+  it("fills the generated local day and hour in the observer's zone on insert and upsert", async () => {
+    expect.hasAssertions();
+
+    const written = event(
+      "Generated",
+      "2026-01-10T03:30:00Z",
+      "2026-01-10T05:00:00Z",
+    );
+    const read = async (): Promise<
+      {
+        end_local_day: string;
+        start_local_day: string;
+        start_local_hour: number;
+      }[]
+    > =>
+      repository.manager.query(
+        `select start_local_day::text, end_local_day::text, start_local_hour
+         from calendar_events where name = 'Generated'`,
+      );
+
+    await service.upsert([written], philadelphia);
+    await service.upsert(
+      [{ ...written, description: "changed" }],
+      philadelphia,
+    );
+
+    await expect(read()).resolves.toStrictEqual([
+      {
+        end_local_day: "2026-01-10",
+        start_local_day: "2026-01-09",
+        start_local_hour: 22,
+      },
+    ]);
+  });
+
+  it("refreshes the tag sets and the facts caelundas-web queries after every upsert", async () => {
     expect.hasAssertions();
 
     await service.upsert(
       [tagged("Read model", "2026-01-13T00:00:00Z", ["Planet", "Sun"])],
       philadelphia,
     );
-    const nodes = await repository.manager.query<
-      { is_direct: boolean; tag_name: string }[]
+    const [fact] = await repository.manager.query<
+      { direct: string[]; tags: string[] }[]
     >(
-      `select tag_name, is_direct from calendar_event_tag_nodes n join calendar_events e on e.id = n.calendar_event_id where e.summary = 'Read model' order by tag_name`,
+      `select
+        (select array_agg(t.name order by t.name) from tags t where t.id = any(f.tag_ids || f.ancestor_tag_ids)) as tags,
+        (select array_agg(t.name order by t.name) from tags t where t.id = any(f.tag_ids)) as direct
+      from calendar_event_tag_sets f
+      inner join calendar_events e on e.id = f.calendar_event_id
+      where e.name = 'Read model'`,
     );
-    const [derived] = await repository.manager.query<{ temporality: string }[]>(
-      `select temporality from calendar_event_derived_times where summary = 'Read model'`,
-    );
-    const paths = await repository.manager.query<{ path: string }[]>(
-      `select path from tag_nodes where name = 'Sun'`,
+    const rollups = await repository.manager.query<{ name: string }[]>(
+      `select distinct t.name
+        from calendar_event_facts r
+        inner join filters f on f.id = r.filter_id
+        inner join tags t on t.id = f.tag_id
+        inner join calendar_events e on e.start_local_day = f.period
+        where e.name = 'Read model'`,
     );
 
-    expect(nodes.map(({ tag_name: name }) => name)).toContain("Sun");
-    expect(derived?.temporality).toBe("Instant");
-    expect(paths.map(({ path }) => path)).toContain("Planet / Sun");
+    expect(fact?.tags).toContain("Sun");
+    expect(fact?.direct).toContain("Sun");
+    expect(rollups.map(({ name }) => name)).toContain("Sun");
   });
 
-  it(
-    "rebuilds the read model once per upsert, after the last batch is written",
-    async () => {
-      expect.hasAssertions();
-
+  // Two tests read one upsert of more events than a batch holds, which takes
+  // 23 s on a loaded CI run, so it is made once, by the first test to ask.
+  const BULK_COUNT = CALENDAR_EVENT_BATCH_SIZE + 10;
+  let bulkUpsert: Promise<{ refreshes: number; stored: number[] }> | undefined;
+  const upsertBulk = async (): Promise<{
+    refreshes: number;
+    stored: number[];
+  }> => {
+    bulkUpsert ??= (async () => {
       const databaseService = database.module.get(CaelundasDatabaseService);
-      const rebuild = databaseService.refreshReadModel.bind(databaseService);
-      const refresh = vi.spyOn(databaseService, "refreshReadModel");
-      refresh.mockClear();
-      const count = CALENDAR_EVENT_BATCH_SIZE + 1;
+      const rebuild = databaseService.refreshMetrics.bind(databaseService);
+      const refresh = vi.spyOn(databaseService, "refreshMetrics");
       const stored: number[] = [];
       refresh.mockImplementationOnce(async (manager) => {
         stored.push(
           await manager.getRepository(CalendarEvent).countBy({
-            summary: In(["Refresh first", `Refresh ${String(count - 1)}`]),
+            name: In(["Bulk 0", `Bulk ${String(BULK_COUNT - 1)}`]),
           }),
         );
         await rebuild(manager);
       });
-      const start = moment.utc("2031-01-01T00:00:00Z");
+      const start = moment.utc("2030-01-01T00:00:00Z");
       await service.upsert(
-        Array.from({ length: count }, (_value, index) =>
+        Array.from({ length: BULK_COUNT }, (_value, index) =>
           event(
-            index === 0 ? "Refresh first" : `Refresh ${String(index)}`,
+            `Bulk ${String(index)}`,
             start.clone().add(index, "minutes").toISOString(),
           ),
         ),
         philadelphia,
       );
 
-      expect(refresh).toHaveBeenCalledTimes(1);
+      return { refreshes: refresh.mock.calls.length, stored };
+    })();
+
+    return bulkUpsert;
+  };
+
+  it(
+    "refreshes the metrics view once per upsert, after the last batch is written",
+    async () => {
+      expect.hasAssertions();
+
+      const { refreshes, stored } = await upsertBulk();
+
+      expect(refreshes).toBe(1);
       expect(stored).toStrictEqual([2]);
     },
     BULK_UPSERT_TIMEOUT_MILLISECONDS,
   );
 
-  it("stores no event when the read model rebuild fails", async () => {
+  it("refreshes the facts, so the day filter counts the new event", async () => {
+    expect.hasAssertions();
+
+    await service.upsert(
+      [event("Metrics rollup", "2032-02-03T15:00:00Z", "2032-02-03T17:30:00Z")],
+      philadelphia,
+    );
+    const day = await repository.manager.query<
+      { measurement: number; slug: string }[]
+    >(
+      `select m.slug, r.measurement
+      from calendar_event_facts r
+      inner join measures m on m.id = r.measure_id
+      inner join filters f on f.id = r.filter_id
+      where f.period = '2032-02-03' and f.tag_id is null and m.slug in ('events', 'duration')
+      order by m.slug`,
+    );
+    const [tagRollups] = await repository.manager.query<{ count: string }[]>(
+      `select count(*) from filters where period = '2032-02-03' and tag_id is not null`,
+    );
+
+    expect(day).toStrictEqual([
+      { measurement: 150, slug: "duration" },
+      { measurement: 1, slug: "events" },
+    ]);
+    expect(Number(tagRollups?.count)).toBeGreaterThan(0);
+  });
+
+  it("stores no event when the metrics refresh fails", async () => {
     expect.hasAssertions();
 
     vi.spyOn(
       database.module.get(CaelundasDatabaseService),
-      "refreshReadModel",
+      "refreshMetrics",
     ).mockRejectedValueOnce(new Error("refresh failed"));
 
     await expect(
@@ -177,9 +266,7 @@ describe("calendar events service integration", () => {
         philadelphia,
       ),
     ).rejects.toThrow("refresh failed");
-    await expect(repository.countBy({ summary: "Rolled back" })).resolves.toBe(
-      0,
-    );
+    await expect(repository.countBy({ name: "Rolled back" })).resolves.toBe(0);
     await expect(tags.countBy({ name: "rolled back tag" })).resolves.toBe(0);
   });
 
@@ -191,9 +278,9 @@ describe("calendar events service integration", () => {
       philadelphia,
     );
     const [raw] = await repository.manager.query<{ end: Date; start: Date }[]>(
-      `select "start", "end" from calendar_events where summary = 'Instant text'`,
+      `select "start", "end" from calendar_events where name = 'Instant text'`,
     );
-    const [row] = await repository.findBy({ summary: "Instant text" });
+    const [row] = await repository.findBy({ name: "Instant text" });
 
     expect(raw?.start.toISOString()).toBe("2026-01-12T06:30:15.250Z");
     expect(raw?.end.toISOString()).toBe("2026-01-12T06:30:15.250Z");
@@ -208,7 +295,7 @@ describe("calendar events service integration", () => {
     await service.upsert([sunset], sydney);
     const rows = await repository.find({
       order: { latitude: "ASC" },
-      where: { summary: "Zoned" },
+      where: { name: "Zoned" },
     });
 
     expect(rows.map(({ timezone }) => timezone)).toStrictEqual([
@@ -224,7 +311,7 @@ describe("calendar events service integration", () => {
       [event("Repeated", "2026-02-10T00:00:00Z")],
       philadelphia,
     );
-    const [first] = await repository.findBy({ summary: "Repeated" });
+    const [first] = await repository.findBy({ name: "Repeated" });
     await service.upsert(
       [
         {
@@ -234,10 +321,10 @@ describe("calendar events service integration", () => {
       ],
       philadelphia,
     );
-    const rows = await repository.findBy({ summary: "Repeated" });
+    const rows = await repository.findBy({ name: "Repeated" });
 
     expect(rows).toHaveLength(1);
-    expect(rows[0]?.description).toBe("changed");
+    expect(rows[0]?.note).toBe("changed");
     expect(rows[0]?.id).toBe(first?.id);
     expect(rows[0]?.createdAt.getTime()).toBe(first?.createdAt.getTime());
     expect(rows[0]?.updatedAt.getTime()).toBeGreaterThan(
@@ -252,7 +339,7 @@ describe("calendar events service integration", () => {
     await service.upsert([sunrise], philadelphia);
     await service.upsert([sunrise], sydney);
 
-    await expect(repository.countBy({ summary: "Sunrise" })).resolves.toBe(2);
+    await expect(repository.countBy({ name: "Sunrise" })).resolves.toBe(2);
   });
 
   it("keeps one row when a batch repeats an event", async () => {
@@ -261,7 +348,7 @@ describe("calendar events service integration", () => {
     const twice = event("Twice", "2026-04-10T00:00:00Z");
     await service.upsert([twice, twice], philadelphia);
 
-    await expect(repository.countBy({ summary: "Twice" })).resolves.toBe(1);
+    await expect(repository.countBy({ name: "Twice" })).resolves.toBe(1);
   });
 
   it("stores a boundary and a span of the same title and start as two rows", async () => {
@@ -278,7 +365,7 @@ describe("calendar events service integration", () => {
       ],
       philadelphia,
     );
-    const rows = await service.findInRange({
+    const rows = await findStoredEvents(database.dataSource, {
       end: moment.utc("2026-05-11T00:00:00Z"),
       latitude: philadelphia.latitude,
       longitude: philadelphia.longitude,
@@ -302,9 +389,7 @@ describe("calendar events service integration", () => {
       philadelphia,
     );
 
-    await expect(repository.countBy({ summary: "Spaced out" })).resolves.toBe(
-      1,
-    );
+    await expect(repository.countBy({ name: "Spaced out" })).resolves.toBe(1);
   });
 
   it(
@@ -312,111 +397,46 @@ describe("calendar events service integration", () => {
     async () => {
       expect.hasAssertions();
 
-      const count = CALENDAR_EVENT_BATCH_SIZE + 10;
-      const start = moment.utc("2030-01-01T00:00:00Z");
-      await service.upsert(
-        Array.from({ length: count }, (_value, index) => {
-          const at = start.clone().add(index, "minutes").toISOString();
-          return event(`Bulk ${String(index)}`, at);
-        }),
-        philadelphia,
-      );
+      await upsertBulk();
 
       await expect(
         repository
           .createQueryBuilder("event")
-          .where("event.summary LIKE 'Bulk %'")
+          .where("event.name LIKE 'Bulk %'")
           .getCount(),
-      ).resolves.toBe(count);
+      ).resolves.toBe(BULK_COUNT);
+
+      // Later upserts refresh the metrics facts, whose cost grows with the rows.
+      await repository.delete({ name: Like("Bulk %") });
     },
     BULK_UPSERT_TIMEOUT_MILLISECONDS,
   );
 
-  describe("findInRange", () => {
-    const range = {
-      end: moment.utc("2027-01-31T00:00:00Z"),
-      latitude: philadelphia.latitude,
-      longitude: philadelphia.longitude,
-      start: moment.utc("2027-01-01T00:00:00Z"),
-    };
-
-    beforeAll(async () => {
-      await service.upsert(
-        [
-          tagged("Inside", "2027-01-10T00:00:00Z", ["moon", "inside"]),
-          event("Instant at start", "2027-01-01T00:00:00Z"),
-          event("Before", "2026-12-01T00:00:00Z", "2026-12-02T00:00:00Z"),
-          event("After", "2027-02-10T00:00:00Z"),
-          event("Spans start", "2026-12-20T00:00:00Z", "2027-01-05T00:00:00Z"),
-          event("Spans end", "2027-01-25T00:00:00Z", "2027-02-05T00:00:00Z"),
-          event(
-            "Ends at start",
-            "2026-12-30T00:00:00Z",
-            "2027-01-01T00:00:00Z",
-          ),
-        ],
-        philadelphia,
-      );
-      await service.upsert(
-        [event("Elsewhere", "2027-01-10T00:00:00Z")],
-        sydney,
-      );
-    });
-
-    it("includes events that overlap the range, ordered by start", async () => {
-      expect.hasAssertions();
-
-      const rows = await service.findInRange(range);
-
-      expect(rows.map((row) => row.summary)).toStrictEqual([
-        "Spans start",
-        "Instant at start",
-        "Inside",
-        "Spans end",
-      ]);
-    });
-
-    it("returns each event with its tags, ordered by name", async () => {
-      expect.hasAssertions();
-
-      const rows = await service.findInRange(range);
-
-      expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
-        ["Spans start", ["Duration", "aspects", "moon"]],
-        ["Instant at start", ["Instant", "aspects", "moon"]],
-        ["Inside", ["Instant", "inside", "moon"]],
-        ["Spans end", ["Duration", "aspects", "moon"]],
-      ]);
-    });
-
-    it("returns nothing for a range no event overlaps", async () => {
-      expect.hasAssertions();
-
-      await expect(
-        service.findInRange({
-          ...range,
-          end: moment.utc("1999-01-31T00:00:00Z"),
-          start: moment.utc("1999-01-01T00:00:00Z"),
-        }),
-      ).resolves.toStrictEqual([]);
-    });
-
-    it("returns only the requested location", async () => {
-      expect.hasAssertions();
-
-      const rows = await service.findInRange({
-        ...range,
-        latitude: sydney.latitude,
-        longitude: sydney.longitude,
-      });
-
-      expect(rows.map((row) => row.summary)).toStrictEqual(["Elsewhere"]);
-    });
-  });
-
   describe("tags", () => {
-    async function tag(name: string, parent: null | Tag = null): Promise<Tag> {
-      return tags.save(tags.create({ name, parent }));
+    async function tag(name: string, parent?: Tag): Promise<Tag> {
+      return tagRepository(database.dataSource).save({
+        name,
+        parent,
+        slug: tagSlug(name),
+      });
+    }
+
+    /** The names of the tags the tag trees hold above (or beneath) `node`, itself included, after refreshing it. */
+    async function treeOf(
+      node: Tag,
+      direction: "ancestors" | "descendants",
+    ): Promise<string[]> {
+      await database.dataSource.query("refresh materialized view tag_trees");
+      const [near, far] =
+        direction === "ancestors"
+          ? ["descendant_id", "ancestor_id"]
+          : ["ancestor_id", "descendant_id"];
+      const rows = await database.dataSource.query<{ name: string }[]>(
+        `select t."name" from tag_trees c join tags t on t.id = c.${far} where c.${near} = $1 order by t."name"`,
+        [node.id],
+      );
+
+      return rows.map(({ name }) => name);
     }
 
     /** The name of the root above the one node named `name`. */
@@ -425,11 +445,16 @@ describe("calendar events service integration", () => {
       if (node === undefined) {
         return undefined;
       }
-      const ancestors = await tags.findAncestors(node);
-      return ancestors.find(({ parentId }) => parentId === null)?.name;
+      const rows = await database.dataSource.query<{ name: string }[]>(
+        `select t."name" from tag_trees c join tags t on t.id = c.ancestor_id
+        where c.descendant_id = $1
+          and not exists (select 1 from tag_edges e where e.target_node = t.id)`,
+        [node.id],
+      );
+      return rows[0]?.name;
     }
 
-    it("resolves ancestors and descendants through the closure table", async () => {
+    it("resolves ancestors and descendants through the tag trees", async () => {
       expect.hasAssertions();
 
       const type = await tag("Tree type");
@@ -437,15 +462,15 @@ describe("calendar events service integration", () => {
       const major = await tag("Tree major", aspect);
       await tag("Tree minor", aspect);
 
-      const ancestors = await tags.findAncestors(major);
-      const descendants = await tags.findDescendants(aspect);
+      const ancestors = await treeOf(major, "ancestors");
+      const descendants = await treeOf(aspect, "descendants");
 
-      expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([
+      expect(ancestors).toStrictEqual([
         "Tree aspect",
         "Tree major",
         "Tree type",
       ]);
-      expect(descendants.map(({ name }) => name).toSorted()).toStrictEqual([
+      expect(descendants).toStrictEqual([
         "Tree aspect",
         "Tree major",
         "Tree minor",
@@ -463,13 +488,15 @@ describe("calendar events service integration", () => {
         order: { name: "ASC" },
         where: { name: In(["rooted a", "rooted b"]) },
       });
+      const edges = await database.dataSource
+        .getRepository("TagEdge")
+        .countBy({ targetNode: In(roots.map(({ id }) => id)) });
 
-      expect(roots.map(({ name, parentId }) => [name, parentId])).toStrictEqual(
-        [
-          ["rooted a", null],
-          ["rooted b", null],
-        ],
-      );
+      expect(roots.map(({ name }) => name)).toStrictEqual([
+        "rooted a",
+        "rooted b",
+      ]);
+      expect(edges).toBe(0);
     });
 
     it("replaces an event's tags when a re-run changes them", async () => {
@@ -484,7 +511,7 @@ describe("calendar events service integration", () => {
         [tagged("Changed tags", start, ["kept", "added"])],
         philadelphia,
       );
-      const rows = await service.findInRange({
+      const rows = await findStoredEvents(database.dataSource, {
         end: moment.utc("2026-06-11T00:00:00Z"),
         latitude: philadelphia.latitude,
         longitude: philadelphia.longitude,
@@ -492,7 +519,7 @@ describe("calendar events service integration", () => {
       });
 
       expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
-        ["Changed tags", ["Instant", "added", "kept"]],
+        ["Changed tags", ["Perfective", "added", "kept"]],
       ]);
     });
 
@@ -511,7 +538,7 @@ describe("calendar events service integration", () => {
         ],
         philadelphia,
       );
-      const rows = await service.findInRange({
+      const rows = await findStoredEvents(database.dataSource, {
         end: moment.utc("2026-08-11T00:00:00Z"),
         latitude: philadelphia.latitude,
         longitude: philadelphia.longitude,
@@ -519,12 +546,12 @@ describe("calendar events service integration", () => {
       });
 
       expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
-        ["Mixed new", ["Instant", "mixed fresh"]],
-        ["Mixed stored", ["Instant", "mixed updated"]],
+        ["Mixed new", ["Perfective", "mixed fresh"]],
+        ["Mixed stored", ["Perfective", "mixed updated"]],
       ]);
     });
 
-    it("saves each node of a nested path once, under its ancestors", async () => {
+    it("saves each node of a nested path once, under its ancestors and its nature and harmonic", async () => {
       expect.hasAssertions();
 
       const nestedTags = ["Simple Aspect", "Major Aspect", "Trine"];
@@ -540,15 +567,18 @@ describe("calendar events service integration", () => {
       const leaves = await tags.findBy({ name: "Trine" });
       const [leaf] = leaves;
       const ancestors =
-        leaf === undefined ? [] : await tags.findAncestors(leaf);
+        leaf === undefined ? [] : await treeOf(leaf, "ancestors");
 
       expect(leaves).toHaveLength(1);
-      expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([
+      expect(ancestors).toStrictEqual([
         "Aspect",
-        "Major Aspect",
-        "Simple Aspect",
+        "Harmonic",
+        "Harmonic 3",
+        "Major",
+        "Nature",
+        "Simple",
+        "Soft",
         "Trine",
-        "Type",
       ]);
     });
 
@@ -568,7 +598,7 @@ describe("calendar events service integration", () => {
         ],
         philadelphia,
       );
-      const [row] = await service.findInRange({
+      const [row] = await findStoredEvents(database.dataSource, {
         end: moment.utc("2026-09-11T00:00:00Z"),
         latitude: philadelphia.latitude,
         longitude: philadelphia.longitude,
@@ -583,10 +613,52 @@ describe("calendar events service integration", () => {
       expect(row?.tags).toStrictEqual(
         expect.arrayContaining(["Aries", "Cardinal", "Fire", "Positive"]),
       );
-      expect(roots).toStrictEqual(["Sign", "Element", "Modality", "Polarity"]);
+      expect(roots).toStrictEqual(["Sign", "Sign", "Sign", "Sign"]);
     });
 
-    it("files a planetary phase under Type as Planetary Phase, with its planet", async () => {
+    it("lists a sign under its element, modality and polarity too, adding each edge once however often it is carried", async () => {
+      expect.hasAssertions();
+
+      const countEdges = async (): Promise<number> => {
+        const [row] = await database.dataSource.query<{ count: string }[]>(
+          `select count(*) from tag_edges`,
+        );
+
+        return Number(row?.count);
+      };
+      const events = [
+        tagged("Leo ingress", "2026-09-20T00:00:00Z", [
+          "Astronomy",
+          "Astrology",
+          "Ingress",
+          "Sun",
+          "Leo",
+        ]),
+      ];
+
+      await service.upsert(events, philadelphia);
+      const edges = await countEdges();
+      await service.upsert(events, philadelphia);
+      const leo = await tags.findOneByOrFail({ name: "Leo" });
+      const parents = await database.dataSource.query<{ name: string }[]>(
+        `select p."name" from tag_edges e join tags p on p.id = e.source_node
+        where e.target_node = $1 order by p."name"`,
+        [leo.id],
+      );
+      const fire = await tags.findOneByOrFail({ name: "Fire" });
+      const under = await treeOf(fire, "descendants");
+
+      expect(parents.map(({ name }) => name)).toStrictEqual([
+        "Fire",
+        "Fixed",
+        "Positive",
+        "Zodiac",
+      ]);
+      await expect(countEdges()).resolves.toBe(edges);
+      expect(under).toStrictEqual(["Aries", "Fire", "Leo"]);
+    });
+
+    it("files a planetary phase under Phase as Planetary, with its planet", async () => {
       expect.hasAssertions();
 
       const start = "2026-09-12T00:00:00Z";
@@ -602,7 +674,7 @@ describe("calendar events service integration", () => {
         ],
         philadelphia,
       );
-      const [row] = await service.findInRange({
+      const [row] = await findStoredEvents(database.dataSource, {
         end: moment.utc("2026-09-13T00:00:00Z"),
         latitude: philadelphia.latitude,
         longitude: philadelphia.longitude,
@@ -610,16 +682,90 @@ describe("calendar events service integration", () => {
       });
       const [opposition] = await tags.findBy({ name: "Martian Opposition" });
       const ancestors =
-        opposition === undefined ? [] : await tags.findAncestors(opposition);
+        opposition === undefined ? [] : await treeOf(opposition, "ancestors");
 
       expect(row?.tags).toStrictEqual(
         expect.arrayContaining(["Mars", "Martian Opposition", "Opposition"]),
       );
-      expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([
+      expect(ancestors).toStrictEqual([
         "Martian",
         "Martian Opposition",
-        "Planetary Phase",
-        "Type",
+        "Phase",
+        "Planetary",
+      ]);
+    });
+
+    it("puts Venus under Planet and Benefic as one node, however many events carry it", async () => {
+      expect.hasAssertions();
+
+      const start = "2026-10-10T00:00:00Z";
+      await service.upsert(
+        [
+          tagged("Venus one", start, ["Astronomy", "Astrology", "Venus"]),
+          tagged("Venus two", "2026-10-11T00:00:00Z", [
+            "Astronomy",
+            "Astrology",
+            "Venus",
+          ]),
+        ],
+        philadelphia,
+      );
+      const venus = await tags.findBy({ name: "Venus" });
+      const [node] = venus;
+      const parents = await database.dataSource.query<{ name: string }[]>(
+        `select p."name" from tag_edges e join tags p on p.id = e.source_node
+        where e.target_node = $1 order by p."name"`,
+        [node?.id],
+      );
+      const ancestors =
+        node === undefined ? [] : await treeOf(node, "ancestors");
+
+      expect(venus).toHaveLength(1);
+      expect(parents.map(({ name }) => name)).toStrictEqual([
+        "Benefic",
+        "Personal",
+        "Planet",
+      ]);
+      expect(ancestors).toStrictEqual([
+        "Benefic",
+        "Body",
+        "Inner",
+        "Personal",
+        "Planet",
+        "Venus",
+      ]);
+    });
+
+    it("gives a node that already exists its other parent when an event carries it again", async () => {
+      expect.hasAssertions();
+
+      const [saturn] = await tags.findBy({ name: "Saturn" });
+      const edges = database.dataSource.getRepository("TagEdge");
+
+      expect(saturn).toBeUndefined();
+
+      await service.upsert(
+        [tagged("Saturn one", "2026-10-12T00:00:00Z", ["Saturn"])],
+        philadelphia,
+      );
+      const [created] = await tags.findBy({ name: "Saturn" });
+      await edges.delete({ targetNode: created?.id });
+      const social = await tags.findOneByOrFail({ name: "Social" });
+      await edges.insert({ sourceNode: social.id, targetNode: created?.id });
+      await service.upsert(
+        [tagged("Saturn two", "2026-10-13T00:00:00Z", ["Saturn"])],
+        philadelphia,
+      );
+      const parents = await database.dataSource.query<{ name: string }[]>(
+        `select p."name" from tag_edges e join tags p on p.id = e.source_node
+        where e.target_node = $1 order by p."name"`,
+        [created?.id],
+      );
+
+      expect(parents.map(({ name }) => name)).toStrictEqual([
+        "Malefic",
+        "Planet",
+        "Social",
       ]);
     });
 
@@ -649,8 +795,111 @@ describe("calendar events service integration", () => {
       await tag("Mars", planet);
       await tag("Mars", sign);
 
-      await expect(tag("Mars", planet)).rejects.toThrow(/tags_sibling_name/u);
-      await expect(tag("Unique planet")).rejects.toThrow(/tags_root_name/u);
+      await expect(tag("Mars", planet)).rejects.toThrow(/same name or slug/u);
+      await expect(tag("Unique planet")).rejects.toThrow(/another root/u);
+    });
+
+    it("stores each written tag with its slug", async () => {
+      expect.hasAssertions();
+
+      await service.upsert(
+        [tagged("Slugged", "2026-05-14T00:00:00Z", ["Slug Me Please"])],
+        philadelphia,
+      );
+
+      await expect(
+        tags.findOneByOrFail({ name: "Slug Me Please" }),
+      ).resolves.toMatchObject({ slug: "slug-me-please" });
+    });
+
+    it("stores each tag's menu flags and restores them when a rerun finds them changed", async () => {
+      expect.hasAssertions();
+
+      await service.upsert(
+        [tagged("Flagged one", "2026-05-15T00:00:00Z", ["Aries"])],
+        philadelphia,
+      );
+
+      const sign = await tags.findOneByOrFail({ name: "Element" });
+      const aries = await tags.findOneByOrFail({ name: "Aries" });
+
+      expect(sign).toMatchObject({
+        isFilterable: false,
+        isGroupable: true,
+        isSelectable: true,
+        isSortable: true,
+      });
+      expect(aries).toMatchObject({ isFilterable: true, isGroupable: true });
+
+      await tags.update(sign.id, { isFilterable: true, isSortable: false });
+      await service.upsert(
+        [tagged("Flagged two", "2026-05-16T00:00:00Z", ["Aries"])],
+        philadelphia,
+      );
+
+      await expect(
+        tags.findOneByOrFail({ name: "Element" }),
+      ).resolves.toMatchObject({ isFilterable: false, isSortable: true });
+    });
+
+    it("refuses two siblings whose names slug alike", async () => {
+      expect.hasAssertions();
+
+      await expect(
+        service.upsert(
+          [tagged("Clash", "2026-05-15T00:00:00Z", ["Clash Tag", "clash-tag"])],
+          philadelphia,
+        ),
+      ).rejects.toThrow('share the slug "clash-tag"');
+      await expect(tags.countBy({ slug: "clash-tag" })).resolves.toBe(0);
+    });
+
+    it("refuses two children of one parent whose names slug alike", async () => {
+      expect.hasAssertions();
+
+      const resolver = database.module.get(TagsService, { strict: false });
+
+      await expect(
+        database.dataSource.transaction(async (manager) =>
+          resolver.resolve(manager, [
+            ["Slug Group", "Group Clash"],
+            ["Slug Group", "group-clash"],
+          ]),
+        ),
+      ).rejects.toThrow('share the slug "group-clash" under');
+    });
+
+    it("refuses to give a node a parent that already has a different child of its name", async () => {
+      expect.hasAssertions();
+
+      const resolver = database.module.get(TagsService, { strict: false });
+      const now = moment.utc("2026-10-10T00:00:00Z");
+      const venusPaths = classifyEvent({
+        end: now,
+        start: now,
+        tags: ["Astronomy", "Astrology", "Venus"],
+      }).filter((path) => path.at(-1) === "Venus");
+      const resolve = async (): Promise<Map<string, string>> =>
+        database.dataSource.transaction(async (manager) =>
+          resolver.resolve(manager, venusPaths),
+        );
+
+      await resolve();
+      const edges = database.dataSource.getRepository<{
+        sourceNode: string;
+        targetNode: string;
+      }>("TagEdge");
+      const venus = await tags.findOneByOrFail({ name: "Venus" });
+      const benefic = await tags.findOneByOrFail({ name: "Benefic" });
+      await edges.delete({ sourceNode: benefic.id, targetNode: venus.id });
+      const saved = await tags.save(
+        tags.create({ name: "Venus", slug: "venus" }),
+      );
+      await edges.insert({ sourceNode: benefic.id, targetNode: saved.id });
+
+      await expect(resolve()).rejects.toThrow(
+        'The tag "Venus" is already a different child of',
+      );
     });
   });
 });

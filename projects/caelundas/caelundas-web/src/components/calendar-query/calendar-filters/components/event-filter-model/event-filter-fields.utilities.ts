@@ -1,7 +1,18 @@
+import { Link2 } from "lucide-react";
+import { createElement } from "react";
+
+import { TagLead } from "../../../../calendar-events/tag-lead/tag-lead";
+import {
+  TAG_ALSO_UNDER,
+  TAG_NOTE,
+} from "../../../filter-tag-editor/filter-tag-editor.constants";
+import { describeAlsoUnder } from "../../../filter-tag-editor/filter-tag-editor.utilities";
+
 import {
   DERIVED_FIELDS,
   DERIVED_LABELS,
   EVENT_COUNT_FORMAT,
+  EVENT_COUNT_NOUNS,
   NUMBER_FIELD_OPERATORS,
   NUMERIC_TAG_NAME,
   TAG_FIELD_OPERATORS,
@@ -11,12 +22,20 @@ import {
   TAG_FIELD_PREFIX,
   TAG_OPERATORS,
   TAG_OPTIONS_EDITOR,
-  TAG_ROOT_DESCRIPTIONS,
 } from "./event-filters.constants";
 
-import type { EventFacet } from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
-import type { EventFilterField } from "./event-filters.types";
-import type { FilterOption } from "@codebase/presentation";
+import type {
+  EventFacet,
+  EventFacetValue,
+  OfferedValue,
+  TagMenuFlag,
+} from "../../../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
+import type { EventFilterField, EventFilterValue } from "./event-filters.types";
+import type {
+  FilterOption,
+  FilterValueDisplayContext,
+} from "@codebase/presentation";
+import type { ReactNode } from "react";
 
 /**
  * Builds the filter fields: one per tag root in the facets, then the derived fields; a root named like one of those is skipped.
@@ -40,24 +59,56 @@ export function createEventFilterFields(
 }
 
 /**
- * Lists a tag root's tags as options in tree order, labeled by name, or by path where two tags share a name.
+ * The icon of a tag root, drawn beside its field's name.
  */
-export function createTagOptions(facet: EventFacet): FilterOption[] {
+export function createRootIcon(facet: EventFacet): ReactNode {
+  return createElement(TagLead, {
+    icon: facet.icon ?? undefined,
+    label: facet.name,
+  });
+}
+
+/**
+ * Lists a root's offered tags as options in tree order, labeled by name, or by path where two tags share a name.
+ */
+export function createTagOptions(
+  facet: EventFacet,
+  offered: readonly OfferedValue[],
+): FilterOption[] {
   const options: FilterOption[] = [];
-  const nameCounts = new Map<string, number>();
+  // The tag first seen under each name: another tag with that name, not the same tag listed under a second parent, makes the name ambiguous.
+  const seen = new Map<string, string>();
+  const shared = new Set<string>();
 
   for (const value of facet.values) {
-    nameCounts.set(value.name, (nameCounts.get(value.name) ?? 0) + 1);
+    const first = seen.get(value.name) ?? value.id;
+
+    if (first !== value.id) {
+      shared.add(value.name);
+    }
+
+    seen.set(value.name, first);
   }
 
-  for (const value of facet.values) {
+  for (const { folder, value } of offered) {
+    // Written here rather than through a function, which would be one more
+    // call on every stack beneath.
     options.push({
-      data: { depth: value.depth - 1, name: value.name },
-      // Written here rather than through a function, which would be one more
-      // call on every stack beneath.
-      description: `${String(value.count)} ${EVENT_COUNT_FORMAT.select(value.count) === "one" ? "event" : "events"}`,
+      data: {
+        alsoUnder: value.alsoUnder,
+        depth: value.depth - 1,
+        folder,
+        name: value.name,
+        ...(typeof value.note === "string" ? { note: value.note } : {}),
+      },
+      description: `${String(value.count)} ${EVENT_COUNT_NOUNS[EVENT_COUNT_FORMAT.select(value.count)]}`,
+      icon: createElement(TagLead, {
+        icon: value.icon ?? undefined,
+        id: value.id,
+        label: value.name,
+      }),
       keywords: [value.name, value.path],
-      label: (nameCounts.get(value.name) ?? 0) > 1 ? value.path : value.name,
+      label: shared.has(value.name) ? value.path : value.name,
       value: value.id,
     });
   }
@@ -66,13 +117,56 @@ export function createTagOptions(facet: EventFacet): FilterOption[] {
 }
 
 /**
- * What a tag root means: its own description, or one derived from its name for a root added to the data.
+ * What a tag root means: its note from the tag data, or one derived from its name for a root with none.
  */
 export function describeRoot(facet: EventFacet): string {
+  return facet.note ?? `The ${facet.name.toLowerCase()} of the event`;
+}
+
+/**
+ * What a tag option says beneath its name: its other parents, note and event count.
+ */
+export function describeTagOption(option: FilterOption): string | undefined {
+  const note = TAG_NOTE.safeParse(option.data).data?.note;
+  const parents = TAG_ALSO_UNDER.safeParse(option.data).data?.alsoUnder ?? [];
+  // Each parent's last name only: its path up to the last slash, at the start or after a comma, goes.
+  const names = parents.join(", ").replaceAll(/(?:^|(?<=, ))[^,]*\/ /gu, "");
+  const cue = parents.length === 0 ? undefined : `also ${names}`;
+
   return (
-    TAG_ROOT_DESCRIPTIONS[facet.name] ??
-    `The ${facet.name.toLowerCase()} of the event`
+    [cue, note, option.description].filter(Boolean).join(" · ") || undefined
   );
+}
+
+/**
+ * The tags a menu lists: those its flag offers, and a folder for each other with one offered beneath.
+ */
+export function listOfferedValues(
+  values: readonly EventFacetValue[],
+  flag?: TagMenuFlag,
+): OfferedValue[] {
+  const listed: OfferedValue[] = [];
+
+  // Loops rather than callbacks keep the call stacks shallow.
+  for (const [index, value] of values.entries()) {
+    if (flag === undefined || value[flag] !== false) {
+      listed.push({ folder: false, value });
+      continue;
+    }
+
+    for (const below of values.slice(index + 1)) {
+      if (below.depth <= value.depth) {
+        break;
+      }
+
+      if (below[flag] !== false) {
+        listed.push({ folder: true, value });
+        break;
+      }
+    }
+  }
+
+  return listed;
 }
 
 /**
@@ -80,6 +174,47 @@ export function describeRoot(facet: EventFacet): string {
  */
 function isNumericFacet(facet: EventFacet): boolean {
   return facet.values.every((value) => NUMERIC_TAG_NAME.test(value.name));
+}
+
+/**
+ * What a tag rule's chip shows: one tag with its icon, and a link mark if it has several parents, else a count.
+ */
+function renderTagValue(
+  context: FilterValueDisplayContext<EventFilterValue>,
+): ReactNode {
+  const { labels, options, values } = context;
+  const [option] = options;
+
+  if (values.length === 0) {
+    return labels.selectPlaceholder;
+  }
+
+  if (values.length > 1) {
+    return labels.valueCount(values.length);
+  }
+
+  const alsoUnder =
+    option === undefined ? undefined : describeAlsoUnder(option);
+
+  return createElement(
+    "span",
+    { className: "flex items-center gap-1.5" },
+    option?.icon,
+    option?.label ?? String(values[0]),
+    alsoUnder === undefined
+      ? null
+      : createElement(
+          "span",
+          {
+            "aria-label": alsoUnder.title,
+            className: "text-muted-foreground flex shrink-0 items-center",
+            "data-testid": "chip-also-under",
+            role: "img",
+            title: alsoUnder.title,
+          },
+          createElement(Link2, { "aria-hidden": true, className: "size-3" }),
+        ),
+  );
 }
 
 /**
@@ -91,6 +226,7 @@ function toTagField(facet: EventFacet): EventFilterField {
     return {
       defaultOperator: NUMBER_OPERATORS.eq,
       description: describeRoot(facet),
+      icon: createRootIcon(facet),
       id: `${TAG_FIELD_PREFIX}${facet.id}`,
       label: facet.name,
       operators: NUMBER_FIELD_OPERATORS,
@@ -98,16 +234,21 @@ function toTagField(facet: EventFacet): EventFilterField {
     };
   }
 
-  const options = createTagOptions(facet);
+  const options = createTagOptions(
+    facet,
+    listOfferedValues(facet.values, "isFilterable"),
+  );
 
   return {
     defaultOperator: TAG_OPERATORS.isAnyOf,
     description: describeRoot(facet),
     editor: TAG_OPTIONS_EDITOR,
+    icon: createRootIcon(facet),
     id: `${TAG_FIELD_PREFIX}${facet.id}`,
     label: facet.name,
     operators: TAG_FIELD_OPERATORS,
     options,
+    renderValue: renderTagValue,
     type: "multiselect",
   };
 }

@@ -6,6 +6,7 @@ import {
   resolveEventGrouping,
 } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 import { toEventGroupingInput } from "../../../../calendar-query/calendar-group-strip/components/event-group-model/event-group-input.utilities";
+import { isMetricView } from "../calendar-views/calendar-views.utilities";
 import { parseCalendarDate } from "../calendar-window/calendar-window.utilities";
 import {
   describeDataset,
@@ -35,15 +36,6 @@ import type {
 } from "./calendar-records.types";
 
 /**
- * Forgets every read the loader kept, so the next load asks the API again.
- */
-export function clearCalendarCaches(): void {
-  CONSTANTS_CACHE.clear();
-  EVENTS_CACHE.clear();
-  FACETS_CACHE.clear();
-}
-
-/**
  * Reads the events in the view's period, plus a buffer, that pass the filter.
  * Reads are cached by period and filter.
  */
@@ -56,10 +48,10 @@ export async function loadCalendar(
   const { dataset, defaultFilter, facets, presets } = await readBasics(visible);
   const effectiveFilter = search.filter ?? defaultFilter;
   const filter = toEventFilterInput(effectiveFilter);
-  const { colorBy, grouping } = resolveGroups(search, facets);
+  const grouping = resolveGrouping(search, facets);
   const query = {
     filter,
-    grouping: toEventGroupingInput(grouping, colorBy),
+    grouping: toQueriedGrouping(search, grouping),
     period: read,
   };
   const events = await readCached(
@@ -77,7 +69,6 @@ export async function loadCalendar(
 
   return {
     anchor,
-    colorBy,
     dataset,
     emptiness,
     events,
@@ -227,54 +218,17 @@ async function readConstants(): Promise<{
 }
 
 /**
- * The level the search colors events by, kept to a field the data has, or
- * nothing for the default of type, kind by kind.
- */
-function resolveColorBy(
-  search: CalendarSearch,
-  facets: readonly EventFacet[],
-): EventGroupLevel | undefined {
-  return search.color === undefined
-    ? undefined
-    : resolveEventGrouping([search.color], createEventGroupFields(facets))[0];
-}
-
-/**
- * The grouping the view shows, kept to the fields the data has. Only the
- * agenda and timeline group.
+ * The grouping for any view, kept to the fields the data has, the default's
+ * every tag root when the link leaves none.
  */
 function resolveGrouping(
   search: CalendarSearch,
   facets: readonly EventFacet[],
 ): EventGroupLevel[] {
-  const view = search.view ?? "agenda";
-
-  if (view !== "agenda" && view !== "timeline") {
-    return [];
-  }
-
   const fields = createEventGroupFields(facets);
+  const resolved = resolveEventGrouping(search.group ?? [], fields);
 
-  return resolveEventGrouping(
-    search.group ?? getDefaultGrouping(view, fields),
-    fields,
-  );
-}
-
-/**
- * The grouping the search's view shows and the level it colors events by.
- */
-function resolveGroups(
-  search: CalendarSearch,
-  facets: readonly EventFacet[],
-): {
-  colorBy: EventGroupLevel | undefined;
-  grouping: EventGroupLevel[];
-} {
-  return {
-    colorBy: resolveColorBy(search, facets),
-    grouping: resolveGrouping(search, facets),
-  };
+  return resolved.length === 0 ? [...getDefaultGrouping(fields)] : resolved;
 }
 
 /**
@@ -297,4 +251,23 @@ async function resolveWindows(search: CalendarSearch): Promise<{
       view: search.view,
     })),
   };
+}
+
+/**
+ * The grouping the API reads: the default's first root alone on the month, week and day, which only color by it.
+ */
+function toQueriedGrouping(
+  search: CalendarSearch,
+  grouping: readonly EventGroupLevel[],
+): ReturnType<typeof toEventGroupingInput> {
+  const isSectioned =
+    search.view === "timeline" ||
+    search.view === "table" ||
+    isMetricView(search.view);
+
+  return toEventGroupingInput(
+    search.group === undefined && search.view !== undefined && !isSectioned
+      ? grouping.slice(0, 1)
+      : grouping,
+  );
 }

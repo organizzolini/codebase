@@ -1,11 +1,15 @@
 import { Module } from "@nestjs/common";
 
+import { EphemerisModule } from "../ephemeris/ephemeris.module";
+import { BoundarySearchModule } from "../ephemeris/modules/boundary-search/boundary-search.module";
+
 import {
   COMPOSITE_ASPECT_DETECTORS_TOKEN,
   PROGRESSIVE_ASPECT_DETECTORS_TOKEN,
   SIMPLE_ASPECT_DETECTORS_TOKEN,
 } from "./aspects.constants";
 import { AspectsService } from "./aspects.service";
+import { AspectEdgesService } from "./modules/calculation/aspect-edges.service";
 import { MajorAspectsModule } from "./modules/major-aspects/major-aspects.module";
 import { MajorAspectsService } from "./modules/major-aspects/major-aspects.service";
 import { MinorAspectsModule } from "./modules/minor-aspects/minor-aspects.module";
@@ -22,6 +26,7 @@ import { StelliumModule } from "./modules/stellium/stellium.module";
 import { StelliumService } from "./modules/stellium/stellium.service";
 import { TripleAspectsModule } from "./modules/triple-aspects/triple-aspects.module";
 import { TripleAspectsService } from "./modules/triple-aspects/triple-aspects.service";
+import { AspectsUtilitiesModule } from "./modules/utilities/aspects-utilities.module";
 
 import type {
   CompositeAspectDetector,
@@ -38,6 +43,9 @@ import type {
   controllers: [],
   exports: [AspectsService],
   imports: [
+    AspectsUtilitiesModule,
+    BoundarySearchModule,
+    EphemerisModule,
     MajorAspectsModule,
     MinorAspectsModule,
     TripleAspectsModule,
@@ -48,6 +56,7 @@ import type {
     StelliumModule,
   ],
   providers: [
+    AspectEdgesService,
     AspectsService,
     {
       inject: [

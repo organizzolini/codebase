@@ -1,7 +1,6 @@
 import {
   AGENDA_DAY_COUNT,
   DEFAULT_TIMELINE_SCALE,
-  THREE_DAYS,
 } from "../calendar-views/calendar-views.constants";
 
 import {
@@ -59,11 +58,11 @@ export function getViewWindows(
 ): ViewWindows {
   if (view === undefined) {
     const month = getViewWindows("month", anchor);
-    const agenda = getViewWindows("agenda", anchor, options);
+    const table = getViewWindows("table", anchor, options);
 
     return {
-      read: joinPeriods(month.read, agenda.read),
-      visible: joinPeriods(month.visible, agenda.visible),
+      read: joinPeriods(month.read, table.read),
+      visible: joinPeriods(month.visible, table.visible),
     };
   }
 
@@ -204,7 +203,12 @@ function getVisibleDays(
     return { end: shiftDays(sunday, WEEK_DAYS), start: sunday };
   }
 
-  const length = { agenda: agendaDays, day: 1, "three-day": THREE_DAYS }[view];
+  const length = {
+    charts: agendaDays,
+    day: 1,
+    table: agendaDays,
+    totals: agendaDays,
+  }[view];
 
   return { end: shiftDays(day, length), start: day };
 }

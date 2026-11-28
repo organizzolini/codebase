@@ -6,6 +6,7 @@ import {
   seedFilterTags,
   startEventsApplication,
 } from "../../../../../testing/events-application";
+import { tagRepository } from "../../../../../testing/tag-repository";
 
 import type {
   EventsApplication,
@@ -46,15 +47,15 @@ const EVERYTHING = [
  * module on a Postgres built by the real migration, covering every filter the
  * calendar offers against a seeded fixture.
  */
-describe("events filtering end-to-end suite", () => {
+describe("events filtering end-to-end suite", { timeout: 60_000 }, () => {
   let application: EventsApplication;
   let tags: FilterTags;
 
-  /** The summaries of the events a filter keeps, earliest first. */
+  /** The names of the events a filter keeps, earliest first. */
   async function keep(filter: GroupVariable | null): Promise<string[]> {
     const body = await application.query(
       `query Events($period: PeriodInput!, $filter: EventFilterGroupInput) {
-        events(period: $period, filter: $filter) { summary }
+        events(period: $period, filter: $filter) { name }
       }`,
       {
         filter,
@@ -68,10 +69,10 @@ describe("events filtering end-to-end suite", () => {
     expect(body.errors).toBeUndefined();
 
     const { events } = (body.data ?? {}) as {
-      events: { summary: string }[];
+      events: { name: string }[];
     };
 
-    return events.map(({ summary }) => summary);
+    return events.map(({ name }) => name);
   }
 
   /** Keeps the events one rule holds for. */
@@ -147,16 +148,18 @@ describe("events filtering end-to-end suite", () => {
     it("matches an event carrying the tag or any tag beneath it", async () => {
       expect.hasAssertions();
 
-      const { aspect, major, type } = tags;
+      const { aspect, direction, major, simple, stay } = tags;
 
       await expect(
-        keepWhere(tagRule(type, "is_any_of", [major.id])),
+        keepWhere(tagRule(aspect, "is_any_of", [major.id])),
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
       await expect(
-        keepWhere(tagRule(type, "is_any_of", [aspect.id])),
+        keepWhere(tagRule(aspect, "is_any_of", [simple.id])),
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
       await expect(
-        keepWhere(tagRule(type, "is_any_of", [type.id])),
+        keepWhere(
+          tagRule(aspect, "is_any_of", [simple.id, stay.id, direction.id]),
+        ),
       ).resolves.toStrictEqual([
         MARS_RETROGRADE,
         MOON_CONJUNCT_MARS,
@@ -167,66 +170,66 @@ describe("events filtering end-to-end suite", () => {
     it("requires all of the picked tags for has_all_of", async () => {
       expect.hasAssertions();
 
-      const { major, moon, signIngress, type } = tags;
+      const { aspect, major, moon, signStay } = tags;
 
       await expect(
-        keepWhere(tagRule(type, "has_all_of", [major.id, moon.id])),
+        keepWhere(tagRule(aspect, "has_all_of", [major.id, moon.id])),
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
       await expect(
-        keepWhere(tagRule(type, "has_all_of", [major.id, signIngress.id])),
+        keepWhere(tagRule(aspect, "has_all_of", [major.id, signStay.id])),
       ).resolves.toStrictEqual([]);
     });
 
     it("drops the events carrying any picked tag for is_none_of, as a negated is_any_of does", async () => {
       expect.hasAssertions();
 
-      const { moon, type } = tags;
+      const { aspect, moon } = tags;
       const withoutTheMoon = [MARS_RETROGRADE, SUN_ENTERS_ARIES, EQUINOX_WATCH];
 
       await expect(
-        keepWhere(tagRule(type, "is_none_of", [moon.id])),
+        keepWhere(tagRule(aspect, "is_none_of", [moon.id])),
       ).resolves.toStrictEqual(withoutTheMoon);
       await expect(
-        keepWhere(tagRule(type, "is_any_of", [moon.id], true)),
+        keepWhere(tagRule(aspect, "is_any_of", [moon.id], true)),
       ).resolves.toStrictEqual(withoutTheMoon);
     });
 
     it("treats a pick that is no tag as a tag the data lacks", async () => {
       expect.hasAssertions();
 
-      const { type } = tags;
+      const { aspect } = tags;
 
       await expect(
-        keepWhere(tagRule(type, "is_any_of", ["no-such-tag"])),
+        keepWhere(tagRule(aspect, "is_any_of", ["no-such-tag"])),
       ).resolves.toStrictEqual([]);
       await expect(
-        keepWhere(tagRule(type, "is_none_of", ["no-such-tag"])),
+        keepWhere(tagRule(aspect, "is_none_of", ["no-such-tag"])),
       ).resolves.toStrictEqual(EVERYTHING);
     });
 
     it("compares the numbers the tags beneath a root are named for", async () => {
       expect.hasAssertions();
 
-      const { harmonic } = tags;
+      const { aspect } = tags;
 
       await expect(
-        keepWhere(tagRule(harmonic, "gte", ["6"])),
+        keepWhere(tagRule(aspect, "gte", ["6"])),
       ).resolves.toStrictEqual([SUN_ENTERS_ARIES, EQUINOX_WATCH]);
       await expect(
-        keepWhere(tagRule(harmonic, "eq", ["2"])),
+        keepWhere(tagRule(aspect, "eq", ["2"])),
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
       await expect(
-        keepWhere(tagRule(harmonic, "between", ["3", "8"])),
+        keepWhere(tagRule(aspect, "between", ["3", "8"])),
       ).resolves.toStrictEqual([EQUINOX_WATCH]);
       await expect(
-        keepWhere(tagRule(harmonic, "neq", ["6"])),
+        keepWhere(tagRule(aspect, "neq", ["6"])),
       ).resolves.toStrictEqual([
         MARS_RETROGRADE,
         MOON_CONJUNCT_MARS,
         SUN_ENTERS_ARIES,
       ]);
       await expect(
-        keepWhere(tagRule(harmonic, "not_between", ["2", "12"])),
+        keepWhere(tagRule(aspect, "not_between", ["2", "12"])),
       ).resolves.toStrictEqual([MARS_RETROGRADE]);
     });
 
@@ -234,7 +237,7 @@ describe("events filtering end-to-end suite", () => {
       expect.hasAssertions();
 
       await expect(
-        keepWhere(tagRule(tags.harmonic, "lt", ["1"])),
+        keepWhere(tagRule(tags.aspect, "lt", ["1"])),
       ).resolves.toStrictEqual([]);
     });
   });
@@ -387,7 +390,7 @@ describe("events filtering end-to-end suite", () => {
       ).resolves.toStrictEqual([MOON_CONJUNCT_MARS, SUN_ENTERS_ARIES]);
     });
 
-    it("searches the summary and the description, ignoring case, with wildcards taken literally", async () => {
+    it("searches the name and the note, ignoring case, with wildcards taken literally", async () => {
       expect.hasAssertions();
 
       await expect(
@@ -460,7 +463,7 @@ describe("events filtering end-to-end suite", () => {
 
       const body = await application.query(
         `query($period: PeriodInput!, $filter: EventFilterGroupInput) {
-          events(period: $period, filter: $filter) { summary }
+          events(period: $period, filter: $filter) { name }
         }`,
         {
           filter: { combinator: "XOR" },
@@ -479,7 +482,7 @@ describe("events filtering end-to-end suite", () => {
 
       const body = await application.query(
         `query($period: PeriodInput!, $filter: EventFilterGroupInput) {
-          events(period: $period, filter: $filter) { summary }
+          events(period: $period, filter: $filter) { name }
         }`,
         {
           filter: { combinator: "AND", rules: [{ path: ["text"] }] },
@@ -529,8 +532,8 @@ describe("events filtering end-to-end suite", () => {
         rules: [{ operator: "is_any_of", path: ["weekday"], values: ["2"] }],
       });
 
-      expect(everything).toMatchObject({ Conjunct: 2, Mars: 1, Moon: 1 });
-      expect(tuesdays).toMatchObject({ Conjunct: 2, Mars: 0, Moon: 1 });
+      expect(everything).toMatchObject({ Conjunct: 1, Mars: 1, Moon: 1 });
+      expect(tuesdays).toMatchObject({ Conjunct: 1, Mars: 0, Moon: 1 });
     });
   });
 
@@ -590,6 +593,13 @@ describe("events filtering end-to-end suite", () => {
       const { presets } = await askPresets();
       const highlights = presets.find(({ id }) => id === "highlights");
 
+      const notTheMoon = {
+        negated: false,
+        operator: "is_none_of",
+        path: [`tag:${tags.body.id}`],
+        values: [tags.luminaryMoon.id],
+      };
+
       expect(highlights?.filter).toStrictEqual({
         combinator: "OR",
         groups: [
@@ -600,26 +610,39 @@ describe("events filtering end-to-end suite", () => {
               {
                 negated: false,
                 operator: "is_any_of",
-                path: [`tag:${tags.type.id}`],
-                values: [tags.major.id, tags.signIngress.id],
+                path: [`tag:${tags.aspect.id}`],
+                values: [tags.major.id],
               },
+              notTheMoon,
+            ],
+          },
+          {
+            combinator: "AND",
+            groups: [],
+            rules: [
               {
                 negated: false,
-                operator: "is_none_of",
-                path: [`tag:${tags.planet.id}`],
-                values: [tags.moon.id],
+                operator: "is_any_of",
+                path: [`tag:${tags.ingress.id}`],
+                values: [tags.signStay.id],
+              },
+              notTheMoon,
+            ],
+          },
+          {
+            combinator: "OR",
+            groups: [],
+            rules: [
+              {
+                negated: false,
+                operator: "is_any_of",
+                path: [`tag:${tags.planetary.id}`],
+                values: [tags.direction.id],
               },
             ],
           },
         ],
-        rules: [
-          {
-            negated: false,
-            operator: "is_any_of",
-            path: [`tag:${tags.type.id}`],
-            values: [tags.direction.id],
-          },
-        ],
+        rules: [],
       });
     });
 
@@ -646,5 +669,70 @@ describe("events filtering end-to-end suite", () => {
         keep(structuredClone(filter) as unknown as GroupVariable),
       ).resolves.toStrictEqual([MARS_RETROGRADE, SUN_ENTERS_ARIES]);
     });
+  });
+
+  it("filters by a Duration tag like any other, a span carrying one unit", async () => {
+    expect.hasAssertions();
+
+    const repository = tagRepository(application.database.dataSource);
+    const duration = await repository.save(
+      repository.create({ name: "Duration", slug: "duration" }),
+    );
+    const hours = await repository.save(
+      repository.create({ name: "Hours", parent: duration, slug: "hours" }),
+    );
+    const days = await repository.save(
+      repository.create({ name: "Days", parent: duration, slug: "days" }),
+    );
+
+    for (const [name, unit] of [
+      [MOON_CONJUNCT_MARS, hours],
+      [MARS_RETROGRADE, days],
+    ] as const) {
+      await application.database.dataSource.query(
+        `insert into calendar_event_tags (calendar_event_id, tag_id)
+         select id, $2 from calendar_events where "name" = $1`,
+        [name, unit.id],
+      );
+    }
+    await application.database.dataSource.query(
+      "refresh materialized view tag_trees",
+    );
+
+    await expect(
+      keepWhere(tagRule(duration, "is_any_of", [hours.id])),
+    ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
+    await expect(
+      keepWhere(tagRule(duration, "is_any_of", [hours.id, days.id])),
+    ).resolves.toStrictEqual([MARS_RETROGRADE, MOON_CONJUNCT_MARS]);
+    await expect(
+      keepWhere(tagRule(duration, "is_none_of", [days.id])),
+    ).resolves.toContain(SUN_ENTERS_ARIES);
+  });
+
+  it("silently drops a rule whose only tag a menu leaves out, and keeps the tags it still offers", async () => {
+    expect.hasAssertions();
+
+    const { aspect, major, moon } = tags;
+    const repository = application.database.dataSource.getRepository("Tag");
+
+    await expect(
+      keepWhere(tagRule(aspect, "is_any_of", [moon.id])),
+    ).resolves.toStrictEqual([MOON_CONJUNCT_MARS]);
+
+    await repository.update(moon.id, { isFilterable: false });
+
+    try {
+      await expect(
+        keepWhere(tagRule(aspect, "is_any_of", [moon.id])),
+      ).resolves.toStrictEqual(EVERYTHING);
+      await expect(
+        keepWhere(tagRule(aspect, "is_any_of", [moon.id, major.id])),
+      ).resolves.toStrictEqual(
+        await keepWhere(tagRule(aspect, "is_any_of", [major.id])),
+      );
+    } finally {
+      await repository.update(moon.id, { isFilterable: true });
+    }
   });
 });

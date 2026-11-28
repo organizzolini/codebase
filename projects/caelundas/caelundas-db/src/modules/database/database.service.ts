@@ -2,13 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 
-import { READ_MODEL_STATEMENTS } from "./database.constants";
+import { METRICS_REFRESH_STATEMENTS } from "./modules/metrics/calendar-event-facts.constants";
 
 import type { EntityManager } from "typeorm";
 
 /**
  * Reports on the Postgres connection every caelundas application shares, and
- * keeps the derived tag tables in step with the rows a run wrote. The rows
+ * keeps the metrics facts in step with the rows a run wrote. The rows
  * themselves are read and written through the entities.
  */
 @Injectable()
@@ -34,13 +34,11 @@ export class DatabaseService {
   }
 
   /**
-   * Rebuilds the derived tag tables through `manager`, so a reader never sees them half rebuilt. The derived-times view needs no refresh.
+   * Refreshes the tag sets and rebuilds the facts through `manager`, without locking readers out; in the caller's transaction when it has one.
    */
-  async refreshReadModel(manager: EntityManager): Promise<void> {
-    await manager.transaction(async (transaction) => {
-      for (const statement of READ_MODEL_STATEMENTS) {
-        await transaction.query<unknown>(statement);
-      }
-    });
+  async refreshMetrics(manager: EntityManager): Promise<void> {
+    for (const statement of METRICS_REFRESH_STATEMENTS) {
+      await manager.query<unknown>(statement);
+    }
   }
 }

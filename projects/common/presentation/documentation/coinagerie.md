@@ -12,6 +12,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **br**: The HTML line-break element, used in code-block output to render an empty line with no tokens.
 - **brightness**: The colour-picker brightness channel, one of the axes the picker exposes alongside hue and saturation.
 - **coordinate**: Pointer or screen coordinate used by drag-and-drop in data-grid, calendar, and gantt to place drop indicators.
+- **crosshair**:
 - **cut**: Cell-selection action that clears the source cells after a copy, applied as a clear-or-cut batch in data-grid.
 - **degree**: Angle unit in gantt arrow geometry, where a 45-degree bend shapes the pointer of a dependency bubble.
 - **dimension**: Word with no occurrence in tracked source, appearing only as a glossary heading and naming no measurement in this project.

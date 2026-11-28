@@ -22,7 +22,7 @@ const CONTAINER_TIMEOUT_MILLISECONDS = 120_000;
 const UUID_V7 =
   /^[\da-f]{8}-[\da-f]{4}-7[\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/u;
 
-const NATURAL_KEY = ["summary", "start", "end", "latitude", "longitude"];
+const NATURAL_KEY = ["name", "start", "end", "latitude", "longitude"];
 
 /**
  * Boots the real `DatabaseModule` from configuration alone, the way
@@ -36,12 +36,12 @@ describe(DatabaseModule, () => {
 
   const detected = (overrides: Partial<CalendarEvent> = {}): CalendarEvent =>
     Object.assign(new CalendarEvent(), {
-      description: "Mars stations retrograde",
       end: moment.utc("2026-03-04T15:20:00.000Z"),
       latitude: "40.712800",
       longitude: "-74.006000",
+      name: "Mars Retrograde",
+      note: "Mars stations retrograde",
       start: moment.utc("2026-03-04T14:00:00.000Z"),
-      summary: "Mars Retrograde",
       timezone: "America/New_York",
       ...overrides,
     });
@@ -68,7 +68,7 @@ describe(DatabaseModule, () => {
     expect(database.container.connection.username).toBe("caelundas_username");
   });
 
-  it("creates every table, derived table and the view the entities describe, and nothing else", async () => {
+  it("creates every table the entities describe, and nothing else", async () => {
     expect.hasAssertions();
 
     const relations = await database.dataSource.query<{ name: string }[]>(
@@ -77,17 +77,24 @@ describe(DatabaseModule, () => {
     );
 
     expect(relations.map(({ name }) => name)).toStrictEqual([
-      "calendar_event_derived_times",
-      "calendar_event_tag_nodes",
+      "calendar_event_facts",
       "calendar_event_tags",
       "calendar_events",
       "constellation_edges",
       "constellations",
+      "dimension_edges",
+      "dimensions",
+      "filters",
+      "group_dimensions",
+      "groups",
+      "measures",
+      "metric_expressions",
+      "metric_expressions_closure",
+      "metrics",
       "migrations",
       "stars",
-      "tag_nodes",
+      "tag_edges",
       "tags",
-      "tags_closure",
       "typeorm_metadata",
     ]);
   });
@@ -106,13 +113,13 @@ describe(DatabaseModule, () => {
 
     expect(tables).toStrictEqual([{ name: "constellation_edges" }]);
     expect(constraints.map(({ name }) => name).toSorted()).toStrictEqual([
-      "FK_04d68e2ee86feb8798df9881158",
-      "FK_b82df4a773517d7ddf1b8b8df14",
-      "FK_d952356fc9daa4133c753105b3c",
-      "PK_a32e2be764ccbe09e19f10384f1",
-      "constellation_edges_constellation_designation_not_null",
-      "constellation_edges_from_hip_not_null",
-      "constellation_edges_to_hip_not_null",
+      "FK_037fc3e87b256f309e5cf499cde",
+      "FK_0d6cd1241fe640015005c630a03",
+      "FK_a7954f4db381f98e1b7a734b1c5",
+      "PK_bfdda0678824ee2374f1c72f018",
+      "constellation_edges_constellation_id_not_null",
+      "constellation_edges_source_node_not_null",
+      "constellation_edges_target_node_not_null",
     ]);
   });
 
@@ -129,7 +136,7 @@ describe(DatabaseModule, () => {
   it("gives every row a uuidv7 id the database assigned", async () => {
     expect.hasAssertions();
 
-    const saved = await events.save(detected({ summary: "uuid check" }));
+    const saved = await events.save(detected({ name: "uuid check" }));
 
     expect(saved.id).toMatch(UUID_V7);
   });
@@ -137,8 +144,8 @@ describe(DatabaseModule, () => {
   it("stores instants as timestamptz and coordinates as numeric, read back as a Moment in UTC and as text", async () => {
     expect.hasAssertions();
 
-    await events.save(detected({ summary: "round trip" }));
-    const read = await events.findOneByOrFail({ summary: "round trip" });
+    await events.save(detected({ name: "round trip" }));
+    const read = await events.findOneByOrFail({ name: "round trip" });
     const [column] = await database.dataSource.query<
       { latitude: string; start: string }[]
     >(
@@ -159,18 +166,18 @@ describe(DatabaseModule, () => {
     expect.hasAssertions();
 
     const first = await events.upsert(
-      [detected({ summary: "natural key" })],
+      [detected({ name: "natural key" })],
       NATURAL_KEY,
     );
     await events.upsert(
-      [detected({ description: "revised", summary: "natural key" })],
+      [detected({ name: "natural key", note: "revised" })],
       NATURAL_KEY,
     );
 
-    const rows = await events.findBy({ summary: "natural key" });
+    const rows = await events.findBy({ name: "natural key" });
 
     expect(rows).toHaveLength(1);
-    expect(rows[0]?.description).toBe("revised");
+    expect(rows[0]?.note).toBe("revised");
     expect(rows[0]?.id).toBe(first.identifiers[0]?.["id"]);
   });
 
@@ -179,16 +186,16 @@ describe(DatabaseModule, () => {
 
     await events.upsert(
       [
-        detected({ summary: "two places" }),
+        detected({ name: "two places" }),
         detected({
           latitude: "51.500000",
           longitude: "0.000000",
-          summary: "two places",
+          name: "two places",
         }),
       ],
       NATURAL_KEY,
     );
 
-    await expect(events.countBy({ summary: "two places" })).resolves.toBe(2);
+    await expect(events.countBy({ name: "two places" })).resolves.toBe(2);
   });
 });

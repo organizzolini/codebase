@@ -42,8 +42,6 @@ describe(RenderMermaidService, () => {
       { diagram: "filetree" },
     );
 
-    expect(diagram).toBe(
-      ["treeView-beta", '    "A/"', '        "B"'].join("\n"),
-    );
+    expect(diagram).toBe(["A", "└── B"].join("\n"));
   });
 });

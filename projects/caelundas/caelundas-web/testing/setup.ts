@@ -7,7 +7,13 @@ import {
   stopGraphqlMockServer,
 } from "@codebase/interface/testing";
 
-import { clearCalendarCaches } from "../src/components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.utilities";
+import { CATALOG_CACHE } from "../src/components/calendar-display/calendar-metrics/components/metric-catalog-provider/metric-catalog-provider.constants";
+import {
+  CONSTANTS_CACHE,
+  EVENTS_CACHE,
+  FACETS_CACHE,
+} from "../src/components/calendar-display/events-calendar/components/calendar-loader/calendar-loader.constants";
+import { METRICS_CACHE } from "../src/hooks/use-metric-layout/hooks/use-event-metrics/use-event-metrics.constants";
 
 import { installViewport } from "./viewport";
 
@@ -18,6 +24,7 @@ import { installViewport } from "./viewport";
 const ignore = (): void => {};
 
 Element.prototype.scrollTo = ignore;
+globalThis.scrollTo = ignore;
 Element.prototype.getAnimations = (): Animation[] => [];
 // A resize observer reports its element's size as soon as it observes it,
 // as a browser's does, read from whatever size a test gives the element.
@@ -53,7 +60,13 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  clearCalendarCaches();
+  // The constants files, not the loader's utilities, which would load the
+  // whole filter and grouping model into every test file's setup.
+  CONSTANTS_CACHE.clear();
+  EVENTS_CACHE.clear();
+  FACETS_CACHE.clear();
+  METRICS_CACHE.clear();
+  CATALOG_CACHE.clear();
   resetGraphqlMockServer();
 });
 

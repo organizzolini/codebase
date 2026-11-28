@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   findAncestors,
   getTagStates,
+  readFolder,
   toggleTag,
   toTagTreeRows,
 } from "./event-filter-tag-tree.utilities";
@@ -36,7 +37,81 @@ function ids(rows: ReturnType<typeof toTagTreeRows>): string[] {
 
 const NONE = new Set<string>();
 
+// planet
+//   personal
+//     mercury
+//     venus   (also under benefic)
+//     mars
+// benefic
+//   jupiter
+//   venus     (the same tag)
+const SHARED = [
+  option("planet", 0),
+  option("personal", 1),
+  option("mercury", 2),
+  option("venus", 2),
+  option("mars", 2),
+  option("benefic", 0),
+  option("jupiter", 1),
+  option("venus", 1),
+];
+
 describe("tag tree", () => {
+  describe("a tag under two parents", () => {
+    it("is checked everywhere once it is picked anywhere", () => {
+      const states = getTagStates(SHARED, ["venus"]);
+
+      expect(states.get("venus")).toBe("checked");
+      expect(states.get("personal")).toBe("partial");
+      expect(states.get("benefic")).toBe("partial");
+      expect(states.get("planet")).toBe("partial");
+    });
+
+    it("is checked under the second parent when that parent is picked", () => {
+      const states = getTagStates(SHARED, ["benefic"]);
+
+      expect(states.get("venus")).toBe("checked");
+      expect(states.get("benefic")).toBe("checked");
+      expect(states.get("personal")).toBe("partial");
+      expect(states.get("planet")).toBe("partial");
+    });
+
+    it("completes a parent whose other children are picked, the shared child counting wherever it is picked", () => {
+      expect(toggleTag(SHARED, ["jupiter"], "benefic")).toStrictEqual([
+        "benefic",
+      ]);
+      expect(getTagStates(SHARED, ["venus", "jupiter"]).get("benefic")).toBe(
+        "checked",
+      );
+    });
+
+    it("removes it from either place, taking it from the parent that held it", () => {
+      expect(toggleTag(SHARED, ["benefic"], "venus")).toStrictEqual([
+        "jupiter",
+      ]);
+    });
+
+    it("picks the tag once, however many places it is ticked from", () => {
+      expect(toggleTag(SHARED, [], "venus")).toStrictEqual(["venus"]);
+    });
+
+    it("opens both parents of a picked tag, and counts the pick inside each when closed", () => {
+      expect([...findAncestors(SHARED, ["venus"])].toSorted()).toStrictEqual([
+        "benefic",
+        "personal",
+        "planet",
+      ]);
+
+      const rows = toTagTreeRows(SHARED, {
+        expanded: NONE,
+        selected: ["venus"],
+        showAll: false,
+      });
+
+      expect(rows.map((row) => row.selectedBelow)).toStrictEqual([1, 1]);
+    });
+  });
+
   describe(toTagTreeRows, () => {
     it("shows only the first level while everything is closed", () => {
       expect(
@@ -237,6 +312,37 @@ describe("tag tree", () => {
       expect(toggleTag(ITEMS, ["square", 3], "missing")).toStrictEqual([
         "square",
       ]);
+    });
+  });
+
+  describe(readFolder, () => {
+    it("reads a folder mark, and takes any other option for a tag to pick", () => {
+      expect(
+        readFolder({
+          data: { depth: 0, folder: true, name: "Sign" },
+          label: "Sign",
+          value: "sign",
+        }),
+      ).toBe(true);
+      expect(readFolder(option("sign", 0))).toBe(false);
+      expect(readFolder({ label: "x", value: "x" })).toBe(false);
+    });
+
+    it("marks a folder's row", () => {
+      const items = [
+        {
+          ...option("sign", 0),
+          data: { depth: 0, folder: true, name: "sign" },
+        },
+        option("aries", 1),
+      ];
+      const opened = toTagTreeRows(items, {
+        expanded: new Set(["sign"]),
+        selected: [],
+        showAll: false,
+      });
+
+      expect(opened.map((row) => row.isFolder)).toStrictEqual([true, false]);
     });
   });
 });

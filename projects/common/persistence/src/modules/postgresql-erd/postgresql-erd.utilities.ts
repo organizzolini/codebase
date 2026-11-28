@@ -7,6 +7,8 @@ import { z } from "zod";
 
 import { withGeneratedEdges } from "../render/modules/render-entities/render-entities-generated.utilities";
 
+import { readPostgresqlErdDerivedTables } from "./postgresql-erd-metadata.utilities";
+import { renderPostgresqlErdSections } from "./postgresql-erd-sections.utilities";
 import {
   POSTGRESQL_ERD_END_ANCHOR,
   POSTGRESQL_ERD_ENTITY_CLASS_SCHEMA,
@@ -15,6 +17,7 @@ import {
   POSTGRESQL_ERD_RELATION_SYMBOLS,
   POSTGRESQL_ERD_START_ANCHOR,
   POSTGRESQL_ERD_TYPE_MAP,
+  POSTGRESQL_ERD_VIEW_TITLES,
 } from "./postgresql-erd.constants";
 
 import type { GraphEntity } from "../render/modules/render-entities/render-entities.types";
@@ -58,6 +61,15 @@ export async function readPostgresqlErdModel(
   const entityModels = entities.map((entity) =>
     getEntityModel(entity, storage),
   );
+  const derivedModels = await readPostgresqlErdDerivedTables(
+    entities,
+    new Map(
+      entities.map((entity, index) => [
+        entity,
+        entityModels[index]?.tableName ?? entity.name,
+      ]),
+    ),
+  );
   const entityNames = new Set(
     entityModels.flatMap(({ name, tableName }) => [name, tableName]),
   );
@@ -74,6 +86,7 @@ export async function readPostgresqlErdModel(
   return POSTGRESQL_ERD_MODEL_SCHEMA.parse({
     entities: [
       ...entityModels,
+      ...derivedModels,
       ...[...externalEntityNames].toSorted().map((name) => ({ name })),
     ],
   });
@@ -100,7 +113,9 @@ export function renderPostgresqlErdModel(model: PostgresqlErdModel): string {
       : `  ${renderMermaidEntityName(entity.name)}`,
   );
 
-  return ["erDiagram", ...relationships, ...definitions].join("\n");
+  return ["erDiagram", "  direction LR", ...relationships, ...definitions].join(
+    "\n",
+  );
 }
 
 /**
@@ -111,13 +126,10 @@ export function splicePostgresqlErdMarkdown(
   content: string | undefined,
   model: PostgresqlErdModel,
 ): string {
-  const rendered = renderPostgresqlErdModel(model);
   const block = [
     POSTGRESQL_ERD_START_ANCHOR,
     "",
-    "```mermaid",
-    rendered,
-    "```",
+    ...renderPostgresqlErdSections(model, renderPostgresqlErdModel),
     "",
     POSTGRESQL_ERD_END_ANCHOR,
   ].join("\n");
@@ -267,14 +279,16 @@ function getEntityModel(
   storage: PostgresqlErdMetadataStorage,
 ): PostgresqlErdEntityDetails {
   const targets = getEntityTargets(entity);
+  const table = storage.tables.find(({ target }) => target === entity);
 
   return {
     columns: getEntityColumns(targets, storage),
+    ...(table?.type === "view"
+      ? { kind: table.materialized === true ? "materialized-view" : "view" }
+      : {}),
     name: entity.name,
     relations: getEntityRelations(targets, storage),
-    tableName:
-      storage.tables.find(({ target }) => target === entity)?.name ??
-      entity.name,
+    tableName: table?.name ?? entity.name,
   };
 }
 
@@ -405,8 +419,17 @@ function renderColumn(
 
 /** Renders the attribute block for a full entity record. */
 function renderEntityDefinition(entity: PostgresqlErdEntityDetails): string {
+  const kind =
+    entity.kind === undefined
+      ? undefined
+      : POSTGRESQL_ERD_VIEW_TITLES[entity.kind];
+  const title =
+    kind === undefined
+      ? ""
+      : `[${renderMermaidEntityName(`${entity.tableName} (${kind})`)}]`;
+
   return [
-    `  ${renderMermaidEntityName(entity.tableName)} {`,
+    `  ${renderMermaidEntityName(entity.tableName)}${title} {`,
     ...entity.columns.map((column) => renderColumn(column)),
     "  }",
   ].join("\n");

@@ -10,6 +10,7 @@ import { MathService } from "../../../ephemeris/modules/math/math.service";
 import { ProgressiveUtilitiesService } from "../../../progressive/progressive-utilities.service";
 
 import { PhaseCalculationService } from "./modules/calculation/phase-calculation.service";
+import { ElongationSpansService } from "./modules/elongation/elongation-spans.service";
 import { MartianPhaseService } from "./modules/martian/martian-phase.service";
 import { MercurianPhaseService } from "./modules/mercurian/mercurian-phase.service";
 import { VenusianPhaseService } from "./modules/venusian/venusian-phase.service";
@@ -44,13 +45,13 @@ const mercurianPhaseService = new MercurianPhaseService(
 const martianPhaseService = new MartianPhaseService(
   logger,
   phaseCalculationService,
-  progressiveUtilitiesService,
 );
 const service = new PhasesService(
   logger,
   venusianPhaseService,
   mercurianPhaseService,
   martianPhaseService,
+  new ElongationSpansService(logger, progressiveUtilitiesService),
 );
 
 describe("phases.events integration", () => {

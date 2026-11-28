@@ -290,6 +290,28 @@ non-zero, naming every stale or missing output:
 pnpm exec nx run persistence:start:postgresql-erd --args="--entities 'src/**/*.entity.ts' --output-markdown README.md --check"
 ```
 
+The diagram draws every table TypeORM creates for the entities, not only the
+entities. It builds the entities' metadata, without connecting, and adds the
+closure table of each `@Tree("closure-table")` entity (`ancestor_id` and
+`descendant_id` by default) and the join table of each many-to-many
+relation, each as a table of its own with its columns and a many-to-one
+relationship, labelled with the column, to the entity each foreign key
+references. An edge entity that `@Graph({ edge, nodes })` generates is added the same way,
+with its `source_node` and `target_node`. A view entity is drawn
+as `<name> (view)` or `<name> (materialized view)`, and the model's `kind`
+says so; its column types are the properties' declared types, since the
+view's SQL is not read. Entities, and the columns and relations written on them, are
+named as their classes and properties name them; the derived tables are named by the
+data source's naming strategy, as in the database. When the entities cannot build their
+metadata alone, such as when a relation points at an entity no glob matched,
+only the derived tables are left out.
+
+The diagram is drawn left to right (`direction LR`). Tables joined by relations
+form a group, and when there are two or more groups the marker block opens with an
+index of links, then a `##` heading and a diagram per group, titled by its most
+related table, with the tables that have no relation together in a last
+`Standalone tables` group. One group is one diagram, as before.
+
 ## Moving data between databases
 
 The package is also a command line, `database`, that copies selected tables
@@ -421,14 +443,22 @@ Every option is shared by the three commands unless the table says otherwise;
 | `--page <n>`               | A page of `--limit` roots to draw, from 1; repeat for several, each its own diagram. Needs `--limit`                                                                                                  |
 | `--truncate-depth <n>`     | The deepest level drawn, a positive integer. Roots are level 1; the children below a cut level become one `… K more` node                                                                             |
 | `--truncate-breadth <n>`   | The most children drawn under one node, a positive integer, in sort order. The rest become one `… K more` node. Roots are never capped                                                                |
-| `--output-markdown <path>` | Writes the diagram as a fenced Mermaid block, creating its folders, with the warnings after the fence. The diagram is not printed                                                                     |
+| `--output-markdown <path>` | Writes the diagram as Markdown, creating its folders: a fenced block, or an index and a small diagram per section. Warnings last. Not printed                                                         |
 | `--output-json <path>`     | Writes the drawn graph as pretty JSON, creating its folders. The diagram is not printed                                                                                                               |
 | `--overwrite`              | Replaces an existing `--output-markdown` or `--output-json` file. Without it an existing file is refused and left unchanged                                                                           |
 | `--dry-run`                | Checks the options and output paths and lists the entity files it would read. It connects to no database and imports no entity file                                                                   |
 
 `--diagram <flowchart|filetree>` is `render-tree-data` only. `flowchart` (the
-default) draws the tree as a flowchart; `filetree` draws Mermaid's beta
-`treeView-beta` file tree. See [Drawing trees](#drawing-trees).
+default) draws the tree as a flowchart; `filetree` draws a plain text file tree,
+one line per node. See [Drawing trees](#drawing-trees).
+
+`--icon-field <name>`, `--note-field <name>` and `--rank-field <name>` are
+`render-tree-data` only, and name the entity properties a tree reads from,
+`icon`, `note` and `rank` unless given. A row's `note` and `icon` (a lucide
+icon slug) are drawn beneath its name in a flowchart, and in a file tree as
+the icon in brackets and then the note after a dash, both following the name. With no `--sort`, siblings come in `rank`
+ascending and then by `name`. A property the entity lacks is left out, so a tree
+with none of them draws as before.
 
 Filters and sorts name columns of the entity, and fail before any connection
 opens when a name is unknown. A `<` or `>` on a text column, or a value that is
@@ -464,6 +494,11 @@ storage the `@Tree` names:
 | `adjacency-list`    | The `@TreeParent` join column. Requires `@TreeParent`                                                                      |
 | `materialized-path` | The segment before the last of the materialized path column, so `a.b.c` has parent `b`. Requires the path column           |
 | `nested-set`        | The nearest row whose left bound is below the row's and whose right bound is above it. Requires the left and right columns |
+
+A node entity whose generated `@Graph` edge joins its own rows is a tree as well, and
+the one kind in which a node may have several parents: the edge table gives each row's
+parents, a node is drawn once with an edge from each parent, and a file tree lists it
+under each. Roots are the rows no edge ends at.
 
 The closure table itself is not read: a closure-table tree's parent comes
 from its `@TreeParent` column, as an adjacency list's does.
@@ -533,79 +568,81 @@ is open.
 
 #### Generated edges
 
-Declare the graph once, on the graph entity, and name the edge entity it
-generates and the entity whose rows it joins. Nobody writes the edge class:
+Declare the edge once, on any class, and name the edge entity it generates and
+the entity whose rows it joins. Nobody writes the edge class:
 
 ```ts
 @Entity()
-@Graph({ directed: false, edge: "ConstellationEdge", nodes: () => Star })
-export class Constellation {
+@Graph({ directed: false, edge: "NetworkLine", nodes: () => Station })
+export class Network {
   @PrimaryColumn("text")
-  designation!: string;
-
-  @GraphLabel() // titles the constellation's box in the diagram
-  @Column("text")
-  name!: string;
-
-  @GraphEdges("ConstellationEdge")
-  edges?: Relation<GraphEdgeRow<Constellation, Star>>[];
+  code!: string;
 }
 
 @Entity()
-export class Star {
-  @GraphLabel() // labels the star's node
+export class Station {
+  @GraphLabel() // labels the station's node
   @PrimaryColumn({ transformer: createBigintTransformer(), type: "bigint" })
-  hip!: number;
+  number!: number;
 
-  @GraphOutgoingEdges("ConstellationEdge")
-  outgoingEdges?: Relation<GraphEdgeRow<Constellation, Star>>[];
+  @GraphOutgoingEdges("NetworkLine")
+  outgoingLines?: Relation<GraphEdgeRow<Station>>[];
 
-  @GraphIncomingEdges("ConstellationEdge")
-  incomingEdges?: Relation<GraphEdgeRow<Constellation, Star>>[];
+  @GraphIncomingEdges("NetworkLine")
+  incomingLines?: Relation<GraphEdgeRow<Station>>[];
 }
 ```
 
 - **Options:** `edge` names the generated entity, and so its table, by the
-  data source's naming strategy (`ConstellationEdge` is `constellation_edges`);
+  data source's naming strategy (`NetworkLine` is `network_lines`);
   `nodes` returns the node entity, read when the decorator runs, so import it
-  before the graph and keep the two out of an import cycle; `directed` is true
-  unless false; `table` names the table instead of `edge`. `@DirectedAcyclicGraph`
-  takes `edge`, `nodes`, and `table`.
-- **The generated entity** has a composite key of the graph's key and both
-  ends, each column of the type of the key it copies, so a `bigint` key with a
-  transformer stays one. Its properties are `<graph><Key>`, `from<NodeKey>`,
-  and `to<NodeKey>`, such as `constellationDesignation`, `fromHip`, and `toHip`,
-  which `--filter` and `--sort` name. The columns are `constellation_designation`,
-  `from_hip`, and `to_hip`. It indexes each end as `<table>_from_<key>` and
-  `<table>_to_<key>`, and it has a many-to-one relation to the graph (`graph`)
-  and to each node (`source`, `target`), each deleting with its row.
-- **Reaching it:** a data source must list the generated class beside the graph
-  and node entities. `withGeneratedEdges(entities)` adds the edge, node, and
-  graph entities of each graph in the list once, and the drawing commands and
-  `createGraphDataSource` use it. The edge has no class to import, so callers
-  address it by name: `manager.getRepository("ConstellationEdge")`.
-- **Reverse relations:** `@GraphEdges(edge)` on the graph entity lists the
-  edges of each graph row. On a node entity, `@GraphOutgoingEdges(edge)` lists
+  before the declaring class and keep the two out of an import cycle;
+  `directed` is true unless false; `table` names the table instead of `edge`.
+  `sourceColumn` and `targetColumn` name the two key properties, and the naming
+  strategy snake-cases each into its column; they default to `sourceNode` and
+  `targetNode`. `@DirectedAcyclicGraph` takes `edge`, `nodes`, `table`, and the
+  same two.
+- **The generated entity** is only the edge between a source node and a target
+  node: a composite key of both ends, each column of the type of the key it
+  copies, so a `bigint` key with a transformer stays one. Its properties are
+  `sourceNode` and `targetNode`, which `--filter` and `--sort` name, and its
+  columns are `source_node` and `target_node`. It indexes each end as
+  `<table>_<column>`, such as `network_lines_source_node`, and it has a
+  many-to-one relation to each node (`source`, `target`), deleting with its row.
+  It has no owner column, since not every graph has subgraphs: for edges that
+  belong to a subgraph, write the edge entity by hand with its own owner column
+  (the first form).
+- **Reaching it:** a data source needs the generated class beside the
+  node entity. `postgresDataSourceOptions` (so `createDataSource`,
+  `PostgresqlModule.forRoot` and the testing module) adds it for every graph in
+  its `entities`, so listing the declaring entity is enough;
+  `withGeneratedEdges(entities)` does the same for any other data source, adding
+  the edge, node, and declaring entities of each graph once, as the drawing
+  commands and `createGraphDataSource` do. The edge has no class to import, so
+  callers address it by name: `manager.getRepository("NetworkLine")`.
+- **Reverse relations:** on a node entity, `@GraphOutgoingEdges(edge)` lists
   the edges that start at it and `@GraphIncomingEdges(edge)` those that end at
   it, so a node of an undirected graph needs both to find all its edges. Each is
-  a one-to-many whose inverse side is the edge's `graph`, `source`, or `target`
-  relation, so a node reaches its graphs through `edge.graph`, and a graph its
-  nodes through `edge.source` and `edge.target`. Type the properties with
-  `Relation<GraphEdgeRow<Graph, Node>>[]`.
+  a one-to-many whose inverse side is the edge's `source` or `target` relation.
+  Type the properties with `Relation<GraphEdgeRow<Node>>[]`.
 - **Labels:** `@GraphLabel()` on a node entity labels each drawn node with that
   column. Only the drawn nodes are read, in batches of 500 ids, so a large node
   table is never read whole; a node with no row or no label keeps its id.
-  `@GraphLabel()` on the graph entity titles each neighborhood with the graph
-  row's label in place of the graph's key.
-- **Refused at decoration, naming the class:** a graph or node entity without
-  exactly one primary column, `edge` without `nodes` or the reverse, an edge
-  name or table that an entity already has, two generating declarations on one
-  class, and a graph that also marks `@GraphSource` or `@GraphTarget` properties.
-  Use one form per graph.
+- **Refused at decoration, naming the class:** a node entity without exactly
+  one primary column, `edge` without `nodes` or the reverse, an edge name or
+  table that an entity already has, two generating declarations on one class,
+  and a class that also marks `@GraphSource` or `@GraphTarget` properties. Use
+  one form per class.
 
-The commands pick the graph entity: `--table constellations` picks it among
+The commands pick the declaring entity: `--table networks` picks it among
 several, and without `--table` the only one is chosen. `--filter` and `--sort`
 name the edge's columns, as in the first form.
+
+A hand-written edge entity may carry an owner column of its own, such as
+`constellation_id`, marked `@GraphLabel()` and joined to the owner by a
+`@ManyToOne`. The relations decide the labels: the entity the `@GraphSource`
+column joins labels each drawn node, and the entity the `@GraphLabel` column
+joins titles each neighborhood with its own `@GraphLabel`.
 
 ### Drawing trees
 
@@ -617,26 +654,25 @@ name the edge's columns, as in the first form.
   parent.
 - **`--filter`** keeps each matching row together with its ancestors and its
   whole subtree, so a match shows where it sits.
-- **`--sort`** orders siblings and roots. Without it, rows follow the primary
-  key, which is a `uuidv7` in the caelundas tables and so roughly creation order.
+- **`--sort`** orders siblings and roots. Without it, rows follow the entity's
+  `rank` property then its `name` when it has them (`--rank-field` names
+  another), else the primary key, which is a `uuidv7` in the caelundas tables and
+  so roughly creation order.
 - **`--limit` and `--page`** page the roots, each with its descendants. Each
   page is the next roots of the filtered, sorted forest.
 - **Caps** hide children beyond `--truncate-depth` or `--truncate-breadth`. Each capped
   parent warns with its id and the count hidden.
 - Several `@Tree` entities without `--table` fail, naming each table, before
   any connection opens.
-- **`--diagram filetree`** draws the same tree as Mermaid's `treeView-beta`
-  diagram instead of a flowchart: roots at the top level, children nested by
-  indentation, quoted labels, and a trailing `/` on each node with children. A
-  truncation node shows as its `… K more` label. Filters, sorts, caps, paging
-  (with the same `## Page` headings), and the output flags work unchanged; edge
-  labels, weights, and styled roots are not drawn. Mermaid's quoted labels
-  have no escapes, so a label holding `"` is wrapped in single quotes with its
-  own `'` turned into `’`.
-- **`treeView-beta` is a beta diagram.** It needs Mermaid 11.14 or later, its
-  syntax may still change, and Obsidian may not render it yet. Only Mermaid's
-  50,000-character text limit warns for a filetree; the 500-edge limit is a
-  flowchart setting.
+- **`--diagram filetree`** draws the same tree as a plain text tree in a
+  `text` fence, not Mermaid: one line per node with `├──`, `└──` and `│` guides,
+  then the icon in brackets and the note after a dash. A node with several parents is
+  listed once, under the first parent that reaches it, and marked
+  `(also under X, Y)` with its other parents, so every node is one line. Nodes of
+  a cycle no root reaches are listed as roots. A truncation node shows as its
+  `… K more` label. Filters, sorts, caps, paging, and the output flags work
+  unchanged; edge labels, weights, and styled roots are not drawn, and there are
+  no limit warnings, since no Mermaid limit applies to text.
 
 ### Drawing directed acyclic graphs and graphs
 
@@ -681,18 +717,29 @@ diagram reaches 90% of either limit, and again when it passes one:
 
 The diagram is still drawn in full, and the warnings name the count and the
 limit. The edge count includes the truncation edges, and the character count is
-the length of the Mermaid text.
+the length of the Mermaid text. In a Markdown file written in sections, each
+section is its own diagram, so the limits are checked per section and a warning
+names the section.
 
 A capped parent gets one truncation node, labelled `… K more` with a dashed grey
 box, under the parent with id `<parent>/more`. Each one warns with the parent's
 id, the number hidden, and the cap that hid them. Roots are drawn with a heavy
-blue border. Node ids in the diagram are short positional ids, and labels are
+blue border, and a node with several parents in a directed graph with an orange
+one (class `shared`), its every parent edge drawn. Node ids in the diagram are short positional ids, and labels are
 escaped so a quote, pipe, angle bracket, hash, or backtick in a value cannot break the diagram.
 
-### Neighborhoods
+### Layout and sections
+
+A flowchart is compact: each node is declared once, with its label, where it
+first appears; each source's edges are chained to all its targets
+(`n0 --> n1 & n2 & n3`); an undirected graph chains its links into trails
+(`n0 --- n1 --- n2`); and each class is named on one `class` line, with only the
+`classDef`s the diagram uses. A tree of a hundred nodes takes about as many
+lines as it has parents.
 
 When a diagram holds two or more neighborhoods, each is wrapped in a Mermaid
-`subgraph` (`nb0`, `nb1`, and so on, in order of its first node). A
+`subgraph` (`nb0`, `nb1`, and so on, in order of its first node), set in rows of
+three with invisible `~~~` links, and each draws in the diagram's direction. A
 neighborhood is one weakly connected group of nodes: for tree data each
 separate tree of the forest, and for graph data each connected group, with
 edges read as undirected. A truncation node belongs to its parent's
@@ -703,10 +750,21 @@ them.
 The title is the label every edge of the neighborhood shares; those edges are
 then drawn without it, since the title says it already, which keeps a
 constellation's lines uncluttered. A truncation node's edge has no label and is
-not counted. Otherwise the title is the label of the
+not counted. Otherwise, when the edges carry one to three distinct labels, the
+title joins them, such as two constellations that share a star, and keeps the
+labels on the edges. Failing that, the title is the label of the
 neighborhood's first root, or of its first node. Weights stay on their edges.
-A generated edge's label is its graph's key, shown as the graph's `@GraphLabel`
-when it has one, so the box reads "Ursa Major" and not "UMa".
+An edge's label may be the key of an owner row, shown as that row's
+`@GraphLabel` when the label column joins the owner by a relation, so the box
+reads "Ursa Major" and not "UMa".
+
+With `--output-markdown` (and in a text file tree) the neighborhoods are also
+packed, in order, into sections of at most 40 nodes, a larger neighborhood being
+a section of its own. A file of two or more sections opens with an index of
+links to them, then gives each a `##` heading, titled by its neighborhoods, and
+a diagram small enough to read on one screen. With several pages each page is a
+`##` heading and its sections `###`. The diagram printed on stdout is always
+the whole drawing in one piece.
 
 ### Known limits
 
@@ -739,70 +797,24 @@ nx run caelundas-db:render-tag-tree --args="--truncate-depth 2 --limit 3"
 
 The target and its connection variables are described in the
 [caelundas-db README](../../caelundas/caelundas-db/README.md#drawing-the-tag-tree).
-The output below is a real run against the local container, with the target's
-`--truncate-depth 2 --limit 3`:
+The output below is a real run against the local container, with
+`--truncate-depth 2 --truncate-breadth 3 --limit 1 --page 2`:
 
 ```mermaid
 flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
     classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5
-    n0["Aspect Harmonic"]
-    n1["Harmonic 4"]
-    n2["Aspect Nature"]
-    n3["Hard"]
-    n4["Body Class"]
-    n5["Asteroid"]
-    n6["Luminary"]
-    n7["Outer"]
-    n8["Personal"]
-    n9["Harmonic 3"]
-    n10["Soft"]
-    n11["Point"]
-    n12["Harmonic 6"]
-    n13["Harmonic 12"]
-    n14["Neutral"]
-    n15["Node"]
-    n16["Harmonic 1"]
-    n17["Harmonic 2"]
-    n18["Harmonic 10"]
-    n19["Social"]
-    n20["Harmonic 9"]
-    n21["Harmonic 5"]
-    n22["Harmonic 8"]
-    n23["Harmonic 7"]
-    n24["Harmonic 11"]
-    n0 --> n1
-    n2 --> n3
-    n4 --> n5
-    n4 --> n6
-    n4 --> n7
-    n4 --> n8
-    n0 --> n9
-    n2 --> n10
-    n4 --> n11
-    n0 --> n12
-    n0 --> n13
-    n2 --> n14
-    n4 --> n15
-    n0 --> n16
-    n0 --> n17
-    n0 --> n18
-    n4 --> n19
-    n0 --> n20
-    n0 --> n21
-    n0 --> n22
-    n0 --> n23
-    n0 --> n24
-    class n0 root
-    class n2 root
-    class n4 root
+    n1["Body<br/><i>globe · The bodies an event involves, grouped by class.</i>"] --> n0["Luminary<br/><i>sun-moon · The Sun and the Moon.</i>"] & n2["Planet<br/><i>earth · The planets, by how far they reach and by tradition's fortune.</i>"] & n3["Asteroid<br/><i>mountain · Asteroids and Chiron.</i>"] & n4["… 1 more"]
+    n0 --> n5["… 2 more"]
+    n2 --> n6["… 5 more"]
+    n3 --> n7["… 5 more"]
+    class n1 root
+    class n4,n5,n6,n7 truncation
 ```
 
-The three roots are the first three in primary-key order, and `--truncate-depth 2`
-draws their children without going deeper. A run with `--truncate-depth 2
---truncate-breadth 2` and no `--limit` cuts each parent to two children, adds
-`… K more` nodes, and writes one warning per cut to stderr; that run was made
-too, and its warnings were read from stderr.
+The page is the second root in primary-key order, and `--truncate-depth 2`
+draws its children without going deeper. The breadth cap keeps three
+children under Body, and each cut writes one warning to stderr.
 
 The directed acyclic graph and graph commands are shown with the illustrative entity above rather
 than a live run, since no local table holds edge rows.

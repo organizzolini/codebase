@@ -9,14 +9,20 @@ export interface CalendarEventGroupKey {
    * value.
    */
   path: null | string;
+  /**
+   * What sorts a tag's group among its siblings as the tags are meant to read; null for a derived value.
+   */
+  rank?: null | string;
 }
 
 /**
  * An astronomical event; equal start and end mark an instant.
  */
 export interface CalendarEventRecord {
+  /**
+   * The color views paint it in, set by `colorEvents`; none for a view's default.
+   */
   color: null | string;
-  description: string;
   /**
    * Whole minutes from start to end, 0 for an instant.
    */
@@ -27,9 +33,9 @@ export interface CalendarEventRecord {
    */
   groups: CalendarEventGroupKey[][];
   id: string;
-  location: null | string;
+  name: string;
+  note: string;
   start: Date;
-  summary: string;
   tags: CalendarEventTag[];
   timezone: string;
 }
@@ -54,8 +60,24 @@ export interface CalendarEventTag {
  * A tag root and every tag beneath it.
  */
 export interface EventFacet {
+  /**
+   * The slug of the root's lucide icon, if it has one.
+   */
+  icon?: null | string;
   id: string;
+  /**
+   * Whether each menu offers the root; every menu does when absent.
+   */
+  isDefaultGroup?: boolean;
+  isFilterable?: boolean;
+  isGroupable?: boolean;
+  isSelectable?: boolean;
+  isSortable?: boolean;
   name: string;
+  /**
+   * What the root means, if it says.
+   */
+  note?: null | string;
   /**
    * The tags beneath the root, depth first.
    */
@@ -63,9 +85,13 @@ export interface EventFacet {
 }
 
 /**
- * A tag a facet offers.
+ * A tag a query offers.
  */
 export interface EventFacetValue {
+  /**
+   * The other parents of a tag under several, as paths from the root.
+   */
+  alsoUnder?: readonly string[];
   /**
    * Events carrying the tag or any tag beneath it, among those overlapping the facets' window.
    */
@@ -74,8 +100,24 @@ export interface EventFacetValue {
    * How far beneath its root the tag sits, so a root's children are 1.
    */
   depth: number;
+  /**
+   * The slug of the tag's lucide icon, if it has one.
+   */
+  icon?: null | string;
   id: string;
+  /**
+   * Whether each menu offers the tag; a saved link to it works either way, and every menu offers it when absent.
+   */
+  isDefaultGroup?: boolean;
+  isFilterable?: boolean;
+  isGroupable?: boolean;
+  isSelectable?: boolean;
+  isSortable?: boolean;
   name: string;
+  /**
+   * What the tag means, if it says.
+   */
+  note?: null | string;
   /**
    * The names from beneath the root down to this tag, joined by " / ".
    */
@@ -93,9 +135,26 @@ export interface EventsDataset {
 }
 
 /**
+ * A tag a menu lists, and whether it is only a folder.
+ */
+export interface OfferedValue {
+  folder: boolean;
+  value: EventFacetValue;
+}
+
+/**
  * A half-open span of time: `start` is included and `end` is not.
  */
 export interface Period {
   end: Date;
   start: Date;
 }
+
+/**
+ * A menu flag: Filter, Group, Select or Sort.
+ */
+export type TagMenuFlag =
+  | "isFilterable"
+  | "isGroupable"
+  | "isSelectable"
+  | "isSortable";

@@ -62,8 +62,14 @@ export interface GraphOptions {
   /** Each `column<op>value` row filter as text; repeatable, all must match. */
   readonly filter?: string[] | undefined;
 
+  /** The entity property holding a tree row's lucide icon slug; `icon` when absent. */
+  readonly iconField?: string | undefined;
+
   /** Roots per page, as text; a positive integer when given. */
   readonly limit?: string | undefined;
+
+  /** The entity property holding a tree row's note; `note` when absent. */
+  readonly noteField?: string | undefined;
 
   /** Path of the JSON graph file to write, as text. */
   readonly outputJson?: string | undefined;
@@ -76,6 +82,9 @@ export interface GraphOptions {
 
   /** Page of roots to draw, from 1, as text; needs `limit`. */
   readonly page?: string[] | undefined;
+
+  /** The entity property holding a tree row's place among its siblings; `rank` when absent. */
+  readonly rankField?: string | undefined;
 
   /** The schema the entity tables live in; required. */
   readonly schema?: string | undefined;
@@ -164,6 +173,9 @@ export interface GraphPlan {
   /** The entity glob patterns, in the order given. */
   readonly entities: readonly string[];
 
+  /** The entity properties a tree's icons, notes and sibling rank are read from. */
+  readonly fields: GraphTreeFields;
+
   /** The row filters, in the order given; every one must match. */
   readonly filters: readonly GraphFilter[];
 
@@ -206,6 +218,9 @@ export interface GraphReadOptions extends GraphLimits {
   /** Rows read per query; a test seam, `undefined` for the default. */
   readonly batchSize?: number | undefined;
 
+  /** The properties a tree reads icons, notes and rank from; the defaults when absent. */
+  readonly fields?: GraphTreeFields | undefined;
+
   /** The row filters, each by a column name; a row must match all of them. */
   readonly filters: readonly GraphFilter[];
 
@@ -230,6 +245,18 @@ export interface GraphSort {
 
 /** A sort's direction. */
 export type GraphSortDirection = "asc" | "desc";
+
+/** The entity properties a tree row is drawn from. */
+export interface GraphTreeFields {
+  /** The property holding the row's lucide icon slug. */
+  readonly icon: string;
+
+  /** The property holding the row's note. */
+  readonly note: string;
+
+  /** The property holding the row's place among its siblings, lowest first. */
+  readonly rank: string;
+}
 
 /** The row filters and sort keys a graph read applies, resolved. */
 export interface GraphView {

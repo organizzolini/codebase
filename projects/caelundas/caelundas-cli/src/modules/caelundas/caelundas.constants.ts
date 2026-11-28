@@ -65,7 +65,7 @@ export const eclipsePhases = ["beginning", "maximum", "ending"] as const;
 
 // 🔭 Body Arrays
 
-/** Bodies that can retrograde; excludes Sun, Moon, and nodes. */
+/** Bodies that retrograde; Lilith, the mean apogee, never stations. */
 export const retrogradeBodies = [
   "mercury",
   "venus",
@@ -76,7 +76,6 @@ export const retrogradeBodies = [
   "neptune",
   "pluto",
   "chiron",
-  "lilith",
   "ceres",
   "pallas",
   "juno",

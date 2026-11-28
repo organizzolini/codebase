@@ -13,6 +13,8 @@ export interface PipelineWindow {
   perfective: DetectedCalendarEvent[];
   /** Span events the progressive pass built from the perfective ones. */
   progressive: DetectedCalendarEvent[];
+  /** What a run stores: every span, and the instants no span starts or ends on, sorted by start time. */
+  stored: DetectedCalendarEvent[];
 }
 
 /** How a sweep differs from running every detector. */

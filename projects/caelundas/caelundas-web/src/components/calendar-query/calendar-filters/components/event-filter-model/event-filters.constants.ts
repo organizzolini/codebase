@@ -17,10 +17,8 @@ export const TAG_OPERATORS = {
  */
 export const DERIVED_FIELD_IDS = {
   date: "date",
-  duration: "duration",
   durationMinutes: "duration-minutes",
   hour: "hour",
-  temporality: "temporality",
   text: "text",
   weekday: "weekday",
 } as const;
@@ -48,44 +46,24 @@ export const DERIVED_OPERATORS = {
 } as const;
 
 /**
- * The duration buckets, each a closed range of whole minutes.
+ * The weekdays from Sunday, each with the planet it is named for.
  */
-export const DURATION_BUCKETS: readonly {
-  label: string;
-  maximum: number;
-  minimum: number;
-  value: string;
-}[] = [
-  { label: "Instant", maximum: 0, minimum: 0, value: "instant" },
-  { label: "Minutes", maximum: 59, minimum: 1, value: "minutes" },
-  { label: "Hours", maximum: 1439, minimum: 60, value: "hours" },
-  { label: "Days", maximum: 10_079, minimum: 1440, value: "days" },
-  { label: "Weeks", maximum: 43_199, minimum: 10_080, value: "weeks" },
-  {
-    label: "Months",
-    maximum: Number.MAX_SAFE_INTEGER,
-    minimum: 43_200,
-    value: "months",
-  },
+export const WEEKDAYS: readonly (readonly [string, string])[] = [
+  ["Sunday", "The Sun's day"],
+  ["Monday", "The Moon's day"],
+  ["Tuesday", "Mars's day"],
+  ["Wednesday", "Mercury's day"],
+  ["Thursday", "Jupiter's day"],
+  ["Friday", "Venus's day"],
+  ["Saturday", "Saturn's day"],
 ];
 
 /**
  * The days of the week, numbered from Sunday, the API's numbering.
  */
-export const WEEKDAY_LABELS: readonly string[] = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
-/**
- * The values the temporality field offers, as the derived view names them.
- */
-export const TEMPORALITIES: readonly string[] = ["Instant", "Duration"];
+export const WEEKDAY_LABELS: readonly string[] = WEEKDAYS.map(
+  ([label]) => label,
+);
 
 /**
  * Numeric field operators: equality, orderings, and a range.
@@ -100,37 +78,3 @@ export const NUMBER_OPERATORS = {
   neq: "neq",
   notBetween: "not_between",
 } as const;
-
-/**
- * What each tag root means; unlisted roots show their name.
- */
-export const TAG_ROOT_DESCRIPTIONS: Readonly<Record<string, string>> = {
-  "Aspect Harmonic":
-    "The harmonic of an aspect: 1 for a conjunction, 2 an opposition, 3 a trine, 4 a square, and so on",
-  "Aspect Nature": "Whether an aspect is hard, soft or neutral",
-  "Body Class":
-    "The class of body involved: a luminary, a personal, social or outer planet, an asteroid, a node or a point",
-  Decan: "The ten-degree third of a sign a body is in",
-  Dignity:
-    "How strongly a planet sits in its sign: domicile, exaltation, detriment, fall or peregrine",
-  Domain: "Whether the event belongs to the solar, lunar or planetary sphere",
-  "Eclipse Frame":
-    "What an eclipse is measured from: the Earth's center or the observer's visibility",
-  Element: "The element of a sign: fire, earth, air or water",
-  "Focal Body":
-    "The body a pattern points at: the apex of a T-square, a yod or a kite",
-  "Lunar Phase":
-    "The Moon's phase: new, a crescent, a quarter, gibbous or full",
-  Modality: "The modality of a sign: cardinal, fixed or mutable",
-  Motion: "Whether a planet turns retrograde or direct at a station",
-  Phase:
-    "Where an event sits in its span: forming, perfective, dissolving, and so on",
-  Planet: "The planets, luminaries and other bodies the event involves",
-  Polarity: "The polarity of a sign: positive or negative",
-  Season: "The season of the year",
-  Sign: "The zodiac sign a body is in",
-  "Synodic Stage":
-    "A planet's stage in its cycle with the Sun: brightest, elongation, rise and set",
-  "Time of Day": "Whether it falls in the morning or the evening",
-  Type: "What kind of event it is: an aspect, an ingress, a station, an eclipse, a cycle, a twilight…",
-};

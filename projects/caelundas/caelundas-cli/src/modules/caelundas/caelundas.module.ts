@@ -13,7 +13,6 @@ import { SpecialtyAspectsModule } from "../aspects/modules/specialty-aspects/spe
 import { StelliumModule } from "../aspects/modules/stellium/stellium.module";
 import { TripleAspectsModule } from "../aspects/modules/triple-aspects/triple-aspects.module";
 import { CalendarEventsModule } from "../calendar-events/calendar-events.module";
-import { CalendarModule } from "../calendar/calendar.module";
 import { EphemerisModule } from "../ephemeris/ephemeris.module";
 import { MathModule } from "../ephemeris/modules/math/math.module";
 import { InputModule } from "../input/input.module";
@@ -44,7 +43,6 @@ import { CaelundasCommand } from "./caelundas.command";
     InputModule,
     MathModule,
     EphemerisModule,
-    CalendarModule,
     CaelundasDatabaseModule,
     CalendarEventsModule,
     AspectsModule,

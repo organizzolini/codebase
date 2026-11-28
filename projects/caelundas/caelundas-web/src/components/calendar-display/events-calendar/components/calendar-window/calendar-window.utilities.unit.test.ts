@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { isDayShown, parseCalendarDate } from "./calendar-window.utilities";
+import {
+  getViewWindows,
+  isDayShown,
+  parseCalendarDate,
+} from "./calendar-window.utilities";
 
 const THURSDAY = parseCalendarDate("2026-10-22", new Date());
 
@@ -15,15 +19,6 @@ describe(isDayShown, () => {
     expect(isDayShown("2026-10-23", { anchor: THURSDAY, view: "day" })).toBe(
       false,
     );
-  });
-
-  it("shows the three days from the one it opens on", () => {
-    expect(
-      isDayShown("2026-10-24", { anchor: THURSDAY, view: "three-day" }),
-    ).toBe(true);
-    expect(
-      isDayShown("2026-10-25", { anchor: THURSDAY, view: "three-day" }),
-    ).toBe(false);
   });
 
   it("shows the whole week around the day it opens on", () => {
@@ -53,19 +48,34 @@ describe(isDayShown, () => {
     );
   });
 
-  it("follows the agenda's days and the timeline's scale", () => {
+  it("gives the Charts and Totals the table's days", () => {
+    const options = { agendaDays: 14 };
+    const table = getViewWindows("table", THURSDAY, options);
+
+    expect(getViewWindows("charts", THURSDAY, options)).toStrictEqual(table);
+    expect(getViewWindows("totals", THURSDAY, options)).toStrictEqual(table);
     expect(
       isDayShown("2026-11-10", {
         anchor: THURSDAY,
         options: { agendaDays: 30 },
-        view: "agenda",
+        view: "charts",
+      }),
+    ).toBe(true);
+  });
+
+  it("follows the table's days and the timeline's scale", () => {
+    expect(
+      isDayShown("2026-11-10", {
+        anchor: THURSDAY,
+        options: { agendaDays: 30 },
+        view: "table",
       }),
     ).toBe(true);
     expect(
       isDayShown("2026-12-30", {
         anchor: THURSDAY,
         options: { agendaDays: 30 },
-        view: "agenda",
+        view: "table",
       }),
     ).toBe(false);
     expect(

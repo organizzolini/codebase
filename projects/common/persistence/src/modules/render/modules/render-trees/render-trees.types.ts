@@ -7,6 +7,18 @@ import type {
 } from "../render-options/render-options.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
+/** The edge table of a graph tree, names escaped. */
+export interface GraphTreeEdge {
+  /** The edge table, schema-qualified when its entity names a schema. */
+  readonly from: string;
+
+  /** The column of the parent. */
+  readonly source: string;
+
+  /** The column of the child. */
+  readonly target: string;
+}
+
 /** Caps on the drawn tree, as for any graph. */
 export type GraphTreeLimits = GraphLimits;
 
@@ -30,13 +42,22 @@ export interface GraphTreeRead {
 
 /** One row of a tree table, reduced to what a diagram draws. */
 export interface GraphTreeRow {
+  /** The row's lucide icon slug, when the entity has the property and the row a value. */
+  readonly icon?: string | undefined;
+
   /** The row's primary key, as text. */
   readonly id: string;
 
   /** The row's `name` column, or its primary key when it has none. */
   readonly label: string;
 
-  /** The primary key of the row's parent; `undefined` for a root. */
+  /** The row's note, when the entity has the property and the row a value. */
+  readonly note?: string | undefined;
+
+  /** The other parents of a row in a graph, whose nodes may have several; empty or absent for a tree. */
+  readonly otherParentIds?: readonly string[] | undefined;
+
+  /** The primary key of the row's parent, the first of its parents in a graph; `undefined` for a root. */
   readonly parentId: string | undefined;
 }
 
@@ -57,8 +78,14 @@ export interface GraphTreeSql {
 
 /** The escaped SQL names a tree table is read by. */
 export interface GraphTreeTable {
+  /** The edge table, when the rows are the nodes of a graph and not a `@Tree`. */
+  readonly edge?: GraphTreeEdge | undefined;
+
   /** The table, schema-qualified when its entity names a schema. */
   readonly from: string;
+
+  /** The icon column's escaped name, when the entity has the property. */
+  readonly icon?: string | undefined;
 
   /** The primary key column. */
   readonly id: string;
@@ -68,6 +95,9 @@ export interface GraphTreeTable {
 
   /** The entity's metadata, for its tree columns. */
   readonly metadata: EntityMetadata;
+
+  /** The note column's escaped name, when the entity has the property. */
+  readonly note?: string | undefined;
 }
 
 /** The ids a walk shows, and the truncations it made. */

@@ -124,6 +124,20 @@ describe(toGlyphParts, () => {
     ]);
   });
 
+  it("draws each stellium of seven bodies or more, and Beltane, as its own icon", () => {
+    expect(
+      ["🌠", "✴️", "✳️", "❇️", "🎇", "🎆", "🌼"].map((symbol) => files(symbol)),
+    ).toStrictEqual([
+      ["septuple-stellium-icon.png"],
+      ["octuple-stellium-icon.png"],
+      ["nonuple-stellium-icon.png"],
+      ["decuple-stellium-icon.png"],
+      ["undecuple-stellium-icon.png"],
+      ["duodecuple-stellium-icon.png"],
+      ["beltane-icon.png"],
+    ]);
+  });
+
   it("draws an undecile as its own icon", () => {
     expect(files("⬅️ ♆ U ☊")).toContain("undecile-32.7-icon.svg");
   });

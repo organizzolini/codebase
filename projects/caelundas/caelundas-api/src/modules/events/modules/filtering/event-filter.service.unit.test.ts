@@ -174,6 +174,20 @@ describe(EventFilterService, () => {
         ).toContain("(not (exists");
       });
 
+      it("reads the tags an event carries from the source it is given", () => {
+        expect.hasAssertions();
+
+        const compiled = service.compile(
+          group("and", [rule(TAG_PATH, "is_any_of", [MARS])]),
+          2,
+          "select m.tag_id from unnest(e.tag_ids) as m (tag_id) where m.tag_id = any({tags}::uuid[])",
+        );
+
+        expect(compiled?.sql).toContain("unnest(e.tag_ids)");
+        expect(compiled?.sql).toContain("any($3::uuid[])");
+        expect(compiled?.sql).not.toContain("calendar_event_tags");
+      });
+
       it("compares the numbers its tags are named for", () => {
         expect.hasAssertions();
 

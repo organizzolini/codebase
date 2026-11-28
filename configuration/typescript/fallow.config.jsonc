@@ -336,6 +336,19 @@
         "unused-files": "off",
       },
     },
+    {
+      // Vendored ReUI and shadcn source is composed here and never edited, so
+      // a property it declares and does not read is upstream's, not ours to remove.
+      // Only this rule is off: the files stay entry points, so their imports
+      // and exports are still checked.
+      "files": [
+        "projects/common/presentation/src/components/reui/**",
+        "projects/common/presentation/src/components/ui/**",
+      ],
+      "rules": {
+        "unused-component-props": "off",
+      },
+    },
   ],
   "publicPackages": [],
   // The dead-code rules knip also gates on are errors, because

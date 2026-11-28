@@ -5,6 +5,7 @@ Dependency graphs exported by [codependix](https://github.com/Organizzolini/code
 ### Nx Neighborhood
 
 <!-- codependix:start name="codependix-nx-projects" -->
+
 ```mermaid
 graph LR
   caelundas_api["caelundas-api"]
@@ -21,11 +22,13 @@ graph LR
   classDef subject fill:#7c3aed,color:#fff,stroke:#4c1d95,stroke-width:2px
   class caelundas_db subject
 ```
+
 <!-- codependix:end name="codependix-nx-projects" -->
 
 ### NestJS Module Graph
 
 <!-- codependix:start name="codependix-nestjs-modules" -->
+
 ```mermaid
 flowchart LR
   CaelundasDatabaseModule
@@ -35,11 +38,13 @@ flowchart LR
   CaelundasDatabaseModule --> TypeOrmModule
   PostgresqlModule --> TypeOrmModule
 ```
+
 <!-- codependix:end name="codependix-nestjs-modules" -->
 
 ### File Imports
 
 <!-- codependix:start name="codependix-file-imports" -->
+
 ```mermaid
 graph LR
   file_configuration_callidescope_config_ts["configuration/callidescope.config.ts"]
@@ -113,4 +118,5 @@ graph LR
   file_src_modules_caelundas_database_modules_night_sky_star_entity_ts --> file_src_modules_caelundas_database_caelundas_database_utilities_ts
   file_src_modules_caelundas_database_modules_tags_tag_node_entity_ts --> file_src_modules_caelundas_database_caelundas_database_utilities_ts
 ```
+
 <!-- codependix:end name="codependix-file-imports" -->

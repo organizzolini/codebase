@@ -3,6 +3,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
+import { ElongationSpansService } from "./modules/elongation/elongation-spans.service";
 import { MartianPhaseService } from "./modules/martian/martian-phase.service";
 import { MercurianPhaseService } from "./modules/mercurian/mercurian-phase.service";
 import { VenusianPhaseService } from "./modules/venusian/venusian-phase.service";
@@ -94,8 +95,6 @@ describe(PhasesService, () => {
   const martianPhaseService = {
     getMartianPhaseEvents:
       vi.fn<MartianPhaseService["getMartianPhaseEvents"]>(),
-    getMartianPhaseProgressiveEvents:
-      vi.fn<MartianPhaseService["getMartianPhaseProgressiveEvents"]>(),
   };
 
   const testingModuleOptions = {
@@ -111,6 +110,10 @@ describe(PhasesService, () => {
       {
         provide: MartianPhaseService,
         useValue: martianPhaseService,
+      },
+      {
+        provide: ElongationSpansService,
+        useValue: { detectProgressive: () => [] },
       },
     ],
   };
@@ -175,19 +178,12 @@ describe(PhasesService, () => {
         "Planetary Phase",
         "Mercurian",
       ]);
-      const martianProgressiveEvent = createEvent("Mars Morning Star", [
-        "Planetary Phase",
-        "Martian",
-      ]);
 
       venusianPhaseService.getVenusianPhaseProgressiveEvents.mockReturnValue([
         venusianProgressiveEvent,
       ]);
       mercurianPhaseService.getMercurianPhaseProgressiveEvents.mockReturnValue([
         mercurianProgressiveEvent,
-      ]);
-      martianPhaseService.getMartianPhaseProgressiveEvents.mockReturnValue([
-        martianProgressiveEvent,
       ]);
 
       const result = service.detectProgressive([
@@ -203,13 +199,9 @@ describe(PhasesService, () => {
       expect(
         mercurianPhaseService.getMercurianPhaseProgressiveEvents,
       ).toHaveBeenCalledTimes(1);
-      expect(
-        martianPhaseService.getMartianPhaseProgressiveEvents,
-      ).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual([
         venusianProgressiveEvent,
         mercurianProgressiveEvent,
-        martianProgressiveEvent,
       ]);
     });
 
@@ -220,7 +212,6 @@ describe(PhasesService, () => {
       mercurianPhaseService.getMercurianPhaseProgressiveEvents.mockReturnValue(
         [],
       );
-      martianPhaseService.getMartianPhaseProgressiveEvents.mockReturnValue([]);
 
       const result = service.detectProgressive([
         createEvent("Unrelated Event", ["Astronomy"]),

@@ -10,7 +10,18 @@ import { CalendarService } from "../../../calendar/calendar.service";
 import { EphemerisService } from "../../../ephemeris/ephemeris.service";
 
 import { LunarApsidesService } from "./lunar-apsides.service";
-import { ELONGATION_BY_LUNAR_PHASE } from "./monthly-lunar-cycle.constants";
+import {
+  ELONGATION_BY_LUNAR_PHASE,
+  LUNAR_ADVANCING_DESCRIPTION,
+  LUNAR_ADVANCING_SUMMARY,
+  LUNAR_ADVANCING_TAG,
+  LUNAR_APOGEE_TAG,
+  LUNAR_APSIDES_BASE_TAGS,
+  LUNAR_PERIGEE_TAG,
+  LUNAR_RETREATING_DESCRIPTION,
+  LUNAR_RETREATING_SUMMARY,
+  LUNAR_RETREATING_TAG,
+} from "./monthly-lunar-cycle.constants";
 
 import type { LunarPhase } from "../../../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
@@ -73,6 +84,49 @@ export class MonthlyLunarCycleService {
       return null;
     }
     return lunarPhaseLower;
+  }
+
+  /**
+   * Pairs each apsis with the next: the Moon advances from apogee to perigee
+   * and retreats from perigee to apogee.
+   */
+  private getApsisProgressiveEvents(
+    events: DetectedCalendarEvent[],
+  ): DetectedCalendarEvent[] {
+    const apsides = _.sortBy(
+      events.filter((event) => event.tags.includes("Lunar Apsides")),
+      (event) => event.start.valueOf(),
+    );
+
+    return apsides.slice(0, -1).flatMap((beginning, index) => {
+      const ending = apsides[index + 1];
+      const isApogee = beginning.tags.includes(LUNAR_APOGEE_TAG);
+      const isFollowedByOther =
+        ending?.tags.includes(
+          isApogee ? LUNAR_PERIGEE_TAG : LUNAR_APOGEE_TAG,
+        ) === true;
+
+      if (ending === undefined || !isFollowedByOther) {
+        return [];
+      }
+
+      return [
+        {
+          description: isApogee
+            ? LUNAR_ADVANCING_DESCRIPTION
+            : LUNAR_RETREATING_DESCRIPTION,
+          end: ending.start,
+          start: beginning.start,
+          summary: isApogee
+            ? LUNAR_ADVANCING_SUMMARY
+            : LUNAR_RETREATING_SUMMARY,
+          tags: [
+            ...LUNAR_APSIDES_BASE_TAGS,
+            isApogee ? LUNAR_ADVANCING_TAG : LUNAR_RETREATING_TAG,
+          ],
+        },
+      ];
+    });
   }
 
   /**
@@ -229,8 +283,8 @@ export class MonthlyLunarCycleService {
   }
 
   /**
-   * Pairs consecutive lunar phase events into progressive spans: the time spent
-   * in each phase, roughly 3.7 days on average.
+   * Pairs consecutive lunar phases into spans, and apsides into the Moon's
+   * advancing and retreating.
    */
   detectProgressive(events: DetectedCalendarEvent[]): DetectedCalendarEvent[] {
     const progressiveEvents: DetectedCalendarEvent[] = [];
@@ -264,6 +318,6 @@ export class MonthlyLunarCycleService {
       progressiveEvents.push(durationEvent);
     }
 
-    return progressiveEvents;
+    return [...progressiveEvents, ...this.getApsisProgressiveEvents(events)];
   }
 }

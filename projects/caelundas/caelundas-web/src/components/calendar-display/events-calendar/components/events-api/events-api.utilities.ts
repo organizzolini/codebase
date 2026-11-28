@@ -3,6 +3,8 @@ import { z } from "zod";
 
 import {
   DatasetDocument,
+  EventMetricCatalogDocument,
+  EventMetricsDocument,
   EventsDocument,
   FacetsDocument,
   PresetsDocument,
@@ -17,10 +19,13 @@ import {
 } from "./events-api.constants";
 
 import type {
+  EventMetricCatalogQuery,
+  EventMetricsInput,
   EventsQuery,
   FacetsQuery,
   PresetsQuery,
 } from "../../../../../graphql/generated/operations";
+import type { EventMetricsData } from "../../../calendar-metrics/calendar-metrics.types";
 import type {
   CalendarEventRecord,
   EventFacet,
@@ -50,6 +55,17 @@ export async function describeDataset(): Promise<EventsDataset | null> {
         start: new Date(dataset.start),
         timezone: dataset.timezone,
       };
+}
+
+/**
+ * Reads a period's event metrics, for the whole set and each group, with the previous period's when asked.
+ */
+export async function findEventMetrics(
+  input: EventMetricsInput,
+): Promise<EventMetricsData> {
+  const { eventMetrics } = await queryApi(EventMetricsDocument, { input });
+
+  return eventMetrics;
 }
 
 /**
@@ -85,6 +101,17 @@ export async function findFacets(period?: Period): Promise<EventFacet[]> {
   });
 
   return facets;
+}
+
+/**
+ * Reads the catalog of metrics the API measures: what each is called, shows, measures and how it adds up.
+ */
+export async function findMetricCatalog(): Promise<
+  EventMetricCatalogQuery["eventMetricCatalog"]
+> {
+  const { eventMetricCatalog } = await queryApi(EventMetricCatalogDocument, {});
+
+  return eventMetricCatalog;
 }
 
 /**
@@ -162,15 +189,14 @@ function toEventRecord(
   event: EventsQuery["events"][number],
 ): CalendarEventRecord {
   return {
-    color: event.color,
-    description: event.description,
+    color: null,
     durationMinutes: event.durationMinutes,
     end: new Date(event.end),
     groups: event.groups,
     id: event.id,
-    location: event.location,
+    name: event.name,
+    note: event.note,
     start: new Date(event.start),
-    summary: event.summary,
     tags: event.tags,
     timezone: event.timezone,
   };

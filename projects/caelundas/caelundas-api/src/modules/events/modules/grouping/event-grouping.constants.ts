@@ -1,13 +1,14 @@
 import { z } from "zod";
 
 import { DURATION_BUCKETS } from "../filtering/modules/query-building/event-filter-fields.constants";
+import { UUID_PATTERN } from "../filtering/modules/values/event-filter-values.constants";
 
 import type { EventGroupLevel } from "./event-grouping.types";
 
 // ♟️ Constants
 
 /** Most levels a grouping nests, not counting the color level. */
-export const MAXIMUM_GROUP_LEVELS = 3;
+export const MAXIMUM_GROUP_LEVELS = 16;
 
 /**
  * The deepest a tag grouping may reach beneath its root.
@@ -51,24 +52,34 @@ export const CALENDAR_GROUP_KEY_SQL: Readonly<
   quarter: `substr(e.start_local_day, 1, 4) || '-Q' || ((substr(e.start_local_day, 6, 2)::integer + 2) / 3)::text`,
   // The Sunday the week starts on, as the calendar draws weeks.
   week: "(e.start_local_day::date - extract(dow from e.start_local_day::date)::integer)::text",
-  weekday: `extract(dow from e."start" at time zone e.timezone)::integer::text`,
+  weekday: "extract(dow from e.start_local_day::date)::integer::text",
   year: "substr(e.start_local_day, 1, 4)",
 };
 
 /**
  * One derived group key for the event `e`, in place of `{key}`.
  */
-export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, null::text as "path"`;
+export const CALENDAR_GROUP_SQL = `select {key} as "key", null::text as label, null::text as "path", null::text as "rank"`;
 
 /** Puts every event in no group, for an unknown field. */
-export const NO_GROUP_SQL = `select null::text as "key", null::text as label, null::text as "path" where false`;
+export const NO_GROUP_SQL = `select null::text as "key", null::text as label, null::text as "path", null::text as "rank" where false`;
 
+/** Ids of every tag event `e` carries, ancestors included. */
+const EVENT_NODE_IDS_SQL = `(
+      select c.ancestor_id
+      from calendar_event_tags et
+      join tag_trees c on c.descendant_id = et.tag_id
+      where et.calendar_event_id = e.id
+    )`;
+
+// A tag with several parents has a row a path, and a key is one group a level, so each level keeps the
+// path whose depth is the level's, else the first by rank.
 /** Tags an event falls under at a depth; shallower leaves count. */
 export const TAG_GROUP_SQL = `
-  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path"
-  from calendar_event_tag_nodes t
+  select distinct on (t.tag_id) t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path", t.tag_rank as "rank"
+  from tag_paths t
   where
-    t.calendar_event_id = e.id
+    t.tag_id in ${EVENT_NODE_IDS_SQL}
     and t.tag_root_id::text = {root}
     and t.tag_depth > 0
     and (
@@ -77,8 +88,8 @@ export const TAG_GROUP_SQL = `
         t.tag_depth < {depth}::bigint
         and not exists (
           select 1
-          from calendar_event_tag_nodes x
-          join tags_closure c on c.descendant_id = x.tag_id
+          from calendar_event_tags x
+          join tag_trees c on c.descendant_id = x.tag_id
           where
             x.calendar_event_id = e.id
             and c.ancestor_id = t.tag_id
@@ -86,13 +97,24 @@ export const TAG_GROUP_SQL = `
         )
       )
     )
+  order by t.tag_id, (t.tag_depth = {depth}::bigint) desc, t.tag_rank collate "C"
+`;
+
+/** The children of a tag an event carries, under that tag's path. */
+export const PARENT_TAG_GROUP_SQL = `
+  select distinct on (t.tag_id) t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path", t.tag_rank as "rank"
+  from tag_paths t
+  where
+    t.tag_id in ${EVENT_NODE_IDS_SQL}
+    and t.tag_parent_id = {parent}::uuid
+  order by t.tag_id, t.tag_rank collate "C"
 `;
 
 /** Picked tags an event falls under, including every ancestor tag. */
 export const PICKED_TAG_GROUP_SQL = `
-  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path"
-  from calendar_event_tag_nodes t
-  where t.calendar_event_id = e.id and t.tag_id = any({tags}::uuid[])
+  select t.tag_id::text as "key", t.tag_name as label, t.tag_path as "path", t.tag_rank as "rank"
+  from tag_info t
+  where t.tag_id = any({tags}::uuid[]) and t.tag_id in ${EVENT_NODE_IDS_SQL}
 `;
 
 /** Gathers a level's rows into JSON; unknown keys mean no group. */
@@ -100,7 +122,12 @@ export const GROUP_COLUMN_SQL = `,
     coalesce(
       (
         select json_agg(
-          json_build_object('key', g."key", 'label', g.label, 'path', g."path")
+          json_build_object(
+            'key', g."key",
+            'label', g.label,
+            'rank', g."rank",
+            'path', g."path"
+          )
           order by g."path" collate "C", g."key" collate "C"
         )
         from ({source}) g
@@ -119,6 +146,11 @@ export const eventGroupLevelSchema: z.ZodType<EventGroupLevel> = z.object({
     .nullish()
     .transform((depth) => depth ?? undefined),
   field: z.string().max(MAXIMUM_GROUP_FIELD_LENGTH),
+  parent: z
+    .string()
+    .regex(UUID_PATTERN)
+    .nullish()
+    .transform((parent) => parent ?? undefined),
   tags: z
     .array(z.string())
     .max(MAXIMUM_GROUP_TAGS)

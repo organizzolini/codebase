@@ -52,7 +52,6 @@ describe(InputService, () => {
         END_DATE: "2025-01-02",
         LATITUDE: "40.7128",
         LONGITUDE: "-74.006",
-        OUTPUT_DIRECTORY: "./out",
         START_DATE: "2025-01-01",
       });
 
@@ -60,13 +59,6 @@ describe(InputService, () => {
       expect(environment.LONGITUDE).toBe(-74.006);
       expect(environment.START_DATE).toBe("2025-01-01");
       expect(environment.END_DATE).toBe("2025-01-02");
-      expect(environment.OUTPUT_DIRECTORY).toBe("./out");
-    });
-
-    it("defaults OUTPUT_DIRECTORY to ./output when omitted", () => {
-      const environment = environmentSchema.parse({});
-
-      expect(environment.OUTPUT_DIRECTORY).toBe("./output");
     });
 
     it("coerces string coordinates to numbers", () => {

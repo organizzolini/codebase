@@ -1,3 +1,8 @@
+import { parseMetrics } from "../../components/calendar-display/calendar-metrics/calendar-metrics.utilities";
+import {
+  parseAllDayMode,
+  toAllDaySearch,
+} from "../../components/calendar-display/events-calendar/components/calendar-grid/components/calendar-all-day/calendar-all-day.utilities";
 import {
   parseCalendarView,
   parseTimelineScale,
@@ -5,10 +10,15 @@ import {
 import { parseCalendarSymbols } from "../../components/calendar-events/event-glyphs/calendar-symbols.utilities";
 import { normalizeEventFilter } from "../../components/calendar-query/calendar-filters/components/event-filter-model/event-filter-tree.utilities";
 import { MAXIMUM_GROUP_LEVELS } from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.constants";
+import {
+  parseFoldedStrips,
+  toFoldSearch,
+} from "../../components/calendar-query/calendar-group-strip/components/strip-fold-button/strip-fold-button.utilities";
 
 import {
   agendaDaysSchema,
   calendarDateSchema,
+  columnsSchema,
   filterGroupSchema,
   groupLevelSchema,
   groupSortsSchema,
@@ -21,12 +31,19 @@ import type { GroupSort } from "../../components/calendar-query/calendar-group-s
 import type { CalendarSearch, SkySearchValue } from "./calendar-search.types";
 
 /**
- * The loader's result depends on the calendar's own search, so the route reloads for a calendar change, not a sky one.
+ * The route reloads for a calendar's search change, not a sky, metrics, hidden-groups or folded-strips one, which the layouts and strips read themselves.
  */
 export function getCalendarReloadKey(
   search: Readonly<Record<string, unknown>>,
 ): string {
-  return JSON.stringify(readCalendarSearch(search));
+  return JSON.stringify({
+    ...readCalendarSearch(search),
+    ad: undefined,
+    compare: undefined,
+    fold: undefined,
+    hideEmpty: undefined,
+    metrics: undefined,
+  });
 }
 
 /**
@@ -38,23 +55,22 @@ export function readCalendarSearch(
   const filter = filterGroupSchema.safeParse(search["filter"]).data;
 
   return {
-    clusters:
-      search["clusters"] === false || search["clusters"] === "false"
-        ? false
-        : undefined,
-    color: groupLevelSchema.safeParse(search["color"]).data,
-    colors:
-      search["colors"] === false || search["colors"] === "false"
-        ? false
+    ...readDisplaySearch(search),
+    ad: toAllDaySearch(parseAllDayMode(search["ad"]) ?? "grouped"),
+    compare:
+      search["compare"] === true || search["compare"] === "true"
+        ? true
         : undefined,
     date: calendarDateSchema.safeParse(search["date"]).data,
     days: agendaDaysSchema.safeParse(search["days"]).data,
     filter: filter === undefined ? undefined : normalizeEventFilter(filter),
     group: parseGrouping(search["group"]),
-    scale: parseTimelineScale(search["scale"]),
+    hideEmpty:
+      search["hideEmpty"] === true || search["hideEmpty"] === "true"
+        ? true
+        : undefined,
+    metrics: parseMetrics(search["metrics"]),
     sort: parseSorts(search["sort"]),
-    symbols: parseCalendarSymbols(search["symbols"]),
-    view: parseCalendarView(search["view"]),
   };
 }
 
@@ -66,38 +82,56 @@ export function validateCalendarSearch(
 ): CalendarSearch {
   return {
     ...readCalendarSearch(search),
-    sky: parseSkyValue(search["sky"]),
-    "sky.altBottom": parseSkyValue(search["sky.altBottom"]),
-    "sky.bottom": parseSkyValue(search["sky.bottom"]),
-    "sky.constellations": parseSkyValue(search["sky.constellations"]),
-    "sky.debug": parseSkyValue(search["sky.debug"]),
-    "sky.ecliptic": parseSkyValue(search["sky.ecliptic"]),
-    "sky.eclipticColor": parseSkyValue(search["sky.eclipticColor"]),
-    "sky.eclipticOpacity": parseSkyValue(search["sky.eclipticOpacity"]),
-    "sky.eclipticWidth": parseSkyValue(search["sky.eclipticWidth"]),
-    "sky.lat": parseSkyValue(search["sky.lat"]),
-    "sky.lineColor": parseSkyValue(search["sky.lineColor"]),
-    "sky.lineOpacity": parseSkyValue(search["sky.lineOpacity"]),
-    "sky.lineWidth": parseSkyValue(search["sky.lineWidth"]),
-    "sky.lon": parseSkyValue(search["sky.lon"]),
-    "sky.maxMag": parseSkyValue(search["sky.maxMag"]),
-    "sky.opacity": parseSkyValue(search["sky.opacity"]),
-    "sky.pixelsPerSecond": parseSkyValue(search["sky.pixelsPerSecond"]),
-    "sky.starScale": parseSkyValue(search["sky.starScale"]),
-    "sky.surfaceOpacity": parseSkyValue(search["sky.surfaceOpacity"]),
-    "sky.top": parseSkyValue(search["sky.top"]),
-    "sky.vFov": parseSkyValue(search["sky.vFov"]),
+    skyfield: readSkyValue(search, "skyfield"),
+    "skyfield.altBottom": readSkyValue(search, "skyfield.altBottom"),
+    "skyfield.bottom": readSkyValue(search, "skyfield.bottom"),
+    "skyfield.constellations": readSkyValue(search, "skyfield.constellations"),
+    "skyfield.debug": readSkyValue(search, "skyfield.debug"),
+    "skyfield.ecliptic": readSkyValue(search, "skyfield.ecliptic"),
+    "skyfield.eclipticColor": readSkyValue(search, "skyfield.eclipticColor"),
+    "skyfield.eclipticOpacity": readSkyValue(
+      search,
+      "skyfield.eclipticOpacity",
+    ),
+    "skyfield.eclipticWidth": readSkyValue(search, "skyfield.eclipticWidth"),
+    "skyfield.lat": readSkyValue(search, "skyfield.lat"),
+    "skyfield.lineColor": readSkyValue(search, "skyfield.lineColor"),
+    "skyfield.lineOpacity": readSkyValue(search, "skyfield.lineOpacity"),
+    "skyfield.lineWidth": readSkyValue(search, "skyfield.lineWidth"),
+    "skyfield.lon": readSkyValue(search, "skyfield.lon"),
+    "skyfield.maxMag": readSkyValue(search, "skyfield.maxMag"),
+    "skyfield.opacity": readSkyValue(search, "skyfield.opacity"),
+    "skyfield.pixelsPerSecond": readSkyValue(
+      search,
+      "skyfield.pixelsPerSecond",
+    ),
+    "skyfield.starScale": readSkyValue(search, "skyfield.starScale"),
+    "skyfield.top": readSkyValue(search, "skyfield.top"),
+    "skyfield.vFov": readSkyValue(search, "skyfield.vFov"),
   };
 }
 
 /**
- * Reads a grouping from the link, dropping unparsable levels and keeping at most the levels a grouping nests.
+ * Reads the table's columns from the link, one value or a list; none when there are none.
+ */
+function parseColumns(value: unknown): string[] | undefined {
+  const columns = columnsSchema.safeParse(
+    Array.isArray(value) ? value : [value],
+  ).data;
+
+  return columns === undefined || columns.length === 0 ? undefined : columns;
+}
+
+/**
+ * Reads a grouping from the link, dropping unparsable levels, keeping at most the levels a grouping nests; none when there are none.
  */
 function parseGrouping(value: unknown): EventGrouping | undefined {
-  return levelsSchema
+  const levels = levelsSchema
     .safeParse(value)
     .data?.flatMap((level) => groupLevelSchema.safeParse(level).data ?? [])
     .slice(0, MAXIMUM_GROUP_LEVELS);
+
+  return levels === undefined || levels.length === 0 ? undefined : levels;
 }
 
 /**
@@ -116,4 +150,39 @@ function parseSorts(value: unknown): GroupSort[] | undefined {
   ).data;
 
   return sorts === undefined || sorts.length === 0 ? undefined : sorts;
+}
+
+/**
+ * Reads how the calendar looks: its colors, columns, folded strips, timeline scale, symbols and view.
+ */
+function readDisplaySearch(
+  search: Readonly<Record<string, unknown>>,
+): Pick<
+  CalendarSearch,
+  "colors" | "columns" | "fold" | "scale" | "symbols" | "view"
+> {
+  return {
+    colors:
+      search["colors"] === false || search["colors"] === "false"
+        ? false
+        : undefined,
+    columns: parseColumns(search["columns"]),
+    fold: toFoldSearch(parseFoldedStrips(search["fold"])),
+    scale: parseTimelineScale(search["scale"]),
+    symbols: parseCalendarSymbols(search["symbols"]),
+    view: parseCalendarView(search["view"]),
+  };
+}
+
+/**
+ * Reads a skyfield key, falling back to its old `sky` spelling, so a link from before the rename still opens.
+ */
+function readSkyValue(
+  search: Readonly<Record<string, unknown>>,
+  key: string,
+): SkySearchValue | undefined {
+  return (
+    parseSkyValue(search[key]) ??
+    parseSkyValue(search[key.replace(/^skyfield/u, "sky")])
+  );
 }

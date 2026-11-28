@@ -1,5 +1,5 @@
 import { Eye } from "lucide-react";
-import { useState } from "react";
+import { createElement, useMemo, useState } from "react";
 
 import {
   Button,
@@ -10,58 +10,74 @@ import {
 } from "@codebase/presentation";
 
 import { QueryCascader } from "../query-cascader/query-cascader";
-import { JOINED_STRIP_CLASS_NAME } from "../query-cascader/query-cascader.constants";
+import { TagIcon } from "../tag-icon/tag-icon";
 
 import {
   CHIP_CLASS_NAME,
   CUSTOM_ID,
+  CUSTOM_VIEW_ICON,
   TITLE,
 } from "./calendar-view-strip.constants";
 import {
   findActiveViewId,
-  getViewFilter,
+  getViewSelection,
   listViewChoices,
+  resolveViews,
 } from "./calendar-view-strip.utilities";
 
+import type { EventFacet } from "../../calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
 import type { EventFilterQuery } from "../calendar-filters/components/event-filter-model/event-filters.types";
-import type { ResolvedPreset } from "../calendar-filters/components/presets/presets.types";
+import type { EventGrouping } from "../calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../calendar-group-strip/components/event-group-tree/event-group-tree.types";
+import type { ViewSelection } from "./calendar-view-strip.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
 
 /**
- * The presets offered, the filter tree shown, and the selection handler.
+ * The facets, the link's filter, group and sort, and the handler.
  */
 export interface CalendarViewStripProperties {
   className?: string;
-  onSelect: (filter: EventFilterQuery) => void;
-  presets: readonly ResolvedPreset[];
+  facets: readonly EventFacet[];
+  group: EventGrouping | undefined;
+  onSelect: (selection: ViewSelection) => void;
   query: EventFilterQuery;
+  sort: readonly GroupSort[] | undefined;
 }
 
 // 🧩 Component
 
-/** Renders the View button, opening a searchable preset list, joined to a chip naming the matching preset, else Custom. */
+/** Renders the View button, opening a searchable list of views, joined to a chip naming the one the link matches, else Custom. */
 export function CalendarViewStrip(
   properties: Readonly<CalendarViewStripProperties>,
 ): ReactNode {
-  const { className, onSelect, presets, query } = properties;
+  const { className, facets, group, onSelect, query, sort } = properties;
 
   // 🪝 Hooks
   const [isOpen, setIsOpen] = useState(false);
 
+  const views = useMemo(() => resolveViews(facets), [facets]);
+
   // 🏗 Setup
-  const choices = listViewChoices(presets);
+  const choices = listViewChoices(views);
   const items = choices.map((choice) => ({
     description: choice.description,
+    icon: createElement(TagIcon, { name: choice.icon }),
     label: choice.label,
     value: choice.id,
   }));
-  const activeId = findActiveViewId(presets, query);
+  const activeId = findActiveViewId(views, {
+    filter: query,
+    group: group === undefined ? undefined : [...group],
+    sort: sort === undefined ? undefined : [...sort],
+  });
   const active =
     activeId === CUSTOM_ID
       ? "Custom"
       : choices.find((choice) => choice.id === activeId)?.label;
+  const activeIcon =
+    views.find((view) => view.id === activeId)?.icon ?? CUSTOM_VIEW_ICON;
 
   // 💪 Handlers
 
@@ -75,10 +91,7 @@ export function CalendarViewStrip(
       className={className}
       data-testid="calendar-view-strip"
     >
-      <ButtonGroup
-        aria-label="Saved view"
-        className={JOINED_STRIP_CLASS_NAME}
-      >
+      <ButtonGroup aria-label="Saved view">
         <Popover
           onOpenChange={setIsOpen}
           open={isOpen}
@@ -102,7 +115,12 @@ export function CalendarViewStrip(
             <QueryCascader
               items={items}
               onValueChange={([picked]) => {
-                onSelect(getViewFilter(presets, picked));
+                const selection = getViewSelection(views, picked);
+
+                if (selection !== undefined) {
+                  onSelect(selection);
+                  setIsOpen(false);
+                }
               }}
               placeholder="Search views"
               value={
@@ -121,6 +139,7 @@ export function CalendarViewStrip(
           size="sm"
           variant="outline"
         >
+          <TagIcon name={activeIcon} />
           {active}
         </Button>
       </ButtonGroup>

@@ -6,18 +6,13 @@ import type { UseNightSkyOpacityResult } from "./use-night-sky-opacity.types";
 
 // 🧩 Hook
 
-/** The link's sky and surface opacities, defaulted where absent; reads only those keys, so other sky changes skip a render. */
+/** The link's skyfield opacity, defaulted when absent; reads only that key, so other sky changes skip a render. */
 export function useNightSkyOpacity(): UseNightSkyOpacityResult {
   // 🪝 Hooks
   const skyOpacity = useRouterState({
     select: (state: {
       location: { search: Readonly<Record<string, unknown>> };
     }) => readNightSkyOverrides(state.location.search).skyOpacity,
-  });
-  const surfaceOpacity = useRouterState({
-    select: (state: {
-      location: { search: Readonly<Record<string, unknown>> };
-    }) => readNightSkyOverrides(state.location.search).surfaceOpacity,
   });
 
   // 🏗 Setup
@@ -27,5 +22,5 @@ export function useNightSkyOpacity(): UseNightSkyOpacityResult {
   // ♻️ Lifecycle
 
   // 🎁 Result
-  return { skyOpacity, surfaceOpacity };
+  return { skyOpacity };
 }

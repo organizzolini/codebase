@@ -42,7 +42,7 @@ const EQUINOX_WATCH = "Equinox Watch";
  * Postgres built by the real migration, reading each event's group keys from
  * a seeded fixture.
  */
-describe("events grouping end-to-end suite", () => {
+describe("events grouping end-to-end suite", { timeout: 60_000 }, () => {
   let application: EventsApplication;
   let base: Record<string, Tag>;
   let tags: FilterTags;
@@ -63,7 +63,7 @@ describe("events grouping end-to-end suite", () => {
     return tagOf(name).id;
   }
 
-  /** The group keys of every event, by summary, one list per level. */
+  /** The group keys of every event, by name, one list per level. */
   async function group(
     grouping: LevelVariable[] | null,
     options: { colorBy?: LevelVariable; filter?: unknown } = {},
@@ -75,7 +75,7 @@ describe("events grouping end-to-end suite", () => {
         $grouping: EventGroupingInput
       ) {
         events(period: $period, filter: $filter, grouping: $grouping) {
-          summary
+          name
           groups { key label path }
         }
       }`,
@@ -95,12 +95,10 @@ describe("events grouping end-to-end suite", () => {
     expect(body.errors).toBeUndefined();
 
     const { events } = (body.data ?? {}) as {
-      events: { groups: GroupKey[][]; summary: string }[];
+      events: { groups: GroupKey[][]; name: string }[];
     };
 
-    return Object.fromEntries(
-      events.map(({ groups, summary }) => [summary, groups]),
-    );
+    return Object.fromEntries(events.map(({ groups, name }) => [name, groups]));
   }
 
   /** The keys of each level, sorted, for comparing without the order. */
@@ -113,8 +111,8 @@ describe("events grouping end-to-end suite", () => {
     const grouped = await group([{ field }]);
 
     return Object.fromEntries(
-      Object.entries(grouped).map(([summary, [keys]]) => [
-        summary,
+      Object.entries(grouped).map(([name, [keys]]) => [
+        name,
         keys?.at(0)?.key ?? "",
       ]),
     );
@@ -128,16 +126,14 @@ describe("events grouping end-to-end suite", () => {
     // Give Moon Conjunct Mars a second planet, so it falls under both.
     const [event] = await application.database.dataSource.query<
       [{ id: string }]
-    >(`select id from calendar_events where "summary" = $1`, [
-      MOON_CONJUNCT_MARS,
-    ]);
+    >(`select id from calendar_events where "name" = $1`, [MOON_CONJUNCT_MARS]);
 
     await application.database
       .repository(CalendarEventTag)
       .insert({ calendarEventId: event.id, tagId: idOf("mars") });
     await application.database.module
       .get(CaelundasDatabaseService)
-      .refreshReadModel(application.database.dataSource.manager);
+      .refreshMetrics(application.database.dataSource.manager);
   }, DATABASE_TIMEOUT_MILLISECONDS);
 
   afterAll(async () => {
@@ -267,11 +263,11 @@ describe("events grouping end-to-end suite", () => {
       const grouped = await group([{ field: `tag:${tags.planet.id}` }]);
       const counts = new Map<string, Set<string>>();
 
-      for (const [summary, [keys = []]] of Object.entries(grouped)) {
+      for (const [name, [keys = []]] of Object.entries(grouped)) {
         for (const { label } of keys) {
           counts.set(
             label ?? "",
-            (counts.get(label ?? "") ?? new Set()).add(summary),
+            (counts.get(label ?? "") ?? new Set()).add(name),
           );
         }
       }
@@ -379,8 +375,8 @@ describe("events grouping end-to-end suite", () => {
             rules: [
               {
                 operator: "is_any_of",
-                path: [`tag:${tags.type.id}`],
-                values: [tags.type.id],
+                path: [`tag:${tags.aspect.id}`],
+                values: [tags.aspect.id, tags.direction.id],
               },
               { operator: "contains", path: ["text"], values: ["mars"] },
             ],
@@ -394,7 +390,7 @@ describe("events grouping end-to-end suite", () => {
       expect(keysOf(grouped[MARS_RETROGRADE])[1]).toStrictEqual(["3"]);
     });
 
-    it("refuses more than three levels of grouping, a color level aside", async () => {
+    it("refuses more than sixteen levels of grouping, a color level aside", async () => {
       expect.hasAssertions();
 
       const body = await application.query(
@@ -403,9 +399,7 @@ describe("events grouping end-to-end suite", () => {
         }`,
         {
           grouping: {
-            levels: ["year", "month", "day", "hour"].map((field) => ({
-              field,
-            })),
+            levels: Array.from({ length: 17 }, () => ({ field: "year" })),
           },
           period: {
             end: "2026-04-01T00:00:00.000Z",

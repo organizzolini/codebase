@@ -7,7 +7,7 @@ import {
   ECLIPTIC_SLIDERS,
   LINE_COLOR,
   LINE_SLIDERS,
-  OPACITY_SLIDERS,
+  OPACITY_SLIDER,
   SKY_COLORS,
   SKY_SLIDERS,
   STAR_SLIDERS,
@@ -99,13 +99,15 @@ export function createSkyItems(
   for (const choice of CONSTELLATION_CHOICES) {
     choices.push({
       label: choice.label,
+      radio: true,
       value: `constellations:${choice.value}`,
     });
   }
 
   return [
-    { label: "Show the sky", value: "sky:visible" },
-    { label: "Default sky", value: "sky:reset" },
+    { label: "Show the skyfield", value: "sky:visible" },
+    { label: "Default skyfield", value: "sky:reset" },
+    createSliderItem(OPACITY_SLIDER),
     {
       children: [
         ...choices,
@@ -124,11 +126,6 @@ export function createSkyItems(
       colors: [LINE_COLOR],
       leaves: [],
       sliders: LINE_SLIDERS,
-    }),
-    createSettingsBranch("Opacity", {
-      colors: [],
-      leaves: [],
-      sliders: OPACITY_SLIDERS,
     }),
     createSettingsBranch("Stars", {
       colors: [],
@@ -200,11 +197,7 @@ function createSettingsBranch(
   const children: CascaderNode[] = [...controls.leaves];
 
   for (const control of controls.sliders) {
-    children.push({
-      children: createStepItems(control),
-      label: control.label,
-      value: `branch:${control.key}`,
-    });
+    children.push(createSliderItem(control));
   }
 
   for (const control of controls.colors) {
@@ -219,6 +212,17 @@ function createSettingsBranch(
 }
 
 // 🌎 Public Functions
+
+/**
+ * A numeric setting as a branch of the values it offers.
+ */
+function createSliderItem(control: SkySliderControl): CascaderNode {
+  return {
+    children: createStepItems(control),
+    label: control.label,
+    value: `branch:${control.key}`,
+  };
+}
 
 /**
  * The values a numeric setting offers: evenly spaced from its least to its most, to its step.
@@ -238,6 +242,7 @@ function createStepItems(control: SkySliderControl): CascaderNode[] {
       seen.add(step);
       steps.push({
         label: `${String(step)}${control.unit}`,
+        radio: true,
         value: `setting:${control.key}=${String(step)}`,
       });
     }
@@ -260,6 +265,7 @@ function createSwatchItems(control: SkyColorControl): CascaderNode[] {
         style: { backgroundColor: swatch.value },
       }),
       label: swatch.label,
+      radio: true,
       value: `setting:${control.key}=${swatch.value}`,
     });
   }

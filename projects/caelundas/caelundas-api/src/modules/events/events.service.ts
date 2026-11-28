@@ -13,15 +13,17 @@ import {
 } from "./events.constants";
 import { EventFilterService } from "./modules/filtering/event-filter.service";
 import { EventGroupingService } from "./modules/grouping/event-grouping.service";
-import { compareNaturalPaths } from "./modules/natural-order/natural-order.utilities";
+import { compareRankedPaths } from "./modules/natural-order/natural-order.utilities";
 import { PresetsService } from "./modules/presets/presets.service";
 import { WindowsService } from "./modules/windows/windows.service";
 
 import type { EventsDatasetEntity } from "./events.entities";
+import type { EventsReadOptions } from "./events.types";
 import type { CalendarEventEntity } from "./modules/calendar-event/calendar-event.entities";
+import type { EventFacetValueEntity } from "./modules/facets/event-facet-value.entities";
 import type { EventFacetEntity } from "./modules/facets/event-facet.entities";
 import type { EventFilterGroup } from "./modules/filtering/event-filter.types";
-import type { EventGroupLevel } from "./modules/grouping/event-grouping.types";
+import type { RankedName } from "./modules/natural-order/natural-order.types";
 import type { ResolvedPreset } from "./modules/presets/presets.types";
 import type { PeriodInput } from "./modules/windows/period-input.entities";
 import type { WindowsArguments } from "./modules/windows/windows-arguments.entities";
@@ -54,10 +56,146 @@ export class EventsService {
   // 🔏 Private Methods
 
   /**
+   * Each tag's parents, by id, with the path of one appearance of each.
+   */
+  private collectParents(
+    rows: readonly z.infer<typeof facetRowSchema>[],
+  ): Map<string, Map<string, string>> {
+    const parentPaths = new Map<string, Map<string, string>>();
+
+    for (const row of rows) {
+      if (row.parent_id !== null && row.parent_path !== null) {
+        const parents = parentPaths.get(row.id) ?? new Map<string, string>();
+
+        parents.set(
+          row.parent_id,
+          parents.get(row.parent_id) ?? row.parent_path,
+        );
+        parentPaths.set(row.id, parents);
+      }
+    }
+
+    return parentPaths;
+  }
+
+  /**
+   * A tag root, with no tags beneath it yet.
+   */
+  private toFacetRoot(row: z.infer<typeof facetRowSchema>): EventFacetEntity {
+    return {
+      icon: row.icon,
+      id: row.id,
+      isDefaultGroup: row.is_default_group,
+      isFilterable: row.is_filterable,
+      isGroupable: row.is_groupable,
+      isSelectable: row.is_selectable,
+      isSortable: row.is_sortable,
+      name: row.name,
+      note: row.note,
+      slug: row.slug,
+      values: [],
+    };
+  }
+
+  /**
+   * Assembles the tag roots, each with its tags, one value a path.
+   */
+  private toFacets(
+    rows: readonly z.infer<typeof facetRowSchema>[],
+  ): EventFacetEntity[] {
+    const facets = new Map<string, EventFacetEntity>();
+    const levelsByPath = new Map<string, RankedName[]>();
+    const parentPaths = this.collectParents(rows);
+
+    // Roots in their rank, as the data orders them; one with no rank follows by name.
+    const roots = rows
+      .filter((row) => row.depth === 0)
+      .toSorted(
+        (left, right) =>
+          (left.rank === 0 ? Infinity : left.rank) -
+            (right.rank === 0 ? Infinity : right.rank) ||
+          left.name.localeCompare(right.name),
+      );
+
+    for (const root of roots) {
+      facets.set(root.id, this.toFacetRoot(root));
+    }
+
+    for (const row of rows) {
+      if (row.depth !== 0) {
+        levelsByPath.set(
+          `${row.id}\u0000${row.path_below_root}`,
+          this.toRankedLevels(row.tag_rank),
+        );
+        facets
+          .get(row.root_id)
+          ?.values.push(this.toFacetValue(row, parentPaths.get(row.id)));
+      }
+    }
+
+    for (const facet of facets.values()) {
+      facet.values.sort((left, right) =>
+        compareRankedPaths(
+          levelsByPath.get(`${left.id}\u0000${left.path}`) ?? [],
+          levelsByPath.get(`${right.id}\u0000${right.path}`) ?? [],
+        ),
+      );
+    }
+
+    return [...facets.values()];
+  }
+
+  /**
+   * One place a tag sits, naming the other parents it sits under.
+   */
+  private toFacetValue(
+    row: z.infer<typeof facetRowSchema>,
+    parents: ReadonlyMap<string, string> | undefined,
+  ): EventFacetValueEntity {
+    const otherParents = [...(parents ?? [])]
+      .filter(([parentId]) => parentId !== row.parent_id)
+      .map(([, parentPath]) => parentPath);
+
+    return {
+      alsoUnder: otherParents.toSorted(),
+      count: row.count,
+      depth: row.depth,
+      icon: row.icon,
+      id: row.id,
+      isDefaultGroup: row.is_default_group,
+      isFilterable: row.is_filterable,
+      isGroupable: row.is_groupable,
+      isSelectable: row.is_selectable,
+      isSortable: row.is_sortable,
+      name: row.name,
+      note: row.note,
+      path: row.path_below_root,
+      slug: row.slug,
+    };
+  }
+
+  /**
    * Formats an instant as the ISO 8601 text Postgres reads as a timestamptz.
    */
   private toIsoString(instant: Date | string): string {
     return new Date(instant).toISOString();
+  }
+
+  /**
+   * Each level of a rank path beneath the root, with its place among its siblings, so siblings sort as intended.
+   */
+  private toRankedLevels(rankPath: string): RankedName[] {
+    return rankPath
+      .split(" / ")
+      .slice(1)
+      .map((level) => {
+        const colon = level.indexOf(":");
+
+        return {
+          name: level.slice(colon + 1),
+          rank: Number(level.slice(0, colon)),
+        };
+      });
   }
 
   // 🌎 Public Methods
@@ -72,14 +210,15 @@ export class EventsService {
   }
 
   /**
-   * Events overlapping the period and meeting the filter, earliest first, with
-   * their tags and group keys.
+   * Events overlapping the period and meeting the filter, earliest
+   * first, with their tags and group keys.
    */
   public async findEvents(
     period: PeriodInput,
     filter?: EventFilterGroup | null,
-    grouping: readonly EventGroupLevel[] = [],
+    options: EventsReadOptions = {},
   ): Promise<CalendarEventEntity[]> {
+    const { grouping = [] } = options;
     const compiled = this.filterService.compile(filter, 2);
     const filterParameters = compiled?.parameters ?? [];
     const groups = this.groupingService.compile(
@@ -100,19 +239,17 @@ export class EventsService {
     );
 
     return rows.map((row) => ({
-      color: row.color,
-      description: row.description,
       durationMinutes: row.duration_minutes,
       end: row.end,
       groups: grouping.map((_, level) =>
         groupKeysSchema.parse(row[`group_${String(level)}`]),
       ),
       id: row.id,
-      location: row.location,
+      name: row.name,
+      note: row.note,
       start: row.start,
       startLocalDay: row.start_local_day,
       startLocalHour: row.start_local_hour,
-      summary: row.summary,
       tags: row.tags,
       timezone: row.timezone,
     }));
@@ -137,30 +274,7 @@ export class EventsService {
       ],
       facetRowSchema,
     );
-    const facets = new Map<string, EventFacetEntity>();
-
-    for (const row of rows) {
-      if (row.depth === 0) {
-        facets.set(row.id, { id: row.id, name: row.name, values: [] });
-        continue;
-      }
-
-      facets.get(row.root_id)?.values.push({
-        count: row.count,
-        depth: row.depth,
-        id: row.id,
-        name: row.name,
-        path: row.path_below_root,
-      });
-    }
-
-    for (const facet of facets.values()) {
-      facet.values.sort((left, right) =>
-        compareNaturalPaths(left.path, right.path),
-      );
-    }
-
-    return [...facets.values()];
+    return this.toFacets(rows);
   }
 
   /**

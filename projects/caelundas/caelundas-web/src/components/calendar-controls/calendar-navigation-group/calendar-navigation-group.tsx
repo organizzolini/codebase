@@ -3,8 +3,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button, ButtonGroup, ButtonGroupText } from "@codebase/presentation";
 
 import { SURFACE_CLASS_NAMES } from "../../calendar-display/events-calendar/components/calendar-views/calendar-surfaces.constants";
+import { CalendarDatePicker } from "../calendar-date-picker/calendar-date-picker";
 
-import type { CalendarNavigation } from "./calendar-navigation-group.types";
+import type {
+  CalendarDatePickerBinding,
+  CalendarNavigation,
+} from "./calendar-navigation-group.types";
 import type { ReactNode } from "react";
 
 // 🔖 Type
@@ -20,6 +24,10 @@ export interface CalendarNavigationGroupProperties {
    */
   compact?: boolean | undefined;
   navigation: CalendarNavigation;
+  /**
+   * Makes the title the button that opens the date picker; plain text when absent.
+   */
+  picker?: CalendarDatePickerBinding | undefined;
 }
 
 // 🧩 Component
@@ -30,7 +38,7 @@ export interface CalendarNavigationGroupProperties {
 export function CalendarNavigationGroup(
   properties: Readonly<CalendarNavigationGroupProperties>,
 ): ReactNode {
-  const { className, compact, navigation } = properties;
+  const { className, compact, navigation, picker } = properties;
 
   // 🪝 Hooks
 
@@ -60,7 +68,7 @@ export function CalendarNavigationGroup(
         )}
         <Button
           aria-label="Previous"
-          className="w-9"
+          className="w-8"
           onClick={navigation.prev}
           size="sm"
           variant="outline"
@@ -72,14 +80,23 @@ export function CalendarNavigationGroup(
         </Button>
         <ButtonGroupText
           aria-level={2}
-          className={`h-7 justify-center ${SURFACE_CLASS_NAMES.navigationTitle} font-semibold ${compact ? "min-w-0 grow truncate text-sm" : "w-60 truncate text-base"}`}
+          className={`h-7 justify-center px-0 ${SURFACE_CLASS_NAMES.navigationTitle} font-semibold tabular-nums ${compact ? "min-w-0 grow truncate text-sm" : "truncate text-base"}`}
           role="heading"
         >
-          {navigation.title}
+          {picker === undefined ? (
+            <span className="px-3">{navigation.title}</span>
+          ) : (
+            <CalendarDatePicker
+              className="contents"
+              title={navigation.title}
+              triggerClassName="h-full min-w-0 cursor-pointer truncate px-3 hover:bg-muted"
+              {...picker}
+            />
+          )}
         </ButtonGroupText>
         <Button
           aria-label="Next"
-          className="w-9"
+          className="w-8"
           onClick={navigation.next}
           size="sm"
           variant="outline"

@@ -8,14 +8,31 @@ import type { EventFacetEntity } from "../facets/event-facet.entities";
 /** A tag root with a tag for each path beneath it, each id `root:path`. */
 function facet(id: string, name: string, paths: string[]): EventFacetEntity {
   return {
+    icon: null,
     id,
+    isDefaultGroup: true,
+    isFilterable: true,
+    isGroupable: true,
+    isSelectable: true,
+    isSortable: true,
     name,
+    note: null,
+    slug: id,
     values: paths.map((path) => ({
+      alsoUnder: [],
       count: 1,
       depth: path.split(" / ").length,
+      icon: null,
       id: `${id}:${path}`,
+      isDefaultGroup: true,
+      isFilterable: true,
+      isGroupable: true,
+      isSelectable: true,
+      isSortable: true,
       name: path.split(" / ").at(-1) ?? path,
+      note: null,
       path,
+      slug: (path.split(" / ").at(-1) ?? path).toLowerCase(),
     })),
   };
 }
@@ -23,12 +40,10 @@ function facet(id: string, name: string, paths: string[]): EventFacetEntity {
 const service = new PresetsService();
 
 const FACETS = [
-  facet("type", "Type", [
-    "Aspect / Simple Aspect / Major Aspect",
-    "Ingress / Sign Ingress",
-    "Direction",
-  ]),
-  facet("planet", "Planet", ["Moon", "Sun"]),
+  facet("aspect", "Aspect", ["Simple / Major"]),
+  facet("body", "Body", ["Luminary / Moon", "Luminary / Sun"]),
+  facet("planetary", "Planetary", ["Direction"]),
+  facet("ingress", "Ingress", ["Stay / Full Sign"]),
 ];
 
 describe(PresetsService, () => {
@@ -43,29 +58,39 @@ describe(PresetsService, () => {
         groups: [
           {
             combinator: "and",
-            groups: [],
             rules: [
               {
                 operator: "is_any_of",
-                path: ["tag:type"],
-                values: [
-                  "type:Aspect / Simple Aspect / Major Aspect",
-                  "type:Ingress / Sign Ingress",
-                ],
+                path: ["tag:aspect"],
+                values: ["aspect:Simple / Major"],
               },
               {
                 operator: "is_none_of",
-                path: ["tag:planet"],
-                values: ["planet:Moon"],
+                path: ["tag:body"],
+                values: ["body:Luminary / Moon"],
               },
             ],
           },
-        ],
-        rules: [
           {
-            operator: "is_any_of",
-            path: ["tag:type"],
-            values: ["type:Direction"],
+            combinator: "and",
+            rules: [
+              {
+                operator: "is_any_of",
+                path: ["tag:ingress"],
+                values: ["ingress:Stay / Full Sign"],
+              },
+              { path: ["tag:body"] },
+            ],
+          },
+          {
+            combinator: "or",
+            rules: [
+              {
+                operator: "is_any_of",
+                path: ["tag:planetary"],
+                values: ["planetary:Direction"],
+              },
+            ],
           },
         ],
       },
@@ -94,11 +119,11 @@ describe(PresetsService, () => {
   it("keeps the or's other conditions when one cannot be named", () => {
     expect.hasAssertions();
 
-    const [highlights] = service.resolve(FACETS.slice(0, 1));
+    const [highlights] = service.resolve(FACETS.slice(2, 3));
 
     expect(highlights?.id).toBe(DEFAULT_PRESET_ID);
-    expect(highlights?.filter.groups).toStrictEqual([]);
-    expect(highlights?.filter.rules).toHaveLength(1);
+    expect(highlights?.filter.groups).toHaveLength(1);
+    expect(highlights?.filter.rules).toStrictEqual([]);
   });
 
   it("answers nothing for data that has none of the tags", () => {

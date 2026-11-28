@@ -1,38 +1,29 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { readNightSkyOverrides } from "../../../hooks/use-night-sky/use-night-sky.utilities";
-import { createEventGroupFields } from "../../calendar-query/calendar-group-strip/components/event-group-model/event-group-fields.utilities";
 
 import {
   applyDisplayLeaf,
   createDisplayItems,
   describeConstellations,
   findToggledLeaf,
+  isDisplayChoice,
   toDisplayValue,
 } from "./calendar-display-menu.utilities";
 
 import type { UseCalendarDisplayResult } from "../../../hooks/use-calendar-display/use-calendar-display.types";
 import type { DisplayChoices } from "./calendar-display-menu.types";
+import type { CascaderNode } from "@codebase/presentation";
 
-const FIELDS = createEventGroupFields([
-  {
-    id: "type",
-    name: "Type",
-    values: [
-      { count: 1, depth: 1, id: "aspect", name: "Aspect", path: "Aspect" },
-    ],
-  },
-]);
 const LISTING = [
   { name: "Aries", zodiac: true },
   { name: "Orion", zodiac: false },
 ];
 const CHOICES: DisplayChoices = {
-  clusters: true,
-  colorBy: undefined,
   colors: true,
+  compare: false,
+  hideEmpty: false,
   listing: LISTING,
-  scale: "month",
   sky: readNightSkyOverrides({}),
   symbols: "glyphs",
   view: "timeline",
@@ -51,7 +42,7 @@ function apply(
   const handlers = createHandlers();
   const onSkyChange = vi.fn<(change: unknown) => void>();
 
-  applyDisplayLeaf(leaf, { choices, fields: FIELDS, handlers, onSkyChange });
+  applyDisplayLeaf(leaf, { choices, handlers, onSkyChange });
 
   return { handlers, onSkyChange };
 }
@@ -61,88 +52,123 @@ function apply(
  */
 function createHandlers(): UseCalendarDisplayResult["handlers"] {
   return {
-    handleClustersChange: vi.fn<(enabled: boolean) => void>(),
-    handleColorByChange: vi.fn<() => void>(),
     handleColorsChange: vi.fn<(enabled: boolean) => void>(),
+    handleCompareChange: vi.fn<(enabled: boolean) => void>(),
+    handleHideEmptyChange: vi.fn<(enabled: boolean) => void>(),
     handleScaleChange: vi.fn<() => void>(),
     handleSymbolsChange: vi.fn<() => void>(),
     handleViewChange: vi.fn<() => void>(),
   };
 }
 
+/**
+ * The values of every row beneath these that lacks a description, apart from the many figure, step, and swatch values.
+ */
+function listMissingDescriptions(nodes: readonly CascaderNode[]): string[] {
+  const missing: string[] = [];
+
+  for (const node of nodes) {
+    const isValue =
+      node.value.startsWith("setting:") ||
+      node.value.startsWith("constellation:");
+
+    if (!isValue && (node.description ?? "").trim() === "") {
+      missing.push(node.value);
+    }
+
+    missing.push(...listMissingDescriptions(node.children ?? []));
+  }
+
+  return missing;
+}
+
 describe("calendar-display-menu utilities", () => {
   describe(createDisplayItems, () => {
-    it("offers Calendar, Symbols, Crowded days, Color and Sky, with a Scale only on the timeline", () => {
-      const labels = (view: "month" | "timeline"): string[] =>
-        createDisplayItems(FIELDS, { listing: LISTING, view }).map(
+    it("describes every row", () => {
+      expect(
+        listMissingDescriptions(createDisplayItems({ listing: LISTING })),
+      ).toStrictEqual([]);
+    });
+
+    it("offers Symbols, Colors and Skyfield, with no Layout and no Crowded days", () => {
+      expect(
+        createDisplayItems({ listing: LISTING }).map((item) => item.label),
+      ).toStrictEqual(["Symbols", "Colors", "Skyfield"]);
+    });
+
+    it("offers Compare to previous period only for the metric layouts", () => {
+      const labels = (view: "charts" | "table" | "totals"): string[] =>
+        createDisplayItems({ listing: LISTING, view }).map(
           (item) => item.label,
         );
 
-      expect(labels("timeline")).toStrictEqual([
-        "Calendar",
-        "Scale",
-        "Symbols",
-        "Crowded days",
-        "Color",
-        "Sky",
-      ]);
-      expect(labels("month")).not.toContain("Scale");
+      expect(labels("charts")).toContain("Compare to previous period");
+      expect(labels("totals")).toContain("Compare to previous period");
+      expect(labels("table")).not.toContain("Compare to previous period");
+      expect(
+        createDisplayItems({ listing: LISTING }).map((item) => item.label),
+      ).not.toContain("Compare to previous period");
     });
 
-    it("keeps an icon on the Calendar, Color and Sky options", () => {
-      const items = createDisplayItems(FIELDS, {
-        listing: LISTING,
-        view: "month",
-      });
+    it("keeps an icon on every option", () => {
+      const items = createDisplayItems({ listing: LISTING });
 
-      for (const label of ["Calendar", "Color", "Sky"]) {
-        expect(items.find((item) => item.label === label)?.icon).toBeDefined();
+      for (const item of items) {
+        expect(item.icon).toBeDefined();
       }
     });
 
-    it("lists none, the event kind and each field to color by directly under Color", () => {
-      const color = createDisplayItems(FIELDS, {
-        listing: LISTING,
-        view: "month",
-      }).find((item) => item.label === "Color");
+    it("nests Glyphs and Emojis as radios under Symbols, and offers Colors as one", () => {
+      const items = createDisplayItems({ listing: LISTING });
+      const symbols = items.find((item) => item.label === "Symbols");
+
+      expect(symbols?.children?.map((item) => item.value)).toStrictEqual([
+        "symbols:glyphs",
+        "symbols:emojis",
+      ]);
+      expect(symbols?.children?.every((item) => item.radio)).toBe(true);
+
+      const values = items.map((item) => item.value);
+
+      expect(values).toContain("colors");
+      expect(values).not.toContain("clusters");
+    });
+
+    it("offers Hide empty groups, described, on the layouts that group", () => {
+      for (const view of ["table", "timeline", "charts", "totals"] as const) {
+        const option = createDisplayItems({ listing: LISTING, view }).find(
+          (item) => item.value === "hideEmpty",
+        );
+
+        expect(option?.label).toBe("Hide empty groups");
+        expect(option?.description).toContain("no events");
+      }
+
+      for (const view of ["month", "week", "day"] as const) {
+        const values = createDisplayItems({ listing: LISTING, view }).map(
+          (item) => item.value,
+        );
+
+        expect(values).not.toContain("hideEmpty");
+      }
 
       expect(
-        color?.children?.map((item) => item.value).slice(0, 2),
-      ).toStrictEqual(["colorBy:none", "colorBy:default"]);
-      expect(color?.children?.map((item) => item.value)).toContain(
-        "colorBy:tag:type",
+        createDisplayItems({ listing: LISTING }).map((item) => item.value),
+      ).not.toContain("hideEmpty");
+    });
+
+    it("nests the sky's settings and figures under Skyfield", () => {
+      const sky = createDisplayItems({ listing: LISTING }).find(
+        (item) => item.label === "Skyfield",
       );
-    });
-
-    it("lists the views beneath Calendar", () => {
-      const calendar = createDisplayItems(FIELDS, {
-        listing: LISTING,
-        view: "month",
-      }).find((item) => item.label === "Calendar");
-
-      expect(calendar?.children?.map((item) => item.value)).toStrictEqual([
-        "calendar:month",
-        "calendar:week",
-        "calendar:three-day",
-        "calendar:day",
-        "calendar:agenda",
-        "calendar:timeline",
-      ]);
-    });
-
-    it("nests the sky's settings and figures under Sky", () => {
-      const sky = createDisplayItems(FIELDS, {
-        listing: LISTING,
-        view: "month",
-      }).find((item) => item.label === "Sky");
 
       expect(sky?.children?.map((item) => item.label)).toStrictEqual([
-        "Show the sky",
-        "Default sky",
+        "Show the skyfield",
+        "Default skyfield",
+        "Opacity",
         "Constellations",
         "Ecliptic",
         "Constellation lines",
-        "Opacity",
         "Stars",
         "Angles",
         "Background",
@@ -160,14 +186,12 @@ describe("calendar-display-menu utilities", () => {
   });
 
   describe(toDisplayValue, () => {
-    it("ticks each choice that is on, with the scale only on the timeline", () => {
+    it("ticks each choice that is on", () => {
       const value = toDisplayValue(CHOICES);
 
       for (const leaf of [
-        "scale:month",
         "symbols:glyphs",
-        "clusters",
-        "colorBy:default",
+        "colors",
         "constellations:all",
         "sky:visible",
         "sky:ecliptic",
@@ -176,22 +200,59 @@ describe("calendar-display-menu utilities", () => {
       }
     });
 
-    it("leaves out what is off, and names the field colored by", () => {
+    it("ticks the comparison only on the metric layouts", () => {
+      expect(
+        toDisplayValue({ ...CHOICES, compare: true, view: "charts" }),
+      ).toContain("compare");
+      expect(
+        toDisplayValue({ ...CHOICES, compare: true, view: "table" }),
+      ).not.toContain("compare");
+      expect(
+        toDisplayValue({ ...CHOICES, compare: false, view: "totals" }),
+      ).not.toContain("compare");
+    });
+
+    it("ticks hiding empty groups only on the layouts that group", () => {
+      for (const view of ["table", "timeline", "charts", "totals"] as const) {
+        expect(toDisplayValue({ ...CHOICES, hideEmpty: true, view })).toContain(
+          "hideEmpty",
+        );
+      }
+
+      for (const view of ["month", "week", "day"] as const) {
+        expect(
+          toDisplayValue({ ...CHOICES, hideEmpty: true, view }),
+        ).not.toContain("hideEmpty");
+      }
+
+      expect(toDisplayValue({ ...CHOICES, view: "table" })).not.toContain(
+        "hideEmpty",
+      );
+    });
+
+    it("leaves out what is off", () => {
       const value = toDisplayValue({
         ...CHOICES,
-        clusters: false,
-        colorBy: { field: "tag:type" },
         colors: false,
-        sky: readNightSkyOverrides({ sky: "off", "sky.ecliptic": false }),
+        sky: readNightSkyOverrides({
+          skyfield: "off",
+          "skyfield.ecliptic": false,
+        }),
         view: "week",
       });
 
-      expect(value).not.toContain("clusters");
-      expect(value).toContain("colorBy:none");
-      expect(value).not.toContain("colorBy:tag:type");
-      expect(value).not.toContain("scale:month");
+      expect(value).not.toContain("colors");
       expect(value).not.toContain("sky:visible");
       expect(value).not.toContain("sky:ecliptic");
+    });
+  });
+
+  describe(isDisplayChoice, () => {
+    it("lets every row be picked but the grouping branches", () => {
+      expect(isDisplayChoice({ label: "Skyfield", value: "branch:sky" })).toBe(
+        false,
+      );
+      expect(isDisplayChoice({ label: "Colors", value: "colors" })).toBe(true);
     });
   });
 
@@ -204,19 +265,7 @@ describe("calendar-display-menu utilities", () => {
   });
 
   describe(applyDisplayLeaf, () => {
-    it("sets the calendar view, and ignores one it does not know", () => {
-      expect(
-        apply("calendar:week").handlers.handleViewChange,
-      ).toHaveBeenCalledWith("week");
-      expect(
-        apply("calendar:narnia").handlers.handleViewChange,
-      ).not.toHaveBeenCalled();
-    });
-
-    it("sets the scale and the symbols", () => {
-      expect(
-        apply("scale:year").handlers.handleScaleChange,
-      ).toHaveBeenCalledWith("year");
+    it("sets the symbols", () => {
       expect(
         apply("symbols:emojis").handlers.handleSymbolsChange,
       ).toHaveBeenCalledWith("emojis");
@@ -225,55 +274,60 @@ describe("calendar-display-menu utilities", () => {
       ).toHaveBeenCalledWith("glyphs");
     });
 
-    it("ignores a scale it does not know", () => {
+    it("leaves the layout to its own menu", () => {
       expect(
-        apply("scale:narnia").handlers.handleScaleChange,
+        apply("calendar:week").handlers.handleViewChange,
+      ).not.toHaveBeenCalled();
+      expect(
+        apply("scale:year").handlers.handleScaleChange,
       ).not.toHaveBeenCalled();
     });
 
-    it("flips a switch from what it is now", () => {
+    it("flips colors from what they are now", () => {
+      expect(apply("colors").handlers.handleColorsChange).toHaveBeenCalledWith(
+        false,
+      );
       expect(
-        apply("clusters").handlers.handleClustersChange,
-      ).toHaveBeenCalledWith(false);
-    });
-
-    it("turns colors off for none, and on again for any other choice", () => {
-      expect(
-        apply("colorBy:none").handlers.handleColorsChange,
-      ).toHaveBeenCalledWith(false);
-      expect(
-        apply("colorBy:default", { ...CHOICES, colors: false }).handlers
+        apply("colors", { ...CHOICES, colors: false }).handlers
           .handleColorsChange,
       ).toHaveBeenCalledWith(true);
     });
 
-    it("colors by a field's first level, or by the event kind", () => {
+    it("flips hiding empty groups from what it is now", () => {
       expect(
-        apply("colorBy:tag:type").handlers.handleColorByChange,
-      ).toHaveBeenCalledWith({
-        depth: 1,
-        field: "tag:type",
-      });
+        apply("hideEmpty").handlers.handleHideEmptyChange,
+      ).toHaveBeenCalledWith(true);
       expect(
-        apply("colorBy:default").handlers.handleColorByChange,
-      ).toHaveBeenCalledWith(undefined);
+        apply("hideEmpty", { ...CHOICES, hideEmpty: true }).handlers
+          .handleHideEmptyChange,
+      ).toHaveBeenCalledWith(false);
+    });
+
+    it("flips the comparison from what it is now", () => {
+      expect(
+        apply("compare").handlers.handleCompareChange,
+      ).toHaveBeenCalledWith(true);
+      expect(
+        apply("compare", { ...CHOICES, compare: true }).handlers
+          .handleCompareChange,
+      ).toHaveBeenCalledWith(false);
     });
 
     it("writes the sky's visibility, its ecliptic and its figures", () => {
       expect(apply("sky:visible").onSkyChange).toHaveBeenCalledWith({
-        sky: "off",
+        skyfield: "off",
       });
       expect(apply("sky:ecliptic").onSkyChange).toHaveBeenCalledWith({
-        "sky.ecliptic": false,
+        "skyfield.ecliptic": false,
       });
       expect(apply("constellations:zodiac").onSkyChange).toHaveBeenCalledWith({
-        "sky.constellations": "zodiac",
+        "skyfield.constellations": "zodiac",
       });
       expect(apply("constellations:narnia").onSkyChange).not.toHaveBeenCalled();
     });
 
     it("does nothing for a branch or a leaf it does not know", () => {
-      const { handlers, onSkyChange } = apply("branch:calendar");
+      const { handlers, onSkyChange } = apply("branch:layout");
 
       expect(onSkyChange).not.toHaveBeenCalled();
 

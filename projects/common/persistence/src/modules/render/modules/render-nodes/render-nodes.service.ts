@@ -2,19 +2,21 @@ import { Injectable } from "@nestjs/common";
 
 import {
   edgeLabels,
+  joinedMetadata,
   labelSql,
   nodeIds,
   readLabels,
   relabelGraph,
 } from "./render-nodes.utilities";
 
-import type { GraphGeneratedEdge } from "../render-entities/render-entities.types";
 import type { GraphModel } from "../render-mermaid/render-mermaid.types";
+import type { RenderNodesEdge } from "./render-nodes.types";
 import type { DataSource, EntityMetadata } from "typeorm";
 
 /**
  * Reads the labels a drawn graph is shown under: each node's, from its entity's
- * `@GraphLabel` column, and each neighborhood's title, from its graph entity's.
+ * `@GraphLabel` column, and each neighborhood's title, from the entity its edges'
+ * label column joins.
  * Only the rows the graph draws are read, never a whole table.
  */
 @Injectable()
@@ -47,25 +49,29 @@ export class RenderNodesService {
   }
 
   /**
-   * The graph with each drawn node under its label, and each edge, which
-   * carries its graph's key, under the graph's label.
+   * The graph with each node under its label and each edge under its owner's
+   * title, read through the entities the edge's relations join.
    */
   async relabel(
     dataSource: DataSource,
     graph: GraphModel,
-    { graph: graphEntity, nodes }: GraphGeneratedEdge,
+    { edge, picked }: RenderNodesEdge,
   ): Promise<GraphModel> {
+    const metadata = dataSource.getMetadata(picked);
+    const nodes = joinedMetadata(metadata, edge.sourceColumn);
+    const titled =
+      edge.labelColumn === undefined
+        ? undefined
+        : joinedMetadata(metadata, edge.labelColumn);
     return relabelGraph(graph, {
-      nodes: await this.labels(
-        dataSource,
-        dataSource.getMetadata(nodes),
-        nodeIds(graph),
-      ),
-      titles: await this.labels(
-        dataSource,
-        dataSource.getMetadata(graphEntity),
-        edgeLabels(graph),
-      ),
+      nodes:
+        nodes === undefined
+          ? new Map<string, string>()
+          : await this.labels(dataSource, nodes, nodeIds(graph)),
+      titles:
+        titled === undefined
+          ? new Map<string, string>()
+          : await this.labels(dataSource, titled, edgeLabels(graph)),
     });
   }
 }

@@ -24,11 +24,10 @@ export function colorEvents(
 }
 
 /**
- * The color of an event's kind: that of its kind's rule, or its own color
- * from the data when it has none.
+ * The color of an event's kind: that of its kind's rule, or none when it has no kind.
  */
 export function getEventColor(event: CalendarEventRecord): null | string {
-  return getEventKind(event)?.color ?? event.color;
+  return getEventKind(event)?.color ?? null;
 }
 
 /**

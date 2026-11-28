@@ -10,6 +10,7 @@ import { MathService } from "../../../ephemeris/modules/math/math.service";
 import { DailyCyclesBuilderService } from "./daily-cycles-builder.service";
 import { DailyCyclesService } from "./daily-cycles.service";
 
+import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
 import type {
   AzimuthElevationEphemeris,
   HorizonPosition,
@@ -469,6 +470,115 @@ describe(DailyCyclesService, () => {
           trueElevations: [-0.82, -0.86, -0.9],
         }),
       ).not.toContain(moonsetSummary);
+    });
+  });
+
+  describe("detectProgressive", () => {
+    const crossing = (iso: string, name: string): DetectedCalendarEvent => ({
+      description: name,
+      end: moment.utc(iso),
+      start: moment.utc(iso),
+      summary: name,
+      tags: ["Astronomy", "Astrology", "Daily Lunar Cycle", "Lunar", name],
+    });
+
+    it("spans each moonrise to the moonset after it as the Moon being up", () => {
+      const spans = service.detectProgressive([
+        crossing("2026-03-05T13:30:00Z", "Moonset"),
+        crossing("2026-03-04T23:50:00Z", "Moonrise"),
+        crossing("2026-03-05T23:50:00Z", "Moonrise"),
+        crossing("2026-03-06T14:10:00Z", "Moonset"),
+      ]);
+
+      expect(
+        spans.map((span) => [
+          span.summary,
+          span.start.toISOString(),
+          span.end.toISOString(),
+        ]),
+      ).toStrictEqual([
+        ["🌙 Moon Up", "2026-03-04T23:50:00.000Z", "2026-03-05T13:30:00.000Z"],
+        [
+          "🌑 Moon Down",
+          "2026-03-05T13:30:00.000Z",
+          "2026-03-05T23:50:00.000Z",
+        ],
+        ["🌙 Moon Up", "2026-03-05T23:50:00.000Z", "2026-03-06T14:10:00.000Z"],
+      ]);
+      expect(spans[0]?.tags).toStrictEqual([
+        "Astronomy",
+        "Astrology",
+        "Daily Lunar Cycle",
+        "Lunar",
+        "Moon Up",
+      ]);
+    });
+
+    it("spans each moonset to the moonrise after it as the Moon being down", () => {
+      const spans = service.detectProgressive([
+        crossing("2026-03-05T23:50:00Z", "Moonrise"),
+        crossing("2026-03-05T13:30:00Z", "Moonset"),
+        crossing("2026-03-06T14:10:00Z", "Moonset"),
+      ]);
+
+      expect(
+        spans.map((span) => [
+          span.summary,
+          span.description,
+          span.start.toISOString(),
+          span.end.toISOString(),
+        ]),
+      ).toStrictEqual([
+        [
+          "🌑 Moon Down",
+          "Moon Down (Moonset to Moonrise)",
+          "2026-03-05T13:30:00.000Z",
+          "2026-03-05T23:50:00.000Z",
+        ],
+        [
+          "🌙 Moon Up",
+          "Moon Up (Moonrise to Moonset)",
+          "2026-03-05T23:50:00.000Z",
+          "2026-03-06T14:10:00.000Z",
+        ],
+      ]);
+      expect(spans[0]?.tags).toStrictEqual([
+        "Astronomy",
+        "Astrology",
+        "Daily Lunar Cycle",
+        "Lunar",
+        "Moon Down",
+      ]);
+    });
+
+    it("makes no span of a lone moonrise or of none, as at a pole where the Moon neither rises nor sets", () => {
+      expect(
+        service.detectProgressive([
+          crossing("2026-12-20T08:45:00Z", "Moonrise"),
+        ]),
+      ).toStrictEqual([]);
+      expect(service.detectProgressive([])).toStrictEqual([]);
+    });
+
+    it("makes no span of two moonsets or two moonrises in a row, since the one between them went unseen", () => {
+      expect(
+        service
+          .detectProgressive([
+            crossing("2026-03-05T13:30:00Z", "Moonset"),
+            crossing("2026-03-06T13:30:00Z", "Moonset"),
+            crossing("2026-03-07T01:00:00Z", "Moonrise"),
+            crossing("2026-03-08T01:00:00Z", "Moonrise"),
+          ])
+          .map((span) => span.summary),
+      ).toStrictEqual(["🌑 Moon Down"]);
+    });
+
+    it("ignores events that are no moonrise or moonset", () => {
+      expect(
+        service.detectProgressive([
+          crossing("2026-03-05T13:30:00Z", "Sunrise"),
+        ]),
+      ).toStrictEqual([]);
     });
   });
 });

@@ -9,6 +9,7 @@ const ROW: TagTreeRow = {
   depth: 0,
   hasChildren: true,
   isExpanded: false,
+  isFolder: false,
   item: { description: "400 events", label: "Aspect", value: "aspect" },
   name: "Aspect",
   selectedBelow: 2,
@@ -59,9 +60,75 @@ describe(TagRow, () => {
     expect(onOpenChange).toHaveBeenCalledWith("aspect", true);
   });
 
+  it("opens a folder on a click and draws no checkbox", () => {
+    const onOpenChange = vi.fn<(id: string, open: boolean) => void>();
+    const onToggle = vi.fn<(id: string) => void>();
+
+    render(
+      <TagRow
+        onKeyDown={vi.fn<() => void>()}
+        onOpenChange={onOpenChange}
+        onToggle={onToggle}
+        row={{ ...ROW, isFolder: true }}
+      />,
+    );
+    fireEvent.click(screen.getByRole("option"));
+
+    expect(onOpenChange).toHaveBeenCalledExactlyOnceWith("aspect", true);
+    expect(onToggle).not.toHaveBeenCalled();
+  });
+
+  it("reserves no room for a checkbox on a folder, so it shows only its caret, icon and name", () => {
+    render(
+      <TagRow
+        onKeyDown={vi.fn<() => void>()}
+        onOpenChange={vi.fn<() => void>()}
+        onToggle={vi.fn<() => void>()}
+        row={{ ...ROW, isFolder: true }}
+      />,
+    );
+    const row = screen.getByRole("option");
+
+    expect(row.querySelector("span.size-4")).toBeNull();
+    expect(row.querySelector("[data-slot=checkbox]")).toBeNull();
+  });
+
   it("counts the picks inside a closed tag", () => {
     renderRow();
 
     expect(screen.getByText("2")).toBeDefined();
+  });
+
+  it("says where else a tag under two parents sits, with the full paths on hover", () => {
+    render(
+      <TagRow
+        onKeyDown={vi.fn<() => void>()}
+        onOpenChange={vi.fn<() => void>()}
+        onToggle={vi.fn<() => void>()}
+        row={{
+          ...ROW,
+          hasChildren: false,
+          item: {
+            data: { alsoUnder: ["Body / Benefic"], depth: 2, name: "Venus" },
+            label: "Venus",
+            value: "venus",
+          },
+          name: "Venus",
+          selectedBelow: 0,
+          state: "unchecked",
+        }}
+      />,
+    );
+
+    const cue = screen.getByTestId("tag-also-under");
+
+    expect(cue.textContent).toBe("also Benefic");
+    expect(cue.getAttribute("title")).toBe("Also under Body / Benefic");
+  });
+
+  it("shows no cue on a tag with one parent", () => {
+    renderRow();
+
+    expect(screen.queryByTestId("tag-also-under")).toBeNull();
   });
 });

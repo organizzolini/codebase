@@ -1,7 +1,7 @@
 import { act, cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { readServedApi } from "../../../../testing/calendar-api";
+import { readServedApi } from "../../../../testing/calendar/calendar-api";
 import { renderCalendarRoute } from "../../../../testing/render-route";
 import { setReducedMotion } from "../../../../testing/viewport";
 import { getRouter } from "../../../router";
@@ -18,7 +18,7 @@ vi.mock(import("../../../router"), async (importOriginal) => {
 
   return {
     ...original,
-    getRouter: vi.fn(() => {
+    getRouter: vi.fn<typeof original.getRouter>(() => {
       const router = original.getRouter();
 
       router.update({
@@ -43,7 +43,12 @@ vi.mock(
   async (importOriginal) => {
     const original = await importOriginal();
 
-    return { ...original, EventsCalendar: vi.fn(original.EventsCalendar) };
+    return {
+      ...original,
+      EventsCalendar: vi.fn<typeof original.EventsCalendar>(
+        original.EventsCalendar,
+      ),
+    };
   },
 );
 
@@ -152,7 +157,7 @@ describe("night sky backdrop", () => {
   it("asks for the speed, the magnitude, the observer and the scale the link sets", async () => {
     await expect(
       findRequest(
-        "/?date=2026-03-01&sky.pixelsPerSecond=12&sky.maxMag=3&sky.lat=60&sky.lon=10&sky.starScale=2&sky.vFov=45&sky.altBottom=-10",
+        "/?date=2026-03-01&skyfield.pixelsPerSecond=12&skyfield.maxMag=3&skyfield.lat=60&skyfield.lon=10&skyfield.starScale=2&skyfield.vFov=45&skyfield.altBottom=-10",
       ),
     ).resolves.toMatchObject({
       bottomAltitudeDegrees: -10,
@@ -165,22 +170,28 @@ describe("night sky backdrop", () => {
     });
   });
 
+  it("still reads the observer from a link that spells the keys sky", async () => {
+    await expect(
+      findRequest("/?date=2026-03-01&sky.lat=60&sky.lon=10"),
+    ).resolves.toMatchObject({ latitudeDegrees: 60, longitudeDegrees: 10 });
+  });
+
   it("asks for the figures the link names, and none for an empty list", async () => {
     await expect(
-      findRequest("/?date=2026-03-01&sky.constellations=ursa_major,leo"),
+      findRequest("/?date=2026-03-01&skyfield.constellations=ursa_major,leo"),
     ).resolves.toMatchObject({ constellations: ["ursa_major", "leo"] });
 
     cleanup();
 
     await expect(
-      findRequest("/?date=2026-03-01&sky.constellations="),
+      findRequest("/?date=2026-03-01&skyfield.constellations="),
     ).resolves.toMatchObject({ constellations: ["none"] });
   });
 
   it("asks for the figures and the ecliptic stroked as the link says", async () => {
     await expect(
       findRequest(
-        "/?date=2026-03-01&sky.ecliptic=false&sky.lineColor=%23ff8800&sky.lineOpacity=0.5&sky.lineWidth=2",
+        "/?date=2026-03-01&skyfield.ecliptic=false&skyfield.lineColor=%23ff8800&skyfield.lineOpacity=0.5&skyfield.lineWidth=2",
       ),
     ).resolves.toMatchObject({
       ecliptic: false,
@@ -192,7 +203,7 @@ describe("night sky backdrop", () => {
 
   it("asks for the tuning view when told to", async () => {
     await expect(
-      findRequest("/?date=2026-03-01&sky.debug=true"),
+      findRequest("/?date=2026-03-01&skyfield.debug=true"),
     ).resolves.toMatchObject({ debug: true });
   });
 
@@ -203,14 +214,16 @@ describe("night sky backdrop", () => {
 
     await expect(
       findRequest(
-        "/?date=2026-03-01&sky.maxMag=banana&sky.lat=999&sky.debug=yes&sky.vFov=-4&sky.lon=east&sky.starScale=0&sky.altBottom=up&sky.pixelsPerSecond=fast",
+        "/?date=2026-03-01&skyfield.maxMag=banana&skyfield.lat=999&skyfield.debug=yes&skyfield.vFov=-4&skyfield.lon=east&skyfield.starScale=0&skyfield.altBottom=up&skyfield.pixelsPerSecond=fast",
       ),
     ).resolves.toStrictEqual(normal);
   });
 
   it("asks for the background gradient in the colors of the link", async () => {
     await expect(
-      findRequest("/?date=2026-03-01&sky.top=ff0000&sky.bottom=%2300f"),
+      findRequest(
+        "/?date=2026-03-01&skyfield.top=ff0000&skyfield.bottom=%2300f",
+      ),
     ).resolves.toMatchObject({
       backgroundBottomColor: "#0000ff",
       backgroundTopColor: "#ff0000",
@@ -220,7 +233,7 @@ describe("night sky backdrop", () => {
   it("never sends a color of the link unless it is hexadecimal", async () => {
     await expect(
       findRequest(
-        "/?date=2026-03-01&sky.top=red%22/%3E%3Ci%3E&sky.bottom=%3Cb%3E",
+        "/?date=2026-03-01&skyfield.top=red%22/%3E%3Ci%3E&skyfield.bottom=%3Cb%3E",
       ),
     ).resolves.toMatchObject({
       backgroundBottomColor: "#0d1533",
@@ -229,27 +242,30 @@ describe("night sky backdrop", () => {
   });
 
   it("draws the sky the API answers", async () => {
-    await renderCalendarRoute("/?date=2026-03-01&sky.lat=60&sky.lon=10", {
-      api: {
-        nightSky: () => ({
-          measurements: {
-            bottomAltitudeDegrees: 0,
-            fieldOfViewClamped: false,
-            fieldOfViewLimitDegrees: 89,
-            periodSeconds: 600,
-            poleDistanceAboveScreen: 0,
-            realTimeMultiple: 1,
-            segmentsDrawn: 0,
-            starsDrawn: 0,
-            starsInCatalog: 0,
-            svgLength: 0,
-            topAltitudeDegrees: 90,
-            verticalFieldOfViewDegrees: 90,
-          },
-          svg: '<svg data-testid="api-sky" xmlns="http://www.w3.org/2000/svg"><circle r="1"/></svg>',
-        }),
+    await renderCalendarRoute(
+      "/?date=2026-03-01&skyfield.lat=60&skyfield.lon=10",
+      {
+        api: {
+          nightSky: () => ({
+            measurements: {
+              bottomAltitudeDegrees: 0,
+              fieldOfViewClamped: false,
+              fieldOfViewLimitDegrees: 89,
+              periodSeconds: 600,
+              poleDistanceAboveScreen: 0,
+              realTimeMultiple: 1,
+              segmentsDrawn: 0,
+              starsDrawn: 0,
+              starsInCatalog: 0,
+              svgLength: 0,
+              topAltitudeDegrees: 90,
+              verticalFieldOfViewDegrees: 90,
+            },
+            svg: '<svg data-testid="api-sky" xmlns="http://www.w3.org/2000/svg"><circle r="1"/></svg>',
+          }),
+        },
       },
-    });
+    );
 
     const sky = await findSky();
 
@@ -265,13 +281,15 @@ describe("night sky backdrop", () => {
 
     expect(sky.dataset["latitude"]).toBe("90");
 
-    const router = vi.mocked(getRouter).mock.results.at(-1)?.value;
+    const router = vi.mocked(getRouter).mock.results.at(-1)?.value as
+      | ReturnType<typeof getRouter>
+      | undefined;
 
     await act(async () => {
       await router?.navigate({
         search: (previous: Record<string, unknown>) => ({
           ...previous,
-          "sky.lat": 60,
+          "skyfield.lat": 60,
         }),
         to: "/",
       });
@@ -294,14 +312,16 @@ describe("night sky backdrop", () => {
     await renderCalendarRoute("/?date=2026-03-01");
     await findSky();
 
-    const router = vi.mocked(getRouter).mock.results.at(-1)?.value;
+    const router = vi.mocked(getRouter).mock.results.at(-1)?.value as
+      | ReturnType<typeof getRouter>
+      | undefined;
     const rendered = vi.mocked(EventsCalendar).mock.calls.length;
 
     await act(async () => {
       await router?.navigate({
         search: (previous: Record<string, unknown>) => ({
           ...previous,
-          "sky.lat": 60,
+          "skyfield.lat": 60,
         }),
         to: "/",
       });
@@ -334,27 +354,30 @@ describe("night sky backdrop", () => {
   it("says when the API reduced a field of view that would put the pole on screen", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    await renderCalendarRoute("/?date=2026-03-01&sky.lat=40&sky.vFov=90", {
-      api: {
-        nightSky: (input) => ({
-          measurements: {
-            bottomAltitudeDegrees: 0,
-            fieldOfViewClamped: true,
-            fieldOfViewLimitDegrees: 50,
-            periodSeconds: 600,
-            poleDistanceAboveScreen: 0,
-            realTimeMultiple: 1,
-            segmentsDrawn: 0,
-            starsDrawn: 0,
-            starsInCatalog: 0,
-            svgLength: 0,
-            topAltitudeDegrees: 50,
-            verticalFieldOfViewDegrees: 50,
-          },
-          svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${String(input.width)} ${String(input.height)}"/>`,
-        }),
+    await renderCalendarRoute(
+      "/?date=2026-03-01&skyfield.lat=40&skyfield.vFov=90",
+      {
+        api: {
+          nightSky: (input) => ({
+            measurements: {
+              bottomAltitudeDegrees: 0,
+              fieldOfViewClamped: true,
+              fieldOfViewLimitDegrees: 50,
+              periodSeconds: 600,
+              poleDistanceAboveScreen: 0,
+              realTimeMultiple: 1,
+              segmentsDrawn: 0,
+              starsDrawn: 0,
+              starsInCatalog: 0,
+              svgLength: 0,
+              topAltitudeDegrees: 50,
+              verticalFieldOfViewDegrees: 50,
+            },
+            svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${String(input.width)} ${String(input.height)}"/>`,
+          }),
+        },
       },
-    });
+    );
     await findSky();
 
     await waitFor(() => {
@@ -365,8 +388,8 @@ describe("night sky backdrop", () => {
     warn.mockRestore();
   });
 
-  it("draws nothing, and asks for nothing, for sky=off", async () => {
-    await renderCalendarRoute("/?date=2026-03-01&sky=off");
+  it("draws nothing, and asks for nothing, for skyfield=off", async () => {
+    await renderCalendarRoute("/?date=2026-03-01&skyfield=off");
     const api = readServedApi();
 
     await screen.findByRole("grid", { name: "March 2026" });
@@ -378,7 +401,7 @@ describe("night sky backdrop", () => {
   });
 
   it("draws nothing, and asks for nothing, at a latitude of zero or below", async () => {
-    await renderCalendarRoute("/?date=2026-03-01&sky.lat=0");
+    await renderCalendarRoute("/?date=2026-03-01&skyfield.lat=0");
     const api = readServedApi();
 
     await screen.findByRole("grid", { name: "March 2026" });

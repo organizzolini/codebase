@@ -1,6 +1,8 @@
 import { DataSource } from "typeorm";
 import { z } from "zod";
 
+import { generatedEntitiesOf } from "../render/modules/render-entities/render-entities-generated.utilities";
+
 import {
   DEFAULT_POSTGRES_HOST,
   DEFAULT_POSTGRES_PORT,
@@ -58,10 +60,10 @@ export function createDataSource(
   environment: Readonly<Record<string, unknown>> = process.env,
 ): DataSource {
   return new DataSource(
-    postgresDataSourceOptions(
-      postgresConnection({ environment, project }),
-      settings,
-    ),
+    postgresDataSourceOptions(postgresConnection({ environment, project }), {
+      ...settings,
+      entities: withGeneratedEntities(settings.entities),
+    }),
   );
 }
 
@@ -206,4 +208,17 @@ export function postgresSettingsSchema(
     schema: z.string().regex(PROJECT_NAME_PATTERN).default(project),
     username: z.string().min(1).default(`${project}_username`),
   });
+}
+
+/**
+ * `entities` plus the edge, node, and graph entities that each `@Graph` or
+ * `@DirectedAcyclicGraph` among them generates, so a project lists only the
+ * graph entity.
+ */
+export function withGeneratedEntities(
+  entities: PostgresDataSourceSettings["entities"],
+): PostgresDataSourceSettings["entities"] {
+  return Array.isArray(entities)
+    ? [...entities, ...generatedEntitiesOf(entities)]
+    : entities;
 }

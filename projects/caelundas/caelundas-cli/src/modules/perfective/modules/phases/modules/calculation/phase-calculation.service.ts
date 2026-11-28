@@ -339,6 +339,22 @@ export class PhaseCalculationService {
   }
 
   /**
+   * Whether a superior planet crosses 180° from the Sun as it recedes: its
+   * westward longitude gap falling to 180°.
+   */
+  isOpposition(args: RiseSetLongitudeArguments): boolean {
+    const gap = (planet: number, sun: number): number =>
+      this.mathService.normalizeDegrees(planet - sun);
+    const previous = gap(
+      args.previousLongitudePlanet,
+      args.previousLongitudeSun,
+    );
+    const current = gap(args.currentLongitudePlanet, args.currentLongitudeSun);
+
+    return previous > 180 && current <= 180 && previous - current < 180;
+  }
+
+  /**
    * Determines whether planet crosses rise threshold (moving east of sun).
    */
   isRise(args: RiseSetLongitudeArguments): boolean {

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   parseGraphDiagram,
+  parseGraphFields,
   parseGraphFilter,
   parseGraphSort,
 } from "./render-options.utilities";
@@ -89,5 +90,33 @@ describe("graph options utilities", () => {
         );
       },
     );
+  });
+
+  describe(parseGraphFields, () => {
+    it("names icon, note and rank when no flag names others", () => {
+      expect(parseGraphFields({})).toStrictEqual({
+        icon: "icon",
+        note: "note",
+        rank: "rank",
+      });
+    });
+
+    it("takes each field a flag names, trimmed", () => {
+      expect(
+        parseGraphFields({
+          iconField: " glyph ",
+          noteField: "description",
+          rankField: "position",
+        }),
+      ).toStrictEqual({
+        icon: "glyph",
+        note: "description",
+        rank: "position",
+      });
+    });
+
+    it("falls back to the default for a blank flag", () => {
+      expect(parseGraphFields({ iconField: "  " }).icon).toBe("icon");
+    });
   });
 });

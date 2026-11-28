@@ -5,13 +5,12 @@ import type {
 import type { EventGrouping, EventGroupLevel } from "./event-groups.types";
 
 /**
- * Writes the grouping and color levels as the API's grouping input, or `null` when neither is set.
+ * Writes the grouping as the API's grouping input, or `null` when there is none.
  */
 export function toEventGroupingInput(
   grouping: EventGrouping,
-  colorBy: EventGroupLevel | undefined,
 ): EventGroupingInput | null {
-  if (grouping.length === 0 && colorBy === undefined) {
+  if (grouping.length === 0) {
     return null;
   }
 
@@ -22,10 +21,7 @@ export function toEventGroupingInput(
     levels.push(toLevelInput(level));
   }
 
-  return {
-    ...(levels.length === 0 ? {} : { levels }),
-    ...(colorBy === undefined ? {} : { colorBy: toLevelInput(colorBy) }),
-  };
+  return { levels };
 }
 
 /**
@@ -36,6 +32,7 @@ function toLevelInput(level: EventGroupLevel): EventGroupLevelInput {
   return {
     ...(level.depth === undefined ? {} : { depth: level.depth }),
     field: level.field,
+    ...(level.parent === undefined ? {} : { parent: level.parent }),
     ...(level.tags === undefined || level.tags.length === 0
       ? {}
       : { tags: [...level.tags] }),

@@ -197,7 +197,7 @@ export interface CascaderActionsContextValue<T = unknown> {
    */
   isDisabled: (node: CascaderNode<T>) => boolean
   isSelected: (node: CascaderNode<T>) => boolean
-  /** Always `false` without `cascade`: partial selection needs propagation. */
+  /** Always `false` without `multiple`: a branch with picks beneath it but none of its own is partly picked. */
   isIndeterminate: (node: CascaderNode<T>) => boolean
   /**
    * O(1) read of `selectedDescendants`; a memoised row may not subscribe.

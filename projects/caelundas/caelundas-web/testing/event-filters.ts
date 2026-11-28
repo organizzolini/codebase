@@ -43,8 +43,8 @@ export function filterLink(date: string, filter: unknown): string {
 }
 
 /**
- * A rule on a tag root's field by the seed's short names: the root "planet"
- * and the tag "mars" name `tag-planet` and `tag-mars`.
+ * A rule on a tag root's field by the seed's short names: the root "body"
+ * and the tag "mars" name `tag-body` and `tag-mars`.
  */
 export function tagRule(
   root: string,

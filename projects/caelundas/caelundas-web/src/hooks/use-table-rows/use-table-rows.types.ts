@@ -1,0 +1,49 @@
+// 🏷️ Types
+
+import type { TableRowModel } from "../../components/calendar-display/calendar-table/calendar-table.types";
+import type {
+  CalendarEventRecord,
+  EventFacet,
+} from "../../components/calendar-display/events-calendar/components/calendar-loader/calendar-records.types";
+import type {
+  EventGroupField,
+  EventGroupLevel,
+} from "../../components/calendar-query/calendar-group-strip/components/event-group-model/event-groups.types";
+import type { GroupSort } from "../../components/calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
+
+/**
+ * The events and how they are grouped, sorted, and ranged.
+ */
+export interface UseTableRowsOptions {
+  anchor: Date;
+  dayCount: number;
+  events: readonly CalendarEventRecord[];
+  facets: readonly EventFacet[];
+  fields: readonly EventGroupField[];
+  grouping: readonly EventGroupLevel[];
+  /**
+   * Leaves out groups with no events; shown when absent.
+   */
+  hideEmpty?: boolean | undefined;
+  sort: readonly GroupSort[] | undefined;
+  timeZone: string;
+}
+
+/**
+ * The table's rows and its handlers.
+ */
+export interface UseTableRowsResult {
+  /**
+   * The icon of each grouping level's field, for a derived field.
+   */
+  levelIcons: readonly (string | undefined)[];
+  /**
+   * Loads another page of a list, by its group's id and how many of it show.
+   */
+  more: (listId: string, shown: number) => void;
+  rows: TableRowModel[];
+  /**
+   * Opens a closed group and closes an open one, by its id.
+   */
+  toggle: (id: string) => void;
+}

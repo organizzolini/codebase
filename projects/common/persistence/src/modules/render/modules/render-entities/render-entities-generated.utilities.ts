@@ -9,8 +9,10 @@ import {
 } from "./render-entities-records.utilities";
 import {
   DECORATOR_OF_KIND,
+  RENDER_ENTITIES_GENERATED_COLUMNS,
   RENDER_ENTITIES_GENERATED_MARK,
   RENDER_ENTITIES_NAMING,
+  RENDER_ENTITIES_OPTIONAL_NAMES,
   RenderEntitiesEdgeError,
   renderEntitiesEdgeKindsMessage,
   renderEntitiesGeneratedBothMessage,
@@ -29,10 +31,11 @@ import type {
   GraphGeneratedEdge,
   GraphGeneratedEndpoint,
   GraphGeneratedNames,
+  GraphGeneratedOptionalName,
   GraphGeneratedOptions,
   GraphGeneratedPlan,
 } from "./render-entities.types";
-import type { ColumnOptions, RelationOptions } from "typeorm";
+import type { ColumnOptions } from "typeorm";
 
 /** The edge entity `entity`, or a class it extends, generated, or is one. */
 export function generatedEdgeOf(
@@ -46,6 +49,18 @@ export function generatedEdgeOf(
 }
 
 /**
+ * The edge, node, and graph entities of each generated edge whose graph is among
+ * `entities`, other than those `entities` list already, once each.
+ */
+export function generatedEntitiesOf(
+  entities: readonly unknown[],
+): GraphEntity[] {
+  const classes = entities.filter((entity) => isGraphEntity(entity));
+
+  return withGeneratedEdges(classes).slice(classes.length);
+}
+
+/**
  * The names `options` carries, or `undefined` when it asks for no generation.
  * @throws RenderEntitiesEdgeError when it names the edge or the nodes alone.
  */
@@ -53,7 +68,7 @@ export function generatedNamesOf(
   options: Partial<GraphGeneratedOptions>,
   decorator: string,
 ): GraphGeneratedNames | undefined {
-  const { edge, nodes, table } = options;
+  const { edge, nodes } = options;
   if (edge === undefined && nodes === undefined) return undefined;
   if (edge === undefined || nodes === undefined) {
     throw new RenderEntitiesEdgeError(
@@ -64,7 +79,7 @@ export function generatedNamesOf(
       ),
     );
   }
-  return { edge, nodes, ...(table === undefined ? {} : { table }) };
+  return { ...definedNames(options), edge, nodes };
 }
 
 /**
@@ -87,14 +102,6 @@ export function generateEdgeEntity(
 }
 
 /**
- * Marks a property of the graph entity that lists the edge rows of the
- * generated entity `edge`, by the graph each belongs to.
- */
-export function GraphEdges(edge: string): PropertyDecorator {
-  return reverseRelation(edge, "graph", { cascade: ["insert"] });
-}
-
-/**
  * Marks a property of a node entity that lists the edge rows of the generated
  * entity `edge` that end at the node.
  */
@@ -108,6 +115,11 @@ export function GraphIncomingEdges(edge: string): PropertyDecorator {
  */
 export function GraphOutgoingEdges(edge: string): PropertyDecorator {
   return reverseRelation(edge, "source");
+}
+
+/** Whether `value` is a class, which a generated edge may belong to. */
+export function isGraphEntity(value: unknown): value is GraphEntity {
+  return typeof value === "function";
 }
 
 /** `entities` plus the edge, node, and graph entities of each generated edge in them, once each. */
@@ -214,6 +226,18 @@ function copiedKeyOptions(source: ColumnOptions): ColumnOptions {
   };
 }
 
+/** The optional names `options` sets, so an unset one never overrides a default. */
+function definedNames(
+  options: Partial<GraphGeneratedOptions>,
+): Partial<Record<GraphGeneratedOptionalName, string>> {
+  const kept: Partial<Record<GraphGeneratedOptionalName, string>> = {};
+  for (const key of RENDER_ENTITIES_OPTIONAL_NAMES) {
+    const value = options[key];
+    if (value !== undefined) kept[key] = value;
+  }
+  return kept;
+}
+
 /**
  * Drops what an earlier run of this graph's decorator registered for the same
  * edge name, as when a test reloads the module.
@@ -243,39 +267,39 @@ function discardStaleEdge(edge: string, graph: GraphEntity): void {
   }
 }
 
-/** The graph's, source's, and target's columns, in that order, each typed from the key it references. */
-function edgeEndpoints(
-  graph: GraphEntity,
-  nodes: GraphEntity,
-  context: GraphGeneratedContext,
-): [GraphGeneratedEndpoint, GraphGeneratedEndpoint, GraphGeneratedEndpoint] {
-  const graphKey = singleKey(graph, context);
+/** The source's and target's columns, in that order, each typed from the node key it references. */
+function edgeEndpoints({
+  context,
+  names,
+  nodes,
+}: {
+  readonly context: GraphGeneratedContext;
+  readonly names: GraphGeneratedNames;
+  readonly nodes: GraphEntity;
+}): [GraphGeneratedEndpoint, GraphGeneratedEndpoint] {
+  const { sourceColumn, targetColumn } = {
+    ...RENDER_ENTITIES_GENERATED_COLUMNS,
+    ...names,
+  };
   const nodeKey = singleKey(nodes, context);
   return [
-    endpointOf(["graph", graph, graphKey], lowerFirst(graph.name)),
-    endpointOf(["source", nodes, nodeKey], "from"),
-    endpointOf(["target", nodes, nodeKey], "to"),
+    endpointOf(["source", nodes, nodeKey], sourceColumn),
+    endpointOf(["target", nodes, nodeKey], targetColumn),
   ];
 }
 
-/** The column `prefix` and `key` name, joined to `target` by the relation `relation`. */
+/** The column the naming strategy makes of `property`, typed from `key` and joined to `target` by the relation `relation`. */
 function endpointOf(
   [relation, target, key]: readonly [string, GraphEntity, GraphColumnArguments],
-  prefix: string,
+  property: string,
 ): GraphGeneratedEndpoint {
-  const property = `${prefix}${upperFirst(key.propertyName)}`;
   return {
-    column: RENDER_ENTITIES_NAMING.columnName(property, key.options.name, []),
+    column: RENDER_ENTITIES_NAMING.columnName(property, undefined, []),
     key,
     property,
     relation,
     target,
   };
-}
-
-/** `text` with its first letter in lower case. */
-function lowerFirst(text: string): string {
-  return `${text.charAt(0).toLowerCase()}${text.slice(1)}`;
 }
 
 /**
@@ -308,7 +332,7 @@ function planEdge({
 }): GraphGeneratedPlan {
   assertSingleGeneration(graph);
   assertOwnEndpointsUnmarked(graph, context.edge);
-  const endpoints = edgeEndpoints(graph, nodes, context);
+  const endpoints = edgeEndpoints({ context, names, nodes });
   const table = RENDER_ENTITIES_NAMING.tableName(names.edge, names.table);
   discardStaleEdge(names.edge, graph);
   assertNoCollision(graph, context, table);
@@ -318,8 +342,7 @@ function planEdge({
 /** Records the declaration and the roles the generated columns play, as decorators on a hand-written edge would. */
 function recordEdge(
   edge: GraphEntity,
-  [graphEnd, sourceEnd, targetEnd]: readonly [
-    GraphGeneratedEndpoint,
+  [sourceEnd, targetEnd]: readonly [
     GraphGeneratedEndpoint,
     GraphGeneratedEndpoint,
   ],
@@ -327,7 +350,6 @@ function recordEdge(
 ): void {
   const record = edgeRecordOf(edge);
   record.declarations.push(declaration);
-  record.properties.GraphLabel.push(graphEnd.property);
   record.properties.GraphSource.push(sourceEnd.property);
   record.properties.GraphTarget.push(targetEnd.property);
 }
@@ -377,26 +399,14 @@ function registerEdge(
 /** Registers an index on each end, named for the table and the end's key column. */
 function registerIndices(
   edge: GraphEntity,
-  [, source, target]: readonly [
-    GraphGeneratedEndpoint,
-    GraphGeneratedEndpoint,
-    GraphGeneratedEndpoint,
-  ],
+  [source, target]: readonly [GraphGeneratedEndpoint, GraphGeneratedEndpoint],
   table: string,
 ): void {
   const storage = getMetadataArgumentsStorage();
-  for (const [role, end] of [
-    ["from", source],
-    ["to", target],
-  ] as const) {
-    const key = RENDER_ENTITIES_NAMING.columnName(
-      end.key.propertyName,
-      end.key.options.name,
-      [],
-    );
+  for (const end of [source, target]) {
     storage.indices.push({
       columns: [end.property],
-      name: `${table}_${role}_${key}`,
+      name: `${table}_${end.column}`,
       target: edge,
     });
   }
@@ -431,14 +441,13 @@ function resolveNodes(
 /** Registers the one-to-many side of edge `edge`'s `inverse` relation by name, as its class does not yet exist. */
 function reverseRelation(
   edge: string,
-  inverse: "graph" | "source" | "target",
-  options: RelationOptions = {},
+  inverse: "source" | "target",
 ): PropertyDecorator {
   return (target: object, propertyKey: string | symbol): void => {
     getMetadataArgumentsStorage().relations.push({
       inverseSideProperty: inverse,
       isLazy: false,
-      options,
+      options: {},
       propertyName: String(propertyKey),
       relationType: "one-to-many",
       target: target.constructor,
@@ -470,9 +479,4 @@ function singleKey(
     );
   }
   return only;
-}
-
-/** `text` with its first letter in upper case. */
-function upperFirst(text: string): string {
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)}`;
 }

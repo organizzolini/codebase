@@ -162,6 +162,7 @@ export abstract class RenderCommand extends CommandRunner {
           dataSource.getMetadata(picked),
           {
             edge,
+            fields: plan.fields,
             filters: plan.filters,
             paging,
             sorts: plan.sorts,
@@ -169,9 +170,9 @@ export abstract class RenderCommand extends CommandRunner {
             truncateDepth: plan.truncateDepth,
           },
         );
-        return edge?.generated === undefined
+        return edge === undefined
           ? graph
-          : this.renderNodes.relabel(dataSource, graph, edge.generated);
+          : this.renderNodes.relabel(dataSource, graph, { edge, picked });
       },
     });
     for (const line of written) {

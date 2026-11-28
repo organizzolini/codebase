@@ -1,8 +1,5 @@
 import { formatCalendarDay } from "../../../../calendar-display/events-calendar/components/calendar-format/calendar-format.utilities";
-import {
-  DURATION_BUCKETS,
-  WEEKDAY_LABELS,
-} from "../../../calendar-filters/components/event-filter-model/event-filters.constants";
+import { WEEKDAY_LABELS } from "../../../calendar-filters/components/event-filter-model/event-filters.constants";
 
 import type { DerivedGroupId } from "./event-groups.types";
 
@@ -15,8 +12,6 @@ const DERIVED_KEY_FORMATS: Readonly<
   Record<DerivedGroupId, (key: string) => string>
 > = {
   day: formatCalendarDay,
-  duration: (key) =>
-    DURATION_BUCKETS.find((bucket) => bucket.value === key)?.label ?? key,
   hour: (key) => {
     const hour = Number(key);
     const twelveHour = hour % HOURS_PER_HALF_DAY || HOURS_PER_HALF_DAY;

@@ -128,15 +128,13 @@ export function getGraphEdgeDeclaration(
  * @throws RenderEntitiesEdgeError on bad decorators.
  */
 export function getGraphEdgeMetadata(source: GraphEntity): GraphEdgeMetadata {
-  const generated = generatedEdgeOf(source);
-  const entity = generated?.edge ?? source;
+  const entity = generatedEdgeOf(source)?.edge ?? source;
   const declaration = getGraphEdgeDeclaration(entity);
   const labelColumn = singleEdgeProperty(entity, "GraphLabel");
   const weightColumn = singleEdgeProperty(entity, "GraphWeight");
 
   return {
     directed: declaration.directed,
-    ...(generated === undefined ? {} : { generated }),
     kind: declaration.kind,
     sourceColumn: requiredEdgeProperty(entity, "GraphSource"),
     targetColumn: requiredEdgeProperty(entity, "GraphTarget"),
@@ -262,19 +260,26 @@ export function resolveEntityFiles(globs: readonly string[]): string[] {
 }
 
 /**
- * The `@Tree` entities among `entities`, each with the table its name maps to
- * under `namingStrategy`. Read from the decorator metadata, before any
- * connection opens.
+ * The `@Tree` entities among `entities`, and those whose generated `@Graph`
+ * edge joins their own rows, each with its table under `namingStrategy`.
  */
 export function treeCandidates(
   entities: readonly GraphEntity[],
   namingStrategy: NamingStrategyInterface,
 ): GraphTreeCandidate[] {
-  return getMetadataArgumentsStorage().trees.flatMap((tree) => {
+  const trees = getMetadataArgumentsStorage().trees.flatMap((tree) => {
     const entity = entities.find((candidate) => candidate === tree.target);
-    if (entity === undefined) return [];
-    return [{ entity, tableName: entityTableName(entity, namingStrategy) }];
+    return entity === undefined ? [] : [entity];
   });
+  const graphs = entities.filter((entity) => {
+    const generated = generatedEdgeOf(entity);
+    return generated?.graph === entity && generated.nodes === entity;
+  });
+
+  return [...new Set([...trees, ...graphs])].map((entity) => ({
+    entity,
+    tableName: entityTableName(entity, namingStrategy),
+  }));
 }
 
 /**

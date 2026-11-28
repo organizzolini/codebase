@@ -1,0 +1,20 @@
+query EventMetricCatalog {
+  eventMetricCatalog {
+    measures {
+      icon
+      name
+      note
+      slug
+      unit
+    }
+    metrics {
+      additive
+      icon
+      measures
+      name
+      note
+      slug
+      unit
+    }
+  }
+}

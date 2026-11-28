@@ -34,6 +34,15 @@ export type PostgresqlErdEntityDetails = Extract<
   { columns: unknown }
 >;
 
+/** A group of tables joined by relations, drawn as one diagram. */
+export interface PostgresqlErdGroup {
+  /** The entities of the group's tables, in model order. */
+  readonly entities: PostgresqlErdModel["entities"];
+
+  /** The section heading. */
+  readonly title: string;
+}
+
 /** The decorator metadata read without constructing a TypeORM data source. */
 export type PostgresqlErdMetadataStorage = ReturnType<
   typeof getMetadataArgumentsStorage

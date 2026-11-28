@@ -33,21 +33,17 @@ const LIST_GLOB = path.join(
 const DIAGRAM = [
   "flowchart LR",
   "    classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px",
-  "    classDef truncation fill:#f5f5f5,stroke:#9e9e9e,stroke-dasharray:5 5",
   '    subgraph nb0["Work"]',
-  '        n0["Work"]',
-  '        n1["Email"]',
-  '        n2["Meetings"]',
-  '        n3["Inbox"]',
-  "        n0 --> n1",
-  "        n0 --> n2",
-  "        n1 --> n3",
+  "        direction LR",
+  '        n0["Work"] --> n1["Email"] & n2["Meetings"]',
+  '        n1 --> n3["Inbox"]',
   "    end",
   '    subgraph nb1["Errands"]',
+  "        direction LR",
   '        n4["Errands"]',
   "    end",
-  "    class n0 root",
-  "    class n4 root",
+  "    nb0 ~~~ nb1",
+  "    class n0,n4 root",
 ].join("\n");
 
 /** The warning a row with a missing parent draws. */

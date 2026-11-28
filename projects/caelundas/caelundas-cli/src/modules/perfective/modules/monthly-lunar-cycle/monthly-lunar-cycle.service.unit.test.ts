@@ -678,7 +678,7 @@ describe(MonthlyLunarCycleService, () => {
             "Lunar",
             "New",
           ],
-        } as DetectedCalendarEvent;
+        };
         const exiting = {
           ...entering,
           end: moment.utc("2024-01-08T00:00:00.000Z"),
@@ -750,4 +750,71 @@ describe(MonthlyLunarCycleService, () => {
       });
     });
   }); // private utility methods
+
+  describe("lunar apsis spans", () => {
+    const apsis = (iso: string, tag: string): DetectedCalendarEvent => ({
+      description: tag,
+      end: moment.utc(iso),
+      start: moment.utc(iso),
+      summary: tag,
+      tags: ["Astronomy", "Astrology", "Lunar Apsides", "Lunar", tag],
+    });
+
+    it("advances from apogee to perigee and retreats from perigee to apogee", () => {
+      const spans = service.detectProgressive([
+        apsis("2026-03-10T00:00:00.000Z", "Perigee"),
+        apsis("2026-03-03T00:00:00.000Z", "Apogee"),
+        apsis("2026-03-24T00:00:00.000Z", "Perigee"),
+        apsis("2026-03-17T00:00:00.000Z", "Apogee"),
+      ]);
+
+      expect(
+        spans.map((span) => [
+          span.summary,
+          span.start.toISOString(),
+          span.end.toISOString(),
+        ]),
+      ).toStrictEqual([
+        [
+          "🌙🔥 Lunar Advancing",
+          "2026-03-03T00:00:00.000Z",
+          "2026-03-10T00:00:00.000Z",
+        ],
+        [
+          "🌙❄️ Lunar Retreating",
+          "2026-03-10T00:00:00.000Z",
+          "2026-03-17T00:00:00.000Z",
+        ],
+        [
+          "🌙🔥 Lunar Advancing",
+          "2026-03-17T00:00:00.000Z",
+          "2026-03-24T00:00:00.000Z",
+        ],
+      ]);
+    });
+
+    it("tags a span as an apsis one, apart from the phases", () => {
+      const [span] = service.detectProgressive([
+        apsis("2026-03-03T00:00:00.000Z", "Apogee"),
+        apsis("2026-03-10T00:00:00.000Z", "Perigee"),
+      ]);
+
+      expect(span?.tags).toStrictEqual([
+        "Astronomy",
+        "Astrology",
+        "Lunar Apsides",
+        "Lunar",
+        "Advancing",
+      ]);
+    });
+
+    it("skips two apsides of one kind in a row", () => {
+      expect(
+        service.detectProgressive([
+          apsis("2026-03-03T00:00:00.000Z", "Apogee"),
+          apsis("2026-03-10T00:00:00.000Z", "Apogee"),
+        ]),
+      ).toStrictEqual([]);
+    });
+  });
 });

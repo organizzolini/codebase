@@ -63,11 +63,14 @@ export class RenderOptionsService {
     diagram,
     entities,
     filter,
+    iconField,
     limit,
+    noteField,
     outputJson,
     outputMarkdown,
     overwrite,
     page,
+    rankField,
     schema,
     sort,
     sourceUri,
@@ -83,6 +86,9 @@ export class RenderOptionsService {
     const { filters, sorts } = parseGraphRows(filter, sort);
     const drawing = parseGraphDrawing({
       diagram,
+      iconField,
+      noteField,
+      rankField,
       truncateBreadth,
       truncateDepth,
     });

@@ -1357,9 +1357,11 @@ function Cascader<T>({
   // Partial selections read off the SAME map, so the dash and the number are
   // two readings of one traversal and cannot drift apart.
   const indeterminateSet = React.useMemo(() => {
-    if (!cascade || !multiple) return null
+    // Multi-select without `cascade` too: a branch whose own box is clear but
+    // that has picks beneath it reads as partly picked, the way a tree does.
+    if (!multiple) return null
     return getCascaderIndeterminateFrom(selectedDescendants, selectedValues)
-  }, [cascade, multiple, selectedDescendants, selectedValues])
+  }, [multiple, selectedDescendants, selectedValues])
 
   const isIndeterminate = React.useCallback(
     (node: CascaderNode<T>) => indeterminateSet?.has(node.value) ?? false,

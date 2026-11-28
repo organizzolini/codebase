@@ -10,9 +10,12 @@ import {
   ingressBodies as signIngressBodies,
 } from "../../../caelundas/caelundas.constants";
 import { EphemerisService } from "../../../ephemeris/ephemeris.service";
+import { BoundarySearchService } from "../../../ephemeris/modules/boundary-search/boundary-search.service";
 
+import { IngressStaysService } from "./ingress-stays.service";
 import { IngressesComposerService } from "./ingresses-composer.service";
 import { IngressesService } from "./ingresses.service";
+import { SignTransitsService } from "./sign-transits.service";
 
 import type { Body } from "../../../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
@@ -66,7 +69,17 @@ const ephemerisService = new EphemerisService(
 );
 const logger = new LoggerService();
 const helperService = new IngressesComposerService(logger, ephemerisService);
-const service = new IngressesService(helperService, logger);
+const signTransitsService = new SignTransitsService(
+  new BoundarySearchService(),
+  ephemerisService,
+  logger,
+);
+const service = new IngressesService(
+  helperService,
+  new IngressStaysService(logger, signTransitsService),
+  logger,
+  signTransitsService,
+);
 
 describe("ingresses.events integration", () => {
   describe("service.getSignIngressEvents", () => {

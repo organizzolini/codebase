@@ -115,6 +115,7 @@ linesecond
 linuxbrew
 lintstaged
 lintstagedrc
+lpad
 Manypkg
 mapbox
 maplibre

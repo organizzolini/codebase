@@ -61,6 +61,63 @@ describe(useTagPicker, () => {
     ]);
   });
 
+  it("lists no folder while a search narrows the list", () => {
+    const properties = createProperties([]);
+    const folder: FilterOption = {
+      data: { depth: 0, folder: true, name: "Sign" },
+      label: "Sign",
+      value: "sign",
+    };
+    const { result } = renderHook(() =>
+      useTagPicker({
+        ...properties,
+        options: {
+          ...properties.options,
+          items: [folder, ...ITEMS],
+          query: "a",
+        },
+      }),
+    );
+
+    expect(result.current.rows.map((row) => row.item.value)).toStrictEqual([
+      "aspect",
+      "trine",
+    ]);
+  });
+
+  it("opens a folder on Space instead of ticking it, and ticks any other tag", () => {
+    const properties = createProperties([]);
+    const { result } = renderHook(() => useTagPicker(properties));
+    const press = (row: (typeof result.current.rows)[number]): void => {
+      act(() => {
+        result.current.handleOptionKeyDown(
+          {
+            currentTarget: document.createElement("div"),
+            key: " ",
+            preventDefault: vi.fn<() => void>(),
+          } as unknown as Parameters<
+            typeof result.current.handleOptionKeyDown
+          >[0],
+          row,
+        );
+      });
+    };
+    const [aspect] = result.current.rows;
+
+    if (aspect === undefined) {
+      throw new Error("The list has no rows");
+    }
+
+    press({ ...aspect, isFolder: true });
+
+    expect(result.current.rows).toHaveLength(2);
+    expect(properties.onValueChange).not.toHaveBeenCalled();
+
+    press(aspect);
+
+    expect(properties.onValueChange).toHaveBeenCalledWith(["aspect"]);
+  });
+
   it("writes a tick at once, picking a tag whose every tag beneath is picked", () => {
     const properties = createProperties([]);
     const { result } = renderHook(() => useTagPicker(properties));

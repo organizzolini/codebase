@@ -50,7 +50,7 @@ src/
       modules/render-entities/      # @DirectedAcyclicGraph, @Graph (two forms), the endpoint and reverse-relation decorators, the generated edge entity; globs to entity classes; the @Tree pick
       modules/render-options/       # Options every drawing command shares: connection, filter, sort, paging, caps, outputs
       modules/render-edges/         # Reads an edge table, finds roots and cycles, then pages and caps the edges
-      modules/render-nodes/         # Reads the labels of only the drawn nodes and graphs, and relabels a generated edge's graph
+      modules/render-nodes/         # Reads the labels of only the drawn nodes and owners, and relabels them through the edge's relations
       modules/render-mermaid/       # Pure renderer: a graph model to Mermaid text, with its limit warnings
       modules/render-trees/         # Reads a @Tree table in its storage, then filters, sorts, pages, and caps it
       modules/render-tree-data/     # The render-tree-data command: draws a @Tree entity
@@ -110,23 +110,39 @@ testing/
   `--truncate-breadth` keeps its first children in row order. Each hidden group is
   drawn as one "… K more" truncation node under its parent and warned about.
   Nodes no root reaches, such as a cycle, stay as drawn.
+- **Graph trees:** a node entity whose generated `@Graph` edge joins its own rows
+  (`@Graph({ edge, nodes: () => Itself })`) is also a `render-tree-data` pick, the way
+  a `@Tree` is, for a tree whose nodes may have several parents. `treeTable` reads its
+  edge table: a row's `parentId` is its lowest parent id and `otherParentIds` the rest
+  (`GraphTreeRow`), so the level-by-level read still finds every row by one parent and
+  `buildTreeGraph`, the match walks, paging and the caps follow all of them. A node with
+  two parents is one node with two edges in the flowchart, and the file tree lists it once, under
+  the first parent that reaches it, marked `(also under X, Y)`.
 - **Tree matches:** the ancestor and descendant walks each join a row once, so a
   cycle ends them instead of looping.
-- **Mermaid:** `renderGraphMermaid` draws short node ids, escaped labels, and
-  styled roots and truncation nodes.
+- **Mermaid:** `renderGraphMermaid` draws short node ids and escaped labels, each node
+  declared once where it first appears, edges chained to every target of a source
+  (`n0 --> n1 & n2`), undirected edges as chained trails, one `class` line per style
+  (root, truncation, and `shared` for a directed node with several parents), and only the
+  `classDef`s used. It never reads a node twice, so 150,000 leaves cannot overflow the stack.
 - **File tree:** `--diagram filetree` (`render-tree-data` only; the plan's
   `diagram` defaults to `flowchart`) makes `RenderMermaidService` call
-  `renderGraphFileTree`, Mermaid's beta `treeView-beta` (needs Mermaid 11.14 or
-  later; Obsidian may not render it). It nests children under roots by edge
-  order, quotes labels, and marks a node with children with a trailing `/`
-  inside the quotes. It ignores edge labels, weights, markers, and direction,
-  and warns only on the 50,000-character limit, not the 500-edge flowchart one.
-  The grammar has no quote escape, so a label holding `"` uses single quotes.
+  `renderGraphFileTree`, a plain text tree in a `text` fence (`GraphMermaidRendering.language`),
+  not Mermaid. One line per node with `├──` guides; a first walk gives each node its one
+  place, so a node with several parents is marked `(also under X, Y)` and a cycle no root
+  reaches is listed as roots. It ignores edge labels, weights, markers, and direction, and
+  has no limit warnings.
 - **Neighborhoods:** with two or more weakly connected groups of nodes (edges
-  read as undirected), `renderGraphMermaid` wraps each in `subgraph nb<N>`,
-  titled by the label all its edges share (then drawn without it), else its
+  read as undirected), `renderGraphMermaid` wraps each in `subgraph nb<N>` (with
+  `direction` inside, rows of three joined by `~~~`), titled by the label all its edges
+  share (then drawn without it), else one to three distinct edge labels joined, else its
   first root's or first node's label. One neighborhood draws unchanged, and the
   `GraphModel` never carries them.
+- **Sections:** `RenderService` asks for `sections` only when `--output-markdown` is
+  given. `packNeighborhoods` packs neighborhoods in order into groups of at most 40 nodes,
+  each a small diagram in `GraphMermaidRendering.sections`; `renderGraphPagesMarkdown`
+  writes an index of links and a heading per section when there are two or more (limit
+  warnings are then per section). stdout always gets the one whole `diagram`.
 - **Checks before connecting:** column names and the `@Tree` pick are read from
   decorators first, so a bad flag or pick never reaches the database.
 - **Two forms of one decorator:** `@Graph()` and `@DirectedAcyclicGraph()` mark
@@ -135,16 +151,23 @@ testing/
   entity. `generateEdgeEntity` registers a nameless class, its table, key
   columns, cascading relations and indexes with TypeORM's metadata storage when
   the decorator runs; the class is reachable only through
-  `generatedEdgeOf` and `withGeneratedEdges`, which `createGraphDataSource` and a
-  project's own entity list must use. A graph entity is a pick candidate, but the
+  `generatedEdgeOf` and `withGeneratedEdges`; `postgresDataSourceOptions` applies
+  them to its `entities` (`generatedEntitiesOf`), so a project lists only the
+  graph entity. A graph entity is a pick candidate, but the
   command reads the generated class, so `--filter` and `--sort` name its columns.
+  The generated edge has no owner column, since not every graph has
+  subgraphs, only the source and target columns, which default to `sourceNode`
+  and `targetNode` (`source_node`, `target_node`); the `sourceColumn` and
+  `targetColumn` options rename them. A graph with subgraphs writes its edge
+  entity by hand, with an owner column and relations of its own.
 - **Labels:** `RenderCommand` calls `RenderNodesService.relabel` after
   `RenderEdgesService` has paged and capped the edges, so node labels and neighborhood titles are read for
-  only the nodes drawn. A generated edge carries its graph's key as its label,
-  which `relabel` replaces with the graph's `@GraphLabel`.
+  only the nodes drawn. `relabel` reads the entities the edge's relations join:
+  the source column's labels each node, and the `@GraphLabel` column's titles
+  each neighborhood.
 - **Reverse relations** register by the generated entity's name, since its class
   does not exist when a node entity is defined, so a data source that builds the
-  node entity must also build the graph entity.
+  node entity must also build the declaring entity.
 
 `postgresql-import --clean` never prompts and has no `--yes`; the preview is
 `postgresql-import --dry-run`, which names what `--clean` would drop or truncate. Run it
