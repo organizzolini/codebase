@@ -16,7 +16,7 @@ export interface CommandStep {
   recover?: readonly Command[];
 }
 
-/** The variables the upgrade reads: where the workflow's outputs go, and which run it is. */
+/** Variables the upgrade reads: the workflow output file and run id. */
 export type Environment = z.infer<typeof environmentSchema>;
 
 /** A failed, undone step, with its report label. */

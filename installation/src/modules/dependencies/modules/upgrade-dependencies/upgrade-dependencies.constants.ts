@@ -29,7 +29,7 @@ export const WARNING_LIMIT = 10;
 /** Most characters quoted from a warning or skipped step's reason. */
 export const LINE_CHARACTERS = 160;
 
-/** What the pull request says the ReUI step did; it prints its own retry hint on an outage. */
+/** What the pull request says the ReUI step did. */
 export const REUI_SUMMARY = "ReUI skill refreshed";
 
 /** Formats upgrades, so the commit hook does not reformat them. */

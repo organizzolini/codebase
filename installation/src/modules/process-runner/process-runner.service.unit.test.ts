@@ -40,6 +40,17 @@ describe(ProcessRunnerService, () => {
       });
     });
 
+    it("reports a command killed by a signal as failed", () => {
+      expect.hasAssertions();
+
+      const result = service.capture(process.execPath, [
+        "-e",
+        "process.kill(process.pid, 'SIGKILL')",
+      ]);
+
+      expect(result.status).toBe(1);
+    });
+
     it("reports a command that cannot start as failed", () => {
       expect.hasAssertions();
 
