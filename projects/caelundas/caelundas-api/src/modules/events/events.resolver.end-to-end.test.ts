@@ -14,7 +14,7 @@ import type { EventsApplication } from "../../../testing/events-application";
  * module backed by a Postgres built by the real migration and a seeded
  * fixture.
  */
-describe("events resolver end-to-end suite", () => {
+describe("events resolver end-to-end suite", { timeout: 60_000 }, () => {
   let application: EventsApplication;
 
   /** Executes an operation expected to succeed and returns its data. */

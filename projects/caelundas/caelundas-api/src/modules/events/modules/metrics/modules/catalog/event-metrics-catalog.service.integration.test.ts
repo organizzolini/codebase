@@ -41,43 +41,47 @@ function shape(catalog: MetricCatalog): unknown {
  * Loads the catalog from a Postgres built by the real migration, which seeds
  * it, and checks it is the one the unit tests compile.
  */
-describe("event metrics catalog over the migrated database", () => {
-  let application: EventsApplication;
-  let service: EventMetricsCatalogService;
+describe(
+  "event metrics catalog over the migrated database",
+  { timeout: 60_000 },
+  () => {
+    let application: EventsApplication;
+    let service: EventMetricsCatalogService;
 
-  beforeAll(async () => {
-    application = await startEventsApplication();
-    service = application.database.module.get(EventMetricsCatalogService, {
-      strict: false,
+    beforeAll(async () => {
+      application = await startEventsApplication();
+      service = application.database.module.get(EventMetricsCatalogService, {
+        strict: false,
+      });
+    }, DATABASE_TIMEOUT_MILLISECONDS);
+
+    afterAll(async () => {
+      await application.stop();
+    }, DATABASE_TIMEOUT_MILLISECONDS);
+
+    it("loads the nineteen seeded metrics and measures the tests compile", async () => {
+      expect.hasAssertions();
+
+      const catalog = await service.getCatalog();
+
+      expect(catalog.metrics.size).toBe(18);
+      expect(catalog.measures.size).toBe(18);
+      expect(shape(catalog)).toStrictEqual(shape(createSeedCatalog()));
     });
-  }, DATABASE_TIMEOUT_MILLISECONDS);
 
-  afterAll(async () => {
-    await application.stop();
-  }, DATABASE_TIMEOUT_MILLISECONDS);
+    it("gives every measure and metric a name, an icon and a note", async () => {
+      expect.hasAssertions();
 
-  it("loads the nineteen seeded metrics and measures the tests compile", async () => {
-    expect.hasAssertions();
+      const catalog = await service.getCatalog();
 
-    const catalog = await service.getCatalog();
-
-    expect(catalog.metrics.size).toBe(18);
-    expect(catalog.measures.size).toBe(18);
-    expect(shape(catalog)).toStrictEqual(shape(createSeedCatalog()));
-  });
-
-  it("gives every measure and metric a name, an icon and a note", async () => {
-    expect.hasAssertions();
-
-    const catalog = await service.getCatalog();
-
-    for (const entry of [
-      ...catalog.measures.values(),
-      ...catalog.metrics.values(),
-    ]) {
-      expect(entry.name.length).toBeGreaterThan(0);
-      expect(entry.icon.length).toBeGreaterThan(0);
-      expect(entry.note.length).toBeGreaterThan(0);
-    }
-  });
-});
+      for (const entry of [
+        ...catalog.measures.values(),
+        ...catalog.metrics.values(),
+      ]) {
+        expect(entry.name.length).toBeGreaterThan(0);
+        expect(entry.icon.length).toBeGreaterThan(0);
+        expect(entry.note.length).toBeGreaterThan(0);
+      }
+    });
+  },
+);

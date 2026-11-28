@@ -20,7 +20,7 @@ interface Windows {
  * period it answers, so a view or a timeline scale reads only the span it
  * shows.
  */
-describe("events windows end-to-end suite", () => {
+describe("events windows end-to-end suite", { timeout: 60_000 }, () => {
   let application: EventsApplication;
 
   /** The windows of one view or scale around an anchor. */

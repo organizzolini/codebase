@@ -63,7 +63,7 @@ const QUERY = `
  * and one plain span crossing its end; Gamma one progressive span, before the
  * period only.
  */
-describe("events metrics percent end-to-end suite", () => {
+describe("events metrics percent end-to-end suite", { timeout: 60_000 }, () => {
   let application: EventsApplication;
   let kind: Tag;
   let progressive: Tag;

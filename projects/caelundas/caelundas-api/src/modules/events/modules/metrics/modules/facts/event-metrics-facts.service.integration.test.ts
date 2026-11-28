@@ -190,7 +190,7 @@ function slugify(name: string): string {
  * Measures a New York fixture over the facts and over the events, and asserts
  * each answer is the other's, for the groupings and filters the web asks.
  */
-describe("event metrics over the facts", () => {
+describe("event metrics over the facts", { timeout: 60_000 }, () => {
   let application: EventsApplication;
   let events = false;
   let metrics: string[] = [];

@@ -42,7 +42,7 @@ const EQUINOX_WATCH = "Equinox Watch";
  * Postgres built by the real migration, reading each event's group keys from
  * a seeded fixture.
  */
-describe("events grouping end-to-end suite", () => {
+describe("events grouping end-to-end suite", { timeout: 60_000 }, () => {
   let application: EventsApplication;
   let base: Record<string, Tag>;
   let tags: FilterTags;

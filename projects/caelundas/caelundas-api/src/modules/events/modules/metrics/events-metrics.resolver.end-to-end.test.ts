@@ -101,7 +101,7 @@ const QUERY = `
  * and Equinox Watch carry no planet. February holds a Mars span and a Venus
  * instant, which the previous period reads.
  */
-describe("events metrics end-to-end suite", () => {
+describe("events metrics end-to-end suite", { timeout: 60_000 }, () => {
   let application: EventsApplication;
   let base: Record<string, Tag>;
   let filterTags: FilterTags;

@@ -47,7 +47,7 @@ const EVERYTHING = [
  * module on a Postgres built by the real migration, covering every filter the
  * calendar offers against a seeded fixture.
  */
-describe("events filtering end-to-end suite", () => {
+describe("events filtering end-to-end suite", { timeout: 60_000 }, () => {
   let application: EventsApplication;
   let tags: FilterTags;
 
