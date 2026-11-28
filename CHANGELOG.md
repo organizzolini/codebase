@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.15.7](https://github.com/organizzolini/codebase/compare/v6.15.6...v6.15.7) (2026-11-28)
+
+### 🐛 Bug Fixes
+
+* **installation,integration:** 🐛 move dependency upgrades into installation ([#2658](https://github.com/organizzolini/codebase/issues/2658)) ([20ecf48](https://github.com/organizzolini/codebase/commit/20ecf488000e8a2dbb48bfdb3bb32e0aebdd8e85)), closes [#2657](https://github.com/organizzolini/codebase/issues/2657)
+
 ## [6.15.6](https://github.com/organizzolini/codebase/compare/v6.15.5...v6.15.6) (2026-11-28)
 
 ### 🐛 Bug Fixes
