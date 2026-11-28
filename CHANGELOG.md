@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.15.5](https://github.com/organizzolini/codebase/compare/v6.15.4...v6.15.5) (2026-11-28)
+
+### 🐛 Bug Fixes
+
+* **documentation:** 🐛 retry a refresh that skipped pages and report the page counts ([#2654](https://github.com/organizzolini/codebase/issues/2654)) ([d9ba88b](https://github.com/organizzolini/codebase/commit/d9ba88ba084fb05a1fa8498505305d234bf78ca3)), closes [#2653](https://github.com/organizzolini/codebase/issues/2653)
+
 ## [6.15.4](https://github.com/organizzolini/codebase/compare/v6.15.3...v6.15.4) (2026-11-27)
 
 ### ♻️ Code Refactoring
