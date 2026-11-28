@@ -31,9 +31,11 @@ later release step skips on.
 ### Helm Targets
 
 `helm-lint` and `helm-render` run the commands of the same names over every
-chart under `infrastructure/helm`, and are the renderings and lint the
+chart under `infrastructure/helm` and every project's `infrastructure/helm`,
+and `helm-test` runs the helm-unittest suites of those charts. They are the
+renderings and lint the
 `integration` project's `kubeconform`, `kube-linter`, and `pluto`, and
-infrastructure's `trivy-config`, read from `dist/deployment/helm-render`.
+`integration:trivy-config`, read from `dist/deployment/helm-render`.
 
 ### Release Steps
 

@@ -72,7 +72,7 @@ testing/
 `infrastructure/helm/postgres` is the shared PostgreSQL chart (CloudNativePG
 `Cluster`, `Pooler`, backups), which Argo CD installs from this path and
 `deployment:helm-render` renders with every other chart. Its helm-unittest suite
-runs in `infrastructure:helm-test`. Central infrastructure, such as Terraform and
+runs in `deployment:helm-test`. Central infrastructure, such as Terraform and
 the Argo CD application tree, stays in the root `infrastructure` project.
 
 ## Rules this package holds

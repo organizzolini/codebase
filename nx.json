@@ -651,7 +651,7 @@
         "tflint",
         "zizmor"
       ],
-      "description": "Aggregator for lint-code. `helm-test`, `compose-config`, `terraform-format`, and `terraform-validate` are defined only by the infrastructure project, `helm-lint` only by the deployment project, `kubeconform`, `kube-linter`, `pluto`, and `tflint` only by the integration project, and `actionlint` and `zizmor` only by the configuration project, so Nx skips them everywhere else. They shell out to helm, docker compose, and the tools the setup-codebase action installs (kubeconform, kube-linter, pluto, tflint, actionlint), which the devcontainer ships too; compose-config creates the gitignored root .env from .env.default when it is missing. The Kubernetes tools read the one rendering the deployment project's `helm-render` writes, and kubeconform fetches its CRD schemas over the network.",
+      "description": "Aggregator for lint-code. `compose-config`, `terraform-format`, and `terraform-validate` are defined only by the infrastructure project, `helm-lint` and `helm-test` only by the deployment project, `kubeconform`, `kube-linter`, `pluto`, and `tflint` only by the integration project, and `actionlint` and `zizmor` only by the configuration project, so Nx skips them everywhere else. They shell out to helm, docker compose, and the tools the setup-codebase action installs (kubeconform, kube-linter, pluto, tflint, actionlint), which the devcontainer ships too; compose-config creates the gitignored root .env from .env.default when it is missing. The Kubernetes tools read the one rendering the deployment project's `helm-render` writes, and kubeconform fetches its CRD schemas over the network.",
       "executor": "nx:noop",
       "inputs": ["default"]
     },
@@ -1266,6 +1266,35 @@
         }
       }
     ],
+    "trivy-config": {
+      "cache": true,
+      "dependsOn": [
+        {
+          "projects": ["deployment"],
+          "target": "helm-render"
+        }
+      ],
+      "description": "Scan Terraform infrastructure code and the rendered Helm manifests (helm-render) for misconfigurations using Trivy, both at CRITICAL and HIGH severity. Part of secure-code, so the Secure check runs it and a local run reproduces CI exactly. Defined in nx.json for the integration project, which holds the repository-wide CI scanners. Requires trivy and helm on PATH (the devcontainer installs trivy; otherwise `brew install trivy`).",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "{workspaceRoot}/infrastructure/terraform/**/*.tf",
+        "{workspaceRoot}/configuration/security/trivyignore",
+        {
+          "dependentTasksOutputFiles": "**/*.yaml",
+          "transitive": false
+        },
+        {
+          "externalDependencies": []
+        }
+      ],
+      "options": {
+        "command": "trivy config infrastructure/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore && trivy config dist/deployment/helm-render --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore",
+        "cwd": "{workspaceRoot}"
+      },
+      "filter": {
+        "projects": ["tag:name:integration"]
+      }
+    },
     "ty": [
       {
         "cache": true,
