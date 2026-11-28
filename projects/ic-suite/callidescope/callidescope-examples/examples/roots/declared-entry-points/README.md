@@ -67,7 +67,7 @@ callable without editing the address and the run stops before it prints or
 writes anything:
 
 ```text
-🔭 Rejected a project configuration {"reason":"projects/ic-suite/callidescope/callidescope-examples/examples/limits/gated-leaf
+🔬 Rejected a project configuration {"reason":"projects/ic-suite/callidescope/callidescope-examples/examples/limits/gated-leaf
 declares an entryPoints.addresses entry that resolves to nothing:
 \"…/gated-leaf.ts#GatedLeafService.readMissing\". Check the file path and the qualified name
 callidescope prints for it in a stack."}

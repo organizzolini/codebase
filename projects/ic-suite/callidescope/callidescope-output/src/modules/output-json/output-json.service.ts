@@ -65,7 +65,7 @@ export class OutputJsonService {
     mkdirSync(path.dirname(resolvedPath), { recursive: true });
     writeFileSync(resolvedPath, generatedReport, "utf8");
 
-    this.logger.info("🔭 Wrote a report", undefined, { path: resolvedPath });
+    this.logger.info("🔬 Wrote a report", undefined, { path: resolvedPath });
 
     return true;
   }

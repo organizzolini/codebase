@@ -5,7 +5,7 @@ description: "Documents the five shared packages under projects/common/ (persist
 tags: ["architecture", "shared-packages", "persistence", "interface", "presentation", "observability", "testing", "nestjs", "graphql", "react", "typescript"]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-25T18:55:00.444Z
+    at: 2026-11-27T18:15:08.471Z
 sources:
   - id: openwiki-source-f361a9dd9b028b78e5690b6b
     resource: repo://projects/affirmancy/pyproject.toml

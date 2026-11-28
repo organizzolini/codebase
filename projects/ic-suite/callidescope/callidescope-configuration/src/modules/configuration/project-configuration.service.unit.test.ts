@@ -699,7 +699,7 @@ describe(ProjectConfigurationService, () => {
     const workspaceRoot = writeWorkspace({
       "packages/published": completeConfiguration({
         write: {
-          markdown: { heading: "## 🔭 Callidescope", path: "README.md" },
+          markdown: { heading: "## 🔬 Callidescope", path: "README.md" },
           mermaid: { path: "docs/diagram.md" },
         },
       }),
@@ -716,7 +716,7 @@ describe(ProjectConfigurationService, () => {
     );
 
     expect(loaded?.configuration.write.markdown).toMatchObject({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       path: "README.md",
     });
     expect(loaded?.configuration.write.mermaid?.path).toBe("docs/diagram.md");

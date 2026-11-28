@@ -211,7 +211,7 @@ locals {
     "🕵️ Secure",
     "🧑‍⚕️ Static",
     "💂 Guard",
-    "🔭 Callidescope Restrict",
+    "🔬 Callidescope Restrict",
     "🕸️ Codependix Bound",
     "⏲️ Codometer Limit",
     "👔 Conformetry Validate",

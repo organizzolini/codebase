@@ -143,6 +143,10 @@ const scopes = [
     name: "documentation",
   },
   {
+    description: "Static GitHub profile README project (markdown and assets)",
+    name: "identity",
+  },
+  {
     description: "Helm charts, Terraform configs, and Kubernetes resources",
     name: "infrastructure",
   },
@@ -153,10 +157,6 @@ const scopes = [
   {
     description: "CI plumbing: steps around a CI job (affected run, Nx task-cache database)",
     name: "integration",
-  },
-  {
-    description: "Static GitHub profile README project (markdown and assets)",
-    name: "JimmyPaolini",
   },
   {
     description:

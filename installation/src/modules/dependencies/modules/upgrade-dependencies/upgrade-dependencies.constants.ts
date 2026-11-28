@@ -1,4 +1,4 @@
-import type { Command } from "../process-runner/process-runner.types";
+import type { Command } from "../../../process-runner/process-runner.types";
 import type { UpgradeStep } from "./upgrade-dependencies.types";
 
 // ♟️ Constants
@@ -29,6 +29,9 @@ export const WARNING_LIMIT = 10;
 /** Most characters quoted from a warning or skipped step's reason. */
 export const LINE_CHARACTERS = 160;
 
+/** What the pull request says the ReUI step did. */
+export const REUI_SUMMARY = "ReUI skill refreshed";
+
 /** Formats upgrades, so the commit hook does not reformat them. */
 const FORMAT_UPGRADED_FILES: Command = [
   "pnpm",
@@ -50,7 +53,14 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
     label: "Upgrade Python",
     // The environment is rebuilt from the lock the step left unchanged.
     recover: [
-      ["uv", "sync", "--frozen", "--quiet", "--project", "configuration"],
+      [
+        "uv",
+        "sync",
+        "--frozen",
+        "--quiet",
+        "--project",
+        "configuration/python",
+      ],
     ],
     task: "python",
   },
@@ -67,27 +77,49 @@ export const UPGRADE_STEPS: readonly UpgradeStep[] = [
   },
   {
     // One lockfile covers every uv workspace member.
-    commands: [["uv", "lock", "--upgrade", "--project", "configuration"]],
+    commands: [
+      ["uv", "lock", "--upgrade", "--project", "configuration/python"],
+    ],
     label: "Upgrade Python dependencies",
   },
   {
-    // The skills CLI installs for every agent when none is detected and --yes
-    // is passed, leaving an untracked agent/ folder that lint rejects, so it is
-    // removed. ReUI serves its skill as a JSON bundle that `skills update`
-    // skips, so the installation project re-fetches it.
+    // `skills update` installs for every agent when none is detected, leaving
+    // an untracked agent/ folder, so it is removed.
     commands: [
       ["pnpm", "exec", "skills", "update", "--yes"],
       ["rm", "-rf", "agent/"],
-      [
-        "node",
-        "--import",
-        "@swc-node/register/esm-register",
-        "installation/src/installation.main.ts",
-        "update-reui-skill",
-      ],
-      FORMAT_UPGRADED_FILES,
     ],
     label: "Upgrade skills",
+  },
+  // `skills update` skips ReUI's JSON bundle, so it is refreshed on its own.
+  { label: "Upgrade ReUI skill", task: "reui" },
+  {
+    // `skills update` also skips the IC-suite skills, which sit too deep to
+    // find, so they are re-added from local sources, then everything is
+    // formatted.
+    commands: [
+      [
+        "find",
+        "./projects/ic-suite",
+        "-mindepth",
+        "4",
+        "-maxdepth",
+        "4",
+        "-path",
+        "*-agents/skills/*",
+        "-exec",
+        "pnpm",
+        "exec",
+        "skills",
+        "add",
+        "{}",
+        "-y",
+        ";",
+      ],
+      ["rm", "-rf", "agent/"],
+      FORMAT_UPGRADED_FILES,
+    ],
+    label: "Restore IC-suite skills",
   },
 ];
 

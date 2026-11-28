@@ -1,3 +1,25 @@
+## 0.0.102 (2026-11-26)
+
+### 💅 Refactors
+
+- **callidescope,caelundas:** ♻️ move callidescope to the microscope emoji and caelundas to the telescope ([#2618](https://github.com/organizzolini/codebase/pull/2618), [#2617](https://github.com/organizzolini/codebase/issues/2617))
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.101
+- Updated conformetry-generation to 0.0.101
+- Updated conformetry-validation to 0.0.100
+- Updated conformetry-output to 0.0.100
+
+## 0.0.101 (2026-11-26)
+
+### 🧱 Updated Dependencies
+
+- Updated conformetry-configuration to 0.0.100
+- Updated conformetry-generation to 0.0.100
+- Updated conformetry-validation to 0.0.99
+- Updated conformetry-output to 0.0.99
+
 ## 0.0.100 (2026-11-25)
 
 ### 🚀 Features

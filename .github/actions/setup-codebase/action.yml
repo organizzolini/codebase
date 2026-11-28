@@ -78,7 +78,7 @@ inputs:
   uv:
     description: |
       Install uv. Required by far more than the Python projects — yaml-lint
-      and sqlfluff shell out to `uv run --project configuration` on every
+      and sqlfluff shell out to `uv run --project configuration/python` on every
       TypeScript project too.
     default: "true"
 

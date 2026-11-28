@@ -1,6 +1,6 @@
 ---
 name: codometer-configure
-description: Write or edit a codometer.config.ts, declaring inputs, limits, custom convention counters, comment budgets, exclusions, or output destinations. Use when a repository has no codometer configuration yet, when adding a size or count limit, when bounding how long a comment block or a JSDoc comment may run, when declaring an input for compiled or generated output, when counting a naming convention no built-in analyzer knows about, when a limit fails to bind or an input matches no files, or when deciding whether one configuration can describe every project in a workspace.
+description: "Write or edit a codometer.config.ts: inputs, size and count limits, comment budgets, custom counters, exclusions, and outputs. Use when a repository has no configuration, when adding a limit or budget, or when a limit fails to bind or an input matches no files."
 license: MIT
 ---
 
@@ -9,7 +9,7 @@ license: MIT
 `codometer.config.{ts,mts,cts,js,mjs,cjs,json,jsonc}` is read from the path a
 run names with `--config <path>`, which is required — nothing is searched for
 and there is no default file. In this repository the workspace file is
-`configuration/codometer.config.ts`; a project's own is its
+`configuration/ic-suite/codometer.config.ts`; a project's own is its
 `codometer.config.ts`. The named file is never merged with another: a merged
 limit that never applied to this folder would look exactly like one that did. `format` is the one field every
 configuration must set — there is no code-level fallback for it — and every
@@ -21,7 +21,7 @@ import { type CodometerConfiguration } from "@codometer/configuration";
 const codometerConfiguration: CodometerConfiguration = {
   format: "markdown",
   exclude: ["notepads/**"],
-  excludeFrom: ["configuration/.codometerignore"],
+  excludeFrom: ["configuration/ic-suite/.codometerignore"],
   defaultInput: "codebase",
   limits: [{ metric: "typescript.interfaces", severity: "warn", value: 500 }],
   inputs: [
@@ -44,7 +44,7 @@ always read as a plain object — there is no config-as-function escape hatch,
 so one file cannot describe every project in a workspace on its own; a
 repository with many projects gives each its own `codometer.config.ts` and
 spreads a shared object across them, the way this repository's own
-`configuration/codometer.config.ts` does.
+`configuration/ic-suite/codometer.config.ts` does.
 
 ## Exclusions
 
@@ -52,9 +52,9 @@ spreads a shared object across them, the way this repository's own
 `excludeFrom` are for files that are **kept** but that nobody wrote by hand —
 lockfiles, vendored bundles, generated documentation:
 
-| Option | Syntax | Use it for |
-| ------ | ------ | ---------- |
-| `exclude` | Globs | A handful of paths named inline |
+| Option        | Syntax                          | Use it for                                      |
+| ------------- | ------------------------------- | ----------------------------------------------- |
+| `exclude`     | Globs                           | A handful of paths named inline                 |
 | `excludeFrom` | Paths to gitignore-syntax files | A list a repository would rather keep in a file |
 
 Reusing an existing ignore file is a trap worth knowing about: most are written
@@ -71,14 +71,14 @@ over it. The measured directory is always an input of its own, named
 `.gitignore` excludes, and that therefore needs an input rather than an
 exclusion to reach at all.
 
-| Field | Required | Default | Meaning |
-| ----- | -------- | ------- | ------- |
-| `name` | yes | — | Unique name for this input |
-| `include` | yes | — | Globs that add files; at least one must add rather than only remove |
-| `exclude` | no | none | Globs that remove files |
-| `analyses` | yes | — | `"language"`, `"size"`, or both |
-| `compression` | no | `gzip` | `gzip`, `brotli`, or `none`, for `size` analysis |
-| `directory` | no | `.` | Where this input's globs start, relative to the process's working directory |
+| Field         | Required | Default | Meaning                                                                     |
+| ------------- | -------- | ------- | --------------------------------------------------------------------------- |
+| `name`        | yes      | —       | Unique name for this input                                                  |
+| `include`     | yes      | —       | Globs that add files; at least one must add rather than only remove         |
+| `exclude`     | no       | none    | Globs that remove files                                                     |
+| `analyses`    | yes      | —       | `"language"`, `"size"`, or both                                             |
+| `compression` | no       | `gzip`  | `gzip`, `brotli`, or `none`, for `size` analysis                            |
+| `directory`   | no       | `.`     | Where this input's globs start, relative to the process's working directory |
 
 A `!` prefix in `include` removes files; every negation across the array forms
 one set applied to the whole input, so reordering the array can never change
@@ -107,12 +107,12 @@ limits: [
 ],
 ```
 
-| Field | Required | Default | Meaning |
-| ----- | -------- | ------- | ------- |
-| `metric` | yes | — | Dotted path of the metric this bounds |
-| `value` | yes | — | Ceiling, as a number or a string carrying a unit |
-| `severity` | no | `fail` | `fail` stops the run on a breach; `warn` only reports it |
-| `label` | no | the path | What the report calls this limit |
+| Field      | Required | Default  | Meaning                                                  |
+| ---------- | -------- | -------- | -------------------------------------------------------- |
+| `metric`   | yes      | —        | Dotted path of the metric this bounds                    |
+| `value`    | yes      | —        | Ceiling, as a number or a string carrying a unit         |
+| `severity` | no       | `fail`   | `fail` stops the run on a breach; `warn` only reports it |
+| `label`    | no       | the path | What the report calls this limit                         |
 
 A metric is addressed as its input's name followed by its path within that
 input. Setting `defaultInput` lets an unqualified path resolve to that input's
@@ -155,8 +155,8 @@ custom: [
 Each entry renders as one badge everywhere it is selected, in configured
 order. `color` is a shields.io hexadecimal triplet; an entry that omits it
 takes the next color from a built-in palette per group, so a counter's color
-stays stable between runs. A counter selects what it counts with exactly one
-of three fields — `patterns`, `symbols`, or `comment` — and an entry naming
+stays stable between runs. A counter selects what it counts with one of four
+fields — `patterns`, `symbols`, `comment`, or `tree` — and an entry naming
 none of them is rejected rather than reported as a permanent zero.
 
 An `outputs` entry's own `custom` array is a separate, later concern: it
@@ -187,13 +187,19 @@ custom: [
 ],
 ```
 
-`kinds` is one or more of `class`, `enum`, `function`, `getter`, `interface`,
-`method`, `property`, `setter`; `modifiers` narrows to declarations carrying
+`kinds` is one or more of `class`, `enum`, `file`, `function`, `getter`,
+`interface`, `method`, `property`, `setter`, `signature`, `type`, `variable`;
+`modifiers` narrows to declarations carrying
 every named modifier from `abstract`, `async`, `export`, `override`, `private`,
 `protected`, `public`, `readonly`, `static`. Both are read literally from the
 syntax — a class member is a `method`, everything else callable is a
 `function` including an arrow, and a class field holding an arrow function is
-a `property` carrying none of the field's own modifiers.
+a `property` carrying none of the field's own modifiers. A `variable` is a
+`const`, `let`, or `var` statement, an arrow-holding one included; a `type` is a
+type alias; a `signature` is a property or method signature in an interface or
+type literal; and a `file` is the one JSDoc block at the top of a file that a
+blank line sets apart from the first statement, which is why no declaration
+claims it.
 
 `patterns` on a symbol counter narrows **which files are searched** rather than
 being what is counted. `group` places the badge after a named group's
@@ -218,14 +224,14 @@ custom: [
 limits: [{ metric: "custom.YAML Comment Budget", value: 0 }],
 ```
 
-| Field | Required | Default | Meaning |
-| ----- | -------- | ------- | ------- |
-| `language` | no | every language with comments | Narrows to one of `css`, `hcl`, `python`, `shell`, `sql`, `toml`, `typescript`, `yaml` |
-| `kind` | no | a plain comment block | Narrows to a documented declaration's JSDoc-style comment for this declaration kind |
-| `maximumCharacters` | no | — | Characters a block may hold, markers and newlines and all |
-| `maximumLines` | no | — | Lines a block may span |
-| `maximumWords` | no | — | Words of prose a block may hold, once markers are stripped |
-| `severity` | no | `fail` | `fail` stops the run on a breach; `warn` only reports it |
+| Field               | Required | Default                      | Meaning                                                                                |
+| ------------------- | -------- | ---------------------------- | -------------------------------------------------------------------------------------- |
+| `language`          | no       | every language with comments | Narrows to one of `css`, `hcl`, `python`, `shell`, `sql`, `toml`, `typescript`, `yaml` |
+| `kind`              | no       | a plain comment block        | Narrows to a documented declaration's JSDoc-style comment for this declaration kind    |
+| `maximumCharacters` | no       | —                            | Characters a block may hold, markers and newlines and all                              |
+| `maximumLines`      | no       | —                            | Lines a block may span                                                                 |
+| `maximumWords`      | no       | —                            | Words of prose a block may hold, once markers are stripped                             |
+| `severity`          | no       | `fail`                       | `fail` stops the run on a breach; `warn` only reports it                               |
 
 Its count is how many blocks broke the selector's own maxima, and its
 `instances` names each breaching block's `file` and 1-indexed `line`, plus how
@@ -234,7 +240,7 @@ much it measured. A block that stayed within budget contributes to neither.
 **A `comment` selector carries no inheritance.** There is no top-level default
 a per-language entry merges over, so "every language at 128 words except shell
 at 256" is written as one selector per language, not as a shared budget with
-an override — this repository's own `configuration/codometer.config.ts`
+an override — this repository's own `configuration/ic-suite/codometer.config.ts`
 derives that enumeration from `CODOMETER_COMMENT_LANGUAGES` and types it so a
 language added to the schema is a compile error there until this repository's
 list covers it. **A language codometer starts measuring comments in is not
@@ -282,6 +288,46 @@ Two accuracy caveats worth knowing before trusting a count:
 
 For what to do about a breach, reach for the `codometer-triage` skill.
 
+### Selecting a tree ceiling
+
+`tree` holds every directory of the measured tree to one ceiling — how many
+entries it holds directly, or how deep it sits below the measured root — and
+counts the directories that broke it:
+
+```ts
+custom: [
+  { label: "Directory Breadth", tree: { exclude: ["**/migrations"], maximumBreadth: 12 } },
+  { label: "Directory Depth", tree: { maximumDepth: 8 } },
+],
+limits: [
+  { metric: "custom.Directory Breadth", value: 0 },
+  { metric: "custom.Directory Depth", value: 0 },
+],
+```
+
+| Field            | Required       | Default | Meaning                                                                  |
+| ---------------- | -------------- | ------- | ------------------------------------------------------------------------ |
+| `maximumBreadth` | one of the two | —       | Entries one directory may hold directly, files and folders counted alike |
+| `maximumDepth`   | one of the two | —       | Folders deep a directory may sit, the measured root being depth `0`      |
+| `exclude`        | no             | none    | Directory globs exempt from the ceiling, their descendants included      |
+
+**A selector names exactly one ceiling.** Breadth and depth are separate
+problems with separate fixes, so one selector holding both is refused —
+declare a second statistic for the second ceiling.
+
+The tree is rebuilt from the files discovery found, so an ignored file is
+never an entry and a folder holding only ignored files does not exist. An
+excluded directory still counts as one entry in its parent; only its own
+contents go unmeasured. `patterns`, when set, narrows which files build the
+tree.
+
+A breadth breach names the directory and how many entries it holds; the
+measured root is named `.`. A depth breach names the shallowest directory
+past the ceiling, once, measured by the deepest folder beneath it, so one
+over-nested subtree is one breach rather than one per level. Split a wide
+directory into child folders, or flatten a deep one — **never raise the
+ceiling to make the run pass**.
+
 ## Output destinations
 
 `outputs` is an array of typed destinations — declare as many as you like, but
@@ -321,14 +367,14 @@ report says and where it lands, replacing what used to be two separate
 }
 ```
 
-| Argument | Meaning |
-| -------- | ------- |
-| `description` | The configured description, for a writer that wants to place it itself |
-| `renderBadges()` | The built-in badge rendering of these same statistics — call it to build the default content, or to add to it |
-| `statistics` | The measured statistics |
-| `check` | True when nothing may be written and the file is only being inspected |
-| `path` | The configured path, resolved against the process's working directory |
-| `anchors` | The marker mechanics — `syncAnchoredBlock`, `wrapInAnchors`, `startMarker`/`endMarker` — so choosing a different file does not mean reimplementing the splice |
+| Argument         | Meaning                                                                                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `description`    | The configured description, for a writer that wants to place it itself                                                                                        |
+| `renderBadges()` | The built-in badge rendering of these same statistics — call it to build the default content, or to add to it                                                 |
+| `statistics`     | The measured statistics                                                                                                                                       |
+| `check`          | True when nothing may be written and the file is only being inspected                                                                                         |
+| `path`           | The configured path, resolved against the process's working directory                                                                                         |
+| `anchors`        | The marker mechanics — `syncAnchoredBlock`, `wrapInAnchors`, `startMarker`/`endMarker` — so choosing a different file does not mean reimplementing the splice |
 
 Leaving `write` unset keeps the built-in rendering and writing. A `write`
 function returns `false` to report its destination as stale, which is what

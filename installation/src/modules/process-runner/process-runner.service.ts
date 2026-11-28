@@ -6,9 +6,18 @@ import { Injectable } from "@nestjs/common";
 
 import { LoggerService } from "@codebase/observability";
 
-import { MILLISECONDS_PER_SECOND } from "./process-runner.constants";
+import {
+  ABNORMAL_EXIT_STATUS,
+  MAXIMUM_CAPTURED_BYTES,
+  MILLISECONDS_PER_SECOND,
+} from "./process-runner.constants";
 
-import type { ProcessOptions, ProcessResult } from "./process-runner.types";
+import type {
+  CapturedProcess,
+  Command,
+  ProcessOptions,
+  ProcessResult,
+} from "./process-runner.types";
 
 /**
  * Starts the child processes setup depends on, and answers whether a command exists.
@@ -31,6 +40,41 @@ export class ProcessRunnerService {
   // 🔏 Private Methods
 
   // 🌎 Public Methods
+
+  /** Runs a command to completion and returns both output streams and the exit code. */
+  public capture(executable: string, args: readonly string[]): CapturedProcess {
+    const result = spawnSync(executable, [...args], {
+      encoding: "utf8",
+      maxBuffer: MAXIMUM_CAPTURED_BYTES,
+    });
+    const failure = result.error === undefined ? "" : String(result.error);
+
+    return {
+      status: result.status ?? ABNORMAL_EXIT_STATUS,
+      // Typed as a string, but absent when the process never started.
+      stderr: [result.stderr, failure].filter(Boolean).join(""),
+      stdout: result.stdout,
+    };
+  }
+
+  /** Runs commands in order, stopping at the first that fails, and returns their output. */
+  public captureSequence(commands: readonly Command[]): CapturedProcess {
+    const finished: CapturedProcess = { status: 0, stderr: "", stdout: "" };
+
+    for (const [executable, ...args] of commands) {
+      const result = this.capture(executable, args);
+
+      finished.stderr += result.stderr;
+      finished.stdout += result.stdout;
+      finished.status = result.status;
+
+      if (result.status !== 0) {
+        break;
+      }
+    }
+
+    return finished;
+  }
 
   /** Finds a command on `PATH` the way `command -v` does, or returns `undefined`. */
   public locate(command: string): string | undefined {

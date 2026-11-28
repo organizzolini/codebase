@@ -160,14 +160,14 @@ export class AddressReportService {
 
     if (args.format === "mermaid") {
       return [
-        `# 🔭 Callidescope breadth — \`${args.address}\``,
+        `# 🔬 Callidescope breadth — \`${args.address}\``,
         "",
         this.renderBreadthDiagram(args),
       ].join("\n");
     }
 
     return [
-      `# 🔭 Callidescope breadth — \`${args.address}\``,
+      `# 🔬 Callidescope breadth — \`${args.address}\``,
       "",
       this.renderReferenceTable({
         heading: "Callees",
@@ -211,7 +211,7 @@ export class AddressReportService {
 
     if (args.format === "mermaid") {
       return [
-        `# 🔭 Callidescope depth — \`${args.address}\``,
+        `# 🔬 Callidescope depth — \`${args.address}\``,
         "",
         "## Above",
         "",
@@ -226,7 +226,7 @@ export class AddressReportService {
     }
 
     return [
-      `# 🔭 Callidescope depth — \`${args.address}\``,
+      `# 🔬 Callidescope depth — \`${args.address}\``,
       "",
       this.renderDepthStacks({
         heading: "Above",

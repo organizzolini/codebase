@@ -18,7 +18,7 @@ the steps that run around a Continuous Integration job.
   `verify-task-database`, `adopt-task-database`, and `keep-task-database`.
   `run-affected` runs Nx affected, and `collect-codometer-baseline` and
   `report-codometer-changes` keep codometer's baseline and its pull request
-  report. `upgrade-dependencies` runs the weekly dependency upgrades.
+  report.
 
 `nx run integration:start` runs the nine checks and derivations in one process,
 and names the command that fixes each failure. The aggregate's CLI command is

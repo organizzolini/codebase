@@ -5,7 +5,7 @@ description: "Documents the five independently versioned IC-Suite toolchains (ca
 tags: ["architecture", "ic-suite", "toolchains", "nx", "ci"]
 verified:
   - by: openwiki/0.9.0
-    at: 2026-11-25T18:55:00.444Z
+    at: 2026-11-27T18:15:08.471Z
 sources:
   - id: openwiki-source-105f2705156f283beb3d513c
     resource: repo://.github/workflows/continuous-deployment.yml
@@ -31,6 +31,8 @@ sources:
     resource: repo://projects/ic-suite/callidescope/callidescope-graph/src/index.ts
   - id: openwiki-source-c1f8f704f0e4826d1b7980ec
     resource: repo://projects/ic-suite/callidescope/callidescope-nx/project.json
+  - id: openwiki-source-3a9a91a5f64207a13d1e2208
+    resource: repo://projects/ic-suite/callidescope/callidescope-nx/src/modules/options/options.constants.ts
   - id: openwiki-source-b0f4b82129506808ee6679a5
     resource: repo://projects/ic-suite/callidescope/callidescope-output/src/index.ts
   - id: openwiki-source-52ec00392373de2385106b9d
@@ -69,7 +71,7 @@ sources:
     resource: repo://projects/ic-suite/conformetry/conformetry-cli/src/modules/validate/validate.command.ts
   - id: openwiki-source-30ea5f8cd0a73ded8c23221f
     resource: repo://projects/ic-suite/conformetry/conformetry-output/src/index.ts
-generated: { by: "openwiki/0.9.0", at: "2026-11-25T18:55:00.444Z" }
+generated: { by: "openwiki/0.9.0", at: "2026-11-27T18:15:08.471Z" }
 ---
 
 # IC Suite Toolchains
@@ -94,7 +96,7 @@ This convergence was deliberately landed as vocabulary first (ADR 0013), with `l
 | **configuration** | `layer:configuration` | The config file's schema, loading, defaults, and override resolution, **plus CLI flag resolution**, producing one resolved configuration object | Domain result types |
 | **analysis** | `layer:analysis` | What the tool actually does. Per-suite names and per-suite shape | Rendering, command wiring |
 | **output** | `layer:output` | Every render target: JSON, markdown, mermaid, anchor blocks, destination routing, delivery | Analysis |
-| **cli** | `layer:cli` | `*.command.ts` modules and nothing else | Any logic |
+| **cli** | `layer:cli` | `*.command.ts` modules that wire the toolchain together | Analysis, rendering, or configuration logic |
 
 ### The `nx` plugin layer
 
@@ -135,7 +137,7 @@ Traces control flow through injected dependencies and reports where a stack got 
 | `@callidescope/graph` | `analysis` | ✅ | Builds call graph from TypeScript AST, measures depth/breadth |
 | `@callidescope/output` | `output` | ✅ | Renders findings to markdown, mermaid, JSON |
 | `@callidescope/cli` | `cli` | ✅ | `nest-commander` host, wires graph → output, gates depth |
-| `@callidescope/nx` | `cli` (nx plugin) | ✅ | Nx plugin inferring per-project `trace`, `depth`, `breadth`, `gate` targets |
+| `@callidescope/nx` | `cli` (nx plugin) | ✅ | Nx plugin inferring per-project `trace`, `depth`, `breadth`, `restrict` targets |
 | `@callidescope/agents` | *(none)* | ❌ | Agent skills, travel via `skills-lock.json` |
 | `@callidescope/examples` | *(none)* | ❌ | Fixture codebase with worked examples per rule/finding/output |
 
@@ -425,7 +427,7 @@ Pull requests are gated by the matrix in `.github/workflows/continuous-integrati
 |--------|-----------|-----------|
 | 🧑‍⚕️ Static | `typecheck-code`, `format-code`, `lint-code`, `deprecate-code` | — |
 | 💂 Guard | `agent-instructions`, `catalog-manifests`, `coinagerie-check`, `lockfile`, `project-ports`, `pull-request-template`, `readme-projects`, `skill-descriptions`, `typeorm-migration-sql`, `vscode-extensions` | coinagerie, workspace integrity |
-| 🔭 Callidescope Restrict | `callidescope-restrict` (sharded) | callidescope |
+| 🔬 Callidescope Restrict | `callidescope-restrict` (sharded) | callidescope |
 | 🕸️ Codependix Bound | `codependix-bound` | codependix |
 | ⏲️ Codometer Limit | `codometer-limit` | codometer (comment budgets, directory ceilings) |
 | 👔 Conformetry Validate | `conformetry-validate` | conformetry |
@@ -598,10 +600,3 @@ flowchart TD
 - [Codependix Domain](../domain/codependix.md) — Dependency graph and boundary domain model
 - [Codomter Domain](../domain/codometer.md) — Repository measurement domain model
 - [Conformetry Domain](../domain/conformetry.md) — Template generation and conformance domain model
-- [Coinagerie Domain](../domain/coinagerie.md) — Vocabulary and glossary domain model
-- [Code Quality Gates](../workflows/code-quality.md) — Four IC-Suite quality gates and their integration into CI via Nx targets
-- [Release Workflow](../workflows/release.md) — Independent versioning and cascading dependents in practice
-<!-- openwiki: broken internal link [../documentation/adr/0013-name-the-ic-suite-layers.md] file "../documentation/adr/0013-name-the-ic-suite-layers.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [ADR 0013: Name the ic-suite layers](../documentation/adr/0013-name-the-ic-suite-layers.md) — Layer vocabulary, core-vs-configuration test, analysis layer rule
-<!-- openwiki: broken internal link [../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md] file "../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md" does not exist. Fix the href or restore the target, then delete this comment. -->
-- [ADR 0017: Independent package versioning with cascading dependents](../documentation/adr/0017-independent-package-versioning-with-cascading-dependents.md) — Nx Release configuration, cascade mechanics, two-tier releases

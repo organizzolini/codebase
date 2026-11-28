@@ -16,14 +16,16 @@ import {
 import { createTemporaryDirectory } from "@codebase/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { UpdateReuiSkillService } from "../installed-skills/modules/update-reui-skill/update-reui-skill.service";
 
 import { UpgradeNodeService } from "./modules/upgrade-node/upgrade-node.service";
 import { UpgradePnpmService } from "./modules/upgrade-pnpm/upgrade-pnpm.service";
 import { UpgradePythonService } from "./modules/upgrade-python/upgrade-python.service";
+import { REUI_SUMMARY } from "./upgrade-dependencies.constants";
 import { UpgradeDependenciesService } from "./upgrade-dependencies.service";
 
-import type { Command } from "../process-runner/process-runner.types";
+import type { Command } from "../../../process-runner/process-runner.types";
 import type { UpgradeStep } from "./upgrade-dependencies.types";
 
 /** A command running JavaScript, which writes a test file. */
@@ -51,6 +53,7 @@ describe(UpgradeDependenciesService, () => {
     mocks: [
       ConfigService,
       ProcessRunnerService,
+      UpdateReuiSkillService,
       UpgradeNodeService,
       UpgradePnpmService,
       UpgradePythonService,
@@ -58,6 +61,7 @@ describe(UpgradeDependenciesService, () => {
   };
   let service: UpgradeDependenciesService;
   let pnpm: UpgradePnpmService;
+  let reui: UpdateReuiSkillService;
   let repository: string;
   let temporary: string;
   let originalDirectory: string;
@@ -98,7 +102,12 @@ describe(UpgradeDependenciesService, () => {
     vi.stubEnv("GITHUB_OUTPUT", path.join(temporary, "output"));
 
     const { module } = await buildTestingModule(UpgradeDependenciesService, {
-      mocks: [UpgradeNodeService, UpgradePnpmService, UpgradePythonService],
+      mocks: [
+        UpdateReuiSkillService,
+        UpgradeNodeService,
+        UpgradePnpmService,
+        UpgradePythonService,
+      ],
       providers: [
         ProcessRunnerService,
         { provide: ConfigService, useValue: new ConfigService() },
@@ -107,6 +116,7 @@ describe(UpgradeDependenciesService, () => {
 
     service = await module.resolve(UpgradeDependenciesService);
     pnpm = await module.resolve(UpgradePnpmService);
+    reui = await module.resolve(UpdateReuiSkillService);
   });
 
   afterEach(() => {
@@ -358,6 +368,21 @@ describe(UpgradeDependenciesService, () => {
         },
       });
       expect(read("package.json")).toBe("pinned\n");
+    });
+
+    it("refreshes the ReUI skill and reports it", async () => {
+      expect.hasAssertions();
+
+      const outcome = await service.attempt({
+        label: "Upgrade ReUI skill",
+        task: "reui",
+      });
+
+      expect(reui.update).toHaveBeenCalledWith();
+      expect(outcome).toMatchObject({
+        kind: "succeeded",
+        report: { summary: REUI_SUMMARY },
+      });
     });
 
     it("is undone and reported when it throws", async () => {

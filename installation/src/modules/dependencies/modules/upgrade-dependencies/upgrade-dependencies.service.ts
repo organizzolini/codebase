@@ -5,7 +5,8 @@ import path from "node:path";
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { ProcessRunnerService } from "../process-runner/process-runner.service";
+import { ProcessRunnerService } from "../../../process-runner/process-runner.service";
+import { UpdateReuiSkillService } from "../installed-skills/modules/update-reui-skill/update-reui-skill.service";
 
 import { UpgradeNodeService } from "./modules/upgrade-node/upgrade-node.service";
 import { UpgradePnpmService } from "./modules/upgrade-pnpm/upgrade-pnpm.service";
@@ -13,6 +14,7 @@ import { UpgradePythonService } from "./modules/upgrade-python/upgrade-python.se
 import {
   EMPTY_TREE,
   PULL_REQUEST_BODY_FILE,
+  REUI_SUMMARY,
   RUNS_URL,
   TAIL_CHARACTERS,
   TAIL_LINES,
@@ -24,12 +26,12 @@ import {
   warningsOf,
 } from "./upgrade-dependencies.utilities";
 
-import type { Environment } from "../../integration.types";
 import type {
   CapturedProcess,
   Command,
-} from "../process-runner/process-runner.types";
+} from "../../../process-runner/process-runner.types";
 import type {
+  Environment,
   StepReport,
   UpgradeOutcome,
   UpgradeStep,
@@ -56,11 +58,19 @@ export class UpgradeDependenciesService {
     upgradeNode: UpgradeNodeService,
     upgradePnpm: UpgradePnpmService,
     upgradePython: UpgradePythonService,
+    updateReuiSkill: UpdateReuiSkillService,
   ) {
     this.tasks = {
       node: upgradeNode,
       pnpm: upgradePnpm,
       python: upgradePython,
+      reui: {
+        upgrade: async () => {
+          await updateReuiSkill.update();
+
+          return REUI_SUMMARY;
+        },
+      },
     };
   }
 

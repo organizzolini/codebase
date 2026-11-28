@@ -24,6 +24,57 @@ describe(ProcessRunnerService, () => {
     expect(instance).toBeInstanceOf(ProcessRunnerService);
   });
 
+  describe("capture", () => {
+    it("returns both streams and the exit code", () => {
+      expect.hasAssertions();
+
+      const result = service.capture(process.execPath, [
+        "-e",
+        "console.log('out'); console.error('err'); process.exitCode = 3",
+      ]);
+
+      expect(result).toStrictEqual({
+        status: 3,
+        stderr: "err\n",
+        stdout: "out\n",
+      });
+    });
+
+    it("reports a command killed by a signal as failed", () => {
+      expect.hasAssertions();
+
+      const result = service.capture(process.execPath, [
+        "-e",
+        "process.kill(process.pid, 'SIGKILL')",
+      ]);
+
+      expect(result.status).toBe(1);
+    });
+
+    it("reports a command that cannot start as failed", () => {
+      expect.hasAssertions();
+
+      const result = service.capture("no-such-command-here", []);
+
+      expect(result.status).toBe(1);
+      expect(result.stderr).not.toBe("");
+    });
+  });
+
+  describe("captureSequence", () => {
+    it("stops at the first failure and keeps what ran", () => {
+      expect.hasAssertions();
+
+      const result = service.captureSequence([
+        [process.execPath, "-e", "console.log('one')"],
+        [process.execPath, "-e", "process.exitCode = 2"],
+        [process.execPath, "-e", "console.log('three')"],
+      ]);
+
+      expect(result).toStrictEqual({ status: 2, stderr: "", stdout: "one\n" });
+    });
+  });
+
   describe("run", () => {
     it("captures standard output and merges both streams", () => {
       expect.hasAssertions();

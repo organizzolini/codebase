@@ -243,11 +243,11 @@ describe(ConfigurationFileService, () => {
   it("keeps an authored markdown heading", () => {
     const configuration = service.resolveConfiguration({
       write: {
-        markdown: { heading: "## 🔭 Callidescope", path: "README.md" },
+        markdown: { heading: "## 🔬 Callidescope", path: "README.md" },
       },
     });
 
-    expect(configuration.write.markdown?.heading).toBe("## 🔭 Callidescope");
+    expect(configuration.write.markdown?.heading).toBe("## 🔬 Callidescope");
   });
 
   it("carries an authored heading through the file schema, not only the resolver", async () => {

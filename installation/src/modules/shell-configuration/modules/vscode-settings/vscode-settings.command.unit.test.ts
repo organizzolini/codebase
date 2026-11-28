@@ -178,6 +178,20 @@ describe(VscodeSettingsCommand, () => {
     );
   });
 
+  it("checks by default when run with no mode", async () => {
+    expect.hasAssertions();
+
+    fileContents.set(workspaceFile, '{ "editor.tabSize": 2 }');
+
+    await expectProcessExitOne(async () => command.run([]));
+
+    expect(logger.info).toHaveBeenCalledWith(
+      expect.any(String),
+      undefined,
+      expect.any(Object),
+    );
+  });
+
   it("exits with code 1 from run for an unknown mode", async () => {
     await expectProcessExitOne(async () => command.run(["bogus"]));
 

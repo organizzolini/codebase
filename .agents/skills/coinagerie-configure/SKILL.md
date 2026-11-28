@@ -1,16 +1,17 @@
 ---
 name: coinagerie-configure
-description: Use when writing or changing a coinagerie.config.ts, choosing which files are scanned, excluding paths or words, reading another glossary into exclude.words, merging a word family with fold, declaring markdown or JSON glossary destinations, sharing one base configuration across folders, or when a configuration is rejected, a keyword list will not import, or a word is wrongly listed in the glossary.
+description: "Write or change a coinagerie.config.ts: files scanned, excluded paths and words, merged word families, and glossary destinations. Use when setting coinagerie up, when a configuration is rejected, or when a word is wrongly listed in the glossary."
 license: MIT
 ---
 
 # Writing a coinagerie configuration
 
 A configuration is one default-exported **plain object** in
-`coinagerie.config.ts` (or `.mts`, `.cts`, `.js`, `.mjs`, `.cjs`), loaded with
-jiti, so TypeScript works and any field can be computed. Every field is
-optional, and no file at all is valid: the run then scans the working
-directory and prints.
+a coinagerie configuration file such as `coinagerie.config.ts` (any name and
+extension jiti loads), loaded with jiti, so TypeScript works and any field can
+be computed. Every field is optional, but the file is not: every run is given
+its path (`--config`, or the Nx plugin's `projectConfigurationPath`), and
+coinagerie never searches for one.
 
 The schema is strict at every level. A misspelled key fails the run, naming
 the file, instead of being ignored. Exporting a function is refused.
@@ -30,7 +31,8 @@ export default {
   unfolded: ["pisces"],
   outputs: [
     {
-      description: "Words this project uses. Regenerate with `coinagerie --write`.",
+      description:
+        "Words this project uses. Regenerate with `coinagerie --write`.",
       path: "README.md",
       type: "markdown",
     },
@@ -72,7 +74,9 @@ import path from "node:path";
 
 const parentWords = async (): Promise<string[]> =>
   Object.keys(
-    JSON.parse(await readFile(path.join(__dirname, "../glossary.json"), "utf8")),
+    JSON.parse(
+      await readFile(path.join(__dirname, "../glossary.json"), "utf8"),
+    ),
   );
 
 export default { exclude: { words: parentWords } };
@@ -162,7 +166,10 @@ import base from "../coinagerie.base";
 
 export default {
   ...base,
-  exclude: { ...base.exclude, paths: [...(base.exclude?.paths ?? []), "fixtures"] },
+  exclude: {
+    ...base.exclude,
+    paths: [...(base.exclude?.paths ?? []), "fixtures"],
+  },
   outputs: [{ path: "README.md", type: "markdown" }],
 };
 ```
@@ -178,7 +185,7 @@ child's target, or an edit to it will not re-run their checks.
 Every field except `exclude.words`, `fold`, and `unfolded` has a command-line flag that
 replaces it for one run: `--include`, `--exclude-paths`, `--output-json`,
 `--output-markdown`, `--description`. The `coinagerie-collect` skill has the
-table. A bare `coinagerie` run prints the result of a change without writing
+table. A run with no mode flag prints the result of a change without writing
 anything.
 
 ## When a run rejects the configuration
@@ -194,7 +201,7 @@ anything.
 | `Two outputs name a.json`                   | give each destination its own file                                   |
 | `A description may not hold a list item...` | the description has a `-`, `*`, `+`, or `<!--` line; reword it       |
 | `fold threw on "<word>"`                    | the fold function raised; fix it for that word                       |
-| `Configuration file not found`              | a named `--config` is relative to the working directory              |
+| `Configuration file not found`              | `--config` is relative to the working directory; nothing is searched |
 
 For what to do about a failed check rather than a rejected configuration, use
 the `coinagerie-triage` skill.

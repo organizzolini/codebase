@@ -1,6 +1,6 @@
 ---
 name: conformetry-generate
-description: Scaffold code with a conformetry generator instead of writing it by hand. Use when adding a module, component, service, application, or package to a workspace that has a conformetry configuration; when deciding whether a generator exists for the shape you are about to create; when a generator run overwrote or misplaced files; or when a conformance run reports a file that a generator should have produced. Covers both the Nx plugin and the conformetry command-line host, whose input contracts differ.
+description: "Scaffold code with a conformetry generator instead of writing it by hand, through the Nx plugin or the command line. Use when adding a module, component, service, application, or package, when checking whether a generator exists for a shape, or when a generator run overwrote or misplaced files."
 license: MIT
 ---
 
@@ -17,7 +17,7 @@ A generator name you guess at is rejected, so read the registry rather than
 inferring it:
 
 ```bash
-conformetry templates --config configuration/conformetry.config.ts
+conformetry templates --config configuration/ic-suite/conformetry.config.ts
 ```
 
 Every `conformetry` command requires `--config <path>`; no default file is
@@ -61,7 +61,7 @@ the same generator behaves differently depending on how you invoke it.
 | Invocation | `nx g conformetry:<name>` | `conformetry generate --config <path> --template <name>` |
 | Inputs | **every declared input is required** | none is ever required |
 | Missing input | refuses, or prompts | refuses when the template interpolates it |
-| Default destination | resolved from the workspace; refused for a new project with no `type` | none: `--directory` is required |
+| Default destination | resolved from the workspace | `generated/<generator-name>` |
 
 The remaining asymmetry is about _when_ a missing value is caught. The Nx path
 requires every declared input up front, so it refuses before rendering starts.
@@ -99,8 +99,7 @@ On the Nx path the destination is resolved in this order, first match winning:
 
 1. An explicit `--directory`.
 2. No `project` input — treated as a new project, placed by its `type` input
-   alongside projects of the same type. With no `type` either, the run is
-   refused rather than written at the workspace root.
+   alongside projects of the same type.
 3. A `module` input — placed in that existing module. Naming a module that does
    not exist is an error, not an invitation to create one.
 4. The generator's own scoped directory, from the first tagged pattern in its
@@ -112,8 +111,9 @@ Steps 4 and 5 are why a generator usually needs no destination at all: it knows
 where its own instances live. Reach for `--directory` when you are deliberately
 placing something outside that convention.
 
-On the command-line host only `--directory` applies, and it is required: a
-run without it is refused rather than written to a default location.
+On the command-line host only `--directory` applies, and its absence means
+`generated/<generator-name>` — a scratch location, not your source tree. Always
+pass `--directory` there when you mean to write into the workspace.
 
 ## Running without a person present
 
@@ -150,7 +150,7 @@ definitions.
 
 ## Seeing it rather than reading about it
 
-[`conformetry-examples`](https://github.com/JimmyPaolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples) is twelve self-contained examples, each
+[`conformetry-examples`](https://github.com/Organizzolini/codebase/tree/main/projects/ic-suite/conformetry/conformetry-examples) is twelve self-contained examples, each
 with its own configuration, template, instances, and command. Two are worth
 running before scaffolding something unfamiliar:
 
@@ -161,4 +161,4 @@ running before scaffolding something unfamiliar:
 
 Each runs in about a second and its guide quotes the output it produces, which
 the package's own test suite asserts. See
-[its AGENTS.md](https://github.com/JimmyPaolini/codebase/blob/main/projects/ic-suite/conformetry/conformetry-examples/AGENTS.md) for which example answers which question.
+[its AGENTS.md](https://github.com/Organizzolini/codebase/blob/main/projects/ic-suite/conformetry/conformetry-examples/AGENTS.md) for which example answers which question.

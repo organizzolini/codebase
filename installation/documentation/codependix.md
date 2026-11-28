@@ -27,19 +27,28 @@ flowchart LR
   DependenciesModule
   DiscoveryModule
   EnvironmentFilesModule
+  InstalledSkillsModule
   LocalServicesModule
   LoggerModule([LoggerModule])
   MainModule
+  PackageManifestModule
   ProcessRunnerModule
   ReleaseArchivesModule
   RemoteCacheModule
   ReporterModule
+  SessionBranchNameModule
+  SessionWorktreeNameModule
   SetupModule
   SharedNxCacheModule
   ShellConfigurationModule
   SoftwareModule
   SshSigningModule
   UpdateReuiSkillModule
+  UpgradeDependenciesModule
+  UpgradeNodeModule
+  UpgradePnpmModule
+  UpgradePythonModule
+  VscodeSettingsModule
   DependenciesModule --> ProcessRunnerModule
   DependenciesModule --> ReporterModule
   EnvironmentFilesModule --> ProcessRunnerModule
@@ -49,14 +58,19 @@ flowchart LR
   MainModule --> DependenciesModule
   MainModule --> DiscoveryModule
   MainModule --> EnvironmentFilesModule
+  MainModule --> InstalledSkillsModule
   MainModule --> LocalServicesModule
   MainModule --> RemoteCacheModule
   MainModule --> ReporterModule
+  MainModule --> SessionBranchNameModule
+  MainModule --> SessionWorktreeNameModule
   MainModule --> SetupModule
   MainModule --> SharedNxCacheModule
   MainModule --> ShellConfigurationModule
   MainModule --> SoftwareModule
   MainModule --> UpdateReuiSkillModule
+  MainModule --> UpgradeDependenciesModule
+  MainModule --> VscodeSettingsModule
   ReleaseArchivesModule --> ProcessRunnerModule
   ReleaseArchivesModule --> ReporterModule
   RemoteCacheModule --> ProcessRunnerModule
@@ -79,6 +93,15 @@ flowchart LR
   SshSigningModule --> ProcessRunnerModule
   SshSigningModule --> ReporterModule
   UpdateReuiSkillModule --> ReporterModule
+  UpgradeDependenciesModule --> ProcessRunnerModule
+  UpgradeDependenciesModule --> UpdateReuiSkillModule
+  UpgradeDependenciesModule --> UpgradeNodeModule
+  UpgradeDependenciesModule --> UpgradePnpmModule
+  UpgradeDependenciesModule --> UpgradePythonModule
+  UpgradeNodeModule --> PackageManifestModule
+  UpgradePnpmModule --> PackageManifestModule
+  UpgradePnpmModule --> ProcessRunnerModule
+  UpgradePythonModule --> ProcessRunnerModule
 ```
 
 _Rounded modules are global: every module can inject them, so their edges are left out._
@@ -109,6 +132,55 @@ graph LR
   file_src_modules_dependencies_dependencies_service_ts["src/modules/dependencies/dependencies.service.ts"]
   file_src_modules_dependencies_dependencies_service_unit_test_ts["src/modules/dependencies/dependencies.service.unit.test.ts"]
   file_src_modules_dependencies_dependencies_types_ts["src/modules/dependencies/dependencies.types.ts"]
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_fixtures_utilities_ts["src/modules/dependencies/modules/installed-skills/installed-skills-fixtures.utilities.ts"]
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_process_service_ts["src/modules/dependencies/modules/installed-skills/installed-skills-process.service.ts"]
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_process_service_unit_test_ts["src/modules/dependencies/modules/installed-skills/installed-skills-process.service.unit.test.ts"]
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_command_ts["src/modules/dependencies/modules/installed-skills/installed-skills.command.ts"]
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_command_unit_test_ts["src/modules/dependencies/modules/installed-skills/installed-skills.command.unit.test.ts"]
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_constants_ts["src/modules/dependencies/modules/installed-skills/installed-skills.constants.ts"]
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_module_ts["src/modules/dependencies/modules/installed-skills/installed-skills.module.ts"]
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_service_ts["src/modules/dependencies/modules/installed-skills/installed-skills.service.ts"]
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_service_unit_test_ts["src/modules/dependencies/modules/installed-skills/installed-skills.service.unit.test.ts"]
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_types_ts["src/modules/dependencies/modules/installed-skills/installed-skills.types.ts"]
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_ts["src/modules/dependencies/modules/installed-skills/modules/update-reui-skill/update-reui-skill.command.ts"]
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_unit_test_ts["src/modules/dependencies/modules/installed-skills/modules/update-reui-skill/update-reui-skill.command.unit.test.ts"]
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_constants_ts["src/modules/dependencies/modules/installed-skills/modules/update-reui-skill/update-reui-skill.constants.ts"]
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_module_ts["src/modules/dependencies/modules/installed-skills/modules/update-reui-skill/update-reui-skill.module.ts"]
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_ts["src/modules/dependencies/modules/installed-skills/modules/update-reui-skill/update-reui-skill.service.ts"]
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_unit_test_ts["src/modules/dependencies/modules/installed-skills/modules/update-reui-skill/update-reui-skill.service.unit.test.ts"]
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_types_ts["src/modules/dependencies/modules/installed-skills/modules/update-reui-skill/update-reui-skill.types.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_constants_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/package-manifest/package-manifest.constants.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_module_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/package-manifest/package-manifest.module.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/package-manifest/package-manifest.service.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_unit_test_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/package-manifest/package-manifest.service.unit.test.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_types_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/package-manifest/package-manifest.types.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_constants_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.constants.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_module_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.module.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.service.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_unit_test_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.service.unit.test.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_types_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-node/upgrade-node.types.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_constants_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.constants.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_module_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.module.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.service.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.service.unit.test.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_types_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-pnpm/upgrade-pnpm.types.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_constants_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.constants.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_module_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.module.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.service.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_unit_test_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.service.unit.test.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_types_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.types.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_utilities_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.utilities.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_utilities_unit_test_ts["src/modules/dependencies/modules/upgrade-dependencies/modules/upgrade-python/upgrade-python.utilities.unit.test.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_ts["src/modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.command.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts["src/modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.command.unit.test.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_constants_ts["src/modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.constants.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_ts["src/modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.module.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts["src/modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.module.unit.test.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts["src/modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.service.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts["src/modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.service.unit.test.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_types_ts["src/modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.types.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts["src/modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.utilities.ts"]
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_utilities_unit_test_ts["src/modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.utilities.unit.test.ts"]
   file_src_modules_environment_files_environment_files_command_ts["src/modules/environment-files/environment-files.command.ts"]
   file_src_modules_environment_files_environment_files_command_unit_test_ts["src/modules/environment-files/environment-files.command.unit.test.ts"]
   file_src_modules_environment_files_environment_files_constants_ts["src/modules/environment-files/environment-files.constants.ts"]
@@ -123,25 +195,6 @@ graph LR
   file_src_modules_local_services_local_services_service_ts["src/modules/local-services/local-services.service.ts"]
   file_src_modules_local_services_local_services_service_unit_test_ts["src/modules/local-services/local-services.service.unit.test.ts"]
   file_src_modules_local_services_local_services_types_ts["src/modules/local-services/local-services.types.ts"]
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_command_ts["src/modules/nx-cache/modules/remote-cache/remote-cache.command.ts"]
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_command_unit_test_ts["src/modules/nx-cache/modules/remote-cache/remote-cache.command.unit.test.ts"]
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_constants_ts["src/modules/nx-cache/modules/remote-cache/remote-cache.constants.ts"]
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_module_ts["src/modules/nx-cache/modules/remote-cache/remote-cache.module.ts"]
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts["src/modules/nx-cache/modules/remote-cache/remote-cache.service.ts"]
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_unit_test_ts["src/modules/nx-cache/modules/remote-cache/remote-cache.service.unit.test.ts"]
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_types_ts["src/modules/nx-cache/modules/remote-cache/remote-cache.types.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_remote_service_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache-remote.service.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_remote_service_unit_test_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache-remote.service.unit.test.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache-server.service.integration.test.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache-server.service.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache-server.service.unit.test.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache-storage.service.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache-storage.service.unit.test.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache.command.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache.command.unit.test.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_constants_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache.constants.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_module_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache.module.ts"]
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_types_ts["src/modules/nx-cache/modules/shared-nx-cache/shared-nx-cache.types.ts"]
   file_src_modules_process_runner_process_runner_constants_ts["src/modules/process-runner/process-runner.constants.ts"]
   file_src_modules_process_runner_process_runner_module_ts["src/modules/process-runner/process-runner.module.ts"]
   file_src_modules_process_runner_process_runner_service_ts["src/modules/process-runner/process-runner.service.ts"]
@@ -158,6 +211,45 @@ graph LR
   file_src_modules_reporter_reporter_service_ts["src/modules/reporter/reporter.service.ts"]
   file_src_modules_reporter_reporter_service_unit_test_ts["src/modules/reporter/reporter.service.unit.test.ts"]
   file_src_modules_reporter_reporter_types_ts["src/modules/reporter/reporter.types.ts"]
+  file_src_modules_session_branch_name_session_branch_name_git_service_ts["src/modules/session-branch-name/session-branch-name-git.service.ts"]
+  file_src_modules_session_branch_name_session_branch_name_git_service_unit_test_ts["src/modules/session-branch-name/session-branch-name-git.service.unit.test.ts"]
+  file_src_modules_session_branch_name_session_branch_name_command_ts["src/modules/session-branch-name/session-branch-name.command.ts"]
+  file_src_modules_session_branch_name_session_branch_name_command_unit_test_ts["src/modules/session-branch-name/session-branch-name.command.unit.test.ts"]
+  file_src_modules_session_branch_name_session_branch_name_constants_ts["src/modules/session-branch-name/session-branch-name.constants.ts"]
+  file_src_modules_session_branch_name_session_branch_name_module_ts["src/modules/session-branch-name/session-branch-name.module.ts"]
+  file_src_modules_session_branch_name_session_branch_name_module_unit_test_ts["src/modules/session-branch-name/session-branch-name.module.unit.test.ts"]
+  file_src_modules_session_branch_name_session_branch_name_service_ts["src/modules/session-branch-name/session-branch-name.service.ts"]
+  file_src_modules_session_branch_name_session_branch_name_service_unit_test_ts["src/modules/session-branch-name/session-branch-name.service.unit.test.ts"]
+  file_src_modules_session_branch_name_session_branch_name_types_ts["src/modules/session-branch-name/session-branch-name.types.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_git_service_ts["src/modules/session-worktree-name/session-worktree-name-git.service.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_git_service_unit_test_ts["src/modules/session-worktree-name/session-worktree-name-git.service.unit.test.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_command_ts["src/modules/session-worktree-name/session-worktree-name.command.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts["src/modules/session-worktree-name/session-worktree-name.command.unit.test.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_constants_ts["src/modules/session-worktree-name/session-worktree-name.constants.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_module_ts["src/modules/session-worktree-name/session-worktree-name.module.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts["src/modules/session-worktree-name/session-worktree-name.module.unit.test.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_service_ts["src/modules/session-worktree-name/session-worktree-name.service.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_service_unit_test_ts["src/modules/session-worktree-name/session-worktree-name.service.unit.test.ts"]
+  file_src_modules_session_worktree_name_session_worktree_name_types_ts["src/modules/session-worktree-name/session-worktree-name.types.ts"]
+  file_src_modules_setup_modules_remote_cache_remote_cache_command_ts["src/modules/setup/modules/remote-cache/remote-cache.command.ts"]
+  file_src_modules_setup_modules_remote_cache_remote_cache_command_unit_test_ts["src/modules/setup/modules/remote-cache/remote-cache.command.unit.test.ts"]
+  file_src_modules_setup_modules_remote_cache_remote_cache_constants_ts["src/modules/setup/modules/remote-cache/remote-cache.constants.ts"]
+  file_src_modules_setup_modules_remote_cache_remote_cache_module_ts["src/modules/setup/modules/remote-cache/remote-cache.module.ts"]
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_ts["src/modules/setup/modules/remote-cache/remote-cache.service.ts"]
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_unit_test_ts["src/modules/setup/modules/remote-cache/remote-cache.service.unit.test.ts"]
+  file_src_modules_setup_modules_remote_cache_remote_cache_types_ts["src/modules/setup/modules/remote-cache/remote-cache.types.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_remote_service_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache-remote.service.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_remote_service_unit_test_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache-remote.service.unit.test.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache-server.service.integration.test.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache-server.service.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache-server.service.unit.test.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache-storage.service.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache-storage.service.unit.test.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache.command.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache.command.unit.test.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_constants_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache.constants.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_module_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache.module.ts"]
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_types_ts["src/modules/setup/modules/shared-nx-cache/shared-nx-cache.types.ts"]
   file_src_modules_setup_setup_command_ts["src/modules/setup/setup.command.ts"]
   file_src_modules_setup_setup_command_unit_test_ts["src/modules/setup/setup.command.unit.test.ts"]
   file_src_modules_setup_setup_constants_ts["src/modules/setup/setup.constants.ts"]
@@ -165,6 +257,11 @@ graph LR
   file_src_modules_setup_setup_service_ts["src/modules/setup/setup.service.ts"]
   file_src_modules_setup_setup_service_unit_test_ts["src/modules/setup/setup.service.unit.test.ts"]
   file_src_modules_setup_setup_types_ts["src/modules/setup/setup.types.ts"]
+  file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_command_ts["src/modules/shell-configuration/modules/vscode-settings/vscode-settings.command.ts"]
+  file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_command_unit_test_ts["src/modules/shell-configuration/modules/vscode-settings/vscode-settings.command.unit.test.ts"]
+  file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_constants_ts["src/modules/shell-configuration/modules/vscode-settings/vscode-settings.constants.ts"]
+  file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_module_ts["src/modules/shell-configuration/modules/vscode-settings/vscode-settings.module.ts"]
+  file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_types_ts["src/modules/shell-configuration/modules/vscode-settings/vscode-settings.types.ts"]
   file_src_modules_shell_configuration_shell_configuration_command_ts["src/modules/shell-configuration/shell-configuration.command.ts"]
   file_src_modules_shell_configuration_shell_configuration_command_unit_test_ts["src/modules/shell-configuration/shell-configuration.command.unit.test.ts"]
   file_src_modules_shell_configuration_shell_configuration_constants_ts["src/modules/shell-configuration/shell-configuration.constants.ts"]
@@ -204,16 +301,8 @@ graph LR
   file_src_modules_ssh_signing_ssh_signing_types_ts["src/modules/ssh-signing/ssh-signing.types.ts"]
   file_src_modules_ssh_signing_ssh_signing_utilities_ts["src/modules/ssh-signing/ssh-signing.utilities.ts"]
   file_src_modules_ssh_signing_ssh_signing_utilities_unit_test_ts["src/modules/ssh-signing/ssh-signing.utilities.unit.test.ts"]
-  file_src_modules_update_reui_skill_update_reui_skill_command_ts["src/modules/update-reui-skill/update-reui-skill.command.ts"]
-  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts["src/modules/update-reui-skill/update-reui-skill.command.unit.test.ts"]
-  file_src_modules_update_reui_skill_update_reui_skill_constants_ts["src/modules/update-reui-skill/update-reui-skill.constants.ts"]
-  file_src_modules_update_reui_skill_update_reui_skill_module_ts["src/modules/update-reui-skill/update-reui-skill.module.ts"]
-  file_src_modules_update_reui_skill_update_reui_skill_service_ts["src/modules/update-reui-skill/update-reui-skill.service.ts"]
-  file_src_modules_update_reui_skill_update_reui_skill_service_unit_test_ts["src/modules/update-reui-skill/update-reui-skill.service.unit.test.ts"]
-  file_src_modules_update_reui_skill_update_reui_skill_types_ts["src/modules/update-reui-skill/update-reui-skill.types.ts"]
   file_testing_environment_ts["testing/environment.ts"]
   file_testing_fake_process_runner_ts["testing/fake-process-runner.ts"]
-  file_testing_mocks_ts["testing/mocks.ts"]
   file_testing_report_ts["testing/report.ts"]
   file_testing_ssh_signature_ts["testing/ssh-signature.ts"]
   file_testing_temporary_workspace_ts["testing/temporary-workspace.ts"]
@@ -221,15 +310,20 @@ graph LR
   file_src_installation_main_ts --> file_src_installation_module_ts
   file_src_installation_module_ts --> file_src_installation_constants_ts
   file_src_installation_module_ts --> file_src_modules_dependencies_dependencies_module_ts
+  file_src_installation_module_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_module_ts
+  file_src_installation_module_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_module_ts
+  file_src_installation_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_ts
   file_src_installation_module_ts --> file_src_modules_environment_files_environment_files_module_ts
   file_src_installation_module_ts --> file_src_modules_local_services_local_services_module_ts
-  file_src_installation_module_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_module_ts
-  file_src_installation_module_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_module_ts
   file_src_installation_module_ts --> file_src_modules_reporter_reporter_module_ts
+  file_src_installation_module_ts --> file_src_modules_session_branch_name_session_branch_name_module_ts
+  file_src_installation_module_ts --> file_src_modules_session_worktree_name_session_worktree_name_module_ts
+  file_src_installation_module_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_module_ts
+  file_src_installation_module_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_module_ts
   file_src_installation_module_ts --> file_src_modules_setup_setup_module_ts
+  file_src_installation_module_ts --> file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_module_ts
   file_src_installation_module_ts --> file_src_modules_shell_configuration_shell_configuration_module_ts
   file_src_installation_module_ts --> file_src_modules_software_software_module_ts
-  file_src_installation_module_ts --> file_src_modules_update_reui_skill_update_reui_skill_module_ts
   file_src_installation_repl_ts --> file_src_installation_module_ts
   file_src_modules_dependencies_dependencies_command_ts --> file_src_modules_dependencies_dependencies_service_ts
   file_src_modules_dependencies_dependencies_command_unit_test_ts --> file_src_modules_dependencies_dependencies_command_ts
@@ -252,6 +346,110 @@ graph LR
   file_src_modules_dependencies_dependencies_service_unit_test_ts --> file_src_modules_dependencies_dependencies_service_ts
   file_src_modules_dependencies_dependencies_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_dependencies_dependencies_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_fixtures_utilities_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_types_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_process_service_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_types_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_process_service_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_process_service_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_command_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_constants_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_command_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_service_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_command_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_fixtures_utilities_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_command_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_process_service_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_command_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_command_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_command_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_service_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_command_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_types_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_module_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_process_service_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_module_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_command_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_module_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_service_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_service_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_process_service_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_service_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_constants_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_service_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_types_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_service_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_process_service_ts
+  file_src_modules_dependencies_modules_installed_skills_installed_skills_service_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_installed_skills_service_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_constants_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_testing_environment_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_testing_report_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_testing_temporary_workspace_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_module_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_command_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_module_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_module_ts --> file_src_modules_reporter_reporter_module_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_constants_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_types_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_ts
+  file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_package_manifest_package_manifest_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_constants_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_utilities_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_utilities_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_utilities_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_constants_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_constants_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_command_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_module_unit_test_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_dependencies_modules_installed_skills_modules_update_reui_skill_update_reui_skill_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_node_upgrade_node_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_pnpm_upgrade_pnpm_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_modules_upgrade_python_upgrade_python_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_service_unit_test_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_types_ts --> file_src_installation_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_types_ts --> file_src_modules_process_runner_process_runner_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_constants_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_types_ts
+  file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_utilities_unit_test_ts --> file_src_modules_dependencies_modules_upgrade_dependencies_upgrade_dependencies_utilities_ts
   file_src_modules_environment_files_environment_files_command_ts --> file_src_modules_environment_files_environment_files_service_ts
   file_src_modules_environment_files_environment_files_command_unit_test_ts --> file_src_modules_environment_files_environment_files_command_ts
   file_src_modules_environment_files_environment_files_command_unit_test_ts --> file_src_modules_environment_files_environment_files_service_ts
@@ -289,61 +487,6 @@ graph LR
   file_src_modules_local_services_local_services_service_unit_test_ts --> file_testing_fake_process_runner_ts
   file_src_modules_local_services_local_services_service_unit_test_ts --> file_testing_report_ts
   file_src_modules_local_services_local_services_service_unit_test_ts --> file_testing_temporary_workspace_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_command_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_command_unit_test_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_command_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_command_unit_test_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_module_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_command_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_module_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_module_ts --> file_src_modules_process_runner_process_runner_module_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_module_ts --> file_src_modules_reporter_reporter_module_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_constants_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts --> file_src_modules_reporter_reporter_service_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_unit_test_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_unit_test_ts --> file_testing_environment_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_unit_test_ts --> file_testing_fake_process_runner_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_unit_test_ts --> file_testing_report_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_unit_test_ts --> file_testing_temporary_workspace_ts
-  file_src_modules_nx_cache_modules_remote_cache_remote_cache_types_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_constants_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_remote_service_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_constants_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_remote_service_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_types_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_remote_service_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_remote_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_remote_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_constants_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_types_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_testing_temporary_workspace_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_remote_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_constants_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_types_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_remote_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_constants_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_types_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_constants_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_types_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_constants_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts --> file_testing_temporary_workspace_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_constants_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_types_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_src_modules_reporter_reporter_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_constants_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_constants_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_types_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_remote_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_server_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_command_ts
-  file_src_modules_nx_cache_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_src_modules_reporter_reporter_module_ts
   file_src_modules_process_runner_process_runner_module_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_process_runner_process_runner_service_ts --> file_src_modules_process_runner_process_runner_constants_ts
   file_src_modules_process_runner_process_runner_service_ts --> file_src_modules_process_runner_process_runner_types_ts
@@ -364,14 +507,109 @@ graph LR
   file_src_modules_release_archives_release_archives_service_unit_test_ts --> file_testing_fake_process_runner_ts
   file_src_modules_reporter_reporter_module_ts --> file_src_modules_reporter_reporter_service_ts
   file_src_modules_reporter_reporter_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_session_branch_name_session_branch_name_git_service_ts --> file_src_modules_session_branch_name_session_branch_name_types_ts
+  file_src_modules_session_branch_name_session_branch_name_git_service_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_command_ts --> file_src_modules_session_branch_name_session_branch_name_constants_ts
+  file_src_modules_session_branch_name_session_branch_name_command_ts --> file_src_modules_session_branch_name_session_branch_name_service_ts
+  file_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_command_ts
+  file_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_service_ts
+  file_src_modules_session_branch_name_session_branch_name_command_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_types_ts
+  file_src_modules_session_branch_name_session_branch_name_module_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_module_ts --> file_src_modules_session_branch_name_session_branch_name_command_ts
+  file_src_modules_session_branch_name_session_branch_name_module_ts --> file_src_modules_session_branch_name_session_branch_name_service_ts
+  file_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_command_ts
+  file_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_module_ts
+  file_src_modules_session_branch_name_session_branch_name_module_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_service_ts
+  file_src_modules_session_branch_name_session_branch_name_service_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_service_ts --> file_src_modules_session_branch_name_session_branch_name_constants_ts
+  file_src_modules_session_branch_name_session_branch_name_service_ts --> file_src_modules_session_branch_name_session_branch_name_types_ts
+  file_src_modules_session_branch_name_session_branch_name_service_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_git_service_ts
+  file_src_modules_session_branch_name_session_branch_name_service_unit_test_ts --> file_src_modules_session_branch_name_session_branch_name_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_git_service_ts --> file_src_modules_session_worktree_name_session_worktree_name_types_ts
+  file_src_modules_session_worktree_name_session_worktree_name_git_service_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_ts --> file_src_modules_session_worktree_name_session_worktree_name_constants_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_ts --> file_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_command_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_command_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_types_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_ts --> file_src_modules_session_worktree_name_session_worktree_name_command_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_ts --> file_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_command_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_module_ts
+  file_src_modules_session_worktree_name_session_worktree_name_module_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_service_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_service_ts --> file_src_modules_session_worktree_name_session_worktree_name_constants_ts
+  file_src_modules_session_worktree_name_session_worktree_name_service_ts --> file_src_modules_session_worktree_name_session_worktree_name_types_ts
+  file_src_modules_session_worktree_name_session_worktree_name_service_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_git_service_ts
+  file_src_modules_session_worktree_name_session_worktree_name_service_unit_test_ts --> file_src_modules_session_worktree_name_session_worktree_name_service_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_command_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_service_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_command_unit_test_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_command_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_command_unit_test_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_service_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_module_ts --> file_src_modules_process_runner_process_runner_module_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_module_ts --> file_src_modules_reporter_reporter_module_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_module_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_command_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_module_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_service_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_constants_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_unit_test_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_service_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_unit_test_ts --> file_testing_environment_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_unit_test_ts --> file_testing_fake_process_runner_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_unit_test_ts --> file_testing_report_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_service_unit_test_ts --> file_testing_temporary_workspace_ts
+  file_src_modules_setup_modules_remote_cache_remote_cache_types_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_constants_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_remote_service_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_remote_service_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_remote_service_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_remote_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_remote_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_integration_test_ts --> file_testing_temporary_workspace_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_remote_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_remote_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_unit_test_ts --> file_testing_temporary_workspace_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_unit_test_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_constants_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_constants_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_types_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_src_modules_reporter_reporter_module_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_remote_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_server_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_storage_service_ts
+  file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_module_ts --> file_src_modules_setup_modules_shared_nx_cache_shared_nx_cache_command_ts
   file_src_modules_setup_setup_command_ts --> file_src_modules_setup_setup_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_dependencies_dependencies_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_environment_files_environment_files_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_local_services_local_services_service_ts
-  file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_release_archives_release_archives_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_setup_setup_command_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_setup_setup_service_ts
   file_src_modules_setup_setup_command_unit_test_ts --> file_src_modules_shell_configuration_shell_configuration_service_ts
@@ -392,9 +630,9 @@ graph LR
   file_src_modules_setup_setup_module_ts --> file_src_modules_dependencies_dependencies_module_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_environment_files_environment_files_module_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_local_services_local_services_module_ts
-  file_src_modules_setup_setup_module_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_module_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_process_runner_process_runner_module_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_reporter_reporter_module_ts
+  file_src_modules_setup_setup_module_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_module_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_setup_setup_command_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_setup_setup_service_ts
   file_src_modules_setup_setup_module_ts --> file_src_modules_shell_configuration_shell_configuration_module_ts
@@ -402,22 +640,27 @@ graph LR
   file_src_modules_setup_setup_service_ts --> file_src_modules_dependencies_dependencies_service_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_environment_files_environment_files_service_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_local_services_local_services_service_ts
-  file_src_modules_setup_setup_service_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_setup_setup_service_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_service_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_setup_setup_constants_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_shell_configuration_shell_configuration_service_ts
   file_src_modules_setup_setup_service_ts --> file_src_modules_software_software_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_dependencies_dependencies_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_environment_files_environment_files_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_local_services_local_services_service_ts
-  file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_nx_cache_modules_remote_cache_remote_cache_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
+  file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_setup_modules_remote_cache_remote_cache_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_setup_setup_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_shell_configuration_shell_configuration_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_src_modules_software_software_service_ts
   file_src_modules_setup_setup_service_unit_test_ts --> file_testing_fake_process_runner_ts
+  file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_command_ts --> file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_constants_ts
+  file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_command_ts --> file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_types_ts
+  file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_command_ts
+  file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_command_unit_test_ts --> file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_constants_ts
+  file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_module_ts --> file_src_modules_shell_configuration_modules_vscode_settings_vscode_settings_command_ts
   file_src_modules_shell_configuration_shell_configuration_command_ts --> file_src_modules_shell_configuration_shell_configuration_service_ts
   file_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_src_modules_shell_configuration_shell_configuration_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
@@ -589,22 +832,6 @@ graph LR
   file_src_modules_ssh_signing_ssh_signing_utilities_ts --> file_src_modules_ssh_signing_ssh_signing_constants_ts
   file_src_modules_ssh_signing_ssh_signing_utilities_unit_test_ts --> file_src_modules_ssh_signing_ssh_signing_utilities_ts
   file_src_modules_ssh_signing_ssh_signing_utilities_unit_test_ts --> file_testing_ssh_signature_ts
-  file_src_modules_update_reui_skill_update_reui_skill_command_ts --> file_src_modules_update_reui_skill_update_reui_skill_service_ts
-  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
-  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_update_reui_skill_update_reui_skill_command_ts
-  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_update_reui_skill_update_reui_skill_constants_ts
-  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_src_modules_update_reui_skill_update_reui_skill_service_ts
-  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_testing_environment_ts
-  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_testing_report_ts
-  file_src_modules_update_reui_skill_update_reui_skill_command_unit_test_ts --> file_testing_temporary_workspace_ts
-  file_src_modules_update_reui_skill_update_reui_skill_module_ts --> file_src_modules_reporter_reporter_module_ts
-  file_src_modules_update_reui_skill_update_reui_skill_module_ts --> file_src_modules_update_reui_skill_update_reui_skill_command_ts
-  file_src_modules_update_reui_skill_update_reui_skill_module_ts --> file_src_modules_update_reui_skill_update_reui_skill_service_ts
-  file_src_modules_update_reui_skill_update_reui_skill_service_ts --> file_src_modules_reporter_reporter_service_ts
-  file_src_modules_update_reui_skill_update_reui_skill_service_ts --> file_src_modules_update_reui_skill_update_reui_skill_constants_ts
-  file_src_modules_update_reui_skill_update_reui_skill_service_ts --> file_src_modules_update_reui_skill_update_reui_skill_types_ts
-  file_src_modules_update_reui_skill_update_reui_skill_service_unit_test_ts --> file_src_modules_reporter_reporter_service_ts
-  file_src_modules_update_reui_skill_update_reui_skill_service_unit_test_ts --> file_src_modules_update_reui_skill_update_reui_skill_service_ts
   file_testing_environment_ts --> file_testing_temporary_workspace_ts
   file_testing_fake_process_runner_ts --> file_src_modules_process_runner_process_runner_service_ts
   file_testing_fake_process_runner_ts --> file_src_modules_process_runner_process_runner_types_ts

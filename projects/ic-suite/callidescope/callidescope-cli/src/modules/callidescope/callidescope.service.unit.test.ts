@@ -192,7 +192,7 @@ describe(CallidescopeService, () => {
     });
 
     expect(logger.info).toHaveBeenCalledWith(
-      "🔭 Finished an analysis",
+      "🔬 Finished an analysis",
       undefined,
       {
         callableCount: 1,

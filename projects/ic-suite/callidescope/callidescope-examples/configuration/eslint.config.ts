@@ -4,7 +4,7 @@ export default [
   // 🛠️ Base Config
   ...baseConfig,
 
-  // 🔭 The committed reports
+  // 🔬 The committed reports
   // Callidescope writes these and reads them back byte for byte, so their key order must stay the emitter's.
   // Sorting them would make `examples:write` put them back and leave `examples` stale.
   {

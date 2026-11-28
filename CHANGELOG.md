@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.15.7](https://github.com/organizzolini/codebase/compare/v6.15.6...v6.15.7) (2026-11-28)
+
+### 🐛 Bug Fixes
+
+* **installation,integration:** 🐛 move dependency upgrades into installation ([#2658](https://github.com/organizzolini/codebase/issues/2658)) ([20ecf48](https://github.com/organizzolini/codebase/commit/20ecf488000e8a2dbb48bfdb3bb32e0aebdd8e85)), closes [#2657](https://github.com/organizzolini/codebase/issues/2657)
+
+## [6.15.6](https://github.com/organizzolini/codebase/compare/v6.15.5...v6.15.6) (2026-11-28)
+
+### 🐛 Bug Fixes
+
+* **dependencies:** ⬆️ upgrade ([#2623](https://github.com/organizzolini/codebase/issues/2623)) ([10a0567](https://github.com/organizzolini/codebase/commit/10a0567287850d5f5cc2e3a800db8a7441f0800d))
+
+### 📝 Documentation
+
+* **documentation:** 📝 refresh ([#2624](https://github.com/organizzolini/codebase/issues/2624)) ([25916f1](https://github.com/organizzolini/codebase/commit/25916f1aa4fc8e82756c4a6f2780bc62df66e468))
+
+## [6.15.5](https://github.com/organizzolini/codebase/compare/v6.15.4...v6.15.5) (2026-11-28)
+
+### 🐛 Bug Fixes
+
+* **documentation:** 🐛 retry a refresh that skipped pages and report the page counts ([#2654](https://github.com/organizzolini/codebase/issues/2654)) ([d9ba88b](https://github.com/organizzolini/codebase/commit/d9ba88ba084fb05a1fa8498505305d234bf78ca3)), closes [#2653](https://github.com/organizzolini/codebase/issues/2653)
+
+## [6.15.4](https://github.com/organizzolini/codebase/compare/v6.15.3...v6.15.4) (2026-11-27)
+
+### ♻️ Code Refactoring
+
+* **configuration,documentation:** ♻️ move workspace reports into the documentation project ([#2622](https://github.com/organizzolini/codebase/issues/2622)) ([3810142](https://github.com/organizzolini/codebase/commit/3810142b6756520c9371be9c75611431add97a85)), closes [#2621](https://github.com/organizzolini/codebase/issues/2621)
+
+## [6.15.3](https://github.com/organizzolini/codebase/compare/v6.15.2...v6.15.3) (2026-11-26)
+
+### ♻️ Code Refactoring
+
+* **callidescope,caelundas:** ♻️ move callidescope to the microscope emoji and caelundas to the telescope ([#2618](https://github.com/organizzolini/codebase/issues/2618)) ([57d8558](https://github.com/organizzolini/codebase/commit/57d8558de54852f75f3860ba9aa61ff0f2579144)), closes [#2617](https://github.com/organizzolini/codebase/issues/2617)
+
+## [6.15.2](https://github.com/organizzolini/codebase/compare/v6.15.1...v6.15.2) (2026-11-26)
+
+### 📝 Documentation
+
+* **documentation:** 📝 refresh ([#2608](https://github.com/organizzolini/codebase/issues/2608)) ([91541ca](https://github.com/organizzolini/codebase/commit/91541cad0d872ca1b2faa0306777890847f376c8))
+* **documentation:** 📝 reorder readme root projects ([#2613](https://github.com/organizzolini/codebase/issues/2613)) ([b8ae8cc](https://github.com/organizzolini/codebase/commit/b8ae8ccd3dacad42725ba47e742496e718774774)), closes [#2594](https://github.com/organizzolini/codebase/issues/2594) [#2595](https://github.com/organizzolini/codebase/issues/2595) [#2612](https://github.com/organizzolini/codebase/issues/2612)
+
+### ♻️ Code Refactoring
+
+* **identity,documentation:** ♻️ rename the profile project and describe common projects ([#2615](https://github.com/organizzolini/codebase/issues/2615)) ([f6aa952](https://github.com/organizzolini/codebase/commit/f6aa9523beaacd4a68afd977539f4b77af781d75)), closes [#2614](https://github.com/organizzolini/codebase/issues/2614)
+
 ## [6.15.1](https://github.com/organizzolini/codebase/compare/v6.15.0...v6.15.1) (2026-11-26)
 
 ## [6.15.0](https://github.com/organizzolini/codebase/compare/v6.14.1...v6.15.0) (2026-11-25)

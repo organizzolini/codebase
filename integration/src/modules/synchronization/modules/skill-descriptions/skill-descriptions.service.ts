@@ -5,6 +5,7 @@ import { Injectable } from "@nestjs/common";
 import { parse } from "yaml";
 
 import {
+  AUTHORED_LOCAL_PREFIX,
   AUTHORED_SOURCE,
   FRONT_MATTER_PATTERN,
   MAXIMUM_DESCRIPTION_WORDS,
@@ -52,14 +53,21 @@ export class SkillDescriptionsService {
       .filter((skillPath) => existsSync(path.join(workspaceRoot, skillPath)));
   }
 
-  /** Source files of locked skills this repository publishes. */
+  /** Source files of locked skills this repository publishes, by repository or local path. */
   private findPublishedSkillPaths(
     workspaceRoot: string,
     skills: SkillsLock["skills"],
   ): string[] {
     return Object.values(skills)
-      .filter(({ source }) => source.toLowerCase() === AUTHORED_SOURCE)
-      .map(({ skillPath }) => skillPath)
+      .map(({ skillPath, source }) => {
+        if (source.toLowerCase() === AUTHORED_SOURCE) {
+          return skillPath;
+        }
+
+        return source.startsWith(AUTHORED_LOCAL_PREFIX)
+          ? path.posix.join(source.slice(2), SKILL_FILE_NAME)
+          : undefined;
+      })
       .filter(
         (skillPath): skillPath is string =>
           skillPath !== undefined &&

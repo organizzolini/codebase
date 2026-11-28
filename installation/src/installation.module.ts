@@ -8,6 +8,7 @@ import { environmentSchema } from "./installation.constants";
 import { DependenciesModule } from "./modules/dependencies/dependencies.module";
 import { InstalledSkillsModule } from "./modules/dependencies/modules/installed-skills/installed-skills.module";
 import { UpdateReuiSkillModule } from "./modules/dependencies/modules/installed-skills/modules/update-reui-skill/update-reui-skill.module";
+import { UpgradeDependenciesModule } from "./modules/dependencies/modules/upgrade-dependencies/upgrade-dependencies.module";
 import { EnvironmentFilesModule } from "./modules/environment-files/environment-files.module";
 import { LocalServicesModule } from "./modules/local-services/local-services.module";
 import { ReporterModule } from "./modules/reporter/reporter.module";
@@ -46,6 +47,7 @@ import { SoftwareModule } from "./modules/software/software.module";
     ShellConfigurationModule,
     SoftwareModule,
     UpdateReuiSkillModule,
+    UpgradeDependenciesModule,
     VscodeSettingsModule,
   ],
 })

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pageVersion": "sha256:e30e99a89dbf6c285c21fe545b5105c4309f0d6cdca04736b9ec9cd7c11b6f7d",
+  "pageVersion": "sha256:dca78300c4d1351ea9c8136448e862145b7a744529f4b19a365af1d60e8d6845",
   "claims": [
     {
       "id": "claim_6ba1f48fb60e4cdc8e8e767e2f7a6779",
@@ -15,8 +15,8 @@
           "version": "repo-lines-v1:sha256:031b244f6ed07c7a06d64229680e97312a6b428c17614806c9821bac98fd05f4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMyLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJjYzE2NmNmNTM0OTU0MTVhMjZkNDNlMTIyNTQxNmE5Y2E4NDdhZWRlYjgzYjA3MTExMjBiMTNlYTQ1MzI3Nzc3IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMTI0MmM5NTk0ZTU5YTViNzVjMjViZGQ4NmRjZDBmMWQ5YzZmMmQ1MmU0OTVhMjZhNGU1MGRjMWUzZWNhYTE5IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4ODA5MThhYzY0MzA3MDQwMzAwNDMyNzhhYmIxNjcwMDFjNjgzNDNmYzVhM2FkZjdmODJiNjE2OTUyOWI4NGFmIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5NGE5NDQ5MWY4MzU3Y2VlNDQwNTZmZmVmZmJmMmZiNzhiODRhODNjZjQzMzU5MDk3ZWQxOGI0MTMyNDZkY2FjIn0"
         },
         {
-          "resource": "repo://AGENTS.md#L275-L278",
-          "version": "repo-lines-v1:sha256:b31256ea911e0a54b80a77077722e661f782cf15e8bc80765b548886bcf1b288:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODA2NDcxNmY3YzAzOGRlZjRiOTRjMzY5MjAyNDc2NjIwNDUxZDI0ZTgzZmE2ZjJkZTkwYTRiOWJkZDMzZDkyZCJ9"
+          "resource": "repo://AGENTS.md#L70-L90",
+          "version": "repo-lines-v1:sha256:b600c7030594db5844040ff8e763242b5306887c2b05c4bd6487c64744ba6a9b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjYjU2NDc1MWY1ZjM5M2VhYWNjNWY1NTM3MDE5NDQzMWNmZTZlZjE4NTRlYzdlOTc1NDFkZmJiODQ2MDg5YzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzODliMGIwYjE2YjNiMTk2ZjMwNzZiYmYwZTk1YjQ2NmYxNmY4NmNlZjg4YzIzMTMyM2JlNzg5ZjUxOGRmMjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYTY4MDM0OGNlYmM4OTgxMTkwNzZhZTA4YWM1NTY1YWVjOTljN2Q5YTg2OWQ2ZmUxY2Q2YjEwZWY2MGFhYmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhOTJmNWEyZjA4ZjkxYTc4ZTU4YTgzMGE3M2Y4MTE4NTkxOWUyYzg0MjRjNWM3MjAyNzg5YzgwYTc2MTczMjgifQ"
         }
       ]
     },
@@ -33,8 +33,8 @@
           "version": "repo-lines-v1:sha256:befcaa738db89f478f309e834a990edd07ad1388785d09e6d99bdabc2ef1141c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIxOWRhNjBhNjEyOTAwNzkyZTZkNTg0MGU2YWU2OTc3YjhhMTdhZDU0NzVlYzJjNThkNzU5NmM2ZDFkYzIxNTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBhZjQ1M2M4MWI0ZjI0YWY0NDdhZDk5MmQwZjc3NzVkMDAyODczZDFmMTQ3MmQyMzk1N2M0ZjdlNmZjMmUxYjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1YzljNTJlZmIwYzZiZjQyYTM2OTAwZTM2YzQzMDgzY2ZlMDBiODExODc3YjYxOTZhN2IyMDIyYzMzZDliZWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNjNWJiMDQ2Yzg4NzRkYWMzOTUwZjgzNGQ5MmEzMTNlYjM4ZGRiNWFhNWQzMmMxZmNmMDNlZTZmNDJhMTIyMzUifQ"
         },
         {
-          "resource": "repo://AGENTS.md#L275-L278",
-          "version": "repo-lines-v1:sha256:b31256ea911e0a54b80a77077722e661f782cf15e8bc80765b548886bcf1b288:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYThiZGRjNmVlOTQ1MmFiNDlmZDRjOGI1OTliNjI4ZjdmMjhkMzY5YjQ4NWVkMGQxYTQzNzlmMDQ1YzI0YWY3ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODA2NDcxNmY3YzAzOGRlZjRiOTRjMzY5MjAyNDc2NjIwNDUxZDI0ZTgzZmE2ZjJkZTkwYTRiOWJkZDMzZDkyZCJ9"
+          "resource": "repo://AGENTS.md#L70-L90",
+          "version": "repo-lines-v1:sha256:b600c7030594db5844040ff8e763242b5306887c2b05c4bd6487c64744ba6a9b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZjYjU2NDc1MWY1ZjM5M2VhYWNjNWY1NTM3MDE5NDQzMWNmZTZlZjE4NTRlYzdlOTc1NDFkZmJiODQ2MDg5YzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEzODliMGIwYjE2YjNiMTk2ZjMwNzZiYmYwZTk1YjQ2NmYxNmY4NmNlZjg4YzIzMTMyM2JlNzg5ZjUxOGRmMjkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhjYTY4MDM0OGNlYmM4OTgxMTkwNzZhZTA4YWM1NTY1YWVjOTljN2Q5YTg2OWQ2ZmUxY2Q2YjEwZWY2MGFhYmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRhOTJmNWEyZjA4ZjkxYTc4ZTU4YTgzMGE3M2Y4MTE4NTkxOWUyYzg0MjRjNWM3MjAyNzg5YzgwYTc2MTczMjgifQ"
         }
       ]
     },
@@ -67,8 +67,8 @@
           "version": "repo-file-v1:sha256:c0d71c0abe55cc5903df23fd8e5ee4909a1f8c4532698382ea919ac5380f9439"
         },
         {
-          "resource": "repo://AGENTS.md#L225-L260",
-          "version": "repo-lines-v1:sha256:75f3b14ed6efcb4aab6ddb41e32ab426f45aa4a55fdd3ee6762f099220daf49b:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhNThlMTRkMmY3MGUzMzMzMTU5NTQxZWJiOGFlMGZmYTg3NTMwNjkxMTMzMTUwNDgyZTg1MDIyNDQ2MWQ1ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijg3MDYwNTJjMmQxNjQxNjU4NWU1M2U1Njg4NjRjZjU3MmUyNzMyOWI1NDVjN2MzNzYzMDUxNzhjOWQyZDA1ZjciLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3YTU2Mjc2ZTFhMzRhZTlmY2U5NzM1OGNhNWNhZDcxM2Q4NzZmM2FhN2Q5NDIxMDQ2ZTVhODQ0YjRmZWVkZWEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxMmNjZmRiYzdkMzY2MWU0NjFhZmJlM2EwZTJmOTdkNjcyZDI0Zjc2Zjg4ZmNmMzQwOGFiMzg5ZWQ3NjQyYWEifQ"
+          "resource": "repo://AGENTS.md#L287-L292",
+          "version": "repo-lines-v1:sha256:982b7fd528f51c615987e02cdc510505eead118c58f21520555b835080b107e8:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZWQ5YjdhOThmMmRkODdhYWQ5MzE1YWJmZTEyNzQyNTZiZGJjNjBhMmFlZTdkMjJhYTg4ZDE5MTE1Y2RlYjE1MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZWE2NzQzMTU2MzMxMDEzNTIyZTUyYWIzZjI4NDZiM2NmYWNmMDI3NzFmM2Q2YTBkNDgwYmFiZTJkMzkwODMwOSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMWJiNmE2NzJhMWZkOTY2OGE1NWI1ZWE3N2JlMjBiMTM4MDFmMThhMjUxYmZiMTQ3OGFkZjNkZmM3MzJlNzI5NSJ9"
         },
         {
           "resource": "repo://configuration/typescript/vitest.config.ts#L20-L30",
@@ -163,33 +163,11 @@
       ]
     },
     {
-      "id": "claim_0e05e79c65ec40bca4e2a358a2924a85",
-      "statement": "lexico-web uses GraphQL Code Generator through @codebase/interface/client's createGraphqlCodegenConfig (configured in its configuration/codegen.ts) to produce typed artifacts in src/graphql/generated/: operations, Zod validation schemas, and MSW mock handlers; generation runs via nx run lexico-web:codegen or nx run lexico-web:codegen-watch.",
-      "evidence": [
-        {
-          "resource": "repo://projects/common/interface/src/modules/graphql-client/graphql-client.constants.ts#L1-L13",
-          "version": "repo-lines-v1:sha256:c1e23f75ab24e638fde20129df5e043a8519fb94341888681f84a4f8da998681:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJjMmM0N2VhNWI5ZjkyMGE5ZGE5NDM4Y2E0NzIyOTYyYzkyYzMzYTkxM2JkMTY3NjNhNzczZWFmOWQ1YTQxZmMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        },
-        {
-          "resource": "repo://projects/common/interface/src/modules/graphql-client/graphql-client.utilities.ts#L1-L51",
-          "version": "repo-lines-v1:sha256:c6c5cb5ac59ae61ad7589f163352b31fe890dedd7a6d7b69389f967d177fb5b9:eyJzZWxlY3RlZExpbmVDb3VudCI6NTEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU4MjAwOTY0YTk3ODYzNTUyMmIyYWIwOTBjNjUwNjVkOGVmOGU4NWM0NzMwYmIyZWIwNDYwZDM0YzY3N2RkYmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-web/README.md#L28-L45",
-          "version": "repo-lines-v1:sha256:3dd1fb9708540e7c861232fc12c23f111400f37ab329f733434c7ee3c0d8cf05:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkZTJmNTMyOGVlNmU4MDUwZThhYWZkOGRjODY5YTA2OWNkOTU4NGVkYWFmNTRmZTU4OWQ3M2MzYjdkY2Q3OTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYzZDc4ZjA2YzE0MDc0MzhmNTRkYjkzMzBjZjJmMWIwMDgyMjE0YzQwNDdkMDFmN2UyNzNmN2YzMTc3YjViMzIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVhYjg4ZDlmNzA1ZTc3NjI1ZGY5NjhlMDRjOTg2MTQ4ZTkzNTVjZDZiODhjMjk4Mjk1NzFhOGZjNzNlZGY5ZGUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZhZGZjZWU4ODVlOTZlM2NjMzgyNmIxZjFmY2QwOTQzYzc2ODM0ZjFmZGVhNTJhNDlhNjFkYzI1MWYzYzcwYzUifQ"
-        },
-        {
-          "resource": "repo://projects/lexico/lexico-web/configuration/codegen.ts#L1-L9",
-          "version": "repo-lines-v1:sha256:87bd5e311df586096e0d54af4b2fb9e37da6755a7474e991eef71568c6c7e58a:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGRlY2NlYzVlZGM3NmU2MzliOWUwNzBiZjA4MzdiMjU4ZmExY2VlMzAxNDg0ZDA2ZTk3ZmRmM2IzYzQwYjA3MCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiY2JmOTNmZmE0ODg2YTk3ZjJmYjUwOTMxOTI0Y2FkNjU1MjZkZGMzYWMwMDg2Yzk4NGQ3YTQxZmQwZTBkMjUzYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
-        }
-      ]
-    },
-    {
       "id": "claim_01da2e1e55a94d58bd8e17b624f5d9fb",
       "statement": "CI test execution is sharded into parallel legs per project group in .github/workflows/continuous-integration.yml: Test Codebase, Test Common, Test Affirmancy, Test Caelundas, Test IC Suite, Test Lexico and Test Meanderaw, each running nx affected --target=vitest --configuration=coverage with its exclude pattern; the Postgres client is installed for the common and lexico legs.",
       "evidence": [
         {
-          "resource": "repo://.github/workflows/continuous-integration.yml#L83-L130",
+          "resource": "repo://.github/workflows/continuous-integration.yml#L91-L138",
           "version": "repo-lines-v1:sha256:e03034e1d97e600612b87ec2a61dfec78694bf0f545bfd7527fc5066ae786cfa:eyJzZWxlY3RlZExpbmVDb3VudCI6NDgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBjMjU4MjJhMDk0YzQ5M2Y1YTA0YTdjZjRhNDdhODJlOTA1MWQyYTdhZDMyNGUzODRiMGRhZjEyMDVkZWVhNzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMmY5MmExN2FiOWIyMTcwOTM3NDcwMWI0NWRkZjA0ZGQ5ZWIyODVhMTk2NTE1ODJmNDFjYmQ4Y2Y1MDU1NGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ4YzMzMmRlZGRlNzBlYzM1MjA2Y2MxMzU0OTc4Mzc4YjgzYmY5YzdhZGM0ZGU3NTVhYzYxZGE1OWY3YjU0NzYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwNzZiOTZkMmEzMDIzZGVjNTcxNzc1MGRjNzQ3NTY3NDAxN2U2MDM4NDI2ZWI4MTM5MjUyODg3YTE1MDU5YTMifQ"
         }
       ]
@@ -207,10 +185,24 @@
           "version": "repo-lines-v1:sha256:a92c3ccf3aef223feda5e30fd3e0684e2eb8ceb8558a81d732f07d89b06f2d64:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiNzc0ZmE0OWRkZTA2ZTY5NTI1Y2MyZDg2YTcyMGExZmIxZTJkOGY1MjVjZGY0NGM0MjVmNmQzODhmMTI2Y2QiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmMWI1Y2Q2NmMyZDYxZGFkMjQ3ODNjYzkyNzg2MWFiZTk3ZmYzYTkzMzQxNjI3NjZkZDUyYTBiOGU3MTJjZDIifQ"
         }
       ]
+    },
+    {
+      "id": "claim_d13759bfee274159a962714c0ce596e7",
+      "statement": "lexico-web uses GraphQL Code Generator through @codebase/interface/client's createGraphqlCodegenConfig (configured in its configuration/codegen.ts) to produce typed artifacts in src/graphql/generated/: operations (TypeScript + typed-document-node) and MSW mock handlers; validators (Zod schemas) are explicitly disabled via validators: false. Generation runs via nx run lexico-web:codegen or nx run lexico-web:codegen-watch.",
+      "evidence": [
+        {
+          "resource": "repo://projects/common/interface/src/modules/graphql-client/graphql-client.utilities.ts",
+          "version": "repo-file-v1:sha256:e37f0e266e1b1596f99e024c9faeb07879d3aa113224260d39b730c42f9cb511"
+        },
+        {
+          "resource": "repo://projects/lexico/lexico-web/configuration/codegen.ts",
+          "version": "repo-file-v1:sha256:e759191abd0cf05349da34843c5c53e0aef1bcc2b557c349c518fdb3548dc797"
+        }
+      ]
     }
   ],
   "verification": {
     "by": "openwiki/0.9.0",
-    "at": "2026-11-22T00:18:20.862Z"
+    "at": "2026-11-27T18:15:08.471Z"
   }
 }
