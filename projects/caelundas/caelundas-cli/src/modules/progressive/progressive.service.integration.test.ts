@@ -18,8 +18,8 @@ import { ProgressiveService } from "./progressive.service";
 import type { Body } from "../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 
-/** Timeout for a pass that searches window edges, sized for CI. */
-const EDGE_SEARCH_TIMEOUT_MILLISECONDS = 120_000;
+/** Timeout for a pass that searches window edges: four real-ephemeris sweeps took 160 s on a loaded CI run, so each test gets 300 s (temporary, until CI is faster). */
+const EDGE_SEARCH_TIMEOUT_MILLISECONDS = 300_000;
 
 /**
  * Progressive-step tests: the real progressive pass, fed hand-built perfective

@@ -160,7 +160,9 @@ function normalize(value: unknown): unknown {
  * Measures a New York fixture over the rollups and over the events, and asserts
  * each answer is the other's, in every grouping the rollups read.
  */
-describe("event metrics rollups", () => {
+// Each grouped test runs the rollup SQL and the events SQL: under 1 s here, but
+// over the default 5 s on a loaded CI run, so 60 s (temporary).
+describe("event metrics rollups", { timeout: 60_000 }, () => {
   let application: EventsApplication;
   let eventsService: EventsService;
   let fallback = false;
@@ -179,23 +181,39 @@ describe("event metrics rollups", () => {
   async function measure(
     input: EventMetricsInputEntity,
     withoutRollups: boolean,
-  ): Promise<{ result: unknown; sql: string }> {
+  ): Promise<{
+    raw: Awaited<ReturnType<EventMetricsService["findMetrics"]>>;
+    result: unknown;
+    sql: string;
+  }> {
     fallback = withoutRollups;
     queries = [];
 
-    const result = normalize(await findMetrics(input));
+    const raw = await findMetrics(input);
 
-    return { result, sql: queries.join("\n") };
+    return { raw, result: normalize(raw), sql: queries.join("\n") };
   }
 
-  /** Asserts both paths agree, and returns the SQL the rollup path ran. */
-  async function expectEqual(input: EventMetricsInputEntity): Promise<string> {
+  /**
+   * Asserts both paths agree, and returns the rollup path's answer and SQL.
+   */
+  async function expectEqualAnswer(input: EventMetricsInputEntity): Promise<{
+    answer: Awaited<ReturnType<EventMetricsService["findMetrics"]>>;
+    sql: string;
+  }> {
     const rollup = await measure(input, false);
     const events = await measure(input, true);
 
     expect(rollup.result).toStrictEqual(events.result);
 
-    return rollup.sql;
+    return { answer: rollup.raw, sql: rollup.sql };
+  }
+
+  /** Asserts both paths agree, and returns the SQL the rollup path ran. */
+  async function expectEqual(input: EventMetricsInputEntity): Promise<string> {
+    const { sql } = await expectEqualAnswer(input);
+
+    return sql;
   }
 
   /** Saves a tag, beneath `parent` when one is named. */
@@ -290,21 +308,18 @@ describe("event metrics rollups", () => {
   it("reads the whole set from the day rollup, as the events read", async () => {
     expect.hasAssertions();
 
-    const sql = await expectEqual({
+    const { answer, sql } = await expectEqualAnswer({
       compareToPrevious: true,
       metrics: ROLLUP_METRICS,
-      period: WINDOW,
-    });
-
-    const { total } = await findMetrics({
-      metrics: ["events"],
       period: WINDOW,
     });
 
     expect(sql).toContain(WHOLE_FACTS);
     expect(sql).not.toContain("events_in_periods");
     // Six events start in the window.
-    expect(total[0]?.value).toBe(6);
+    expect(answer.total.find(({ metric }) => metric === "events")?.value).toBe(
+      6,
+    );
   });
 
   it("counts the tags beneath a root, as the events count them", async () => {
@@ -321,16 +336,13 @@ describe("event metrics rollups", () => {
   it("reads the children of a root from the day and tag rollup", async () => {
     expect.hasAssertions();
 
-    const sql = await expectEqual({
+    const {
+      answer: { groups },
+      sql,
+    } = await expectEqualAnswer({
       compareToPrevious: true,
       grouping: [{ field: `tag:${tags.get("Body")?.id ?? ""}` }],
       metrics: ROLLUP_METRICS,
-      period: WINDOW,
-    });
-
-    const { groups } = await findMetrics({
-      grouping: [{ field: `tag:${tags.get("Body")?.id ?? ""}` }],
-      metrics: ["events"],
       period: WINDOW,
     });
 
@@ -374,15 +386,13 @@ describe("event metrics rollups", () => {
     expect.hasAssertions();
 
     const grouping = [{ field: `tag:${tags.get("Aspect")?.id ?? ""}` }];
-    const sql = await expectEqual({
+    const {
+      answer: { groups },
+      sql,
+    } = await expectEqualAnswer({
       compareToPrevious: true,
       grouping,
       metrics: ROLLUP_METRICS,
-      period: WINDOW,
-    });
-    const { groups } = await findMetrics({
-      grouping,
-      metrics: ["events"],
       period: WINDOW,
     });
 
@@ -528,15 +538,13 @@ describe("event metrics rollups", () => {
     await refresh();
 
     const grouping = [{ field: `tag:${tags.get("Aspect")?.id ?? ""}` }];
-    const sql = await expectEqual({
+    const {
+      answer: { groups },
+      sql,
+    } = await expectEqualAnswer({
       compareToPrevious: true,
       grouping,
       metrics: ROLLUP_METRICS,
-      period: WINDOW,
-    });
-    const { groups } = await findMetrics({
-      grouping,
-      metrics: ["events"],
       period: WINDOW,
     });
     const conjunct = groups.find(({ label }) => label === "Conjunct");

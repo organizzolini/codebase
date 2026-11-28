@@ -67,8 +67,8 @@ function tagged(
   return { ...event(summary, start), tags: eventTags };
 }
 
-/** Thirty seconds: insert batches take over five seconds on CI. */
-const BULK_UPSERT_TIMEOUT_MILLISECONDS = 30_000;
+/** Two minutes: one upsert of over a batch of events took 23 s on a loaded CI run (temporary). */
+const BULK_UPSERT_TIMEOUT_MILLISECONDS = 120_000;
 
 describe("calendar events service integration", () => {
   let database: DatabaseTestingModule;
@@ -173,41 +173,53 @@ describe("calendar events service integration", () => {
     expect(rollups.map(({ name }) => name)).toContain("Sun");
   });
 
-  it(
-    "refreshes the metrics view once per upsert, after the last batch is written",
-    async () => {
-      expect.hasAssertions();
-
+  // Two tests read one upsert of more events than a batch holds, which takes
+  // 23 s on a loaded CI run, so it is made once, by the first test to ask.
+  const BULK_COUNT = CALENDAR_EVENT_BATCH_SIZE + 10;
+  let bulkUpsert: Promise<{ refreshes: number; stored: number[] }> | undefined;
+  const upsertBulk = async (): Promise<{
+    refreshes: number;
+    stored: number[];
+  }> => {
+    bulkUpsert ??= (async () => {
       const databaseService = database.module.get(CaelundasDatabaseService);
       const rebuild = databaseService.refreshMetrics.bind(databaseService);
       const refresh = vi.spyOn(databaseService, "refreshMetrics");
-      refresh.mockClear();
-      const count = CALENDAR_EVENT_BATCH_SIZE + 1;
       const stored: number[] = [];
       refresh.mockImplementationOnce(async (manager) => {
         stored.push(
           await manager.getRepository(CalendarEvent).countBy({
-            name: In(["Refresh first", `Refresh ${String(count - 1)}`]),
+            name: In(["Bulk 0", `Bulk ${String(BULK_COUNT - 1)}`]),
           }),
         );
         await rebuild(manager);
       });
-      const start = moment.utc("2031-01-01T00:00:00Z");
+      const start = moment.utc("2030-01-01T00:00:00Z");
       await service.upsert(
-        Array.from({ length: count }, (_value, index) =>
+        Array.from({ length: BULK_COUNT }, (_value, index) =>
           event(
-            index === 0 ? "Refresh first" : `Refresh ${String(index)}`,
+            `Bulk ${String(index)}`,
             start.clone().add(index, "minutes").toISOString(),
           ),
         ),
         philadelphia,
       );
 
-      expect(refresh).toHaveBeenCalledTimes(1);
-      expect(stored).toStrictEqual([2]);
+      return { refreshes: refresh.mock.calls.length, stored };
+    })();
 
-      await repository.delete({ name: Like("Refresh %") });
-      await repository.delete({ name: "Refresh first" });
+    return bulkUpsert;
+  };
+
+  it(
+    "refreshes the metrics view once per upsert, after the last batch is written",
+    async () => {
+      expect.hasAssertions();
+
+      const { refreshes, stored } = await upsertBulk();
+
+      expect(refreshes).toBe(1);
+      expect(stored).toStrictEqual([2]);
     },
     BULK_UPSERT_TIMEOUT_MILLISECONDS,
   );
@@ -385,22 +397,14 @@ describe("calendar events service integration", () => {
     async () => {
       expect.hasAssertions();
 
-      const count = CALENDAR_EVENT_BATCH_SIZE + 10;
-      const start = moment.utc("2030-01-01T00:00:00Z");
-      await service.upsert(
-        Array.from({ length: count }, (_value, index) => {
-          const at = start.clone().add(index, "minutes").toISOString();
-          return event(`Bulk ${String(index)}`, at);
-        }),
-        philadelphia,
-      );
+      await upsertBulk();
 
       await expect(
         repository
           .createQueryBuilder("event")
           .where("event.name LIKE 'Bulk %'")
           .getCount(),
-      ).resolves.toBe(count);
+      ).resolves.toBe(BULK_COUNT);
 
       // Later upserts refresh the metrics facts, whose cost grows with the rows.
       await repository.delete({ name: Like("Bulk %") });

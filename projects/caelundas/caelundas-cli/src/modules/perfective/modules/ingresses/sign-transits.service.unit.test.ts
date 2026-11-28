@@ -182,13 +182,22 @@ describe(SignTransitsService, () => {
 
     it("clips at the range's limits and says so", () => {
       const { service } = buildService(parked);
-      const window = { end: atDay(10), start: atDay(5) };
+      // Windows a few days from each limit, so each search walks days and
+      // not the 46,000 from today to a limit, which cost 6 s on CI.
+      const early = {
+        end: moment.utc("1900-01-11T00:00:00Z"),
+        start: moment.utc("1900-01-06T00:00:00Z"),
+      };
+      const late = {
+        end: moment.utc("2100-12-26T00:00:00Z"),
+        start: moment.utc("2100-12-21T00:00:00Z"),
+      };
 
-      expect(service.getEntry("sun", window).sign).toBe("aries");
-      expect(service.getEntry("sun", window).start.toISOString()).toBe(
+      expect(service.getEntry("sun", early).sign).toBe("aries");
+      expect(service.getEntry("sun", early).start.toISOString()).toBe(
         "1900-01-01T00:00:00.000Z",
       );
-      expect(service.getExit("sun", window).toISOString()).toBe(
+      expect(service.getExit("sun", late).toISOString()).toBe(
         "2100-12-31T23:59:00.000Z",
       );
     });

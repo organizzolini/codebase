@@ -481,10 +481,10 @@ describe(RetrogradesService, () => {
     });
   });
 
-  // Each test walks the station search over the 1900 to 2100 range for ten
-  // bodies: about two seconds here, and a CI runner under load took more
-  // than the default five. Thirty seconds is fifteen times the slowest.
-  describe("detectProgressive over a sweep window", { timeout: 30_000 }, () => {
+  // Each test walks the station search over the range for Mercury: a CI
+  // run under coverage and load took 65 to 82 s for the two slowest of the
+  // earlier all-bodies version, so 60 s leaves room for this one, eight times cheaper.
+  describe("detectProgressive over a sweep window", { timeout: 60_000 }, () => {
     const day = (days: number): Moment =>
       moment.utc("2026-01-01T00:00:00.000Z").add(days, "days");
 
@@ -523,9 +523,11 @@ describe(RetrogradesService, () => {
         ]);
 
     /**
-     * Answers the ephemeris of every minute with a longitude by epoch
-     * milliseconds. It steps plain numbers, as a window spans up to
-     * hundreds of thousands of minutes and a moment per minute is slow.
+     * Answers the ephemeris of every minute, Mercury moving by the given
+     * longitude of epoch milliseconds and every other body standing still,
+     * as the tests read Mercury's spans alone and a station scan of each of
+     * the others would cost eight times as much. It steps plain numbers, as a
+     * window spans up to hundreds of thousands of minutes.
      */
     const useLongitude = (
       longitude: (milliseconds: number) => number,
@@ -534,19 +536,28 @@ describe(RetrogradesService, () => {
         ephemerisService,
         "getCoordinateEphemerisByBody",
       ).mockImplementation(({ bodies, end, start }) => {
-        const ephemeris: CoordinateEphemeris = {};
-        for (
-          let milliseconds = start.valueOf();
-          milliseconds <= end.valueOf();
-          milliseconds += MINUTE_MILLISECONDS
-        ) {
-          ephemeris[new Date(milliseconds).toISOString()] = {
-            latitude: 0,
-            longitude: longitude(milliseconds),
-          };
-        }
+        const build = (
+          longitudeAtMinute: (milliseconds: number) => number,
+        ): CoordinateEphemeris => {
+          const ephemeris: CoordinateEphemeris = {};
+          for (
+            let milliseconds = start.valueOf();
+            milliseconds <= end.valueOf();
+            milliseconds += MINUTE_MILLISECONDS
+          ) {
+            ephemeris[new Date(milliseconds).toISOString()] = {
+              latitude: 0,
+              longitude: longitudeAtMinute(milliseconds),
+            };
+          }
+          return ephemeris;
+        };
+
         return Object.fromEntries(
-          bodies.map((body) => [body, ephemeris]),
+          bodies.map((body) => [
+            body,
+            build(body === "mercury" ? longitude : () => 0),
+          ]),
         ) as ReturnType<EphemerisService["getCoordinateEphemerisByBody"]>;
       });
     };
