@@ -145,6 +145,7 @@ jobs:
           filters: |
             terraform:
               - infrastructure/terraform/**
+              - projects/*/*/infrastructure/terraform/**
 
       # Devcontainer Build & Publish Steps
       - name: 🗂️ Setup Environment File

@@ -23,30 +23,6 @@ services:
         max-file: "3"
     restart: unless-stopped
 
-  postgres:
-    image: postgres:18-alpine
-    container_name: postgres
-    env_file: ../../.env
-    environment:
-      # Every database-backed project: adding one is adding its name here.
-      POSTGRES_PROJECTS: caelundas lexico meanderaw
-    ports:
-      - 5432:5432
-    volumes:
-      - postgres_data:/var/lib/postgresql
-    configs:
-      - source: postgres-databases
-        target: /docker-entrypoint-initdb.d/databases.sh
-        # Executable, so the image runs it in its own shell rather than
-        # sourcing it: its `set -eu` and `exit` stay out of the entrypoint.
-        mode: "0555"
-    healthcheck:
-      test: [CMD-SHELL, "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-
   searxng:
     image: searxng/searxng:latest
     container_name: searxng
@@ -69,28 +45,5 @@ services:
         max-file: "3"
     restart: unless-stopped
 
-configs:
-  # Inline, so the container never depends on a checkout.
-  # Runs only on an empty volume. For an existing one, run the script by hand.
-  # Each project in `POSTGRES_PROJECTS` gets its own role, database, and schema.
-  # `$$` escapes Compose's interpolation, leaving `$` for the shell.
-  postgres-databases:
-    content: |
-      #!/bin/sh
-      set -eu
-
-      for project in $$POSTGRES_PROJECTS; do
-        case "$$project" in
-          '' | [!a-z]* | *[!a-z0-9_]*) echo "bad project: $$project" >&2; exit 1 ;;
-        esac
-        psql -v ON_ERROR_STOP=1 --username "$$POSTGRES_USER" --dbname "$$POSTGRES_DB" <<SQL
-      CREATE ROLE $${project}_username LOGIN PASSWORD '$${project}_password';
-      CREATE DATABASE $${project}_development OWNER $${project}_username;
-      \connect $${project}_development
-      CREATE SCHEMA $${project} AUTHORIZATION $${project}_username;
-      SQL
-      done
-
 volumes:
   open-webui_data:
-  postgres_data:

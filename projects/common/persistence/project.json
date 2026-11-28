@@ -30,6 +30,15 @@
       "outputs": ["{options.outputPath}"]
     },
     "build-projects": {},
+    "compose-config": {
+      "cache": false,
+      "description": "Validate this project's Docker Compose file (the local PostgreSQL service) without starting anything. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires docker compose. Creates the workspace-root .env from .env.default when it is missing (the documented bootstrap; .env is gitignored) and never touches an existing one. Uncached on purpose: the compose file reads the workspace-root .env (env_file), which is gitignored and so cannot be declared as an input, and a cached pass would replay after .env goes missing or changes.",
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "test -f .env || cp .env.default .env; docker compose -f {projectRoot}/infrastructure/docker/docker-compose.yml config -q",
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "dependency-cruiser": {},
     "deprecate-code": {},
     "eslint": {},
@@ -40,6 +49,25 @@
     "markdown-lint": {},
     "oxfmt": {},
     "oxlint": {},
+    "postgres": {
+      "configurations": {
+        "down": {
+          "command": "docker compose -f {projectRoot}/infrastructure/docker/docker-compose.yml down postgres"
+        },
+        "recreate": {
+          "command": "docker compose -f {projectRoot}/infrastructure/docker/docker-compose.yml down -v postgres && docker compose -f {projectRoot}/infrastructure/docker/docker-compose.yml up -d postgres"
+        },
+        "up": {
+          "command": "docker compose -f {projectRoot}/infrastructure/docker/docker-compose.yml up -d postgres"
+        }
+      },
+      "defaultConfiguration": "up",
+      "description": "Start, stop, or recreate the local PostgreSQL container, which the compose file under this project's infrastructure/docker defines (recreate removes the volume)",
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "prettier": {},
     "spell-check": {},
     "start": {

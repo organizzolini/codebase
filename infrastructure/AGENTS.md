@@ -33,7 +33,7 @@ infrastructure/
 │   └── postgres/            # Shared PostgreSQL as CloudNativePG resources
 └── terraform/               # Cluster provisioning
     ├── github/              # Repository settings, ruleset, Actions variables
-    ├── linode/              # Object Storage buckets: the state, the shared Nx cache, and Postgres backups
+    ├── linode/              # Object Storage buckets: the state, the shared Nx cache, and (through the persistence module) Postgres backups
     ├── openrouter/          # OpenRouter workspace, key, guardrail, preset
     └── organizzolini/       # LKE cluster, Cloudflare tunnel, namespaces, secrets, Argo CD, KUBECONFIG secret
 ```
@@ -53,7 +53,8 @@ Use a Job for work that runs to completion and leaves output behind (caelundas w
 
 **Organizzolini root**: what `terraform/organizzolini` holds and how to run it are in the [README](README.md#manage-the-organizzolini-root-with-terraform), and Key Files below maps each file. Its conventions:
 
-- Each app's Terraform lives in one file like `caelundas.tf`, so another app is another file. The apps do not set `CreateNamespace`, so that file creates the app's namespace.
+- **Central roots compose, projects own their modules.** A root here calls modules that live in the project they serve, under `projects/<domain>/<project>/infrastructure/terraform/<module>/` (`main.tf`, `variables.tf`, `outputs.tf`, and a `tests/` folder of mock-provider tests): `postgres-backups-bucket` and `postgres-backups-secret` in persistence, and `database` in caelundas-db (the namespace every Caelundas workload shares, plus the database role's password and Secrets; one module, in the one Caelundas project that is a package, which this package project may depend on). The root keeps what only it can hold: providers, state, tokens, the cluster, and the `depends_on` that orders a module after the cluster. A new app is a module in its project and a short call in a file like `caelundas.tf`. The apps do not set `CreateNamespace`, so a module creates the app's namespace.
+- A resource that moves from a root into a module needs a `moved` block in the root, as `linode/main.tf` and `organizzolini/secrets.tf` have: without it, a plan destroys and recreates the live resource. The `terraform-format`, `terraform-validate`, `tflint`, and `trivy-config` targets, the CI and CD path filters, and Dependabot read `projects/*/*/infrastructure/terraform`, and `infrastructure` depends on the projects that hold modules, so `nx affected` runs them when a module changes.
 - The kubernetes and helm providers are configured from the cluster resource's own kubeconfig, so every Kubernetes and Helm resource that calls the cluster depends on `terraform_data.cluster_ready`. The known caveats are in the README.
 - `state_bucket` locates the `linode` state read for the backups key, through `try`, so a pull request plans before that output exists.
 - The `argo-cd` chart has no ApplicationSet switch, so `argocd-values.yaml` sets `applicationSet.replicas: 0`.
@@ -199,6 +200,6 @@ serving all three roots, so the move can stop at any point.
 - [terraform/organizzolini/cluster.tf](terraform/organizzolini/cluster.tf): LKE cluster and its readiness wait
 - [terraform/organizzolini/cloudflare.tf](terraform/organizzolini/cloudflare.tf): Zone import and tunnel
 - [terraform/organizzolini/argocd.tf](terraform/organizzolini/argocd.tf): Argo CD core and the root Application
-- [terraform/organizzolini/secrets.tf](terraform/organizzolini/secrets.tf): Platform secrets
-- [terraform/organizzolini/caelundas.tf](terraform/organizzolini/caelundas.tf): Caelundas namespace, database password, and secrets
+- [terraform/organizzolini/secrets.tf](terraform/organizzolini/secrets.tf): Platform secrets, with `postgres-backups` from the persistence module
+- [terraform/organizzolini/caelundas.tf](terraform/organizzolini/caelundas.tf): The caelundas-db module: namespace, database password, and secrets
 - [terraform/openrouter/main.tf](terraform/openrouter/main.tf): OpenRouter resources and the S3-compatible state backend

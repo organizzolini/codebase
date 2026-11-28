@@ -53,9 +53,9 @@ Continuous Integration plans a pull request that changes the root and comments t
 
 The `terraform/organizzolini` root holds everything the cluster needs, in one state. It creates the `organizzolini` LKE cluster (region `us-iad`, one `g6-standard-2` pool whose autoscaler keeps 1 to 2 nodes, on the Kubernetes version hardcoded in `cluster.tf`; bump it by hand together with the version the `kubeconform` and `pluto` targets check against) and the Cloudflare tunnel. It imports the existing `organizzolini.net` zone, which it refuses to destroy, and manages no zone settings or other records. The tunnel answers 404 to everything and has no DNS record: no public hostname exists until an application adds its routing rules and a record.
 
-Inside the cluster it holds what must not live in git, or must exist before Argo CD. **It creates the `organizzolini` and `caelundas` namespaces**, because the Argo CD applications do not set `CreateNamespace` for them. It generates the `caelundas_username` role's password and writes it as the `caelundas-postgres` secret in both namespaces, writes `postgres-backups` and `cloudflared-token` into `organizzolini`, installs the pinned `argo-cd` chart in the core profile (no API server, Dex, or notifications; zero ApplicationSet replicas, since the chart has no switch for that controller), and installs the `argocd-apps` chart with one `root` Application that follows `infrastructure/helm/argocd` on `main`. It also publishes the cluster's kubeconfig as the `KUBECONFIG` Actions secret. It reads only the `linode` root's state, for the backups key, through `try`, so a pull request plans before that output exists.
+Inside the cluster it holds what must not live in git, or must exist before Argo CD. **It creates the `organizzolini` and `caelundas` namespaces**, because the Argo CD applications do not set `CreateNamespace` for them. Through the project modules below, it generates the `caelundas_username` role's password and writes it as the `caelundas-postgres` secret in both namespaces, and writes `postgres-backups`, and, itself, `cloudflared-token` into `organizzolini`, installs the pinned `argo-cd` chart in the core profile (no API server, Dex, or notifications; zero ApplicationSet replicas, since the chart has no switch for that controller), and installs the `argocd-apps` chart with one `root` Application that follows `infrastructure/helm/argocd` on `main`. It also publishes the cluster's kubeconfig as the `KUBECONFIG` Actions secret. It reads only the `linode` root's state, for the backups key, through `try`, so a pull request plans before that output exists.
 
-It needs `TF_VAR_linode_token`, `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_account_id`, `TF_VAR_cloudflare_zone_id`, `TF_VAR_state_bucket`, and `TF_VAR_github_token`. In CI the Cloudflare account and zone IDs come from the `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_ZONE_ID` repository secrets, next to `CLOUDFLARE_API_TOKEN`. The optional `TF_VAR_k8s_version` pins the LKE Kubernetes version; unset, the cluster takes the newest available. The readiness wait runs `kubectl`, which must be on `PATH`.
+It needs `TF_VAR_linode_token`, `TF_VAR_cloudflare_api_token`, `TF_VAR_cloudflare_account_id`, `TF_VAR_cloudflare_zone_id`, `TF_VAR_state_bucket`, and `TF_VAR_github_token`. In CI the Cloudflare account and zone IDs come from the `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_ZONE_ID` repository secrets, next to `CLOUDFLARE_API_TOKEN`. The readiness wait runs `kubectl`, which must be on `PATH`.
 
 **Known caveat**: the kubernetes and helm providers are configured from the cluster resource's kubeconfig in the same root. That suits one cluster and one maintainer, but the provider configuration is unknown at plan time until the cluster exists, so the first plan shows the cluster and its dependents, and replacing or destroying the cluster requires removing the Kubernetes and Helm resources from state, or destroying them first, since Terraform cannot configure the providers for a cluster that is going away.
 
@@ -92,14 +92,14 @@ Owner prerequisites, all in one place:
 ### Run Local Services
 
 ```bash
-nx run infrastructure:postgres:up
+nx run persistence:postgres:up
 nx run infrastructure:searxng:up
 nx run infrastructure:open-webui:up
 ```
 
 ### Project Databases on an Existing Volume
 
-The Compose `postgres` service creates every database-backed project's
+The Compose `postgres` service, defined in the persistence project's `infrastructure/docker` folder, creates every database-backed project's
 `<project>_username` role, `<project>_development` database, and `<project>`
 schema from its `POSTGRES_PROJECTS` list, but only when the volume is empty.
 To add a project to a volume that already holds data, add its name to the
@@ -107,7 +107,7 @@ list, recreate the container while keeping its volume, and run the same init
 script for that project alone:
 
 ```bash
-nx run infrastructure:postgres:up
+nx run persistence:postgres:up
 docker exec -e POSTGRES_PROJECTS=<project> postgres sh /docker-entrypoint-initdb.d/databases.sh
 ```
 
@@ -118,7 +118,7 @@ docker exec -e POSTGRES_PROJECTS=caelundas postgres sh /docker-entrypoint-initdb
 ```
 
 The script stops at the first object that already exists, so name only the
-projects the volume lacks. Never use `infrastructure:postgres:recreate` for this:
+projects the volume lacks. Never use `persistence:postgres:recreate` for this:
 it deletes the volume and every row in it.
 
 ### Provision Kubernetes Cluster
@@ -134,7 +134,6 @@ terraform apply -var="linode_token=$LINODE_API_TOKEN"
 
 | Target               | Does                                                                   |
 | -------------------- | ---------------------------------------------------------------------- |
-| `postgres`           | `up`, `down`, `recreate` (removes the volume) for the local PostgreSQL |
 | `searxng`            | `up`, `down`, `open` for the SearxNG metasearch service                |
 | `open-webui`         | `up`, `down`, `open` for the Open WebUI service                        |
 | `terraform`          | `plan` (default) or `import` against the cluster                       |
@@ -151,4 +150,4 @@ The Helm and Terraform linters that read this project's files belong to other pr
 
 The `terraform/github` root imports the repository's settings (merge methods, features, secret scanning, Dependabot security updates) and its `main` ruleset, and sets the `OPENWIKI_MODEL_ID` Actions variable to the OpenRouter preset (`@preset/refresh-documentation`) by reading the openrouter root's state. It needs `TF_VAR_state_bucket` and `TF_VAR_github_token`. CI reads the `GH_TOKEN` repository secret, which needs Administration, Variables and Secrets write on this repository, because `GITHUB_TOKEN` cannot be granted any of them. Because the provider cannot express the ruleset's `code_quality` rule or its unattributed-changes approval, `terraform_data.main_ruleset_unsupported_rules` patches both back through the GitHub REST API whenever the ruleset updates. Terraform cannot read the value of the imported "Default key", so `OPENROUTER_API_KEY` stays a hand-set secret.
 
-The `terraform/linode` root imports the state bucket (`organizzolini`, region `us-iad-2`) and its access key and refuses to destroy it. It also creates the Postgres backups bucket (`organizzolini-postgres-backups`, region `us-iad-2`, private) and a key that reads and writes only that bucket, which CloudNativePG archives to; the bucket has no lifecycle rule, since Barman's retention deletes old backups, and it refuses to destroy. It needs `TF_VAR_linode_token`; CI reads the `LINODE_TOKEN` repository secret, a Linode API token with Object Storage read and write.
+The `terraform/linode` root imports the state bucket (`organizzolini`, region `us-iad-2`) and its access key and refuses to destroy it. It also instantiates the persistence project's `postgres-backups-bucket` module, which creates the Postgres backups bucket (`organizzolini-postgres-backups`, region `us-iad-2`, private) and a key that reads and writes only that bucket, which CloudNativePG archives to; `moved` blocks map the resources' former root addresses into the module, so no plan destroys the bucket. The bucket has no lifecycle rule, since Barman's retention deletes old backups, and it refuses to destroy. It needs `TF_VAR_linode_token`; CI reads the `LINODE_TOKEN` repository secret, a Linode API token with Object Storage read and write.

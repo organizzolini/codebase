@@ -173,6 +173,7 @@ jobs:
           filters: |
             terraform:
               - infrastructure/terraform/**
+              - projects/*/*/infrastructure/terraform/**
 
       - name: 🚦 Detect Devcontainer Changes
         id: devcontainer-changes

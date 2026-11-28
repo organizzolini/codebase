@@ -1247,7 +1247,7 @@
     "tflint": [
       {
         "cache": true,
-        "description": "Lint the OpenRouter, GitHub, Linode, and Organizzolini Terraform roots with tflint and its bundled terraform ruleset (preset all). Each root uses its own .tflint.hcl when it has one, otherwise terraform/.tflint.hcl. The ruleset ships inside the pinned tflint binary, so there is no plugin download and no `tflint --init`, and nothing touches .terraform, so it may run beside the terraform targets. The stale root main.tf is not listed and is never scanned. Part of lint-code. Requires tflint on PATH.",
+        "description": "Lint the OpenRouter, GitHub, Linode, and Organizzolini Terraform roots, and the modules the projects keep under their own infrastructure/terraform folders, with tflint and its bundled terraform ruleset (preset all). Each root or module uses its own .tflint.hcl when it has one, otherwise terraform/.tflint.hcl. The ruleset ships inside the pinned tflint binary, so there is no plugin download and no `tflint --init`, and nothing touches .terraform, so it may run beside the terraform targets. The stale root main.tf is not listed and is never scanned. Part of lint-code. Requires tflint on PATH.",
         "executor": "nx:run-commands",
         "filter": {
           "projects": ["tag:name:integration"]
@@ -1256,12 +1256,13 @@
           "{workspaceRoot}/infrastructure/terraform/*/.tflint.hcl",
           "{workspaceRoot}/infrastructure/terraform/.tflint.hcl",
           "{workspaceRoot}/infrastructure/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
+          "{workspaceRoot}/projects/*/*/infrastructure/terraform/**/*.tf",
           {
             "externalDependencies": []
           }
         ],
         "options": {
-          "command": "for root in openrouter github linode organizzolini; do (cd $root && c=../.tflint.hcl; [ -f .tflint.hcl ] && c=.tflint.hcl; tflint --config $c) || exit 1; done",
+          "command": "base=$PWD; for root in openrouter github linode organizzolini ../../projects/*/*/infrastructure/terraform/*; do (cd $root && c=$base/.tflint.hcl; [ -f .tflint.hcl ] && c=.tflint.hcl; tflint --config $c) || exit 1; done",
           "cwd": "{workspaceRoot}/infrastructure/terraform"
         }
       }
@@ -1274,11 +1275,15 @@
           "target": "helm-render"
         }
       ],
-      "description": "Scan Terraform infrastructure code and the rendered Helm manifests (helm-render) for misconfigurations using Trivy, both at CRITICAL and HIGH severity. Part of secure-code, so the Secure check runs it and a local run reproduces CI exactly. Defined in nx.json for the integration project, which holds the repository-wide CI scanners. Requires trivy and helm on PATH (the devcontainer installs trivy; otherwise `brew install trivy`).",
+      "description": "Scan Terraform infrastructure code (the roots and the project modules) and the rendered Helm manifests (helm-render) for misconfigurations using Trivy, both at CRITICAL and HIGH severity. Part of secure-code, so the Secure check runs it and a local run reproduces CI exactly. Defined in nx.json for the integration project, which holds the repository-wide CI scanners. Requires trivy and helm on PATH (the devcontainer installs trivy; otherwise `brew install trivy`).",
       "executor": "nx:run-commands",
+      "filter": {
+        "projects": ["tag:name:integration"]
+      },
       "inputs": [
-        "{workspaceRoot}/infrastructure/terraform/**/*.tf",
         "{workspaceRoot}/configuration/security/trivyignore",
+        "{workspaceRoot}/infrastructure/terraform/**/*.tf",
+        "{workspaceRoot}/projects/*/*/infrastructure/terraform/**/*.tf",
         {
           "dependentTasksOutputFiles": "**/*.yaml",
           "transitive": false
@@ -1288,11 +1293,8 @@
         }
       ],
       "options": {
-        "command": "trivy config infrastructure/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore && trivy config dist/deployment/helm-render --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore",
+        "command": "trivy config infrastructure/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore && for dir in projects/*/*/infrastructure/terraform; do trivy config $dir --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore || exit 1; done && trivy config dist/deployment/helm-render --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore",
         "cwd": "{workspaceRoot}"
-      },
-      "filter": {
-        "projects": ["tag:name:integration"]
       }
     },
     "ty": [

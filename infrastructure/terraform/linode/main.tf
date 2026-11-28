@@ -173,28 +173,23 @@ resource "linode_object_storage_key" "nx_cache_read_write" {
   }
 }
 
-# The bucket CloudNativePG archives Postgres WAL and base backups to. Barman
-# runs the retention, so there is no lifecycle rule: one would expire backups
-# Barman still needs. Destroying it deletes every backup, so Terraform refuses to.
-resource "linode_object_storage_bucket" "organizzolini_postgres_backups" {
-  label         = var.postgres_backups_bucket_label
-  region        = var.region
-  endpoint_type = "E3"
-  acl           = "private"
+# The Postgres backups bucket and its key belong to the persistence project; this
+# root only instantiates them, because it is the one that holds the Linode token.
+module "postgres_backups" {
+  source = "../../../projects/common/persistence/infrastructure/terraform/postgres-backups-bucket"
 
-  lifecycle {
-    prevent_destroy = true
-  }
+  label  = var.postgres_backups_bucket_label
+  region = var.region
 }
 
-# The key CloudNativePG authenticates with. It reaches only the backups bucket,
-# and a rotated key loses no backups, so it has no prevent_destroy.
-resource "linode_object_storage_key" "organizzolini_postgres_backups" {
-  label = var.postgres_backups_bucket_label
+# They were resources of this root before moving into the module, and the moves
+# keep Terraform from planning a destroy of the bucket that holds the backups.
+moved {
+  from = linode_object_storage_bucket.organizzolini_postgres_backups
+  to   = module.postgres_backups.linode_object_storage_bucket.backups
+}
 
-  bucket_access {
-    bucket_name = linode_object_storage_bucket.organizzolini_postgres_backups.label
-    region      = var.region
-    permissions = "read_write"
-  }
+moved {
+  from = linode_object_storage_key.organizzolini_postgres_backups
+  to   = module.postgres_backups.linode_object_storage_key.backups
 }
