@@ -59,8 +59,8 @@ pnpm install --frozen-lockfile
 echo "✅ Dependencies installed"
 
 # The infrastructure and configuration projects' linters: kubeconform, kube-linter,
-# pluto, and actionlint, built with the Go toolchain into /usr/local/bin. Gitleaks and
-# Trivy, installed above, are skipped. tflint comes from the Terraform feature.
+# pluto, hadolint, and actionlint: the Go ones built into /usr/local/bin, hadolint
+# fetched from its release. Gitleaks and Trivy, installed above, are skipped. tflint comes from the Terraform feature.
 echo "🧹 Installing infrastructure linters..."
 GOBIN=/usr/local/bin pnpm exec nx run installation:start:software -- infrastructure configuration
 echo "✅ Infrastructure linters installed"

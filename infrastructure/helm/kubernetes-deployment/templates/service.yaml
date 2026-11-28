@@ -1,0 +1,17 @@
+{{- /* Named after the release, the address the tunnel rules use. */ -}}
+{{- if .Values.image.tag }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "kubernetes-deployment.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.containerPort }}
+  selector:
+    {{- include "kubernetes-deployment.serverLabels" . | nindent 4 }}
+{{- end }}

@@ -32,6 +32,10 @@ export const DEFAULT_POSTGRES_PORT = 5432;
 /** Lowercase, starting with a letter, so SQL needs no quoting. */
 export const PROJECT_NAME_PATTERN = /^[a-z][a-z0-9_]*$/;
 
+// Held for one transaction, so a transaction-mode pooler cannot strand it.
+/** Advisory lock key serializing migrations across instances starting at once. */
+export const MIGRATION_LOCK_KEY = 7_361_040_911;
+
 /** Injection token for the options `PostgresqlModule.forRoot` receives. */
 export const DATABASE_OPTIONS = Symbol("DATABASE_OPTIONS");
 
@@ -55,3 +59,8 @@ export const PluralSnakeNamingStrategy: new () => SnakeNamingStrategy = class ex
     return pluralize(super.tableName(targetName, userSpecifiedName));
   }
 };
+
+/** A migration that failed, so the connection retry in `PostgresqlModule` gives up rather than repeat it. */
+export class MigrationFailedError extends Error {
+  override name = "MigrationFailedError";
+}

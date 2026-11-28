@@ -6,7 +6,6 @@ import { expectLoggerContext } from "@codebase/observability/testing";
 import { buildTestingModule } from "@codebase/testing/nestjs";
 
 import { CalendarEventsService } from "../calendar-events/calendar-events.service";
-import { CalendarService } from "../calendar/calendar.service";
 import { EphemerisService } from "../ephemeris/ephemeris.service";
 import { InputService } from "../input/input.service";
 import { PerfectiveService } from "../perfective/perfective.service";
@@ -14,10 +13,7 @@ import { ProgressiveService } from "../progressive/progressive.service";
 
 import { CaelundasCommand } from "./caelundas.command";
 
-import type {
-  DetectedCalendarEvent,
-  StoredCalendarEvent,
-} from "../calendar-events/calendar-events.types";
+import type { DetectedCalendarEvent } from "../calendar-events/calendar-events.types";
 import type { Input } from "../input/input.types";
 
 const input: Input = {
@@ -38,21 +34,8 @@ function detectedEvent(summary: string, start: string): DetectedCalendarEvent {
   };
 }
 
-function storedEvent(summary: string, start: string): StoredCalendarEvent {
-  return {
-    ...detectedEvent(summary, start),
-    createdAt: new Date(start),
-    id: "0192f0c4-5b1e-7c66-8a3d-2f4e6b8c9d10",
-    latitude: "40.712800",
-    longitude: "-74.006000",
-    timezone: "America/New_York",
-    updatedAt: new Date(start),
-  };
-}
-
 describe(CaelundasCommand, () => {
   const callOrder: string[] = [];
-  const calendarService = createMock<CalendarService>();
   const calendarEventsService = createMock<CalendarEventsService>();
   const perfectiveService = createMock<PerfectiveService>();
   const progressiveService = createMock<ProgressiveService>();
@@ -63,7 +46,6 @@ describe(CaelundasCommand, () => {
       { provide: InputService, useValue: inputService },
       { provide: PerfectiveService, useValue: perfectiveService },
       { provide: ProgressiveService, useValue: progressiveService },
-      { provide: CalendarService, useValue: calendarService },
       { provide: CalendarEventsService, useValue: calendarEventsService },
       { provide: EphemerisService, useValue: ephemerisService },
     ],
@@ -94,19 +76,6 @@ describe(CaelundasCommand, () => {
     ]);
     calendarEventsService.upsert.mockImplementation(async () => {
       callOrder.push("upsert");
-      await Promise.resolve();
-    });
-    calendarEventsService.findInRange.mockImplementation(async () => {
-      callOrder.push("findInRange");
-      await Promise.resolve();
-      return [storedEvent("Stored", "2026-01-12T00:00:00Z")];
-    });
-    calendarService.write.mockImplementation(async () => {
-      callOrder.push("write");
-      await Promise.resolve();
-    });
-    calendarService.writeJson.mockImplementation(async () => {
-      callOrder.push("writeJson");
       await Promise.resolve();
     });
   });
@@ -147,16 +116,10 @@ describe(CaelundasCommand, () => {
       expect(calendarEventsService.upsert).not.toHaveBeenCalled();
     });
 
-    it("detects, upserts, reads back, then writes both files", async () => {
+    it("detects, then upserts", async () => {
       await command.run();
 
-      expect(callOrder).toStrictEqual([
-        "detect",
-        "upsert",
-        "findInRange",
-        "write",
-        "writeJson",
-      ]);
+      expect(callOrder).toStrictEqual(["detect", "upsert"]);
     });
 
     it("upserts every detected event, sorted by start, for the input observer", async () => {
@@ -177,39 +140,16 @@ describe(CaelundasCommand, () => {
       });
     });
 
-    it("reads back the input's range and location", async () => {
-      await command.run();
-
-      expect(calendarEventsService.findInRange).toHaveBeenCalledExactlyOnceWith(
-        {
-          end: input.end.clone().add(1, "day"),
-          latitude: input.latitude,
-          longitude: input.longitude,
-          start: input.start,
-        },
-      );
-    });
-
-    it("renders the stored rows, not the detected events", async () => {
-      await command.run();
-
-      const [written] = calendarService.write.mock.calls[0] ?? [];
-      const [writtenJson] = calendarService.writeJson.mock.calls[0] ?? [];
-
-      expect(written?.map((event) => event.summary)).toStrictEqual(["Stored"]);
-      expect(writtenJson?.map((event) => event.summary)).toStrictEqual([
-        "Stored",
-      ]);
-    });
-
     it("handles no detected events", async () => {
       perfectiveService.detect.mockReturnValue([]);
       progressiveService.detect.mockReturnValue([]);
-      calendarEventsService.findInRange.mockResolvedValue([]);
 
       await command.run();
 
-      expect(calendarService.write).toHaveBeenCalledExactlyOnceWith([], input);
+      expect(calendarEventsService.upsert).toHaveBeenCalledExactlyOnceWith(
+        [],
+        expect.objectContaining({ latitude: input.latitude }),
+      );
     });
   });
 });

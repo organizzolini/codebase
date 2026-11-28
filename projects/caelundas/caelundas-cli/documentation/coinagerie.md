@@ -130,6 +130,7 @@ The words this project uses, regenerated with this project's `coinagerie-check:w
 - **novile**: Harmonic aspect at 40 degrees, a ninth-harmonic angle with a tight 1 degree orb in the specialty aspect table.
 - **observer**: Location from which positions and rises are computed, set by the LATITUDE and LONGITUDE environment variables.
 - **octuple**: Compound stellium of eight mutually conjunct bodies, named octuple stellium in the stellium constants.
+- **opencontainer**: The `org.opencontainers.image.source` label on the image, which links the package on the GitHub Container Registry back to this repository.
 - **opposition**: Event when a planet sits 180 degrees from the Sun, such as Mars's opposition in the planetary phase events.
 - **orb**: Tolerance in degrees around an exact aspect angle within which a body pair counts as in aspect.
 - **orbital**: Describes Earth's position and speed around the Sun, which drive annual solar cycle events such as apsis timing.

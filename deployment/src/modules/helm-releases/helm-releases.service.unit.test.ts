@@ -97,7 +97,7 @@ describe(HelmReleasesService, () => {
     ]);
   });
 
-  it("adds a release for each further values file, layered over base", async () => {
+  it("adds a release for each project values file, layered over its chart's base", async () => {
     expect.hasAssertions();
 
     const subject = await build();
@@ -106,18 +106,69 @@ describe(HelmReleasesService, () => {
       tree({
         "app/Chart.yaml": "name: app",
         "app/values/base.yaml": "a: 1",
-        "app/values/one.yaml": "a: 2",
-        "app/values/two.yaml": "a: 3",
+        "projects/group/one/infrastructure/helm-values.yaml":
+          "chart: app\na: 2",
+        "projects/group/two/infrastructure/helm-values.yaml":
+          "chart: app\na: 3",
       }),
     );
 
     expect(
-      releases.map(({ release, values }) => [release, values]),
+      releases.map(({ directory, release, values }) => [
+        release,
+        directory,
+        values,
+      ]),
     ).toStrictEqual([
-      ["app", ["values/base.yaml"]],
-      ["app-one", ["values/base.yaml", "values/one.yaml"]],
-      ["app-two", ["values/base.yaml", "values/two.yaml"]],
+      ["app", "infrastructure/helm/app", ["values/base.yaml"]],
+      [
+        "app-one",
+        "infrastructure/helm/app",
+        [
+          "values/base.yaml",
+          "../../../projects/group/one/infrastructure/helm-values.yaml",
+        ],
+      ],
+      [
+        "app-two",
+        "infrastructure/helm/app",
+        [
+          "values/base.yaml",
+          "../../../projects/group/two/infrastructure/helm-values.yaml",
+        ],
+      ],
     ]);
+  });
+
+  it("rejects a project values file that names no chart", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    expect(() =>
+      subject.discover(
+        tree({
+          "app/Chart.yaml": "name: app",
+          "projects/group/one/infrastructure/helm-values.yaml": "a: 2",
+        }),
+      ),
+    ).toThrow("chart");
+  });
+
+  it("rejects a project values file that names a chart that does not exist", async () => {
+    expect.hasAssertions();
+
+    const subject = await build();
+
+    expect(() =>
+      subject.discover(
+        tree({
+          "app/Chart.yaml": "name: app",
+          "projects/group/one/infrastructure/helm-values.yaml":
+            "chart: missing",
+        }),
+      ),
+    ).toThrow("does not exist");
   });
 
   it("ignores folders without a Chart.yaml and finds every chart", async () => {
@@ -146,7 +197,6 @@ describe(HelmReleasesService, () => {
       tree({
         "app/Chart.yaml": "name: app",
         "app/values/base.yaml": "a: 1",
-        "app/values/web.yaml": "a: 2",
         "argocd/Chart.yaml": "name: argocd",
         "argocd/values/base.yaml": [
           "applications:",
@@ -160,8 +210,11 @@ describe(HelmReleasesService, () => {
           "  - name: app-web",
           "    namespace: two",
           "    path: infrastructure/helm/app",
-          "    valueFiles: [values/base.yaml, values/web.yaml]",
+          "    valueFiles:",
+          "      - values/base.yaml",
+          "      - $values/projects/group/web/infrastructure/helm-values.yaml",
         ].join("\n"),
+        "projects/group/web/infrastructure/helm-values.yaml": "chart: app",
       }),
     );
 
@@ -169,8 +222,8 @@ describe(HelmReleasesService, () => {
       releases.map(({ namespace, release }) => [release, namespace]),
     ).toStrictEqual([
       ["app", "one"],
-      ["app-web", "two"],
       ["argocd", "default"],
+      ["app-web", "two"],
     ]);
   });
 
@@ -183,13 +236,16 @@ describe(HelmReleasesService, () => {
       tree({
         "app/Chart.yaml": "name: app",
         "app/values/base.yaml": 'image:\n  tag: ""',
-        "app/values/pinned.yaml": "image:\n  tag: 1.2.3",
+        "projects/group/pinned/infrastructure/helm-values.yaml":
+          "chart: app\nimage:\n  tag: 1.2.3",
+        "projects/group/unset/infrastructure/helm-values.yaml": "chart: app",
       }),
     );
 
     expect(releases.map(({ strings }) => strings)).toStrictEqual([
       { "image.tag": "0.0.0" },
       {},
+      { "image.tag": "0.0.0" },
     ]);
   });
 

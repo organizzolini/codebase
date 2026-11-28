@@ -192,7 +192,7 @@ describe(SoftwareNamedService, () => {
 
     subject.install(["configuration", "infrastructure"]);
 
-    expect(installedNames()).toStrictEqual(["gitleaks", "trivy"]);
+    expect(installedNames()).toStrictEqual(["gitleaks", "trivy", "hadolint"]);
     expect(installGoTool.mock.calls.map(([tool]) => tool.name)).toStrictEqual([
       "actionlint",
       "kubeconform",

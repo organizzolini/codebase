@@ -9,6 +9,7 @@ buildkit
 buildx
 bullmq
 burstable
+configmap
 confrelid
 conrelid
 contype
@@ -102,6 +103,7 @@ tflint
 tfstate
 tfvars
 timestamptz
+tini
 tolerations
 trgm
 trivy
@@ -118,5 +120,6 @@ uuidv
 Virtio
 vonage
 workos
+xact
 yannh
 zizmor

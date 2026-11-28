@@ -3,14 +3,19 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { DatabaseModule as PersistenceDatabaseModule } from "@codebase/persistence";
 
-import { DATABASE_ENTITIES } from "./data-source.constants";
+import {
+  CAELUNDAS_DATABASE_MIGRATIONS,
+  DATABASE_ENTITIES,
+} from "./data-source.constants";
 import { DATABASE_PROJECT } from "./database.constants";
 import { DatabaseService } from "./database.service";
 
 /**
- * Connects an application to `caelundas_development`.`caelundas` as `caelundas_username`, through the shared `DatabaseModule.forRoot` and its naming strategy, with every caelundas entity registered. Never synchronizes or runs migrations on start: `nx run caelundas-db:migration:run` does that.
- *
- * Reads `CAELUNDAS_POSTGRES_*` via `ConfigService`, so the importing app's `ConfigModule` must be global.
+ * Connects an application to the `caelundas` schema as `caelundas_username`
+ * through the shared `DatabaseModule.forRoot`, with every entity registered.
+ * Never synchronizes; applies pending migrations at start under an advisory
+ * lock (`nx run caelundas-db:migration:run` does so by hand). Reads
+ * `CAELUNDAS_POSTGRES_*`, so `ConfigModule` must be global.
  */
 @Module({
   controllers: [],
@@ -18,6 +23,7 @@ import { DatabaseService } from "./database.service";
   imports: [
     PersistenceDatabaseModule.forRoot({
       entities: [...DATABASE_ENTITIES],
+      migrations: [...CAELUNDAS_DATABASE_MIGRATIONS],
       project: DATABASE_PROJECT,
     }),
     TypeOrmModule.forFeature([...DATABASE_ENTITIES]),

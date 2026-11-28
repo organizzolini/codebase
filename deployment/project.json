@@ -19,12 +19,13 @@
     "guard-code": {},
     "helm-lint": {
       "cache": true,
-      "description": "Lint every Helm release this repository ships with `helm lint --strict`, each chart layered with the values files its Argo CD Application uses. The `helm-lint` command of this project discovers the releases from the chart folders, as `helm-render` does, so lint and every render-based check judge the same set. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
+      "description": "Lint every Helm release this repository ships with `helm lint --strict`, each chart alone and layered with the values file each project owns. The `helm-lint` command of this project discovers the releases from the chart folders, as `helm-render` does, so lint and every render-based check judge the same set. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/src/**/*",
         "{workspaceRoot}/infrastructure/helm/**/*",
         "{workspaceRoot}/projects/**/infrastructure/helm/**/*",
+        "{workspaceRoot}/projects/*/*/infrastructure/helm-values.yaml",
         {
           "externalDependencies": []
         }
@@ -36,12 +37,13 @@
     },
     "helm-render": {
       "cache": true,
-      "description": "Render every Helm release to dist/deployment/helm-render/<release>.yaml with helm template, using the values files each Argo CD Application passes. The single rendering that kubeconform, kube-linter, pluto, and trivy-config all consume, so no tool re-templates differently. Requires helm on PATH.",
+      "description": "Render every Helm release to dist/deployment/helm-render/<release>.yaml with helm template, using the values file each project owns, which its Argo CD Application or workflow passes. The single rendering that kubeconform, kube-linter, pluto, and trivy-config all consume, so no tool re-templates differently. Requires helm on PATH.",
       "executor": "nx:run-commands",
       "inputs": [
         "{projectRoot}/src/**/*",
         "{workspaceRoot}/infrastructure/helm/**/*",
         "{workspaceRoot}/projects/**/infrastructure/helm/**/*",
+        "{workspaceRoot}/projects/*/*/infrastructure/helm-values.yaml",
         {
           "externalDependencies": []
         }
@@ -60,6 +62,7 @@
         "{workspaceRoot}/infrastructure/helm/**/*",
         "{workspaceRoot}/installation/src/modules/software/software.constants.ts",
         "{workspaceRoot}/projects/**/infrastructure/helm/**/*",
+        "{workspaceRoot}/projects/*/*/infrastructure/helm-values.yaml",
         {
           "externalDependencies": []
         }
@@ -85,6 +88,9 @@
         },
         "helm-render": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts helm-render"
+        },
+        "image-tags": {
+          "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts image-tags"
         },
         "link-packages": {
           "command": "NODE_OPTIONS='' node --import @swc-node/register/esm-register deployment/src/deployment.main.ts link-packages"

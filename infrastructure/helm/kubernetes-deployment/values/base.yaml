@@ -1,0 +1,69 @@
+# Default values for kubernetes-deployment.
+# This is a YAML-formatted file.
+
+replicaCount: 1
+
+image:
+  repository: my-application
+  pullPolicy: IfNotPresent
+  # Empty renders nothing: no Deployment or Service until a release sets it.
+  tag: ""
+
+imagePullSecrets: []
+
+podAnnotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# The container's own context: the root filesystem is read-only, so a writable path is a volume
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# Scratch space for the read-only root filesystem, mounted at the temporary directory; a values file that sets either list replaces it
+volumes:
+  - name: tmp
+    emptyDir: {}
+
+volumeMounts:
+  - name: tmp
+    mountPath: /tmp
+
+# Port the application listens on, and the port the Service targets
+containerPort: 8080
+
+service:
+  port: 80
+
+# Liveness and readiness probes, each on its own port
+probes:
+  liveness:
+    path: /
+    port: 8080
+  readiness:
+    path: /
+    port: 8080
+
+# Environment variables
+env: []
+
+# Every container states what it needs and may use; a release with its own numbers overrides these
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

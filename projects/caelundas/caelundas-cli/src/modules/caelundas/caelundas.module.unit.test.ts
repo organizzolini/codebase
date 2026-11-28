@@ -41,7 +41,6 @@ describe("caelundas module", () => {
     expect(options.validate?.({})).toMatchObject({
       CAELUNDAS_POSTGRES_DATABASE: "caelundas_development",
       CAELUNDAS_POSTGRES_SCHEMA: "caelundas",
-      OUTPUT_DIRECTORY: "./output",
     });
   });
 });

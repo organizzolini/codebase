@@ -1,7 +1,7 @@
 import { Inject, Injectable, Optional } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
-import { DATABASE_OPTIONS } from "./postgresql.constants";
+import { DATABASE_OPTIONS, MigrationFailedError } from "./postgresql.constants";
 import {
   postgresConnection,
   postgresDataSourceOptions,
@@ -10,10 +10,12 @@ import {
 
 import type {
   PostgresConnection,
-  PostgresDataSourceOptions,
   PostgresqlModuleOptions,
 } from "./postgresql.types";
-import type { TypeOrmOptionsFactory } from "@nestjs/typeorm";
+import type {
+  TypeOrmModuleOptions,
+  TypeOrmOptionsFactory,
+} from "@nestjs/typeorm";
 
 /**
  * Turns the options `PostgresqlModule.forRoot` was given, and the project's
@@ -71,11 +73,17 @@ export class PostgresqlService implements TypeOrmOptionsFactory {
     });
   }
 
-  /** TypeORM's options for the project's connection, with no migrations: the runtime never runs them. */
-  createTypeOrmOptions(): PostgresDataSourceOptions {
-    return postgresDataSourceOptions(this.connection(), {
-      ...this.databaseOptions(),
-      migrations: [],
-    });
+  /** TypeORM's options for the project's connection, with the migrations it was given, if any. */
+  createTypeOrmOptions(): TypeOrmModuleOptions {
+    const options = this.databaseOptions();
+
+    return {
+      ...postgresDataSourceOptions(this.connection(), {
+        ...options,
+        migrations: options.migrations ?? [],
+      }),
+      // Connection errors are retried while Postgres starts; a failed migration is not.
+      toRetry: (error: unknown) => !(error instanceof MigrationFailedError),
+    };
   }
 }

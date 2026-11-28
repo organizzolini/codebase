@@ -254,7 +254,7 @@ jobs:
             ${{ matrix.check['postgres-client'] && 'true' || 'false' }}
           uv: ${{ matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
           # The infrastructure project's Terraform checks, tflint, kubeconform,
-          # kube-linter, and pluto run as part of lint-code, and its plan job
+          # kube-linter, pluto, and hadolint run as part of lint-code, and its plan job
           # needs Terraform. The runner image no longer ships Terraform.
           infrastructure: >-
             ${{ (matrix.check.target == 'static-code' ||
@@ -352,21 +352,21 @@ jobs:
           cp .env.default .env
           echo "LOCAL_WORKSPACE_FOLDER=$GITHUB_WORKSPACE" >> .env
 
-      - name: 🔧 Set up Docker Buildx
+      # Only Buildx and the registry login: the devcontainer build installs
+      # the workspace itself, so every other step of the action is off.
+      - name: 🕋 Setup Docker for Devcontainer
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'build-devcontainer'
-        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-
-      - name: 🔐 Login to GitHub Container Registry
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'build-devcontainer'
-        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        uses: ./.github/actions/setup-codebase
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          deployment: "true"
+          install: "false"
+          nx-cache: "false"
+          nx-graph-cache: "false"
+          nx-shas: "false"
+          python-dependencies: "false"
+          uv: "false"
 
       - name: 🐳 Build Devcontainer Image
         if: >-

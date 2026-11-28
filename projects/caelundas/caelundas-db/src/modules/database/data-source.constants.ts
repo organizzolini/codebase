@@ -1,9 +1,8 @@
 import "reflect-metadata";
 
-import { createDataSource, withGeneratedEdges } from "@codebase/persistence";
+import path from "node:path";
 
-import { Migration1793990506900 } from "../../../migrations/1793990506900-migration";
-import { Migration1795466077000 } from "../../../migrations/1795466077000-migration";
+import { createDataSource, withGeneratedEdges } from "@codebase/persistence";
 
 import { DATABASE_PROJECT } from "./database.constants";
 import { CalendarEventDerivedTime } from "./modules/calendar-events/calendar-event-derived-time.entity";
@@ -29,13 +28,14 @@ export const DATABASE_ENTITIES = [
   TagNode,
 ] as const;
 
-/** All migrations in order, for tests; the runtime runs none. */
+// TypeScript in the source tree, JavaScript where a build writes them.
+/** The migrations folder's files. */
 export const CAELUNDAS_DATABASE_MIGRATIONS = [
-  Migration1793990506900,
-  Migration1795466077000,
+  path.join(import.meta.dirname, "../../../migrations/*-migration.{js,ts}"),
 ] as const;
 
-/** TypeORM CLI data source; reads only `CAELUNDAS_POSTGRES_*`, never syncs. */
+// Run from this folder; reads only `CAELUNDAS_POSTGRES_*` and never syncs.
+/** TypeORM CLI data source. */
 export const databaseDataSource = createDataSource({
   entities: [...DATABASE_ENTITIES],
   migrations: ["migrations/*.ts"],

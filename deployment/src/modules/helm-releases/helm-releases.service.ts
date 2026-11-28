@@ -15,14 +15,17 @@ import {
   OVERRIDE_FILE,
   overrideSchema,
   PLACEHOLDER_IMAGE_TAG,
+  PROJECT_VALUES_GLOB,
+  projectValuesSchema,
+  REFERENCE_PREFIX,
   valuesSchema,
   WORKSPACE_ROOT,
 } from "./helm-releases.constants";
 
-import type { HelmRelease } from "./helm-releases.types";
+import type { HelmRelease, ProjectContext } from "./helm-releases.types";
 
 /**
- * Finds every Helm release under the charts folder, so each tool judges
+ * Finds every Helm release, charts and project values, so each tool judges
  * exactly what Argo CD or a workflow installs.
  */
 @Injectable()
@@ -85,47 +88,35 @@ export class HelmReleasesService {
     );
   }
 
-  /** The releases of one chart: base alone, then base with each other values file. */
-  private chartReleases(
+  /** The release of one chart with its base values alone. */
+  private chartRelease(
     root: string,
     directory: string,
     namespaces: Map<string, string>,
-  ): HelmRelease[] {
+  ): HelmRelease {
     const chart = path.basename(directory);
     const chartDirectory = path.join(root, directory);
     const override = overrideSchema.parse(
       this.readYaml(path.join(chartDirectory, OVERRIDE_FILE)) ?? {},
     );
-    const base = `values/${BASE_VALUES}`;
+    const values = [`values/${BASE_VALUES}`];
 
-    const releases: HelmRelease[] = [];
-
-    for (const variant of [undefined, ...this.valuesFiles(chartDirectory)]) {
-      const values =
-        variant === undefined ? [base] : [base, `values/${variant}`];
-
-      releases.push({
-        chart,
-        directory,
-        namespace:
-          override.namespace ??
-          namespaces.get([chart, ...values].join(" ")) ??
-          DEFAULT_NAMESPACE,
-        release:
-          variant === undefined
-            ? chart
-            : `${chart}-${path.basename(variant, ".yaml")}`,
-        strings: {
-          ...(this.hasEmptyImageTag(chartDirectory, values)
-            ? { "image.tag": PLACEHOLDER_IMAGE_TAG }
-            : {}),
-          ...override.strings,
-        },
-        values,
-      });
-    }
-
-    return releases;
+    return {
+      chart,
+      directory,
+      namespace:
+        override.namespace ??
+        namespaces.get([chart, ...values].join(" ")) ??
+        DEFAULT_NAMESPACE,
+      release: chart,
+      strings: {
+        ...(this.hasEmptyImageTag(chartDirectory, values)
+          ? { "image.tag": PLACEHOLDER_IMAGE_TAG }
+          : {}),
+        ...override.strings,
+      },
+      values,
+    };
   }
 
   /** Whether the last values file to set `image.tag` leaves it empty. */
@@ -143,27 +134,42 @@ export class HelmReleasesService {
     return last === "";
   }
 
+  /** The release of a project's values file, over the base values of the chart it names. */
+  private projectRelease(
+    file: string,
+    { directories, namespaces, root }: ProjectContext,
+  ): HelmRelease {
+    const absolute = path.resolve(root, file);
+    const { chart } = projectValuesSchema.parse(this.readYaml(absolute));
+    const directory = directories.get(chart);
+
+    if (directory === undefined) {
+      throw new Error(`${file} names the chart ${chart}, which does not exist`);
+    }
+
+    const base = `values/${BASE_VALUES}`;
+    const chartDirectory = path.resolve(root, directory);
+    const values = [base, path.relative(chartDirectory, absolute)];
+
+    return {
+      chart,
+      directory,
+      namespace:
+        namespaces.get([chart, base, `${REFERENCE_PREFIX}${file}`].join(" ")) ??
+        DEFAULT_NAMESPACE,
+      release: `${chart}-${path.basename(path.dirname(path.dirname(file)))}`,
+      strings: this.hasEmptyImageTag(chartDirectory, values)
+        ? { "image.tag": PLACEHOLDER_IMAGE_TAG }
+        : {},
+      values,
+    };
+  }
+
   /** Reads a YAML file, or `undefined` when it does not exist. */
   private readYaml(file: string): unknown {
     return fs.existsSync(file)
       ? parse(fs.readFileSync(file, "utf8"))
       : undefined;
-  }
-
-  /** Lists the values files of a chart other than `base.yaml`, sorted. */
-  private valuesFiles(chartDirectory: string): string[] {
-    const directory = path.join(chartDirectory, "values");
-    const names: string[] = [];
-
-    for (const name of fs.existsSync(directory)
-      ? fs.readdirSync(directory)
-      : []) {
-      if (name.endsWith(".yaml") && name !== BASE_VALUES) {
-        names.push(name);
-      }
-    }
-
-    return names.toSorted();
   }
 
   // 🌎 Public Methods
@@ -185,16 +191,28 @@ export class HelmReleasesService {
   }
 
   /**
-   * Finds each chart's release with base values, plus `<chart>-<name>` for every
-   * other values file layered over base.
+   * Finds each chart's release with base values, plus `<chart>-<project>` for
+   * every project that owns a `helm-values.yaml` naming the chart it layers over.
    */
   public discover(root = WORKSPACE_ROOT): HelmRelease[] {
     const namespaces = this.applicationNamespaces(root);
+    const directories = this.chartDirectories(root);
+    const charts = new Map(
+      directories.map((directory) => [path.basename(directory), directory]),
+    );
 
     const releases: HelmRelease[] = [];
 
-    for (const directory of this.chartDirectories(root)) {
-      releases.push(...this.chartReleases(root, directory, namespaces));
+    for (const directory of directories) {
+      releases.push(this.chartRelease(root, directory, namespaces));
+    }
+
+    for (const file of fs
+      .globSync(PROJECT_VALUES_GLOB, { cwd: root, exclude: IGNORED_FOLDERS })
+      .toSorted()) {
+      releases.push(
+        this.projectRelease(file, { directories: charts, namespaces, root }),
+      );
     }
 
     return releases;

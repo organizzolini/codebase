@@ -12,15 +12,15 @@ import { ProcessRunnerService } from "../process-runner/process-runner.service";
 
 import { HelmRenderService } from "./helm-render.service";
 
-/** Two charts: `alpha` with a variant and empty tag, `beta` plain. */
+/** Two charts, one with project values. */
 const charts = (): string => {
   const root = createTemporaryDirectory("charts", TEMPORARY_ROOT);
   const files = {
     "infrastructure/helm/alpha/Chart.yaml": "name: alpha",
     "infrastructure/helm/alpha/values/base.yaml": 'image:\n  tag: ""',
-    "infrastructure/helm/alpha/values/web.yaml": "a: 1",
     "projects/common/store/infrastructure/helm/beta/Chart.yaml": "name: beta",
     "projects/common/store/infrastructure/helm/beta/values/base.yaml": "a: 1",
+    "projects/group/web/infrastructure/helm-values.yaml": "chart: alpha",
   };
 
   for (const [name, content] of Object.entries(files)) {
@@ -39,13 +39,13 @@ const arguments_ = (root: string): string[] => {
   };
   const base = (chart: string): string =>
     `${root}/${directories[chart]} --namespace default --values ${root}/${directories[chart]}/values/base.yaml`;
-  const web = `--values ${root}/infrastructure/helm/alpha/values/web.yaml`;
+  const web = `--values ${root}/projects/group/web/infrastructure/helm-values.yaml`;
   const tag = "--set-string image.tag=0.0.0";
 
   return [
     `${base("alpha")} ${tag}`,
-    `${base("alpha")} ${web} ${tag}`,
     base("beta"),
+    `${base("alpha")} ${web} ${tag}`,
   ];
 };
 
@@ -89,7 +89,7 @@ describe(HelmRenderService, () => {
 
     expect(fs.existsSync(directory)).toBe(true);
     expect(runner.lines).toStrictEqual(
-      ["alpha", "alpha-web", "beta"].map(
+      ["alpha", "beta", "alpha-web"].map(
         (release, index) =>
           `helm template ${release} ${arguments_(root)[index] ?? ""}`,
       ),

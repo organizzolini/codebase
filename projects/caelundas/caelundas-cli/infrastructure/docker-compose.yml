@@ -1,0 +1,30 @@
+# Builds the caelundas-cli image: `docker compose build` builds it, `build --push` pushes it (the project's `docker` target runs both).
+# IMAGE_TAG (default local) tags it. IMAGE_CA_BUNDLE is an optional PEM file for a TLS-inspecting proxy; unset, the secret is empty.
+name: caelundas-cli
+
+secrets:
+  ca-bundle:
+    file: ${IMAGE_CA_BUNDLE:-/dev/null}
+
+services:
+  caelundas-cli:
+    image: ghcr.io/organizzolini/caelundas-cli:${IMAGE_TAG:-local}
+    build:
+      context: ../../../..
+      dockerfile: infrastructure/docker/application/Dockerfile
+      platforms: [linux/amd64]
+      labels:
+        org.opencontainers.image.source: https://github.com/organizzolini/codebase
+      secrets: [ca-bundle]
+      target: node
+      args:
+        PROJECT: caelundas-cli
+        PROJECT_DIRECTORY: projects/caelundas/caelundas-cli
+        ENTRY: caelundas-cli.main.js
+        REBUILT_PACKAGES: sweph
+        # The Swiss Ephemeris files are fetched at build time, so a run never downloads them.
+        PREPARE_COMMAND: NODE_USE_ENV_PROXY=1 node /workspace/dist/caelundas-cli/ephemeris-download-cli.main.js ephemeris-download
+        RUNTIME_PATHS: data
+        # Node sizes its default heap from the container limit, about 760 MB under the Job's 1.5 GiB, which one year's
+        # events overrun once stored; 1 GiB leaves the rest for the native ephemeris and buffers.
+        RUNTIME_NODE_OPTIONS: --max-old-space-size=1024

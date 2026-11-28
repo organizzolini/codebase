@@ -6,9 +6,9 @@ description: |
   Every optional step is gated by an input so a job pays only for what it
   uses. A tool install is named after the project whose Nx targets need
   it (`configuration`, `infrastructure`, `persistence`), and installs all of
-  that project's tools, so an input for building and publishing images
-  would be `deployment`. The cache and workspace toggles are named for what
-  they do.
+  that project's tools; `deployment` likewise sets up what building and
+  publishing images needs (Buildx and the ghcr.io login). The cache and
+  workspace toggles are named for what they do.
 
 inputs:
   configuration:
@@ -64,8 +64,15 @@ inputs:
   infrastructure:
     description: |
       Install the infrastructure toolchain the infrastructure project's
-      targets need: Terraform, tflint, kubeconform, kube-linter, and pluto.
-      Needs the runner's Go.
+      targets need: Terraform, tflint, kubeconform, kube-linter, pluto, and
+      hadolint. Needs the runner's Go.
+    default: "false"
+  deployment:
+    description: |
+      Prepare the deployment project's image builds: set up Docker Buildx and
+      sign in to ghcr.io as the workflow's actor with its `GITHUB_TOKEN`, so
+      the job needs `packages: read` to pull a cache and `packages: write` to
+      push.
     default: "false"
   eslint-cache:
     description: Restore and save the ESLint cache
@@ -261,6 +268,20 @@ runs:
         tflint_version: v0.66.0
         tflint_wrapper: false
 
+    - name: 🔧 Setup Docker Buildx
+      if: inputs.deployment == 'true'
+      uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+    # The token is the workflow's own, read from the `github` context rather
+    # than passed in, so a caller never handles it.
+    - name: 🔐 Login to GitHub Container Registry
+      if: inputs.deployment == 'true'
+      uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+
     # Guarded on `uv` as well as its own input: `python-dependencies` defaults
     # on, so a job that opts out of installing uv would otherwise inherit a sync
     # it has no binary to run.
@@ -349,6 +370,7 @@ runs:
         path: |
           ~/.local/bin/actionlint
           ~/.local/bin/gitleaks
+          ~/.local/bin/hadolint
           ~/.local/bin/kube-linter
           ~/.local/bin/kubeconform
           ~/.local/bin/pluto

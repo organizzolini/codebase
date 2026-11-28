@@ -49,6 +49,16 @@ export const applicationsSchema = z.object({
   ),
 });
 
+/** Where each project keeps the values of its own release. */
+export const PROJECT_VALUES_GLOB =
+  "projects/*/*/infrastructure/helm-values.yaml";
+
+/** Starts an Application's `valueFiles` entry that lies elsewhere in the repository. */
+export const REFERENCE_PREFIX = "$values/";
+
+/** What a project's values file says of its chart. */
+export const projectValuesSchema = z.looseObject({ chart: z.string().min(1) });
+
 /** What a values file says of the image tag. */
 export const valuesSchema = z.looseObject({
   image: z.looseObject({ tag: z.string().optional() }).optional(),

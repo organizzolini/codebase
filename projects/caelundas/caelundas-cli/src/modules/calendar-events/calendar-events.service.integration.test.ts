@@ -72,6 +72,20 @@ describe("calendar events service integration", () => {
   let repository: Repository<CalendarEvent>;
   let tags: TreeRepository<Tag>;
 
+  /** Each stored event with the summary, by summary, with its direct tag names by code point. */
+  const storedTags = async (
+    ...summaries: string[]
+  ): Promise<[string, string[]][]> => {
+    const rows = await repository.manager.query<
+      { summary: string; tags: string[] }[]
+    >(
+      `select e.summary, array_agg(t.name order by t.name collate "C") as tags from calendar_events e join calendar_event_tags et on et.calendar_event_id = e.id join tags t on t.id = et.tag_id where e.summary = any($1) group by e.id, e.summary order by e.summary`,
+      [summaries],
+    );
+
+    return rows.map((row) => [row.summary, row.tags]);
+  };
+
   beforeAll(async () => {
     database = await startCaelundasDatabase([
       LoggerModule,
@@ -278,17 +292,10 @@ describe("calendar events service integration", () => {
       ],
       philadelphia,
     );
-    const rows = await service.findInRange({
-      end: moment.utc("2026-05-11T00:00:00Z"),
-      latitude: philadelphia.latitude,
-      longitude: philadelphia.longitude,
-      start: moment.utc("2026-05-09T00:00:00Z"),
-    });
-    const own = rows
-      .filter(({ summary }) => summary === "Shared title")
-      .map(({ tags }) =>
-        tags.filter((tag) => tag === "boundary only" || tag === "span only"),
-      );
+    const rows = await storedTags("Shared title");
+    const own = rows.map(([, eventTags]) =>
+      eventTags.filter((tag) => tag === "boundary only" || tag === "span only"),
+    );
 
     expect(own).toHaveLength(2);
     expect(own.toSorted()).toStrictEqual([["boundary only"], ["span only"]]);
@@ -331,88 +338,6 @@ describe("calendar events service integration", () => {
     },
     BULK_UPSERT_TIMEOUT_MILLISECONDS,
   );
-
-  describe("findInRange", () => {
-    const range = {
-      end: moment.utc("2027-01-31T00:00:00Z"),
-      latitude: philadelphia.latitude,
-      longitude: philadelphia.longitude,
-      start: moment.utc("2027-01-01T00:00:00Z"),
-    };
-
-    beforeAll(async () => {
-      await service.upsert(
-        [
-          tagged("Inside", "2027-01-10T00:00:00Z", ["moon", "inside"]),
-          event("Instant at start", "2027-01-01T00:00:00Z"),
-          event("Before", "2026-12-01T00:00:00Z", "2026-12-02T00:00:00Z"),
-          event("After", "2027-02-10T00:00:00Z"),
-          event("Spans start", "2026-12-20T00:00:00Z", "2027-01-05T00:00:00Z"),
-          event("Spans end", "2027-01-25T00:00:00Z", "2027-02-05T00:00:00Z"),
-          event(
-            "Ends at start",
-            "2026-12-30T00:00:00Z",
-            "2027-01-01T00:00:00Z",
-          ),
-        ],
-        philadelphia,
-      );
-      await service.upsert(
-        [event("Elsewhere", "2027-01-10T00:00:00Z")],
-        sydney,
-      );
-    });
-
-    it("includes events that overlap the range, ordered by start", async () => {
-      expect.hasAssertions();
-
-      const rows = await service.findInRange(range);
-
-      expect(rows.map((row) => row.summary)).toStrictEqual([
-        "Spans start",
-        "Instant at start",
-        "Inside",
-        "Spans end",
-      ]);
-    });
-
-    it("returns each event with its tags, ordered by name", async () => {
-      expect.hasAssertions();
-
-      const rows = await service.findInRange(range);
-
-      expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
-        ["Spans start", ["Duration", "aspects", "moon"]],
-        ["Instant at start", ["Instant", "aspects", "moon"]],
-        ["Inside", ["Instant", "inside", "moon"]],
-        ["Spans end", ["Duration", "aspects", "moon"]],
-      ]);
-    });
-
-    it("returns nothing for a range no event overlaps", async () => {
-      expect.hasAssertions();
-
-      await expect(
-        service.findInRange({
-          ...range,
-          end: moment.utc("1999-01-31T00:00:00Z"),
-          start: moment.utc("1999-01-01T00:00:00Z"),
-        }),
-      ).resolves.toStrictEqual([]);
-    });
-
-    it("returns only the requested location", async () => {
-      expect.hasAssertions();
-
-      const rows = await service.findInRange({
-        ...range,
-        latitude: sydney.latitude,
-        longitude: sydney.longitude,
-      });
-
-      expect(rows.map((row) => row.summary)).toStrictEqual(["Elsewhere"]);
-    });
-  });
 
   describe("tags", () => {
     async function tag(name: string, parent: null | Tag = null): Promise<Tag> {
@@ -484,14 +409,8 @@ describe("calendar events service integration", () => {
         [tagged("Changed tags", start, ["kept", "added"])],
         philadelphia,
       );
-      const rows = await service.findInRange({
-        end: moment.utc("2026-06-11T00:00:00Z"),
-        latitude: philadelphia.latitude,
-        longitude: philadelphia.longitude,
-        start: moment.utc(start),
-      });
 
-      expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
+      await expect(storedTags("Changed tags")).resolves.toStrictEqual([
         ["Changed tags", ["Instant", "added", "kept"]],
       ]);
     });
@@ -511,14 +430,10 @@ describe("calendar events service integration", () => {
         ],
         philadelphia,
       );
-      const rows = await service.findInRange({
-        end: moment.utc("2026-08-11T00:00:00Z"),
-        latitude: philadelphia.latitude,
-        longitude: philadelphia.longitude,
-        start: moment.utc(start),
-      });
 
-      expect(rows.map(({ summary, tags }) => [summary, tags])).toStrictEqual([
+      await expect(
+        storedTags("Mixed new", "Mixed stored"),
+      ).resolves.toStrictEqual([
         ["Mixed new", ["Instant", "mixed fresh"]],
         ["Mixed stored", ["Instant", "mixed updated"]],
       ]);
@@ -568,19 +483,14 @@ describe("calendar events service integration", () => {
         ],
         philadelphia,
       );
-      const [row] = await service.findInRange({
-        end: moment.utc("2026-09-11T00:00:00Z"),
-        latitude: philadelphia.latitude,
-        longitude: philadelphia.longitude,
-        start: moment.utc(start),
-      });
+      const [row] = await storedTags("Aries ingress");
       const roots = await Promise.all(
         ["Aries", "Fire", "Cardinal", "Positive"].map(async (name) =>
           rootOf(name),
         ),
       );
 
-      expect(row?.tags).toStrictEqual(
+      expect(row?.[1]).toStrictEqual(
         expect.arrayContaining(["Aries", "Cardinal", "Fire", "Positive"]),
       );
       expect(roots).toStrictEqual(["Sign", "Element", "Modality", "Polarity"]);
@@ -602,17 +512,12 @@ describe("calendar events service integration", () => {
         ],
         philadelphia,
       );
-      const [row] = await service.findInRange({
-        end: moment.utc("2026-09-13T00:00:00Z"),
-        latitude: philadelphia.latitude,
-        longitude: philadelphia.longitude,
-        start: moment.utc(start),
-      });
+      const [row] = await storedTags("Mars opposition");
       const [opposition] = await tags.findBy({ name: "Martian Opposition" });
       const ancestors =
         opposition === undefined ? [] : await tags.findAncestors(opposition);
 
-      expect(row?.tags).toStrictEqual(
+      expect(row?.[1]).toStrictEqual(
         expect.arrayContaining(["Mars", "Martian Opposition", "Opposition"]),
       );
       expect(ancestors.map(({ name }) => name).toSorted()).toStrictEqual([

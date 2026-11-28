@@ -31,14 +31,31 @@ resource "cloudflare_zero_trust_tunnel_cloudflared_config" "organizzolini" {
   account_id = var.cloudflare_account_id
   tunnel_id  = cloudflare_zero_trust_tunnel_cloudflared.organizzolini.id
 
-  # No public hostname exists yet: every request gets a 404 until an application adds its rules.
   config = {
     ingress = [
+      {
+        hostname = var.hostname
+        path     = "^/graphql"
+        service  = "http://caelundas-api.caelundas.svc.cluster.local:80"
+      },
+      {
+        hostname = var.hostname
+        service  = "http://caelundas-web.caelundas.svc.cluster.local:80"
+      },
       {
         service = "http_status:404"
       },
     ]
   }
+}
+
+resource "cloudflare_dns_record" "organizzolini_caelundas" {
+  zone_id = var.cloudflare_zone_id
+  name    = "caelundas"
+  type    = "CNAME"
+  content = "${cloudflare_zero_trust_tunnel_cloudflared.organizzolini.id}.cfargotunnel.com"
+  proxied = true
+  ttl     = 1
 }
 
 data "cloudflare_zero_trust_tunnel_cloudflared_token" "organizzolini" {

@@ -300,6 +300,9 @@ catalogs:
     '@nx/web':
       specifier: ^24.0.0
       version: 24.0.0
+    '@oxc-project/runtime':
+      specifier: 0.156.0
+      version: 0.156.0
     '@photostructure/tz-lookup':
       specifier: ^11.6.0
       version: 11.7.0
@@ -309,6 +312,9 @@ catalogs:
     '@semantic-release/commit-analyzer':
       specifier: ^13.0.1
       version: 13.0.1
+    '@semantic-release/exec':
+      specifier: ^7.1.0
+      version: 7.1.0
     '@semantic-release/git':
       specifier: ^11.0.1
       version: 11.0.1
@@ -636,6 +642,9 @@ catalogs:
     remark-gfm:
       specifier: ^4.0.1
       version: 4.0.1
+    rolldown:
+      specifier: 1.2.18
+      version: 1.2.18
     semantic-release:
       specifier: ^26.0.1
       version: 26.0.1
@@ -838,12 +847,18 @@ importers:
       '@nx/web':
         specifier: 'catalog:'
         version: 24.0.0(90c5464e369154dd76dc0092885f028e)
+      '@oxc-project/runtime':
+        specifier: 'catalog:'
+        version: 0.156.0
       '@semantic-release/changelog':
         specifier: 'catalog:'
         version: 7.0.0(semantic-release@26.0.1(supports-color@8.1.1))
       '@semantic-release/commit-analyzer':
         specifier: 'catalog:'
         version: 13.0.1(semantic-release@26.0.1(supports-color@8.1.1))(supports-color@8.1.1)
+      '@semantic-release/exec':
+        specifier: 'catalog:'
+        version: 7.1.0(semantic-release@26.0.1(supports-color@8.1.1))(supports-color@8.1.1)
       '@semantic-release/git':
         specifier: 'catalog:'
         version: 11.0.1(semantic-release@26.0.1(supports-color@8.1.1))(supports-color@8.1.1)
@@ -940,6 +955,9 @@ importers:
       prettier:
         specifier: 'catalog:'
         version: 3.9.9
+      rolldown:
+        specifier: 'catalog:'
+        version: 1.2.18
       skills:
         specifier: 'catalog:'
         version: 1.7.0
@@ -1560,6 +1578,9 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 5.1.0(@opentelemetry/api@1.10.0)(@types/node@26.6.2)(@vitest/coverage-v8@5.1.0)(@vitest/ui@5.1.0)(jsdom@31.0.0(@noble/hashes@2.2.0))(msw@2.15.0(@types/node@26.6.2)(typescript@6.0.3))(vite@8.3.8(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))
+      yaml:
+        specifier: 'catalog:'
+        version: 2.9.1
 
   projects/caelundas/caelundas-db:
     dependencies:
@@ -8081,6 +8102,10 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@oxc-project/runtime@0.156.0':
+    resolution: {integrity: sha512-6C8Bl8OZJJKYJFbo2l9Qjn8WGi0OW1mmiErR0b+n8684ZLXegZZ2Ul4LW5aoapIX0a2ri2nIDz4RpCgRleb04w==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+
   '@oxc-project/types@0.150.0':
     resolution: {integrity: sha512-rDS5/31E9HfPl/CIzGrn0DOlvBbXFseQ5URJ9sYMfstbKLD/c6Gm9vmRzRGDdAXyOIL4zmO37lc9RIwYqVruZw==}
 
@@ -8845,6 +8870,12 @@ packages:
   '@semantic-release/error@4.0.0':
     resolution: {integrity: sha512-mgdxrHTLOjOddRVYIYDo0fR3/v61GNN1YGkfbrjuIKg/uMgCd+Qzo3UAXJ+woLQQpos4pl5Esuw5A7AoNlzjUQ==}
     engines: {node: '>=18'}
+
+  '@semantic-release/exec@7.1.0':
+    resolution: {integrity: sha512-4ycZ2atgEUutspPZ2hxO6z8JoQt4+y/kkHvfZ1cZxgl9WKJId1xPj+UadwInj+gMn2Gsv+fLnbrZ4s+6tK2TFQ==}
+    engines: {node: '>=20.8.1'}
+    peerDependencies:
+      semantic-release: '>=24.1.0'
 
   '@semantic-release/git@11.0.1':
     resolution: {integrity: sha512-Zr8BUYCTZMc8V6wDKN2dpR7nJgewd9I6THL3ydLTnp3OEdTo1/4RBLNYaeRucYMsjMv+BXoCNfXA0NADj1kwhw==}
@@ -10252,6 +10283,10 @@ packages:
     resolution: {integrity: sha512-TQf59BsZnytt8GdJKLPfUZ54g/iaUL2OWDSFCCvMOhsHduDQxO8xC4PNeyIkVcA5KwL2phPSv0douC0fgWzmnA==}
     engines: {node: '>= 20'}
 
+  aggregate-error@3.1.0:
+    resolution: {integrity: sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==}
+    engines: {node: '>=8'}
+
   aggregate-error@5.0.0:
     resolution: {integrity: sha512-gOsf2YwSlleG6IjRYG2A7k0HmBMEo6qVNk9Bp/EaLgAJT5ngH6PXbqa4ItvnEwCm/velL5jAnQgsHsWnjhGmvw==}
     engines: {node: '>=18'}
@@ -10833,6 +10868,10 @@ packages:
   clean-regexp@1.0.0:
     resolution: {integrity: sha512-GfisEZEJvzKrmGWkvfhgzcz/BllN1USeqD2V6tg14OAOgaCD2Z/PUEuxnAZ/nPvmaHRG7a8y77p1T/IRQ4D1Hw==}
     engines: {node: '>=4'}
+
+  clean-stack@2.2.0:
+    resolution: {integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==}
+    engines: {node: '>=6'}
 
   clean-stack@5.3.0:
     resolution: {integrity: sha512-9ngPTOhYGQqNVSfeJkYXHmF7AGWp4/nN5D/QqNQs3Dvxd1Kk/WpjHfNujKHYUQ/5CoGyOyFNoWSPk5afzP0QVg==}
@@ -12701,6 +12740,10 @@ packages:
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
+
+  indent-string@4.0.0:
+    resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
+    engines: {node: '>=8'}
 
   indent-string@5.0.0:
     resolution: {integrity: sha512-m6FAo/spmsW2Ab2fU35JTYwtOKa2yAwXSwgjSv1TJzh4Mh7mC3lzAOVLBprb72XsTrgkEIsl7YrFNAiDiRhIGg==}
@@ -20566,6 +20609,8 @@ snapshots:
   '@oxc-parser/binding-win32-x64-msvc@0.150.0':
     optional: true
 
+  '@oxc-project/runtime@0.156.0': {}
+
   '@oxc-project/types@0.150.0': {}
 
   '@oxc-project/types@0.156.0': {}
@@ -21107,6 +21152,18 @@ snapshots:
       - supports-color
 
   '@semantic-release/error@4.0.0': {}
+
+  '@semantic-release/exec@7.1.0(semantic-release@26.0.1(supports-color@8.1.1))(supports-color@8.1.1)':
+    dependencies:
+      '@semantic-release/error': 4.0.0
+      aggregate-error: 3.1.0
+      debug: 4.4.3(supports-color@8.1.1)
+      execa: 9.6.1
+      lodash-es: 4.18.1
+      parse-json: 8.3.0
+      semantic-release: 26.0.1(supports-color@8.1.1)
+    transitivePeerDependencies:
+      - supports-color
 
   '@semantic-release/git@11.0.1(semantic-release@26.0.1(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
@@ -22755,6 +22812,11 @@ snapshots:
 
   agent-base@9.0.0: {}
 
+  aggregate-error@3.1.0:
+    dependencies:
+      clean-stack: 2.2.0
+      indent-string: 4.0.0
+
   aggregate-error@5.0.0:
     dependencies:
       clean-stack: 5.3.0
@@ -23393,6 +23455,8 @@ snapshots:
   clean-regexp@1.0.0:
     dependencies:
       escape-string-regexp: 1.0.5
+
+  clean-stack@2.2.0: {}
 
   clean-stack@5.3.0:
     dependencies:
@@ -25679,6 +25743,8 @@ snapshots:
   import-meta-resolve@4.2.0: {}
 
   imurmurhash@0.1.4: {}
+
+  indent-string@4.0.0: {}
 
   indent-string@5.0.0: {}
 

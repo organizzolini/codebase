@@ -750,6 +750,14 @@
         {
           "children": [
             {
+              "ruleId": "any-file"
+            }
+          ],
+          "name": "infrastructure"
+        },
+        {
+          "children": [
+            {
               "children": [
                 {
                   "ruleId": "component-feature-folder"

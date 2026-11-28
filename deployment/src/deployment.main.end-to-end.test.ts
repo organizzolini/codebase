@@ -17,6 +17,7 @@ const COMMAND_NAMES = [
   "helm-render",
   "link-packages",
   "publish-packages",
+  "image-tags",
   "tag-codebase",
   "tag-packages",
   "version-packages",
@@ -37,6 +38,7 @@ const runHelp = (): { output: string; status: null | number } => {
       encoding: "utf8",
       env: {
         ...process.env,
+        DRY_RUN: "",
         FORCE_COLOR: "0",
         GIT_DIR: path.join(WORKSPACE_ROOT, "deployment/tmp/no-repository"),
         GITHUB_ENV: "",

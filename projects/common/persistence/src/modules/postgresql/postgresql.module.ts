@@ -3,6 +3,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { DATABASE_OPTIONS } from "./postgresql.constants";
 import { PostgresqlService } from "./postgresql.service";
+import { openDataSource } from "./postgresql.utilities";
 
 import type { PostgresqlModuleOptions } from "./postgresql.types";
 import type { DynamicModule } from "@nestjs/common";
@@ -14,9 +15,9 @@ import type { DynamicModule } from "@nestjs/common";
  * PostgresqlModule.forRoot({ entities: [Meander], project: "meanderaw" })
  * ```
  *
- * Reads the project's `<PROJECT>_POSTGRES_*` variables, so `ConfigModule` must
- * be global. Never synchronizes or runs migrations; those run through the data
- * source.
+ * Reads `<PROJECT>_POSTGRES_*`, so `ConfigModule` must be global. Never
+ * synchronizes; applies `options.migrations`, if given, under an advisory lock
+ * at start.
  */
 @Module({
   controllers: [],
@@ -33,6 +34,13 @@ export class PostgresqlModule {
       exports: [TypeOrmModule],
       imports: [
         TypeOrmModule.forRootAsync({
+          dataSourceFactory: async (dataSourceOptions) => {
+            if (dataSourceOptions === undefined) {
+              throw new Error("TypeORM gave no options to open a data source.");
+            }
+
+            return openDataSource(dataSourceOptions);
+          },
           extraProviders: [optionsProvider],
           useClass: PostgresqlService,
         }),

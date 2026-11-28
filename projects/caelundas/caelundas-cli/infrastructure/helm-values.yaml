@@ -1,0 +1,43 @@
+# Values for the caelundas-cli ingestion Job.
+# Layered over infrastructure/helm/kubernetes-job/values/base.yaml.
+# The helm-releases command reads `chart`; the chart ignores it.
+chart: kubernetes-job
+image:
+  repository: ghcr.io/organizzolini/caelundas-cli
+  # The release commit fills the tag with the codebase release version.
+  tag: ""
+
+priorityClassName: batch-low
+
+# The image runs `node`; the entry file and the CLI's ingestion subcommand follow.
+args: [main.js, caelundas]
+
+# The ingestion workflow passes the environment text with `--set-file envFile=...`. It appears where the CLI's
+# ConfigModule reads its dotenv file (configuration/.env under the working directory, /app), and the CLI's own
+# schema validates every value. The Postgres settings below come from this chart, never from that file.
+envFileMountPath: /app/configuration/.env
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 1Gi
+  limits:
+    cpu: "1"
+    memory: 1536Mi
+
+env:
+  - name: CAELUNDAS_POSTGRES_HOST
+    value: postgres-rw.organizzolini.svc.cluster.local
+  - name: CAELUNDAS_POSTGRES_PORT
+    value: "5432"
+  - name: CAELUNDAS_POSTGRES_DATABASE
+    value: caelundas_staging
+  - name: CAELUNDAS_POSTGRES_SCHEMA
+    value: caelundas
+  - name: CAELUNDAS_POSTGRES_USERNAME
+    value: caelundas_username
+  - name: CAELUNDAS_POSTGRES_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: caelundas-postgres
+        key: password

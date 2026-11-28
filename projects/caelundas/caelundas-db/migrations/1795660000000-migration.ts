@@ -2,14 +2,15 @@ import type { MigrationInterface, QueryRunner } from "typeorm";
 
 /**
  * Creates and drops the caelundas schema's tables, derived tables and view,
- * generated from the entities against an empty `caelundas_development`.
+ * and sets the caelundas role's default `search_path` to its schema, which
+ * PgBouncer would otherwise drop from the startup parameters.
  */
-export class Migration1793990506900 implements MigrationInterface {
-  name = "Migration1793990506900";
+export class Migration1795660000000 implements MigrationInterface {
+  name = "Migration1795660000000";
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`SET lock_timeout = '10s'`);
-    await queryRunner.query(`SET statement_timeout = '5min'`);
+    await queryRunner.query(`SET LOCAL lock_timeout = '10s'`);
+    await queryRunner.query(`SET LOCAL statement_timeout = '5min'`);
     await queryRunner.query(
       `CREATE TABLE "calendar_event_tag_nodes" ("calendar_event_id" uuid NOT NULL, "is_direct" boolean NOT NULL, "tag_depth" bigint NOT NULL, "tag_id" uuid NOT NULL, "tag_name" text NOT NULL, "tag_path" text NOT NULL, "tag_root_id" uuid NOT NULL, CONSTRAINT "PK_641ddfc9822887330f05ea3f224" PRIMARY KEY ("calendar_event_id", "tag_id"))`,
     );
@@ -47,13 +48,13 @@ export class Migration1793990506900 implements MigrationInterface {
       `CREATE TABLE "stars" ("color_index" real NOT NULL, "declination_degrees" real NOT NULL, "hip" bigint NOT NULL, "magnitude" real NOT NULL, "right_ascension_hours" real NOT NULL, CONSTRAINT "PK_9a548d1a5b2d84a2f12c46427d3" PRIMARY KEY ("hip"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "constellation_lines" ("constellation_designation" text NOT NULL, "from_hip" bigint NOT NULL, "to_hip" bigint NOT NULL, CONSTRAINT "PK_8b17475143b26888ce18b2ebc51" PRIMARY KEY ("constellation_designation", "from_hip", "to_hip"))`,
+      `CREATE TABLE "constellation_edges" ("constellation_designation" text NOT NULL, "from_hip" bigint NOT NULL, "to_hip" bigint NOT NULL, CONSTRAINT "PK_a32e2be764ccbe09e19f10384f1" PRIMARY KEY ("constellation_designation", "from_hip", "to_hip"))`,
     );
     await queryRunner.query(
-      `CREATE INDEX "constellation_lines_to_hip" ON "constellation_lines"  ("to_hip") `,
+      `CREATE INDEX "constellation_edges_to_hip" ON "constellation_edges"  ("to_hip") `,
     );
     await queryRunner.query(
-      `CREATE INDEX "constellation_lines_from_hip" ON "constellation_lines"  ("from_hip") `,
+      `CREATE INDEX "constellation_edges_from_hip" ON "constellation_edges"  ("from_hip") `,
     );
     await queryRunner.query(
       `CREATE TABLE "tag_nodes" ("depth" bigint NOT NULL, "id" uuid NOT NULL, "name" text NOT NULL, "path" text NOT NULL, "root_id" uuid NOT NULL, CONSTRAINT "PK_334a646214f797b13a1b9f5ab57" PRIMARY KEY ("id"))`,
@@ -77,13 +78,13 @@ export class Migration1793990506900 implements MigrationInterface {
       `ALTER TABLE "calendar_event_tags" ADD CONSTRAINT "FK_6f0520ed07726fe729a882a6928" FOREIGN KEY ("tag_id") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "constellation_lines" ADD CONSTRAINT "FK_cd94ca681020ea973ded017c089" FOREIGN KEY ("constellation_designation") REFERENCES "constellations"("designation") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "constellation_edges" ADD CONSTRAINT "FK_04d68e2ee86feb8798df9881158" FOREIGN KEY ("constellation_designation") REFERENCES "constellations"("designation") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "constellation_lines" ADD CONSTRAINT "FK_cf2a9cc8a473723f68be0b40b41" FOREIGN KEY ("from_hip") REFERENCES "stars"("hip") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "constellation_edges" ADD CONSTRAINT "FK_d952356fc9daa4133c753105b3c" FOREIGN KEY ("from_hip") REFERENCES "stars"("hip") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "constellation_lines" ADD CONSTRAINT "FK_bd51ce53daefdc59902c12e31ae" FOREIGN KEY ("to_hip") REFERENCES "stars"("hip") ON DELETE CASCADE ON UPDATE NO ACTION`,
+      `ALTER TABLE "constellation_edges" ADD CONSTRAINT "FK_b82df4a773517d7ddf1b8b8df14" FOREIGN KEY ("to_hip") REFERENCES "stars"("hip") ON DELETE CASCADE ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "tags_closure" ADD CONSTRAINT "FK_3f3680694135907038de253a57e" FOREIGN KEY ("ancestor_id") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE NO ACTION`,
@@ -132,11 +133,15 @@ from calendar_events as e`);
         'select\n    e.id,\n    e.created_at,\n    e.created_by,\n    e.updated_at,\n    e.updated_by,\n    e.color,\n    e.description,\n    e."end",\n    e.latitude,\n    e."location",\n    e.longitude,\n    e."start",\n    e."summary",\n    e.timezone,\n    extract(year from (e."start" at time zone \'UTC\'))::integer as start_year,\n    extract(quarter from (e."start" at time zone \'UTC\'))::integer as start_quarter,\n    extract(month from (e."start" at time zone \'UTC\'))::integer as start_month,\n    floor((extract(doy from (e."start" at time zone \'UTC\')) + 6 - mod(extract(dow from (e."start" at time zone \'UTC\')) + 6, 7)) / 7)::integer as start_week,\n    extract(dow from (e."start" at time zone \'UTC\'))::integer as start_weekday,\n    extract(hour from (e."start" at time zone \'UTC\'))::integer as start_hour,\n    (e."start" at time zone \'UTC\')::date::text as start_day,\n    (e."start" at time zone e.timezone)::date::text as start_local_day,\n    extract(hour from (e."start" at time zone e.timezone))::integer as start_local_hour,\n    floor(extract(epoch from e."end" - e."start") / 60)::integer as duration_minutes,\n    case when e."start" = e."end" then \'Instant\' else \'Duration\' end as temporality\nfrom calendar_events as e',
       ],
     );
+    await queryRunner.query(
+      `ALTER ROLE caelundas_username SET search_path TO caelundas`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`SET lock_timeout = '10s'`);
-    await queryRunner.query(`SET statement_timeout = '5min'`);
+    await queryRunner.query(`SET LOCAL lock_timeout = '10s'`);
+    await queryRunner.query(`SET LOCAL statement_timeout = '5min'`);
+    await queryRunner.query(`ALTER ROLE caelundas_username RESET search_path`);
     await queryRunner.query(
       `DELETE FROM "caelundas"."typeorm_metadata" WHERE "type" = $1 AND "name" = $2 AND "schema" = $3`,
       ["VIEW", "calendar_event_derived_times", "caelundas"],
@@ -150,13 +155,13 @@ from calendar_events as e`);
       `ALTER TABLE "tags_closure" DROP CONSTRAINT "FK_3f3680694135907038de253a57e"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "constellation_lines" DROP CONSTRAINT "FK_bd51ce53daefdc59902c12e31ae"`,
+      `ALTER TABLE "constellation_edges" DROP CONSTRAINT "FK_b82df4a773517d7ddf1b8b8df14"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "constellation_lines" DROP CONSTRAINT "FK_cf2a9cc8a473723f68be0b40b41"`,
+      `ALTER TABLE "constellation_edges" DROP CONSTRAINT "FK_d952356fc9daa4133c753105b3c"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "constellation_lines" DROP CONSTRAINT "FK_cd94ca681020ea973ded017c089"`,
+      `ALTER TABLE "constellation_edges" DROP CONSTRAINT "FK_04d68e2ee86feb8798df9881158"`,
     );
     await queryRunner.query(
       `ALTER TABLE "calendar_event_tags" DROP CONSTRAINT "FK_6f0520ed07726fe729a882a6928"`,
@@ -176,12 +181,12 @@ from calendar_events as e`);
     await queryRunner.query(`DROP TABLE "tags_closure"`);
     await queryRunner.query(`DROP TABLE "tag_nodes"`);
     await queryRunner.query(
-      `DROP INDEX "caelundas"."constellation_lines_from_hip"`,
+      `DROP INDEX "caelundas"."constellation_edges_from_hip"`,
     );
     await queryRunner.query(
-      `DROP INDEX "caelundas"."constellation_lines_to_hip"`,
+      `DROP INDEX "caelundas"."constellation_edges_to_hip"`,
     );
-    await queryRunner.query(`DROP TABLE "constellation_lines"`);
+    await queryRunner.query(`DROP TABLE "constellation_edges"`);
     await queryRunner.query(`DROP TABLE "stars"`);
     await queryRunner.query(`DROP TABLE "constellations"`);
     await queryRunner.query(

@@ -173,6 +173,9 @@
     "@golevelup/ts-vitest",
     // Nx loads its plugins from nx.json by name rather than importing them.
     "@nx/vitest",
+    // The helpers rolldown injects when it compiles decorators; the bundles of
+    // `rolldown.application.config.ts` import them, and no source file does.
+    "@oxc-project/runtime",
     // Registered on Nx command lines as a string
     // (`node --import @swc-node/register/esm-register`) and by
     // conformetry-nx's `src/bootstrap.mjs`, which passes it to `register()`.

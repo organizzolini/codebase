@@ -32,6 +32,12 @@ variable "node_type" {
   default     = "g6-standard-2"
 }
 
+variable "hostname" {
+  description = "Public host the tunnel serves."
+  type        = string
+  default     = "caelundas.organizzolini.net"
+}
+
 variable "github_token" {
   description = "A token that can write Actions secrets on the repository."
   type        = string

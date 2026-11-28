@@ -9,15 +9,16 @@ actions set them, print what they decide, and set the exit code. Anything that
 runs a child process goes through `ProcessRunnerService`, so a test replaces
 one class.
 
-| Command            | Module                         | Called from                                                                    |
-| ------------------ | ------------------------------ | ------------------------------------------------------------------------------ |
-| `version-packages` | `src/modules/version-packages` | 🏷️ Version Packages in Continuous Deployment                                   |
-| `tag-codebase`     | `src/modules/tag-codebase`     | 🔖 Tag Codebase in Continuous Deployment                                       |
-| `tag-packages`     | `src/modules/tag-packages`     | 🔖 Tag Packages in Continuous Deployment, and `version-packages` first         |
-| `publish-packages` | `src/modules/publish-packages` | 📦 Publish Packages in Continuous Deployment                                   |
-| `link-packages`    | `src/modules/link-packages`    | 🔗 Link Packages in Continuous Deployment                                      |
-| `helm-lint`        | `src/modules/helm-lint`        | The `helm-lint` target of this project                                         |
-| `helm-render`      | `src/modules/helm-render`      | The `helm-render` target of this project, with `--directory`                   |
+| Command            | Module                                        | Called from                                                               |
+| ------------------ | --------------------------------------------- | ------------------------------------------------------------------------- |
+| `version-packages` | `src/modules/version-packages`                | 🏷️ Version Packages in Continuous Deployment                              |
+| `image-tags`       | `src/modules/tag-codebase/modules/image-tags` | semantic-release's `prepareCmd`, inside 🔖 Tag Codebase, after the pushes |
+| `tag-codebase`     | `src/modules/tag-codebase`                    | 🔖 Tag Codebase in Continuous Deployment                                  |
+| `tag-packages`     | `src/modules/tag-packages`                    | 🔖 Tag Packages in Continuous Deployment, and `version-packages` first    |
+| `publish-packages` | `src/modules/publish-packages`                | 📦 Publish Packages in Continuous Deployment                              |
+| `link-packages`    | `src/modules/link-packages`                   | 🔗 Link Packages in Continuous Deployment                                 |
+| `helm-lint`        | `src/modules/helm-lint`                       | The `helm-lint` target of this project                                    |
+| `helm-render`      | `src/modules/helm-render`                     | The `helm-render` target of this project, with `--directory`              |
 
 `src/modules/helm-releases` holds the discovery of every Helm release that both helm commands share, and
 `src/modules/process-runner` holds the shared wrapper over `node:child_process`
@@ -31,9 +32,10 @@ later release step skips on.
 ### Helm Targets
 
 `helm-lint` and `helm-render` run the commands of the same names over every
-chart under `infrastructure/helm` and every project's `infrastructure/helm`,
-and `helm-test` runs the helm-unittest suites of those charts. They are the
-renderings and lint the
+chart (in `infrastructure/helm` or a project's own `infrastructure/helm`) and every
+project's `infrastructure/helm-values.yaml` (released as `<chart>-<project>` over
+the chart its `chart` key names), and `helm-test` runs the helm-unittest suites
+of those charts. They are the renderings and lint the
 `integration` project's `kubeconform`, `kube-linter`, and `pluto`, and
 `integration:trivy-config`, read from `dist/deployment/helm-render`.
 

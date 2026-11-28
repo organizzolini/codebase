@@ -181,3 +181,22 @@ updates:
       - source:agent
     assignees:
       - JimmyPaolini
+
+  # The one Dockerfile every application image builds from, with literal
+  # base image tags so Dependabot can read them.
+  - package-ecosystem: docker
+    directory: /infrastructure/docker/application
+    schedule:
+      interval: weekly
+      day: friday
+    # Seven days, the same as every other ecosystem, so a release is not proposed the minute it is published.
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "chore(infrastructure): 🔧 "
+    labels:
+      - type:chore
+      - scope:infrastructure
+      - source:agent
+    assignees:
+      - JimmyPaolini

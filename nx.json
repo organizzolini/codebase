@@ -329,6 +329,28 @@
       "executor": "nx:noop",
       "inputs": ["default"]
     },
+    "docker": [
+      {
+        "cache": false,
+        "configurations": {
+          "build": {
+            "command": "docker compose -f {projectRoot}/infrastructure/docker-compose.yml build"
+          },
+          "push": {
+            "command": "docker compose -f {projectRoot}/infrastructure/docker-compose.yml build --push"
+          }
+        },
+        "defaultConfiguration": "build",
+        "description": "Build (`docker:build`, loaded into the local daemon) or build and push (`docker:push`, one `docker compose build --push`) the container image of a project tagged `container:image`, for linux/amd64, with the service of its own infrastructure/docker-compose.yml, tagged ghcr.io/organizzolini/<project>:$IMAGE_TAG (default local). Set IMAGE_CA_BUNDLE to a PEM file to trust a TLS-inspecting proxy during the build. Never cached: a Docker build has no file outputs Nx could restore, so a remote cache hit would skip building, and a push is a side effect; layer caching is BuildKit's job. A new image needs the tag and its compose file.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:container:image"]
+        },
+        "options": {
+          "cwd": "{workspaceRoot}"
+        }
+      }
+    ],
     "end-to-end": {
       "cache": true,
       "dependsOn": ["^pack", "pack"],
@@ -537,6 +559,27 @@
       "executor": "nx:noop",
       "inputs": ["default"]
     },
+    "hadolint": [
+      {
+        "cache": true,
+        "description": "Lint every Dockerfile in the repository (found with git ls-files) with hadolint and the shared configuration/lint/hadolint.yaml, which ignores no rule. Part of lint-code. Defined in nx.json for the configuration project, which holds the repository-wide lint tools and their configuration. Requires hadolint on PATH.",
+        "executor": "nx:run-commands",
+        "filter": {
+          "projects": ["tag:name:configuration"]
+        },
+        "inputs": [
+          "{workspaceRoot}/**/*Dockerfile*",
+          "{workspaceRoot}/configuration/lint/hadolint.yaml",
+          {
+            "externalDependencies": []
+          }
+        ],
+        "options": {
+          "command": "hadolint --config configuration/lint/hadolint.yaml $(git ls-files -- '*Dockerfile*')",
+          "cwd": "{workspaceRoot}"
+        }
+      }
+    ],
     "knip": [
       {
         "cache": true,
@@ -636,6 +679,7 @@
         "actionlint",
         "compose-config",
         "eslint",
+        "hadolint",
         "helm-lint",
         "helm-test",
         "kube-linter",
@@ -651,7 +695,7 @@
         "tflint",
         "zizmor"
       ],
-      "description": "Aggregator for lint-code. `compose-config`, `terraform-format`, and `terraform-validate` are defined only by the infrastructure project, `helm-lint` and `helm-test` only by the deployment project, `kubeconform`, `kube-linter`, `pluto`, and `tflint` only by the integration project, and `actionlint` and `zizmor` only by the configuration project, so Nx skips them everywhere else. They shell out to helm, docker compose, and the tools the setup-codebase action installs (kubeconform, kube-linter, pluto, tflint, actionlint), which the devcontainer ships too; compose-config creates the gitignored root .env from .env.default when it is missing. The Kubernetes tools read the one rendering the deployment project's `helm-render` writes, and kubeconform fetches its CRD schemas over the network.",
+      "description": "Aggregator for lint-code. `compose-config`, `terraform-format`, and `terraform-validate` are defined only by the infrastructure project, `helm-lint` and `helm-test` only by the deployment project, `kubeconform`, `kube-linter`, `pluto`, and `tflint` only by the integration project, and `actionlint`, `hadolint`, and `zizmor` only by the configuration project, so Nx skips them everywhere else. They shell out to helm, docker compose, and the tools the setup-codebase action installs (kubeconform, kube-linter, pluto, tflint, hadolint, actionlint), which the devcontainer ships too; compose-config creates the gitignored root .env from .env.default when it is missing. The Kubernetes tools read the one rendering the deployment project's `helm-render` writes, and kubeconform fetches its CRD schemas over the network.",
       "executor": "nx:noop",
       "inputs": ["default"]
     },

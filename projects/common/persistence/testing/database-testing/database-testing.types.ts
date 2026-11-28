@@ -17,10 +17,7 @@ import type {
 
 /** Connects via the project's database module or `PostgresqlModule.forRoot`. */
 export interface DatabaseTestingConnection {
-  /**
-   * The project's own database module, so modules under test share its one
-   * connection. Absent, the helper uses its own `PostgresqlModule.forRoot`.
-   */
+  /** The project's database module; absent, the helper connects itself. */
   readonly database?: NonNullable<ModuleMetadata["imports"]>[number];
 }
 
@@ -50,11 +47,10 @@ export type DatabaseTestingModuleOptions = DatabaseTestingConnection &
 
 /** Every option but how the testing module connects. */
 export interface DatabaseTestingModuleSettings
-  extends Omit<PostgresqlModuleOptions, "entities">, PostgresContainerOptions {
-  /**
-   * The entity classes to register repositories for, and to connect when no
-   * `database` module is given.
-   */
+  extends
+    Omit<PostgresqlModuleOptions, "entities" | "migrations">,
+    PostgresContainerOptions {
+  /** Entity classes to register repositories for, and to connect. */
   readonly entities: NonNullable<
     Parameters<typeof TypeOrmModule.forFeature>[0]
   >;
@@ -65,10 +61,7 @@ export interface DatabaseTestingModuleSettings
   /** The providers under test. */
   readonly providers?: ModuleMetadata["providers"];
 
-  /**
-   * Validates the environment the way the application does, usually its
-   * own `environmentSchema.parse`; every variable is otherwise read raw.
-   */
+  /** Validates the environment as the application does; otherwise read raw. */
   readonly validate?: (
     config: Record<string, unknown>,
   ) => Record<string, unknown>;

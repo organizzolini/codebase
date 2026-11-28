@@ -29,6 +29,7 @@ infrastructure/
 ├── helm/
 │   ├── argocd/ # Argo CD app-of-apps tree and the batch-low PriorityClass
 │   ├── cloudflared/         # Cloudflare Tunnel connector, routing held in Cloudflare
+│   ├── kubernetes-deployment/  # Reusable chart for long-running services
 │   ├── kubernetes-job/      # Reusable chart for K8s Jobs
 │   └── postgres/            # Shared PostgreSQL as CloudNativePG resources
 └── terraform/               # Cluster provisioning
@@ -38,16 +39,23 @@ infrastructure/
     └── organizzolini/       # LKE cluster, Cloudflare tunnel, namespaces, secrets, Argo CD, KUBECONFIG secret
 ```
 
+### kubernetes-deployment Chart
+
+**Purpose**: Deploy long-running services as a Deployment and Service. The application migrates its own database at startup, under a Postgres advisory lock, so replicas starting together migrate one at a time and the chart has no hook.
+
+- `image.tag: ""` (default) renders nothing, so Argo CD reports the app Synced/Healthy before the first release. The release commit sets the tag.
+- The Deployment exposes `containerPort` (8080 for every application) as `http`, and a `probes` port when liveness probes use another port (Lightship uses 9000).
+- The Deployment pods and the Service selector both carry `app.kubernetes.io/component: server`.
+
+Each application owns its values: `projects/caelundas/caelundas-api/infrastructure/helm-values.yaml` and `projects/caelundas/caelundas-web/infrastructure/helm-values.yaml` layer over this chart's `values/base.yaml`, next to the application's `docker-compose.yml`.
+
 ### kubernetes-job Chart
 
-**Purpose**: Deploy batch jobs with optional PVC storage.
+**Purpose**: Run one container image to completion as a Job: today only the caelundas-cli ingestion, which writes to Postgres and leaves nothing on disk. Use a Deployment for anything that serves requests continuously.
 
-**Use cases**:
+The chart is the smallest correct Job: the image (`image.tag` is required, so an empty tag fails the render with `image.tag is required (no release of <repository> yet)` instead of pulling `repository:`), `args`, `env`, `resources`, `backoffLimit`, `ttlSecondsAfterFinished`, and an optional `priorityClassName`. The pod runs as uid 10001 under the `RuntimeDefault` seccomp profile with a read-only root filesystem, no privilege escalation and all capabilities dropped, with an `emptyDir` at `/tmp`. `envFile` and `envFileMountPath` hold the text of a dotenv file (`--set-file envFile=my.env`) and where it appears: `configmap.yaml` renders the ConfigMap `<fullname>-env`, and the Job mounts it read-only at the path through `subPath`. A ConfigMap is not private, so it is never for secrets: a password stays a Secret reference in `env`. `envFile` without a mount path fails the render.
 
-- Data migrations
-- Report generation
-
-Use a Job for work that runs to completion and leaves output behind (caelundas writes iCalendar files to a PVC); use a Deployment for anything that serves requests continuously.
+`projects/caelundas/caelundas-cli/infrastructure/helm-values.yaml` layers over `values/base.yaml` for the ingestion Job: `batch-low` priority, `args: [main.js, caelundas]` (the image runs `node`), the staging Postgres environment, and `envFileMountPath: /app/configuration/.env`, the file the CLI's `ConfigModule` reads relative to its working directory.
 
 **Chart tests**: `tests/*_test.yaml` holds helm-unittest suites, run by `nx run deployment:helm-test` over every chart that has a `tests/` folder.
 
@@ -107,14 +115,14 @@ Use `caelundas_staging` in place of `caelundas_production` for staging. The same
 
 ### argocd Chart
 
-**Purpose**: The Argo CD app-of-apps tree (this repository's `helm/argocd` chart, not the upstream `argo-cd` chart that Terraform installs as the `argocd` release). Each `applications` entry renders one `Application` in the `argocd` namespace, ordered by `argocd.argoproj.io/sync-wave` (0 cert-manager, 1 cloudnative-pg, 2 plugin-barman-cloud, 3 postgres, 4 cloudflared). The chart also renders the `batch-low` PriorityClass (value -10, `preemptionPolicy: Never`, not global), which batch Jobs use.
+**Purpose**: The Argo CD app-of-apps tree (this repository's `helm/argocd` chart, not the upstream `argo-cd` chart that Terraform installs as the `argocd` release). Each `applications` entry renders one `Application` in the `argocd` namespace, ordered by `argocd.argoproj.io/sync-wave` (0 cert-manager, 1 cloudnative-pg, 2 plugin-barman-cloud, 3 postgres, 4 cloudflared, 5 the two caelundas apps). The chart also renders the `batch-low` PriorityClass (value -10, `preemptionPolicy: Never`, not global), which batch Jobs use.
 
 - Upstream entries (`chart`) pin an exact `version`, never a range. `cert-manager` installs its CRDs through a Helm parameter and uses `ServerSideApply=true`; the two operator namespaces set `CreateNamespace=true`.
-- Repository entries (`path`) take `valueFiles` relative to the chart path. `organizzolini` and `caelundas` come from Terraform, so their apps do not set `CreateNamespace`.
+- Repository entries (`path`) take `valueFiles` relative to the chart path; an entry starting with `$values/` is a path in the repository (a project's own `helm-values.yaml`), which makes the Application multi-source with a `ref: values` source (Argo CD 2.6 or later; the pinned chart installs 3.x). `organizzolini` and `caelundas` come from Terraform, so their apps do not set `CreateNamespace`.
 - Every Application auto-syncs with `prune` and `selfHeal`, retries with backoff, and sets `SkipDryRunOnMissingResource=true`.
 - The root `Application` created by the `organizzolini` Terraform root points at this chart's path.
 
-`tests/applications_test.yaml` asserts on rendered YAML: the wave order, exact upstream pins, automated sync, dry-run skipping, and the PriorityClass.
+`tests/applications_test.yaml` asserts on rendered YAML: the wave order, exact upstream pins, automated sync, dry-run skipping, the caelundas values, and the PriorityClass.
 
 **Read drift** between the repository and the cluster:
 
@@ -125,6 +133,9 @@ argocd app diff --core <name>                 # the live-versus-desired diff, re
 
 ## Helm Chart References
 
+- Chart metadata: [helm/kubernetes-deployment/Chart.yaml](helm/kubernetes-deployment/Chart.yaml)
+- Base values: [helm/kubernetes-deployment/values/base.yaml](helm/kubernetes-deployment/values/base.yaml)
+- Templates: [helm/kubernetes-deployment/templates/](helm/kubernetes-deployment/templates/)
 - Chart metadata: [helm/kubernetes-job/Chart.yaml](helm/kubernetes-job/Chart.yaml)
 - Base values: [helm/kubernetes-job/values/base.yaml](helm/kubernetes-job/values/base.yaml)
 - Templates: [helm/kubernetes-job/templates/](helm/kubernetes-job/templates/)
@@ -144,13 +155,14 @@ See [README.md](README.md) for the Helm deploy commands and the `nx run infrastr
 
 ## Linters
 
-The `helm-lint` and `helm-render` commands, and targets, of the `deployment` project discover the Helm releases, so none is listed anywhere: every folder holding a `Chart.yaml` directly under this project's `helm/` or under a project's own `infrastructure/helm/` (the `postgres` chart lives in the persistence project) installs as `<chart>` with `values/base.yaml`, and once more as `<chart>-<name>` for each other `values/<name>.yaml` layered over it. The namespace comes from the Argo CD Application in `helm/argocd/values/base.yaml` whose `path` and `valueFiles` match the release, else `default`; an empty `image.tag` in the values is filled with a placeholder so the chart renders. A chart whose release the files cannot describe adds an optional `release.yaml` beside `Chart.yaml` with `namespace` and `strings` (extra `--set-string` pairs), as `argocd` does for its namespace. `deployment:helm-lint` runs `helm lint --strict` over the releases, and `deployment:helm-render` templates them into `dist/deployment/helm-render/`, which `integration:kubeconform`, `integration:kube-linter`, `integration:pluto`, and `integration:trivy-config` read. The four linters are defined in `nx.json` and applied to the `integration` project by its `name:integration` tag; they read this project's charts and Terraform through their inputs. Chart names must be unique across both places. Add a chart or values file and the next run picks it up; edit no code. Only charts every project shares stay in this folder; a chart for one project or one common project belongs in that project's `infrastructure/` folder.
+The `helm-lint` and `helm-render` commands, and targets, of the `deployment` project discover the Helm releases, so none is listed anywhere: every folder holding a `Chart.yaml` directly under this project's `helm/` or under a project's own `infrastructure/helm/` (the `postgres` chart lives in the persistence project) installs as `<chart>` with `values/base.yaml`, and every `projects/*/*/infrastructure/helm-values.yaml` installs as `<chart>-<project>`, layered over the base of the chart its top-level `chart` key names (the chart ignores the key). The namespace comes from the Argo CD Application in `helm/argocd/values/base.yaml` whose `path` and `valueFiles` (a project file as `$values/<path>`) match the release, else `default`; an empty `image.tag` in the values is filled with a placeholder so the chart renders. A chart whose release the files cannot describe adds an optional `release.yaml` beside `Chart.yaml` with `namespace` and `strings` (extra `--set-string` pairs), as `argocd` does for its namespace. `deployment:helm-lint` runs `helm lint --strict` over the releases, and `deployment:helm-render` templates them into `dist/deployment/helm-render/`, which `integration:kubeconform`, `integration:kube-linter`, `integration:pluto`, and `integration:trivy-config` read. The four linters are defined in `nx.json` and applied to the `integration` project by its `name:integration` tag; they read this project's charts and Terraform through their inputs. Chart names must be unique across both places. Add a chart or values file and the next run picks it up; edit no code. Only charts every project shares stay in this folder; a chart for one project or one common project belongs in that project's `infrastructure/` folder.
 
 - **kubeconform**: strict schemas for Kubernetes 1.35.0 plus the datreeio CRDs catalog for Argo CD, CloudNativePG, Barman Cloud, and cert-manager. A kind with no schema fails, so nothing is skipped. It reads schemas from raw.githubusercontent.com.
 - **kube-linter**: runs its default checks, which include the hardening ones, with no config and no exclusions. Fix the chart, not the check.
 - **pluto**: a removed API fails, a deprecated one prints and passes.
 - **integration:trivy-config**: also scans the rendered manifests at CRITICAL and HIGH. Fix the chart; never add a trivyignore entry.
 - **tflint**: `terraform/.tflint.hcl` enables the bundled terraform ruleset (`preset = "all"`). The `github` root's `outputs.tf` holds only a comment, since `terraform_standard_module_structure` wants every root to declare where its outputs go.
+- **hadolint** (configuration project): `configuration/lint/hadolint.yaml` ignores no rule: the Dockerfile pins `tini`, builds on the full Node image so no `apt-get` runs in the install stage, and starts with `node main.js` under `tini`, with no shell.
 - **actionlint** and **zizmor** (configuration project): `.github/actionlint.yaml` and `.github/zizmor.yml` record every ignored message and changed rule with its reason.
 
 A failure prints the tool's own message with the file and line; the rendered file name is the release, so open `dist/deployment/helm-render/<release>.yaml` to see what was linted.
@@ -186,20 +198,37 @@ serving all three roots, so the move can stop at any point.
 6. **Prove it**: run `nx run infrastructure:terraform-init:<root>` and `terraform plan` for each of `openrouter`, `github`, and `linode` with the new values. Each plan must show no changes, since the state is the same state. Roll back by restoring the four secrets to the old values.
 7. **Retire the old bucket** only after a week of clean runs: `terraform state rm` the `state` bucket and key in the `linode` root, delete their resources and `bucket_label`, then delete the old bucket and key in Linode by hand. Both resources set `prevent_destroy` so that Terraform cannot do this itself.
 
+## Caelundas Ingestion
+
+**Start a run**: Actions, then **caelundas-cli**, then **Run workflow**. The one input is `environment`, the CLI's dotenv text, pre-filled with the Environment section of `projects/caelundas/caelundas-cli/configuration/.env.default` (`LATITUDE`, `LONGITUDE`, `START_DATE`, `END_DATE`; a test keeps the two equal). The workflow parses nothing: it writes the input to a file through `env:` and runs `helm install caelundas-cli-<run_id>` into the `caelundas` namespace with `--set-file envFile=<file>`, so the chart mounts the text as `/app/configuration/.env` and the CLI's own Zod schema validates every line (a bad line fails the Job's pod with the schema's message in its logs, not the workflow). A new CLI option needs no workflow change. While the image tag in `projects/caelundas/caelundas-cli/infrastructure/helm-values.yaml` is empty (no release yet), `helm install` fails with the chart's `image.tag is required (no release of ghcr.io/organizzolini/caelundas-cli yet)`. It authenticates with the `KUBECONFIG` repository secret through `azure/k8s-set-context`, does not wait for the Job, and appends the chart's `NOTES.txt` to the run summary. A green run means the Job was created, not that the ingestion finished: follow it with the commands below. The Actions form's string box is a single line, so send multi-line text from the CLI: `gh workflow run caelundas-cli.yml -f environment="$(cat my.env)"`. The Postgres settings and password come from the chart and the `caelundas-postgres` Secret, never from the input, and the ConfigMap holds no secret. One run is one Job, one range: split a long range into several runs (a year takes about 45 minutes).
+
+**Follow it**: the run summary prints these with the release name filled in.
+
+```bash
+kubectl get jobs -n caelundas
+kubectl get pods -n caelundas -l job-name=<release-name>
+kubectl logs -n caelundas -l job-name=<release-name> --prefix --tail=50
+```
+
+**Clean up**: Argo CD never tracks the release, so it neither prunes nor reports it. The Job's `ttlSecondsAfterFinished` (86400) removes it a day after it finishes; `helm uninstall <release-name> -n caelundas` tidies the release record.
+
+**Duration**: one year takes about 45 minutes on 1 CPU at about 800 MiB peak (limit 1.5 GiB), and a failed pod retries up to three more times (`backoffLimit: 3`); the CLI upserts, so a retry repeats no row. The Job requests 1 GiB, so running a second ingestion beside the first does not fit beside the platform on the one 4 GB node: the autoscaler adds the second node (about $24 a month while it lasts, at most 2 nodes).
+
+**Night sky, one-off**: the `stars`, `constellations` and `constellation_edges` tables come from `nx run caelundas-cli:start:night-sky` run locally against three hand-downloaded files (see the caelundas-cli README). Restore just those tables into `caelundas_staging` (or production) with the `pg_dump`/`pg_restore` pair from the postgres runbook, adding `--table stars --table constellations --table constellation_edges` to both. A Job route is not provided: the image carries no night-sky input files.
+
 ## Troubleshooting
 
-- **Job stuck in `Pending`** — inspect with `kubectl describe job <name>`, then the pod and PVC. Usual causes are an image pull failure against GHCR, insufficient cluster CPU/memory, or an unbound PVC.
-- **PVCs outliving their Job** — PVCs are never deleted automatically when a Job or pod goes away. Remove them explicitly (`kubectl delete pvc <name>`) once you have what you need from it.
+- **Job stuck in `Pending`** — inspect with `kubectl describe job <name>`, then the pod. Usual causes are an image pull failure against GHCR or insufficient cluster CPU/memory.
 - **`exec format error`** — the image was built for arm64. Rebuild with `--platform linux/amd64`.
 
 ## Key Files
 
+- [../.github/workflows/caelundas-cli.yml](../.github/workflows/caelundas-cli.yml): On-demand ingestion workflow
 - [helm/kubernetes-job/templates/job.yaml](helm/kubernetes-job/templates/job.yaml): Job template
-- [helm/kubernetes-job/templates/pvc.yaml](helm/kubernetes-job/templates/pvc.yaml): PVC template
 - [helm/kubernetes-job/templates/\_helpers.tpl](helm/kubernetes-job/templates/_helpers.tpl): Helpers
 - [terraform/organizzolini/main.tf](terraform/organizzolini/main.tf): Backend, remote state, and the provider wiring from the cluster's kubeconfig
 - [terraform/organizzolini/cluster.tf](terraform/organizzolini/cluster.tf): LKE cluster and its readiness wait
-- [terraform/organizzolini/cloudflare.tf](terraform/organizzolini/cloudflare.tf): Zone import and tunnel
+- [terraform/organizzolini/cloudflare.tf](terraform/organizzolini/cloudflare.tf): Zone import, tunnel, routing, and DNS record
 - [terraform/organizzolini/argocd.tf](terraform/organizzolini/argocd.tf): Argo CD core and the root Application
 - [terraform/organizzolini/secrets.tf](terraform/organizzolini/secrets.tf): Platform secrets, with `postgres-backups` from the persistence module
 - [terraform/organizzolini/caelundas.tf](terraform/organizzolini/caelundas.tf): The caelundas-api namespace and caelundas-db database module calls

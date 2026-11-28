@@ -67,6 +67,9 @@ const config: KnipConfig = {
     // full-workspace run, and the Nx target runs knip scoped to one workspace,
     // where nothing imports this.
     "@nx/js",
+    // The helpers rolldown injects when it compiles decorators; the bundles of
+    // `rolldown.application.config.ts` import them, and no source file does.
+    "@oxc-project/runtime",
     "@nx/web", // Nx web plugin (auto-detected by Nx)
     // Declared at the root only so pnpm resolves @nestjs/core's optional peer
     // the same way for every workspace package; without it lexico-api and
@@ -77,6 +80,7 @@ const config: KnipConfig = {
     "@semantic-release/npm", // semantic-release plugin
     "@semantic-release/release-notes-generator", // semantic-release plugin
     "@semantic-release/changelog", // semantic-release plugin
+    "@semantic-release/exec", // semantic-release plugin
     "@semantic-release/git", // semantic-release plugin
     "@swc/helpers", // SWC runtime helpers, required by @swc-node/register for compiled TS
     "commitlint-plugin-gitmoji", // commitlint plugin, referenced as string in plugins array

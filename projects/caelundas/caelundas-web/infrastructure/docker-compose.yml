@@ -1,0 +1,26 @@
+# Builds the caelundas-web image: `docker compose build` builds it, `build --push` pushes it (the project's `docker` target runs both).
+# IMAGE_TAG (default local) tags it. IMAGE_CA_BUNDLE is an optional PEM file for a TLS-inspecting proxy; unset, the secret is empty.
+name: caelundas-web
+
+secrets:
+  ca-bundle:
+    file: ${IMAGE_CA_BUNDLE:-/dev/null}
+
+services:
+  caelundas-web:
+    image: ghcr.io/organizzolini/caelundas-web:${IMAGE_TAG:-local}
+    build:
+      context: ../../../..
+      dockerfile: infrastructure/docker/application/Dockerfile
+      platforms: [linux/amd64]
+      labels:
+        org.opencontainers.image.source: https://github.com/organizzolini/codebase
+      secrets: [ca-bundle]
+      target: static
+      args:
+        PROJECT: caelundas-web
+        PROJECT_DIRECTORY: projects/caelundas/caelundas-web
+        BUILD_COMMAND: pnpm exec vite build --config configuration/vite.config.mts
+        OUTPUT_PATH: dist/client
+        # Vite reads VITE_ variables when it builds, so the API address is baked into the JavaScript.
+        BUILD_ENVIRONMENT: VITE_CAELUNDAS_API_URL=${VITE_CAELUNDAS_API_URL:-https://caelundas.organizzolini.net/graphql}

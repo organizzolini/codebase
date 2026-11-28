@@ -1,0 +1,5 @@
+apiVersion: v2
+name: kubernetes-deployment
+description: A reusable Helm chart for long-running services deployed as Kubernetes Deployments
+version: 0.1.0
+appVersion: "1.0"

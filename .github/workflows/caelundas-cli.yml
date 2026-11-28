@@ -1,0 +1,61 @@
+name: 🔭 caelundas-cli
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: |
+          The caelundas-cli dotenv text, one NAME="value" per line. For example:
+          LATITUDE="39.949309"
+          LONGITUDE="-75.17169"
+          START_DATE="2026-07-01"
+          END_DATE="2026-07-31"
+        required: true
+        default: |
+          LATITUDE="39.949309"
+          LONGITUDE="-75.17169"
+          START_DATE="2026-07-01"
+          END_DATE="2026-07-31"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    name: 🔭 caelundas-cli
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # The input is written to a file through `env:`, never spliced into a command, and mounted into the Job as
+      # configuration/.env. The CLI's own schema validates every value.
+      - name: 📝 Write Environment File
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+        run: printf '%s' "$ENVIRONMENT" > "$RUNNER_TEMP/caelundas-cli.env"
+
+      # The GitHub-hosted runner ships kubectl and helm, and nothing here needs
+      # a particular version of either, so neither is installed or pinned.
+      - name: 🔑 Set Kubernetes Context
+        uses: azure/k8s-set-context@5f008dfddbbc9df61ba40a7aaa912c6033ba62fc # v5.0.2
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+
+      # A green run means the Job was created, not that the ingestion finished: the step summary lists the commands
+      # that follow it. With no release yet the chart fails on its empty image tag, saying so.
+      - name: 🚀 Install caelundas-cli Release
+        env:
+          RELEASE: caelundas-cli-${{ github.run_id }}
+        run: |
+          helm install "$RELEASE" infrastructure/helm/kubernetes-job -n caelundas \
+            -f infrastructure/helm/kubernetes-job/values/base.yaml \
+            -f projects/caelundas/caelundas-cli/infrastructure/helm-values.yaml \
+            --set-file envFile="$RUNNER_TEMP/caelundas-cli.env"
+          helm get notes "$RELEASE" -n caelundas >> "$GITHUB_STEP_SUMMARY"

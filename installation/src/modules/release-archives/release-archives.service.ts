@@ -69,7 +69,7 @@ export class ReleaseArchivesService {
     throw new Error(`No checksum is published for ${archiveName}`);
   }
 
-  /** Installs each of the release's executables into `~/.local/bin`. */
+  /** Installs each of the release's executables into `~/.local/bin`; a bare binary takes the tool's name. */
   private place(tool: ReleaseArchiveTool, download: ReleaseDownload): void {
     const binaryDirectory = path.join(os.homedir(), ".local", "bin");
 
@@ -82,7 +82,10 @@ export class ReleaseArchivesService {
         "-m",
         "0755",
         path.join(download.directory, file),
-        path.join(binaryDirectory, path.basename(file)),
+        path.join(
+          binaryDirectory,
+          tool.format === "binary" ? tool.name : path.basename(file),
+        ),
       ]);
     }
   }

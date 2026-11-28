@@ -9,31 +9,20 @@ metadata:
     argocd.argoproj.io/sync-wave: {{ .syncWave | quote }}
 spec:
   project: default
+  {{- $referenced := false }}
+  {{- range .valueFiles }}
+  {{- if hasPrefix "$values/" . }}{{ $referenced = true }}{{ end }}
+  {{- end }}
+  {{- if $referenced }}
+  sources:
+    - {{ include "argocd.source" (dict "app" . "root" $) | trim | nindent 6 | trim }}
+    - repoURL: {{ $.Values.repoURL }}
+      targetRevision: {{ $.Values.targetRevision }}
+      ref: values
+  {{- else }}
   source:
-    {{- if .chart }}
-    repoURL: {{ .chart.repoURL }}
-    chart: {{ .chart.name }}
-    targetRevision: {{ .chart.version | quote }}
-    {{- else }}
-    repoURL: {{ $.Values.repoURL }}
-    targetRevision: {{ $.Values.targetRevision }}
-    path: {{ .path }}
-    {{- end }}
-    {{- if or .valueFiles .helmParameters .helmValues }}
-    helm:
-      {{- with .valueFiles }}
-      valueFiles:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .helmParameters }}
-      parameters:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .helmValues }}
-      valuesObject:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- end }}
+    {{- include "argocd.source" (dict "app" . "root" $) | trim | nindent 4 }}
+  {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .namespace }}

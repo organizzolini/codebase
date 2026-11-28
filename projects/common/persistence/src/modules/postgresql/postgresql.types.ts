@@ -65,13 +65,17 @@ export interface PostgresProject<Project extends string = string> {
   readonly project: Project;
 }
 
-/** Project and connection part given to `PostgresqlModule.forRoot`, without migrations. */
+// Migrations are applied at start when given.
+/** Project and connection part given to `PostgresqlModule.forRoot`. */
 export interface PostgresqlModuleOptions
-  extends Omit<PostgresDataSourceSettings, "migrations">, PostgresProject {}
+  extends Omit<PostgresDataSourceSettings, "migrations">, PostgresProject {
+  readonly migrations?: PostgresDataSourceSettings["migrations"];
+}
 
-/** Module options, plus the migrations the TypeORM CLI runs. */
+// As the TypeORM CLI data source needs them.
+/** Module options with the migrations required. */
 export interface PostgresqlOptions
-  extends PostgresDataSourceSettings, PostgresqlModuleOptions {}
+  extends PostgresDataSourceSettings, PostgresProject {}
 
 /** The zod schema each connection field is validated by. */
 export type PostgresSettingsShape = Readonly<

@@ -1,0 +1,184 @@
+suite: kubernetes-job
+templates:
+  - templates/configmap.yaml
+  - templates/job.yaml
+  - templates/NOTES.txt
+values:
+  - ../values/base.yaml
+  - ../../../../projects/caelundas/caelundas-cli/infrastructure/helm-values.yaml
+set:
+  image.tag: 1.0.0
+tests:
+  - it: renders a Job that is retried and cleaned up
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.backoffLimit
+          value: 3
+      - equal:
+          path: spec.ttlSecondsAfterFinished
+          value: 86400
+      - equal:
+          path: spec.template.spec.restartPolicy
+          value: Never
+
+  - it: sets the priority class the values name
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.priorityClassName
+          value: batch-low
+
+  - it: omits priorityClassName when empty
+    set:
+      priorityClassName: ""
+    template: templates/job.yaml
+    asserts:
+      - notExists:
+          path: spec.template.spec.priorityClassName
+
+  - it: fails to render while the image tag is empty
+    set:
+      image.tag: ""
+    template: templates/job.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: image.tag is required (no release of ghcr.io/organizzolini/caelundas-cli yet)
+
+  - it: caelundas-cli values render a staging job
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: ghcr.io/organizzolini/caelundas-cli:1.0.0
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CAELUNDAS_POSTGRES_DATABASE
+            value: caelundas_staging
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CAELUNDAS_POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: caelundas-postgres
+                key: password
+
+  - it: runs non-root with a read-only root filesystem and only scratch space
+    asserts:
+      - template: templates/job.yaml
+        equal:
+          path: spec.template.spec.securityContext
+          value:
+            runAsNonRoot: true
+            runAsUser: 10001
+            seccompProfile:
+              type: RuntimeDefault
+      - template: templates/job.yaml
+        equal:
+          path: spec.template.spec.containers[0].securityContext
+          value:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+      - template: templates/job.yaml
+        equal:
+          path: spec.template.spec.volumes
+          value:
+            - name: tmp
+              emptyDir: {}
+      - template: templates/job.yaml
+        equal:
+          path: spec.template.spec.containers[0].volumeMounts
+          value:
+            - name: tmp
+              mountPath: /tmp
+
+  - it: caelundas-cli runs the entry file with the ingestion subcommand
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].args
+          value: [main.js, caelundas]
+      - notExists:
+          path: spec.template.spec.containers[0].command
+
+  - it: renders no ConfigMap, volume or mount without envFile
+    asserts:
+      - template: templates/configmap.yaml
+        hasDocuments:
+          count: 0
+      - template: templates/job.yaml
+        notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: env-file
+
+  - it: renders a ConfigMap, volume and read-only file mount when envFile is set
+    release:
+      name: ingest
+    set:
+      envFile: "START_DATE=\"2026-07-01\"\nEND_DATE=\"2026-07-31\"\n"
+      envFileMountPath: /app/configuration/.env
+    asserts:
+      - template: templates/configmap.yaml
+        equal:
+          path: metadata.name
+          value: ingest-kubernetes-job-env
+      - template: templates/configmap.yaml
+        equal:
+          path: data[".env"]
+          value: "START_DATE=\"2026-07-01\"\nEND_DATE=\"2026-07-31\"\n"
+      - template: templates/job.yaml
+        contains:
+          path: spec.template.spec.volumes
+          content:
+            name: env-file
+            configMap:
+              name: ingest-kubernetes-job-env
+      - template: templates/job.yaml
+        contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: env-file
+            mountPath: /app/configuration/.env
+            subPath: .env
+            readOnly: true
+
+  - it: requires envFileMountPath when envFile is set
+    set:
+      envFile: A=1
+      envFileMountPath: ""
+    template: templates/job.yaml
+    asserts:
+      - failedTemplate:
+          errorMessage: envFileMountPath is required with envFile
+
+  - it: caelundas-cli requests 1Gi against a 1536Mi limit
+    template: templates/job.yaml
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 1Gi
+      - equal:
+          path: spec.template.spec.containers[0].resources.limits.memory
+          value: 1536Mi
+
+  - it: prints the follow and cleanup commands for the release
+    release:
+      name: ingest-1900-1902
+      namespace: organizzolini
+    template: templates/NOTES.txt
+    asserts:
+      - matchRegex:
+          path: raw
+          pattern: kubectl get jobs -n organizzolini
+      - matchRegex:
+          path: raw
+          pattern: kubectl logs -n organizzolini -l job-name=ingest-1900-1902-kubernetes-job --prefix --tail=50
+      - matchRegex:
+          path: raw
+          pattern: helm uninstall ingest-1900-1902 -n organizzolini

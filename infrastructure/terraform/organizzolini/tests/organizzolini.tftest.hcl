@@ -25,7 +25,7 @@ override_resource {
   target = terraform_data.cluster_ready
 }
 
-# An overridden ID keeps the tunnel ID known in a plan, where mocks would leave it unknown.
+# A plan never runs provisioners, and an overridden ID keeps the record's content known in a plan.
 override_resource {
   target          = cloudflare_zero_trust_tunnel_cloudflared.organizzolini
   override_during = plan
@@ -59,12 +59,61 @@ variables {
   state_bucket          = "mock-state-bucket"
 }
 
-run "the_tunnel_answers_404_until_an_application_adds_rules" {
+run "the_tunnel_sends_graphql_to_the_api_and_everything_else_to_the_web" {
   command = plan
 
   assert {
-    condition     = length(cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress) == 1 && cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].service == "http_status:404"
-    error_message = "The tunnel must carry only the catch-all 404 rule: no public hostname exists before an application adds one."
+    condition     = cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].hostname == "caelundas.organizzolini.net" && cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].path == "^/graphql" && cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].service == "http://caelundas-api.caelundas.svc.cluster.local:80"
+    error_message = "The first ingress rule must send /graphql on the public host to the API on port 80."
+  }
+
+  assert {
+    condition     = cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[1].hostname == "caelundas.organizzolini.net" && cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[1].service == "http://caelundas-web.caelundas.svc.cluster.local:80"
+    error_message = "The second ingress rule must send the public host's other paths to the web on port 80."
+  }
+
+  assert {
+    condition     = cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[2].service == "http_status:404"
+    error_message = "The last ingress rule must answer 404 for anything else."
+  }
+}
+
+run "the_caelundas_record_is_a_proxied_cname_to_the_tunnel" {
+  command = plan
+
+  assert {
+    condition     = cloudflare_dns_record.organizzolini_caelundas.type == "CNAME"
+    error_message = "The caelundas record must be a CNAME."
+  }
+
+  assert {
+    condition     = cloudflare_dns_record.organizzolini_caelundas.proxied == true
+    error_message = "The caelundas record must be proxied."
+  }
+
+  assert {
+    condition     = endswith(cloudflare_dns_record.organizzolini_caelundas.content, ".cfargotunnel.com")
+    error_message = "The caelundas record must point at the tunnel's cfargotunnel.com name."
+  }
+}
+
+run "nothing_outside_organizzolini_net_is_named" {
+  command = plan
+
+  # The Lexico guard: every hostname the config names must sit under organizzolini.net.
+  assert {
+    condition     = endswith(cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[0].hostname, ".organizzolini.net") && endswith(cloudflare_zero_trust_tunnel_cloudflared_config.organizzolini.config.ingress[1].hostname, ".organizzolini.net")
+    error_message = "Every ingress hostname must end with organizzolini.net."
+  }
+
+  assert {
+    condition     = "${cloudflare_dns_record.organizzolini_caelundas.name}.organizzolini.net" == "caelundas.organizzolini.net"
+    error_message = "The DNS record must name a host under organizzolini.net."
+  }
+
+  assert {
+    condition     = cloudflare_zone.organizzolini_net.name == "organizzolini.net"
+    error_message = "The imported zone must be organizzolini.net."
   }
 }
 

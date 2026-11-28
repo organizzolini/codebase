@@ -129,7 +129,7 @@ export const ARCHIVE_TOOL_NAMES: ReadonlySet<string> = new Set(
 /** Each project group and the tools its targets need. */
 export const SOFTWARE_GROUPS: Readonly<Record<string, readonly string[]>> = {
   configuration: ["gitleaks", "trivy", "actionlint"],
-  infrastructure: ["kubeconform", "kube-linter", "pluto"],
+  infrastructure: ["kubeconform", "kube-linter", "pluto", "hadolint"],
   persistence: [POSTGRES_CLIENT_NAME],
 };
 

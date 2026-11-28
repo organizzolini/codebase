@@ -52,13 +52,13 @@ jobs:
             name: Devcontainer
             emoji: 🧑‍🏭
             timeout: 12
-          # Sized for a release of many packages: a 28-package release once outran a
-          # 24-minute limit. A release now takes 15 to 21 minutes, and a timeout before
-          # the push leaves nothing behind.
+          # The last 30 successful runs took 3.8 minutes at the median and 23.5 at
+          # most. Three cold image builds with pushes add about 12 (one took
+          # 2.2 here, 4.5 on a runner), so 40 holds; a timeout before the push leaves nothing.
           - id: push-releases
             name: Releases
             emoji: 🦸
-            timeout: 32
+            timeout: 40
           # Applies the four Terraform roots in order on a push to main that
           # changes them: OpenRouter, Linode, Organizzolini, GitHub. State has no
           # lock, so the never-cancelling concurrency group prevents overlap.
@@ -147,6 +147,28 @@ jobs:
               - infrastructure/terraform/**
               - projects/*/*/infrastructure/terraform/**
 
+      # The one setup of every leg. The release needs Python, uv, Buildx and a
+      # ghcr.io login to push the Caelundas images; the infrastructure leg needs
+      # terraform; the devcontainer leg needs only Buildx and the login.
+      - name: 🕋 Setup Codebase
+        id: setup
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          (matrix.target.id != 'apply-terraform' ||
+          github.event_name == 'workflow_dispatch' ||
+          steps.terraform-changes.outputs.terraform == 'true')
+        uses: ./.github/actions/setup-codebase
+        with:
+          deployment: ${{ matrix.target.id != 'apply-terraform' && 'true' || 'false' }}
+          install: ${{ matrix.target.id != 'build-devcontainer' && 'true' || 'false' }}
+          nx-cache: ${{ matrix.target.id != 'build-devcontainer' && 'true' || 'false' }}
+          nx-graph-cache: ${{ matrix.target.id != 'build-devcontainer' && 'true' || 'false' }}
+          nx-shas: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
+          nx-base: push-before
+          python-dependencies: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
+          infrastructure: ${{ matrix.target.id == 'apply-terraform' && 'true' || 'false' }}
+          uv: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
+
       # Devcontainer Build & Publish Steps
       - name: 🗂️ Setup Environment File
         if: >-
@@ -155,22 +177,6 @@ jobs:
         run: |
           cp .env.default .env
           echo "LOCAL_WORKSPACE_FOLDER=$GITHUB_WORKSPACE" >> .env
-
-      - name: 🔧 Set up Docker Buildx
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.target.id == 'build-devcontainer'
-        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-
-      - name: 🔐 Login to GitHub Container Registry
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.target.id == 'build-devcontainer'
-        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🐳 Build Devcontainer Image
         if: >-
@@ -212,24 +218,6 @@ jobs:
             bash .devcontainer/scripts/test-devcontainer.sh
 
       # Release Steps
-      # The one setup of the release and infrastructure legs. The release needs
-      # Python and uv; the infrastructure leg needs terraform and neither.
-      - name: 🕋 Setup Codebase
-        id: setup
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          (matrix.target.id == 'push-releases' ||
-          (matrix.target.id == 'apply-terraform' &&
-          (github.event_name == 'workflow_dispatch' ||
-          steps.terraform-changes.outputs.terraform == 'true')))
-        uses: ./.github/actions/setup-codebase
-        with:
-          nx-shas: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
-          nx-base: push-before
-          python-dependencies: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
-          infrastructure: ${{ matrix.target.id == 'apply-terraform' && 'true' || 'false' }}
-          uv: ${{ matrix.target.id == 'push-releases' && 'true' || 'false' }}
-
       - name: 🔐 Import GPG Key
         if: >-
           steps.check-skip.outputs.skip != 'true' &&

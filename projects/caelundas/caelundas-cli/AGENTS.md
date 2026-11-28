@@ -1,6 +1,6 @@
 # caelundas-cli
 
-Generate astronomical event calendars using NASA's JPL Horizons API (Outputs: iCalendar `.ics` and JSON files)
+Generate astronomical event calendars with Swiss Ephemeris (Output: rows in the Postgres `calendar_events` table)
 
 - **Database**: Postgres via TypeORM and `caelundas-db`'s `CaelundasDatabaseModule`, which wraps `@codebase/persistence`'s `DatabaseModule` (the `calendar_events`, `tags`, `tags_closure`, and `calendar_event_tags` tables, and the night sky's)
 
@@ -12,9 +12,7 @@ src/caelundas-cli.main.ts
             ├─ Swiss Ephemeris             ← EphemerisService (via Perfective/Progressive)
             ├─ Perfective Event Detection  ← PerfectiveService.detect()
             ├─ Progressive Event Synthesis ← ProgressiveService.detect()
-            ├─ Store Events                ← CalendarEventsService.upsert()
-            ├─ Read Back Range + Location  ← CalendarEventsService.findInRange()
-            └─ iCal and JSON Output        ← CalendarService.write() / writeJson()
+            └─ Store Events                ← CalendarEventsService.upsert()
 ```
 
 **Project Domain Modules**:
@@ -22,9 +20,9 @@ src/caelundas-cli.main.ts
 ```text
 src/modules/
   input/                               # Zod environmentSchema and config parsing
-  calendar/                            # ICS and JSON file output formatting
+  calendar/                            # Instant-event builder shared by the detectors
   night-sky/                           # The night-sky command: HYG stars and d3-celestial figures
-  calendar-events/                     # Upsert and range queries over the calendar_events table
+  calendar-events/                     # Upsert into the calendar_events table
   tags/                                # Resolving raw tag strings to nodes of the tag tree
   ephemeris/                           # Swiss Ephemeris access; child modules: datetime/, math/, ephemeris-download/
   perfective/                          # Exact moment event detection; child modules: one per event family (eclipses/, phases/, ...)
@@ -36,10 +34,9 @@ src/modules/
 
 - **Input Validation** ([input.constants.ts](src/modules/input/input.constants.ts)): Zod schema for environment variables
 - **Ephemeris Retrieval** ([ephemeris/](src/modules/ephemeris/)): Swiss Ephemeris, computed locally
-- **Event Storage** ([calendar-events/](src/modules/calendar-events/)): Upserts detected events into Postgres and reads them back by range and location
+- **Event Storage** ([calendar-events/](src/modules/calendar-events/)): Upserts detected events into Postgres
 - **Event Detection** ([perfective/](src/modules/perfective/) and domain modules): Aspects, phases, eclipses, retrogrades
 - **Progressive Synthesis** ([progressive/](src/modules/progressive/)): Pairs start/end moments into calendar events
-- **Output** ([calendar/](src/modules/calendar/)): iCal and JSON files, rendered from the stored rows
 
 ## Event Types
 
@@ -57,7 +54,7 @@ Astronomical concepts, event detection, and storage:
 - Swiss Ephemeris computes positions locally from JPL DE431 data files; there are no network calls or rate limits
 - Aspects, retrogrades, and phases are detected in two passes: perfective (the exact moment) and progressive (the span around it)
 - Detected events are stored in the `calendar_events` table, keyed by summary, start, latitude, and longitude, so a re-run updates rows in place and a second location adds its own
-- A range's files are rendered from the rows `findInRange` returns, using overlap semantics so an event spanning a range edge is included
+- The CLI's only output is the database: it writes no `.ics` or JSON files, and needs no writable directory
 
 1. **Implement the root command** — add logic to `caelundas.command.ts` `run()`, or delegate to injected services.
 2. **Add domain command modules** — create `src/modules/<domain>/` with a NestJS module, command, service, types, and constants.
@@ -75,8 +72,6 @@ Required:
 Optional:
 
 - `EVENT_TYPES`: Comma-separated list (defaults to all)
-- `OUTPUT_FORMAT`: `ical` or `json` (defaults to `ical`)
-- `OUTPUT_DIRECTORY`: Directory path (defaults to `./output`)
 
 Full schema: [src/modules/input/input.constants.ts](src/modules/input/input.constants.ts)
 
@@ -96,7 +91,7 @@ Postgres: the `caelundas` schema of `caelundas_development`, as `caelundas_usern
 - **Color and location**: optional as well as nullable (`color?: null | string`), so a detector leaves them out and a stored row reads back `null`; the writers treat the two alike.
 - **Coordinates**: `latitude`/`longitude` stay strings, which only `CalendarEventsService` reads or writes. The in-memory `geography`, `url`, and `priority` fields are gone: no detector set them, and no column stored them.
 
-A detected event, which has no id, audit columns, coordinates, or timezone yet, is `DetectedCalendarEvent` in `calendar-events.types.ts`, an `Omit` of the entity plus its raw `tags: string[]`. `findInRange` returns `StoredCalendarEvent`, the entity plus the names of its linked tags, ordered by name; it is assignable to `DetectedCalendarEvent`, so the writers take it too.
+A detected event, which has no id, audit columns, coordinates, or timezone yet, is `DetectedCalendarEvent` in `calendar-events.types.ts`, an `Omit` of the entity plus its raw `tags: string[]`.
 
 Tags go from raw strings to tree nodes in one place: `classifyEvent` in `tags/tags.utilities.ts` turns an event's raw tags into the root-to-node paths it is classified under, and `TagsService.resolve` inserts any missing node through a `TreeRepository`. The static maps live in `tags/tag-map.constants.ts`: `SHARED_TAG_MAP` for raw tags that mean the same everywhere (bodies, signs, decans), and `CONTEXT_TAG_MAPS` keyed by the raw tag that marks a kind of event (`Simple Aspect`, `Ingress`, `Venusian`), so `Full` is a lunar phase under `Monthly Lunar Cycle` and a synodic stage under `Venusian`. The lookup tables behind the implied tags (element, body class, aspect nature, dignity, synodic stage) live in `tags/tag-dimensions.constants.ts`. Ingress kind, eclipse kind, dignity and temporality need several raw tags or the event's times, so `classifyEvent` derives them. A raw tag no map knows falls back to a root of its own, and `Astronomy` and `Astrology` classify nothing. Each root in `TAG_ROOT` is one dimension; never nest one dimension under another. An event links only to the deepest node of each branch and carries the nodes above it through the closure table. A new detector tag should get a map entry, not a new root.
 
@@ -112,71 +107,37 @@ Inspect: `psql` with the `CAELUNDAS_POSTGRES_*` values, then `set search_path to
 
 ## Kubernetes Deployment
 
-### Architecture
-
-Caelundas runs as a **Kubernetes Job** (not Deployment):
-
-- Single execution, terminates on completion
-- Output stored in PersistentVolumeClaim
-- No network exposure needed
-
-### Workflow
-
-```bash
-# 1. Push the image (built for linux/amd64)
-docker push ghcr.io/organizzolini/caelundas:latest
-
-# 2. Deploy Job (base.yaml is a defaults template, so override the image)
-helm upgrade --install <release-name> infrastructure/helm/kubernetes-job/ \
-  --values infrastructure/helm/kubernetes-job/values/base.yaml \
-  --set image.repository=ghcr.io/organizzolini/caelundas --set image.tag=latest
-
-# 3. Monitor completion
-kubectl wait --for=condition=complete job/<job-name> --timeout=600s
-
-# 4. Clean up
-helm uninstall <release-name>
-kubectl delete pvc caelundas-output
-```
-
-### Helm Chart
-
-Uses [infrastructure/helm/kubernetes-job](../../../infrastructure/helm/kubernetes-job) - reusable chart for batch jobs with PVC storage.
-
-**Values**: [base.yaml](../../../infrastructure/helm/kubernetes-job/values/base.yaml) holds chart defaults only (its image is the placeholder `my-application`); there is no caelundas-specific values file, so override the image and `env` at deploy time.
-
-See [infrastructure/AGENTS.md](../../../infrastructure/AGENTS.md) for the chart and the deployment pipeline.
-
-### Environment Variables in K8s
-
-The chart references no Secret by default; to inject them, create one and point `env` at it with `valueFrom.secretKeyRef` (see the commented example in `base.yaml`):
-
-```bash
-kubectl create secret generic caelundas-env-secret --from-env-file=.env
-```
+Ingestion runs as a **Kubernetes Job**, one range per run, writing events to Postgres and nothing else (no volume is mounted). The
+`.github/workflows/caelundas-cli.yml` workflow takes the dotenv text as its one input and mounts it as `configuration/.env`, the file this CLI's
+`ConfigModule` reads; the schema validates it. The Job's values are
+[infrastructure/helm-values.yaml](infrastructure/helm-values.yaml). Run
+`gh workflow run caelundas-cli.yml -f environment="$(cat my.env)"` for several lines, and split a long range into several runs.
+The ConfigMap is not for secrets: the database password is a Secret reference.
+See
+[infrastructure/AGENTS.md](../../../infrastructure/AGENTS.md) for the cluster.
 
 ## Docker Workflow
 
-### Build
+```bash
+IMAGE_TAG=local nx run caelundas-cli:docker:build   # linux/amd64, from the workspace root
+IMAGE_TAG=1.2.3 nx run caelundas-cli:docker:push    # one docker compose build --push
+```
 
-**Platform targeting**: Always build with `--platform linux/amd64` for K8s deployment (Apple Silicon compatibility).
-
-See [infrastructure/AGENTS.md](../../../infrastructure/AGENTS.md) for troubleshooting a Job that will not start.
-
-### Dockerfile
-
-Single-stage build:
-
-- Base: Node.js 20 Alpine
-- Native deps: python3, make, g++ (for native modules)
-- Workspace: Full codebase copied (needed for path resolution)
-- Entry: `pnpm start` (runs TypeScript directly via tsx)
+[infrastructure/docker/application/Dockerfile](../../../infrastructure/docker/application/Dockerfile)
+builds `ghcr.io/organizzolini/caelundas-cli`, shared with the other applications and
+built through this project's own [docker-compose.yml](infrastructure/docker-compose.yml). The image is
+the ingestion Job (the same command as `nx run caelundas-cli:start`: `node main.js caelundas`, the Job's `args`). It runs as UID
+10001, bakes the Swiss Ephemeris files in at build time, and compiles `sweph`
+natively. It runs plain JavaScript that `nx run caelundas-cli:bundle`
+([configuration/rolldown.config.ts](configuration/rolldown.config.ts)) writes: one
+file per module at its source path, so the migrations stay files the database
+module's glob finds. Keep `--platform linux/amd64`.
 
 ## Performance
 
 **Execution times** (1-year range, all event types):
 
-- 1-2 minutes of local computation, plus a quick upsert and read back
+- About 45 minutes on one CPU in the container image, peaking near 0.8 GiB (see the README's Image section), plus a quick upsert and read back
 
 **Optimization strategies**:
 
@@ -194,5 +155,6 @@ Single-stage build:
 - `caelundas.command.ts` includes pipeline orchestration
 - `input.constants.ts` includes Zod validation
 - `ephemeris.service.ts` includes NASA API client
-- `calendar.service.ts` includes ICS/JSON generation
-- `Dockerfile` includes container build config
+- `calendar.service.ts` builds instant events
+- `infrastructure/helm-values.yaml` holds this project's Helm values over the shared `kubernetes-job` chart
+- `infrastructure/docker-compose.yml` configures the container build

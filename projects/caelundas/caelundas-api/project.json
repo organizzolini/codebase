@@ -4,6 +4,7 @@
   "projectType": "application",
   "sourceRoot": "projects/caelundas/caelundas-api",
   "tags": [
+    "container:image",
     "domain:caelundas",
     "framework:nestjs",
     "generator:nestjs-graphql-application",
@@ -17,8 +18,27 @@
         "url": "http://localhost:${CAELUNDAS_API_PORT:-6173}/graphql"
       }
     },
+    "bundle": {
+      "description": "Bundle the API and its workspace packages to dist/caelundas-api with a production-only node_modules, ready to run with node",
+      "executor": "nx:run-commands",
+      "inputs": [
+        "^production",
+        "{workspaceRoot}/configuration/typescript/rolldown.application.config.ts",
+        "dependency-versions",
+        "production"
+      ],
+      "options": {
+        "command": "rolldown --config configuration/rolldown.config.ts",
+        "cwd": "{projectRoot}"
+      },
+      "outputs": ["{workspaceRoot}/dist/caelundas-api"]
+    },
+    "codometer-weigh": {
+      "dependsOn": ["...", "bundle"]
+    },
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "docker": {},
     "eslint": {},
     "format-code": {},
     "guard-code": {},

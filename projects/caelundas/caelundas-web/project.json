@@ -13,6 +13,7 @@
   "projectType": "application",
   "sourceRoot": "projects/caelundas/caelundas-web/src",
   "tags": [
+    "container:image",
     "domain:caelundas",
     "framework:react",
     "framework:tanstack-start",
@@ -65,6 +66,7 @@
     },
     "dependency-cruiser": {},
     "deprecate-code": {},
+    "docker": {},
     "eslint": {},
     "format-code": {},
     "guard-code": {},

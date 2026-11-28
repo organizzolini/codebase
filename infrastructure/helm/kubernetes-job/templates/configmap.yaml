@@ -1,0 +1,10 @@
+{{- if .Values.envFile }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kubernetes-job.fullname" . }}-env
+  labels:
+    {{- include "kubernetes-job.labels" . | nindent 4 }}
+data:
+  .env: {{ .Values.envFile | toJson }}
+{{- end }}

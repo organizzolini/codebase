@@ -9,7 +9,7 @@ tests:
     template: templates/applications.yaml
     asserts:
       - hasDocuments:
-          count: 5
+          count: 7
       - equal:
           path: metadata.annotations["argocd.argoproj.io/sync-wave"]
           value: "0"
@@ -30,6 +30,14 @@ tests:
           path: metadata.annotations["argocd.argoproj.io/sync-wave"]
           value: "4"
         documentIndex: 4
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+          value: "5"
+        documentIndex: 5
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+          value: "5"
+        documentIndex: 6
 
   - it: pins every upstream chart to an exact version
     template: templates/applications.yaml
@@ -90,6 +98,22 @@ tests:
           path: spec.syncPolicy.automated.selfHeal
           value: true
         documentIndex: 4
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: true
+        documentIndex: 5
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: true
+        documentIndex: 5
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: true
+        documentIndex: 6
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: true
+        documentIndex: 6
 
   - it: skips dry run for resources whose CRDs are still installing
     template: templates/applications.yaml
@@ -114,6 +138,30 @@ tests:
           path: spec.syncPolicy.syncOptions
           content: SkipDryRunOnMissingResource=true
         documentIndex: 4
+      - contains:
+          path: spec.syncPolicy.syncOptions
+          content: SkipDryRunOnMissingResource=true
+        documentIndex: 5
+      - contains:
+          path: spec.syncPolicy.syncOptions
+          content: SkipDryRunOnMissingResource=true
+        documentIndex: 6
+
+  - it: caelundas apps use kubernetes-deployment with the values their project owns
+    template: templates/applications.yaml
+    asserts:
+      - equal:
+          path: spec.sources[0].path
+          value: infrastructure/helm/kubernetes-deployment
+        documentIndex: 5
+      - contains:
+          path: spec.sources[0].helm.valueFiles
+          content: $values/projects/caelundas/caelundas-api/infrastructure/helm-values.yaml
+        documentIndex: 5
+      - equal:
+          path: spec.sources[1].ref
+          value: values
+        documentIndex: 5
 
   - it: defines the low batch priority
     template: templates/priority-class.yaml
