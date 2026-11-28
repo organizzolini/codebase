@@ -14,6 +14,7 @@ dev = [
     "sqlfluff>=4.5.0",
     "vulture>=2.14",
     "yamllint>=1.35",
+    "zizmor==1.32.0",
 ]
 
 # Python projects extend the settings below via

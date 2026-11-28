@@ -1,7 +1,7 @@
 ## Start
 
 ```bash
-nx run infrastructure:postgres:up
+nx run persistence:postgres:up
 nx run meanderaw-db:migration:run
 nx run meanderaw-cli:start
 ```

@@ -1,0 +1,8 @@
+rules:
+  # Every ecosystem uses a seven-day cooldown, matching pnpm's minimumReleaseAge (10080 minutes).
+  dependabot-cooldown:
+    config:
+      days: 7
+  # Local actions are referenced as ./.github/actions/<name>. zizmor wants $/, which actionlint rejects.
+  self-repository:
+    disable: true

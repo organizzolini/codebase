@@ -538,6 +538,8 @@ const MODULE_BOUNDARIES = {
       onlyDependOnLibsWithTags: ["name:configuration", "name:observability"],
       sourceTag: "name:testing",
     },
+    // Infrastructure is `type:infrastructure`, not a package, so it is
+    // unconstrained and may depend on any project, applications too.
     {
       notDependOnLibsWithTags: ["type:application"],
       sourceTag: "type:package",
@@ -597,6 +599,8 @@ export default [
       // which ESLint does not read. Anchored to the root: a `**/` prefix would
       // also match the path of a checkout that is itself one of them.
       ".claude/worktrees/**",
+      // The `.worktrees/` checkouts of this repository, the same way.
+      ".worktrees/**",
       "**/vite.config.*.timestamp*",
       "**/vitest.config.*.timestamp*",
       "**/codometer-report.json",

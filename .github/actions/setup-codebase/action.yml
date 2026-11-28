@@ -1,15 +1,21 @@
 name: 🧑‍🍳 Setup Codebase
 description: |
-  Nx codebase setup with pnpm, node, and cache management
-  (requires checkout first)
+  Nx codebase setup with pnpm (restored from cache), node, and cache
+  management (requires checkout first)
 
   Every optional step is gated by an input so a job pays only for what it
-  uses. The tool installs exist for the security gate and the database
-  tests, so only they should ask for them.
+  uses. A tool install is named after the project whose Nx targets need
+  it (`configuration`, `infrastructure`, `persistence`), and installs all of
+  that project's tools, so an input for building and publishing images
+  would be `deployment`. The cache and workspace toggles are named for what
+  they do.
 
 inputs:
-  gitleaks:
-    description: Install gitleaks (secret scanning)
+  configuration:
+    description: |
+      Install what the configuration project's targets need: gitleaks
+      (`gitleaks`, `secure-code-ci`), Trivy (the security gate's
+      `trivy-config`), and actionlint (`actionlint`).
     default: "false"
   install:
     description: Install node dependencies with pnpm
@@ -48,22 +54,27 @@ inputs:
       and those run on every TypeScript project — not only the Python ones.
       Turn it off for a job that runs no Python-backed tool at all.
     default: "true"
-  postgres-client:
+  persistence:
     description: |
       Install the PostgreSQL 18 client tools (pg_dump, pg_restore) from the
-      PGDG apt repository, which the database package's export and import
+      PGDG apt repository, which the persistence project's export and import
       integration tests run for real. The runner's own package is older than
       the server.
     default: "false"
-  trivy:
-    description: Install trivy (infrastructure scanning)
-    default: "false"
-  terraform:
-    description: Install terraform (infrastructure lint, plan, and apply)
+  infrastructure:
+    description: |
+      Install the infrastructure toolchain the infrastructure project's
+      targets need: Terraform, tflint, kubeconform, kube-linter, and pluto.
+      Needs the runner's Go.
     default: "false"
   eslint-cache:
     description: Restore and save the ESLint cache
     default: "false"
+  node-cache:
+    description: |
+      Package manager whose store `setup-node` caches, such as `pnpm`, or empty
+      for none. For a job that installs on its own, without `install`.
+    default: ""
   uv:
     description: |
       Install uv. Required by far more than the Python projects — yaml-lint
@@ -89,17 +100,80 @@ outputs:
 runs:
   using: composite
   steps:
+    # `pnpm/action-setup` runs an uncached `npm ci` against its own bundled pnpm on
+    # every job, then self-updates to the pinned version. This caches the result by
+    # version and skips the action on a hit. Upstream has no setting: pnpm/action-setup#141.
+    # Read with `grep`/`sed`, since this runs before `setup-node`.
+    - name: 🧮 Resolve pnpm Version
+      id: pnpm-version
+      run: |
+        version="$(
+          grep -o '"packageManager": *"pnpm@[^"+]*' package.json \
+            | sed 's/.*pnpm@//'
+        )"
+        if [ -z "${version}" ]; then
+          echo "❌ No pnpm version found in package.json's packageManager field"
+          exit 1
+        fi
+        echo "version=${version}" >>"$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: ♻️ Sync pnpm Cache
+      id: pnpm-cache
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/setup-pnpm
+        key: pnpm-${{ runner.os }}-${{ steps.pnpm-version.outputs.version }}
+
     - name: 📦 Setup pnpm
-      uses: ./.github/actions/setup-pnpm
+      if: steps.pnpm-cache.outputs.cache-hit != 'true'
+      uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+
+    # A cache hit repeats the action's PATH setup by hand, with literal paths in the
+    # hosted runner's home. pnpm v10 and v11 disagree on whether `PNPM_HOME` or its
+    # `bin` holds the shims, so both go on PATH.
+    - name: 🛤️ Restore Cached pnpm PATH
+      if: steps.pnpm-cache.outputs.cache-hit == 'true'
+      run: |
+        echo "PNPM_HOME=/home/runner/setup-pnpm/node_modules/.bin" >>"$GITHUB_ENV"
+        echo "/home/runner/setup-pnpm/node_modules/.bin" >>"$GITHUB_PATH"
+        echo "/home/runner/setup-pnpm/node_modules/.bin/bin" >>"$GITHUB_PATH"
+      shell: bash
+
+    # A cache entry is immutable, so a damaged one would break every job until the
+    # pinned version changed; this step reinstalls it, and warns when an upgrade
+    # moves the shims the PATH above relies on.
+    - name: 🔎 Verify Cached pnpm
+      if: steps.pnpm-cache.outputs.cache-hit == 'true'
+      id: pnpm-verify
+      env:
+        EXPECTED_VERSION: ${{ steps.pnpm-version.outputs.version }}
+      run: |
+        actual="$(pnpm --version 2>/dev/null || true)"
+        if [ "${actual}" = "${EXPECTED_VERSION}" ]; then
+          echo "usable=true" >>"$GITHUB_OUTPUT"
+        else
+          echo "usable=false" >>"$GITHUB_OUTPUT"
+          echo "::warning::Cached pnpm reported '${actual}', expected" \
+            "'${EXPECTED_VERSION}' — reinstalling from the registry."
+        fi
+      shell: bash
+
+    - name: 🩹 Repair pnpm Install
+      if: |
+        steps.pnpm-cache.outputs.cache-hit == 'true'
+        && steps.pnpm-verify.outputs.usable != 'true'
+      uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
 
     - name: 🟢 Setup node
-      uses: actions/setup-node@v7
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version-file: .nvmrc
+        cache: ${{ inputs.node-cache }}
 
     - name: 🎯 Set Nx SHAs
       if: inputs.nx-shas == 'true'
-      uses: nrwl/nx-set-shas@v5
+      uses: nrwl/nx-set-shas@e602fada7ad5987b0f7b1905e7a99ea1c661514c # v5.1.0
 
     - name: 🗃️ Configure Nx Cache
       run: |
@@ -113,7 +187,7 @@ runs:
     # the key is shared by every job; the `v3` key retires tarballs that once held it.
     - name: 🕸️ Sync Nx Graph
       if: inputs.nx-graph-cache == 'true'
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
           .nx/workspace-data/*
@@ -135,7 +209,7 @@ runs:
     - name: ♻️ Restore Nx Cache
       if: inputs.nx-cache == 'true'
       id: nx-cache
-      uses: actions/cache/restore@v6
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
           .nx/cache
@@ -150,7 +224,7 @@ runs:
 
     - name: 🌌 Setup uv
       if: inputs.uv == 'true'
-      uses: astral-sh/setup-uv@v10.4.0
+      uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
       with:
         # The version the devcontainers pin and the `software` command
         # installs, so a runner, a devcontainer, and a laptop run one uv. A
@@ -173,11 +247,19 @@ runs:
     # the version that last wrote it. 1.14.5 is the version the OpenRouter module was
     # validated with. The wrapper is off so the plan comment reads Terraform's own output.
     - name: 🏗️ Setup Terraform
-      if: inputs.terraform == 'true'
-      uses: hashicorp/setup-terraform@v4
+      if: inputs.infrastructure == 'true'
+      uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
       with:
         terraform_version: 1.14.5
         terraform_wrapper: false
+
+    # The terraform ruleset ships inside tflint, so no plugin download follows.
+    - name: 🧹 Setup tflint
+      if: inputs.infrastructure == 'true'
+      uses: terraform-linters/setup-tflint@6ffdbaa3be476b3431f7275c26966ef32ff60337 # v6.3.2
+      with:
+        tflint_version: v0.66.0
+        tflint_wrapper: false
 
     # Guarded on `uv` as well as its own input: `python-dependencies` defaults
     # on, so a job that opts out of installing uv would otherwise inherit a sync
@@ -191,7 +273,7 @@ runs:
 
     - name: ♻️ Sync ESLint Cache
       if: inputs.eslint-cache == 'true'
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: .eslintcache
         key: eslint-cache-${{ runner.os }}-${{ github.sha }}
@@ -222,7 +304,7 @@ runs:
 
     - name: ♻️ Sync pnpm Store
       if: inputs.install == 'true'
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: ${{ steps.pnpm-store.outputs.path }}
         key: pnpm-store-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
@@ -257,35 +339,46 @@ runs:
       shell: bash
 
     # gitleaks and Trivy are single binaries the `software` command downloads into
-    # `~/.local/bin`. The key names the pinned versions, so a hit skips the download.
+    # `~/.local/bin`, and it builds actionlint, kubeconform, kube-linter, and pluto
+    # there from pinned tags. The key names the pinned versions, so a hit skips both.
     # Pull requests cannot read each other's caches, so `main`'s is what they restore.
-    - name: ♻️ Sync Release Archive Tools Cache
-      if: inputs.gitleaks == 'true' || inputs.trivy == 'true'
-      uses: actions/cache@v6
+    - name: ♻️ Sync Software Cache
+      if: inputs.configuration == 'true' || inputs.infrastructure == 'true'
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       with:
         path: |
+          ~/.local/bin/actionlint
           ~/.local/bin/gitleaks
+          ~/.local/bin/kube-linter
+          ~/.local/bin/kubeconform
+          ~/.local/bin/pluto
           ~/.local/bin/trivy
         key: |
-          release-archive-tools-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles(
-          'installation/src/modules/release-archives/release-archives.constants.ts')
-          }}-gitleaks-${{ inputs.gitleaks }}-trivy-${{ inputs.trivy }}
+          software-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles(
+          'installation/src/modules/release-archives/release-archives.constants.ts',
+          'installation/src/modules/software/software.constants.ts')
+          }}-configuration-${{ inputs.configuration }}-infrastructure-${{ inputs.infrastructure }}
 
-    # The `software` command of the `installation` project installs only the software
-    # named here, from the pinned release archives and apt repository a developer's
-    # Linux machine uses, and adds it to `PATH` for later steps.
+    # The `software` command of the `installation` project installs the tools of each
+    # project group asked for, from the pinned release archives, Go tags, and apt
+    # repository a developer's Linux machine uses, and adds them to `PATH` for later steps.
     - name: 🧰 Software
       if: |
-        (inputs.gitleaks == 'true' || inputs.trivy == 'true'
-        || inputs.postgres-client == 'true')
+        (inputs.configuration == 'true' || inputs.infrastructure == 'true'
+        || inputs.persistence == 'true')
         && hashFiles('node_modules/.modules.yaml') != ''
+      env:
+        CONFIGURATION: ${{ inputs.configuration }}
+        INFRASTRUCTURE: ${{ inputs.infrastructure }}
+        PERSISTENCE: ${{ inputs.persistence }}
       shell: bash
       run: |
+        groups=()
+        [[ "${CONFIGURATION}" == "true" ]] && groups+=(configuration)
+        [[ "${INFRASTRUCTURE}" == "true" ]] && groups+=(infrastructure)
+        [[ "${PERSISTENCE}" == "true" ]] && groups+=(persistence)
         NODE_OPTIONS='' node --import @swc-node/register/esm-register \
-          installation/src/installation.main.ts software \
-          ${{ inputs.gitleaks == 'true' && 'gitleaks' || '' }} \
-          ${{ inputs.trivy == 'true' && 'trivy' || '' }} \
-          ${{ inputs.postgres-client == 'true' && 'postgres-client' || '' }}
+          installation/src/installation.main.ts software "${groups[@]}"
 
     # The `setup-codebase` command of the `integration` project runs the Nx cache steps:
     # bounds a push's base, imports a pull request's cache into a merge group, discards

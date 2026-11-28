@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.6"
+  required_version = ">= 1.7"
 
   # Same Linode Object Storage bucket and backend settings as the openrouter
   # root; see its main.tf. This root manages that bucket, which is safe because
@@ -171,4 +171,25 @@ resource "linode_object_storage_key" "nx_cache_read_write" {
     region      = var.region
     permissions = "read_write"
   }
+}
+
+# The Postgres backups bucket and its key belong to the persistence project; this
+# root only instantiates them, because it is the one that holds the Linode token.
+module "postgres_backups" {
+  source = "../../../projects/common/persistence/infrastructure/terraform/postgres-backups-bucket"
+
+  label  = var.postgres_backups_bucket_label
+  region = var.region
+}
+
+# They were resources of this root before moving into the module, and the moves
+# keep Terraform from planning a destroy of the bucket that holds the backups.
+moved {
+  from = linode_object_storage_bucket.organizzolini_postgres_backups
+  to   = module.postgres_backups.linode_object_storage_bucket.backups
+}
+
+moved {
+  from = linode_object_storage_key.organizzolini_postgres_backups
+  to   = module.postgres_backups.linode_object_storage_key.backups
 }

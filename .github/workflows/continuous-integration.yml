@@ -143,7 +143,7 @@ jobs:
           - target: end-to-end
             name: End to End IC Suite
             emoji: 🤵
-          # Plans the OpenRouter Terraform for a pull request and comments the result.
+          # Plans the four Terraform roots for a pull request and comments the result.
           # Nothing applies here: Continuous Deployment applies it on `main`. The leg
           # always reports, so it can be a required check; its steps run only for a
           # same-repository pull request, since forks get no secrets.
@@ -151,13 +151,12 @@ jobs:
             name: Infrastructure
             emoji: 🧑‍🚀
           # Builds and tests the devcontainer image for a pull request that changes it,
-          # without publishing: Continuous Deployment pushes it on `main`. Like the
-          # infrastructure leg, it always reports. The slowest build took 9m05s, so 15
-          # minutes leaves room without waiting 20 on a hung one.
+          # without publishing; Continuous Deployment pushes it on `main`. A cold build
+          # takes about 15 minutes with the linter install, so 20 leaves room.
           - target: build-devcontainer
             name: Devcontainer
             emoji: 🧑‍🏭
-            timeout-minutes: 15
+            timeout-minutes: 20
 
     steps:
       # Decides first whether the job has work to do, so the skip decision below knows
@@ -169,18 +168,19 @@ jobs:
           matrix.check.target == 'plan-terraform' &&
           github.event_name == 'pull_request' &&
           github.event.pull_request.head.repo.full_name == github.repository
-        uses: dorny/paths-filter@v4
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         with:
           filters: |
             terraform:
               - infrastructure/terraform/**
+              - projects/*/*/infrastructure/terraform/**
 
       - name: 🚦 Detect Devcontainer Changes
         id: devcontainer-changes
         if: >-
           matrix.check.target == 'build-devcontainer' &&
           github.event_name == 'pull_request'
-        uses: dorny/paths-filter@v4
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         with:
           filters: |
             devcontainer:
@@ -229,8 +229,9 @@ jobs:
 
       - name: 📥 Checkout Repository
         if: steps.check-skip.outputs.skip != 'true'
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
 
       - name: 🕋 Setup Codebase
@@ -240,19 +241,22 @@ jobs:
           matrix.check.target != 'build-devcontainer'
         uses: ./.github/actions/setup-codebase
         with:
-          gitleaks: ${{ matrix.check.target == 'secure-code' && 'true' || 'false' }}
-          trivy: ${{ matrix.check.target == 'secure-code' && 'true' || 'false' }}
+          # The configuration project's secure-code gate runs gitleaks and Trivy, and its
+          # actionlint runs as part of lint-code.
+          configuration: >-
+            ${{ (matrix.check.target == 'secure-code' ||
+            matrix.check.target == 'static-code') && 'true' || 'false' }}
           python-dependencies: >-
             ${{ matrix.check.target != 'build-projects' &&
             matrix.check.target != 'end-to-end' &&
             matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
-          postgres-client: >-
+          persistence: >-
             ${{ matrix.check['postgres-client'] && 'true' || 'false' }}
           uv: ${{ matrix.check.target != 'plan-terraform' && 'true' || 'false' }}
-          # The infrastructure project's `terraform-format` and
-          # `terraform-validate` run as part of lint-code, and the runner image
-          # no longer ships terraform.
-          terraform: >-
+          # The infrastructure project's Terraform checks, tflint, kubeconform,
+          # kube-linter, and pluto run as part of lint-code, and its plan job
+          # needs Terraform. The runner image no longer ships Terraform.
+          infrastructure: >-
             ${{ (matrix.check.target == 'static-code' ||
             matrix.check.target == 'plan-terraform') && 'true' || 'false' }}
           nx-cache: "true"
@@ -277,10 +281,14 @@ jobs:
           TF_VAR_state_bucket: ${{ secrets.TERRAFORM_STATE_BUCKET }}
           TF_VAR_github_token: ${{ secrets.GH_TOKEN }}
           TF_VAR_linode_token: ${{ secrets.LINODE_TOKEN }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         run: |
           pnpm exec nx run infrastructure:terraform-plan:openrouter
-          pnpm exec nx run infrastructure:terraform-plan:github
           pnpm exec nx run infrastructure:terraform-plan:linode
+          pnpm exec nx run infrastructure:terraform-plan:organizzolini
+          pnpm exec nx run infrastructure:terraform-plan:github
 
       # Posts each root's plan as one comment that every push updates. A
       # failed plan fails the leg above and shows in its log instead.
@@ -288,34 +296,45 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@v3
+        uses: borchero/terraform-plan-comment@f585438eda2fa77c6f275994b92aeccd86ef3542 # v3.2.0
         with:
           token: ${{ github.token }}
           working-directory: infrastructure/terraform/openrouter
           planfile: plan.tfplan
           header: 🏗️ Terraform Plan (OpenRouter)
 
-      - name: 📊 Report GitHub Plan
-        if: >-
-          steps.check-skip.outputs.skip != 'true' &&
-          matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@v3
-        with:
-          token: ${{ github.token }}
-          working-directory: infrastructure/terraform/github
-          planfile: plan.tfplan
-          header: 🏗️ Terraform Plan (GitHub)
-
       - name: 📊 Report Linode Plan
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'plan-terraform'
-        uses: borchero/terraform-plan-comment@v3
+        uses: borchero/terraform-plan-comment@f585438eda2fa77c6f275994b92aeccd86ef3542 # v3.2.0
         with:
           token: ${{ github.token }}
           working-directory: infrastructure/terraform/linode
           planfile: plan.tfplan
           header: 🏗️ Terraform Plan (Linode)
+
+      - name: 📊 Report Organizzolini Plan
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
+        uses: borchero/terraform-plan-comment@f585438eda2fa77c6f275994b92aeccd86ef3542 # v3.2.0
+        with:
+          token: ${{ github.token }}
+          working-directory: infrastructure/terraform/organizzolini
+          planfile: plan.tfplan
+          header: 🏗️ Terraform Plan (Organizzolini)
+
+      - name: 📊 Report GitHub Plan
+        if: >-
+          steps.check-skip.outputs.skip != 'true' &&
+          matrix.check.target == 'plan-terraform'
+        uses: borchero/terraform-plan-comment@f585438eda2fa77c6f275994b92aeccd86ef3542 # v3.2.0
+        with:
+          token: ${{ github.token }}
+          working-directory: infrastructure/terraform/github
+          planfile: plan.tfplan
+          header: 🏗️ Terraform Plan (GitHub)
 
       - name: ${{ matrix.check.emoji }} ${{ matrix.check.name }}
         if: >-
@@ -337,13 +356,13 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'build-devcontainer'
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
 
       - name: 🔐 Login to GitHub Container Registry
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'build-devcontainer'
-        uses: docker/login-action@v4
+        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -353,7 +372,7 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'build-devcontainer'
-        uses: devcontainers/ci@v0.3
+        uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca # v0.3.1900000450
         with:
           configFile: .devcontainer/cloud/devcontainer.json
           imageName: ghcr.io/organizzolini/codebase-devcontainer
@@ -369,7 +388,7 @@ jobs:
         if: >-
           steps.check-skip.outputs.skip != 'true' &&
           matrix.check.target == 'build-devcontainer'
-        uses: devcontainers/ci@v0.3
+        uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca # v0.3.1900000450
         with:
           configFile: .devcontainer/cloud/devcontainer.json
           imageName: ghcr.io/organizzolini/codebase-devcontainer

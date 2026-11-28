@@ -20,11 +20,11 @@ updates:
       interval: weekly
       day: friday
     open-pull-requests-limit: 10
-    # Matches pnpm-workspace.yaml's minimumReleaseAge: 1440 (1 day), so
+    # Matches pnpm-workspace.yaml's minimumReleaseAge: 10080 (7 days), so
     # Dependabot doesn't propose a version before pnpm itself would resolve
     # it.
     cooldown:
-      default-days: 1
+      default-days: 7
     commit-message:
       prefix: "chore(dependencies): 🔧 "
     labels:
@@ -67,6 +67,9 @@ updates:
       interval: weekly
       day: friday
     open-pull-requests-limit: 10
+    # A week, so a release is not proposed before the community has had time to find a bad one.
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "chore(dependencies): 🔧 "
     labels:
@@ -90,11 +93,13 @@ updates:
     directories:
       - /
       - /.github/actions/setup-codebase
-      - /.github/actions/setup-pnpm
     schedule:
       interval: weekly
       day: friday
     open-pull-requests-limit: 10
+    # A week, so a release is not proposed before the community has had time to find a bad one.
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "chore(deployments): 🔧 "
     labels:
@@ -110,16 +115,20 @@ updates:
         patterns:
           - "*"
 
-  # Every Terraform root under infrastructure/terraform pins its providers: the
-  # linode/linode cluster at the top, and one folder per module below it, such
-  # as openrouter. One ecosystem covers them all, so a new module needs no entry.
+  # Every Terraform root under infrastructure/terraform pins its providers, and
+  # so does every module a project keeps under its own infrastructure/terraform
+  # folder. One ecosystem covers them all, so a new module needs no entry.
   - package-ecosystem: terraform
     directories:
       - /infrastructure/terraform
       - /infrastructure/terraform/*
+      - /projects/*/*/infrastructure/terraform/*
     schedule:
       interval: weekly
       day: friday
+    # A week, so a release is not proposed before the community has had time to find a bad one.
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "chore(infrastructure): 🔧 "
     labels:
@@ -138,6 +147,9 @@ updates:
     schedule:
       interval: weekly
       day: friday
+    # A week, so a release is not proposed before the community has had time to find a bad one.
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "chore(configuration): 🔧 "
     labels:
@@ -158,6 +170,9 @@ updates:
     schedule:
       interval: weekly
       day: friday
+    # A week, so a release is not proposed before the community has had time to find a bad one.
+    cooldown:
+      default-days: 7
     commit-message:
       prefix: "chore(configuration): 🔧 "
     labels:

@@ -1139,6 +1139,9 @@ importers:
       semantic-release:
         specifier: 'catalog:'
         version: 26.0.1(supports-color@8.1.1)
+      yaml:
+        specifier: 'catalog:'
+        version: 2.9.1
       zod:
         specifier: 'catalog:'
         version: 4.6.7

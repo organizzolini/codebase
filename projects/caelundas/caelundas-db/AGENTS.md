@@ -67,6 +67,10 @@ migrations/                              # The migrations, each with its .sql pa
   an empty local Postgres (schema-unqualified), then apply the two hand edits the README
   lists. Never edit the generated SQL otherwise.
 
+## Infrastructure
+
+`infrastructure/terraform/database` is the Terraform module that generates the `caelundas_username` role's password and writes it as the `caelundas-postgres` Secret in the platform namespace, where the postgres chart reads it, and in the `caelundas` namespace, where the apps do. It takes both namespaces as input; `caelundas-api` owns the `caelundas` one. The `organizzolini` root in the `infrastructure` project instantiates it.
+
 ## Commands
 
 ```bash

@@ -13,6 +13,15 @@ check. The aggregate runs every command, collects every failure, and prints the
 command that fixes each: the command's own `fixCommand` (such as `pnpm install`),
 else its own Nx target, `pnpm exec nx run integration:<label>`; a derivation sets `fixCommand` to its `:write` target.
 
+## Repository-wide linters
+
+The `kubeconform`, `kube-linter`, `pluto`, and `tflint` targets lint the
+infrastructure project's rendered charts and Terraform roots, which are CI
+checks rather than that project's own work. `nx.json` defines them and the
+project's `name:integration` tag applies them; each reads the rendering that
+`deployment:helm-render` writes, or the Terraform roots, through its inputs, and
+is part of `lint-code`.
+
 Codometer caps a folder at 12 entries, and `src/modules/` already holds 11, so
 each check and derivation lives under `src/modules/synchronization/modules/<command>/`,
 never beside the CI commands. To put one in the aggregate, import its module in

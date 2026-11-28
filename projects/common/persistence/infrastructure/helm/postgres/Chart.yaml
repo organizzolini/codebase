@@ -1,0 +1,5 @@
+apiVersion: v2
+name: postgres
+description: A reusable Helm chart for the shared PostgreSQL cluster, managed by CloudNativePG
+version: 0.1.0
+appVersion: "18"

@@ -2,7 +2,7 @@
 
 import { RELEASE_ARCHIVE_TOOLS } from "../release-archives/release-archives.constants";
 
-import type { InfrastructureTool } from "./software.types";
+import type { GoTool, HelmPlugin, InfrastructureTool } from "./software.types";
 
 /** The check that asks Python whether it is new enough. */
 export const PYTHON_VERSION_CHECK =
@@ -68,6 +68,56 @@ export const INFRASTRUCTURE_TOOLS: InfrastructureTool[] = [
   { name: "linode-cli" },
 ];
 
+/** The infrastructure and workflow linters `lint-code` runs, built with `go install`. */
+export const GO_TOOLS: readonly GoTool[] = [
+  {
+    module: "github.com/rhysd/actionlint/cmd/actionlint",
+    name: "actionlint",
+    version: "1.7.12",
+  },
+  {
+    module: "github.com/yannh/kubeconform/cmd/kubeconform",
+    name: "kubeconform",
+    version: "0.8.0",
+  },
+  {
+    module: "golang.stackrox.io/kube-linter/cmd/kube-linter",
+    name: "kube-linter",
+    version: "0.8.3",
+  },
+  {
+    module: "github.com/fairwindsops/pluto/v5/cmd/pluto",
+    name: "pluto",
+    version: "5.24.5",
+  },
+];
+
+/** The Helm plugins `helm-test` runs, checked against these checksums. */
+export const HELM_PLUGINS: readonly HelmPlugin[] = [
+  {
+    architectures: { arm64: "arm64", x64: "amd64" },
+    checksums: {
+      arm64: "c66062713cd3cbb1a80d7098bd1d4a48db8438f56b43fb6377df65447f93f8de",
+      x64: "48e86ecc1467b009630e5954375e5d8494139f73b466df5fe8c04fa45b634939",
+    },
+    downloadUrl:
+      "https://github.com/helm-unittest/helm-unittest/releases/download/v{version}/helm-unittest-linux-{architecture}-{version}.tgz",
+    name: "unittest",
+    software: "helm-unittest",
+    version: "1.2.1",
+  },
+];
+
+/** The names `software` is given to install those plugins. */
+export const HELM_PLUGIN_NAMES: ReadonlySet<string> = new Set(
+  HELM_PLUGINS.map(({ software }) => software),
+);
+
+/** The names of those Go programs. */
+export const GO_TOOL_NAMES: ReadonlySet<string> = new Set(
+  GO_TOOLS.map(({ name }) => name),
+);
+
 /** The name that asks for PostgreSQL 18's `pg_dump` and `pg_restore`. */
 export const POSTGRES_CLIENT_NAME = "postgres-client";
 
@@ -76,9 +126,19 @@ export const ARCHIVE_TOOL_NAMES: ReadonlySet<string> = new Set(
   RELEASE_ARCHIVE_TOOLS.map(({ name }) => name),
 );
 
+/** Each project group and the tools its targets need. */
+export const SOFTWARE_GROUPS: Readonly<Record<string, readonly string[]>> = {
+  configuration: ["gitleaks", "trivy", "actionlint"],
+  infrastructure: ["kubeconform", "kube-linter", "pluto"],
+  persistence: [POSTGRES_CLIENT_NAME],
+};
+
 /** Every name `software` accepts to install just that software. */
 export const NAMED_SOFTWARE: readonly string[] = [
+  ...Object.keys(SOFTWARE_GROUPS),
   ...ARCHIVE_TOOL_NAMES,
+  ...GO_TOOL_NAMES,
+  ...HELM_PLUGIN_NAMES,
   POSTGRES_CLIENT_NAME,
 ];
 

@@ -14,6 +14,7 @@ conrelid
 contype
 cves
 datname
+datreeio
 dbeaver
 dbname
 distroless
@@ -24,13 +25,16 @@ endgroup
 enochange
 ensurepath
 esockettimedout
+fairwindsops
 fkey
 fluentbit
 fuzzystrmatch
 GHSA
 gitleaks
 gitleaksignore
+gobin
 gojq
+gotoolchain
 gtrgm
 healthcheck
 healthz
@@ -39,7 +43,9 @@ iac
 inbucket
 isready
 kubeconfig
+kubeconform
 kubectl
+kubelet
 kubernetes
 libpq
 lockfiles
@@ -82,9 +88,12 @@ regclass
 regconfig
 resolv
 retag
+rhysd
 SEARCHPATH
+seccomp
 sendgrid
 signups
+stackrox
 STDSTRINGS
 storageclasses
 superkey
@@ -109,3 +118,5 @@ uuidv
 Virtio
 vonage
 workos
+yannh
+zizmor

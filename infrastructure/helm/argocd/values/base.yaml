@@ -1,0 +1,94 @@
+# Default values for argocd: one Argo CD Application per entry.
+# Repository-backed entries use path and valueFiles, relative to the repository root and the chart path.
+repoURL: https://github.com/organizzolini/codebase.git
+targetRevision: main
+
+applications:
+  - name: cert-manager
+    syncWave: 0
+    namespace: cert-manager
+    createNamespace: true
+    serverSideApply: true
+    chart:
+      repoURL: https://charts.jetstack.io
+      name: cert-manager
+      version: 1.21.3
+    helmParameters:
+      - name: crds.enabled
+        value: "true"
+    helmValues:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+      webhook:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+          limits:
+            memory: 64Mi
+      cainjector:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 128Mi
+      startupapicheck:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 16Mi
+          limits:
+            memory: 64Mi
+
+  - name: cloudnative-pg
+    syncWave: 1
+    namespace: cnpg-system
+    createNamespace: true
+    # Its CRDs exceed the last-applied annotation limit of client-side apply.
+    serverSideApply: true
+    chart:
+      repoURL: https://cloudnative-pg.github.io/charts
+      name: cloudnative-pg
+      version: 0.29.1
+    helmValues:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+
+  - name: plugin-barman-cloud
+    syncWave: 2
+    namespace: cnpg-system
+    createNamespace: true
+    chart:
+      repoURL: https://cloudnative-pg.github.io/charts
+      name: plugin-barman-cloud
+      version: 0.8.1
+    helmValues:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+
+  - name: postgres
+    syncWave: 3
+    namespace: organizzolini
+    path: projects/common/persistence/infrastructure/helm/postgres
+    valueFiles:
+      - values/base.yaml
+
+  - name: cloudflared
+    syncWave: 4
+    namespace: organizzolini
+    path: infrastructure/helm/cloudflared
+    valueFiles:
+      - values/base.yaml

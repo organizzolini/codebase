@@ -7,4 +7,4 @@ export const DOCKER_DAEMON_READINESS_ATTEMPTS = 30;
 export const DOCKER_DAEMON_LOG_PATH = ".local/state/dockerd.log";
 
 /** The Nx target that starts the local Postgres container. */
-export const POSTGRES_UP_TARGET = "infrastructure:postgres:up";
+export const POSTGRES_UP_TARGET = "persistence:postgres:up";

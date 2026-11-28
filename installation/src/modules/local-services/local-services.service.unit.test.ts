@@ -21,7 +21,7 @@ import type {
 import type { TemporaryWorkspace } from "../../../testing/temporary-workspace";
 
 const DOCKER_INFO = "docker info";
-const POSTGRES_UP = "pnpm exec nx run infrastructure:postgres:up";
+const POSTGRES_UP = "pnpm exec nx run persistence:postgres:up";
 
 describe(LocalServicesService, () => {
   let workspace: TemporaryWorkspace;

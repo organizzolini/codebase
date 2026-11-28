@@ -67,6 +67,22 @@ testing/
   setup.ts, mocks.ts                # Vitest setup and mocks
 ```
 
+## Infrastructure
+
+`infrastructure/helm/postgres` is the shared PostgreSQL chart (CloudNativePG
+`Cluster`, `Pooler`, backups), which Argo CD installs from this path and
+`deployment:helm-render` renders with every other chart. Its helm-unittest suite
+runs in `deployment:helm-test`. Central infrastructure, such as Terraform and
+the Argo CD application tree, stays in the root `infrastructure` project.
+
+`infrastructure/docker/docker-compose.yml` is the local Postgres service
+(`nx run persistence:postgres:up`, `down`, `recreate`), with its init script
+inline; `infrastructure/terraform/postgres-backups-bucket` and
+`postgres-backups-secret` are the Terraform modules the `linode` and
+`organizzolini` roots instantiate for the backups bucket, its key, and the
+`postgres-backups` Secret. Their resource addresses moved from those roots, so
+the roots keep `moved` blocks; never drop one.
+
 ## Rules this package holds
 
 - **Never read an unprefixed `POSTGRES_*` variable.** They are the shared

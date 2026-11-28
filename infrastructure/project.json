@@ -1,9 +1,10 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": ["caelundas-api", "caelundas-db", "persistence"],
   "name": "infrastructure",
   "projectType": "library",
   "sourceRoot": "infrastructure",
-  "tags": ["language:infrastructure", "type:package"],
+  "tags": ["language:infrastructure", "type:infrastructure"],
   "targets": {
     "compose-config": {
       "cache": false,
@@ -16,21 +17,6 @@
     },
     "format-code": {},
     "guard-code": {},
-    "helm-lint": {
-      "cache": true,
-      "description": "Lint the kubernetes-job Helm chart against its base values. Part of lint-code, so the Lint leg of continuous-integration.yml runs it. Requires helm on PATH (the devcontainer installs it; the GitHub-hosted runners ship it).",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/helm/**/*",
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "helm lint {projectRoot}/helm/kubernetes-job --values {projectRoot}/helm/kubernetes-job/values/base.yaml",
-        "cwd": "{workspaceRoot}"
-      }
-    },
     "lint-code": {},
     "markdown-lint": {},
     "open-webui": {
@@ -53,25 +39,6 @@
       }
     },
     "oxfmt": {},
-    "postgres": {
-      "configurations": {
-        "down": {
-          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml down postgres"
-        },
-        "recreate": {
-          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml down -v postgres && docker compose -f {projectRoot}/docker/docker-compose.yml up -d postgres"
-        },
-        "up": {
-          "command": "docker compose -f {projectRoot}/docker/docker-compose.yml up -d postgres"
-        }
-      },
-      "defaultConfiguration": "up",
-      "description": "Start, stop, or recreate the local PostgreSQL container (recreate removes the volume)",
-      "executor": "nx:run-commands",
-      "options": {
-        "cwd": "{workspaceRoot}"
-      }
-    },
     "searxng": {
       "configurations": {
         "down": {
@@ -91,7 +58,6 @@
         "cwd": "{workspaceRoot}"
       }
     },
-    "secure-code": {},
     "spell-check": {},
     "terraform": {
       "cache": false,
@@ -122,6 +88,9 @@
         },
         "openrouter": {
           "cwd": "{projectRoot}/terraform/openrouter"
+        },
+        "organizzolini": {
+          "cwd": "{projectRoot}/terraform/organizzolini"
         }
       },
       "defaultConfiguration": "openrouter",
@@ -131,7 +100,7 @@
           "target": "terraform-init"
         }
       ],
-      "description": "Apply a Terraform root (--configuration=openrouter, github, or linode), creating, updating, and deleting what a fresh plan finds. Needs the terraform-plan variables. Run by the Continuous Deployment workflow on main; run it locally only on purpose.",
+      "description": "Apply a Terraform root (--configuration=openrouter, github, linode, or organizzolini), creating, updating, and deleting what a fresh plan finds. Needs the terraform-plan variables. Run by the Continuous Deployment workflow on main; run it locally only on purpose.",
       "executor": "nx:run-commands",
       "options": {
         "command": "terraform apply -input=false -auto-approve"
@@ -139,16 +108,17 @@
     },
     "terraform-format": {
       "cache": true,
-      "description": "Check that the OpenRouter, GitHub, and Linode Terraform is formatted. Part of lint-code. Requires terraform on PATH (the devcontainer installs it; CI uses hashicorp/setup-terraform).",
+      "description": "Check that the OpenRouter, GitHub, Linode, and Organizzolini Terraform roots, and the modules the projects keep under their own infrastructure/terraform folders, are formatted. Part of lint-code. Requires terraform on PATH (the devcontainer installs it; CI uses hashicorp/setup-terraform).",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/terraform/{openrouter,github,linode}/**/*.tf",
+        "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
+        "{workspaceRoot}/projects/*/*/infrastructure/terraform/**/*.tf",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "terraform fmt -check -diff -recursive openrouter github linode",
+        "command": "terraform fmt -check -diff -recursive openrouter github linode organizzolini ../../projects/*/*/infrastructure/terraform",
         "cwd": "{projectRoot}/terraform"
       }
     },
@@ -163,10 +133,13 @@
         },
         "openrouter": {
           "cwd": "{projectRoot}/terraform/openrouter"
+        },
+        "organizzolini": {
+          "cwd": "{projectRoot}/terraform/organizzolini"
         }
       },
       "defaultConfiguration": "openrouter",
-      "description": "Initialize a Terraform root (--configuration=openrouter, github, or linode) against its Linode Object Storage backend. Needs TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY.",
+      "description": "Initialize a Terraform root (--configuration=openrouter, github, linode, or organizzolini) against its Linode Object Storage backend. Needs TF_STATE_BUCKET, AWS_ENDPOINT_URL_S3, AWS_ACCESS_KEY_ID, and AWS_SECRET_ACCESS_KEY.",
       "executor": "nx:run-commands",
       "options": {
         "command": "terraform init -input=false -reconfigure -backend-config=\"bucket=$TF_STATE_BUCKET\""
@@ -183,6 +156,9 @@
         },
         "openrouter": {
           "cwd": "{projectRoot}/terraform/openrouter"
+        },
+        "organizzolini": {
+          "cwd": "{projectRoot}/terraform/organizzolini"
         }
       },
       "defaultConfiguration": "openrouter",
@@ -192,7 +168,7 @@
           "target": "terraform-init"
         }
       ],
-      "description": "Plan a Terraform root (--configuration=openrouter, github, or linode) and write plan.tfplan beside it, without changing anything. Needs the terraform-init variables plus TF_VAR_openrouter_management_key.",
+      "description": "Plan a Terraform root (--configuration=openrouter, github, linode, or organizzolini) and write plan.tfplan beside it, without changing anything. Needs the terraform-init variables plus TF_VAR_openrouter_management_key.",
       "executor": "nx:run-commands",
       "options": {
         "command": "terraform plan -input=false -lock=false -out=plan.tfplan"
@@ -200,33 +176,20 @@
     },
     "terraform-validate": {
       "cache": true,
-      "description": "Validate the OpenRouter, GitHub, and Linode Terraform without a backend or credentials. Part of lint-code. Requires terraform on PATH and downloads the provider, so it needs network access.",
+      "description": "Validate the OpenRouter, GitHub, Linode, and Organizzolini Terraform roots, and the modules the projects keep under their own infrastructure/terraform folders, without a backend or credentials, then run the unit tests (terraform test, against mock providers) of each root or module that has a tests folder. One target, because validate and test both run terraform init in the same directories, and concurrent inits corrupt .terraform and the lock file. Part of lint-code. Requires terraform on PATH and downloads the providers, so it needs network access.",
       "executor": "nx:run-commands",
       "inputs": [
-        "{projectRoot}/terraform/{openrouter,github,linode}/**/*.tf",
+        "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/**/*.tf",
+        "{projectRoot}/terraform/{openrouter,github,linode,organizzolini}/tests/**/*",
+        "{workspaceRoot}/projects/*/*/infrastructure/terraform/**/*.tf",
+        "{workspaceRoot}/projects/*/*/infrastructure/terraform/*/tests/**/*",
         {
           "externalDependencies": []
         }
       ],
       "options": {
-        "command": "for module in openrouter github linode; do (cd $module && terraform init -input=false -backend=false && terraform validate) || exit 1; done",
+        "command": "for module in openrouter github linode organizzolini ../../projects/*/*/infrastructure/terraform/*; do (cd $module && terraform init -input=false -backend=false && terraform validate && if [ -d tests ]; then terraform test; fi) || exit 1; done",
         "cwd": "{projectRoot}/terraform"
-      }
-    },
-    "trivy-config": {
-      "cache": true,
-      "description": "Scan Terraform infrastructure code for misconfigurations using Trivy. Identical to what the Secure check runs, so a local run reproduces CI exactly. Requires trivy on PATH (the devcontainer installs it; otherwise `brew install trivy`).",
-      "executor": "nx:run-commands",
-      "inputs": [
-        "{projectRoot}/terraform/**/*.tf",
-        "{workspaceRoot}/configuration/security/trivyignore",
-        {
-          "externalDependencies": []
-        }
-      ],
-      "options": {
-        "command": "trivy config {projectRoot}/terraform --format table --severity CRITICAL,HIGH --exit-code 1 --ignorefile configuration/security/trivyignore",
-        "cwd": "{workspaceRoot}"
       }
     },
     "yaml-lint": {}
