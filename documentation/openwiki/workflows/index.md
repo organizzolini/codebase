@@ -1,6 +1,6 @@
 # Files
 
-- [CI/CD Pipelines](ci-cd.md)
+- [CI/CD Pipelines](ci-cd.md) - Documents the GitHub Actions workflows (continuous-integration, continuous-deployment, continuous-compliance, refresh-documentation, upgrade-dependencies), the setup-codebase and cleanup-codebase composite actions, and the fully automated release process on merge to main.
 - [Code Quality Gates](code-quality.md) - Documents the IC-Suite quality gates (callidescope depth/breadth, codependix boundaries, codometer limits, coinagerie glossary, conformetry conformance) and their integration into CI via Nx targets.
 - [Development Workflow](development.md) - End-to-end development workflow covering the 8-step agent process, project-scoped work rules, Nx commands, code validation gates, pull request compliance, and integration procedures.
 - [Release Process](release.md) - Documents the fully automated release pipeline on merge to main: Nx release determines ic-suite package versions from conventional commits, semantic-release bumps root version and creates GitHub release, packages are tagged and published to npm with provenance, then mirrored to GitHub Packages. Explains the dual versioning scheme (per-package + root).
