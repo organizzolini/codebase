@@ -128,7 +128,7 @@ describe(MarkdownReportService, () => {
 
   it("draws a mermaid diagram instead of a tree when asked to", () => {
     const rendered = service.renderProjectSection({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 3,
       rendering: "diagram",
@@ -200,19 +200,19 @@ describe(MarkdownReportService, () => {
   it("opens a project section with the configured heading", () => {
     expect(
       service.renderProjectSection({
-        heading: "## 🔭 Callidescope",
+        heading: "## 🔬 Callidescope",
         limits: buildProjectLimitsLookup(),
         previewCount: 3,
         rendering: "tree",
         report: report([stack({ entry: "Resolver.read" })]),
       }),
-    ).toContain("## 🔭 Callidescope");
+    ).toContain("## 🔬 Callidescope");
   });
 
   it("names the project a section describes", () => {
     expect(
       service.renderProjectSection({
-        heading: "## 🔭 Callidescope",
+        heading: "## 🔬 Callidescope",
         limits: buildProjectLimitsLookup(),
         previewCount: 3,
         rendering: "tree",
@@ -223,7 +223,7 @@ describe(MarkdownReportService, () => {
 
   it("reports a project's counts and breadth", () => {
     const rendered = service.renderProjectSection({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 3,
       rendering: "tree",
@@ -238,7 +238,7 @@ describe(MarkdownReportService, () => {
 
   it("names the call-stacks section as depth, distinct from breadth", () => {
     const rendered = service.renderProjectSection({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 3,
       rendering: "tree",
@@ -251,7 +251,7 @@ describe(MarkdownReportService, () => {
   it("heads a whole run and counts the stacks over the depth limit", () => {
     const rendered = service.renderRun({
       description: undefined,
-      heading: "# 🔭 Callidescope",
+      heading: "# 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 3,
       rendering: "tree",
@@ -260,14 +260,14 @@ describe(MarkdownReportService, () => {
       }),
     });
 
-    expect(rendered).toContain("# 🔭 Callidescope");
+    expect(rendered).toContain("# 🔬 Callidescope");
     expect(rendered).toContain("## Call stacks over the depth limit (1)");
   });
 
   it("heads a run's wide-callable section with its count", () => {
     const rendered = service.renderRun({
       description: undefined,
-      heading: "# 🔭 Callidescope",
+      heading: "# 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 3,
       rendering: "tree",
@@ -292,20 +292,20 @@ describe(MarkdownReportService, () => {
   it("places a destination's description under the heading", () => {
     const rendered = service.renderRun({
       description: "Traced on every release.",
-      heading: "# 🔭 Callidescope",
+      heading: "# 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 3,
       rendering: "tree",
       result: buildEmptyCallGraphResult(),
     });
 
-    expect(rendered).toContain("# 🔭 Callidescope\n\nTraced on every release.");
+    expect(rendered).toContain("# 🔬 Callidescope\n\nTraced on every release.");
   });
 
   it("writes its subsections one level below the heading it was given", () => {
     const rendered = service.renderRun({
       description: undefined,
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 3,
       rendering: "tree",
@@ -333,7 +333,7 @@ describe(MarkdownReportService, () => {
     expect(
       service.renderRun({
         description: undefined,
-        heading: "# 🔭 Callidescope",
+        heading: "# 🔬 Callidescope",
         limits: buildProjectLimitsLookup(),
         previewCount: 3,
         rendering: "tree",
@@ -368,7 +368,7 @@ describe(MarkdownReportService, () => {
     const deepStacks = [{ ...stack({ entry: "Resolver.read" }), limit: 1 }];
     const run = service.renderRun({
       description: undefined,
-      heading: "# 🔭 Callidescope",
+      heading: "# 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 3,
       rendering: "tree",
@@ -422,11 +422,11 @@ describe(MarkdownReportService, () => {
     expect(rendered).toContain("**1. `Resolver.read`** — depth 2");
   });
 
-  // 🔭 A project's own limits
+  // 🔬 A project's own limits
 
   it("states both limits a project declared for itself", () => {
     const rendered = service.renderProjectSection({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: limitsLookup({
         maximumBreadth: 7,
         maximumDepth: 4,
@@ -447,7 +447,7 @@ describe(MarkdownReportService, () => {
     // Breadth's usual case. Printing the workspace's number, or any number,
     // would claim a gate this project does not have.
     const rendered = service.renderProjectSection({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: limitsLookup({
         maximumBreadth: undefined,
         maximumDepth: 4,
@@ -466,7 +466,7 @@ describe(MarkdownReportService, () => {
     // Through the same `limitsFor` the index and the gate read, so a project's
     // own block cannot disagree with the workspace's view of that project.
     const rendered = service.renderProjectSection({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: buildProjectLimitsLookup({
         byProject: { example: 3 },
         maximumDepth: 17,
@@ -483,7 +483,7 @@ describe(MarkdownReportService, () => {
 
   it("gives a wide callable a row naming its breadth and direct callees", () => {
     const rendered = service.renderProjectSection({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 3,
       rendering: "tree",
@@ -516,7 +516,7 @@ describe(MarkdownReportService, () => {
 
   it("shows every breadth row openly while they fit in the preview", () => {
     const rendered = service.renderProjectSection({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 3,
       rendering: "tree",
@@ -535,7 +535,7 @@ describe(MarkdownReportService, () => {
 
   it("hides the breadth rows past the preview behind a disclosure", () => {
     const rendered = service.renderProjectSection({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 1,
       rendering: "tree",
@@ -555,7 +555,7 @@ describe(MarkdownReportService, () => {
 
   it("still publishes the hidden breadth rows in full", () => {
     const rendered = service.renderProjectSection({
-      heading: "## 🔭 Callidescope",
+      heading: "## 🔬 Callidescope",
       limits: buildProjectLimitsLookup(),
       previewCount: 1,
       rendering: "tree",

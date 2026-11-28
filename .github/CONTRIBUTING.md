@@ -265,7 +265,7 @@ Every pull request runs two workflows, 🧑‍🎤 Continuous Integration and �
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | 🧑‍⚕️ Static                | Typecheck and type coverage, formatting, spelling, markdown and YAML, linting, dead code, and dependency checks                                                | `nx affected --target=typecheck-code,format-code,lint-code,deprecate-code --configuration=check` |
 | 💂 Guard                 | Catalog manifests, glossaries, the lockfile, project ports, the pull request template, the README project table, TypeORM migration SQL, and VS Code extensions | `nx affected --target=guard-code`                                                                |
-| 🔭 Callidescope Restrict | Call-stack depth and breadth limits                                                                                                                            | `nx affected --target=callidescope-restrict`                                                     |
+| 🔬 Callidescope Restrict | Call-stack depth and breadth limits                                                                                                                            | `nx affected --target=callidescope-restrict`                                                     |
 | 🕸️ Codependix Bound      | Dependency boundary rules                                                                                                                                      | `nx affected --target=codependix-bound`                                                          |
 | ⏲️ Codometer Limit       | The codometer limits that need no build: comment budgets and directory breadth and depth                                                                       | `nx affected --target=codometer-limit`                                                           |
 | 👔 Conformetry Validate  | Generated code against the templates it came from                                                                                                              | `nx affected --target=conformetry-validate`                                                      |
@@ -380,8 +380,8 @@ Both signing checks are run by Husky already — do not invoke `scripts/git/` si
 
 Worktrees are the normal way to run several branches side by side here, and three traps are specific to this repository.
 
-- **`pnpm-lock.yaml` goes dirty on its own.** `pnpm install` or `lint-code --write` rewrites the `projects/JimmyPaolini` entry, because a placeholder `package.json` is inconsistently present across checkouts. Revert the lockfile rather than trying to reconcile it.
-- **Never run `git submodule update --init` for `projects/JimmyPaolini`.** That submodule is deliberately left uninitialized everywhere, locally and in CI. A `-` prefix in `git submodule status` is expected here, not broken.
+- **`pnpm-lock.yaml` goes dirty on its own.** `pnpm install` or `lint-code --write` rewrites the `projects/identity` entry, because a placeholder `package.json` is inconsistently present across checkouts. Revert the lockfile rather than trying to reconcile it.
+- **Never run `git submodule update --init` for `projects/identity`.** That submodule is deliberately left uninitialized everywhere, locally and in CI. A `-` prefix in `git submodule status` is expected here, not broken.
 - **The stash stack is shared with every other worktree.** A bare `git stash pop` can take someone else's work. Prefer a temporary commit, or `git stash push -u -m "<unique-tag>"` and `git stash apply <sha>`.
 
 The branch name is not free-form in a worktree either — derive one from the tables below and validate it before creating anything, since an unvalidated branch cannot be pushed. If the branch already exists locally, attach a worktree to it rather than creating a second branch. See [using-git-worktrees](../.agents/skills/using-git-worktrees/SKILL.md).
@@ -466,10 +466,10 @@ Commits are validated by commitlint through Husky. See [commit-code](.agents/ski
 | `deployment`     | Deployment CLI: the CI release steps                                                                            |
 | `deployments`    | GitHub Actions workflows and CI/CD pipeline configuration                                                       |
 | `documentation`  | Markdown docs, skills, planning files, and AGENTS.md files                                                      |
+| `identity`       | Static GitHub profile README project (markdown and assets)                                                      |
 | `infrastructure` | Helm charts, Terraform configs, and Kubernetes resources                                                        |
 | `installation`   | Developer-machine setup: environment files, dependencies, shell config, software                                |
 | `integration`    | CI plumbing: steps around a CI job (affected run, Nx task-cache database)                                       |
-| `JimmyPaolini`   | Static GitHub profile README project (markdown and assets)                                                      |
 | `lexico`         | TanStack Start SSR Latin dictionary web app                                                                     |
 | `presentation`   | Shared React/shadcn component library                                                                           |
 | `lexico-db`      | Shared TypeORM entities and GraphQL types                                                                       |

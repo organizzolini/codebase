@@ -187,7 +187,7 @@ describe(EntriesService, () => {
     });
 
     expect(logger.info).toHaveBeenCalledWith(
-      "🔭 Resolved entry points",
+      "🔬 Resolved entry points",
       undefined,
       { total: 1 },
     );
@@ -209,7 +209,7 @@ describe(EntriesService, () => {
     });
 
     expect(logger.info).toHaveBeenCalledWith(
-      "🔭 Resolved entry points",
+      "🔬 Resolved entry points",
       undefined,
       { total: 0 },
     );

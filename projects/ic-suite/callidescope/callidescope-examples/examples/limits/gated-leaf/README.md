@@ -10,7 +10,7 @@ nx run callidescope-examples:examples
 ```
 
 This directory is its own project, so the run publishes a
-`## 🔭 Callidescope` section for it, and that section is
+`## 🔬 Callidescope` section for it, and that section is
 [at the bottom of this guide](#-callidescope). The limits behind it are in
 [`output/report.json`](../../../output/report.json): `deepStacks` carries this
 stack at `"limit": 3` and `wideCallables` carries `GatedLeafService.read` at
@@ -77,7 +77,7 @@ node --import @swc-node/register/esm-register projects/ic-suite/callidescope/cal
 ```
 
 ```text
-🔭 Found callables calling too much directly {"callables":["GatedLeafService.read"],"count":1,"widest":3}
+🔬 Found callables calling too much directly {"callables":["GatedLeafService.read"],"count":1,"widest":3}
 ```
 
 Scope the same run to a set of projects none of which declares a numeric
@@ -88,7 +88,7 @@ so joins the closure of nearly everything else in this repository — and the ru
 refuses outright:
 
 ```text
-🔭 Rejected the configuration {"reasons":["--check breadth requires at least one project
+🔬 Rejected the configuration {"reasons":["--check breadth requires at least one project
 in scope to declare limits.maximumBreadth. Add `limits: { maximumBreadth: <number> }` to
 that project's callidescope.config.ts before running --check breadth."]}
 ```
@@ -107,7 +107,7 @@ The proof is in what is written against what is traced. Three files sit in
 this directory — [`gated-leaf.ts`](gated-leaf.ts),
 [`configuration/ic-suite/callidescope.config.ts`](configuration/ic-suite/callidescope.config.ts), and
 [`gated-leaf.generated.ts`](gated-leaf.generated.ts) — and the `Files` row in
-the `## 🔭 Callidescope` section [at the bottom of this
+the `## 🔬 Callidescope` section [at the bottom of this
 guide](#-callidescope) reads 2: the generated one never joins the count,
 because its callables were never collected. Nothing in this project's own
 `callidescope.config.ts` names the workspace root or any path outside this
@@ -151,7 +151,7 @@ Nothing left — back to the [package guide](../../../README.md#acting-on-a-find
 
 <!-- callidescope:start -->
 
-## 🔭 Callidescope
+## 🔬 Callidescope
 
 Call stacks traced through `projects/ic-suite/callidescope/callidescope-examples/examples/limits/gated-leaf`, deepest first. Each frame shows what it takes, what it returns, and what its documentation says.
 

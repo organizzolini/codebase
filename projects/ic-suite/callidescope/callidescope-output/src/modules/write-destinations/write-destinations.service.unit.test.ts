@@ -53,7 +53,7 @@ function buildDestination(
   return {
     description: undefined,
     endMarker: "<!-- END -->",
-    heading: "## 🔭 Callidescope",
+    heading: "## 🔬 Callidescope",
     path: destinationPath,
     previewCount: 3,
     render: undefined,

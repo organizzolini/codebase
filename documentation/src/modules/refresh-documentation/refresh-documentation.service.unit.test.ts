@@ -215,6 +215,60 @@ describe(RefreshDocumentationService, () => {
     expect(standardError).toHaveBeenCalledWith("Error: spawn pnpm ENOENT\n");
   });
 
+  describe("pages a run skips", () => {
+    const skipping = (skipped: number, total: number): string =>
+      [
+        ...Array.from(
+          { length: total },
+          (_page, i) =>
+            `Documenting page ${String(i + 1)} of ${String(total)} · /${String(i)}.md`,
+        ),
+        ...Array.from(
+          { length: skipped },
+          (_page, i) =>
+            `/${String(i)}.md was restored after its worker exited without submitting.`,
+        ),
+        "",
+      ].join("\n");
+
+    it("runs again when a clean run skipped pages, and stops once none are skipped", async () => {
+      stageRun({ stdout: skipping(2, 3) });
+      stageRun({ stdout: skipping(0, 2) });
+
+      await expect(service.refresh()).resolves.toBe(true);
+      expect(spawnMock).toHaveBeenCalledTimes(2);
+      expect(setTimeoutMock).toHaveBeenCalledExactlyOnceWith(120_000);
+    });
+
+    it("fails when every attempt skipped every page", async () => {
+      stageRuns(4, { stdout: skipping(3, 3) });
+
+      await expect(service.refresh()).resolves.toBe(false);
+      expect(spawnMock).toHaveBeenCalledTimes(4);
+    });
+
+    it("reports the pages refreshed and skipped in the job summary and step output", async () => {
+      vi.stubEnv("GITHUB_STEP_SUMMARY", "/runner/summary.md");
+      vi.stubEnv("GITHUB_OUTPUT", "/runner/output");
+      stageRuns(4, { stdout: skipping(30, 35) });
+      stageGitStatus(" M documentation/openwiki/quickstart.md\n");
+      await service.refresh();
+
+      expect(appendFileSyncMock).toHaveBeenCalledWith(
+        "/runner/summary.md",
+        expect.stringContaining(
+          "Refreshed 5 of 35 pages. 30 skipped, to be reconsidered on the next run.",
+        ),
+        "utf8",
+      );
+      expect(appendFileSyncMock).toHaveBeenCalledWith(
+        "/runner/output",
+        "wiki-changed=true\npages-refreshed=5\npages-total=35\n",
+        "utf8",
+      );
+    });
+  });
+
   describe("rate limits", () => {
     const now = Date.parse("2026-11-22T21:36:00.000Z");
     const resetting = (milliseconds: number): string =>
@@ -262,12 +316,12 @@ describe(RefreshDocumentationService, () => {
 
       expect(appendFileSyncMock).toHaveBeenCalledWith(
         "/runner/summary.md",
-        expect.stringContaining("| 2 | ✅ Succeeded | 1 | — |"),
+        expect.stringContaining("| 2 | ✅ Succeeded | 1 | 0 | — |"),
         "utf8",
       );
       expect(appendFileSyncMock).toHaveBeenCalledWith(
         "/runner/summary.md",
-        expect.stringContaining("| 1 | ❌ Failed | 0 | — |"),
+        expect.stringContaining("| 1 | ❌ Failed | 0 | 0 | — |"),
         "utf8",
       );
     });
@@ -304,7 +358,7 @@ describe(RefreshDocumentationService, () => {
 
       expect(appendFileSyncMock).toHaveBeenCalledExactlyOnceWith(
         "/runner/output",
-        `wiki-changed=${published}\n`,
+        `wiki-changed=${published}\npages-refreshed=0\npages-total=0\n`,
         "utf8",
       );
       expect(spawnSyncMock).toHaveBeenCalledWith(
@@ -332,7 +386,7 @@ describe(RefreshDocumentationService, () => {
 
       expect(appendFileSyncMock).toHaveBeenCalledWith(
         "/runner/output",
-        "wiki-changed=true\n",
+        "wiki-changed=true\npages-refreshed=0\npages-total=0\n",
         "utf8",
       );
     });

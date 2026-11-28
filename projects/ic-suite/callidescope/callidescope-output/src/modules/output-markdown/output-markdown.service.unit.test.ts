@@ -28,7 +28,7 @@ function buildDestination(
   return {
     description: undefined,
     endMarker: "<!-- callidescope:end -->",
-    heading: "# 🔭 Callidescope",
+    heading: "# 🔬 Callidescope",
     path: filePath,
     previewCount: 3,
     render: undefined,
@@ -90,7 +90,7 @@ describe(OutputMarkdownService, () => {
     expect(written).not.toContain("old");
     expect(written).toContain("After.");
     expect(subjectLogger.info).toHaveBeenCalledWith(
-      "🔭 Wrote a report",
+      "🔬 Wrote a report",
       undefined,
       { path: path.resolve(filePath) },
     );
@@ -111,7 +111,7 @@ describe(OutputMarkdownService, () => {
       "<!-- callidescope:start -->",
     );
     expect(subjectLogger.info).toHaveBeenCalledWith(
-      "🔭 Wrote a report",
+      "🔬 Wrote a report",
       undefined,
       { path: path.resolve(filePath) },
     );

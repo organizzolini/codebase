@@ -314,7 +314,7 @@
     ".github/copilot-instructions.md",
     ".github/skills/**",
     "projects/affirmancy/**",
-    "projects/JimmyPaolini/**",
+    "projects/identity/**",
     "**/CHANGELOG.md",
     "CLAUDE.md",
     "notepads/**",

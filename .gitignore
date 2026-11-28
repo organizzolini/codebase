@@ -47,7 +47,7 @@ projects/ic-suite/conformetry/conformetry-examples/examples/hooks/receipts
 *.ics
 
 # Subrepositories 🌳
-projects/JimmyPaolini
+projects/identity
 
 # Test Coverage 🧪
 coverage

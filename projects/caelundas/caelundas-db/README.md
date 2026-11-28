@@ -38,7 +38,7 @@ See [documentation/entity-relationship-diagram.md](documentation/entity-relation
 - [documentation/entity-relationship-diagram.md](documentation/entity-relationship-diagram.md): Generated entity relationship diagram
 - [documentation/metrics-facts.md](documentation/metrics-facts.md): The metrics facts, filters and groups, and the SQL for each metric
 
-## 🌌 Caelundas Database
+## 🔭 Caelundas Database
 
 **The calendar's shape.** The Postgres schema for
 [caelundas-cli](../caelundas-cli/README.md) and caelundas-api: the TypeORM

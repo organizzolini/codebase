@@ -89,7 +89,7 @@ describe(FileFilterService, () => {
 
     expect(filter.isExcluded("packages/example/src/a.ts")).toBe(false);
     expect(subjectLogger.warn).toHaveBeenCalledWith(
-      "🔭 Skipped a missing ignore file",
+      "🔬 Skipped a missing ignore file",
       undefined,
       { ignoreFile: "configuration/ic-suite/.callidescopeignore" },
     );
@@ -117,7 +117,7 @@ describe(FileFilterService, () => {
 
     expect(filter.isExcluded("packages/example/src/a.ts")).toBe(false);
     expect(subjectLogger.warn).toHaveBeenCalledWith(
-      "🔭 Skipped an unreadable ignore file",
+      "🔬 Skipped an unreadable ignore file",
       undefined,
       {
         ignorePath: path.join(

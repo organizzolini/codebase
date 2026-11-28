@@ -3,8 +3,6 @@
 [![Continuous Integration](https://github.com/Organizzolini/codebase/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/Organizzolini/codebase/actions/workflows/continuous-integration.yml)
 [![Continuous Deployment](https://github.com/Organizzolini/codebase/actions/workflows/continuous-deployment.yml/badge.svg)](https://github.com/Organizzolini/codebase/actions/workflows/continuous-deployment.yml)
 [![Continuous Compliance](https://github.com/Organizzolini/codebase/actions/workflows/continuous-compliance.yml/badge.svg)](https://github.com/Organizzolini/codebase/actions/workflows/continuous-compliance.yml)
-[![Version](https://img.shields.io/github/v/release/Organizzolini/codebase?logo=semanticrelease&label=Version)](https://github.com/Organizzolini/codebase/releases/latest)
-[![License](https://img.shields.io/github/license/Organizzolini/codebase?label=License)](LICENSE)
 
 ## 💾 Technology
 
@@ -132,7 +130,7 @@
 `││├` **[lexico-api](projects/lexico/lexico-api)** - Serves dictionary entries and literature\
 `││├` **[lexico-cli](projects/lexico/lexico-cli)** - Collects and loads dictionary and literature data\
 `││└` **[lexico-db](projects/lexico/lexico-db)** - Stores dictionary and literature data\
-`│├` 🛰️ **caelundas** — Finds astronomical events and creates calendars\
+`│├` 🔭 **caelundas** — Finds astronomical events and creates calendars\
 `││├` **[caelundas-web](projects/caelundas/caelundas-web)** - Browses astronomical events\
 `││├` **[caelundas-api](projects/caelundas/caelundas-api)** - Serves astronomical events\
 `││├` **[caelundas-cli](projects/caelundas/caelundas-cli)** - Finds astronomical events and produces calendars\
@@ -155,7 +153,7 @@
 `│││├` **[conformetry-core](projects/ic-suite/conformetry/conformetry-core)** - Shared generation and conformance contracts [![npm](https://img.shields.io/npm/v/@conformetry/core?logo=npm&label=npm)](https://www.npmjs.com/package/@conformetry/core)\
 `│││├` **[conformetry-agents](projects/ic-suite/conformetry/conformetry-agents)** - Guidance for using generation and conformance tools\
 `│││└` **[conformetry-examples](projects/ic-suite/conformetry/conformetry-examples)** - Examples of generation and conformance features\
-`││├` 🔭 **callidescope** — Traces call stacks and measures their depth and breadth\
+`││├` 🔬 **callidescope** — Traces call stacks and measures their depth and breadth\
 `│││├` **[callidescope-nx](projects/ic-suite/callidescope/callidescope-nx)** - Adds call stack checks to workspace projects [![npm](https://img.shields.io/npm/v/@callidescope/nx?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/nx)\
 `│││├` **[callidescope-cli](projects/ic-suite/callidescope/callidescope-cli)** - Traces call stacks and reports their depth [![npm](https://img.shields.io/npm/v/@callidescope/cli?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/cli)\
 `│││├` **[callidescope-configuration](projects/ic-suite/callidescope/callidescope-configuration)** - Resolves tracing limits and output [![npm](https://img.shields.io/npm/v/@callidescope/configuration?logo=npm&label=npm)](https://www.npmjs.com/package/@callidescope/configuration)\
@@ -198,12 +196,12 @@
 `││ └` **[coinagerie-examples](projects/ic-suite/coinagerie/coinagerie-examples)** - Examples of vocabulary collection features\
 `│├` 🔮 **[affirmancy](projects/affirmancy)** - Generates affirmations with an interactive agent\
 `│├` 🤝 **common** — Shared utilities across projects\
-`││├` **🐘 [persistence](projects/common/persistence)** - Shared database setup, migrations, migration SQL extraction, and testing utilities\
-`││├` **✉️ [interface](projects/common/interface)** - Shared application interface and pagination utilities\
-`││├` **🎨 [presentation](projects/common/presentation)** - Shared user interface components\
-`││├` **👀 [observability](projects/common/observability)** - Shared application logging\
-`││└` **🧪 [testing](projects/common/testing)** - Shared application testing utilities\
-`│└` **🧔‍♂️ [JimmyPaolini](projects/JimmyPaolini)** - Personal GitHub profile site\
+`││├` **🐘 [persistence](projects/common/persistence)** - Shared Postgres connections and migrations, plus table copy and graph commands\
+`││├` **✉️ [interface](projects/common/interface)** - Shared GraphQL package for APIs and their clients, in server and client modules\
+`││├` **🎨 [presentation](projects/common/presentation)** - Shared React component library built on shadcn/ui, Base UI, and Tailwind CSS\
+`││├` **👀 [observability](projects/common/observability)** - Shared NestJS logging on pino: JSON in production, readable output in development\
+`││└` **🧪 [testing](projects/common/testing)** - Shared test setup, temporary directories, mocks, and packed-package runners\
+`│└` **🧔‍♂️ [identity](projects/identity)** - Personal GitHub profile README\
 `├` **💾 [installation](installation)** - Sets up developer machines, devcontainers, and sessions, and checks each new session\
 `├` **🛠️ [configuration](configuration)** - Workspace tool configuration for linting, formatting, and types, run through Nx\
 `├` **📚 [documentation](documentation)** - Refreshes the generated OpenWiki from code and holds agent settings and reports\
