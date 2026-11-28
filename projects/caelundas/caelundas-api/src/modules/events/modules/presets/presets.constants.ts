@@ -36,7 +36,17 @@ const LONG_CYCLES: PresetGroup = {
     },
     {
       operator: TAG_OPERATORS.isAnyOf,
-      paths: ["Annual Cycle"],
+      paths: [
+        "Solstice",
+        "Equinox",
+        "Cross-Quarter Day",
+        "Hexadecan",
+        "Interval",
+        "Perihelion",
+        "Aphelion",
+        "Advancing",
+        "Retreating",
+      ],
       root: "Yearly",
     },
   ],
@@ -53,7 +63,7 @@ const MAJOR_ASPECTS: PresetRule = {
 const SIGN_STAYS: PresetRule = {
   operator: TAG_OPERATORS.isAnyOf,
   paths: ["Stay / Full Sign"],
-  root: "Sign",
+  root: "Ingress",
 };
 
 /** Presets in menu order; missing tags are skipped, not fatal. */
@@ -131,7 +141,7 @@ export const PRESETS: readonly Preset[] = [
         {
           operator: TAG_OPERATORS.isAnyOf,
           paths: ["Stay"],
-          root: "Sign",
+          root: "Ingress",
         },
       ],
     },
@@ -153,7 +163,7 @@ export const PRESETS: readonly Preset[] = [
       rules: [
         {
           operator: TAG_OPERATORS.isAnyOf,
-          paths: ["Daily Solar", "Daily Lunar", "Twilight"],
+          paths: ["Solar", "Lunar", "Twilight"],
           root: "Daily",
         },
       ],

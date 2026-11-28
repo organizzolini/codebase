@@ -8,6 +8,7 @@ export const TAG_ROOT = {
   body: "Body",
   daily: "Daily",
   eclipse: "Eclipse",
+  ingress: "Ingress",
   lunar: "Lunar",
   planetary: "Planetary",
   sign: "Sign",

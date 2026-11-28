@@ -46,17 +46,24 @@ export const DERIVED_OPERATORS = {
 } as const;
 
 /**
+ * The weekdays from Sunday, each with the planet it is named for.
+ */
+export const WEEKDAYS: readonly (readonly [string, string])[] = [
+  ["Sunday", "The Sun's day"],
+  ["Monday", "The Moon's day"],
+  ["Tuesday", "Mars's day"],
+  ["Wednesday", "Mercury's day"],
+  ["Thursday", "Jupiter's day"],
+  ["Friday", "Venus's day"],
+  ["Saturday", "Saturn's day"],
+];
+
+/**
  * The days of the week, numbered from Sunday, the API's numbering.
  */
-export const WEEKDAY_LABELS: readonly string[] = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
+export const WEEKDAY_LABELS: readonly string[] = WEEKDAYS.map(
+  ([label]) => label,
+);
 
 /**
  * Numeric field operators: equality, orderings, and a range.

@@ -114,6 +114,8 @@ export function CalendarMonthCell(
       </div>
       <CalendarOpenGroups
         day={day}
+        groupColors={groupColors}
+        grouping={grouping}
         groups={groups.slice(0, MONTH_GROUP_CAP)}
         timeZone={timeZone}
       />

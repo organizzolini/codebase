@@ -107,6 +107,21 @@ export const GLYPH_BY_TAG_NAME: Readonly<Record<string, string>> = {
   "Thirteenth Hexadecan": "❄️",
   "Vernal Equinox": "🌸",
   "Winter Solstice": "☃️",
+  // Ingresses, with the symbols their events carry
+  Ingress: "→",
+  Peak: "⛰",
+  // The twilights, with the symbols their events carry
+  "Astronomical Dawn": "🌠",
+  "Astronomical Dusk": "🌌",
+  "Astronomical Twilight": "🌌",
+  "Civil Dawn": "🌄",
+  "Civil Dusk": "🌇",
+  Daylight: "☀️",
+  "Nautical Dawn": "🌅",
+  "Nautical Dusk": "🌉",
+  "Nautical Twilight": "🌉",
+  Night: "🌃",
+  Twilight: "🌆",
   // Compound aspects: classes, patterns and stelliums by their bodies
   "3 Body": "✨",
   "4 Body": "🌟",

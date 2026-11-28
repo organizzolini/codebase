@@ -224,9 +224,9 @@ at the right. The menus' triggers carry an icon and no arrow. Times render in th
   (`CalendarAllDay`) and day headings through its render props.
 - Busy cells show **facet groups**, never per-event bars or kind counters:
   `groupCalendarEvents` puts each event under one group, so a cell's counts add
-  up. With the default Tags grouping it is the event's first tag root
+  up. With the default Tags grouping it is the event's first tag root in the API's order (`getRootOrder`)
   whose facet has `isDefaultGroup` (the data flags Body and
-  Temporality out; `getDefaultRoots`), because every root-level group overlapped
+  Temporality out, which come last), because every root-level group overlapped
   (3.5 groups an event) and Temporality held every event; with a grouping the link names it is
   the first key of its first level. Chips show the group's icon, name and count
   and open in place; the Sort strip's sorts order the groups and the events in

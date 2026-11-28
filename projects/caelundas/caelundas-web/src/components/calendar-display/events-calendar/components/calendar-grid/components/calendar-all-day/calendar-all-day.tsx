@@ -128,8 +128,11 @@ export function CalendarAllDay(
               </div>
             ) : (
               <CalendarOpenGroups
+                key={mode}
                 allOpen={mode === "expanded"}
                 day={column.day}
+                groupColors={groupColors}
+                grouping={grouping}
                 groups={column.groups}
                 showTime={false}
                 timeZone={timeZone}

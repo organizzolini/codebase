@@ -648,7 +648,7 @@ describe("calendar events service integration", () => {
         "Fire",
         "Fixed",
         "Positive",
-        "Sign",
+        "Zodiac",
       ]);
       await expect(countEdges()).resolves.toBe(edges);
       expect(under).toStrictEqual(["Aries", "Fire", "Leo"]);

@@ -293,7 +293,7 @@ pairwise conjunct bodies with three or more members.
   A retrograde re-entry across a sign boundary does not fire a peak ingress.
 - **Sign transit** is a body's stay in one sign, from its sign ingress to the
   next one, named like `Moon in Taurus`. It carries the ingress, sign, and body
-  tags, and classifies as `Sign / Stay / Full Sign` and `Temporality /
+  tags, and classifies as `Ingress / Stay / Full Sign` and `Temporality /
 Progressive`, so filtering by body, sign, or progressive finds it. A
   retrograde re-entry starts a new stay in the sign it left. Every body that has
   sign ingresses gets one, so a body is always in a sign.
@@ -301,8 +301,8 @@ Progressive`, so filtering by body, sign, or progressive finds it. A
 Aries`, and **peak transit** its stay in the first or second 15° of a sign,
   before or after the peak, named like `Sun in first half of Aries`. A decan
   transit runs between sign and decan ingresses, a peak transit between sign
-  and peak ingresses, and each classifies as `Sign / Stay / Decan Stay`
-  or `Half Stay`, with the decan or `Sign / Peak / Before Peak` or `After
+  and peak ingresses, and each classifies as `Ingress / Stay / Decan Stay`
+  or `Half Stay`, with the decan or `Ingress / Peak / Before Peak` or `After
 Peak` beside it. Each slice is read from the ephemeris at
   the change, not from the tags, since a retrograde body leaving a sign enters
   its last decan, and the second half, not the first.
@@ -371,18 +371,19 @@ this project, about ten of them at most, since every filter, group and sort menu
 on them. A root groups what one module family detects with the attributes that
 travel with it, and a tag with several parents is carried as several paths on
 the event, not as a node with two parents, so an Aries event carries
-`Sign / Aries`, `Sign / Element / Fire`, `Sign / Modality /
+`Sign / Zodiac / Aries`, `Sign / Element / Fire`, `Sign / Modality /
 Cardinal` and `Sign / Polarity / Positive` side by side:
 
 | Root          | Its nodes                                                                                                                                                                                                                                                                                                                                          |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Sign`        | The twelve signs, and `Element`, `Modality`, `Polarity`, `Decan`, `Peak`, a traditional planet's `Dignity` in the sign it enters, and the `Ingress` kinds                                                                                                                                                                                          |
+| `Sign`        | `Zodiac` (the twelve signs), `Element`, `Modality`, `Polarity`, and a traditional planet's `Dignity` in the sign it enters                                                                                                                                                                                                                         |
 | `Body`        | Every body under its class: `Luminary`, `Planet` (holding `Inner`, which holds `Personal` and `Social`, then `Outer`, `Benefic` and `Malefic`, and each planet directly), `Asteroid` or `Point`                                                                                                                                                    |
 | `Aspect`      | `Simple` (`Major`, `Minor` and `Specialty`) and `Compound` (`Triple`, `Quadruple`, `Quintuple`, `Sextuple` and `Stellium`) aspects by name, with their `Nature`, `Harmonic` (`Harmonic 1` to `Harmonic 12`) and `Phase` (`Exact`, the only phase stored); a compound pattern's `Focal Body` sits under `Compound`                                  |
 | `Lunar`       | The `Monthly Cycle`, with the Moon's phases, and its `Apsides`, with `Advancing` and `Retreating`                                                                                                                                                                                                                                                  |
 | `Planetary`   | `Direction` (the retrograde and direct periods), `Phase` (`Mercurian`, `Venusian` and `Martian`) and `Synodic Stage`, a node for each of `Mercury`, `Venus` and `Mars` holding that planet's own stages (`Widening`, `Closing` and so on, one tag a planet, so planets share stage names)                                                          |
-| `Daily`       | The `Daily Solar` and `Daily Lunar` cycles of a day, each with its `Rise`, `Set`, `Zenith` and `Nadir` (and the Moon's `Moon Up` and `Moon Down` spans), its `Twilight` events and spans, and its `Daylight` and `Night` (under `Daily Solar`)                                                                                                     |
-| `Yearly`      | The `Annual Cycle` (solstices, equinoxes, cross-quarter days, hexadecans, apsides, and the sixteen `Interval`s) and its `Season`                                                                                                                                                                                                                   |
+| `Daily`       | The `Solar` and `Lunar` cycles of a day, each with its `Rise`, `Set`, `Zenith` and `Nadir` (and the Moon's `Moon Up` and `Moon Down` spans), its `Twilight` events and spans, and its `Daylight` and `Night` (under `Solar`)                                                                                                                       |
+| `Yearly`      | The turning points of the Sun's year (solstices, equinoxes, cross-quarter days, hexadecans, apsides, and the sixteen `Interval`s) and its `Season`                                                                                                                                                                                                 |
+| `Ingress`     | How long a body stays in a sign: `Stay` (`Full Sign`, `Decan Stay`, `Half Stay`), with the `Decan` and `Peak` it is in                                                                                                                                                                                                                             |
 | `Eclipse`     | `Solar` and `Lunar` by type (`Total`, `Partial`, `Annular`), with their `Frame` (`Geocentric` or `Topocentric`) and `Phase`                                                                                                                                                                                                                        |
 | `Temporality` | `Perfective`, an instant in time, or `Progressive`, progressing over a duration of time, holding `Minutes`, `Hours`, `Days`, `Weeks`, `Months`, `Quarters`, `Years`, `Decades` and `Centuries`: the largest unit a span reaches (1 minute, 60 minutes, 24 hours, 7 days, 30 days, 91 days, 365 days, 3,650 days, 36,500 days), none for an instant |
 

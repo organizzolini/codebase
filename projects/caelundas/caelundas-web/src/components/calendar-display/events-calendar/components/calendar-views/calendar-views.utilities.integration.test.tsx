@@ -67,11 +67,15 @@ describe("calendar views", () => {
       api: withBusyEvents("2026-03-12T14:00:00.000Z", 400),
     });
 
-    // Each group of the day opens in place; the busy one's rows end in "+N more".
+    // Each group of the day opens in place, then the groups nested in it; the busy one's rows end in "+N more".
     const cell = await findDayCell("2026-03-12");
 
-    for (const chip of within(cell).getAllByTestId("calendar-group-chip")) {
-      fireEvent.click(chip);
+    for (let pass = 0; pass < 8; pass += 1) {
+      for (const chip of within(cell).getAllByTestId("calendar-group-chip")) {
+        if (chip.getAttribute("aria-expanded") === "false") {
+          fireEvent.click(chip);
+        }
+      }
     }
 
     fireEvent.click(

@@ -10,9 +10,14 @@ import type { SkeletonTableRow } from "./skeleton-table.types";
 export const TABLE_COLUMNS = "grid-cols-[18fr_20fr_13fr_13fr]";
 
 /**
- * The widths of the column head pills.
+ * The column head pills: a key and a width each.
  */
-export const TABLE_HEADS = ["w-18", "w-16", "w-16", "w-14"] as const;
+export const TABLE_HEADS = [
+  { key: "group", width: "w-18" },
+  { key: "name", width: "w-16" },
+  { key: "start", width: "w-16" },
+  { key: "end", width: "w-14" },
+] as const;
 
 /**
  * How far a group indents per level, in rem.

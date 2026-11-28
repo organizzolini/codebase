@@ -5,10 +5,14 @@ import { EVENT_SORT_KEYS } from "./calendar-groups-sort.constants";
 
 import type {
   GroupSort,
+  GroupSortKey,
   TagRanks,
 } from "../../../../calendar-query/calendar-group-strip/components/event-group-tree/event-group-tree.types";
 import type { CalendarEventRecord } from "../calendar-loader/calendar-records.types";
-import type { CalendarEventGroup } from "./calendar-groups.types";
+import type {
+  CalendarEventGroup,
+  MeasuredGroup,
+} from "./calendar-groups.types";
 
 /**
  * Orders groups and their events by the sorts as the table does; as they came when none applies.
@@ -25,7 +29,7 @@ export function sortCalendarGroups(
   }
 
   // Measured once per group, so comparing two of them calls nothing deeper.
-  const measures = new Map<string, (number | string)[]>();
+  const rows: MeasuredGroup[] = [];
 
   for (const group of groups) {
     const values: (number | string)[] = [];
@@ -34,18 +38,16 @@ export function sortCalendarGroups(
       values.push(measureGroup(group, sort, ranks));
     }
 
-    measures.set(group.id, values);
+    rows.push({ group, values });
   }
 
-  numberTexts(measures, applicable.length);
-
-  const ordered = groups.toSorted((left, right) =>
-    compareGroups(applicable, measures, [left, right]),
-  );
+  numberTexts(rows, applicable.length);
 
   const result: CalendarEventGroup[] = [];
 
-  for (const group of ordered) {
+  for (const { group } of rows.toSorted((left, right) =>
+    compareValues(applicable, left.values, right.values),
+  )) {
     result.push({ ...group, events: orderEvents(group.events, applicable) });
   }
 
@@ -53,20 +55,15 @@ export function sortCalendarGroups(
 }
 
 /**
- * Orders two groups by their numbers or texts under each sort, later sorts breaking ties.
+ * Orders two groups by their numbers under each sort, later sorts breaking ties.
  */
-function compareGroups(
+function compareValues(
   sorts: readonly GroupSort[],
-  measures: ReadonlyMap<string, readonly (number | string)[]>,
-  pair: readonly [CalendarEventGroup, CalendarEventGroup],
+  left: readonly (number | string)[],
+  right: readonly (number | string)[],
 ): number {
-  const [left, right] = pair;
-  const leftValues = measures.get(left.id) ?? [];
-  const rightValues = measures.get(right.id) ?? [];
-
   for (const [index, sort] of sorts.entries()) {
-    const result =
-      Number(leftValues[index] ?? 0) - Number(rightValues[index] ?? 0);
+    const result = Number(left[index]) - Number(right[index]);
 
     if (result !== 0) {
       return SORT_SIGNS[sort.direction] * result;
@@ -120,32 +117,30 @@ function measureGroup(
 ): number | string {
   const { events } = group;
   const starts = events.map((event) => event.start.getTime());
-  const measures: Record<string, () => number | string> = {
+  const measures: Record<GroupSortKey, () => number | string> = {
     count: () => events.length,
     duration: () =>
       events.reduce((sum, event) => sum + event.durationMinutes, 0),
     end: () => Math.min(...events.map((event) => event.end.getTime())),
     first: () => Math.min(...starts),
+    metric: () => 0,
     name: () => group.label,
     order: () => group.rank,
     start: () => Math.min(...starts),
     tag: () => getTagPlace(group, sort, ranks),
   };
 
-  return measures[sort.key]?.() ?? 0;
+  return measures[sort.key]();
 }
 
 /**
  * Turns each text measure into its place among the texts, ordered naturally, so comparing two groups is a difference.
  */
-function numberTexts(
-  measures: ReadonlyMap<string, (number | string)[]>,
-  width: number,
-): void {
+function numberTexts(rows: readonly MeasuredGroup[], width: number): void {
   for (let index = 0; index < width; index += 1) {
     const texts = new Set<string>();
 
-    for (const values of measures.values()) {
+    for (const { values } of rows) {
       const value = values[index];
 
       if (typeof value === "string") {
@@ -155,7 +150,7 @@ function numberTexts(
 
     const ordered = [...texts].toSorted(compareNatural);
 
-    for (const values of measures.values()) {
+    for (const { values } of rows) {
       const value = values[index];
 
       if (typeof value === "string") {
@@ -182,13 +177,18 @@ function orderEvents(
 
   return events.toSorted((left, right) => {
     for (const sort of applicable) {
-      const differences: Record<string, number> = {
+      const differences: Record<GroupSortKey, number> = {
+        count: 0,
         duration: left.durationMinutes - right.durationMinutes,
         end: left.end.getTime() - right.end.getTime(),
+        first: 0,
+        metric: 0,
         name: left.name.localeCompare(right.name, undefined, { numeric: true }),
+        order: 0,
         start: left.start.getTime() - right.start.getTime(),
+        tag: 0,
       };
-      const result = SORT_SIGNS[sort.direction] * (differences[sort.key] ?? 0);
+      const result = SORT_SIGNS[sort.direction] * differences[sort.key];
 
       if (result !== 0) {
         return result;

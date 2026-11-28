@@ -1274,7 +1274,13 @@ function DataGridTableHead({ children }: { children: ReactNode }) {
   )
 }
 
-function DataGridTableHeadRow({ children }: { children: ReactNode }) {
+function DataGridTableHeadRow({
+  children,
+  rowId,
+}: {
+  children: ReactNode
+  rowId: string
+}) {
   const { props, table } = useDataGrid()
   const isMultiLevel = table.getHeaderGroups().length > 1
 
@@ -2930,7 +2936,7 @@ function DataGridTableHeader<TData extends object>() {
             }
 
             return (
-              <DataGridTableHeadRow key={headerGroup.id}>
+              <DataGridTableHeadRow key={headerGroup.id} rowId={headerGroup.id}>
                 {[
                   ...headerGroup.startHeaders,
                   ...headerGroup.centerHeaders,
@@ -2997,7 +3003,10 @@ function DataGridTable<TData extends object>({
               }
 
               return (
-                <DataGridTableHeadRow key={headerGroup.id}>
+                <DataGridTableHeadRow
+                  key={headerGroup.id}
+                  rowId={headerGroup.id}
+                >
                   {[
                     ...headerGroup.startHeaders,
                     ...headerGroup.centerHeaders,

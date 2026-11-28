@@ -243,6 +243,24 @@ describe(createEventFilterFields, () => {
     }
   });
 
+  it("names each weekday for its planetary ruler, a derived field's own note", () => {
+    const weekday = createEventFilterFields([]).find(
+      (field) => field.label === "Weekday",
+    );
+
+    expect(
+      weekday?.options?.map((option) => [option.label, option.description]),
+    ).toStrictEqual([
+      ["Sunday", "The Sun's day"],
+      ["Monday", "The Moon's day"],
+      ["Tuesday", "Mars's day"],
+      ["Wednesday", "Mercury's day"],
+      ["Thursday", "Jupiter's day"],
+      ["Friday", "Venus's day"],
+      ["Saturday", "Saturn's day"],
+    ]);
+  });
+
   it("describes a root without a note by its name", async () => {
     const fields = createEventFilterFields(
       await findFixtureFacets({ tags: MOTION_TAGS }),

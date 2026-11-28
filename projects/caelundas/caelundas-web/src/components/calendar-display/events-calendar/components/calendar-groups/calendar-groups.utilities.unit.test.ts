@@ -4,7 +4,7 @@ import { createRecord } from "../../../../../../testing/calendar/calendar-record
 
 import {
   createGroupOf,
-  getDefaultRoots,
+  getRootOrder,
   groupCalendarEvents,
   isDefaultGrouping,
 } from "./calendar-groups.utilities";
@@ -13,19 +13,30 @@ import type { CalendarEventRecord } from "../calendar-loader/calendar-records.ty
 
 const DEFAULT_GROUPING = [{ field: "tag:*", tags: ["a"] }];
 const DAY = "2026-03-03T10:00:00Z";
-// The roots a facet flags as grouping by default; Body, Duration and Temporality are not among them.
-const ROOTS = new Set(["Aspect", "Lunar", "Sign"]);
+// The roots as the API lists them: Sign, Body, Aspect, Lunar; Body is flagged out of default grouping, so it comes after the rest.
+const ROOTS = new Map([
+  ["Aspect", 2],
+  ["Body", 5],
+  ["Lunar", 3],
+  ["Sign", 0],
+]);
 
 describe("the calendar's groups", () => {
-  describe(getDefaultRoots, () => {
-    it("names the roots the data does not flag out of default grouping", () => {
+  describe(getRootOrder, () => {
+    it("places the roots as listed, those flagged out of default grouping after the rest", () => {
       expect(
-        getDefaultRoots([
-          { id: "1", name: "Aspect", values: [] },
+        getRootOrder([
+          { id: "1", name: "Sign", values: [] },
           { id: "2", isDefaultGroup: false, name: "Body", values: [] },
-          { id: "3", isDefaultGroup: true, name: "Sign", values: [] },
+          { id: "3", isDefaultGroup: true, name: "Aspect", values: [] },
         ]),
-      ).toStrictEqual(new Set(["Aspect", "Sign"]));
+      ).toStrictEqual(
+        new Map([
+          ["Aspect", 2],
+          ["Body", 4],
+          ["Sign", 0],
+        ]),
+      );
     });
   });
 
@@ -45,6 +56,14 @@ describe("the calendar's groups", () => {
       expect(
         groupOf(createRecord("a", DAY, DAY, ["Body", "Duration", "Sign"])),
       ).toStrictEqual({ id: "id-Sign", key: "id-Sign", label: "Sign" });
+    });
+
+    it("falls under the first root in the API's order, not the first alphabetically", () => {
+      const groupOf = createGroupOf(DEFAULT_GROUPING, ROOTS);
+
+      expect(
+        groupOf(createRecord("a", DAY, DAY, ["Aspect", "Lunar", "Sign"])).label,
+      ).toBe("Sign");
     });
 
     it("falls back to the first root when an event has only attributes", () => {
@@ -94,7 +113,7 @@ describe("the calendar's groups", () => {
   });
 
   describe(groupCalendarEvents, () => {
-    it("splits events into groups in the order of their tags, each event once", () => {
+    it("splits events into groups in the order of the roots, each event once", () => {
       const groups = groupCalendarEvents(
         [
           createRecord("a", DAY, DAY, ["Sign"]),
@@ -105,10 +124,27 @@ describe("the calendar's groups", () => {
       );
 
       expect(groups.map((group) => group.label)).toStrictEqual([
-        "Aspect",
         "Sign",
+        "Aspect",
       ]);
-      expect(groups.map((group) => group.events.length)).toStrictEqual([2, 1]);
+      expect(groups.map((group) => group.events.length)).toStrictEqual([1, 2]);
+    });
+
+    it("splits by a deeper grouping level when given one", () => {
+      const record = createRecord("a", DAY);
+      const deeper = {
+        ...record,
+        groups: [
+          ...record.groups,
+          [{ key: "fire", label: "Fire", path: "Fire", rank: "Fire" }],
+        ],
+      };
+      const groups = groupCalendarEvents([deeper], {
+        grouping: [DEFAULT_GROUPING[0] ?? { field: "tag:*" }, { field: "t" }],
+        level: 1,
+      });
+
+      expect(groups.map((group) => group.id)).toStrictEqual(["fire"]);
     });
 
     it("puts the events with no group last", () => {

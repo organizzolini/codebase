@@ -1,4 +1,4 @@
-[Aspect](#aspect) · [Yearly](#yearly) · [Planetary](#planetary) · [Sign](#sign) · [Daily](#daily-eclipse) · [Eclipse](#daily-eclipse) · [Body](#body) · [Temporality](#temporality-lunar) · [Lunar](#temporality-lunar)
+[Aspect](#aspect) · [Yearly](#yearly) · [Planetary](#planetary) · [Sign](#sign) · [Daily](#daily-ingress) · [Ingress](#daily-ingress) · [Eclipse](#eclipse) · [Body](#body) · [Temporality](#temporality-lunar) · [Lunar](#temporality-lunar)
 
 ## Aspect
 
@@ -84,48 +84,47 @@ Aspect [shapes] — Angles between bodies, and the patterns they form.
 
 ```text
 Yearly [sun] — The Sun's year.
-├── Annual Cycle [rotate-cw] — The turning points of the Sun's year.
-│   ├── Solstice [sun-medium] — The longest and shortest days.
-│   │   ├── Summer Solstice [sun-medium] — The longest day of the year. (also under Summer)
-│   │   └── Winter Solstice [sun-medium] — The shortest day of the year. (also under Winter)
-│   ├── Equinox [equal] — Day and night are of equal length.
-│   │   ├── Autumnal Equinox [equal] — Day and night are equal, as the year turns toward winter. (also under Autumn)
-│   │   └── Vernal Equinox [equal] — Day and night are equal, as the year turns toward summer. (also under Spring)
-│   ├── Cross-Quarter Day [calendar-check] — Days midway between a solstice and an equinox.
-│   │   ├── Beltane [calendar-check] — Midway from the spring equinox to the summer solstice. (also under Spring)
-│   │   ├── Imbolc [calendar-check] — Midway from the winter solstice to the spring equinox. (also under Winter)
-│   │   ├── Lammas [calendar-check] — Midway from the summer solstice to the autumn equinox. (also under Summer)
-│   │   └── Samhain [calendar-check] — Midway from the autumn equinox to the winter solstice. (also under Autumn)
-│   ├── Hexadecan [grid-2x2] — The sixteen divisions of the year.
-│   │   ├── Eleventh Hexadecan [grid-2x2] — The point 11/16 of the way round the year. (also under Autumn)
-│   │   ├── Fifteenth Hexadecan [grid-2x2] — The point 15/16 of the way round the year. (also under Winter)
-│   │   ├── Fifth Hexadecan [grid-2x2] — The point 5/16 of the way round the year. (also under Summer)
-│   │   ├── First Hexadecan [grid-2x2] — The point 1/16 of the way round the year. (also under Spring)
-│   │   ├── Ninth Hexadecan [grid-2x2] — The point 9/16 of the way round the year. (also under Autumn)
-│   │   ├── Seventh Hexadecan [grid-2x2] — The point 7/16 of the way round the year. (also under Summer)
-│   │   ├── Third Hexadecan [grid-2x2] — The point 3/16 of the way round the year. (also under Spring)
-│   │   └── Thirteenth Hexadecan [grid-2x2] — The point 13/16 of the way round the year. (also under Winter)
-│   ├── Interval [ruler] — The sixteen spans between the year's points, each after a named point or before the next.
-│   │   ├── Post-Vernal Equinox [ruler] — From Vernal Equinox to the hexadecan after it.
-│   │   ├── Pre-Beltane [ruler] — From the hexadecan before Beltane to it.
-│   │   ├── Post-Beltane [ruler] — From Beltane to the hexadecan after it.
-│   │   ├── Pre-Summer Solstice [ruler] — From the hexadecan before Summer Solstice to it.
-│   │   ├── Post-Summer Solstice [ruler] — From Summer Solstice to the hexadecan after it.
-│   │   ├── Pre-Lammas [ruler] — From the hexadecan before Lammas to it.
-│   │   ├── Post-Lammas [ruler] — From Lammas to the hexadecan after it.
-│   │   ├── Pre-Autumnal Equinox [ruler] — From the hexadecan before Autumnal Equinox to it.
-│   │   ├── Post-Autumnal Equinox [ruler] — From Autumnal Equinox to the hexadecan after it.
-│   │   ├── Pre-Samhain [ruler] — From the hexadecan before Samhain to it.
-│   │   ├── Post-Samhain [ruler] — From Samhain to the hexadecan after it.
-│   │   ├── Pre-Winter Solstice [ruler] — From the hexadecan before Winter Solstice to it.
-│   │   ├── Post-Winter Solstice [ruler] — From Winter Solstice to the hexadecan after it.
-│   │   ├── Pre-Imbolc [ruler] — From the hexadecan before Imbolc to it.
-│   │   ├── Post-Imbolc [ruler] — From Imbolc to the hexadecan after it.
-│   │   └── Pre-Vernal Equinox [ruler] — From the hexadecan before Vernal Equinox to it.
-│   ├── Perihelion [arrow-down-left] — The Earth is nearest the Sun.
-│   ├── Aphelion [arrow-up-right] — The Earth is farthest from the Sun.
-│   ├── Advancing [arrow-right] — The Sun's days are growing longer.
-│   └── Retreating [arrow-left] — The Sun's days are growing shorter.
+├── Solstice [sun-medium] — The longest and shortest days.
+│   ├── Summer Solstice [sun-medium] — The longest day of the year. (also under Summer)
+│   └── Winter Solstice [sun-medium] — The shortest day of the year. (also under Winter)
+├── Equinox [equal] — Day and night are of equal length.
+│   ├── Autumnal Equinox [equal] — Day and night are equal, as the year turns toward winter. (also under Autumn)
+│   └── Vernal Equinox [equal] — Day and night are equal, as the year turns toward summer. (also under Spring)
+├── Cross-Quarter Day [calendar-check] — Days midway between a solstice and an equinox.
+│   ├── Beltane [calendar-check] — Midway from the spring equinox to the summer solstice. (also under Spring)
+│   ├── Imbolc [calendar-check] — Midway from the winter solstice to the spring equinox. (also under Winter)
+│   ├── Lammas [calendar-check] — Midway from the summer solstice to the autumn equinox. (also under Summer)
+│   └── Samhain [calendar-check] — Midway from the autumn equinox to the winter solstice. (also under Autumn)
+├── Hexadecan [grid-2x2] — The sixteen divisions of the year.
+│   ├── Eleventh Hexadecan [grid-2x2] — The point 11/16 of the way round the year. (also under Autumn)
+│   ├── Fifteenth Hexadecan [grid-2x2] — The point 15/16 of the way round the year. (also under Winter)
+│   ├── Fifth Hexadecan [grid-2x2] — The point 5/16 of the way round the year. (also under Summer)
+│   ├── First Hexadecan [grid-2x2] — The point 1/16 of the way round the year. (also under Spring)
+│   ├── Ninth Hexadecan [grid-2x2] — The point 9/16 of the way round the year. (also under Autumn)
+│   ├── Seventh Hexadecan [grid-2x2] — The point 7/16 of the way round the year. (also under Summer)
+│   ├── Third Hexadecan [grid-2x2] — The point 3/16 of the way round the year. (also under Spring)
+│   └── Thirteenth Hexadecan [grid-2x2] — The point 13/16 of the way round the year. (also under Winter)
+├── Interval [ruler] — The sixteen spans between the year's points, each after a named point or before the next.
+│   ├── Post-Vernal Equinox [ruler] — From Vernal Equinox to the hexadecan after it.
+│   ├── Pre-Beltane [ruler] — From the hexadecan before Beltane to it.
+│   ├── Post-Beltane [ruler] — From Beltane to the hexadecan after it.
+│   ├── Pre-Summer Solstice [ruler] — From the hexadecan before Summer Solstice to it.
+│   ├── Post-Summer Solstice [ruler] — From Summer Solstice to the hexadecan after it.
+│   ├── Pre-Lammas [ruler] — From the hexadecan before Lammas to it.
+│   ├── Post-Lammas [ruler] — From Lammas to the hexadecan after it.
+│   ├── Pre-Autumnal Equinox [ruler] — From the hexadecan before Autumnal Equinox to it.
+│   ├── Post-Autumnal Equinox [ruler] — From Autumnal Equinox to the hexadecan after it.
+│   ├── Pre-Samhain [ruler] — From the hexadecan before Samhain to it.
+│   ├── Post-Samhain [ruler] — From Samhain to the hexadecan after it.
+│   ├── Pre-Winter Solstice [ruler] — From the hexadecan before Winter Solstice to it.
+│   ├── Post-Winter Solstice [ruler] — From Winter Solstice to the hexadecan after it.
+│   ├── Pre-Imbolc [ruler] — From the hexadecan before Imbolc to it.
+│   ├── Post-Imbolc [ruler] — From Imbolc to the hexadecan after it.
+│   └── Pre-Vernal Equinox [ruler] — From the hexadecan before Vernal Equinox to it.
+├── Perihelion [arrow-down-left] — The Earth is nearest the Sun.
+├── Aphelion [arrow-up-right] — The Earth is farthest from the Sun.
+├── Advancing [arrow-right] — The Sun's days are growing longer.
+├── Retreating [arrow-left] — The Sun's days are growing shorter.
 └── Season [leaf] — The season of the year.
     ├── Spring [sprout] — The season from the spring equinox to the summer solstice.
     ├── Summer [sun] — The season from the summer solstice to the autumn equinox.
@@ -202,18 +201,19 @@ Planetary [orbit] — The planets' own cycles.
 
 ```text
 Sign [star] — The signs and what they imply.
-├── Aries [star] — The sign of the Ram, a cardinal fire sign. (also under Positive, Cardinal, Fire)
-├── Taurus [star] — The sign of the Bull, a fixed earth sign. (also under Earth, Negative, Fixed)
-├── Gemini [star] — The sign of the Twins, a mutable air sign. (also under Air, Mutable, Positive)
-├── Cancer [star] — The sign of the Crab, a cardinal water sign. (also under Cardinal, Negative, Water)
-├── Leo [star] — The sign of the Lion, a fixed fire sign. (also under Positive, Fire, Fixed)
-├── Virgo [star] — The sign of the Maiden, a mutable earth sign. (also under Mutable, Earth, Negative)
-├── Libra [star] — The sign of the Scales, a cardinal air sign. (also under Air, Positive, Cardinal)
-├── Scorpio [star] — The sign of the Scorpion, a fixed water sign. (also under Negative, Water, Fixed)
-├── Sagittarius [star] — The sign of the Archer, a mutable fire sign. (also under Mutable, Positive, Fire)
-├── Capricorn [star] — The sign of the Sea-Goat, a cardinal earth sign. (also under Earth, Cardinal, Negative)
-├── Aquarius [star] — The sign of the Water Bearer, a fixed air sign. (also under Air, Positive, Fixed)
-├── Pisces [star] — The sign of the Fish, a mutable water sign. (also under Mutable, Negative, Water)
+├── Zodiac [stars] — The twelve signs of the zodiac, in order.
+│   ├── Aries [stars] — The sign of the Ram, a cardinal fire sign. (also under Positive, Cardinal, Fire)
+│   ├── Taurus [stars] — The sign of the Bull, a fixed earth sign. (also under Earth, Negative, Fixed)
+│   ├── Gemini [stars] — The sign of the Twins, a mutable air sign. (also under Air, Mutable, Positive)
+│   ├── Cancer [stars] — The sign of the Crab, a cardinal water sign. (also under Cardinal, Negative, Water)
+│   ├── Leo [stars] — The sign of the Lion, a fixed fire sign. (also under Positive, Fire, Fixed)
+│   ├── Virgo [stars] — The sign of the Maiden, a mutable earth sign. (also under Mutable, Earth, Negative)
+│   ├── Libra [stars] — The sign of the Scales, a cardinal air sign. (also under Air, Positive, Cardinal)
+│   ├── Scorpio [stars] — The sign of the Scorpion, a fixed water sign. (also under Negative, Water, Fixed)
+│   ├── Sagittarius [stars] — The sign of the Archer, a mutable fire sign. (also under Mutable, Positive, Fire)
+│   ├── Capricorn [stars] — The sign of the Sea-Goat, a cardinal earth sign. (also under Earth, Cardinal, Negative)
+│   ├── Aquarius [stars] — The sign of the Water Bearer, a fixed air sign. (also under Air, Positive, Fixed)
+│   └── Pisces [stars] — The sign of the Fish, a mutable water sign. (also under Mutable, Negative, Water)
 ├── Element [flame] — The element of a sign: fire, earth, air or water.
 │   ├── Fire [flame] — Aries, Leo and Sagittarius.
 │   ├── Earth [mountain] — Taurus, Virgo and Capricorn.
@@ -226,37 +226,26 @@ Sign [star] — The signs and what they imply.
 ├── Polarity [plus] — The polarity of a sign: positive or negative.
 │   ├── Positive [plus] — Fire and air signs: outward.
 │   └── Negative [plus] — Earth and water signs: receptive.
-├── Decan [layers] — The ten-degree third of a sign a body is in.
-│   ├── First Decan [layers] — The first ten degrees of a sign.
-│   ├── Second Decan [layers] — The middle ten degrees of a sign.
-│   └── Third Decan [layers] — The last ten degrees of a sign.
-├── Peak [split] — Which side of a sign's peak, at 15°, a body is on.
-│   ├── Before Peak [split] — The first fifteen degrees of a sign.
-│   └── After Peak [split] — The last fifteen degrees of a sign.
-├── Dignity [crown] — How strongly a planet sits in its sign.
-│   ├── Domicile [house] — The planet sits in its home sign: strong.
-│   ├── Exaltation [trending-up] — The planet sits in the sign where it is honored.
-│   ├── Detriment [trending-down] — The planet sits opposite its home sign: weak.
-│   ├── Fall [arrow-down] — The planet sits opposite its exaltation: lowered.
-│   └── Peregrine [compass] — The planet holds no dignity or debility in the sign.
-└── Stay [log-in] — How long a body stays: the whole sign, a decan, or half a sign.
-    ├── Full Sign [log-in] — A body's whole stay in one sign, a span.
-    ├── Decan Stay [log-in] — A body's stay in one decan of a sign, a span.
-    └── Half Stay [log-in] — A body's stay on one side of a sign's peak, a span.
+└── Dignity [crown] — How strongly a planet sits in its sign.
+    ├── Domicile [house] — The planet sits in its home sign: strong.
+    ├── Exaltation [trending-up] — The planet sits in the sign where it is honored.
+    ├── Detriment [trending-down] — The planet sits opposite its home sign: weak.
+    ├── Fall [arrow-down] — The planet sits opposite its exaltation: lowered.
+    └── Peregrine [compass] — The planet holds no dignity or debility in the sign.
 ```
 
-## Daily, Eclipse
+## Daily, Ingress
 
 ```text
 Daily [clock] — Events that repeat every day.
-├── Daily Solar [sun] — The Sun's day: rise, zenith, set and nadir.
+├── Solar [sun] — The Sun's day: rise, zenith, set and nadir.
 │   ├── Rise [sunrise] — The Sun crosses the horizon upward.
 │   ├── Zenith [arrow-up-to-line] — The Sun's highest point.
 │   ├── Set [sunset] — The Sun crosses the horizon downward.
 │   ├── Nadir [arrow-down-to-line] — The Sun's lowest point.
 │   ├── Daylight [sun] — The Sun is above the horizon.
 │   └── Night [moon] — The Sun is more than 18° below the horizon.
-├── Daily Lunar [moon] — The Moon's day: rise, zenith, set and nadir.
+├── Lunar [moon] — The Moon's day: rise, zenith, set and nadir.
 │   ├── Rise [sunrise] — The Moon crosses the horizon upward.
 │   ├── Zenith [arrow-up-to-line] — The Moon's highest point.
 │   ├── Set [sunset] — The Moon crosses the horizon downward.
@@ -272,6 +261,23 @@ Daily [clock] — Events that repeat every day.
     ├── Astronomical Dusk [sunset] — The Sun is 18° below the horizon, setting: the sky is fully dark.
     ├── Astronomical Twilight [cloud-sun] — The span between 18° and 12° below the horizon.
     └── Nautical Twilight [cloud-sun] — The span between 12° and 6° below the horizon.
+Ingress [log-in] — A body entering a sign, and how long it stays: the whole sign, a decan, or half a sign.
+├── Stay [log-in] — How long a body stays: the whole sign, a decan, or half a sign.
+│   ├── Full Sign [log-in] — A body's whole stay in one sign, a span.
+│   ├── Decan Stay [log-in] — A body's stay in one decan of a sign, a span.
+│   └── Half Stay [log-in] — A body's stay on one side of a sign's peak, a span.
+├── Decan [layers] — The ten-degree third of a sign a body is in.
+│   ├── First Decan [layers] — The first ten degrees of a sign.
+│   ├── Second Decan [layers] — The middle ten degrees of a sign.
+│   └── Third Decan [layers] — The last ten degrees of a sign.
+└── Peak [split] — Which side of a sign's peak, at 15°, a body is on.
+    ├── Before Peak [split] — The first fifteen degrees of a sign.
+    └── After Peak [split] — The last fifteen degrees of a sign.
+```
+
+## Eclipse
+
+```text
 Eclipse [eclipse] — Solar and lunar eclipses.
 ├── Solar [sun] — The Moon covers the Sun.
 │   ├── Total [circle] — The Moon covers the whole Sun.
@@ -297,18 +303,18 @@ Body [globe] — The bodies an event involves, grouped by class.
 │   ├── Sun [sun] — The star at the center, ruling identity and vitality.
 │   └── Moon [moon] — The Earth's satellite, ruling mood and rhythm.
 ├── Planet [earth] — The planets, by how far they reach and by tradition's fortune.
-│   ├── Inner [orbit] — The inner planets: the personal and social ones, Mercury to Saturn.
-│   │   ├── Personal [user] — Mercury, Venus and Mars.
-│   │   │   ├── Mercury [user] — The planet of mind and messages. (also under Planet)
-│   │   │   ├── Venus [user] — The planet of love and value. (also under Planet, Benefic)
-│   │   │   └── Mars [user] — The planet of drive and conflict. (also under Planet, Malefic)
-│   │   └── Social [users] — Jupiter and Saturn.
-│   │       ├── Jupiter [users] — The planet of growth and good fortune. (also under Planet, Benefic)
-│   │       └── Saturn [users] — The planet of structure and limits. (also under Planet, Malefic)
+│   ├── Mercury [user] — The planet of mind and messages. (also under Personal)
+│   ├── Venus [user] — The planet of love and value. (also under Personal, Benefic)
+│   ├── Mars [user] — The planet of drive and conflict. (also under Personal, Malefic)
+│   ├── Jupiter [users] — The planet of growth and good fortune. (also under Social, Benefic)
+│   ├── Saturn [users] — The planet of structure and limits. (also under Social, Malefic)
 │   ├── Uranus [telescope] — The planet of change and surprise. (also under Outer)
 │   ├── Neptune [telescope] — The planet of dreams and dissolution. (also under Outer)
+│   ├── Pluto [telescope] — The dwarf planet of transformation. (also under Outer)
+│   ├── Inner [orbit] — The inner planets: the personal and social ones, Mercury to Saturn.
+│   │   ├── Personal [user] — Mercury, Venus and Mars.
+│   │   └── Social [users] — Jupiter and Saturn.
 │   ├── Outer [telescope] — Uranus, Neptune and Pluto.
-│   │   └── Pluto [telescope] — The dwarf planet of transformation. (also under Planet)
 │   ├── Benefic [smile] — The bodies tradition counts as fortunate: Venus and Jupiter.
 │   └── Malefic [frown] — The bodies tradition counts as difficult: Mars and Saturn.
 ├── Asteroid [mountain] — Asteroids and Chiron.

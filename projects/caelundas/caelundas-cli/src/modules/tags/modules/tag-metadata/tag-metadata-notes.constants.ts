@@ -161,8 +161,8 @@ const HEXADECAN_SIXTEENTHS: Readonly<Record<string, number>> = {
 
 /** Notes by path, for nodes that are not generated. */
 const PATH_NOTES: Readonly<Record<string, string>> = {
-  "Daily / Daily Solar / Daylight": "The Sun is above the horizon.",
-  "Daily / Daily Solar / Night": "The Sun is more than 18° below the horizon.",
+  "Daily / Solar / Daylight": "The Sun is above the horizon.",
+  "Daily / Solar / Night": "The Sun is more than 18° below the horizon.",
   "Daily / Twilight / Astronomical Dawn":
     "The Sun is 18° below the horizon, rising: the sky begins to lighten.",
   "Daily / Twilight / Astronomical Dusk":
@@ -189,6 +189,16 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
     "The Moon is too far to cover the Sun, leaving a ring.",
   "Eclipse / Solar / Partial": "The Moon covers only part of the Sun.",
   "Eclipse / Solar / Total": "The Moon covers the whole Sun.",
+  "Ingress / Decan / First Decan": "The first ten degrees of a sign.",
+  "Ingress / Decan / Second Decan": "The middle ten degrees of a sign.",
+  "Ingress / Decan / Third Decan": "The last ten degrees of a sign.",
+  "Ingress / Peak / After Peak": "The last fifteen degrees of a sign.",
+  "Ingress / Peak / Before Peak": "The first fifteen degrees of a sign.",
+  "Ingress / Stay / Decan Stay":
+    "A body's stay in one decan of a sign, a span.",
+  "Ingress / Stay / Full Sign": "A body's whole stay in one sign, a span.",
+  "Ingress / Stay / Half Stay":
+    "A body's stay on one side of a sign's peak, a span.",
   "Lunar / Apsides / Advancing": "The Moon is drawing nearer the Earth.",
   "Lunar / Apsides / Retreating": "The Moon is drawing farther from the Earth.",
   "Lunar / Monthly Cycle / First Quarter": "Half the Moon is lit, waxing.",
@@ -214,9 +224,6 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
     "Mercury's stages in its cycle with the Sun.",
   "Planetary / Synodic Stage / Venus":
     "Venus's stages in its cycle with the Sun.",
-  "Sign / Decan / First Decan": "The first ten degrees of a sign.",
-  "Sign / Decan / Second Decan": "The middle ten degrees of a sign.",
-  "Sign / Decan / Third Decan": "The last ten degrees of a sign.",
   "Sign / Dignity / Detriment": "The planet sits opposite its home sign: weak.",
   "Sign / Dignity / Domicile": "The planet sits in its home sign: strong.",
   "Sign / Dignity / Exaltation":
@@ -230,34 +237,24 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
     "Signs in the middle of a season: Taurus, Leo, Scorpio, Aquarius.",
   "Sign / Modality / Mutable":
     "Signs that end a season: Gemini, Virgo, Sagittarius, Pisces.",
-  "Sign / Peak / After Peak": "The last fifteen degrees of a sign.",
-  "Sign / Peak / Before Peak": "The first fifteen degrees of a sign.",
   "Sign / Polarity / Negative": "Earth and water signs: receptive.",
   "Sign / Polarity / Positive": "Fire and air signs: outward.",
-  "Sign / Stay / Decan Stay": "A body's stay in one decan of a sign, a span.",
-  "Sign / Stay / Full Sign": "A body's whole stay in one sign, a span.",
-  "Sign / Stay / Half Stay":
-    "A body's stay on one side of a sign's peak, a span.",
-  "Yearly / Annual Cycle / Advancing": "The Sun's days are growing longer.",
-  "Yearly / Annual Cycle / Aphelion": "The Earth is farthest from the Sun.",
-  "Yearly / Annual Cycle / Cross-Quarter Day / Beltane":
+  "Yearly / Advancing": "The Sun's days are growing longer.",
+  "Yearly / Aphelion": "The Earth is farthest from the Sun.",
+  "Yearly / Cross-Quarter Day / Beltane":
     "Midway from the spring equinox to the summer solstice.",
-  "Yearly / Annual Cycle / Cross-Quarter Day / Imbolc":
+  "Yearly / Cross-Quarter Day / Imbolc":
     "Midway from the winter solstice to the spring equinox.",
-  "Yearly / Annual Cycle / Cross-Quarter Day / Lammas":
+  "Yearly / Cross-Quarter Day / Lammas":
     "Midway from the summer solstice to the autumn equinox.",
-  "Yearly / Annual Cycle / Cross-Quarter Day / Samhain":
+  "Yearly / Cross-Quarter Day / Samhain":
     "Midway from the autumn equinox to the winter solstice.",
-  "Yearly / Annual Cycle / Equinox / Autumnal Equinox":
+  "Yearly / Equinox / Autumnal Equinox":
     "Day and night are equal, as the year turns toward winter.",
-  "Yearly / Annual Cycle / Equinox / Vernal Equinox":
+  "Yearly / Equinox / Vernal Equinox":
     "Day and night are equal, as the year turns toward summer.",
-  "Yearly / Annual Cycle / Perihelion": "The Earth is nearest the Sun.",
-  "Yearly / Annual Cycle / Retreating": "The Sun's days are growing shorter.",
-  "Yearly / Annual Cycle / Solstice / Summer Solstice":
-    "The longest day of the year.",
-  "Yearly / Annual Cycle / Solstice / Winter Solstice":
-    "The shortest day of the year.",
+  "Yearly / Perihelion": "The Earth is nearest the Sun.",
+  "Yearly / Retreating": "The Sun's days are growing shorter.",
   "Yearly / Season / Autumn":
     "The season from the autumn equinox to the winter solstice.",
   "Yearly / Season / Spring":
@@ -266,6 +263,8 @@ const PATH_NOTES: Readonly<Record<string, string>> = {
     "The season from the summer solstice to the autumn equinox.",
   "Yearly / Season / Winter":
     "The season from the winter solstice to the spring equinox.",
+  "Yearly / Solstice / Summer Solstice": "The longest day of the year.",
+  "Yearly / Solstice / Winter Solstice": "The shortest day of the year.",
 };
 
 /** A leaf's note when it has no metadata entry, by path. */
@@ -289,7 +288,7 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
     Object.entries(HEXADECAN_SIXTEENTHS).map(
       ([name, sixteenths]) =>
         [
-          `Yearly / Annual Cycle / Hexadecan / ${name} Hexadecan`,
+          `Yearly / Hexadecan / ${name} Hexadecan`,
           `The point ${String(sixteenths)}/16 of the way round the year.`,
         ] as const,
     ),
@@ -298,7 +297,7 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
     SOLAR_INTERVAL_NAMES.map(
       (name) =>
         [
-          `Yearly / Annual Cycle / Interval / ${name}`,
+          `Yearly / Interval / ${name}`,
           name.startsWith("Post-")
             ? `From ${name.slice(5)} to the hexadecan after it.`
             : `From the hexadecan before ${name.slice(4)} to it.`,
@@ -360,7 +359,7 @@ export const TAG_NOTES: Readonly<Record<string, string>> = {
     signs.map((sign) => {
       const name = `${sign.charAt(0).toUpperCase()}${sign.slice(1)}`;
       return [
-        `Sign / ${name}`,
+        `Sign / Zodiac / ${name}`,
         `The sign of ${SIGN_FIGURES[sign]}, a ${MODALITIES[sign].toLowerCase()} ${ELEMENT_BY_SIGN[sign].toLowerCase()} sign.`,
       ] as const;
     }),

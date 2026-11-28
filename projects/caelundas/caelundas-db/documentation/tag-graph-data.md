@@ -1,4 +1,4 @@
-[Aspect](#aspect) · [Body](#body) · [Temporality](#temporality-daily) · [Daily](#temporality-daily) · [Sign](#sign) · [Lunar](#lunar) · [Planetary](#planetary) · [Yearly](#yearly) · [Eclipse](#eclipse)
+[Aspect](#aspect) · [Body](#body) · [Temporality](#temporality-daily) · [Daily](#temporality-daily) · [Sign](#sign) · [Lunar](#lunar) · [Planetary](#planetary) · [Yearly](#yearly) · [Eclipse](#eclipse-ingress) · [Ingress](#eclipse-ingress)
 
 ## Aspect
 
@@ -7,36 +7,36 @@ flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
     classDef shared fill:#fff4e5,stroke:#e8710a,stroke-width:2px
     n0["Aspect"] --> n1["Harmonic"] & n2["Nature"] & n3["Phase"] & n4["Compound"] & n5["Simple"]
-    n1 --> n53["Harmonic 4"] & n54["Harmonic 12"] & n55["Harmonic 11"] & n56["Harmonic 5"] & n57["Harmonic 9"] & n58["Harmonic 10"] & n59["Harmonic 6"] & n60["Harmonic 8"] & n61["Harmonic 1"] & n62["Harmonic 7"] & n63["Harmonic 2"] & n64["Harmonic 3"]
-    n2 --> n65["Hard"] & n66["Neutral"] & n67["Soft"]
-    n68["Focal Body"] --> n69["Chiron Focal"] & n70["Venus Focal"] & n71["Moon Focal"] & n72["Ceres Focal"] & n73["Juno Focal"] & n74["Jupiter Focal"] & n75["Saturn Focal"] & n76["Neptune Focal"] & n77["Uranus Focal"] & n78["Pluto Focal"] & n79["Lunar Apogee Focal"] & n80["Lilith Focal"] & n81["Pallas Focal"] & n82["Mercury Focal"] & n83["Mars Focal"] & n84["Sun Focal"] & n85["North Lunar Node Focal"] & n86["Vesta Focal"]
-    n3 --> n87["Exact"]
-    n4 --> n68 & n99["Triple"] & n100["Quadruple"] & n101["Stellium"] & n102["Sextuple"]
-    n5 --> n122["Minor"] & n123["Specialty"] & n124["Major"]
-    n53 --> n208["T Square"] & n209["Grand Cross"] & n210["Square"]
-    n65 --> n208 & n209 & n210 & n211["Sesquiquadrate"] & n212["Semisquare"] & n213["Opposite"]
-    n99 --> n208 & n214["Yod"] & n215["Grand Trine"]
-    n100 --> n209 & n216["Kite"]
-    n54 --> n214 & n217["Quincunx"] & n218["Semisextile"]
-    n66 --> n101 & n214 & n217 & n219["Undecile"] & n220["Conjunct"] & n221["Septile"]
-    n122 --> n217 & n211 & n212 & n218
-    n55 --> n219
-    n123 --> n219 & n222["Quintile"] & n223["Novile"] & n224["Tredecile"] & n221 & n225["Decile"] & n226["Biquintile"]
-    n56 --> n222 & n226
-    n67 --> n222 & n223 & n224 & n227["Sextile"] & n218 & n225 & n226 & n228["Trine"] & n215 & n216 & n229["Hexagram"]
-    n57 --> n223
-    n58 --> n224 & n225
-    n124 --> n210 & n227 & n220 & n213 & n228
-    n59 --> n227 & n216 & n229
-    n60 --> n211 & n212
-    n61 --> n101 & n220
-    n62 --> n221
-    n63 --> n213
-    n64 --> n228 & n215
-    n101 --> n230["4 Body"] & n231["5 Body"] & n232["6 Body"] & n233["7 Body"] & n234["3 Body"]
-    n102 --> n229
+    n1 --> n47["Harmonic 4"] & n48["Harmonic 12"] & n49["Harmonic 11"] & n50["Harmonic 5"] & n51["Harmonic 9"] & n52["Harmonic 10"] & n53["Harmonic 6"] & n54["Harmonic 8"] & n55["Harmonic 1"] & n56["Harmonic 7"] & n57["Harmonic 2"] & n58["Harmonic 3"]
+    n2 --> n59["Hard"] & n60["Neutral"] & n61["Soft"]
+    n62["Focal Body"] --> n63["Chiron Focal"] & n64["Venus Focal"] & n65["Moon Focal"] & n66["Ceres Focal"] & n67["Juno Focal"] & n68["Jupiter Focal"] & n69["Saturn Focal"] & n70["Neptune Focal"] & n71["Uranus Focal"] & n72["Pluto Focal"] & n73["Lunar Apogee Focal"] & n74["Lilith Focal"] & n75["Pallas Focal"] & n76["Mercury Focal"] & n77["Mars Focal"] & n78["Sun Focal"] & n79["North Lunar Node Focal"] & n80["Vesta Focal"]
+    n3 --> n81["Exact"]
+    n4 --> n62 & n93["Triple"] & n94["Quadruple"] & n95["Stellium"] & n96["Sextuple"]
+    n5 --> n116["Minor"] & n117["Specialty"] & n118["Major"]
+    n47 --> n195["T Square"] & n196["Grand Cross"] & n197["Square"]
+    n59 --> n195 & n196 & n197 & n198["Sesquiquadrate"] & n199["Semisquare"] & n200["Opposite"]
+    n93 --> n195 & n201["Yod"] & n202["Grand Trine"]
+    n94 --> n196 & n203["Kite"]
+    n48 --> n201 & n204["Quincunx"] & n205["Semisextile"]
+    n60 --> n95 & n201 & n204 & n206["Undecile"] & n207["Conjunct"] & n208["Septile"]
+    n116 --> n204 & n198 & n199 & n205
+    n49 --> n206
+    n117 --> n206 & n217["Quintile"] & n218["Novile"] & n219["Tredecile"] & n208 & n220["Decile"] & n221["Biquintile"]
+    n50 --> n217 & n221
+    n61 --> n217 & n218 & n219 & n222["Sextile"] & n205 & n220 & n221 & n223["Trine"] & n202 & n203 & n224["Hexagram"]
+    n51 --> n218
+    n52 --> n219 & n220
+    n118 --> n197 & n222 & n207 & n200 & n223
+    n53 --> n222 & n203 & n224
+    n54 --> n198 & n199
+    n55 --> n95 & n207
+    n56 --> n208
+    n57 --> n200
+    n58 --> n223 & n202
+    n95 --> n229["4 Body"] & n230["5 Body"] & n231["6 Body"] & n232["7 Body"] & n233["3 Body"]
+    n96 --> n224
     class n0 root
-    class n101,n208,n209,n210,n211,n212,n213,n214,n215,n216,n217,n218,n219,n220,n221,n222,n223,n224,n225,n226,n227,n228,n229 shared
+    class n95,n195,n196,n197,n198,n199,n200,n201,n202,n203,n204,n205,n206,n207,n208,n217,n218,n219,n220,n221,n222,n223,n224 shared
 ```
 
 ## Body
@@ -46,18 +46,18 @@ flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
     classDef shared fill:#fff4e5,stroke:#e8710a,stroke-width:2px
     n6["Body"] --> n7["Asteroid"] & n8["Luminary"] & n9["Point"] & n10["Planet"]
-    n7 --> n88["Chiron"] & n89["Juno"] & n90["Ceres"] & n91["Vesta"] & n92["Pallas"]
-    n8 --> n93["Moon"] & n94["Sun"]
-    n95["Outer"] --> n96["Pluto"] & n97["Uranus"] & n98["Neptune"]
-    n103["Personal"] --> n104["Venus"] & n105["Mars"] & n106["Mercury"]
-    n116["Social"] --> n117["Jupiter"] & n118["Saturn"]
-    n9 --> n119["Lunar Apogee"] & n120["North Lunar Node"] & n121["Lilith"]
-    n10 --> n95 & n96 & n104 & n117 & n105 & n97 & n106 & n118 & n98 & n278["Malefic"] & n279["Benefic"] & n280["Inner"]
-    n278 --> n105 & n118
-    n279 --> n104 & n117
-    n280 --> n103 & n116
+    n7 --> n82["Chiron"] & n83["Juno"] & n84["Ceres"] & n85["Vesta"] & n86["Pallas"]
+    n8 --> n87["Moon"] & n88["Sun"]
+    n89["Outer"] --> n90["Pluto"] & n91["Uranus"] & n92["Neptune"]
+    n97["Personal"] --> n98["Venus"] & n99["Mars"] & n100["Mercury"]
+    n110["Social"] --> n111["Jupiter"] & n112["Saturn"]
+    n9 --> n113["Lunar Apogee"] & n114["North Lunar Node"] & n115["Lilith"]
+    n10 --> n89 & n90 & n98 & n111 & n99 & n91 & n100 & n112 & n92 & n277["Malefic"] & n278["Benefic"] & n279["Inner"]
+    n277 --> n99 & n112
+    n278 --> n98 & n111
+    n279 --> n97 & n110
     class n6 root
-    class n96,n97,n98,n104,n105,n106,n117,n118 shared
+    class n90,n91,n92,n98,n99,n100,n111,n112 shared
 ```
 
 ## Temporality, Daily
@@ -68,14 +68,14 @@ flowchart LR
     subgraph nb2["Temporality"]
         direction LR
         n11["Temporality"] --> n12["Perfective"] & n13["Progressive"]
-        n13 --> n107["Minutes"] & n108["Hours"] & n109["Days"] & n110["Weeks"] & n111["Months"] & n112["Quarters"] & n113["Years"] & n114["Decades"] & n115["Centuries"]
+        n13 --> n101["Minutes"] & n102["Hours"] & n103["Days"] & n104["Weeks"] & n105["Months"] & n106["Quarters"] & n107["Years"] & n108["Decades"] & n109["Centuries"]
     end
     subgraph nb3["Daily"]
         direction LR
-        n14["Daily"] --> n15["Daily Solar"] & n16["Daily Lunar"] & n17["Twilight"]
-        n15 --> n125["Nadir"] & n126["Daylight"] & n127["Rise"] & n128["Zenith"] & n129["Set"] & n130["Night"]
-        n16 --> n151["Set"] & n152["Nadir"] & n153["Rise"] & n154["Zenith"] & n155["Moon Up"] & n156["Moon Down"]
-        n17 --> n157["Astronomical Dawn"] & n158["Astronomical Twilight"] & n159["Nautical Dawn"] & n160["Nautical Twilight"] & n161["Civil Dawn"] & n162["Civil Dusk"] & n163["Nautical Dusk"] & n164["Astronomical Dusk"]
+        n14["Daily"] --> n15["Solar"] & n16["Lunar"] & n17["Twilight"]
+        n15 --> n119["Nadir"] & n120["Daylight"] & n121["Rise"] & n122["Zenith"] & n123["Set"] & n124["Night"]
+        n16 --> n147["Set"] & n148["Nadir"] & n149["Rise"] & n150["Zenith"] & n151["Moon Up"] & n152["Moon Down"]
+        n17 --> n153["Astronomical Dawn"] & n154["Astronomical Twilight"] & n155["Nautical Dawn"] & n156["Nautical Twilight"] & n157["Civil Dawn"] & n158["Civil Dusk"] & n159["Nautical Dusk"] & n160["Astronomical Dusk"]
     end
     nb2 ~~~ nb3
     class n11,n14 root
@@ -87,25 +87,23 @@ flowchart LR
 flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
     classDef shared fill:#fff4e5,stroke:#e8710a,stroke-width:2px
-    n18["Sign"] --> n19["Decan"] & n20["Dignity"] & n21["Element"] & n22["Modality"] & n23["Polarity"] & n24["Stay"] & n25["Gemini"] & n26["Capricorn"] & n27["Sagittarius"] & n28["Cancer"] & n29["Leo"] & n30["Virgo"] & n31["Libra"] & n32["Scorpio"] & n33["Aquarius"] & n34["Aries"] & n35["Pisces"] & n36["Taurus"] & n37["Peak"]
-    n19 --> n131["Second Decan"] & n132["Third Decan"] & n133["First Decan"]
-    n20 --> n134["Peregrine"] & n135["Domicile"] & n136["Exaltation"] & n137["Fall"] & n138["Detriment"]
-    n21 --> n139["Air"] & n140["Earth"] & n141["Fire"] & n142["Water"]
-    n22 --> n143["Mutable"] & n144["Cardinal"] & n145["Fixed"]
-    n23 --> n146["Positive"] & n147["Negative"]
-    n24 --> n148["Full Sign"] & n149["Half Stay"] & n150["Decan Stay"]
-    n139 --> n25 & n31 & n33
-    n143 --> n25 & n27 & n30 & n35
-    n146 --> n25 & n27 & n29 & n31 & n33 & n34
-    n140 --> n26 & n30 & n36
-    n144 --> n26 & n28 & n31 & n34
-    n147 --> n26 & n28 & n30 & n32 & n35 & n36
-    n141 --> n27 & n29 & n34
-    n142 --> n28 & n32 & n35
-    n145 --> n29 & n32 & n33 & n36
-    n37 --> n281["After Peak"] & n282["Before Peak"]
+    n18["Sign"] --> n19["Dignity"] & n20["Element"] & n21["Modality"] & n22["Polarity"] & n23["Zodiac"]
+    n19 --> n129["Peregrine"] & n130["Domicile"] & n131["Exaltation"] & n132["Fall"] & n133["Detriment"]
+    n20 --> n134["Air"] & n135["Earth"] & n136["Fire"] & n137["Water"]
+    n21 --> n138["Mutable"] & n139["Cardinal"] & n140["Fixed"]
+    n22 --> n141["Positive"] & n142["Negative"]
+    n134 --> n209["Gemini"] & n210["Libra"] & n211["Aquarius"]
+    n138 --> n209 & n212["Sagittarius"] & n213["Virgo"] & n214["Pisces"]
+    n141 --> n209 & n212 & n215["Leo"] & n210 & n211 & n216["Aries"]
+    n135 --> n225["Capricorn"] & n213 & n226["Taurus"]
+    n139 --> n225 & n227["Cancer"] & n210 & n216
+    n142 --> n225 & n227 & n213 & n228["Scorpio"] & n214 & n226
+    n136 --> n212 & n215 & n216
+    n137 --> n227 & n228 & n214
+    n140 --> n215 & n228 & n211 & n226
+    n23 --> n209 & n225 & n212 & n227 & n215 & n213 & n210 & n228 & n211 & n216 & n214 & n226
     class n18 root
-    class n25,n26,n27,n28,n29,n30,n31,n32,n33,n34,n35,n36 shared
+    class n209,n210,n211,n212,n213,n214,n215,n216,n225,n226,n227,n228 shared
 ```
 
 ## Lunar
@@ -113,10 +111,10 @@ flowchart LR
 ```mermaid
 flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
-    n38["Lunar"] --> n39["Apsides"] & n40["Monthly Cycle"]
-    n39 --> n165["Perigee"] & n166["Apogee"] & n167["Advancing"] & n168["Retreating"]
-    n40 --> n171["Full"] & n172["Waning Gibbous"] & n173["Last Quarter"] & n174["Waning Crescent"] & n175["New"] & n176["Waxing Crescent"] & n177["First Quarter"] & n178["Waxing Gibbous"]
-    class n38 root
+    n24["Lunar"] --> n25["Apsides"] & n26["Monthly Cycle"]
+    n25 --> n161["Perigee"] & n162["Apogee"] & n163["Advancing"] & n164["Retreating"]
+    n26 --> n167["Full"] & n168["Waning Gibbous"] & n169["Last Quarter"] & n170["Waning Crescent"] & n171["New"] & n172["Waxing Crescent"] & n173["First Quarter"] & n174["Waxing Gibbous"]
+    class n24 root
 ```
 
 ## Planetary
@@ -124,17 +122,17 @@ flowchart LR
 ```mermaid
 flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
-    n41["Planetary"] --> n42["Direction"] & n43["Synodic Stage"] & n44["Phase"]
-    n42 --> n169["Retrograde Period"] & n170["Direct Period"]
-    n43 --> n188["Mars"] & n189["Mercury"] & n190["Venus"]
-    n44 --> n191["Mercurian"] & n192["Venusian"] & n193["Martian"]
-    n191 --> n235["Morning Set"] & n236["Evening Rise"] & n237["Evening Visibility"] & n238["Eastern Elongation"] & n239["Evening Set"] & n240["Morning Rise"] & n241["Morning Visibility"] & n242["Western Elongation"] & n243["Western Brightest"] & n244["Morning Widening"] & n245["Morning Closing"] & n246["Evening Widening"] & n247["Evening Closing"]
-    n192 --> n258["Evening Rise"] & n259["Evening Visibility"] & n260["Eastern Elongation"] & n261["Eastern Brightest"] & n262["Evening Set"] & n263["Morning Rise"] & n264["Western Brightest"] & n265["Evening Widening"] & n266["Evening Closing"] & n267["Morning Visibility"] & n268["Morning Widening"] & n269["Morning Closing"]
-    n193 --> n270["Morning Rise"] & n271["Morning Widening"]
-    n188 --> n299["Rise and set"] & n300["Widening"] & n301["Conjunction"] & n302["Visibility"] & n303["Opposition"] & n304["Brightest"] & n305["Closing"]
-    n189 --> n306["Visibility"] & n307["Elongation"] & n308["Brightest"] & n309["Closing"] & n310["Widening"] & n311["Conjunction"] & n312["Rise and set"]
-    n190 --> n313["Brightest"] & n314["Closing"] & n315["Visibility"] & n316["Widening"] & n317["Conjunction"] & n318["Rise and set"] & n319["Elongation"]
-    class n41 root
+    n27["Planetary"] --> n28["Direction"] & n29["Synodic Stage"] & n30["Phase"]
+    n28 --> n165["Retrograde Period"] & n166["Direct Period"]
+    n29 --> n175["Mars"] & n176["Mercury"] & n177["Venus"]
+    n30 --> n178["Mercurian"] & n179["Venusian"] & n180["Martian"]
+    n178 --> n234["Morning Set"] & n235["Evening Rise"] & n236["Evening Visibility"] & n237["Eastern Elongation"] & n238["Evening Set"] & n239["Morning Rise"] & n240["Morning Visibility"] & n241["Western Elongation"] & n242["Western Brightest"] & n243["Morning Widening"] & n244["Morning Closing"] & n245["Evening Widening"] & n246["Evening Closing"]
+    n179 --> n257["Evening Rise"] & n258["Evening Visibility"] & n259["Eastern Elongation"] & n260["Eastern Brightest"] & n261["Evening Set"] & n262["Morning Rise"] & n263["Western Brightest"] & n264["Evening Widening"] & n265["Evening Closing"] & n266["Morning Visibility"] & n267["Morning Widening"] & n268["Morning Closing"]
+    n180 --> n269["Morning Rise"] & n270["Morning Widening"]
+    n175 --> n299["Rise and set"] & n300["Widening"] & n301["Conjunction"] & n302["Visibility"] & n303["Opposition"] & n304["Brightest"] & n305["Closing"]
+    n176 --> n306["Visibility"] & n307["Elongation"] & n308["Brightest"] & n309["Closing"] & n310["Widening"] & n311["Conjunction"] & n312["Rise and set"]
+    n177 --> n313["Brightest"] & n314["Closing"] & n315["Visibility"] & n316["Widening"] & n317["Conjunction"] & n318["Rise and set"] & n319["Elongation"]
+    class n27 root
 ```
 
 ## Yearly
@@ -143,31 +141,41 @@ flowchart LR
 flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
     classDef shared fill:#fff4e5,stroke:#e8710a,stroke-width:2px
-    n45["Yearly"] --> n46["Annual Cycle"] & n47["Season"]
-    n46 --> n179["Perihelion"] & n180["Retreating"] & n181["Hexadecan"] & n182["Cross-Quarter Day"] & n183["Equinox"] & n184["Solstice"] & n185["Aphelion"] & n186["Advancing"] & n187["Interval"]
-    n47 --> n194["Winter"] & n195["Spring"] & n196["Summer"] & n197["Autumn"]
-    n194 --> n248["Thirteenth Hexadecan"] & n249["Imbolc"] & n250["Fifteenth Hexadecan"] & n251["Winter Solstice"]
-    n181 --> n248 & n250 & n252["First Hexadecan"] & n253["Third Hexadecan"] & n254["Fifth Hexadecan"] & n255["Seventh Hexadecan"] & n256["Ninth Hexadecan"] & n257["Eleventh Hexadecan"]
-    n182 --> n249 & n272["Beltane"] & n273["Lammas"] & n274["Samhain"]
-    n195 --> n275["Vernal Equinox"] & n252 & n272 & n253
-    n183 --> n275 & n276["Autumnal Equinox"]
-    n196 --> n277["Summer Solstice"] & n254 & n273 & n255
-    n184 --> n277 & n251
-    n197 --> n276 & n256 & n274 & n257
-    n187 --> n283["Post-Winter Solstice"] & n284["Pre-Imbolc"] & n285["Post-Imbolc"] & n286["Pre-Vernal Equinox"] & n287["Post-Vernal Equinox"] & n288["Pre-Beltane"] & n289["Post-Beltane"] & n290["Pre-Summer Solstice"] & n291["Post-Summer Solstice"] & n292["Pre-Lammas"] & n293["Post-Lammas"] & n294["Pre-Autumnal Equinox"] & n295["Post-Autumnal Equinox"] & n296["Pre-Samhain"] & n297["Post-Samhain"] & n298["Pre-Winter Solstice"]
-    class n45 root
-    class n248,n249,n250,n251,n252,n253,n254,n255,n256,n257,n272,n273,n274,n275,n276,n277 shared
+    n31["Yearly"] --> n32["Season"] & n33["Perihelion"] & n34["Retreating"] & n35["Hexadecan"] & n36["Cross-Quarter Day"] & n37["Equinox"] & n38["Solstice"] & n39["Aphelion"] & n40["Advancing"] & n41["Interval"]
+    n32 --> n181["Winter"] & n182["Spring"] & n183["Summer"] & n184["Autumn"]
+    n181 --> n247["Thirteenth Hexadecan"] & n248["Imbolc"] & n249["Fifteenth Hexadecan"] & n250["Winter Solstice"]
+    n35 --> n247 & n249 & n251["First Hexadecan"] & n252["Third Hexadecan"] & n253["Fifth Hexadecan"] & n254["Seventh Hexadecan"] & n255["Ninth Hexadecan"] & n256["Eleventh Hexadecan"]
+    n36 --> n248 & n271["Beltane"] & n272["Lammas"] & n273["Samhain"]
+    n182 --> n274["Vernal Equinox"] & n251 & n271 & n252
+    n37 --> n274 & n275["Autumnal Equinox"]
+    n183 --> n276["Summer Solstice"] & n253 & n272 & n254
+    n38 --> n276 & n250
+    n184 --> n275 & n255 & n273 & n256
+    n41 --> n283["Post-Winter Solstice"] & n284["Pre-Imbolc"] & n285["Post-Imbolc"] & n286["Pre-Vernal Equinox"] & n287["Post-Vernal Equinox"] & n288["Pre-Beltane"] & n289["Post-Beltane"] & n290["Pre-Summer Solstice"] & n291["Post-Summer Solstice"] & n292["Pre-Lammas"] & n293["Post-Lammas"] & n294["Pre-Autumnal Equinox"] & n295["Post-Autumnal Equinox"] & n296["Pre-Samhain"] & n297["Post-Samhain"] & n298["Pre-Winter Solstice"]
+    class n31 root
+    class n247,n248,n249,n250,n251,n252,n253,n254,n255,n256,n271,n272,n273,n274,n275,n276 shared
 ```
 
-## Eclipse
+## Eclipse, Ingress
 
 ```mermaid
 flowchart LR
     classDef root fill:#e8f0fe,stroke:#1a73e8,stroke-width:3px
-    n48["Eclipse"] --> n49["Frame"] & n50["Phase"] & n51["Solar"] & n52["Lunar"]
-    n49 --> n198["Geocentric"] & n199["Topocentric"]
-    n50 --> n200["Beginning"] & n201["Maximum"] & n202["Ending"]
-    n51 --> n203["Annular"] & n204["Total"] & n205["Partial"]
-    n52 --> n206["Total"] & n207["Partial"]
-    class n48 root
+    subgraph nb8["Eclipse"]
+        direction LR
+        n42["Eclipse"] --> n43["Frame"] & n44["Phase"] & n45["Solar"] & n46["Lunar"]
+        n43 --> n185["Geocentric"] & n186["Topocentric"]
+        n44 --> n187["Beginning"] & n188["Maximum"] & n189["Ending"]
+        n45 --> n190["Annular"] & n191["Total"] & n192["Partial"]
+        n46 --> n193["Total"] & n194["Partial"]
+    end
+    subgraph nb9["Ingress"]
+        direction LR
+        n125["Decan"] --> n126["Second Decan"] & n127["Third Decan"] & n128["First Decan"]
+        n143["Stay"] --> n144["Full Sign"] & n145["Half Stay"] & n146["Decan Stay"]
+        n280["Peak"] --> n281["After Peak"] & n282["Before Peak"]
+        n320["Ingress"] --> n125 & n143 & n280
+    end
+    nb8 ~~~ nb9
+    class n42,n320 root
 ```

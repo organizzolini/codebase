@@ -103,30 +103,30 @@ describe("calendar-view-strip utilities", () => {
     it("groups and sorts by a root's own tags when the view names no path", () => {
       const resolved = resolveViews([
         {
-          id: "planetary",
-          name: "Planetary",
-          values: [
-            { count: 1, depth: 1, id: "phase", name: "Phase", path: "Phase" },
-          ],
-        },
-      ]);
-      const cycles = resolved.find((view) => view.id === "planetary-cycles");
-
-      expect(cycles?.filter.rules).toHaveLength(1);
-      expect(cycles?.group).toStrictEqual([{ field: "tag:planetary" }]);
-      expect(cycles?.sort).toStrictEqual([
-        { direction: "asc", key: "tag", tag: "tag:planetary" },
-      ]);
-    });
-
-    it("oRs the rules of several roots and drops a level whose path the root lacks", () => {
-      const resolved = resolveViews([
-        {
           id: "zodiac",
           name: "Sign",
           values: [
-            { count: 1, depth: 1, id: "aries", name: "Aries", path: "Aries" },
+            {
+              count: 1,
+              depth: 1,
+              id: "zodiac-group",
+              name: "Zodiac",
+              path: "Zodiac",
+            },
+            {
+              count: 1,
+              depth: 2,
+              id: "aries",
+              name: "Aries",
+              path: "Zodiac / Aries",
+            },
             { count: 1, depth: 1, id: "fire", name: "Fire", path: "Fire" },
+          ],
+        },
+        {
+          id: "ingress",
+          name: "Ingress",
+          values: [
             { count: 1, depth: 1, id: "stay", name: "Stay", path: "Stay" },
             {
               count: 1,
@@ -147,7 +147,7 @@ describe("calendar-view-strip utilities", () => {
 
       expect(signs?.id).toBe("body-signs");
       expect(signs?.filter).toMatchObject({
-        rules: [{ path: ["tag:zodiac"], value: ["whole"] }],
+        rules: [{ path: ["tag:ingress"], value: ["whole"] }],
       });
       expect(signs?.group).toStrictEqual([
         { field: "tag:zodiac", tags: ["aries"] },

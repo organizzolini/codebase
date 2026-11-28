@@ -60,8 +60,8 @@ const MAXIMUM_STELLIUM_BODIES =
 const SIMPLE_ASPECT: TagPath = [TAG_ROOT.aspect, "Simple"];
 const COMPOUND_ASPECT: TagPath = [TAG_ROOT.aspect, "Compound"];
 
-/** The annual solar cycle's node, with its points beneath it. */
-const ANNUAL_CYCLE: TagPath = [TAG_ROOT.yearly, "Annual Cycle"];
+/** The annual solar cycle's points sit directly beneath the Yearly root. */
+const ANNUAL_CYCLE: TagPath = [TAG_ROOT.yearly];
 
 /** The class of simple aspect each simple aspect name belongs to. */
 const ASPECT_CLASSES = [
@@ -149,12 +149,12 @@ export const SHARED_TAG_MAP: TagMap = {
     ]),
   ),
   ...mapEach(Object.values(DECAN_TAG_BY_DECAN), (name) => [
-    TAG_ROOT.sign,
+    TAG_ROOT.ingress,
     "Decan",
     name,
   ]),
   ...mapEach(Object.values(HALF_TAG_BY_HALF), (name) => [
-    TAG_ROOT.sign,
+    TAG_ROOT.ingress,
     "Peak",
     name,
   ]),
@@ -285,14 +285,17 @@ export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
     ...mapEach(TWILIGHT_NAMES, (name) => [...TWILIGHT, name]),
     ...mapEach(["Daylight", "Night"], (name) => [
       TAG_ROOT.daily,
-      "Daily Solar",
+      "Solar",
       name,
     ]),
     ...mapNone(["Evening", "Morning"]),
   },
   ...Object.fromEntries(
     DAILY_CYCLES.map(([name, points]): [string, TagMap] => {
-      const cycle: TagPath = [TAG_ROOT.daily, name.replace(/ Cycle$/u, "")];
+      const cycle: TagPath = [
+        TAG_ROOT.daily,
+        name.replaceAll(/^Daily | Cycle$/gu, ""),
+      ];
       return [
         name,
         {
@@ -308,7 +311,7 @@ export const CONTEXT_TAG_MAPS: Readonly<Record<string, TagMap>> = {
     }),
   ),
   "Annual Solar Cycle": {
-    "Annual Solar Cycle": one(ANNUAL_CYCLE),
+    "Annual Solar Cycle": [],
     ...mapEach(
       ["Advancing", "Aphelion", "Perihelion", "Retreating"],
       (name) => [...ANNUAL_CYCLE, name],

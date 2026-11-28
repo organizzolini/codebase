@@ -16,9 +16,9 @@ import type {
 } from "../calendar-loader/calendar-records.types";
 import type {
   CalendarEventGroup,
+  CalendarGroupBucket,
   CalendarGroupReference,
   CalendarGroupSort,
-  GroupBucket,
 } from "./calendar-groups.types";
 
 /**
@@ -26,15 +26,16 @@ import type {
  */
 export function createGroupOf(
   grouping: EventGrouping,
-  roots?: ReadonlySet<string>,
+  roots?: ReadonlyMap<string, number>,
+  level = 0,
 ): (event: CalendarEventRecord) => CalendarGroupReference {
-  const [first] = grouping;
+  const first = grouping[level];
   // Read here rather than by isDefaultGrouping, which would add a frame to every stack beneath.
   const isDefault =
     first?.field === ALL_TAGS_FIELD && first.depth === undefined;
 
   return (event) => {
-    const key = getPrimaryKey(event, isDefault, roots);
+    const key = getPrimaryKey(event, { isDefault, level, roots });
 
     return key === undefined
       ? { id: NO_GROUP_ID, key: null, label: NO_GROUP_LABEL }
@@ -43,18 +44,21 @@ export function createGroupOf(
 }
 
 /**
- * The names of the tag roots that group by default: those the data does not flag otherwise.
+ * Each tag root's place in the order the API lists them, those that group by default ahead of the rest.
  */
-export function getDefaultRoots(facets: readonly EventFacet[]): Set<string> {
-  const roots = new Set<string>();
+export function getRootOrder(
+  facets: readonly EventFacet[],
+): Map<string, number> {
+  const order = new Map<string, number>();
 
-  for (const facet of facets) {
-    if (facet.isDefaultGroup !== false) {
-      roots.add(facet.name);
-    }
+  for (const [index, facet] of facets.entries()) {
+    order.set(
+      facet.name,
+      facet.isDefaultGroup === false ? facets.length + index : index,
+    );
   }
 
-  return roots;
+  return order;
 }
 
 /**
@@ -66,16 +70,17 @@ export function groupCalendarEvents(
     Partial<CalendarGroupSort> & {
       colors?: ReadonlyMap<string, string> | undefined;
       grouping: EventGrouping;
+      level?: number;
     }
   >,
 ): CalendarEventGroup[] {
   const groups: CalendarEventGroup[] = [];
 
-  for (const bucket of collectBuckets(
-    events,
-    options.grouping,
-    options.roots,
-  )) {
+  for (const bucket of collectBuckets(events, {
+    grouping: options.grouping,
+    level: options.level ?? 0,
+    roots: options.roots,
+  })) {
     const { key } = bucket.ref;
 
     groups.push({
@@ -105,21 +110,23 @@ export function isDefaultGrouping(grouping: EventGrouping): boolean {
  */
 function collectBuckets(
   events: readonly CalendarEventRecord[],
-  grouping: EventGrouping,
-  roots: ReadonlySet<string> | undefined,
-): GroupBucket[] {
-  const isDefault = isDefaultGrouping(grouping);
-  const groupOf = createGroupOf(grouping, roots);
-  const buckets = new Map<string, GroupBucket>();
+  options: Readonly<{
+    grouping: EventGrouping;
+    level: number;
+    roots: ReadonlyMap<string, number> | undefined;
+  }>,
+): CalendarGroupBucket[] {
+  const { grouping, level, roots } = options;
+  const isDefault = level === 0 && isDefaultGrouping(grouping);
+  const groupOf = createGroupOf(grouping, roots, level);
+  const ordering = isDefault ? roots : undefined;
+  const buckets = new Map<string, CalendarGroupBucket>();
 
   for (const event of events) {
     const reference = groupOf(event);
-    const key = getPrimaryKey(event, isDefault, roots);
-    const bucket = buckets.get(reference.id) ?? {
-      events: [],
-      rank: key?.rank ?? key?.path ?? reference.label,
-      ref: reference,
-    };
+    const key = getPrimaryKey(event, { isDefault, level, roots });
+    const bucket =
+      buckets.get(reference.id) ?? createBucket(reference, key, ordering);
 
     bucket.events.push(event);
     buckets.set(reference.id, bucket);
@@ -131,12 +138,33 @@ function collectBuckets(
 /**
  * Orders groups by their tags' order, the group of events with no key last.
  */
-function compareGroups(left: GroupBucket, right: GroupBucket): number {
+function compareGroups(
+  left: CalendarGroupBucket,
+  right: CalendarGroupBucket,
+): number {
   if (left.ref.key === null || right.ref.key === null) {
     return Number(left.ref.key === null) - Number(right.ref.key === null);
   }
 
-  return compareNatural(left.rank, right.rank);
+  return left.order === right.order
+    ? compareNatural(left.rank, right.rank)
+    : left.order - right.order;
+}
+
+/**
+ * An empty bucket for a group, ranked by its key's tag and its root's place.
+ */
+function createBucket(
+  reference: CalendarGroupReference,
+  key: CalendarEventGroupKey | undefined,
+  ordering: ReadonlyMap<string, number> | undefined,
+): CalendarGroupBucket {
+  return {
+    events: [],
+    order: getRootPlace(key, ordering),
+    rank: key?.rank ?? key?.path ?? reference.label,
+    ref: reference,
+  };
 }
 
 /**
@@ -166,27 +194,44 @@ function getDominantColor(
 }
 
 /**
- * The key an event is grouped under: by default its first root that groups by default, else the first.
+ * The key an event is grouped under: by default that of its first root in order, a default root before any other.
  */
 function getPrimaryKey(
   event: CalendarEventRecord,
-  isDefault: boolean,
-  roots: ReadonlySet<string> | undefined,
+  options: Readonly<{
+    isDefault: boolean;
+    level: number;
+    roots: ReadonlyMap<string, number> | undefined;
+  }>,
 ): CalendarEventGroupKey | undefined {
-  const keys = event.groups[0] ?? [];
+  const { isDefault, level, roots } = options;
+  const keys = event.groups[level] ?? [];
+  let best: CalendarEventGroupKey | undefined;
+  let bestOrder = Number.POSITIVE_INFINITY;
 
-  if (isDefault) {
-    for (const key of keys) {
-      // The root is the path's first name; a key with no path has its label.
-      const root = `${key.path ?? key.label}`
-        .split(TAG_PATH_SEPARATOR, 1)
-        .join("");
+  for (const key of isDefault && roots !== undefined ? keys : []) {
+    const order = getRootPlace(key, roots);
 
-      if (roots === undefined || roots.has(root)) {
-        return key;
-      }
+    if (order < bestOrder) {
+      best = key;
+      bestOrder = order;
     }
   }
 
-  return keys[0];
+  return best ?? keys[0];
+}
+
+/**
+ * A key's root's place in the order of roots, past every root when it has none.
+ */
+function getRootPlace(
+  key: CalendarEventGroupKey | undefined,
+  roots: ReadonlyMap<string, number> | undefined,
+): number {
+  // The root is the path's first name; a key with no path has its label.
+  const root = `${key?.path ?? key?.label}`
+    .split(TAG_PATH_SEPARATOR, 1)
+    .join("");
+
+  return roots?.get(root) ?? Number.POSITIVE_INFINITY;
 }

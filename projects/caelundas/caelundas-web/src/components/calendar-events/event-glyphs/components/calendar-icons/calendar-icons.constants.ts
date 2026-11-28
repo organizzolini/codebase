@@ -143,6 +143,7 @@ export const FILE_BY_DECAN: Readonly<Record<string, string>> = {
 export const FILE_BY_EVENT_NAME: Readonly<Record<string, string>> = {
   "Astronomical Dawn": "astronomical-dawn-icon.svg",
   "Astronomical Dusk": "astronomical-dusk-icon.svg",
+  "Astronomical Twilight": "astronomical-dusk-icon.svg",
   "Astronomical Twilight (Evening)": "astronomical-dusk-icon.svg",
   "Astronomical Twilight (Morning)": "astronomical-dawn-icon.svg",
   "Civil Dawn": "civil-dawn-icon.svg",
@@ -156,6 +157,7 @@ export const FILE_BY_EVENT_NAME: Readonly<Record<string, string>> = {
   "First Hexadecan": "first-hexadecan-icon.svg",
   "Nautical Dawn": "nautical-dawn-icon.svg",
   "Nautical Dusk": "nautical-dusk-icon.svg",
+  "Nautical Twilight": "nautical-dusk-icon.svg",
   "Nautical Twilight (Evening)": "nautical-dusk-icon.svg",
   "Nautical Twilight (Morning)": "nautical-dawn-icon.svg",
   Night: "night-icon.svg",
@@ -163,6 +165,7 @@ export const FILE_BY_EVENT_NAME: Readonly<Record<string, string>> = {
   "Seventh Hexadecan": "seventh-hexadecan-icon.svg",
   "Third Hexadecan": "third-hexadecan-icon.svg",
   "Thirteenth Hexadecan": "thirteenth-hexadecan-icon.svg",
+  Twilight: "civil-dusk-icon.svg",
 };
 
 export const KEYCAP = "\u20E3";

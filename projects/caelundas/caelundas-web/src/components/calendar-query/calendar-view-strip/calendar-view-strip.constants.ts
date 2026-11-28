@@ -14,7 +14,7 @@ export const CHIP_CLASS_NAME = "bg-background dark:bg-input/30";
 /** The icon of the chip while the link matches no view. */
 export const CUSTOM_VIEW_ICON = "pencil-ruler";
 
-/** The twelve signs in order, which Body Signs keeps. */
+/** The twelve signs in order beneath Zodiac, which Body Signs keeps. */
 const SIGNS: readonly string[] = [
   "Aries",
   "Taurus",
@@ -28,13 +28,13 @@ const SIGNS: readonly string[] = [
   "Capricorn",
   "Aquarius",
   "Pisces",
-];
+].map((sign) => `Zodiac / ${sign}`);
 
 /** The views, in menu order. */
 export const VIEWS: readonly ViewDefinition[] = [
   {
     description: "Which sign each body is in: its whole stay there.",
-    filter: [{ paths: ["Stay / Full Sign"], root: "Sign" }],
+    filter: [{ paths: ["Stay / Full Sign"], root: "Ingress" }],
     group: [{ paths: SIGNS, root: "Sign" }, { root: "Body" }],
     icon: "stars",
     id: "body-signs",
@@ -63,9 +63,7 @@ export const VIEWS: readonly ViewDefinition[] = [
   },
   {
     description: "The Sun's and Moon's days: rises, sets, and the twilights.",
-    filter: [
-      { paths: ["Daily Solar", "Daily Lunar", "Twilight"], root: "Daily" },
-    ],
+    filter: [{ paths: ["Solar", "Lunar", "Twilight"], root: "Daily" }],
     group: [{ root: "Daily" }],
     icon: "sunrise",
     id: "daily-cycles",

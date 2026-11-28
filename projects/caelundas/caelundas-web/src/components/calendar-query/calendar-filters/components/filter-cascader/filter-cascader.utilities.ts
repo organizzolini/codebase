@@ -182,7 +182,7 @@ function toCascaderNode(
   field: EventFilterField,
   option: FilterOption,
 ): CascaderNode {
-  const description = describeTagOption(option);
+  const description = describeTagOption(option) ?? option.description;
   const isFolder = TAG_FOLDER.safeParse(option.data).data?.folder === true;
 
   return {

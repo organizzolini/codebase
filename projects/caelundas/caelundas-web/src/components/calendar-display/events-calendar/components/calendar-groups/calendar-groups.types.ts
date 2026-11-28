@@ -22,6 +22,16 @@ export interface CalendarEventGroup extends CalendarGroupReference {
 }
 
 /**
+ * One group's events as gathered, with its sort rank.
+ */
+export interface CalendarGroupBucket {
+  events: CalendarEventRecord[];
+  order: number;
+  rank: string;
+  ref: CalendarGroupReference;
+}
+
+/**
  * Names a group: its id, its tag's id, and label.
  */
 export interface CalendarGroupReference {
@@ -39,17 +49,16 @@ export interface CalendarGroupReference {
 export interface CalendarGroupSort {
   ranks: TagRanks | undefined;
   /**
-   * The names of the roots that group by default; every root when absent.
+   * Each root's place in order, default ones first; the first key when absent.
    */
-  roots: ReadonlySet<string> | undefined;
+  roots: ReadonlyMap<string, number> | undefined;
   sorts: readonly GroupSort[] | undefined;
 }
 
 /**
- * One group's events as gathered, with its sort rank.
+ * A group with its measure under each sort.
  */
-export interface GroupBucket {
-  events: CalendarEventRecord[];
-  rank: string;
-  ref: CalendarGroupReference;
+export interface MeasuredGroup {
+  group: CalendarEventGroup;
+  values: (number | string)[];
 }

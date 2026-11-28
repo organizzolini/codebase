@@ -26,7 +26,7 @@ export const EVENT_COLOR_RULES: readonly EventColorRule[] = [
     label: "Aspect patterns",
     path: "Aspect / Compound",
   },
-  { color: "#10b981", label: "Sign stays", path: "Sign / Stay" },
+  { color: "#10b981", label: "Sign stays", path: "Ingress / Stay" },
   { color: "#f97316", label: "Directions", path: "Planetary / Direction" },
   {
     color: "#a8a29e",
@@ -42,12 +42,12 @@ export const EVENT_COLOR_RULES: readonly EventColorRule[] = [
   {
     color: "#eab308",
     label: "Daily solar cycle",
-    path: "Daily / Daily Solar",
+    path: "Daily / Solar",
   },
   {
     color: "#0ea5e9",
     label: "Daily lunar cycle",
-    path: "Daily / Daily Lunar",
+    path: "Daily / Lunar",
   },
   {
     color: "#3b82f6",
@@ -57,7 +57,7 @@ export const EVENT_COLOR_RULES: readonly EventColorRule[] = [
   {
     color: "#84cc16",
     label: "Annual solar cycle",
-    path: "Yearly / Annual Cycle",
+    path: "Yearly",
   },
   {
     color: "#14b8a6",

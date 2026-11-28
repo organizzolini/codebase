@@ -8,7 +8,7 @@ import { createTagRanks } from "../../../../calendar-query/calendar-group-strip/
 import { NO_NATIVE_TOOLTIP } from "../../events-calendar.constants";
 import { getViewLayout } from "../../events-calendar.utilities";
 import { CalendarGroupSortContext } from "../calendar-groups/calendar-groups.constants";
-import { getDefaultRoots } from "../calendar-groups/calendar-groups.utilities";
+import { getRootOrder } from "../calendar-groups/calendar-groups.utilities";
 import { CalendarMonth } from "../calendar-month/calendar-month";
 import { toEventCalendarView } from "../calendar-views/calendar-views.utilities";
 
@@ -92,7 +92,7 @@ export function CalendarGrid(
   } = properties;
 
   // 🪝 Hooks
-  const roots = useMemo(() => getDefaultRoots(facets), [facets]);
+  const roots = useMemo(() => getRootOrder(facets), [facets]);
   const groupSort = useMemo(
     () => ({ ranks: createTagRanks(facets), roots, sorts: sort }),
     [facets, roots, sort],

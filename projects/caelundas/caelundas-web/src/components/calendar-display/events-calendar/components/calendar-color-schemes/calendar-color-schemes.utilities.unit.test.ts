@@ -167,7 +167,7 @@ describe(createColorScheme, () => {
     );
     const ingress = {
       ...event(["tag-other"]),
-      tags: [{ depth: 2, id: "ingress", name: "Stay", path: "Sign / Stay" }],
+      tags: [{ depth: 2, id: "ingress", name: "Stay", path: "Ingress / Stay" }],
     };
 
     expect(scheme.colorOf(ingress)).toBe("#10b981");

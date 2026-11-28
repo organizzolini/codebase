@@ -50,13 +50,13 @@ export interface FilterTags {
   readonly harmonic2: Tag;
   readonly harmonic6: Tag;
   readonly harmonic12: Tag;
+  readonly ingress: Tag;
   readonly luminary: Tag;
   readonly luminaryMoon: Tag;
   readonly major: Tag;
   readonly moon: Tag;
   readonly planet: Tag;
   readonly planetary: Tag;
-  readonly sign: Tag;
   readonly signStay: Tag;
   readonly simple: Tag;
   readonly stay: Tag;
@@ -189,9 +189,11 @@ export async function seedFilterTags(
   const major = await tags.save(
     tags.create({ name: "Major", parent: simple, slug: "major" }),
   );
-  const sign = await tags.save(tags.create({ name: "Sign", slug: "sign" }));
+  const ingress = await tags.save(
+    tags.create({ name: "Ingress", slug: "ingress" }),
+  );
   const stay = await tags.save(
-    tags.create({ name: "Stay", parent: sign, slug: "stay" }),
+    tags.create({ name: "Stay", parent: ingress, slug: "stay" }),
   );
   const signStay = await tags.save(
     tags.create({
@@ -250,13 +252,13 @@ export async function seedFilterTags(
     harmonic2,
     harmonic6,
     harmonic12,
+    ingress,
     luminary,
     luminaryMoon,
     major,
     moon,
     planet,
     planetary,
-    sign,
     signStay,
     simple,
     stay,

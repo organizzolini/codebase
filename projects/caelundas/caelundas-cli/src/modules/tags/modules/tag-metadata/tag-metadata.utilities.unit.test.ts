@@ -27,7 +27,7 @@ function generatedPaths(): string[][] {
   }
 
   for (const kind of ["Decan Stay", "Full Sign", "Half Stay"]) {
-    add(["Sign", "Stay", kind]);
+    add(["Ingress", "Stay", kind]);
   }
 
   for (const dignity of [
@@ -61,7 +61,7 @@ function generatedPaths(): string[][] {
 describe("tag metadata", () => {
   describe(tagMenuFlags, () => {
     it("offers a tag in every menu unless it is excluded", () => {
-      expect(tagMenuFlags(["Sign", "Aries"])).toStrictEqual({
+      expect(tagMenuFlags(["Sign", "Zodiac", "Aries"])).toStrictEqual({
         isDefaultGroup: true,
         isFilterable: true,
         isGroupable: true,
@@ -82,15 +82,14 @@ describe("tag metadata", () => {
 
     it("keeps a label over one dimension's spans or sides out of the Filter menu", () => {
       for (const path of [
-        ["Yearly", "Annual Cycle", "Interval"],
-        ["Sign", "Peak"],
+        ["Yearly", "Interval"],
+        ["Ingress", "Peak"],
       ]) {
         expect(tagMenuFlags(path).isFilterable).toBe(false);
       }
 
       expect(
-        tagMenuFlags(["Yearly", "Annual Cycle", "Interval", "Beltane Pre"])
-          .isFilterable,
+        tagMenuFlags(["Yearly", "Interval", "Beltane Pre"]).isFilterable,
       ).toBe(true);
     });
 
@@ -132,8 +131,8 @@ describe("tag metadata", () => {
       const named = [
         ["Aspect", "Simple"],
         ["Aspect", "Simple", "Major"],
-        ["Daily", "Daily Lunar"],
-        ["Daily", "Daily Solar"],
+        ["Daily", "Lunar"],
+        ["Daily", "Solar"],
         ["Daily", "Twilight"],
         ["Eclipse", "Lunar"],
         ["Eclipse", "Solar"],
@@ -142,11 +141,10 @@ describe("tag metadata", () => {
         ["Planetary", "Direction"],
         ["Planetary", "Phase"],
         ["Planetary", "Synodic Stage"],
-        ["Yearly", "Annual Cycle"],
-        ["Sign", "Stay", "Decan Stay"],
-        ["Sign", "Stay", "Full Sign"],
-        ["Sign", "Stay", "Half Stay"],
-        ["Sign", "Aries"],
+        ["Ingress", "Stay", "Decan Stay"],
+        ["Ingress", "Stay", "Full Sign"],
+        ["Ingress", "Stay", "Half Stay"],
+        ["Sign", "Zodiac", "Aries"],
       ].filter((path) => !tagMenuFlags(path).isFilterable);
 
       expect(named).toStrictEqual([]);

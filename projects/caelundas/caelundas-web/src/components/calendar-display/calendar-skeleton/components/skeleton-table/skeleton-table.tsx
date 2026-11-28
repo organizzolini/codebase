@@ -52,9 +52,9 @@ export function SkeletonTable(
           className={`${row} h-10`}
           data-testid="skeleton-table-heads"
         >
-          {TABLE_HEADS.map((width) => (
+          {TABLE_HEADS.map(({ key, width }) => (
             <div
-              key={width}
+              key={key}
               className="px-2"
             >
               <Skeleton className={`h-6.5 ${width}`} />

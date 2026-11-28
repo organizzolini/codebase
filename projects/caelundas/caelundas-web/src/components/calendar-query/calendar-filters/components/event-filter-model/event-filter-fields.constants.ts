@@ -8,7 +8,7 @@ import {
   DERIVED_OPERATORS,
   NUMBER_OPERATORS,
   TAG_OPERATORS,
-  WEEKDAY_LABELS,
+  WEEKDAYS,
 } from "./event-filters.constants";
 
 import type { EventFilterField } from "./event-filters.types";
@@ -146,7 +146,8 @@ export const DERIVED_FIELDS: readonly EventFilterField[] = [
     id: DERIVED_FIELD_IDS.weekday,
     label: "Weekday",
     operators: SET_OPERATORS,
-    options: WEEKDAY_LABELS.map((label, index) => ({
+    options: WEEKDAYS.map(([label, description], index) => ({
+      description,
       label,
       value: String(index),
     })),

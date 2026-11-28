@@ -90,7 +90,7 @@ export const TAG_EXTRA_PARENTS: Readonly<
   }),
   ...Object.entries(KIND_AND_SEASON_BY_SOLAR_CYCLE_POINT).map(
     ([name, [kind, season]]): [string, readonly TagPath[]] => [
-      [TAG_ROOT.yearly, "Annual Cycle", kind, name].join(" / "),
+      [TAG_ROOT.yearly, kind, name].join(" / "),
       [[TAG_ROOT.yearly, "Season", season]],
     ],
   ),

@@ -11,12 +11,12 @@ function parentsOf(key: string): string[] {
 
 describe("tag extra parents", () => {
   it("lists a sign under its element, modality and polarity", () => {
-    expect(parentsOf("Sign / Aries")).toStrictEqual([
+    expect(parentsOf("Sign / Zodiac / Aries")).toStrictEqual([
       "Sign / Element / Fire",
       "Sign / Modality / Cardinal",
       "Sign / Polarity / Positive",
     ]);
-    expect(parentsOf("Sign / Pisces")).toStrictEqual([
+    expect(parentsOf("Sign / Zodiac / Pisces")).toStrictEqual([
       "Sign / Element / Water",
       "Sign / Modality / Mutable",
       "Sign / Polarity / Negative",
@@ -79,12 +79,12 @@ describe("tag extra parents", () => {
   });
 
   it("lists a solar point under its season", () => {
-    expect(
-      parentsOf("Yearly / Annual Cycle / Equinox / Vernal Equinox"),
-    ).toStrictEqual(["Yearly / Season / Spring"]);
-    expect(
-      parentsOf("Yearly / Annual Cycle / Cross-Quarter Day / Samhain"),
-    ).toStrictEqual(["Yearly / Season / Autumn"]);
+    expect(parentsOf("Yearly / Equinox / Vernal Equinox")).toStrictEqual([
+      "Yearly / Season / Spring",
+    ]);
+    expect(parentsOf("Yearly / Cross-Quarter Day / Samhain")).toStrictEqual([
+      "Yearly / Season / Autumn",
+    ]);
   });
 
   it("never lists a node under itself, a node beneath it or its own parent, nor twice under one parent", () => {

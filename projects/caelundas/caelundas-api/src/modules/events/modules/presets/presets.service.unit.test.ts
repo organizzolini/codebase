@@ -43,7 +43,7 @@ const FACETS = [
   facet("aspect", "Aspect", ["Simple / Major"]),
   facet("body", "Body", ["Luminary / Moon", "Luminary / Sun"]),
   facet("planetary", "Planetary", ["Direction"]),
-  facet("sign", "Sign", ["Stay / Full Sign"]),
+  facet("ingress", "Ingress", ["Stay / Full Sign"]),
 ];
 
 describe(PresetsService, () => {
@@ -76,8 +76,8 @@ describe(PresetsService, () => {
             rules: [
               {
                 operator: "is_any_of",
-                path: ["tag:sign"],
-                values: ["sign:Stay / Full Sign"],
+                path: ["tag:ingress"],
+                values: ["ingress:Stay / Full Sign"],
               },
               { path: ["tag:body"] },
             ],

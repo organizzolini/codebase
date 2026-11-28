@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { SkeletonTable } from "./skeleton-table";
 import { TABLE_HEADS, TABLE_ROWS } from "./skeleton-table.constants";
@@ -11,6 +11,16 @@ describe(SkeletonTable, () => {
     expect(screen.getByTestId("skeleton-table").className).toContain(
       "skeleton-table",
     );
+  });
+
+  it("keys every pill apart, so React logs no duplicate key", () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    render(<SkeletonTable />);
+
+    expect(error).not.toHaveBeenCalled();
+
+    error.mockRestore();
   });
 
   it("draws a pill for each column head", () => {

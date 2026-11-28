@@ -144,7 +144,7 @@ describe("tags utilities", () => {
       expect(under(paths, "Body")).toStrictEqual([
         ["Body", "Planet", "Inner", "Personal", "Mars"],
       ]);
-      expect(under(paths, "Sign")).toContainEqual(["Sign", "Aries"]);
+      expect(under(paths, "Sign")).toContainEqual(["Sign", "Zodiac", "Aries"]);
     });
 
     it.each([
@@ -157,7 +157,7 @@ describe("tags utilities", () => {
       (sign, element, modality, polarity) => {
         const paths = under(classify(["Ingress", "Sun", sign]), "Sign");
 
-        expect(paths).toContainEqual(["Sign", sign]);
+        expect(paths).toContainEqual(["Sign", "Zodiac", sign]);
         expect(paths).toContainEqual(["Sign", "Element", element]);
         expect(paths).toContainEqual(["Sign", "Modality", modality]);
         expect(paths).toContainEqual(["Sign", "Polarity", polarity]);
@@ -331,8 +331,8 @@ describe("tags utilities", () => {
         "Leo",
       ]);
 
-      expect(under(paths, "Sign")).toContainEqual([
-        "Sign",
+      expect(under(paths, "Ingress")).toContainEqual([
+        "Ingress",
         "Decan",
         "Second Decan",
       ]);
@@ -344,8 +344,8 @@ describe("tags utilities", () => {
       [["Ingress", "Decan", "Mars", "Aries"], LATER, "Decan Stay"],
       [["Ingress", "Peak", "Mars", "Aries"], LATER, "Half Stay"],
     ])("files %j ending at %s as a %s stay", (tags, end, kind) => {
-      expect(under(classify(tags, end), "Sign")).toContainEqual([
-        "Sign",
+      expect(under(classify(tags, end), "Ingress")).toContainEqual([
+        "Ingress",
         "Stay",
         kind,
       ]);
@@ -375,8 +375,8 @@ describe("tags utilities", () => {
     it.each([
       [["Retrogrades"], ["Planetary", "Direction", "Retrograde Period"]],
       [["Directs"], ["Planetary", "Direction", "Direct Period"]],
-      [["Before Peak"], ["Sign", "Peak", "Before Peak"]],
-      [["After Peak"], ["Sign", "Peak", "After Peak"]],
+      [["Before Peak"], ["Ingress", "Peak", "Before Peak"]],
+      [["After Peak"], ["Ingress", "Peak", "After Peak"]],
       [
         ["Annual Solar Cycle", "Spring"],
         ["Yearly", "Season", "Spring"],
@@ -387,43 +387,43 @@ describe("tags utilities", () => {
       ],
       [
         ["Daily Solar Cycle", "Solar"],
-        ["Daily", "Daily Solar"],
+        ["Daily", "Solar"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar"],
-        ["Daily", "Daily Lunar"],
+        ["Daily", "Lunar"],
       ],
       [
         ["Daily Solar Cycle", "Solar", "Sunrise"],
-        ["Daily", "Daily Solar", "Rise"],
+        ["Daily", "Solar", "Rise"],
       ],
       [
         ["Daily Solar Cycle", "Solar", "Sunset"],
-        ["Daily", "Daily Solar", "Set"],
+        ["Daily", "Solar", "Set"],
       ],
       [
         ["Daily Solar Cycle", "Solar", "Solar Zenith"],
-        ["Daily", "Daily Solar", "Zenith"],
+        ["Daily", "Solar", "Zenith"],
       ],
       [
         ["Daily Solar Cycle", "Solar", "Solar Nadir"],
-        ["Daily", "Daily Solar", "Nadir"],
+        ["Daily", "Solar", "Nadir"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Moonrise"],
-        ["Daily", "Daily Lunar", "Rise"],
+        ["Daily", "Lunar", "Rise"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Moonset"],
-        ["Daily", "Daily Lunar", "Set"],
+        ["Daily", "Lunar", "Set"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Lunar Zenith"],
-        ["Daily", "Daily Lunar", "Zenith"],
+        ["Daily", "Lunar", "Zenith"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Lunar Nadir"],
-        ["Daily", "Daily Lunar", "Nadir"],
+        ["Daily", "Lunar", "Nadir"],
       ],
       [
         ["Lunar Apsides", "Lunar", "Apogee"],
@@ -439,19 +439,19 @@ describe("tags utilities", () => {
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Moon Up"],
-        ["Daily", "Daily Lunar", "Moon Up"],
+        ["Daily", "Lunar", "Moon Up"],
       ],
       [
         ["Daily Lunar Cycle", "Lunar", "Moon Down"],
-        ["Daily", "Daily Lunar", "Moon Down"],
+        ["Daily", "Lunar", "Moon Down"],
       ],
       [
         ["Annual Solar Cycle", "Solar", "Post-Beltane", "Spring"],
-        ["Yearly", "Annual Cycle", "Interval", "Post-Beltane"],
+        ["Yearly", "Interval", "Post-Beltane"],
       ],
       [
         ["Annual Solar Cycle", "Solar", "Pre-Vernal Equinox", "Winter"],
-        ["Yearly", "Annual Cycle", "Interval", "Pre-Vernal Equinox"],
+        ["Yearly", "Interval", "Pre-Vernal Equinox"],
       ],
       [
         ["Annual Solar Cycle", "Solar", "Post-Beltane", "Spring"],
@@ -467,7 +467,7 @@ describe("tags utilities", () => {
       ],
       [
         ["Annual Solar Cycle", "Solar", "Perihelion"],
-        ["Yearly", "Annual Cycle", "Perihelion"],
+        ["Yearly", "Perihelion"],
       ],
       [
         ["Monthly Lunar Cycle", "Lunar", "Waxing Gibbous"],
@@ -536,13 +536,13 @@ describe("tags utilities", () => {
           classify(["Annual Solar Cycle", "Solar", "Vernal Equinox"]),
           "Yearly",
         ),
-      ).toContainEqual(["Yearly", "Annual Cycle", "Equinox", "Vernal Equinox"]);
+      ).toContainEqual(["Yearly", "Equinox", "Vernal Equinox"]);
     });
 
-    it("files daylight and night under Daily Solar, not under Twilight, which a twilight span keeps, and drops the morning and evening", () => {
+    it("files daylight and night under Solar, not under Twilight, which a twilight span keeps, and drops the morning and evening", () => {
       expect(
         under(classify(["Twilight", "Daylight"], LATER), "Daily"),
-      ).toStrictEqual([["Daily", "Daily Solar", "Daylight"]]);
+      ).toStrictEqual([["Daily", "Solar", "Daylight"]]);
       expect(
         under(
           classify(["Twilight", "Astronomical Twilight", "Morning"], LATER),
@@ -562,7 +562,7 @@ describe("tags utilities", () => {
       const paths = classify(["Twilight", "Night", "Night", "Twilight"]);
 
       expect(paths).toStrictEqual([
-        ["Daily", "Daily Solar", "Night"],
+        ["Daily", "Solar", "Night"],
         ["Temporality", "Perfective"],
       ]);
     });
@@ -589,12 +589,12 @@ describe("tags utilities", () => {
       [["Sign"], 1],
       [["Aspect"], 3],
       [["Yearly"], 7],
-      [["Temporality"], 9],
+      [["Temporality"], 10],
       [["Temporality", "Progressive", "Centuries"], 9],
-      [["Sign", "Aries"], 1],
-      [["Sign", "Pisces"], 12],
+      [["Sign", "Zodiac", "Aries"], 1],
+      [["Sign", "Zodiac", "Pisces"], 12],
       [["Body", "Luminary", "Moon"], 2],
-      [["Daily", "Daily Solar", "Nadir"], 4],
+      [["Daily", "Solar", "Nadir"], 4],
     ])("places %j at %i among its siblings", (path, rank) => {
       expect(tagRank(path)).toBe(rank);
     });

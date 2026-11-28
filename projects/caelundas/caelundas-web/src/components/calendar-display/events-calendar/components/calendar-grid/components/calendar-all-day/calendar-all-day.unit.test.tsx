@@ -77,11 +77,20 @@ describe(CalendarAllDay, () => {
     expect(screen.queryByTestId("calendar-group-list")).toBeNull();
   });
 
-  it("lists every event when expanded, with no group to toggle", () => {
+  it("opens every group as a card of its events when expanded, each closing from its header", () => {
     renderAllDay("expanded");
 
     expect(screen.getAllByTestId("calendar-event-chip")).toHaveLength(2);
-    expect(screen.queryByRole("button", { name: /events$/u })).toBeNull();
+
+    const [header] = screen.getAllByRole("button", { name: /events$/u });
+
+    expect(header?.getAttribute("aria-expanded")).toBe("true");
+
+    if (header !== undefined) {
+      fireEvent.click(header);
+    }
+
+    expect(screen.getAllByTestId("calendar-event-chip")).toHaveLength(1);
   });
 
   it("is one slim row of counts when contracted", () => {

@@ -30,7 +30,7 @@ export interface UseCalendarClustersProperties {
   /**
    * The names of the roots that group by default; every root when absent.
    */
-  roots?: ReadonlySet<string> | undefined;
+  roots?: ReadonlyMap<string, number> | undefined;
   timeZone: string;
   view: CalendarViewName;
 }

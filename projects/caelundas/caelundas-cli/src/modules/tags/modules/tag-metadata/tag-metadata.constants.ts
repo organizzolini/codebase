@@ -65,51 +65,24 @@ export const TAG_METADATA: Readonly<
     "Calculated points: Lilith, the lunar nodes and apsides.",
   ],
   Daily: ["clock", "Events that repeat every day."],
-  "Daily / Daily Lunar": [
-    "moon",
-    "The Moon's day: rise, zenith, set and nadir.",
-  ],
-  "Daily / Daily Lunar / Moon Down": [
+  "Daily / Lunar": ["moon", "The Moon's day: rise, zenith, set and nadir."],
+  "Daily / Lunar / Moon Down": [
     "moon",
     "The Moon is below the horizon, from moonset to moonrise.",
   ],
-  "Daily / Daily Lunar / Moon Up": [
+  "Daily / Lunar / Moon Up": [
     "moon",
     "The Moon is above the horizon, from moonrise to moonset.",
   ],
-  "Daily / Daily Lunar / Nadir": [
-    "arrow-down-to-line",
-    "The Moon's lowest point.",
-  ],
-  "Daily / Daily Lunar / Rise": [
-    "sunrise",
-    "The Moon crosses the horizon upward.",
-  ],
-  "Daily / Daily Lunar / Set": [
-    "sunset",
-    "The Moon crosses the horizon downward.",
-  ],
-  "Daily / Daily Lunar / Zenith": [
-    "arrow-up-to-line",
-    "The Moon's highest point.",
-  ],
-  "Daily / Daily Solar": ["sun", "The Sun's day: rise, zenith, set and nadir."],
-  "Daily / Daily Solar / Nadir": [
-    "arrow-down-to-line",
-    "The Sun's lowest point.",
-  ],
-  "Daily / Daily Solar / Rise": [
-    "sunrise",
-    "The Sun crosses the horizon upward.",
-  ],
-  "Daily / Daily Solar / Set": [
-    "sunset",
-    "The Sun crosses the horizon downward.",
-  ],
-  "Daily / Daily Solar / Zenith": [
-    "arrow-up-to-line",
-    "The Sun's highest point.",
-  ],
+  "Daily / Lunar / Nadir": ["arrow-down-to-line", "The Moon's lowest point."],
+  "Daily / Lunar / Rise": ["sunrise", "The Moon crosses the horizon upward."],
+  "Daily / Lunar / Set": ["sunset", "The Moon crosses the horizon downward."],
+  "Daily / Lunar / Zenith": ["arrow-up-to-line", "The Moon's highest point."],
+  "Daily / Solar": ["sun", "The Sun's day: rise, zenith, set and nadir."],
+  "Daily / Solar / Nadir": ["arrow-down-to-line", "The Sun's lowest point."],
+  "Daily / Solar / Rise": ["sunrise", "The Sun crosses the horizon upward."],
+  "Daily / Solar / Set": ["sunset", "The Sun crosses the horizon downward."],
+  "Daily / Solar / Zenith": ["arrow-up-to-line", "The Sun's highest point."],
   "Daily / Twilight": ["cloud-sun", "The stages between day and night."],
   Eclipse: ["eclipse", "Solar and lunar eclipses."],
   "Eclipse / Frame": ["scan", "What an eclipse is measured from."],
@@ -121,6 +94,19 @@ export const TAG_METADATA: Readonly<
     "Where an eclipse is: beginning, maximum or ending.",
   ],
   "Eclipse / Solar": ["sun", "The Moon covers the Sun."],
+  Ingress: [
+    "log-in",
+    "A body entering a sign, and how long it stays: the whole sign, a decan, or half a sign.",
+  ],
+  "Ingress / Decan": ["layers", "The ten-degree third of a sign a body is in."],
+  "Ingress / Peak": [
+    "split",
+    "Which side of a sign's peak, at 15°, a body is on.",
+  ],
+  "Ingress / Stay": [
+    "log-in",
+    "How long a body stays: the whole sign, a decan, or half a sign.",
+  ],
   Lunar: ["moon", "The Moon's month and orbit."],
   "Lunar / Apsides": [
     "orbit",
@@ -157,7 +143,6 @@ export const TAG_METADATA: Readonly<
     "A planet's stage in its cycle with the Sun.",
   ],
   Sign: ["star", "The signs and what they imply."],
-  "Sign / Decan": ["layers", "The ten-degree third of a sign a body is in."],
   "Sign / Dignity": ["crown", "How strongly a planet sits in its sign."],
   "Sign / Element": [
     "flame",
@@ -171,15 +156,8 @@ export const TAG_METADATA: Readonly<
     "repeat",
     "The modality of a sign: cardinal, fixed or mutable.",
   ],
-  "Sign / Peak": [
-    "split",
-    "Which side of a sign's peak, at 15°, a body is on.",
-  ],
   "Sign / Polarity": ["plus", "The polarity of a sign: positive or negative."],
-  "Sign / Stay": [
-    "log-in",
-    "How long a body stays: the whole sign, a decan, or half a sign.",
-  ],
+  "Sign / Zodiac": ["stars", "The twelve signs of the zodiac, in order."],
   Temporality: [
     "timer",
     "Whether an event is an instant or progresses over time.",
@@ -220,31 +198,18 @@ export const TAG_METADATA: Readonly<
     "A year of 365 days to under ten years.",
   ],
   Yearly: ["sun", "The Sun's year."],
-  "Yearly / Annual Cycle": [
-    "rotate-cw",
-    "The turning points of the Sun's year.",
-  ],
-  "Yearly / Annual Cycle / Cross-Quarter Day": [
+  "Yearly / Cross-Quarter Day": [
     "calendar-check",
     "Days midway between a solstice and an equinox.",
   ],
-  "Yearly / Annual Cycle / Equinox": [
-    "equal",
-    "Day and night are of equal length.",
-  ],
-  "Yearly / Annual Cycle / Hexadecan": [
-    "grid-2x2",
-    "The sixteen divisions of the year.",
-  ],
-  "Yearly / Annual Cycle / Interval": [
+  "Yearly / Equinox": ["equal", "Day and night are of equal length."],
+  "Yearly / Hexadecan": ["grid-2x2", "The sixteen divisions of the year."],
+  "Yearly / Interval": [
     "ruler",
     "The sixteen spans between the year's points, each after a named point or before the next.",
   ],
-  "Yearly / Annual Cycle / Solstice": [
-    "sun-medium",
-    "The longest and shortest days.",
-  ],
   "Yearly / Season": ["leaf", "The season of the year."],
+  "Yearly / Solstice": ["sun-medium", "The longest and shortest days."],
 };
 
 /** An icon by a node's last name, when its family's is vague. */

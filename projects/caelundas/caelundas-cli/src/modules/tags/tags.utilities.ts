@@ -165,7 +165,10 @@ function ingressPaths(rawTags: ReadonlySet<string>): TagPath[] {
     return [];
   }
 
-  return [[TAG_ROOT.sign, "Stay", stayKind(rawTags)], ...dignityPaths(rawTags)];
+  return [
+    [TAG_ROOT.ingress, "Stay", stayKind(rawTags)],
+    ...dignityPaths(rawTags),
+  ];
 }
 
 /** Whether an event is a single moment rather than a span. */

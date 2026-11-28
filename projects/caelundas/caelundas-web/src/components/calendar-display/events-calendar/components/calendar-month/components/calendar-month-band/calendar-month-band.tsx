@@ -75,6 +75,8 @@ export function CalendarMonthBand(
       <CalendarOpenGroups
         className="flex-1"
         day={day}
+        groupColors={groupColors}
+        grouping={grouping}
         groups={groups}
         timeZone={timeZone}
       />
