@@ -34,6 +34,31 @@ describe("progressiveService span pairing", () => {
   let twilightsService: TwilightsService;
 
   const at = (iso: string): moment.Moment => moment.utc(iso);
+
+  // A sweep of a window takes seconds and its events are only read, so each
+  // window is swept once however many tests ask about it.
+  const sweeps = new Map<string, DetectedCalendarEvent[]>();
+  const sweepWindow = (
+    input: ReturnType<typeof inputSchema.parse>,
+  ): DetectedCalendarEvent[] => {
+    const key = [
+      input.start.toISOString(),
+      input.end.toISOString(),
+      input.latitude,
+      input.longitude,
+    ].join("|");
+    const known = sweeps.get(key);
+
+    if (known !== undefined) {
+      return known;
+    }
+
+    const events = progressiveService.detect([], input);
+
+    sweeps.set(key, events);
+
+    return events;
+  };
   const spans = (
     events: DetectedCalendarEvent[],
     summary: string,
@@ -203,13 +228,12 @@ describe("progressiveService span pairing", () => {
         window: { endDate: string; startDate: string },
         edge: "end" | "start",
       ): DetectedCalendarEvent[] =>
-        progressiveService
-          .detect([], inputSchema.parse({ ...greenwich, ...window }))
-          .filter((event) =>
+        sweepWindow(inputSchema.parse({ ...greenwich, ...window })).filter(
+          (event) =>
             edge === "start"
               ? event.start.isSame(first)
               : event.end.isSame(last),
-          );
+        );
 
       it.each(families)("keeps %s at the first minute", (_name, [tag]) => {
         const events = clipped(
@@ -237,8 +261,7 @@ describe("progressiveService span pairing", () => {
           [{ endDate: "1900-01-02", startDate: "1900-01-01" }, "start"],
           [{ endDate: "2100-12-31", startDate: "2100-12-30" }, "end"],
         ] as const) {
-          const events = progressiveService.detect(
-            [],
+          const events = sweepWindow(
             inputSchema.parse({ ...greenwich, ...window }),
           );
 
@@ -308,7 +331,7 @@ describe("progressiveService span pairing", () => {
       };
 
       it("gives each slow body one stay that opens and closes outside the window", () => {
-        const events = progressiveService.detect([], input);
+        const events = sweepWindow(input);
 
         for (const body of slowBodies) {
           const [stay, ...rest] = staysOf(events, body);
@@ -320,7 +343,7 @@ describe("progressiveService span pairing", () => {
       });
 
       it("starts and ends each stay on the minute the sign changes", () => {
-        const events = progressiveService.detect([], input);
+        const events = sweepWindow(input);
 
         for (const body of slowBodies) {
           const [stay] = staysOf(events, body);
@@ -345,7 +368,7 @@ describe("progressiveService span pairing", () => {
       ] as const)(
         "starts and ends each %s stay on the minute its slice changes",
         (tag, degrees) => {
-          const events = progressiveService.detect([], input);
+          const events = sweepWindow(input);
 
           for (const body of slowBodies) {
             const [stay, ...rest] = events.filter(
@@ -394,9 +417,7 @@ describe("progressiveService span pairing", () => {
               `${event.summary}|${event.start.toISOString()}|${event.end.toISOString()}`,
           );
 
-        expect(key(progressiveService.detect([], later))).toStrictEqual(
-          key(progressiveService.detect([], input)),
-        );
+        expect(key(sweepWindow(later))).toStrictEqual(key(sweepWindow(input)));
       });
     },
   );

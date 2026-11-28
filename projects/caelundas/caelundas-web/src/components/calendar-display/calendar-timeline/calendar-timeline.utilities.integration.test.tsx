@@ -7,6 +7,7 @@ import {
   FIXTURE_EVENTS,
 } from "../../../../testing/calendar/calendar-fixture";
 import {
+  BUILDER_WAIT,
   findToolbar,
   pickCalendarView,
   pickTimelineScale,
@@ -142,7 +143,7 @@ describe("calendar timeline", () => {
 
     await waitFor(async () => {
       await expect(findTimelineRows()).resolves.toContain("Mars1");
-    });
+    }, BUILDER_WAIT);
 
     fireEvent.click(screen.getByRole("button", { name: "Aspect options" }));
     fireEvent.click(
@@ -154,7 +155,7 @@ describe("calendar timeline", () => {
         "Simple1",
         "No Aspect3",
       ]);
-    });
+    }, BUILDER_WAIT);
   });
 
   it("leads each group's name with its own symbol", async () => {

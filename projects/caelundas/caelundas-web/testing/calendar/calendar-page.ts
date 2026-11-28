@@ -152,6 +152,32 @@ export async function findMonthEvents(name: RegExp): Promise<HTMLElement[]> {
 }
 
 /**
+ * Waits, without clicking, until an open Display menu leaf reads as picked.
+ */
+export async function findPickedDisplayOption(
+  branch: string,
+  leaf: string,
+): Promise<HTMLElement> {
+  return waitFor(() => {
+    const items = screen.getAllByRole("treeitem");
+    const opened = items.find(
+      (item) =>
+        item.getAttribute("aria-level") === "1" && getRowName(item) === branch,
+    );
+    const match = items
+      .slice(opened === undefined ? items.length : items.indexOf(opened) + 1)
+      .filter((item) => item.getAttribute("aria-level") !== "1")
+      .find((item) => getRowName(item) === leaf);
+
+    if (match?.getAttribute("aria-selected") !== "true") {
+      throw new Error(`${leaf} under ${branch} is not picked`);
+    }
+
+    return match;
+  }, BUILDER_WAIT);
+}
+
+/**
  * Finds the calendar's one toolbar row.
  */
 export async function findToolbar(): Promise<HTMLElement> {

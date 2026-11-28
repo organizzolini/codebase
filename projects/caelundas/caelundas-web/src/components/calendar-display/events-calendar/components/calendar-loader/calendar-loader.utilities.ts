@@ -1,4 +1,3 @@
-import { METRICS_CACHE } from "../../../../../hooks/use-metric-layout/hooks/use-event-metrics/use-event-metrics.constants";
 import { toEventFilterInput } from "../../../../calendar-query/calendar-filters/components/event-filter-model/event-filter-input.utilities";
 import { toPreset } from "../../../../calendar-query/calendar-filters/components/presets/presets.utilities";
 import {
@@ -35,16 +34,6 @@ import type {
   EventsDataset,
   Period,
 } from "./calendar-records.types";
-
-/**
- * Forgets every read the loader kept, so the next load asks the API again.
- */
-export function clearCalendarCaches(): void {
-  CONSTANTS_CACHE.clear();
-  EVENTS_CACHE.clear();
-  FACETS_CACHE.clear();
-  METRICS_CACHE.clear();
-}
 
 /**
  * Reads the events in the view's period, plus a buffer, that pass the filter.

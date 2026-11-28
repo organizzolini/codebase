@@ -15,6 +15,7 @@ import {
   findDisplayRow,
   findMonthEvent,
   findMonthEvents,
+  findPickedDisplayOption,
   findToolbar,
   queryMonthEvent,
   queryMonthEvents,
@@ -466,11 +467,9 @@ describe("index", () => {
       fireEvent.click(await findDisplayOption("Symbols", name));
 
       // The link now holds the pick, and the list reads it back.
-      await waitFor(async () => {
-        const option = await findDisplayOption("Symbols", name);
+      const picked = await findPickedDisplayOption("Symbols", name);
 
-        expect(option.getAttribute("aria-selected")).toBe("true");
-      });
+      expect(picked.getAttribute("aria-selected")).toBe("true");
     }
   });
 

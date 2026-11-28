@@ -25,6 +25,8 @@ import type { RetrogradeBody } from "../../../caelundas/caelundas.types";
 import type { DetectedCalendarEvent } from "../../../calendar-events/calendar-events.types";
 import type { CoordinateEphemeris } from "../../../ephemeris/ephemeris.types";
 
+const MINUTE_MILLISECONDS = 60_000;
+
 describe(RetrogradesService, () => {
   let service: RetrogradesService;
   let ephemerisService: EphemerisService;
@@ -479,7 +481,10 @@ describe(RetrogradesService, () => {
     });
   });
 
-  describe("detectProgressive over a sweep window", () => {
+  // Each test walks the station search over the 1900 to 2100 range for ten
+  // bodies: about two seconds here, and a CI runner under load took more
+  // than the default five. Thirty seconds is fifteen times the slowest.
+  describe("detectProgressive over a sweep window", { timeout: 30_000 }, () => {
     const day = (days: number): Moment =>
       moment.utc("2026-01-01T00:00:00.000Z").add(days, "days");
 
@@ -517,26 +522,37 @@ describe(RetrogradesService, () => {
           event.end.toISOString(),
         ]);
 
-    beforeEach(() => {
+    /**
+     * Answers the ephemeris of every minute with a longitude by epoch
+     * milliseconds. It steps plain numbers, as a window spans up to
+     * hundreds of thousands of minutes and a moment per minute is slow.
+     */
+    const useLongitude = (
+      longitude: (milliseconds: number) => number,
+    ): void => {
       vi.spyOn(
         ephemerisService,
         "getCoordinateEphemerisByBody",
       ).mockImplementation(({ bodies, end, start }) => {
         const ephemeris: CoordinateEphemeris = {};
         for (
-          const minute = start.clone();
-          !minute.isAfter(end);
-          minute.add(1, "minute")
+          let milliseconds = start.valueOf();
+          milliseconds <= end.valueOf();
+          milliseconds += MINUTE_MILLISECONDS
         ) {
-          ephemeris[minute.toISOString()] = {
+          ephemeris[new Date(milliseconds).toISOString()] = {
             latitude: 0,
-            longitude: longitudeAt(minute.valueOf()),
+            longitude: longitude(milliseconds),
           };
         }
         return Object.fromEntries(
           bodies.map((body) => [body, ephemeris]),
         ) as ReturnType<EphemerisService["getCoordinateEphemerisByBody"]>;
       });
+    };
+
+    beforeEach(() => {
+      useLongitude(longitudeAt);
     });
 
     afterEach(() => {
@@ -573,30 +589,6 @@ describe(RetrogradesService, () => {
       const daysFrom = (origin: Moment, milliseconds: number): number =>
         (milliseconds - origin.valueOf()) /
         moment.duration(1, "day").asMilliseconds();
-
-      const useLongitude = (
-        longitude: (milliseconds: number) => number,
-      ): void => {
-        vi.spyOn(
-          ephemerisService,
-          "getCoordinateEphemerisByBody",
-        ).mockImplementation(({ bodies, end, start }) => {
-          const ephemeris: CoordinateEphemeris = {};
-          for (
-            const minute = start.clone();
-            !minute.isAfter(end);
-            minute.add(1, "minute")
-          ) {
-            ephemeris[minute.toISOString()] = {
-              latitude: 0,
-              longitude: longitude(minute.valueOf()),
-            };
-          }
-          return Object.fromEntries(
-            bodies.map((body) => [body, ephemeris]),
-          ) as ReturnType<EphemerisService["getCoordinateEphemerisByBody"]>;
-        });
-      };
 
       it("begins a direct period at the first minute when the planet was direct before it", () => {
         // Direct for 20 days from the first minute, then retrograde.

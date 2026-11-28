@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { readServedApi } from "../../../../../../testing/calendar/calendar-api";
 import {
+  BUILDER_WAIT,
   findToolbar,
   pickCalendarView,
 } from "../../../../../../testing/calendar/calendar-page";
@@ -88,7 +89,7 @@ describe("event grouping", () => {
 
     await waitFor(async () => {
       await expect(readGrouping()).resolves.toBe("GroupAspectElement");
-    });
+    }, BUILDER_WAIT);
   });
 
   it("restores the grouping a link holds", async () => {
@@ -116,7 +117,7 @@ describe("event grouping", () => {
 
     await waitFor(async () => {
       await expect(readGrouping()).resolves.toBe("GroupTags");
-    });
+    }, BUILDER_WAIT);
   });
 
   it.each([

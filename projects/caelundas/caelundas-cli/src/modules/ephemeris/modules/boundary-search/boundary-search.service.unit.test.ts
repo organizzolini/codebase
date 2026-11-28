@@ -200,10 +200,12 @@ describe(BoundarySearchService, () => {
       summary: "flip",
       tags: ["Flip"],
     });
+    // Compared as numbers: a string handed to a moment is parsed again on
+    // each of the hundreds of thousands of minutes the search walks.
     const flipsAt =
       (at_: string) =>
       (minute: Moment): DetectedCalendarEvent[] =>
-        minute.isSame(at_) ? [flip(minute)] : [];
+        minute.valueOf() === Date.parse(at_) ? [flip(minute)] : [];
 
     it("knows the range's first and last minute", async () => {
       const { instance } = await buildTestingModule(BoundarySearchService);
@@ -248,10 +250,11 @@ describe(BoundarySearchService, () => {
     it("walks past the first limit to name the boundary, then clips it to the limit", async () => {
       const { instance } = await buildTestingModule(BoundarySearchService);
       const flipBefore = "1899-12-30T12:00:00.000Z";
+      const flipBeforeMilliseconds = Date.parse(flipBefore);
 
       const events = instance.findEdgeEvents({
         detectAt: flipsAt(flipBefore),
-        stateAt: (minute) => Number(minute.isSameOrAfter(flipBefore)),
+        stateAt: (minute) => Number(minute.valueOf() >= flipBeforeMilliseconds),
         stepMinutes: 360,
         window: firstWindow,
       });
@@ -265,10 +268,11 @@ describe(BoundarySearchService, () => {
     it("walks past the last limit to name the boundary, then clips it to the limit", async () => {
       const { instance } = await buildTestingModule(BoundarySearchService);
       const flipAfter = "2101-01-03T06:30:00.000Z";
+      const flipAfterMilliseconds = Date.parse(flipAfter);
 
       const events = instance.findEdgeEvents({
         detectAt: flipsAt(flipAfter),
-        stateAt: (minute) => Number(minute.isSameOrAfter(flipAfter)),
+        stateAt: (minute) => Number(minute.valueOf() >= flipAfterMilliseconds),
         stepMinutes: 360,
         window: lastWindow,
       });
